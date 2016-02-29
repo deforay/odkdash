@@ -62,6 +62,26 @@ return array(
                     ),
                 ),
             ),            
+            'odk-receiver' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/receiver[/]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Receiver',
+                        'action' => 'index',
+                    ),
+                ),
+            ),            
+            'spi-v3-form' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v3[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV3',
+                        'action' => 'index',
+                    ),
+                ),
+            ),            
             
         ),
     ),
@@ -87,7 +107,8 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Application\Controller\Index' => "Application\Controller\IndexController",
-            'Application\Controller\Receiver' => "Application\Controller\ReceiverController"
+            'Application\Controller\Receiver' => "Application\Controller\ReceiverController",
+            'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller"
         ),
     ),
     'view_manager' => array(

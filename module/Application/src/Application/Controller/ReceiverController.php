@@ -11,10 +11,14 @@ class ReceiverController extends AbstractActionController
     public function indexAction()
     {        
         $viewModel = new ViewModel();
-        //$viewModel->setVariables(array('key' => 'value'))
         
         $jsonData = file_get_contents('php://input');
-        $this->var_error_log( $jsonData );        
+        
+        $params = json_decode($jsonData,true);
+        
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $result = $odkFormService->saveSpiFormVer3($params);
+        //$result = $odkFormService->getPerformance($params);
         
         
         $viewModel->setTerminal(true);
@@ -23,11 +27,11 @@ class ReceiverController extends AbstractActionController
 
     
     public function var_error_log( $object=null ){
-        ob_start();                    // start buffer capture
-        var_dump( $object );           // dump the values
-        $contents = ob_get_contents(); // put the buffer into a variable
-        ob_end_clean();                // end capture
-        error_log( $contents );        // log contents of the result of var_dump( $object )
+        ob_start();
+        var_dump( $object );
+        $contents = ob_get_contents();
+        ob_end_clean();
+        error_log( $contents );
     }
  
 }

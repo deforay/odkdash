@@ -16,6 +16,19 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+        
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $perf1 = $odkFormService->getPerformance();        
+        $perflast30 = $odkFormService->getPerformanceLast30Days();        
+        $perflast180 = $odkFormService->getPerformanceLast180Days();        
+        $allSubmissions = $odkFormService->getAllSubmissions();        
+        return new ViewModel(array(
+                                   'perf1' => $perf1,
+                                   'perflast30' => $perflast30,
+                                   'perflast180' => $perflast180,
+                                   'allSubmissions' => $allSubmissions,
+                                   ));
+    
+    
     }
 }

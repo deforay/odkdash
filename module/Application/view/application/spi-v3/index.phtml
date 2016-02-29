@@ -1,0 +1,52 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
+ 
+
+
+<div class="am-content">
+        <div class="page-head">
+          <h2>SPI Version 3</h2>
+        </div>
+        <div class="main-content">
+            
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+
+                <table class="table table-bordered table-striped table-hover table-fw-widget">
+                  <thead>
+                    <tr>
+                      <th>Form ID</th>
+                      <th>Form Version</th>
+                      <th>Facility Name</th>
+                      <th>Testing Point Type</th>
+                      <th>Level</th>
+                      <th>Affiliation</th>
+                      <th>Audit Score Percentage</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <?php foreach ($allSubmissions as $row) { ?>
+                    <tr>
+                      <td><?php echo $row['formId']; ?></td>
+                      <td><?php echo $row['formVersion']; ?></td>
+                      <td><?php echo $row['facilityname']; ?></td>
+                      <td><?php echo $row['testingpointtype']; ?></td>
+                      <td><?php echo $row['level']; ?></td>
+                      <td><?php echo $row['affiliation']; ?></td>
+                      <td><?php echo $row['AUDIT_SCORE_PERCANTAGE']; ?></td>
+                      <td><a href="/spi-v3/print/<?php echo $row['id']; ?>"><i class="fa fa-print"></i> Print</a></td>
+                    </tr>
+                    <?php } ?>
+                  </tbody>
+                </table>
+            </div>
+            
+            
+            
+        </div>
+</div>
+<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
+<script type="text/javascript">
+       $(document).ready(function() {
+    $('.table').DataTable();
+} ); 
+</script>
