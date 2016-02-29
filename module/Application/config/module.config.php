@@ -12,16 +12,7 @@ namespace Application;
 return array(
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
+            
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -62,16 +53,16 @@ return array(
                     ),
                 ),
             ),            
-            'odk-receiver' => array(
-                'type' => 'segment',
+            'login' => array(
+                'type'    => 'segment',
                 'options' => array(
-                    'route' => '/receiver[/]',
+                    'route'    => '/login[/:action]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Receiver',
+                        'controller' => 'Application\Controller\Login',
                         'action' => 'index',
                     ),
                 ),
-            ),            
+            ),     
             'spi-v3-form' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -108,7 +99,8 @@ return array(
         'invokables' => array(
             'Application\Controller\Index' => "Application\Controller\IndexController",
             'Application\Controller\Receiver' => "Application\Controller\ReceiverController",
-            'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller"
+            'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller",
+            'Application\Controller\Login' => "Application\Controller\LoginController"
         ),
     ),
     'view_manager' => array(

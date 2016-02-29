@@ -29,13 +29,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
       
     public function saveData($params) {
-        error_log('AAYA DB MEIN');
-        
-        
-        
-
-        
-        
+       
         foreach($params['data'] as $datar){
             $par = array();
             
