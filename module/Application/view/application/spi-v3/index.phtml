@@ -4,7 +4,7 @@
 
 <div class="am-content">
         <div class="page-head">
-          <h2>SPI Version 3</h2>
+          <h2>SPI RT Version 3</h2>
         </div>
         <div class="main-content">
             
@@ -16,6 +16,7 @@
                       <th>Form ID</th>
                       <th>Form Version</th>
                       <th>Facility Name</th>
+                      <th>Audit Round No.</th>
                       <th>Testing Point Type</th>
                       <th>Level</th>
                       <th>Affiliation</th>
@@ -29,11 +30,12 @@
                       <td><?php echo $row['formId']; ?></td>
                       <td><?php echo $row['formVersion']; ?></td>
                       <td><?php echo $row['facilityname']; ?></td>
+                      <td><?php echo $row['auditroundno']; ?></td>
                       <td><?php echo $row['testingpointtype']; ?></td>
-                      <td><?php echo $row['level']; ?></td>
+                      <td><?php echo $row['level']; ?> <?php echo isset($row['level_other']) ? " - ".$row['level_other'] : ""; ?></td>
                       <td><?php echo $row['affiliation']; ?></td>
-                      <td><?php echo $row['AUDIT_SCORE_PERCANTAGE']; ?></td>
-                      <td><a href="/spi-v3/print/<?php echo $row['id']; ?>"><i class="fa fa-print"></i> Print</a></td>
+                      <td><?php echo round($row['AUDIT_SCORE_PERCANTAGE'],2); ?></td>
+                      <td><a href="/spi-v3/print/<?php echo $row['id']; ?>" target="_blank"><i class="fa fa-print"></i> Print</a></td>
                     </tr>
                     <?php } ?>
                   </tbody>
