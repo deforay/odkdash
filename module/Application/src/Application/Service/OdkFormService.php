@@ -44,6 +44,12 @@ class OdkFormService {
         return $db->getAllSubmissions();
     }
     
+    
+    public function getAuditRoundWiseData() {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->getAuditRoundWiseData();
+    }
+    
     public function getFormData($id) {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getFormData($id);

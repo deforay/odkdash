@@ -16,6 +16,20 @@
               </div>
             </div>
             <div class="col-md-4">
+              <div class="widget widget-pie widget-pie-stats">
+                <div class="widget-head"><span class="title">SPI RT v3 Last 180 days</span></div>
+                <div class="row chart-container">
+                  <div class="col-md-6">
+                    <div id="widget-top-3" class="chart" style="height:170px"></div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="legend"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
               <div class="widget widget-pie">
                 <div class="widget-head"><span class="title">SPI RT v3 Last 30 days</span></div>
                 <div class="row chart-container">
@@ -27,23 +41,36 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="widget widget-pie widget-pie-stats">
-                <div class="widget-head"><span class="title">SPI RT v3 Last 180 days</span></div>
-                <div class="row chart-container">
-                  <div class="col-md-6">
-                    <div id="widget-top-3" class="chart" style="height:170px"></div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="legend">
-                     
+            </div>			
+          </div>
+		  <div class="row">
+			<div class="col-md-6">
+                  <div class="widget widget-radar">
+                    <div class="widget-head">
+                      <span class="title">Audit-wise Average Scores</span>
+                    </div>
+                    <div class="chart-container">
+                      <canvas id="radar-chart1" height="180px"></canvas>
                     </div>
                   </div>
+			</div>
+			<div class="col-md-6">
+			  <div class="widget widget-calendar">
+                <div class="cal-container">
+                  <div class="cal-notes"><span class="day">Thursday</span>
+				  <span class="date">September 24</span>
+				  
+                    <ul>
+                      <li><span class="hour"></span><span class="event-name">Facility 1 SPI RT V3</span></li>
+                      <li><span class="hour"></span><span class="event-name">Facility 2 SPI RT V3</span></li>
+                    </ul>
+                  </div>
+                  <div class="cal-calendar">
+                    <div class="ui-datepicker"></div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
+			</div>
+		  </div>
           <div class="row">
             <div class="col-md-12">
               <div class="widget widget-map">
@@ -67,6 +94,26 @@
       var color3 = "yellow";
       var color4 = "#8DD63E";
       var color5 = "#528A16";
+
+  //Get the template css colors into js vars
+  function getColor( c ){
+    var tmp = $("<div>", { class: c }).appendTo("body");
+    var color = tmp.css("background-color");
+    tmp.remove();
+
+    return color;
+  }
+  
+		var colors = {};
+		colors.primary = getColor('clr-primary');
+        colors.success = getColor('clr-success');
+        colors.info    = getColor('clr-info');
+        colors.warning = getColor('clr-warning');
+        colors.danger  = getColor('clr-danger');
+        colors.alt1    = getColor('clr-alt1');
+        colors.alt2    = getColor('clr-alt2');
+        colors.alt3    = getColor('clr-alt3');
+        colors.alt4    = getColor('clr-alt4');
       
 function widget_top_1(){
 	    var data = [
@@ -115,6 +162,7 @@ function widget_top_1(){
 	    $.plot('#widget-top-2', dataLast30, {
 		    series: {
 					pie: {
+						innerRadius: 0.5,
 						show: true,
 						highlight: {
 							opacity: 0.1
@@ -144,6 +192,7 @@ function widget_top_1(){
 		    series: {
 					pie: {
 						show: true,
+						innerRadius: 0.5,						
 						highlight: {
 							opacity: 0.1
 						}
@@ -159,7 +208,109 @@ function widget_top_1(){
 			});
     }
     
-    
+
+function radar_chart(){
+
+      var color1 = tinycolor( colors.primary ).lighten( 6 );
+      var color2 = tinycolor( colors.alt4 ).lighten( 6.5 );
+      var color3 = tinycolor( colors.success ).lighten( 6.5 );
+      var color4 = tinycolor( colors.info ).lighten( 6.5 );
+      var color5 = tinycolor( colors.warning ).lighten( 6.5 );
+      var color6 = tinycolor( colors.danger ).lighten( 6.5 );
+      var color7 = tinycolor( colors.alt1 ).lighten( 6.5 );
+      var color8 = tinycolor( colors.alt2 ).lighten( 6.5 );
+      var color9 = tinycolor( colors.alt3 ).lighten( 6.5 );
+
+      var data = {
+        labels: ["Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"],
+        datasets: [
+		  <?php foreach ($auditRoundWiseData as $auditNo => $adata){ ?>
+          {
+            label: "Audit Round No. <?php echo $auditNo; ?>",
+            fillColor: color<?php echo $auditNo; ?>.setAlpha(.5).toString(),
+            pointColor: color<?php echo $auditNo; ?>.setAlpha(.8).toString(),
+            strokeColor: color<?php echo $auditNo; ?>.setAlpha(.8).toString(),
+            highlightFill: color<?php echo $auditNo; ?>.setAlpha(.75).toString(),
+            highlightStroke: color<?php echo $auditNo; ?>.toString(),
+            data: [
+				   <?php echo $adata['PERSONAL_SCORE'] ?>,
+				   <?php echo $adata['PHYSICAL_SCORE'] ?>,
+				   <?php echo $adata['SAFETY_SCORE'] ?>,
+				   <?php echo $adata['PRETEST_SCORE'] ?>,
+				   <?php echo $adata['TEST_SCORE'] ?>,
+				   <?php echo $adata['POST_SCORE'] ?>,
+				   <?php echo $adata['EQA_SCORE'] ?>,
+				   ]
+          },
+		  <?php } ?>
+        ]
+      };
+
+      var radarChart = new Chart( $("#radar-chart1").get(0).getContext("2d") ).Radar(data, {
+        scaleShowLine : true,
+        responsive: true,
+        maintainAspectRatio: false,
+        legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+      });
+    }
+
+//Calendar Widget
+    function calendar_widget(){
+    	var widget = $(".widget-calendar");
+    	var calNotes = $(".cal-notes", widget);
+    	var calNotesDay = $(".day", calNotes);
+    	var calNotesDate = $(".date", calNotes);
+
+    	//Calculate the weekday name
+    	var d = new Date();
+		var weekday = new Array(7);
+		weekday[0]=  "Sunday";
+		weekday[1] = "Monday";
+		weekday[2] = "Tuesday";
+		weekday[3] = "Wednesday";
+		weekday[4] = "Thursday";
+		weekday[5] = "Friday";
+		weekday[6] = "Saturday";
+
+		var weekdayName = weekday[d.getDay()];
+
+		calNotesDay.html( weekdayName );
+
+		//Calculate the month name
+		var month = new Array();
+		month[0] = "January";
+		month[1] = "February";
+		month[2] = "March";
+		month[3] = "April";
+		month[4] = "May";
+		month[5] = "June";
+		month[6] = "July";
+		month[7] = "August";
+		month[8] = "September";
+		month[9] = "October";
+		month[10] = "November";
+		month[11] = "December";
+
+		var monthName = month[d.getMonth()];
+		var monthDay = d.getDate();
+
+		calNotesDate.html( monthName + " " + monthDay);
+
+      if (typeof jQuery.ui != 'undefined') {
+        $( ".ui-datepicker" ).datepicker({
+        	onSelect: function(s, o){
+        		var sd = new Date(s);
+        		var weekdayName = weekday[sd.getDay()];
+        		var monthName = month[sd.getMonth()];
+				var monthDay = sd.getDate();
+				calNotesDay.html( weekdayName );
+				calNotesDate.html( monthName + " " + monthDay);
+				alert('Under Construction');
+        	}
+        });
+      }
+    }
+	
 function world_map(){
 
       var color = "#95D9F0";
@@ -222,7 +373,8 @@ function world_map(){
         widget_top_1();
         widget_top_2();
         widget_top_3();
-        //world_map();
+        radar_chart();
+        calendar_widget();
 		
 		new Maplace({
 		  locations: LocsA,

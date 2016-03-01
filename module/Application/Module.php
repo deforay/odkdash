@@ -39,7 +39,9 @@ class Module
     
     
     public function preSetter(MvcEvent $e) {
-	if ($e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login') {
+	if ($e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
+        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
+        ) {
             $session = new Container('credo');
             if (!isset($session->userId) || $session->userId == "") {
                 $url = $e->getRouter()->assemble(array(), array('name' => 'login'));

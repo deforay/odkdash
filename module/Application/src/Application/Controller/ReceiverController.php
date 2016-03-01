@@ -20,7 +20,6 @@ class ReceiverController extends AbstractActionController
         $result = $odkFormService->saveSpiFormVer3($params);
         //$result = $odkFormService->getPerformance($params);
         
-        
         $viewModel->setTerminal(true);
         return $viewModel;        
     }

@@ -22,11 +22,13 @@ class IndexController extends AbstractActionController
         $perflast30 = $odkFormService->getPerformanceLast30Days();        
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllSubmissions();        
+        $auditRoundWiseData = $odkFormService->getAuditRoundWiseData();        
         return new ViewModel(array(
                                    'perf1' => $perf1,
                                    'perflast30' => $perflast30,
                                    'perflast180' => $perflast180,
                                    'allSubmissions' => $allSubmissions,
+                                   'auditRoundWiseData' => $auditRoundWiseData,
                                    ));
     
     
