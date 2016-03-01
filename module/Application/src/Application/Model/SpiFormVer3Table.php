@@ -30,6 +30,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
       
     public function saveData($params) {
        
+        $sql = new Sql($this->adapter);
+        $insert = $sql->insert('form_dump');
+        $d = array('data_dump' => json_encode($params));
+        $dbAdapter = $this->adapter;
+        $insert->values($d);
+        $selectString = $sql->getSqlStringForSqlObject($insert);
+        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+       
+       
         foreach($params['data'] as $datar){
             $par = array();
             
@@ -49,8 +58,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
             try{
                
         
- $sql = new Sql($this->adapter);
+    $sql = new Sql($this->adapter);
+    
+    
     $insert = $sql->insert('spi_form_v_3');
+    
     $par = array(
             'token' => $params['token'],
             'content' => $params['content'],
