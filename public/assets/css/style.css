@@ -7535,7 +7535,7 @@ button:focus {
   line-height: 80px;
   height: 80px;
   width: 100px;
-  background-image: url("../img/logo.png");
+  /*background-image: url("../img/logo.png");*/
   background-repeat: no-repeat;
   background-position: center center;
   margin-right: 20px;
@@ -8406,7 +8406,7 @@ button:focus {
     display: block;
   }
   .am-left-sidebar .am-logo {
-    background: url("../img/logo-full.png") no-repeat 15px center;
+    /*background: url("../img/logo-full.png") no-repeat 15px center;*/
     height: 70px;
     background-color: #393838;
     border-bottom: 1px solid #353434;
