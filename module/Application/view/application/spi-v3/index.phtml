@@ -1,5 +1,14 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
- 
+<style>
+
+ td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_open.png'); ?>') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_close.png'); ?>') no-repeat center center;
+}
+</style> 
 
 
 <div class="am-content">
@@ -82,12 +91,14 @@
 
 
 
-                <table class="table table-bordered table-striped table-hover table-fw-widget">
+                <table id="example" class="table table-bordered table-striped table-hover table-fw-widget">
                   <thead>
                     <tr>
+                        <th></th>
+                        <th>Facility Name</th>
                       <th>Form ID</th>
                       <th>Form Version</th>
-                      <th>Facility Name</th>
+                      
                       <th>Audit Round No.</th>
                       <th>Testing Point Type</th>
                       <th>Level</th>
@@ -98,13 +109,15 @@
                   </thead>
                   <tbody>
                   <?php foreach ($allSubmissions as $row) { ?>
-                    <tr>
+                    <tr id="row_<?php echo $row['id']; ?>" data-child-value="<?php echo $row['id']; ?>">
+                      <td class="details-control"></td>
+                      <td><?php echo $row['facilityname']; ?></td>
                       <td><?php echo $row['formId']; ?></td>
                       <td><?php echo $row['formVersion']; ?></td>
-                      <td><?php echo $row['facilityname']; ?></td>
+                      
                       <td><?php echo $row['auditroundno']; ?></td>
                       <td><?php echo $row['testingpointtype']; ?></td>
-                      <td><?php echo $row['level']; ?> <?php echo isset($row['level_other']) ? " - ".$row['level_other'] : ""; ?></td>
+                      <td><?php echo $row['level']; ?> <?php echo (isset($row['level_other']) && $row['level_other'] != "") ? " - ".$row['level_other'] : ""; ?></td>
                       <td><?php echo $row['affiliation']; ?></td>
                       <td><?php echo round($row['AUDIT_SCORE_PERCANTAGE'],2); ?></td>
                       <td><a href="/spi-v3/print/<?php echo $row['id']; ?>" target="_blank"><i class="fa fa-print"></i> Print</a></td>
@@ -112,15 +125,47 @@
                     <?php } ?>
                   </tbody>
                 </table>
+
+
             </div>
-            
+        <div class="spacer col-lg-12">
+                <button type="button" onclick="alert('Under Construction')" class="btn btn-space btn-primary">Export All Data</button>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
             
             
         </div>
 </div>
 <script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
 <script type="text/javascript">
-       $(document).ready(function() {
-    $('.table').DataTable();
-} ); 
+       
+    function format(value) {
+      return '<a href="/spi-v3/print/'+value+'" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
+                        +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+                        + 
+             '<a href="javascript:alert(\'Under Construction\')" target="_blank"><i class="fa fa-print"></i> Print Corrective Actions</a>';
+  }
+  $(document).ready(function () {
+      var table = $('#example').DataTable({"order": [[1, 'asc']]});
+
+      // Add event listener for opening and closing details
+      $('#example').on('click', 'td.details-control', function () {
+          var tr = $(this).closest('tr');
+          var row = table.row(tr);
+
+          if (row.child.isShown()) {
+              // This row is already open - close it
+              row.child.hide();
+              tr.removeClass('shown');
+          } else {
+              // Open this row
+              row.child(format(tr.data('child-value'))).show();
+              tr.addClass('shown');
+          }
+      });
+  });
 </script>

@@ -47,7 +47,7 @@
 			<div class="col-md-6">
                   <div class="widget widget-radar">
                     <div class="widget-head">
-                      <span class="title">Audit-wise Average Scores</span>
+                      <span class="title">Audit Performance</span>
                     </div>
                     <div class="chart-container">
                       <canvas id="radar-chart1" height="180px"></canvas>
@@ -57,12 +57,21 @@
 			<div class="col-md-6">
 			  <div class="widget widget-calendar">
                 <div class="cal-container">
-                  <div class="cal-notes"><span class="day">Thursday</span>
-				  <span class="date">September 24</span>
-				  
+                  <div class="cal-notes">
+					<h3 style="color:#fff;">Last 5 Audits</h3>
                     <ul>
-                      <li><span class="hour"></span><span class="event-name">Facility 1 SPI RT V3</span></li>
-                      <li><span class="hour"></span><span class="event-name">Facility 2 SPI RT V3</span></li>
+					  <?php
+					  $count = 0;
+					  foreach($allSubmissions as $row) {
+						if($count == 5) break;
+					  ?>					  
+						<li style="list-style:disc;margin-left:15px;color:#fff;">
+						  <span style="color:#fff;margin:0;"><?php echo $row['facilityname'] ?></span>
+						</li>
+                      <?php
+					  $count++;
+					  }
+					  ?>
                     </ul>
                   </div>
                   <div class="cal-calendar">

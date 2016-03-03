@@ -64,10 +64,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
     $insert = $sql->insert('spi_form_v_3');
     
     $par = array(
-            'token' => $params['token'],
-            'content' => $params['content'],
-            'formId' => $params['formId'],
-            'formVersion' => $params['formVersion'],
+                'token' => $params['token'],
+                'content' => $params['content'],
+                'formId' => $params['formId'],
+                'formVersion' => $params['formVersion'],
                 'meta-instance-id' => $data['meta-instance-id'],
                 'meta-model-version' => $data['meta-model-version'],
                 'meta-ui-version' => $data['meta-ui-version'],
@@ -381,14 +381,16 @@ class SpiFormVer3Table extends AbstractTableGateway {
         
     }
     
-    public function getAllSubmissions(){
+    public function getAllSubmissions($sortOrder = 'DESC'){
      
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->order(array('id '.$sortOrder));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
 
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        //\Zend\Debug\Debug::dump($rResult);
         
         return $rResult;
      
