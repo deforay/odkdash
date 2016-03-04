@@ -10196,7 +10196,7 @@ li.L9 {
   font-size: 12px;
 }
 .widget-pie .chart-info span.number {
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 300;
 }
 .widget-pie .chart-info > div {
@@ -10376,7 +10376,7 @@ li.L9 {
 }
 .widget-calendar .cal-container .cal-notes ul li {
   padding-bottom: 10px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .widget-calendar .cal-container .cal-notes ul li span {
   display: inline-block;
@@ -10393,7 +10393,7 @@ li.L9 {
 }
 .widget-calendar .cal-container .cal-calendar .ui-datepicker {
   position: relative;
-  margin: 20px 0;
+  margin: 50px 0;
 }
 .widget-calendar .cal-container .cal-calendar .ui-datepicker .ui-datepicker-header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.6);
@@ -10406,7 +10406,7 @@ li.L9 {
   margin: 0 2.3em;
   text-align: center;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
 }
 .widget-calendar .cal-container .cal-calendar .ui-datepicker .ui-datepicker-header .ui-datepicker-prev,
 .widget-calendar .cal-container .cal-calendar .ui-datepicker .ui-datepicker-header .ui-datepicker-next {
@@ -10472,7 +10472,7 @@ li.L9 {
   width: 25px;
   height: 25px;
   line-height: 20px;
-  font-size: 12px;
+  font-size: 15px;
 }
 .widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-active,
 .widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-highlight {

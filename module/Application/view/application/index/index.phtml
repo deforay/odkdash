@@ -13,6 +13,11 @@
                     <div class="legend"></div>
                   </div>
                 </div>
+				<div class="row chart-info">
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+                </div>				
               </div>
             </div>
             <div class="col-md-4">
@@ -25,6 +30,11 @@
                   <div class="col-md-6">
                     <div class="legend"></div>
                   </div>
+                </div>
+				<div class="row chart-info">
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['oldestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['newestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
                 </div>
               </div>
             </div>
@@ -40,22 +50,34 @@
                     <div class="legend"></div>
                   </div>
                 </div>
+				<div class="row chart-info">
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+                </div>				
               </div>
             </div>			
           </div>
 		  <div class="row">
 			<div class="col-md-6">
-                  <div class="widget widget-radar">
+                  <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title">Audit Performance</span>
                     </div>
                     <div class="chart-container">
                       <canvas id="radar-chart1" height="180px"></canvas>
                     </div>
+					<div class="row chart-info">
+					  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
+					  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
+					  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+					</div>					
                   </div>
+				  
 			</div>
 			<div class="col-md-6">
 			  <div class="widget widget-calendar">
+				
                 <div class="cal-container">
                   <div class="cal-notes">
 					<h3 style="color:#fff;">Last 5 Audits</h3>

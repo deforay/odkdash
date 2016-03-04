@@ -94,6 +94,14 @@ class Module
         );
     }
     
+	
+    public function getViewHelperConfig(){
+        return array(
+           'invokables' => array(
+              'humanDateFormat' => 'Application\View\Helper\HumanDateFormat',
+           ),
+        );
+    }	
 
     public function getAutoloaderConfig()
     {

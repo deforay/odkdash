@@ -321,6 +321,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
+                                                'oldestDate' => new \Zend\Db\Sql\Expression("MIN(`today`)"),
+                                                'newestDate' => new \Zend\Db\Sql\Expression("MAX(`today`)"),
+                                                'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
                                                 'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
                                                 'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
                                                 'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
@@ -341,8 +344,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
      
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
+        
+        $today = date('Y-m-d');
+        $last30Date = date('Y-m-d', strtotime('-30 days', strtotime($today)));
+        
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
+                                                'newestDate' => new \Zend\Db\Sql\Expression("'$today'"),
+                                                'oldestDate' => new \Zend\Db\Sql\Expression("'$last30Date'"),
+                                                'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),                                    
                                                 'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
                                                 'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
                                                 'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
@@ -351,7 +361,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 ))
                                 ->where("`today` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-
+//die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
@@ -363,8 +373,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
      
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
+        $today = date('Y-m-d');
+        $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));        
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
+                                                'newestDate' => new \Zend\Db\Sql\Expression("'$today'"),
+                                                'oldestDate' => new \Zend\Db\Sql\Expression("'$last180Date'"),
+                                                'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
                                                 'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
                                                 'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
                                                 'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
@@ -385,12 +400,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
      
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->order(array('id '.$sortOrder));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->order(array("id $sortOrder"));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
 
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        
-        //\Zend\Debug\Debug::dump($rResult);
         
         return $rResult;
      
@@ -432,6 +445,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $auditRoundWiseData[$auditNo]['POST_SCORE'] = array_sum($auditScores['POST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['EQA_SCORE'] = array_sum($auditScores['EQA_SCORE']) / count($auditScores['PERSONAL_SCORE']);
         }
+        
+        $response = array('');
         
         return $auditRoundWiseData;
      
