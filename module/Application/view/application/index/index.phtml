@@ -1,3 +1,22 @@
+<style>
+  
+  .auditPointName{
+	color:#fff;
+	margin:0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 200px;
+	vertical-align:top;
+  }
+  
+  .auditPointName:hover{
+	white-space: normal !important;
+	overflow: visible;
+	text-overflow: '';
+  }
+  
+</style>
       <div class="am-content">
         <div class="main-content">
           <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
@@ -16,7 +35,7 @@
 				<div class="row chart-info">
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
-                  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
                 </div>				
               </div>
             </div>
@@ -34,7 +53,7 @@
 				<div class="row chart-info">
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
-                  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
                 </div>
               </div>
             </div>
@@ -53,28 +72,14 @@
 				<div class="row chart-info">
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['newestDate']) ?></span></div>
-                  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
                 </div>				
               </div>
             </div>			
           </div>
 		  <div class="row">
-			<div class="col-md-6">
-                  <div class="widget widget-radar widget-pie">
-                    <div class="widget-head">
-                      <span class="title">Audit Performance</span>
-                    </div>
-                    <div class="chart-container">
-                      <canvas id="radar-chart1" height="180px"></canvas>
-                    </div>
-					<div class="row chart-info">
-					  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
-					  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
-					  <div class="col-xs-4" style="text-align:center;"><span class="title">Data Points</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
-					</div>					
-                  </div>
-				  
-			</div>
+			
+			
 			<div class="col-md-6">
 			  <div class="widget widget-calendar">
 				
@@ -88,7 +93,7 @@
 						if($count == 5) break;
 					  ?>					  
 						<li style="list-style:disc;margin-left:15px;color:#fff;">
-						  <span style="color:#fff;margin:0;"><?php echo $row['facilityname'] ?></span>
+						  <span class="auditPointName"><?php echo $row['facilityname']; ?></span>
 						</li>
                       <?php
 					  $count++;
@@ -97,30 +102,54 @@
                     </ul>
                   </div>
                   <div class="cal-calendar">
+					<h3 style="">Audit Data</h3>
                     <div class="ui-datepicker"></div>
                   </div>
                 </div>
 			</div>
-		  </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="widget widget-map">
-                <div class="widget-head"><span class="title">Data Points</span></div>
-                <div class="map-container">
-                  <div class="gmap" id="gmap" style="height: 380px;"></div>
-                </div>
-              </div>
-            </div>
+		  </div>			
+			
+			
 			<div class="col-md-6">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title">Last 30 Data Points</span>
+				  <span class="title">Last 30 Audits</span>
 				</div>
-				<div class="chart-container" style="width:100%;height:380px">
-				  <canvas id="audit-points-barchart"  style="width:100%;height:400px"></canvas>
+				<div class="chart-container">
+				  <canvas id="audit-points-barchart"  style="width:100%;height:300px"></canvas>
 				</div>
 			  </div>
 			</div>
+
+		  </div>
+          <div class="row">
+			
+			<div class="col-md-6">
+                  <div class="widget widget-radar widget-pie">
+                    <div class="widget-head">
+                      <span class="title">Audit Performance</span>
+                    </div>
+                    <div class="chart-container">
+                      <canvas id="radar-chart1" height="180px"></canvas>
+                    </div>
+					<div class="row chart-info">
+					  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
+					  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
+					  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+					</div>					
+                  </div>
+				  
+			</div>			
+			
+            <div class="col-md-6">
+              <div class="widget widget-map">
+                <div class="widget-head"><span class="title">Audit Locations</span></div>
+                <div class="map-container">
+                  <div class="gmap" id="gmap" style="height: 300px;"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -347,7 +376,7 @@ function widget_top_1(){
 					  foreach($allSubmissions as $row) {
 						if($counter == 30) break;
 						$barData[] = round($row['AUDIT_SCORE_PERCANTAGE'],2); 
-						$labNameData[] = "' ".$row['facilityname']." '"; 
+						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['today'])."' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])."' + ' Audit Score ' "); 
 						$counter++;
 					  }
 					?>	
@@ -387,14 +416,16 @@ function radar_chart(){
       var data = {
         labels: ["Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"],
         datasets: [
-		  <?php foreach ($auditRoundWiseData as $auditNo => $adata){ ?>
+		  <?php
+		  $colorCounter = 1;
+		  foreach ($auditRoundWiseData as $auditNo => $adata){ ?>
           {
             label: "Audit Round No. <?php echo $auditNo; ?>",
-            fillColor: color<?php echo $auditNo; ?>.setAlpha(.5).toString(),
-            pointColor: color<?php echo $auditNo; ?>.setAlpha(.8).toString(),
-            strokeColor: color<?php echo $auditNo; ?>.setAlpha(.8).toString(),
-            highlightFill: color<?php echo $auditNo; ?>.setAlpha(.75).toString(),
-            highlightStroke: color<?php echo $auditNo; ?>.toString(),
+            fillColor: color<?php echo $colorCounter; ?>.setAlpha(.5).toString(),
+            pointColor: color<?php echo $colorCounter; ?>.setAlpha(.8).toString(),
+            strokeColor: color<?php echo $colorCounter; ?>.setAlpha(.8).toString(),
+            highlightFill: color<?php echo $colorCounter; ?>.setAlpha(.75).toString(),
+            highlightStroke: color<?php echo $colorCounter; ?>.toString(),
             data: [
 				   <?php echo $adata['PERSONAL_SCORE'] ?>,
 				   <?php echo $adata['PHYSICAL_SCORE'] ?>,
@@ -405,7 +436,9 @@ function radar_chart(){
 				   <?php echo $adata['EQA_SCORE'] ?>,
 				   ]
           },
-		  <?php } ?>
+		  <?php
+		  $colorCounter++;
+		  } ?>
         ]
       };
 
@@ -504,7 +537,7 @@ function world_map(){
 			 <?php foreach($allSubmissions as $row) { ?>
               {
 				latLng: [<?php echo $row['Latitude'] ?>, <?php echo $row['Longitude'] ?>],
-				name: '<?php echo $row['facilityname'] ?>',
+				name: '<?php echo addslashes($row['facilityname']); ?>',
 				style: {
 				  fill: '#F07878',
 				  stroke:'rgba(255,255,255,0.7)',
@@ -519,15 +552,20 @@ function world_map(){
       
 	  
 	var LocsA = [
-	  <?php foreach($allSubmissions as $row) { ?>
+	  <?php foreach($allSubmissions as $row) {
+		
+		if(isset($row['Latitude']) && $row['Latitude'] != ""){
+		
+		?>
 		{
 			lat: <?php echo $row['Latitude'] ?>,
 			lon: <?php echo $row['Longitude'] ?>,
-			title: '<?php echo $row['facilityname'] ?>',
-			html: '<strong><?php echo $row['facilityname'] ?></strong>',
+			title: '<?php echo addslashes($row['facilityname']); ?>',
+			html: '<strong><?php echo addslashes($row['facilityname']); ?></strong>',
 			animation: google.maps.Animation.DROP
 		},
-	  <?php } ?>
+	  <?php }
+	  }?>
 	];
 	  
       
@@ -546,7 +584,7 @@ function world_map(){
 	      controls_on_map: true,
 		  map_options : {
 			  mapTypeId: google.maps.MapTypeId.ROADMAP,
-			  zoom: 4
+			  zoom: 6
 		  }
 		}).Load();
 		

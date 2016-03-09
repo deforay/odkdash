@@ -2087,6 +2087,7 @@
 					return (this.calculateX(1) - this.calculateX(0)) - (2*options.barValueSpacing);
 				},
 				calculateBarWidth : function(datasetCount){
+					return 13;
 					//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
 					var baseWidth = this.calculateBaseWidth() - ((datasetCount - 1) * options.barDatasetSpacing);
 
@@ -2230,7 +2231,7 @@
 					);
 					helpers.extend(this, updatedRanges);
 				},
-				xLabels : labels,
+				xLabels : [],
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,
