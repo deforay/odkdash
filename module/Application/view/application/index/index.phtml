@@ -85,12 +85,12 @@
 				
                 <div class="cal-container">
                   <div class="cal-notes">
-					<h3 style="color:#fff;">Last 5 Audits</h3>
+					<h3 style="color:#fff;">Last 8 Audits</h3>
                     <ul>
 					  <?php
 					  $count = 0;
 					  foreach($allSubmissions as $row) {
-						if($count == 5) break;
+						if($count == 8) break;
 					  ?>					  
 						<li style="list-style:disc;margin-left:15px;color:#fff;">
 						  <span class="auditPointName"><?php echo $row['facilityname']; ?></span>
@@ -102,7 +102,7 @@
                     </ul>
                   </div>
                   <div class="cal-calendar">
-					<h3 style="">Audit Data</h3>
+					<h3 style="">Audit Dates</h3>
                     <div class="ui-datepicker"></div>
                   </div>
                 </div>
@@ -197,17 +197,17 @@ function widget_top_1(){
 		 {
 		  value: <?php echo $perf1[0]['level1']; ?>,
 		  color: color2,
-		  label: "Level 1 (40-60)"
+		  label: "Level 1 (40-59)"
 	  },
 		 {
 		  value: <?php echo $perf1[0]['level2']; ?>,
 		  color: color3,
-		  label: "Level 2 (60-80)"
+		  label: "Level 2 (60-79)"
 	  },
 		 {
 		  value: <?php echo $perf1[0]['level3']; ?>,
 		  color: color4,
-		  label: "Level 3 (80-90)"
+		  label: "Level 3 (80-89)"
 	  },
 		 {
 		  value: <?php echo $perf1[0]['level4']; ?>,
@@ -221,11 +221,11 @@ function widget_top_1(){
 	  
 	  var options = {
 		  segmentShowStroke: false,
-		      animationSteps : 20,
+		  animationSteps : 20,
 		  animateRotate: true,
 		  animateScale: false,
 		  tooltipTemplate: "<%= value %>",
-		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-60)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-80)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-90)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
+		  legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
 
 	  }
 	  
@@ -254,17 +254,17 @@ function widget_top_1(){
 		 {
 		  value: <?php echo $perflast30[0]['level1']; ?>,
 		  color: color2,
-		  label: "Level 1 (40-60)"
+		  label: "Level 1 (40-59)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level2']; ?>,
 		  color: color3,
-		  label: "Level 2 (60-80)"
+		  label: "Level 2 (60-79)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level3']; ?>,
 		  color: color4,
-		  label: "Level 3 (80-90)"
+		  label: "Level 3 (80-89)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level4']; ?>,
@@ -283,7 +283,7 @@ function widget_top_1(){
 		  animateScale: false,
 		  percentageInnerCutout: 50,
 		  tooltipTemplate: "<%= value %>",
-		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-60)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-80)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-90)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
+		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
 
 	  }
 	  
@@ -311,17 +311,17 @@ function widget_top_1(){
 		 {
 		  value: <?php echo $perflast180[0]['level1']; ?>,
 		  color: color2,
-		  label: "Level 1 (40-60)"
+		  label: "Level 1 (40-59)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level2']; ?>,
 		  color: color3,
-		  label: "Level 2 (60-80)"
+		  label: "Level 2 (60-79)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level3']; ?>,
 		  color: color4,
-		  label: "Level 3 (80-90)"
+		  label: "Level 3 (80-89)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level4']; ?>,
@@ -340,7 +340,7 @@ function widget_top_1(){
 		  animateScale: false,
 		  percentageInnerCutout: 50,
 		  tooltipTemplate: "<%= value %>",
-		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-60)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-80)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-90)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
+		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
 
 	  }
 	  
@@ -438,6 +438,9 @@ function radar_chart(){
           },
 		  <?php
 		  $colorCounter++;
+		  if($colorCounter > 9){
+			$colorCounter = 1;
+		  }
 		  } ?>
         ]
       };

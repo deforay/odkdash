@@ -39,9 +39,9 @@ class OdkFormService {
         return $db->getPerformanceLast180Days();
     }
     
-    public function getAllSubmissions($params = null) {
+    public function getAllSubmissions($sortOrder = 'DESC') {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getAllSubmissions();
+        return $db->getAllSubmissions($sortOrder);
     }
     
     
