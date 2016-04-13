@@ -53,7 +53,7 @@
 				<div class="row chart-info">
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
-                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
 				<div class="row chart-info">
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['newestDate']) ?></span></div>
-                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
                 </div>				
               </div>
             </div>			
@@ -145,7 +145,7 @@
               <div class="widget widget-map">
                 <div class="widget-head"><span class="title">Audit Locations</span></div>
                 <div class="map-container">
-                  <div class="gmap" id="gmap" style="height: 300px;"></div>
+                  <div class="gmap" id="gmap" style="height: 410px;"></div>
                 </div>
               </div>
             </div>
@@ -186,7 +186,17 @@
         colors.alt4    = getColor('clr-alt4');
       
 function widget_top_1(){
-	    
+
+
+		<?php
+		
+			$perf1[0]['level0'] = ($perf1[0]['level0'] > 0) ? $perf1[0]['level0'] : 0;
+			$perf1[0]['level1'] = ($perf1[0]['level1'] > 0) ? $perf1[0]['level1'] : 0;
+			$perf1[0]['level2'] = ($perf1[0]['level2'] > 0) ? $perf1[0]['level2'] : 0;
+			$perf1[0]['level3'] = ($perf1[0]['level3'] > 0) ? $perf1[0]['level3'] : 0;
+			$perf1[0]['level4'] = ($perf1[0]['level4'] > 0) ? $perf1[0]['level4'] : 0;
+		
+	  	?>	  		    
 			
 	  var data = [
 		 {
@@ -241,9 +251,15 @@ function widget_top_1(){
     }
     
     function widget_top_2(){
-			
-
-	  		
+		<?php
+		
+			$perflast30[0]['level0'] = ($perflast30[0]['level0'] > 0) ? $perflast30[0]['level0'] : 0;
+			$perflast30[0]['level1'] = ($perflast30[0]['level1'] > 0) ? $perflast30[0]['level1'] : 0;
+			$perflast30[0]['level2'] = ($perflast30[0]['level2'] > 0) ? $perflast30[0]['level2'] : 0;
+			$perflast30[0]['level3'] = ($perflast30[0]['level3'] > 0) ? $perflast30[0]['level3'] : 0;
+			$perflast30[0]['level4'] = ($perflast30[0]['level4'] > 0) ? $perflast30[0]['level4'] : 0;
+		
+	  	?>
 			
 	  var data = [
 		 {
@@ -300,7 +316,15 @@ function widget_top_1(){
     function widget_top_3(){
 			
 
-	  		
+		<?php
+		
+			$perflast180[0]['level0'] = ($perflast180[0]['level0'] > 0) ? $perflast180[0]['level0'] : 0;
+			$perflast180[0]['level1'] = ($perflast180[0]['level1'] > 0) ? $perflast180[0]['level1'] : 0;
+			$perflast180[0]['level2'] = ($perflast180[0]['level2'] > 0) ? $perflast180[0]['level2'] : 0;
+			$perflast180[0]['level3'] = ($perflast180[0]['level3'] > 0) ? $perflast180[0]['level3'] : 0;
+			$perflast180[0]['level4'] = ($perflast180[0]['level4'] > 0) ? $perflast180[0]['level4'] : 0;
+		
+	  	?>	  		
 			
 	  var data = [
 		 {
@@ -448,7 +472,7 @@ function radar_chart(){
       var radarChart = new Chart( $("#radar-chart1").get(0).getContext("2d") ).Radar(data, {
         scaleShowLine : true,
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       });
     }
