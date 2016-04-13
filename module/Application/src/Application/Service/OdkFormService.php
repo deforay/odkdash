@@ -54,7 +54,23 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getFormData($id);
     }
-   
+    
+    public function approveFormStatus($id){
+        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $db = $this->sm->get('SpiFormVer3Table');
+            $result = $db->updateFormStatus($id,'approved');
+            if ($result > 0) {
+                $adapter->commit();
+                return $result;
+            }
+        } catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
 }
 
 ?>

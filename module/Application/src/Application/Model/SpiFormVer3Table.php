@@ -329,7 +329,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
                                                 'level3' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 80 and AUDIT_SCORE_PERCANTAGE < 90, 1,0))"),
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
-                                                ));
+                                                ))
+                                ->where(array('status'=>'approved'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
 
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -359,9 +360,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level3' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 80 and AUDIT_SCORE_PERCANTAGE < 90, 1,0))"),
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
                                                 ))
-                                ->where("`today` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE()");
+                                ->where("status='approved'")
+                                ->where("(`today` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-//die($sQueryStr);
+        //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
@@ -386,9 +388,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level3' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 80 and AUDIT_SCORE_PERCANTAGE < 90, 1,0))"),
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
                                                 ))
-                                ->where("`today` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE()");
+                                ->where(array('status'=>'approved'))
+                                ->where("(`today` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-
+        //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
@@ -400,9 +403,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
      
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->order(array("id $sortOrder"));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where(array('status'=>'approved'))
+                                ->order(array("id $sortOrder"));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-
+        //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
@@ -452,6 +457,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
      
     }
     
-    
+    public function updateFormStatus($id,$status){
+        if (trim($id) != "" && trim($status) != '') {
+            $data = array('status' => $status);
+            $this->update($data, array('id' => $id));
+        }
+        return $id;
+    }
     
 }

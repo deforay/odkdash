@@ -94,16 +94,16 @@ tr.shown td.details-control {
                 <table id="example" class="table table-bordered table-striped table-hover table-fw-widget">
                   <thead>
                     <tr>
-                        <th></th>
-                        <th>Facility Name</th>
+                      <th></th>
+                      <th>Facility Name</th>
                       <th>Form ID</th>
                       <th>Form Version</th>
-                      
                       <th>Audit Round No.</th>
                       <th>Testing Point Type</th>
                       <th>Level</th>
                       <th>Affiliation</th>
                       <th>Audit Score Percentage</th>
+                      <th>Status</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -120,7 +120,15 @@ tr.shown td.details-control {
                       <td><?php echo $row['level']; ?> <?php echo (isset($row['level_other']) && $row['level_other'] != "") ? " - ".$row['level_other'] : ""; ?></td>
                       <td><?php echo $row['affiliation']; ?></td>
                       <td><?php echo round($row['AUDIT_SCORE_PERCANTAGE'],2); ?></td>
-                      <td><a href="/spi-v3/print/<?php echo $row['id']; ?>" target="_blank"><i class="fa fa-print"></i> Print</a></td>
+                      <td><?php echo ucwords($row['status']); ?></td>
+                      <td>
+                       <a href="/spi-v3/print/<?php echo $row['id']; ?>" target="_blank"><i class="fa fa-print"></i> Print</a>
+                       <?php
+                       if($row['status']=='pending'){
+                       ?>
+                       <button type="button" onclick="approveStatus('<?php echo $row['id']; ?>')" class="btn btn-space btn-success">Approve</button>
+                       <?php } ?>
+                      </td>
                     </tr>
                     <?php } ?>
                   </tbody>
@@ -141,7 +149,7 @@ tr.shown td.details-control {
 </div>
 <script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
 <script type="text/javascript">
-       
+    var table = null;
     function format(value) {
       return '<a href="/spi-v3/print/'+value+'" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
                         +
@@ -168,4 +176,18 @@ tr.shown td.details-control {
           }
       });
   });
+  
+  function approveStatus(id) {
+    conf=confirm("Are you sure,you want approved this form");
+    if (conf) {
+      $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{id: id},
+       function(data) {
+        if (data>0) {
+            alert("Form status updated successfully");
+            location="";
+        }
+         
+      });
+    }
+  }
 </script>
