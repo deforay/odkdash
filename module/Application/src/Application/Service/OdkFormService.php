@@ -71,6 +71,11 @@ class OdkFormService {
             error_log($exc->getTraceAsString());
         }
     }
+    
+    public function getAllApprovedSubmissions($sortOrder = 'DESC') {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchAllApprovedSubmissions($sortOrder);
+    }
 }
 
 ?>
