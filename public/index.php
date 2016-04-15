@@ -14,6 +14,12 @@ if (php_sapi_name() === 'cli-server') {
     unset($path);
 }
 
+defined('UPLOAD_PATH')
+    || define('UPLOAD_PATH', realpath(dirname(__FILE__) . '/uploads'));
+    
+defined('TEMP_UPLOAD_PATH')
+    || define('TEMP_UPLOAD_PATH', realpath(dirname(__FILE__) . '/temporary'));
+    
 // Setup autoloading
 require 'init_autoloader.php';
 

@@ -32,7 +32,6 @@ class SpiV3Controller extends AbstractActionController
 
     public function exportAction()
     {
-        
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $allSubmissions = $odkFormService->getAllSubmissions('ASC');
         
@@ -54,6 +53,19 @@ class SpiV3Controller extends AbstractActionController
             $viewModel->setTerminal(true);
             return $viewModel;
         }
+    }
+    
+    public function downloadPdfAction(){
+        
+        $id = ($this->params()->fromRoute('id'));
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $formData = $odkFormService->getFormData($id);
+        
+        $viewModel = new ViewModel(array('formData' => $formData));
+        
+        $viewModel->setTerminal(true);
+        return $viewModel;
+        
     }
 }
 
