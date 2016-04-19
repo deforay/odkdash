@@ -10,7 +10,11 @@ class MYPDF extends TCPDF {
         // Set font
         $this->SetFont('helvetica', 'B', 12);
         // Title
-        $this->Cell(0, 15, 'Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) Checklist', 0, false, 'C', 0, '', 0, false, 'M', 'M');
+        //$this->Cell(0, 15, 'Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) Checklist', 0,1, 'C', 0, '', 0, false, 'M', 'M');
+        
+        $this->writeHTMLCell(180,'','',6,'Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) Checklist',0,1,false,true,'C',true);
+        $this->writeHTMLCell(180,'','','','<br/><hr/>',0,1,false,true,'C',true);
+       
     }
 
     // Page footer
@@ -30,7 +34,7 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Nicola Asuni');
-$pdf->SetTitle('TCPDF Example 003');
+$pdf->SetTitle('SPI-RT Checklist');
 $pdf->SetSubject('TCPDF Tutorial');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -61,19 +65,21 @@ if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
     require_once(dirname(__FILE__).'/lang/eng.php');
     $pdf->setLanguageArray($l);
 }
-
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('Helvetica', '', 10);
+$pdf->SetFont('times', '', 10);
 
 // add a page
 $pdf->AddPage();
+$pdf->SetY(25,true,false);
 
-$partA='<br/><p style="font-weight:bold;">PART A: CHARACTERISTICS OF THE FACILITY OR TESTING POINT AUDITED</p>';
-$partA.='<br/><p>Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.</p>';
+$partA='<p style="font-weight:bold;line-height:24px;">PART A: CHARACTERISTICS OF THE FACILITY OR TESTING POINT AUDITED</p>';
+//$partA.='<br/>';
 
 $pdf->writeHTML($partA, true, 0, true, 0);
+
+$pdf->writeHTMLCell('',12,'','','<p>Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.</p>',0,1,false,true,'L',true);
 
 $testingTab='<table border="1" cellspacing="0" cellpadding="5">';
 
@@ -132,10 +138,10 @@ $pdf->writeHTML($partBCont, true, 0, true, 0);
 
 $partBTable='<table border="1" cellspacing="0" cellpadding="5" style="width:100%;">';
 $partBTable.="<tr>";
-$partBTable.='<td style="text-align:center;font-weight:bold;width:50%;" colspan="2">SECTION</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">YES</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:52%;" colspan="2">SECTION</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">YES</td>';
 $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Partial</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">NO</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">NO</td>';
 $partBTable.='<td style="text-align:center;font-weight:bold;width:18%;">Comments</td>';
 $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Score</td>';
 $partBTable.='</tr>';
@@ -147,7 +153,7 @@ $partBTable.='</tr>';
 
 $partBTable.='<tr>';
 $partBTable.='<td style="width:7%;">1.1</td>';
-$partBTable.='<td style="width:43%;">Have all testers received a comprehensive training on HIV rapid testing using the nationally approved curriculum?</td>';
+$partBTable.='<td style="width:45%;">Have all testers received a comprehensive training on HIV rapid testing using the nationally approved curriculum?</td>';
 $partBTable.='<td style="text-align:center;">';
 $partBTable.=(isset($formData['PERSONAL_Q_1_1']) && $formData['PERSONAL_Q_1_1'] == 1 ) ? '<img src="'.$this->basePath('assets/img/black-tick.png').'" width="20">' : "";
 $partBTable.='</td>';
@@ -1563,12 +1569,12 @@ $partBTable.='<p>*Those marked with an asterisk are only applicable to sites whe
 $pdf->writeHTML($partBTable, true, 0, true, 0);
 
 $partC='<br/><p style="font-weight:bold;">PART C: SCORING CRITERIA</p>';
-$partC.='<br/><p>Each element marked will be assigned a point value:</p>';
-$partC.=' <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "Yes" receive 1 point each.</p>';
-$partC.=' <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "Partial" receive 0.5 point each.</p>';
-$partC.=' <p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "No" receive 0 point each.</p>';
-$partC.='<br/><p>Total points scored for each section should be tallied and recorded at the end of the section.</p>';
-$partC.='<br/><br/><p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance level.</p><br/>';
+$partC.='<br/><span>Each element marked will be assigned a point value:</span><br/>';
+$partC.=' <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "Yes" receive 1 point each.</span><br/>';
+$partC.=' <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "Partial" receive 0.5 point each.</span><br/>';
+$partC.=' <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "No" receive 0 point each.</span>';
+$partC.='<p>Total points scored for each section should be tallied and recorded at the end of the section.</p>';
+$partC.='<p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance level.</p>';
 
 $pdf->writeHTML($partC, true, 0, true, 0);
 
@@ -1612,10 +1618,86 @@ $partCTable.='</tr>';
 
 $partCTable.='</table>';
 
-$pdf->writeHTML($partCTable, true, 0, true, 0);
+$pdf->writeHTML($partCTable,true,0,true,0);
+
+$partDTitle='<p style="font-weight:bold;line-height:30px;">Part D. Auditor\'s Summation Report for SPI-RT Audit</p>';
+$pdf->writeHTML($partDTitle,true,0,true,0);
+
+$partDtableBox1='<table cellspacing="0" cellpadding="2">';
+$partDtableBox1.="<tr><td>Facility Name:".$formData['facilityname']."</td></tr><tr><td>Site Type:".$formData['testingpointtype'];
+$partDtableBox1.=((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other']: "");
+$partDtableBox1.="</td></tr>";
+$partDtableBox1.="<tr><td>Staff Audited Name: ".$formData['staffaudited']."</td></tr>";
+$partDtableBox1.='</table>';
+$pdf->writeHTMLCell(50,26,'','',$partDtableBox1,1, 0, 0, true, 'L');
+
+$partDtableBox2='<table cellspacing="0" cellpadding="5">';
+$partDtableBox2.="<tr><td>No. of Tester(s): ".$formData['NumberofTester']."</td></tr><tr><td>Duration of Audit: ".$formData['durationaudit']."</td></tr>";
+$partDtableBox2.='</table>';
+
+$pdf->writeHTMLCell(50,26,70,'',$partDtableBox2,1,0, 0, true, 'L',true);
+
+$partDtableBox3='<table cellspacing="0" cellpadding="5">';
+$partDtableBox3.="<tr><td>Total points scored (exclude N/A) = ".$formData['FINAL_AUDIT_SCORE']."</td></tr>";
+$partDtableBox3.="<tr><td>Total score expected = ".$formData['MAX_AUDIT_SCORE']."</td></tr>";
+$partDtableBox3.="<tr><td>% Score = ".round($formData['AUDIT_SCORE_PERCANTAGE'],2)."%</td></tr>";
+$partDtableBox3.='</table>';
+
+$pdf->writeHTMLCell(70,26,125,'',$partDtableBox3,1,1, 0, true, 'L',true);
+
+$partDTable='<br/><br/><table border="1" cellspacing="0" cellpadding="5" style="width:100%">';
+$partDTable.='<tr>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>Section No.</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>Deficiency/Issue observed</td>';
+$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:20%">Correction Actions</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">Auditor\'s <br/>Comments</td>';
+$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:26%">Recommendations</td>';
+$partDTable.='</tr>';
+$partDTable.='<tr>';
+$partDTable.='<td style="font-weight:bold;text-align:center;width:12%;">Immediate</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;width:8%;">Follow up</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;">Actions</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;">Timeline / Person responsible</td>';
+$partDTable.='</tr>';
+if(isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  && $formData['correctiveaction'] != "[]"){
+    $correctiveActions = json_decode($formData['correctiveaction'],true);
+    foreach($correctiveActions as $ca) {
+        $partDTable.='<tr>';
+        $partDTable.='<td style="text-align:center;">'.$ca['sectionno'].'</td>';
+        $partDTable.='<td>'.$ca['deficiency'].'</td>';
+        $partDTable.='<td style="text-align:center;">';
+        $partDTable.=($ca['correction'] == 'Immediate' ? '<img src="'.$this->basePath('assets/img/black-tick.png').'" width="20">' : "" );
+        $partDTable.='</td>';
+        $partDTable.='<td style="text-align:center;">';
+        $partDTable.=($ca['correction'] == 'Followup' ? '<img src="'.$this->basePath('assets/img/black-tick.png').'" width="20">' : "" );
+        $partDTable.='</td>';
+        $partDTable.='<td>'.$ca['auditorcomment'].'</td>';
+        $partDTable.='<td>'.$ca['action'].'</td>';
+        $partDTable.='<td>'.$ca['timeline'].'</td>';
+        $partDTable.='</tr>';
+    }
+}else {
+    $partDTable.='<tr>';
+    $partDTable.='<td colspan="7">No Corrective Actions</td>';
+    $partDTable.='</tr>';
+}
+$partDTable.='</table><br/><br/><br/>';
+$pdf->writeHTML($partDTable,true,0,true,0);
+
+$signBox1='<table cellspacing="0" cellpadding="4">';
+$signBox1.="<tr><td>Staff Audited Signature:</td></tr>";
+$signBox1.="<tr><td>Person in Charge Name and Signature : ".$formData['personincharge']."</td></tr>";
+$signBox1.='</table>';
+$pdf->writeHTMLCell(90,18,'','',$signBox1,1, 0, 0, true, 'L');
+
+$signBox2='<table cellspacing="0" cellpadding="4">';
+$signBox2.="<tr><td>Auditor Name and Signature:</td></tr>";
+$signBox2.="<tr><td>Date (dd/mm/yyyy):</td></tr>";
+$signBox2.='</table>';
+$pdf->writeHTMLCell(80,18,115,'',$signBox2,1,1, 0, true, 'L');
 
 //Close and output PDF document
-$fileName = "form-response-".date('d-M-Y-H-i-s').".pdf";
+$fileName = "SPI-RT-CHECKLIST-".date('d-M-Y-H-i-s').".pdf";
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR.$fileName;
 //$pdf->Output('example_003.pdf', 'I');
 $pdf->Output($filePath, "FD");
