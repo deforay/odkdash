@@ -18,11 +18,17 @@ class IndexController extends AbstractActionController
     {
         
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $perf1 = $odkFormService->getPerformance();        
+        $perf1 = $odkFormService->getPerformance();
         $perflast30 = $odkFormService->getPerformanceLast30Days();        
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
-        $auditRoundWiseData = $odkFormService->getAuditRoundWiseData();        
+        $auditRoundWiseData = $odkFormService->getAuditRoundWiseData();
+        
+        
+                                
+                                
+        
+        
         return new ViewModel(array(
                                    'perf1' => $perf1,
                                    'perflast30' => $perflast30,

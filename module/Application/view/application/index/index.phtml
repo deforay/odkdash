@@ -116,7 +116,7 @@
 				  <span class="title">Last 30 Audits</span>
 				</div>
 				<div class="chart-container">
-				  <canvas id="audit-points-barchart"  style="width:100%;height:300px"></canvas>
+				  <div id="audit-points-barchart"  style="width:100%;height:300px"></div>
 				</div>
 			  </div>
 			</div>
@@ -142,21 +142,27 @@
 			</div>			
 			
             <div class="col-md-6">
-              <div class="widget widget-map">
-                <div class="widget-head"><span class="title">Audit Locations</span></div>
-                <div class="map-container">
-                  <div class="gmap" id="gmap" style="height: 410px;"></div>
-                </div>
-              </div>
+
             </div>
 
           </div>
+		  <div class="row">
+			<div class="col-md-12">
+              <div class="widget widget-map">
+                <div class="widget-head"><span class="title">Audit Locations</span></div>
+                <div class="map-container">
+                  <div class="gmap" id="gmap" style="height: 580px;"></div>
+                </div>
+              </div>			  
+			</div>
+		  </div>
         </div>
       </div>
 <script type="text/javascript"
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places">
 </script>
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
     <script type="text/javascript">
       
       var color1 = "red";
@@ -381,49 +387,84 @@ function widget_top_1(){
 	
 
     function bar_chart(){
-
-			  Chart.types.Bar.extend({
-			  name: "BarAlt",
-			  initialize: function (data) {
-				  Chart.types.Bar.prototype.initialize.apply(this, arguments);
-				  var xLabels = this.scale.xLabels
-				  xLabels.forEach(function (label, i) {
-						  xLabels[i] = '';
-				  })
-			  }
-			  });
-			  
-					<?php
+	
+<?php
 					  $counter = 0;
 					  $barData = array();
 					  $labNameData = array();
 					  foreach($allSubmissions as $row) {
 						if($counter == 30) break;
-						$barData[] = round($row['AUDIT_SCORE_PERCANTAGE'],2); 
-						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['today'])."' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])."' + ' Audit Score ' "); 
+						
+						if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
+						  $color = '#FF0000';
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <=59){
+						  $color = '#FFA500';
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <=79){
+						  $color = '#FFFF00';
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <=89){
+						  $color = '#8DD63E';
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 90){
+						  $color = '#528A16';
+						}
+						
+						$barData[] = "{ y : ".round($row['AUDIT_SCORE_PERCANTAGE'],2). ", color : '".$color."' }"; 
+						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['today'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])."<br>'"); 
 						$counter++;
 					  }
-					?>	
+					?>		
+	
+$('#audit-points-barchart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            categories: [<?php echo implode(",",$labNameData); ?>],
+            crosshair: true,
+			labels:
+			{
+			  enabled: false
+			}
+        },
+		 legend: {
+            enabled: false
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'No. of Samples'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="padding:0;font-size:10px">{series.name}: </td>' +
+                '<td style="padding:0;font-size:10px">{point.y:.1f}</td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Audit Score Percentage',
+            data: [<?php echo implode(",",$barData); ?>]
 
-      var barData = {
-		  labels: [<?php echo implode(",",$labNameData); ?>],
-		  datasets: [
-			  {
-				  label: 'Last 30 Audits',
-				  fillColor: colors.primary,
-				  data: [<?php echo implode(",",$barData); ?>]
-			  }
-		  ]
-	  };
-	  
-
-	  var ctx = document.getElementById('audit-points-barchart').getContext('2d');
-	  var myBarChart = new Chart(ctx).BarAlt(barData,{
-							responsive: true
-						});	  
+        }]
+    });	
+	
+	
 	  
 	  
-    }	
+    }
 
 function radar_chart(){
 
@@ -451,13 +492,13 @@ function radar_chart(){
             highlightFill: color<?php echo $colorCounter; ?>.setAlpha(.75).toString(),
             highlightStroke: color<?php echo $colorCounter; ?>.toString(),
             data: [
-				   <?php echo $adata['PERSONAL_SCORE'] ?>,
-				   <?php echo $adata['PHYSICAL_SCORE'] ?>,
-				   <?php echo $adata['SAFETY_SCORE'] ?>,
-				   <?php echo $adata['PRETEST_SCORE'] ?>,
-				   <?php echo $adata['TEST_SCORE'] ?>,
-				   <?php echo $adata['POST_SCORE'] ?>,
-				   <?php echo $adata['EQA_SCORE'] ?>,
+				   <?php echo round($adata['PERSONAL_SCORE'],2); ?>,
+				   <?php echo round($adata['PHYSICAL_SCORE'],2); ?>,
+				   <?php echo round($adata['SAFETY_SCORE'],2); ?>,
+				   <?php echo round($adata['PRETEST_SCORE'],2); ?>,
+				   <?php echo round($adata['TEST_SCORE'],2); ?>,
+				   <?php echo round($adata['POST_SCORE'],2); ?>,
+				   <?php echo round($adata['EQA_SCORE'],2); ?>,
 				   ]
           },
 		  <?php
@@ -520,6 +561,14 @@ function radar_chart(){
 		calNotesDate.html( monthName + " " + monthDay);
 
       if (typeof jQuery.ui != 'undefined') {
+		
+		var eventDates = {};
+		eventDates[ new Date( '04/4/2016' )] = new Date( '04/4/2016' );
+		eventDates[ new Date( '06/4/2016' )] = new Date( '06/4/2016' );
+		eventDates[ new Date( '20/4/2016' )] = new Date( '20/4/2016' );
+		eventDates[ new Date( '25/4/2016' )] = new Date( '25/4/2016' );		
+		
+		
         $( ".ui-datepicker" ).datepicker({
         	onSelect: function(s, o){
         		var sd = new Date(s);
@@ -530,66 +579,46 @@ function radar_chart(){
 				calNotesDate.html( monthName + " " + monthDay);
 				alert('Under Construction');
         	}
+			//,
+			//beforeShowDay: function(date) {
+			//  var highlight = eventDates[date];
+			//  if (highlight) {
+			//	   return [true, "event", highlight];
+			//  } else {
+			//	   return [true, '', ''];
+			//  }
+			//}
         });
       }
     }
 	
-function world_map(){
-
-      var color = "#95D9F0";
-
-      $('#gmap').vectorMap({
-        map: 'world_mill_en',
-        backgroundColor: 'transparent',
-        
-        regionStyle: {
-          initial: {
-            fill: color,
-          },
-          hover: {
-            "fill-opacity": 0.8
-          }
-        },
-        markerStyle:{
-            initial:{
-              r: 10
-            },
-             hover: {
-              r: 12,
-              stroke: 'rgba(255,255,255,0.8)',
-              "stroke-width": 4
-            }
-          },
-          markers: [
-			 <?php foreach($allSubmissions as $row) { ?>
-              {
-				latLng: [<?php echo $row['Latitude'] ?>, <?php echo $row['Longitude'] ?>],
-				name: '<?php echo addslashes($row['facilityname']); ?>',
-				style: {
-				  fill: '#F07878',
-				  stroke:'rgba(255,255,255,0.7)',
-				  "stroke-width": 3
-				  }
-			  },
-			  <?php } ?>
-              
-          ]
-      });
-    }    
       
 	  
 	var LocsA = [
 	  <?php foreach($allSubmissions as $row) {
 		
 		if(isset($row['Latitude']) && $row['Latitude'] != ""){
-		
+		  $icon = $this->basePath('assets/img/map-points/dark-green.png');
+		  if($row['AUDIT_SCORE_PERCANTAGE'] > 90){
+			$icon = $this->basePath('assets/img/map-points/dark-green.png');
+		  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <= 89){
+			$icon = $this->basePath('assets/img/map-points/light-green.png');
+		  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <= 79){
+			$icon = $this->basePath('assets/img/map-points/yellow.png');
+		  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <= 599){
+			$icon = $this->basePath('assets/img/map-points/orange.png');
+		  }else{
+			$icon = $this->basePath('assets/img/map-points/red.png');
+		  }
+		  
 		?>
 		{
 			lat: <?php echo $row['Latitude'] ?>,
 			lon: <?php echo $row['Longitude'] ?>,
 			title: '<?php echo addslashes($row['facilityname']); ?>',
 			html: '<strong><?php echo addslashes($row['facilityname']); ?></strong>',
-			animation: google.maps.Animation.DROP
+			animation: google.maps.Animation.DROP,
+			icon : '<?php echo $icon; ?>'
 		},
 	  <?php }
 	  }?>
@@ -611,7 +640,8 @@ function world_map(){
 	      controls_on_map: true,
 		  map_options : {
 			  mapTypeId: google.maps.MapTypeId.ROADMAP,
-			  zoom: 6
+			  zoom: 8,
+			   scrollwheel: false
 		  }
 		}).Load();
 		

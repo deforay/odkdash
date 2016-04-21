@@ -126,9 +126,9 @@ tr.shown td.details-control {
                        <?php
                        if($row['status']=='pending'){
                        ?>
-                       <button type="button" onclick="approveStatus('<?php echo $row['id']; ?>')" class="btn btn-space btn-success">Approve</button>
+                       <a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')" class="">Approve</a>
                        <?php } ?>
-                       <button type="button" onclick="downloadPdf('<?php echo $row['id']; ?>')" class="btn btn-space btn-primary"><i class="fa fa-download"></i> PDF</button>
+                       <a href="javascript:void(0);" onclick="downloadPdf('<?php echo $row['id']; ?>')" class=""><i class="fa fa-download"></i> PDF</a>
                       </td>
                     </tr>
                     <?php } ?>
