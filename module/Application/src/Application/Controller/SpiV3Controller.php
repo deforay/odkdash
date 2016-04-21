@@ -33,7 +33,7 @@ class SpiV3Controller extends AbstractActionController
     public function exportAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->getAllSubmissions('ASC');
+        $allSubmissions = $odkFormService->getAllSubmissions('DESC');
         
         $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
         

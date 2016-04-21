@@ -396,6 +396,11 @@ function widget_top_1(){
     function bar_chart(){
 	
 <?php
+
+
+
+
+
 					  $counter = 0;
 					  $barData = array();
 					  $labNameData = array();
@@ -404,18 +409,18 @@ function widget_top_1(){
 						
 						if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
 						  $color = '#FF0000';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <=59){
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <60){
 						  $color = '#FFA500';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <=79){
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <80){
 						  $color = '#FFFF00';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <=89){
+						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <90){
 						  $color = '#8DD63E';
 						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 90){
 						  $color = '#528A16';
 						}
 						
 						$barData[] = "{ y : ".round($row['AUDIT_SCORE_PERCANTAGE'],2). ", color : '".$color."' }"; 
-						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['today'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])."<br>'"); 
+						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])."<br>'"); 
 						$counter++;
 					  }
 					?>		
@@ -575,7 +580,7 @@ function radar_chart(){
 		$eventDatesArray = array();
 		foreach($allSubmissions as $row) {
 		  
-		  $eventDatesArray[] = "'".$this->humanDateFormat($row['today'])."'";
+		  $eventDatesArray[] = "'".$this->humanDateFormat($row['assesmentofaudit'])."'";
 		
 		} ?>
 		var eventDates = [<?php echo implode(",",$eventDatesArray); ?>];
@@ -594,25 +599,12 @@ function radar_chart(){
         	}
 			,
 			beforeShowDay: function(date) {
-			  
-			  
-			  if($.inArray($.datepicker.formatDate('dd-M-yy', date ), eventDates) > -1)
-			  {
+			  if($.inArray($.datepicker.formatDate('dd-M-yy', date ), eventDates) > -1){
 				  return [true,"event","Audit Date"];
 			  }
-			  else
-			  {
+			  else{
 				  return [true,'',""];
 			  }
-			  
-			 // var string = jQuery.datepicker.formatDate('dd-M-yy', date);
-			 // var highlight = (eventDates.indexOf(string) == 1);
-			 // console.log(highlight);
-			//  if (highlight) {
-			//	   return [true, "event", highlight];
-			//  } else {
-			//	   return [true, '', ''];
-			//  }
 			}
         });
       }

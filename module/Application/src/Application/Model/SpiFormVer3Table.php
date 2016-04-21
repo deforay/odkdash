@@ -321,8 +321,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
-                                                'oldestDate' => new \Zend\Db\Sql\Expression("MIN(`today`)"),
-                                                'newestDate' => new \Zend\Db\Sql\Expression("MAX(`today`)"),
+                                                'oldestDate' => new \Zend\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
+                                                'newestDate' => new \Zend\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
                                                 'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
                                                 'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
                                                 'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
@@ -361,7 +361,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
                                                 ))
                                 ->where("status='approved'")
-                                ->where("(`today` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
+                                ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -389,7 +389,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
                                                 ))
                                 ->where(array('status'=>'approved'))
-                                ->where("(`today` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
+                                ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -404,9 +404,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->order(array("id $sortOrder"));
+                                ->order(array("assesmentofaudit $sortOrder"));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        //echo $sQueryStr;die;
+        //echo $sQueryStr;//die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
@@ -506,7 +506,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->where(array('status'=>'approved'))
-                                ->order(array("id $sortOrder"));
+                                ->order(array("assesmentofaudit $sortOrder"));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
