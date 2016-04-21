@@ -16,6 +16,13 @@
 	text-overflow: '';
   }
   
+  .event a {
+    background-color: #B2D0FE !important;
+    background-image :none !important;
+    color: #ffffff !important;
+	border-radius:50%;
+}
+  
 </style>
       <div class="am-content">
         <div class="main-content">
@@ -562,14 +569,20 @@ function radar_chart(){
 
       if (typeof jQuery.ui != 'undefined') {
 		
-		var eventDates = {};
-		eventDates[ new Date( '04/4/2016' )] = new Date( '04/4/2016' );
-		eventDates[ new Date( '06/4/2016' )] = new Date( '06/4/2016' );
-		eventDates[ new Date( '20/4/2016' )] = new Date( '20/4/2016' );
-		eventDates[ new Date( '25/4/2016' )] = new Date( '25/4/2016' );		
+		
+		<?php
+		
+		$eventDatesArray = array();
+		foreach($allSubmissions as $row) {
+		  
+		  $eventDatesArray[] = "'".$this->humanDateFormat($row['today'])."'";
+		
+		} ?>
+		var eventDates = [<?php echo implode(",",$eventDatesArray); ?>];
 		
 		
         $( ".ui-datepicker" ).datepicker({
+			dateFormat: 'dd-M-yy',
         	onSelect: function(s, o){
         		var sd = new Date(s);
         		var weekdayName = weekday[sd.getDay()];
@@ -579,15 +592,28 @@ function radar_chart(){
 				calNotesDate.html( monthName + " " + monthDay);
 				alert('Under Construction');
         	}
-			//,
-			//beforeShowDay: function(date) {
-			//  var highlight = eventDates[date];
+			,
+			beforeShowDay: function(date) {
+			  
+			  
+			  if($.inArray($.datepicker.formatDate('dd-M-yy', date ), eventDates) > -1)
+			  {
+				  return [true,"event","Audit Date"];
+			  }
+			  else
+			  {
+				  return [true,'',""];
+			  }
+			  
+			 // var string = jQuery.datepicker.formatDate('dd-M-yy', date);
+			 // var highlight = (eventDates.indexOf(string) == 1);
+			 // console.log(highlight);
 			//  if (highlight) {
 			//	   return [true, "event", highlight];
 			//  } else {
 			//	   return [true, '', ''];
 			//  }
-			//}
+			}
         });
       }
     }
