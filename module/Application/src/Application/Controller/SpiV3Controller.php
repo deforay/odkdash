@@ -80,7 +80,7 @@ class SpiV3Controller extends AbstractActionController
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if ($request->isPost()) {
             $params = $request->getPost();
-            $bhkService->updateBhkType($params);
+            $odkFormService->updateSpiForm($params);
             return $this->redirect()->toRoute("spi-v3-form");
         } else {
             $id = $this->params()->fromRoute('id');

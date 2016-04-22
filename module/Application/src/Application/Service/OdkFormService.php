@@ -90,4 +90,23 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getZeroQuestionCounts();
     }
+    
+    public function updateSpiForm($params){
+        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $db = $this->sm->get('SpiFormVer3Table');
+            $result = $db->updateSpiFormDetails($params);
+            if ($result > 0) {
+                $adapter->commit();
+                $container = new Container('alert');
+                $container->alertMsg = 'Form details updated successfully';
+                return $result;
+            }
+        } catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
 }
