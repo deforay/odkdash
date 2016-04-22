@@ -12,6 +12,7 @@ namespace Application;
 
 use Application\Model\SpiFormVer3Table;
 use Application\Model\UsersTable;
+use Application\Model\SpiFormLabelsTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -81,6 +82,11 @@ class Module
                 'UsersTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UsersTable($dbAdapter);
+                    return $table;
+                },
+                'SpiFormLabelsTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SpiFormLabelsTable($dbAdapter);
                     return $table;
                 },
                 'OdkFormService' => function($sm) {

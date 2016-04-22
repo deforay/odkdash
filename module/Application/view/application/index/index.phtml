@@ -158,7 +158,7 @@
 			</div>			
 			
             <div class="col-md-6">
-<div class="widget widget-map">
+			  <div class="widget widget-map">
                 <div class="widget-head"><span class="title">Audit Locations</span></div>
                 <div class="map-container">
                   <div class="gmap" id="gmap" style="height: 960px;"></div>
@@ -490,13 +490,14 @@ $('#audit-points-barchart').highcharts({
 
 
 					  $counter = 0;
+					  
 					  $barData = array();
 					  $category = array();
 					  foreach($zeroCounts as $col => $val) {
 						if($counter == 10) break;
 						
 						$barData[] = "{ y : ".$val. " }"; 
-						$category[] = "'".$col."'"; 
+						$category[] = "'".$spiV3Labels[$col]."'"; 
 						$counter++;
 					  }
 					?>		
