@@ -73,5 +73,24 @@ class SpiV3Controller extends AbstractActionController
         return $viewModel;
         
     }
+    
+    public function editAction()
+    {
+        $request = $this->getRequest();
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $bhkService->updateBhkType($params);
+            return $this->redirect()->toRoute("spi-v3-form");
+        } else {
+            $id = $this->params()->fromRoute('id');
+            $result = $odkFormService->getFormData($id);
+            
+                return new ViewModel(array(
+                    'formData' => $result,
+                ));
+        }
+       
+    }
 }
 
