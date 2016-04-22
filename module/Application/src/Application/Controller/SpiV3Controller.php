@@ -4,17 +4,23 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
+use Zend\Json\Json;
 class SpiV3Controller extends AbstractActionController
 {
 
     public function indexAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->getAllSubmissions();        
-        return new ViewModel(array(
-                                   'allSubmissions' => $allSubmissions,
-                                   ));
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $param = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getAllSubmissionsDetails($param);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+          
+        //return new ViewModel(array(
+        //                           'allSubmissions' => $allSubmissions,
+        //                           ));
     }
 
     public function printAction()

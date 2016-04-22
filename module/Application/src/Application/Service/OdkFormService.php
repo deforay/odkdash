@@ -43,6 +43,10 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getAllSubmissions($sortOrder);
     }
+    public function getAllSubmissionsDetails($params) {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchAllSubmissionsDetails($params);
+    }
     
     
     public function getAuditRoundWiseData() {
