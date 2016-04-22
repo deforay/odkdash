@@ -159,7 +159,10 @@ tr.shown td.details-control {
              '<a href="javascript:alert(\'Under Construction\')" target="_blank"><i class="fa fa-print"></i> Print Corrective Actions</a>';
   }
   $(document).ready(function () {
-      var table = $('#example').DataTable({"order": [[1, 'asc']]});
+      var table = $('#example').DataTable({
+                              "order": [[1, 'asc']],
+                              "pageLength": 50
+                              });
 
       // Add event listener for opening and closing details
       $('#example').on('click', 'td.details-control', function () {

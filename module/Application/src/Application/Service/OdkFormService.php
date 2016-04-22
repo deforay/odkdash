@@ -76,6 +76,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchAllApprovedSubmissions($sortOrder);
     }
+    
+    public function getZeroQuestionCounts() {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->getZeroQuestionCounts();
+    }
 }
-
-?>

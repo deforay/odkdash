@@ -23,19 +23,15 @@ class IndexController extends AbstractActionController
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
         $auditRoundWiseData = $odkFormService->getAuditRoundWiseData();
+        $zeroCounts = $odkFormService->getZeroQuestionCounts();
         
         
-                                
-                                
-        
-        
-        return new ViewModel(array(
-                                   'perf1' => $perf1,
+        return new ViewModel(array('perf1' => $perf1,
                                    'perflast30' => $perflast30,
                                    'perflast180' => $perflast180,
                                    'allSubmissions' => $allSubmissions,
                                    'auditRoundWiseData' => $auditRoundWiseData,
-                                   ));
+                                   'zeroCounts' => $zeroCounts));
     
     
     }

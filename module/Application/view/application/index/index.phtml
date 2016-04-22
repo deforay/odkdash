@@ -146,21 +146,30 @@
 					</div>					
                   </div>
 				  
+                  <div class="widget widget-radar widget-pie">
+                    <div class="widget-head">
+                      <span class="title">Responses with Zeroes</span>
+                    </div>
+                    <div class="chart-container">
+                      <div id="zero-count-barchart" height="280px"></div>
+                    </div>				
+                  </div>
+				  
 			</div>			
 			
             <div class="col-md-6">
-
+<div class="widget widget-map">
+                <div class="widget-head"><span class="title">Audit Locations</span></div>
+                <div class="map-container">
+                  <div class="gmap" id="gmap" style="height: 960px;"></div>
+                </div>
+              </div>
             </div>
 
           </div>
 		  <div class="row">
 			<div class="col-md-12">
-              <div class="widget widget-map">
-                <div class="widget-head"><span class="title">Audit Locations</span></div>
-                <div class="map-container">
-                  <div class="gmap" id="gmap" style="height: 580px;"></div>
-                </div>
-              </div>			  
+              			  
 			</div>
 		  </div>
         </div>
@@ -398,9 +407,6 @@ function widget_top_1(){
 <?php
 
 
-
-
-
 					  $counter = 0;
 					  $barData = array();
 					  $labNameData = array();
@@ -448,6 +454,7 @@ $('#audit-points-barchart').highcharts({
         },
         yAxis: {
             min: 0,
+			max : 100,
             title: {
                 text: 'No. of Samples'
             }
@@ -468,6 +475,75 @@ $('#audit-points-barchart').highcharts({
         },
         series: [{
             name: 'Audit Score Percentage',
+            data: [<?php echo implode(",",$barData); ?>]
+
+        }]
+    });	
+	
+	
+	  
+	  
+    }
+    function zeroCountsBarChart(){
+	
+<?php
+
+
+					  $counter = 0;
+					  $barData = array();
+					  $category = array();
+					  foreach($zeroCounts as $col => $val) {
+						if($counter == 10) break;
+						
+						$barData[] = "{ y : ".$val. " }"; 
+						$category[] = "'".$col."'"; 
+						$counter++;
+					  }
+					?>		
+	
+$('#zero-count-barchart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            categories: [<?php echo implode(",",$category); ?>],
+            crosshair: true,
+			labels:
+			{
+			  enabled: false
+			}
+        },
+		 legend: {
+            enabled: false
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'No. of <strong><em>Zeroes</em></strong>'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="padding:0;font-size:10px">{series.name}: </td>' +
+                '<td style="padding:0;font-size:10px">{point.y:.0f}</td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Responses scoring a Zero',
             data: [<?php echo implode(",",$barData); ?>]
 
         }]
@@ -651,6 +727,7 @@ function radar_chart(){
         radar_chart();
         calendar_widget();
 		bar_chart();
+		zeroCountsBarChart();
 		
 		new Maplace({
 		  locations: LocsA,
