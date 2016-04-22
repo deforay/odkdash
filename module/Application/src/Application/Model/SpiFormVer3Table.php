@@ -772,4 +772,129 @@ class SpiFormVer3Table extends AbstractTableGateway {
             return $newDate .= $mon . "-" . $dateArray[0];
         }
     }
+    
+    public function updateSpiFormDetails($params){
+        if (trim($params['formId']) != "") {
+            
+            $formId=base64_decode($params['formId']);
+            $summationData="";
+            if(isset($params['sectionNo'])){
+                $n=count($params['sectionNo']);
+                for ($i = 0; $i < $n; $i++) {
+                    $summationData[] = array(
+                    'sectionno' => $params['sectionNo'][$i],
+                    'deficiency' => $params['deficiency'][$i],
+                    'correction' => $params['correction'][$i],
+                    'auditorcomment' => $params['auditorComment'][$i],
+                    'action' => $params['action'][$i],
+                    'timeline' => $params['timeline'][$i],
+                    );
+                    
+                }
+                $summationData=json_encode($summationData,true);
+            }
+            
+            $data = array(
+                'assesmentofaudit' => $this->dateFormat($params['auditDate']),
+                'auditroundno' => $params['auditRound'],
+                'facilityname' => $params['testingFacilityName'],
+                'facilityid' => $params['testingFacilityId'],
+                'testingpointname' => $params['testingPointName'],
+                'testingpointtype' => $params['testingPointType'],
+                'testingpointtype_other' => $params['testingPointTypeOther'],
+                'locationaddress' => $params['location'],
+                'level' => $params['level'],
+                'level_other' => $params['levelOther'],
+                'level_name' => $params['levelName'],
+                'affiliation' => $params['affiliation'],
+                'affiliation_other' => $params['affiliationOther'],
+                'NumberofTester' => $params['numberOfTester'],
+                'avgMonthTesting' => $params['averageTestedPerMonth'],
+                'name_auditor_lead' => $params['nameOfAuditor1'],
+                'name_auditor2' => $params['nameOfAuditor2'],
+                'PERSONAL_C_1_1' => $params['personal_c_1_1'],
+                'PERSONAL_C_1_2' => $params['personal_c_1_2'],
+                'PERSONAL_C_1_3' => $params['personal_c_1_3'],
+                'PERSONAL_C_1_4' => $params['personal_c_1_4'],
+                'PERSONAL_C_1_5' => $params['personal_c_1_5'],
+                'PERSONAL_C_1_6' => $params['personal_c_1_6'],
+                'PERSONAL_C_1_7' => $params['personal_c_1_7'],
+                'PERSONAL_C_1_8' => $params['personal_c_1_8'],
+                'PERSONAL_C_1_9' => $params['personal_c_1_9'],
+                'PERSONAL_C_1_10' => $params['personal_c_1_10'],
+                'PHYSICAL_C_2_1' => $params['physical_c_2_1'],
+                'PHYSICAL_C_2_2' => $params['physical_c_2_2'],
+                'PHYSICAL_C_2_3' => $params['physical_c_2_3'],
+                'PHYSICAL_C_2_4' => $params['physical_c_2_4'],
+                'PHYSICAL_C_2_5' => $params['physical_c_2_5'],
+                'SAFETY_C_3_1' => $params['safety_c_3_1'],
+                'SAFETY_C_3_2' => $params['safety_c_3_2'],
+                'SAFETY_C_3_3' => $params['safety_c_3_3'],
+                'SAFETY_C_3_4' => $params['safety_c_3_4'],
+                'SAFETY_C_3_5' => $params['safety_c_3_5'],
+                'SAFETY_C_3_6' => $params['safety_c_3_6'],
+                'SAFETY_C_3_7' => $params['safety_c_3_7'],
+                'SAFETY_C_3_8' => $params['safety_c_3_8'],
+                'SAFETY_C_3_9' => $params['safety_c_3_9'],
+                'SAFETY_C_3_10' => $params['safety_c_3_10'],
+                'SAFETY_C_3_11' => $params['safety_c_3_11'],
+                'PRE_C_4_1' => $params['pre_c_4_1'],
+                'PRE_C_4_2' => $params['pre_c_4_2'],
+                'PRE_C_4_3' => $params['pre_c_4_3'],
+                'PRE_C_4_4' => $params['pre_c_4_4'],
+                'PRE_C_4_5' => $params['pre_c_4_5'],
+                'PRE_C_4_6' => $params['pre_c_4_6'],
+                'PRE_C_4_7' => $params['pre_c_4_7'],
+                'PRE_C_4_8' => $params['pre_c_4_8'],
+                'PRE_C_4_9' => $params['pre_c_4_9'],
+                'PRE_C_4_10' => $params['pre_c_4_10'],
+                'PRE_C_4_11' => $params['pre_c_4_11'],
+                'PRE_C_4_12' => $params['pre_c_4_12'],
+                'TEST_C_5_1' => $params['test_c_5_1'],
+                'TEST_C_5_2' => $params['test_c_5_2'],
+                'TEST_C_5_3' => $params['test_c_5_3'],
+                'TEST_C_5_4' => $params['test_c_5_4'],
+                'TEST_C_5_5' => $params['test_c_5_5'],
+                'TEST_C_5_6' => $params['test_c_5_6'],
+                'TEST_C_5_7' => $params['test_c_5_7'],
+                'TEST_C_5_8' => $params['test_c_5_8'],
+                'TEST_C_5_9' => $params['test_c_5_9'],
+                'POST_C_6_1' => $params['post_C_6_1'],
+                'POST_C_6_2' => $params['post_C_6_2'],
+                'POST_C_6_3' => $params['post_C_6_3'],
+                'POST_C_6_4' => $params['post_C_6_4'],
+                'POST_C_6_5' => $params['post_C_6_5'],
+                'POST_C_6_6' => $params['post_C_6_6'],
+                'POST_C_6_7' => $params['post_C_6_7'],
+                'POST_C_6_8' => $params['post_C_6_8'],
+                'POST_C_6_9' => $params['post_C_6_9'],
+                'EQA_C_7_1' => $params['eqa_c_7_1'],
+                'EQA_C_7_2' => $params['eqa_c_7_2'],
+                'EQA_C_7_3' => $params['eqa_c_7_3'],
+                'EQA_C_7_4' => $params['eqa_c_7_4'],
+                'EQA_C_7_5' => $params['eqa_c_7_5'],
+                'EQA_C_7_6' => $params['eqa_c_7_6'],
+                'EQA_C_7_7' => $params['eqa_c_7_7'],
+                'EQA_C_7_8' => $params['eqa_c_7_8'],
+                'EQA_C_7_9' => $params['eqa_c_7_9'],
+                'EQA_C_7_10' => $params['eqa_c_7_10'],
+                'EQA_C_7_11' => $params['eqa_c_7_11'],
+                'EQA_C_7_12' => $params['eqa_c_7_12'],
+                'EQA_C_7_13' => $params['eqa_c_7_13'],
+                'EQA_C_7_14' => $params['eqa_c_7_14'],
+                
+                'staffaudited' => $params['staffAuditedName'],
+                'durationaudit' => $params['durationAudit'],
+                'FINAL_AUDIT_SCORE' => $params['totalPointsScored'],
+                'MAX_AUDIT_SCORE' => $params['totalScoreExpect'],
+                'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
+                'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
+                'correctiveaction' => $summationData
+            );
+            $result = $this->update($data, array('id' =>$formId));
+            
+            return $formId;
+        }
+        
+    }
 }

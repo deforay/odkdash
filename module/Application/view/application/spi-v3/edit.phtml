@@ -14,11 +14,12 @@
                    <p>Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.</p>
                     <div class="form-group col-lg-6">
                       <label>Date of Audit (dd/mm/yyyy)</label>
-                      <input type="text" placeholder="Enter Date" name="auditName" class="form-control datepicker" value="<?php echo $this->humanDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                      <input type="text" placeholder="Enter Date" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanDateFormat($formData['assesmentofaudit']); ?>" readonly>
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Audit Round No.</label>
                       <input type="text" placeholder="Audit Round No" name="auditRound" class="form-control" value="<?php echo $formData['auditroundno']; ?>">
+                      <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Testing Facility Name</label>
@@ -34,7 +35,11 @@
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Type of testing point</label>
-                      <input type="text" placeholder="Type of testing point" name="typeOfTestingPoint" class="form-control" value="<?php echo $formData['testingpointtype']; ?><?php echo ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other']: ""); ?>">
+                      <input type="text" placeholder="Type of testing point" name="testingPointType" class="form-control" value="<?php echo $formData['testingpointtype']; ?>">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Testing point type other</label>
+                      <input type="text" placeholder="Testing point type other" name="testingPointTypeOther" class="form-control" value="<?php echo $formData['testingpointtype_other']; ?>">
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Location/Address</label>
@@ -42,12 +47,23 @@
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Level</label>
-                      <input type="text" placeholder="Level" name="level" class="form-control" value="<?php echo $formData['level']; ?> <?php echo ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : ""); ?> : <?php echo $formData['level_name']; ?>">
+                      <input type="text" placeholder="Level" name="level" class="form-control" value="<?php echo $formData['level']; ?>">
                     </div>
-                    
+                    <div class="form-group col-lg-6">
+                      <label>Level Other</label>
+                      <input type="text" placeholder="Level Other" name="levelOther" class="form-control" value="<?php echo $formData['level_other']; ?>">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Level Name</label>
+                      <input type="text" placeholder="Level Other" name="levelName" class="form-control" value="<?php echo $formData['level_name']; ?>">
+                    </div>
                     <div class="form-group col-lg-6">
                       <label>Affiliation</label>
-                      <input type="text" placeholder="Affiliation" name="affiliation" class="form-control" value="<?php echo $formData['affiliation']; ?><?php echo ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : ""); ?>">
+                      <input type="text" placeholder="Affiliation" name="affiliation" class="form-control" value="<?php echo $formData['affiliation']; ?>">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Affiliation Other</label>
+                      <input type="text" placeholder="Affiliation" name="affiliationOther" class="form-control" value="<?php echo $formData['affiliation_other']; ?>">
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Number of Testers</label>
@@ -67,10 +83,12 @@
                     </div>
                     
                     <br/>
+                    <div class="form-group col-lg-12">
                     <h4><b>PART B. SPI- RT Checklist</b></h4>
                     <div>For each of the sections listed below, please check <b>Yes, Partial or No</b>, where applicable. Indicate
                     "<b>Yes</b>" only when all elements are satisfactorily present. Provide comments for each "<b>Partial</b>" or "<b>No</b>" response. State N/A in the comments section if "not applicable" where appropriate (*).</div>
                     <br/>
+                    </div>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
                      <tr>
@@ -1434,15 +1452,24 @@
                       foreach($correctiveActions as $ca) {
                       ?>
                       <tr>
-                       <td style="text-align:center;"><?php echo $ca['sectionno']; ?></td>
-                       <td><?php echo $ca['deficiency']; ?></td>
                        <td style="text-align:center;">
-                        <?php echo ($ca['correction'] == 'Immediate' ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : "" ); ?>
+                        <input type="hidden" name="sectionNo[]" class="form-control" value="<?php echo $ca['sectionno']; ?>">
+                       <?php echo $ca['sectionno']; ?>
                        </td>
-                       <td><?php echo ($ca['correction'] == 'Followup' ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : "" ); ?></td>
+                       <td>
+                        <input type="hidden" name="deficiency[]" class="form-control" value="<?php echo $ca['deficiency']; ?>">
+                       <?php echo $ca['deficiency']; ?>
+                       </td>
+                       <td style="text-align:center;">
+                        <?php echo ($ca['correction'] == 'Immediate' ? "<input type='hidden' name='correction[]' value='Immediate'/><img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : "" ); ?>
+                       </td>
+                       <td><?php echo ($ca['correction'] == 'Followup' ? "<input type='hidden' name='correction[]' value='Followup'/><img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : "" ); ?></td>
                        <td><textarea class="form-control" name="auditorComment[]"><?php echo $ca['auditorcomment']; ?></textarea></td>
                        <td><textarea class="form-control" name="action[]"><?php echo $ca['action']; ?></textarea></td>
-                       <td><?php echo $ca['timeline']; ?></td>
+                       <td>
+                        <input type="hidden" name="timeline[]" class="form-control" value="<?php echo $ca['timeline']; ?>">
+                       <?php echo $ca['timeline']; ?>
+                       </td>
                       </tr>
                       <?php
                       }
@@ -1456,9 +1483,9 @@
                      ?>
                     </table>
                     <div class="spacer  col-lg-12">
-                     <a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+                     
                      <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-                      
+                     <a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
                     </div>
                    
                   </form>
