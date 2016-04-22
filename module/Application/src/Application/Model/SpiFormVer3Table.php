@@ -32,7 +32,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
        
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params));
+        $d = array('data_dump' => json_encode($params) , 'received_on' => new \Zend\Db\Sql\Expression("NOW()"));
         $dbAdapter = $this->adapter;
         $insert->values($d);
         $selectString = $sql->getSqlStringForSqlObject($insert);
@@ -630,38 +630,102 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
 
-    public function getAverageAuditPercentage() {
-        $rResult = $this->getAllSubmissions();
+    public function getZeroQuestionCounts() {
+        $rResult = $this->fetchAllApprovedSubmissions();
         
         $response = array();
         
+        $questionColums = array(
+                                'PERSONAL_Q_1_1',
+                                'PERSONAL_Q_1_2',
+                                'PERSONAL_Q_1_3',
+                                'PERSONAL_Q_1_4',
+                                'PERSONAL_Q_1_5',
+                                'PERSONAL_Q_1_6',
+                                'PERSONAL_Q_1_7',
+                                'PERSONAL_Q_1_8',
+                                'PERSONAL_Q_1_9',
+                                'PERSONAL_Q_1_10',
+                                'PHYSICAL_Q_2_1',
+                                'PHYSICAL_Q_2_2',
+                                'PHYSICAL_Q_2_3',
+                                'PHYSICAL_Q_2_4',
+                                'PHYSICAL_Q_2_5',
+                                'SAFETY_Q_3_1',
+                                'SAFETY_Q_3_2',
+                                'SAFETY_Q_3_3',
+                                'SAFETY_Q_3_4',
+                                'SAFETY_Q_3_5',
+                                'SAFETY_Q_3_6',
+                                'SAFETY_Q_3_7',
+                                'SAFETY_Q_3_8',
+                                'SAFETY_Q_3_9',
+                                'SAFETY_Q_3_10',
+                                'SAFETY_Q_3_11',
+                                'PRE_Q_4_1',
+                                'PRE_Q_4_2',
+                                'PRE_Q_4_3',
+                                'PRE_Q_4_4',
+                                'PRE_Q_4_5',
+                                'PRE_Q_4_6',
+                                'PRE_Q_4_7',
+                                'PRE_Q_4_8',
+                                'PRE_Q_4_9',
+                                'PRE_Q_4_10',
+                                'PRE_Q_4_11',
+                                'PRE_Q_4_12',
+                                'TEST_Q_5_1',
+                                'TEST_Q_5_2',
+                                'TEST_Q_5_3',
+                                'TEST_Q_5_4',
+                                'TEST_Q_5_5',
+                                'TEST_Q_5_6',
+                                'TEST_Q_5_7',
+                                'TEST_Q_5_8',
+                                'TEST_Q_5_9',
+                                'POST_Q_6_1',
+                                'POST_Q_6_2',
+                                'POST_Q_6_3',
+                                'POST_Q_6_4',
+                                'POST_Q_6_5',
+                                'POST_Q_6_6',
+                                'POST_Q_6_7',
+                                'POST_Q_6_8',
+                                'POST_Q_6_9',
+                                'EQA_Q_7_1',
+                                'EQA_Q_7_2',
+                                'EQA_Q_7_3',
+                                'EQA_Q_7_4',
+                                'EQA_Q_7_5',
+                                'EQA_Q_7_6',
+                                'EQA_Q_7_7',
+                                'EQA_Q_7_8',
+                                'EQA_Q_7_9',
+                                'EQA_Q_7_10',
+                                'EQA_Q_7_11',
+                                'EQA_Q_7_12',
+                                'EQA_Q_7_13',
+                                'EQA_Q_7_14'
+                                );
+        
+        
+        
         foreach($rResult as $row){
-            
-            $response[$row['auditroundno']]['PERSONAL_SCORE'][]=  $row['PERSONAL_SCORE'];
-            $response[$row['auditroundno']]['PHYSICAL_SCORE'][]=  $row['PHYSICAL_SCORE'];
-            $response[$row['auditroundno']]['SAFETY_SCORE'][]=  $row['SAFETY_SCORE'];
-            $response[$row['auditroundno']]['PRETEST_SCORE'][]=  $row['PRETEST_SCORE'];
-            $response[$row['auditroundno']]['TEST_SCORE'][]=  $row['TEST_SCORE'];
-            $response[$row['auditroundno']]['POST_SCORE'][]=  $row['POST_SCORE'];
-            $response[$row['auditroundno']]['EQA_SCORE'][]=  $row['EQA_SCORE'];
+            foreach($row as $col => $val){
+                if(in_array($col,$questionColums)){
+                    if($val == 0){
+                        if(isset($response[$col])){
+                            $response[$col] = $response[$col] + 1;    
+                        }else{
+                            $response[$col] = 1;    
+                        }
+                        
+                    }
+                }
+            }
         }
-        
-        
-        $auditRoundWiseData = array();
-        
-        foreach($response as $auditNo => $auditScores){
-            $auditRoundWiseData[$auditNo]['PERSONAL_SCORE'] = array_sum($auditScores['PERSONAL_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-            $auditRoundWiseData[$auditNo]['PHYSICAL_SCORE'] = array_sum($auditScores['PHYSICAL_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-            $auditRoundWiseData[$auditNo]['SAFETY_SCORE'] = array_sum($auditScores['SAFETY_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-            $auditRoundWiseData[$auditNo]['PRETEST_SCORE'] = array_sum($auditScores['PRETEST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-            $auditRoundWiseData[$auditNo]['TEST_SCORE'] = array_sum($auditScores['TEST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-            $auditRoundWiseData[$auditNo]['POST_SCORE'] = array_sum($auditScores['POST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-            $auditRoundWiseData[$auditNo]['EQA_SCORE'] = array_sum($auditScores['EQA_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-        }
-        
-        $response = array('');
-        
-        return $auditRoundWiseData;
+        arsort($response);
+        return $response;
      
     }
     

@@ -59,6 +59,11 @@ class OdkFormService {
         return $db->getFormData($id);
     }
     
+    public function getSpiV3FormLabels() {
+        $db = $this->sm->get('SpiFormLabelsTable');
+        return $db->getAllLabels();
+    }
+    
     public function approveFormStatus($id){
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
@@ -80,6 +85,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchAllApprovedSubmissions($sortOrder);
     }
+    
+    public function getZeroQuestionCounts() {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->getZeroQuestionCounts();
+    }
 }
-
-?>
