@@ -32,7 +32,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
        
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params));
+        $d = array('data_dump' => json_encode($params) , 'received_on' => new \Zend\Db\Sql\Expression("NOW()"));
         $dbAdapter = $this->adapter;
         $insert->values($d);
         $selectString = $sql->getSqlStringForSqlObject($insert);
@@ -458,7 +458,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
 
     public function getZeroQuestionCounts() {
-        $rResult = $this->getAllSubmissions();
+        $rResult = $this->fetchAllApprovedSubmissions();
         
         $response = array();
         
