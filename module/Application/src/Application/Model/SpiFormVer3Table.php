@@ -578,7 +578,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row[] = ucwords($aRow['status']);
         $print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank"><i class="fa fa-print"></i>Print</a>';
         if($aRow['status']=='pending'){
-            $approve = '<a href="javascript:void(0);" onclick="approveStatus("'.$aRow['id'].')" class="">Approve</a>';
+            $approve = '<a href="javascript:void(0);" onclick="approveStatus('.$aRow['id'].')" class="">Approve</a>';
         }
         $downloadPdf = '<a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')"><i class="fa fa-download"></i> PDF</a>';
         $pending = '<a href="/spi-v3/edit/' . $aRow['id'] . '"><i class="fa fa-pencil"></i>Edit</a>';

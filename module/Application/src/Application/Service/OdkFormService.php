@@ -68,8 +68,10 @@ class OdkFormService {
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
+            $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer3Table');
             $result = $db->updateFormStatus($id,'approved');
+            $facilityDb->addFacilityBasedOnForm($id);
             if ($result > 0) {
                 $adapter->commit();
                 return $result;

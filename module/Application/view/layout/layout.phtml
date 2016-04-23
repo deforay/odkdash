@@ -72,7 +72,8 @@ $container = new Container('alert');
                 <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
                 <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
                 <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>                
-                <li><a href="/spi-v3">SPI RT Version 3</a></li>
+                <li><a href="<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>">SPI RT Version 3</a></li>
+                <li><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>">SPI RT Facilities</a></li>
                 
               </ul>
             </li>

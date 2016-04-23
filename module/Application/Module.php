@@ -13,9 +13,11 @@ namespace Application;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
+use Application\Model\SpiRtFacilitiesTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
+use Application\Service\FacilityService;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -89,11 +91,19 @@ class Module
                     $table = new SpiFormLabelsTable($dbAdapter);
                     return $table;
                 },
+				'SpiRtFacilitiesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SpiRtFacilitiesTable($dbAdapter);
+                    return $table;
+                },
                 'OdkFormService' => function($sm) {
                     return new OdkFormService($sm);
                 },
                 'UserService' => function($sm) {
                     return new UserService($sm);
+                },
+				'FacilityService' => function($sm) {
+                    return new FacilityService($sm);
                 }
             ),
           

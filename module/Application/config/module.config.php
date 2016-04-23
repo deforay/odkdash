@@ -72,7 +72,17 @@ return array(
                         'action' => 'index',
                     ),
                 ),
-            ),            
+            ),
+            'spi-facility' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/facility[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Facility',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             
         ),
     ),
@@ -100,7 +110,8 @@ return array(
             'Application\Controller\Index' => "Application\Controller\IndexController",
             'Application\Controller\Receiver' => "Application\Controller\ReceiverController",
             'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller",
-            'Application\Controller\Login' => "Application\Controller\LoginController"
+            'Application\Controller\Login' => "Application\Controller\LoginController",
+            'Application\Controller\Facility' => "Application\Controller\FacilityController"
         ),
     ),
     'view_manager' => array(

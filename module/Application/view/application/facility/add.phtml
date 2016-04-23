@@ -1,0 +1,78 @@
+
+<div class="am-content">
+        <div class="page-head">
+          <h2>Add Facility</h2>
+        </div>
+        
+        
+        <div class="main-content">
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+				<div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form role="form" name="addFacilityInfo" id="addFacilityInfo" method="post" action="<?php echo $this->url('spi-facility', array('action' => 'add')); ?>" autocomplete="off" >
+                    <div class="form-group col-lg-6">
+                      <label>Facility Id</label>
+                      <input type="text" placeholder="Facility Id" class="form-control isRequired" name="facilityId" id="facilityId" title="Please enter the facility id">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Facility Name</label>
+                      <input type="text" placeholder="Facility Name" class="form-control isRequired" name="facilityName" id="facilityName" title="Please enter the facility name" value="">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Email</label>
+                      <input type="text" placeholder="Email" class="form-control isEmail" name="email" id="email">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>Name of the Contact Person</label>
+                      <input type="text" placeholder="Name of the Contact Person" class="form-control" name="contactPerson" id="contactPerson" value="">
+                    </div>
+                    <div class="form-group col-lg-6">
+                      <label>District</label>
+                      <input type="text" placeholder="District" class="form-control" name="district" id="district" value="">
+                    </div>
+                    
+					<div class="form-group col-lg-6">
+                      <label>province</label>
+                      <input type="text" placeholder="Province" class="form-control" name="province" id="province" value="">
+                    </div>
+					<div class="form-group col-lg-6">
+                      <label>Latitude</label>
+                      <input type="text" placeholder="Latitude" class="form-control" name="latitude" id="latitude" value="">
+                    </div>
+					<div class="form-group col-lg-6">
+                      <label>Longitude</label>
+                      <input type="text" placeholder="Longitude" class="form-control" name="longitude" id="longitude" value="">
+                    </div>
+                    <div class="spacer  col-lg-12">
+                      <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
+                     <a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+
+            </div>
+        
+        <br>
+        <br>
+ 
+        </div>
+</div>
+
+<script type="text/javascript">
+		duplicateName = true;
+		function validateNow() {
+			   flag = deforayValidator.init({
+				   formId: 'addFacilityInfo'
+			   });
+			   if (flag) {
+				   if (duplicateName) {
+					   document.getElementById('addFacilityInfo').submit();
+				   }
+			   }
+		}
+</script>
