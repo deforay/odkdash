@@ -580,8 +580,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if($aRow['status']=='pending'){
             $approve = '<a href="javascript:void(0);" onclick="approveStatus("'.$aRow['id'].')" class="">Approve</a>';
         }
-        $pending = '<a href="javascript:void(0);" onclick="downloadPdf("'.$aRow['id'].')" class=""><i class="fa fa-download"></i> PDF</a><br><a href="/spi-v3/edit/' . $aRow['id'] . '"><i class="fa fa-pencil"></i>Edit</a>';
-        $row[] = $print." ".$approve." ".$pending;
+        $downloadPdf = '<a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')"><i class="fa fa-download"></i> PDF</a>';
+        $pending = '<a href="/spi-v3/edit/' . $aRow['id'] . '"><i class="fa fa-pencil"></i>Edit</a>';
+        $row[] = $print." ".$approve." ".$downloadPdf." ".$pending;
         $output['aaData'][] = $row;
        }
        return $output;
@@ -885,10 +886,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 
                 'staffaudited' => $params['staffAuditedName'],
                 'durationaudit' => $params['durationAudit'],
-                'FINAL_AUDIT_SCORE' => $params['totalPointsScored'],
-                'MAX_AUDIT_SCORE' => $params['totalScoreExpect'],
-                'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
-                'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
+                //'FINAL_AUDIT_SCORE' => $params['totalPointsScored'],
+                //'MAX_AUDIT_SCORE' => $params['totalScoreExpect'],
+                //'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
                 'correctiveaction' => $summationData
             );
             $result = $this->update($data, array('id' =>$formId));

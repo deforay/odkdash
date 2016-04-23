@@ -1638,10 +1638,30 @@ $partDtableBox2.='</table>';
 
 $pdf->writeHTMLCell(50,26,70,'',$partDtableBox2,1,0, 0, true, 'L',true);
 
+$scorePer=round($formData['AUDIT_SCORE_PERCANTAGE']);
+$level='';
+$colorCode='';
+if($scorePer<40){
+  $level="Level 0";
+  $colorCode="background-color:#C00000";
+}elseif($scorePer>=40 && $scorePer<=59){
+  $level="Level 1";
+  $colorCode="background-color:#E36C0A";
+}elseif($scorePer>=60 && $scorePer<=79){
+  $level="Level 2";
+  $colorCode="background-color:#FFFF00";
+}elseif($scorePer>=80 && $scorePer<=89){
+  $level="Level 3";
+  $colorCode="background-color:#92D050";
+}elseif($scorePer>=90){
+  $level="Level 4";
+  $colorCode="background-color:#00B050";
+}
+					  
 $partDtableBox3='<table cellspacing="0" cellpadding="5">';
 $partDtableBox3.="<tr><td>Total points scored (exclude N/A) = ".$formData['FINAL_AUDIT_SCORE']."</td></tr>";
 $partDtableBox3.="<tr><td>Total score expected = ".$formData['MAX_AUDIT_SCORE']."</td></tr>";
-$partDtableBox3.="<tr><td>% Score = ".round($formData['AUDIT_SCORE_PERCANTAGE'],2)."%</td></tr>";
+$partDtableBox3.='<tr><td>% Score = '.round($formData['AUDIT_SCORE_PERCANTAGE'],2).'% Level :<span style="'.$colorCode.'">  &nbsp;&nbsp;'.$level.'  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3.='</table>';
 
 $pdf->writeHTMLCell(70,26,125,'',$partDtableBox3,1,1, 0, true, 'L',true);

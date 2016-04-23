@@ -1397,11 +1397,11 @@
                     
                     <div class="form-group col-lg-6">
                       <label>Facility Name</label>
-                      <input type="text" placeholder="Facility Name" name="facilityName" class="form-control" value="<?php echo $formData['facilityname']; ?>">
+                      <p class="form-control"><?php echo $formData['facilityname']; ?></p>
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Site Type</label>
-                      <input type="text" placeholder="Site Type" name="siteType" class="form-control" value="<?php echo $formData['testingpointtype']; ?>">
+                      <p class="form-control"><?php echo $formData['testingpointtype']; ?></p>
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Staff Audited Name</label>
@@ -1409,7 +1409,7 @@
                     </div>
                     <div class="form-group col-lg-6">
                       <label>No. of Tester(s)</label>
-                      <input type="text" placeholder="No. of Tester(s)" name="numberOfTester" class="form-control" value="<?php echo $formData['NumberofTester']; ?>">
+                      <p class="form-control"><?php echo $formData['NumberofTester']; ?></p>
                     </div>
                     
                     <div class="form-group col-lg-6">
@@ -1419,17 +1419,42 @@
                     
                     <div class="form-group col-lg-6">
                       <label>Total points scored (exclude N/A)</label>
-                      <input type="text" placeholder="Total points scored" name="totalPointsScored" class="form-control" value="<?php echo $formData['FINAL_AUDIT_SCORE']; ?>">
+                      <p class="form-control"><?php echo $formData['FINAL_AUDIT_SCORE']; ?></p>
                     </div>
                     
                     
                     <div class="form-group col-lg-6">
                       <label>Total score expected </label>
-                      <input type="text" placeholder="Total score expected " name="totalScoreExpect" class="form-control" value="<?php echo $formData['MAX_AUDIT_SCORE']; ?>">
+                      <p class="form-control"><?php echo $formData['MAX_AUDIT_SCORE']; ?></p>
                     </div>
-                    <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-3">
                       <label>% Score </label>
-                      <input type="text" placeholder="% Score " name="auditScorePercentage" class="form-control" value="<?php echo round($formData['AUDIT_SCORE_PERCANTAGE'],2); ?>">
+                      <p class="form-control"><?php echo round($formData['AUDIT_SCORE_PERCANTAGE'],2); ?></p>
+                    </div>
+                    <div class="form-group col-lg-3">
+                      <label>level </label>
+                      <?php
+                      $level='';
+                      $colorCode='';
+                      $scorePer=round($formData['AUDIT_SCORE_PERCANTAGE']);
+                      if($scorePer<40){
+                        $level="Level 0";
+                        $colorCode="background-color:#C00000";
+                      }elseif($scorePer>=40 && $scorePer<=59){
+                        $level="Level 1";
+                        $colorCode="background-color:#E36C0A";
+                      }elseif($scorePer>=60 && $scorePer<=79){
+                        $level="Level 2";
+                        $colorCode="background-color:#FFFF00";
+                      }elseif($scorePer>=80 && $scorePer<=89){
+                        $level="Level 3";
+                        $colorCode="background-color:#92D050";
+                      }elseif($scorePer>=90){
+                        $level="Level 4";
+                        $colorCode="background-color:#00B050";
+                      }
+                      ?>
+                      <p class="form-control" style="color:#000000;<?php echo $colorCode; ?>"><?php echo $level; ?></p>
                     </div>
                     
                     <table class="table table-bordered" cellspacing="0" cellpadding="5" style="width:100%">
