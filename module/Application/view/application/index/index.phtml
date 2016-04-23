@@ -92,15 +92,20 @@
 				
                 <div class="cal-container">
                   <div class="cal-notes">
-					<h3 style="color:#fff;">Last 8 Audits</h3>
-                    <ul>
+					<h3 style="color:#fff;">Last 8 Audits Received</h3>
+                    <ul style="max-height:240px;overflow-y:scroll;">
 					  <?php
 					  $count = 0;
-					  foreach($allSubmissions as $row) {
+					  foreach($rawSubmissions as $row) {
 						if($count == 8) break;
+						
+						$metaSubmissionDate = explode("T", $row['meta-submission-date']);
+						
+						
+						
 					  ?>					  
 						<li style="list-style:disc;margin-left:15px;color:#fff;">
-						  <span class="auditPointName"><?php echo $row['facilityname']; ?></span>
+						  <span class="auditPointName"><?php echo $row['facilityname']. "<br><small> Recd. on : " . $this->humanDateFormat($metaSubmissionDate[0]). "</small>"; ?></span>
 						</li>
                       <?php
 					  $count++;
@@ -456,7 +461,7 @@ $('#audit-points-barchart').highcharts({
             min: 0,
 			max : 100,
             title: {
-                text: 'No. of Samples'
+                text: 'Audit Score in %'
             }
         },
         tooltip: {
@@ -655,12 +660,41 @@ function radar_chart(){
 		<?php
 		
 		$eventDatesArray = array();
+		$eventCount = array();
 		foreach($allSubmissions as $row) {
-		  
-		  $eventDatesArray[] = "'".$this->humanDateFormat($row['assesmentofaudit'])."'";
+		  $humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+		  $eventDatesArray[] = "'".$humanDate."'";
+		  if(isset($eventCount[$humanDate])){
+			$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
+		  }else{
+			$eventCount[$humanDate] = 1;
+		  }
+		}
 		
-		} ?>
+		
+		
+		$countJson = json_encode($eventCount);
+		?>
+		
+		
+		
+		
+		
+		<?php
+		if($countJson != null && $countJson != ""){
+		  ?>
+		var countJson = <?php echo $countJson; ?>
+		  <?php
+		}else{
+		  ?>
+		var countJson = null;  
+		  <?php
+		}
+		?>
+		
+		
 		var eventDates = [<?php echo implode(",",$eventDatesArray); ?>];
+		
 		
 		
         $( ".ui-datepicker" ).datepicker({
@@ -672,15 +706,14 @@ function radar_chart(){
 				var monthDay = sd.getDate();
 				calNotesDay.html( weekdayName );
 				calNotesDate.html( monthName + " " + monthDay);
-				alert('Under Construction');
-        	}
-			,
+        	},
 			beforeShowDay: function(date) {
-			  if($.inArray($.datepicker.formatDate('dd-M-yy', date ), eventDates) > -1){
-				  return [true,"event","Audit Date"];
+			  hdate = $.datepicker.formatDate('dd-M-yy', date );
+			  if($.inArray(hdate, eventDates) > -1){
+				  return [true,"event","Audits on this date : " + countJson[hdate]];
 			  }
 			  else{
-				  return [true,'',""];
+				  return [true,'',"No recorded audits on this date"];
 			  }
 			}
         });
