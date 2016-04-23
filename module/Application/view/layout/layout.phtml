@@ -52,12 +52,12 @@ $container = new Container('alert');
               </li>
             </ul>
             
-             <ul class="nav navbar-nav am-nav-right">
+<!--             <ul class="nav navbar-nav am-nav-right">
               <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
               <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
               <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>
               <li><a href="/">SPI RT 3.0</a></li>
-             </ul>
+             </ul>-->
             
           </div>
         </div>
@@ -73,11 +73,10 @@ $container = new Container('alert');
                 <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
                 <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>                
                 <li><a href="<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>">SPI RT Version 3</a></li>
-                <li><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>">SPI RT Facilities</a></li>
                 
               </ul>
             </li>
-            <li class="parent"><a href="#"><i class="icon s7-note2"></i><span>Site List</span></a></li>
+            <li class="parent"><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span>Site List</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Charts</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-mail"></i><span>Email</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-map-marker"></i><span>Maps</span></a></li>
