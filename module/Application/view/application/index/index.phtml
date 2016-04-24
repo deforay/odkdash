@@ -22,6 +22,13 @@
     color: #ffffff !important;
 	border-radius:50%;
 }
+
+
+.highcharts-tooltip span {
+    width:250px;
+    overflow:auto;
+    white-space:normal !important;
+}
   
 </style>
       <div class="am-content">
@@ -153,7 +160,7 @@
 				  
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
-                      <span class="title">Responses with Zeroes</span>
+                      <span class="title">Worst Performing Questions</span>
                     </div>
                     <div class="chart-container">
                       <div id="zero-count-barchart" height="280px"></div>
@@ -498,15 +505,20 @@ $('#audit-points-barchart').highcharts({
 					  
 					  $barData = array();
 					  $category = array();
+					  //$fullQuestions = array();
 					  foreach($zeroCounts as $col => $val) {
-						if($counter == 10) break;
+						if($counter == 20) break;
 						
-						$barData[] = "{ y : ".$val. " }"; 
-						$category[] = "'".$spiV3Labels[$col]."'"; 
+						$barData[] = "{ y : ".$val. " , fullquestion : '".$spiV3Labels[$col][1]."' }"; 
+						$category[] = "'".$spiV3Labels[$col][0]."'"; 
+						//$fullQuestions[$spiV3Labels[$col][0]] = "'".$spiV3Labels[$col][1]."'"; 
 						$counter++;
 					  }
+					  //$fullQuestions = json_encode($fullQuestions);
 					?>		
 	
+	
+
 $('#zero-count-barchart').highcharts({
         chart: {
             type: 'column'
@@ -522,7 +534,7 @@ $('#zero-count-barchart').highcharts({
             crosshair: true,
 			labels:
 			{
-			  enabled: false
+			  enabled: true
 			}
         },
 		 legend: {
@@ -535,12 +547,11 @@ $('#zero-count-barchart').highcharts({
             }
         },
         tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="padding:0;font-size:10px">{series.name}: </td>' +
-                '<td style="padding:0;font-size:10px">{point.y:.0f}</td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
+		   formatter: function() {return ' ' +
+                '<strong>'+this.point.fullquestion + '</strong><br /><br />' +
+                this.series.name + ' : ' + this.point.y + '<br />';
+            },
+			useHTML : true
         },
         plotOptions: {
             column: {
