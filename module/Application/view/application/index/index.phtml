@@ -143,13 +143,13 @@
 		  </div>
           <div class="row">
 			
-			<div class="col-md-6">
+			<div class="col-md-6" id="lefter">
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title">Audit Performance</span>
                     </div>
                     <div class="chart-container">
-                      <canvas id="radar-chart1" height="180px"></canvas>
+                      <canvas id="radar-chart1" height="280px" style="max-width:100%;"></canvas>
                     </div>
 					<div class="row chart-info">
 					  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
@@ -169,21 +169,17 @@
 				  
 			</div>			
 			
-            <div class="col-md-6">
+            <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
                 <div class="widget-head"><span class="title">Audit Locations</span></div>
                 <div class="map-container">
-                  <div class="gmap" id="gmap" style="height: 960px;"></div>
+                  <div class="gmap" id="gmap" style="min-height: 1125px;width:100%;"></div>
                 </div>
               </div>
             </div>
 
           </div>
-		  <div class="row">
-			<div class="col-md-12">
-              			  
-			</div>
-		  </div>
+
         </div>
       </div>
 <script type="text/javascript"
@@ -621,6 +617,7 @@ function radar_chart(){
         maintainAspectRatio: true,
         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       });
+	  
     }
 
 //Calendar Widget
@@ -685,21 +682,15 @@ function radar_chart(){
 		
 		
 		$countJson = json_encode($eventCount);
-		?>
-		
-		
-		
-		
-		
-		<?php
+
 		if($countJson != null && $countJson != ""){
-		  ?>
-		var countJson = <?php echo $countJson; ?>
-		  <?php
+		?>
+		  var countJson = <?php echo $countJson; ?>
+		<?php
 		}else{
-		  ?>
-		var countJson = null;  
-		  <?php
+		?>
+		  var countJson = null;  
+		<?php
 		}
 		?>
 		
@@ -784,6 +775,9 @@ function radar_chart(){
 			   scrollwheel: false
 		  }
 		}).Load();
+		
+		
+		//$("#righter").css("height",$("#righter").height());
 		
 
       });
