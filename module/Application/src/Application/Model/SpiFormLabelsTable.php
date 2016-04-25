@@ -39,7 +39,7 @@ class SpiFormLabelsTable extends AbstractTableGateway {
         
         $response = array();
         foreach($rResult as $row){
-            $response[$row['field']] = $row['label'];
+            $response[$row['field']] = array($row['short_label'],$row['label']);
         }
         return $response;
     }

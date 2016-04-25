@@ -22,6 +22,13 @@
     color: #ffffff !important;
 	border-radius:50%;
 }
+
+
+.highcharts-tooltip span {
+    width:250px;
+    overflow:auto;
+    white-space:normal !important;
+}
   
 </style>
       <div class="am-content">
@@ -92,15 +99,20 @@
 				
                 <div class="cal-container">
                   <div class="cal-notes">
-					<h3 style="color:#fff;">Last 8 Audits</h3>
-                    <ul>
+					<h3 style="color:#fff;">Last 8 Audits Received</h3>
+                    <ul style="max-height:240px;overflow-y:scroll;">
 					  <?php
 					  $count = 0;
-					  foreach($allSubmissions as $row) {
+					  foreach($rawSubmissions as $row) {
 						if($count == 8) break;
+						
+						$metaSubmissionDate = explode("T", $row['meta-submission-date']);
+						
+						
+						
 					  ?>					  
 						<li style="list-style:disc;margin-left:15px;color:#fff;">
-						  <span class="auditPointName"><?php echo $row['facilityname']; ?></span>
+						  <span class="auditPointName"><?php echo $row['facilityname']. "<br><small> Recd. on : " . $this->humanDateFormat($metaSubmissionDate[0]). "</small>"; ?></span>
 						</li>
                       <?php
 					  $count++;
@@ -131,13 +143,13 @@
 		  </div>
           <div class="row">
 			
-			<div class="col-md-6">
+			<div class="col-md-6" id="lefter">
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title">Audit Performance</span>
                     </div>
                     <div class="chart-container">
-                      <canvas id="radar-chart1" height="180px"></canvas>
+                      <canvas id="radar-chart1" height="280px" style="max-width:100%;"></canvas>
                     </div>
 					<div class="row chart-info">
 					  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
@@ -148,7 +160,7 @@
 				  
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
-                      <span class="title">Responses with Zeroes</span>
+                      <span class="title">Worst Performing Questions</span>
                     </div>
                     <div class="chart-container">
                       <div id="zero-count-barchart" height="280px"></div>
@@ -157,21 +169,17 @@
 				  
 			</div>			
 			
-            <div class="col-md-6">
+            <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
                 <div class="widget-head"><span class="title">Audit Locations</span></div>
                 <div class="map-container">
-                  <div class="gmap" id="gmap" style="height: 960px;"></div>
+                  <div class="gmap" id="gmap" style="min-height: 1125px;width:100%;"></div>
                 </div>
               </div>
             </div>
 
           </div>
-		  <div class="row">
-			<div class="col-md-12">
-              			  
-			</div>
-		  </div>
+
         </div>
       </div>
 <script type="text/javascript"
@@ -456,7 +464,7 @@ $('#audit-points-barchart').highcharts({
             min: 0,
 			max : 100,
             title: {
-                text: 'No. of Samples'
+                text: 'Audit Score in %'
             }
         },
         tooltip: {
@@ -493,15 +501,20 @@ $('#audit-points-barchart').highcharts({
 					  
 					  $barData = array();
 					  $category = array();
+					  //$fullQuestions = array();
 					  foreach($zeroCounts as $col => $val) {
-						if($counter == 10) break;
+						if($counter == 20) break;
 						
-						$barData[] = "{ y : ".$val. " }"; 
-						$category[] = "'".$spiV3Labels[$col]."'"; 
+						$barData[] = "{ y : ".$val. " , fullquestion : '".$spiV3Labels[$col][1]."' }"; 
+						$category[] = "'".$spiV3Labels[$col][0]."'"; 
+						//$fullQuestions[$spiV3Labels[$col][0]] = "'".$spiV3Labels[$col][1]."'"; 
 						$counter++;
 					  }
+					  //$fullQuestions = json_encode($fullQuestions);
 					?>		
 	
+	
+
 $('#zero-count-barchart').highcharts({
         chart: {
             type: 'column'
@@ -517,7 +530,7 @@ $('#zero-count-barchart').highcharts({
             crosshair: true,
 			labels:
 			{
-			  enabled: false
+			  enabled: true
 			}
         },
 		 legend: {
@@ -530,12 +543,11 @@ $('#zero-count-barchart').highcharts({
             }
         },
         tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="padding:0;font-size:10px">{series.name}: </td>' +
-                '<td style="padding:0;font-size:10px">{point.y:.0f}</td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
+		   formatter: function() {return ' ' +
+                '<strong>'+this.point.fullquestion + '</strong><br /><br />' +
+                this.series.name + ' : ' + this.point.y + '<br />';
+            },
+			useHTML : true
         },
         plotOptions: {
             column: {
@@ -605,6 +617,7 @@ function radar_chart(){
         maintainAspectRatio: true,
         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       });
+	  
     }
 
 //Calendar Widget
@@ -655,12 +668,35 @@ function radar_chart(){
 		<?php
 		
 		$eventDatesArray = array();
+		$eventCount = array();
 		foreach($allSubmissions as $row) {
-		  
-		  $eventDatesArray[] = "'".$this->humanDateFormat($row['assesmentofaudit'])."'";
+		  $humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+		  $eventDatesArray[] = "'".$humanDate."'";
+		  if(isset($eventCount[$humanDate])){
+			$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
+		  }else{
+			$eventCount[$humanDate] = 1;
+		  }
+		}
 		
-		} ?>
+		
+		
+		$countJson = json_encode($eventCount);
+
+		if($countJson != null && $countJson != ""){
+		?>
+		  var countJson = <?php echo $countJson; ?>
+		<?php
+		}else{
+		?>
+		  var countJson = null;  
+		<?php
+		}
+		?>
+		
+		
 		var eventDates = [<?php echo implode(",",$eventDatesArray); ?>];
+		
 		
 		
         $( ".ui-datepicker" ).datepicker({
@@ -672,15 +708,14 @@ function radar_chart(){
 				var monthDay = sd.getDate();
 				calNotesDay.html( weekdayName );
 				calNotesDate.html( monthName + " " + monthDay);
-				alert('Under Construction');
-        	}
-			,
+        	},
 			beforeShowDay: function(date) {
-			  if($.inArray($.datepicker.formatDate('dd-M-yy', date ), eventDates) > -1){
-				  return [true,"event","Audit Date"];
+			  hdate = $.datepicker.formatDate('dd-M-yy', date );
+			  if($.inArray(hdate, eventDates) > -1){
+				  return [true,"event","Audits on this date : " + countJson[hdate]];
 			  }
 			  else{
-				  return [true,'',""];
+				  return [true,'',"No recorded audits on this date"];
 			  }
 			}
         });
@@ -740,6 +775,9 @@ function radar_chart(){
 			   scrollwheel: false
 		  }
 		}).Load();
+		
+		
+		//$("#righter").css("height",$("#righter").height());
 		
 
       });
