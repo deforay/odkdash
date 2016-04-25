@@ -46,5 +46,17 @@ class FacilityController extends AbstractActionController {
             ));
         }
     }
-
+    
+    public function facilityListAction(){
+        $request = $this->getRequest();
+        
+        if ($request->isGet()) {
+            $val = $request->getQuery('search');
+            //\Zend\Debug\Debug::dump($val);
+        //die;
+            $facilityService= $this->getServiceLocator()->get('FacilityService');
+            $result = $facilityService->getFacilityList($val);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+    }
 }

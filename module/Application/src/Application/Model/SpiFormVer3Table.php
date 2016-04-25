@@ -7,6 +7,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Application\Model\SpiRtFacilitiesTable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -776,7 +777,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
     public function updateSpiFormDetails($params){
         if (trim($params['formId']) != "") {
-            
+            $dbAdapter = $this->adapter;
+            $sql = new Sql($dbAdapter);
             $formId=base64_decode($params['formId']);
             $summationData="";
             if(isset($params['sectionNo'])){
@@ -793,6 +795,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
                     
                 }
                 $summationData=json_encode($summationData,true);
+            }
+            
+            if($params['testingFacilityName']!=$params['oldFacilityName']){
+                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+                if(isset($params['selectedFacilityId']) && trim($params['selectedFacilityId'])!="" && trim($params['testingFacilityName'])!=""){
+                    $facilityDb->updateFacilityName($params['selectedFacilityId'],$params['testingFacilityName']);
+                }else{
+                    $facilityDb->addFacilityName(trim($params['testingFacilityName']));
+                }
             }
             
             $data = array(

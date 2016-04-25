@@ -64,4 +64,9 @@ class FacilityService {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchFacility($id);
     }
+    
+    public function getFacilityList($val){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchFacilityList($val);
+    }
 }
