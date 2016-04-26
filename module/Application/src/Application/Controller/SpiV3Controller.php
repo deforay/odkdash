@@ -92,5 +92,43 @@ class SpiV3Controller extends AbstractActionController
         }
        
     }
+    public function auditPerformanceAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
+            $perf1 = $odkFormService->getPerformance();
+            $viewModel = new ViewModel();
+                $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
+                        ->setTerminal(true);
+                return $viewModel;
+        }
+    }
+    public function worstPerformanceAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $zeroCounts = $odkFormService->getZeroQuestionCounts($params);
+            $spiV3Labels = $odkFormService->getSpiV3FormLabels();
+            $viewModel = new ViewModel();
+                $viewModel->setVariables(array('zeroCounts' => $zeroCounts,'spiV3Labels' => $spiV3Labels))
+                        ->setTerminal(true);
+                return $viewModel;
+        }
+    }
+    public function auditLocationsAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $allSubmissions = $odkFormService->getAllApprovedSubmissionLocation($params);
+            $viewModel = new ViewModel();
+                $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
+                        ->setTerminal(true);
+                return $viewModel;
+        }
+    }
 }
 

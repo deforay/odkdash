@@ -49,9 +49,9 @@ class OdkFormService {
     }
     
     
-    public function getAuditRoundWiseData() {
+    public function getAuditRoundWiseData($params) {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getAuditRoundWiseData();
+        return $db->getAuditRoundWiseData($params);
     }
     
     public function getFormData($id) {
@@ -87,10 +87,14 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchAllApprovedSubmissions($sortOrder);
     }
-    
-    public function getZeroQuestionCounts() {
+    public function getAllApprovedSubmissionLocation($params) {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getZeroQuestionCounts();
+        return $db->fetchAllApprovedSubmissionLocation($params);
+    }
+    
+    public function getZeroQuestionCounts($params) {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->getZeroQuestionCounts($params);
     }
     
     public function updateSpiForm($params){
@@ -110,5 +114,12 @@ class OdkFormService {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
+    }
+    
+    //get all audit round no
+    public function getSpiV3FormAuditNo()
+    {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchSpiV3FormAuditNo();
     }
 }

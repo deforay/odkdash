@@ -596,8 +596,17 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
     
 
-    public function getAuditRoundWiseData() {
-        $rResult = $this->getAllSubmissions();
+    public function getAuditRoundWiseData($params) {
+        //$rResult = $this->getAllSubmissions();
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->order(array("id DESC"));
+        if(isset($params['roundno']) && $params['roundno']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['roundno']."'");
+        }
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         $response = array();
         
@@ -626,14 +635,25 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         
         $response = array('');
-        
+        //\Zend\Debug\Debug::dump($auditRoundWiseData);die;
         return $auditRoundWiseData;
      
     }
     
 
-    public function getZeroQuestionCounts() {
-        $rResult = $this->fetchAllApprovedSubmissions();
+    public function getZeroQuestionCounts($params) {
+        //$rResult = $this->fetchAllApprovedSubmissions();
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where(array('status'=>'approved'))
+                                ->order(array("assesmentofaudit DESC"));
+        if(isset($params['roundno']) && $params['roundno']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['roundno']."'");
+        }
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         $response = array();
         
@@ -746,6 +766,24 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit $sortOrder"));
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return $rResult;
+     
+        
+    }
+    public function fetchAllApprovedSubmissionLocation($params){
+     
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where(array('status'=>'approved'))
+                                ->order(array("assesmentofaudit DESC"));
+        if(isset($params['roundno']) && $params['roundno']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['roundno']."'");
+        }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -907,5 +945,17 @@ class SpiFormVer3Table extends AbstractTableGateway {
             return $formId;
         }
         
+    }
+    public function fetchSpiV3FormAuditNo()
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                               ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno')));
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return $rResult;
     }
 }

@@ -23,9 +23,10 @@ class IndexController extends AbstractActionController
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
         $rawSubmissions = $odkFormService->getAllSubmissions();        
-        $auditRoundWiseData = $odkFormService->getAuditRoundWiseData();
-        $zeroCounts = $odkFormService->getZeroQuestionCounts();
-        $spiV3Labels = $odkFormService->getSpiV3FormLabels();
+        //$auditRoundWiseData = $odkFormService->getAuditRoundWiseData('');
+        //$zeroCounts = $odkFormService->getZeroQuestionCounts();
+        //$spiV3Labels = $odkFormService->getSpiV3FormLabels();
+        $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
         
         
         return new ViewModel(array('perf1' => $perf1,
@@ -33,10 +34,12 @@ class IndexController extends AbstractActionController
                                    'perflast180' => $perflast180,
                                    'allSubmissions' => $allSubmissions,
                                    'rawSubmissions' => $rawSubmissions,
-                                   'auditRoundWiseData' => $auditRoundWiseData,
-                                   'spiV3Labels' => $spiV3Labels,
-                                   'zeroCounts' => $zeroCounts));
+                                   //'auditRoundWiseData' => $auditRoundWiseData,
+                                   //'spiV3Labels' => $spiV3Labels,
+                                   //'zeroCounts' => $zeroCounts,
+                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo));
     
     
     }
+    
 }
