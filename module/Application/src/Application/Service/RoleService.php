@@ -4,7 +4,7 @@ namespace Application\Service;
 
 use Zend\Session\Container;
 
-class UserService {
+class RoleService {
 
     public $sm = null;
 
@@ -16,54 +16,56 @@ class UserService {
         return $this->sm;
     }
 
-    
-    public function login($params) {
-        $db = $this->sm->get('UsersTable');
-        return $db->login($params);
-    }
-    
-    public function addUser($params) {
+    public function addRoles($params) {
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
-            $userDb = $this->sm->get('UsersTable');
-            $result = $userDb->addUserDetails($params);
-            if ($result > 0) {
+            $rolesDb = $this->sm->get('RolesTable');
+            $rolesResult = $rolesDb->addRolesDetails($params);
+            if ($rolesResult > 0) {
                 $adapter->commit();
                 $container = new Container('alert');
-                $container->alertMsg = 'User added successfully';
+                $container->alertMsg = 'Roles added successfully';
             }
         } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
-    
-    public function updateUser($params) {
+
+    public function updateRoles($params) {
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
-            $userDb = $this->sm->get('UsersTable');
-            $result = $userDb->updateUserDetails($params);
-            if ($result > 0) {
+            $rolesDb = $this->sm->get('RolesTable');
+            $rolesResult = $rolesDb->updateRolesDetails($params);
+            if ($rolesResult > 0) {
                 $adapter->commit();
                 $container = new Container('alert');
-                $container->alertMsg = 'User details updated successfully';
+                $container->alertMsg = 'Roles updated successfully';
             }
+            
         } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
     
-    public function getAllUsers($parameters){
-        $userDb = $this->sm->get('UsersTable');
+    public function getAllRoles($params) {
+        $rolesDb = $this->sm->get('RolesTable');
         //$acl = $this->sm->get('AppAcl');
-        return $userDb->fetchAllUsers($parameters);
+        return $rolesDb->fetchAllRoles($params);
     }
     
-    public function getUser($id){
-        $userDb = $this->sm->get('UsersTable');
-        return $userDb->fetchUser($id);
+    public function getRole($id) {
+        $rolesDb = $this->sm->get('RolesTable');
+        return $rolesDb->getRolesDetails($id);
+    }
+    
+    public function getAllActiveRoles(){
+        $rolesDb = $this->sm->get('RolesTable');
+        return $rolesDb->fecthAllActiveRoles();
     }
 }
+
+?>

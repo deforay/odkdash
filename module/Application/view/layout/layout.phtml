@@ -12,7 +12,11 @@ $container = new Container('alert');
     <link rel="shortcut icon" href="<?php echo $this->basePath('assets/img/favicon.png'); ?>">
     <title>Malawi – Dashboard for Quality Improvement of HIV Rapid Testing </title>
     
-    
+    <style type="text/css">
+      .mandatory {
+        color: red;
+      }
+    </style>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">    
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs-3.3.6/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
@@ -81,6 +85,12 @@ $container = new Container('alert');
               </ul>
             </li>
             <li class="parent"><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span>Site List</span></a></li>
+            <li class="parent"><a href="#"><i class="icon s7-config"></i><span>Manage</span></a>
+              <ul class="sub-menu">
+                <li><a href="<?php echo $this->url('roles',array('action' => 'index')); ?>">Roles</a></li>               
+                <li><a href="<?php echo $this->url('users',array('action' => 'index')); ?>">Users</a></li>
+              </ul>
+            </li>
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Charts</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-mail"></i><span>Email</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-map-marker"></i><span>Maps</span></a></li>

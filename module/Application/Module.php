@@ -14,10 +14,14 @@ use Application\Model\SpiFormVer3Table;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
+use Application\Model\RolesTable;
+use Application\Model\UserRoleMapTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
 use Application\Service\FacilityService;
+use Application\Service\CommonService;
+use Application\Service\RoleService;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -96,6 +100,17 @@ class Module
                     $table = new SpiRtFacilitiesTable($dbAdapter);
                     return $table;
                 },
+				'RolesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new RolesTable($dbAdapter);
+                    return $table;
+                },
+				'UserRoleMapTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UserRoleMapTable($dbAdapter);
+                    return $table;
+                },
+				
                 'OdkFormService' => function($sm) {
                     return new OdkFormService($sm);
                 },
@@ -104,6 +119,12 @@ class Module
                 },
 				'FacilityService' => function($sm) {
                     return new FacilityService($sm);
+                },
+				'CommonService' => function($sm) {
+                    return new CommonService($sm);
+                },
+				'RoleService' => function($sm) {
+                    return new RoleService($sm);
                 }
             ),
           

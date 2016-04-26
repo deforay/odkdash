@@ -83,7 +83,36 @@ return array(
                     ),
                 ),
             ),
-            
+            'common' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/common[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Common',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'roles' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/roles[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Roles',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'users' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/users[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Users',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
@@ -111,7 +140,10 @@ return array(
             'Application\Controller\Receiver' => "Application\Controller\ReceiverController",
             'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller",
             'Application\Controller\Login' => "Application\Controller\LoginController",
-            'Application\Controller\Facility' => "Application\Controller\FacilityController"
+            'Application\Controller\Facility' => "Application\Controller\FacilityController",
+            'Application\Controller\Roles' => "Application\Controller\RolesController",
+            'Application\Controller\Common' => "Application\Controller\CommonController",
+            'Application\Controller\Users' => "Application\Controller\UsersController"
         ),
     ),
     'view_manager' => array(

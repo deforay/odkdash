@@ -36,7 +36,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         $queryStr = $sql->getSqlStringForSqlObject($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if($result!=""){
-			$fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_id'=>$result['facilityid'],'facility_name'=>$result['facilityname']));
+			$fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$result['facilityname']));
 			$fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
 			$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($fResult==""){
