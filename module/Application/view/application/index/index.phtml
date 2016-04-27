@@ -3,10 +3,10 @@
   .auditPointName{
 	color:#fff;
 	margin:0;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	max-width: 200px;
+	
+	
+	
+	min-width: 200px;
 	vertical-align:top;
   }
   
@@ -17,7 +17,7 @@
   }
   
   .event a {
-    background-color: #B2D0FE !important;
+    background-color: #8eaffe !important;
     background-image :none !important;
     color: #ffffff !important;
 	border-radius:50%;
@@ -29,11 +29,24 @@
     overflow:auto;
     white-space:normal !important;
 }
+
+.select2{
+  max-width:150px;
+}
+
+.widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-highlight{
+  background: none !important;
+  color: #888;
+}
   
 </style>
 
       <div class="am-content">
+		<div class="page-head">
+          <h2>SPI-RT 3.0 Checklist</h2>
+        </div>
         <div class="main-content">
+        
           <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
           <div class="row">
             <div class="col-md-4">
@@ -107,13 +120,13 @@
 					  foreach($rawSubmissions as $row) {
 						if($count == 8) break;
 						
-						$metaSubmissionDate = explode("T", $row['meta-submission-date']);
+						//$metaSubmissionDate = explode("T", $row['meta-submission-date']);
 						
 						
 						
 					  ?>					  
 						<li style="list-style:disc;margin-left:15px;color:#fff;">
-						  <span class="auditPointName"><?php echo $row['facilityname']. "<br><small> Recd. on : " . $this->humanDateFormat($metaSubmissionDate[0]). "</small>"; ?></span>
+						  <span class="auditPointName"><?php echo $row['facilityname']." - " .$row['testingpointname']. "<br> <small> Status : " . ucfirst($row['status']). "</small>"; ?></span>
 						</li>
                       <?php
 					  $count++;
@@ -150,7 +163,7 @@
 		      
                       <span class="title"><b>Audit Performance</b></span>
 		      <div  style="float: right;">
-		      <label>Audit Round No:</label>
+		      <label>Audit Round</label>
                       <select class="select2" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
@@ -172,7 +185,7 @@
                     <div class="widget-head">
                       <span class="title"><b>Worst Performing Questions</b></span>
 		      <div  style="float: right;">
-		      <label>Audit Round No:</label>
+		      <label>Audit Round</label>
                       <select class="select2" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
@@ -196,7 +209,7 @@
 			  <div class="widget widget-map">
                 <div class="widget-head"><span class="title"><b>Audit Locations</b></span>
 		<div  style="float: right;">
-		      <label>Audit Round No:</label>
+		      <label>Audit Round</label>
                       <select class="select2" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
@@ -471,7 +484,7 @@ function widget_top_1(){
 						}
 						
 						$barData[] = "{ y : ".round($row['AUDIT_SCORE_PERCANTAGE'],2). ", color : '".$color."' }"; 
-						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])."<br>'"); 
+						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
 						$counter++;
 					  }
 					?>		
