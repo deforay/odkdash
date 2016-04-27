@@ -31,6 +31,7 @@
 }
   
 </style>
+
       <div class="am-content">
         <div class="main-content">
           <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
@@ -150,10 +151,8 @@
                       <span class="title"><b>Audit Performance</b></span>
 		      <div  style="float: right;">
 		      <label>Audit Round No:</label>
-                      <select class="" id="auditRndNo" onchange="getAuditDetails()">
-                        <option value=''>--Select--</option>
+                      <select class="select2" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
                           <?php
-			  
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
 			    ?>
@@ -174,8 +173,7 @@
                       <span class="title"><b>Worst Performing Questions</b></span>
 		      <div  style="float: right;">
 		      <label>Audit Round No:</label>
-                      <select class="" id="auditRndWorstNo" onchange="getAuditWorstDetails()">
-                        <option value=''>--Select--</option>
+                      <select class="select2" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
@@ -199,8 +197,7 @@
                 <div class="widget-head"><span class="title"><b>Audit Locations</b></span>
 		<div  style="float: right;">
 		      <label>Audit Round No:</label>
-                      <select class="" id="auditRndNoLocations" onchange="getAuditLocationDetails()">
-                        <option value=''>--Select--</option>
+                      <select class="select2" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
@@ -225,8 +222,11 @@
 <script type="text/javascript"
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places">
 </script>
+
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+
     <script type="text/javascript">
       
       var color1 = "red";
@@ -540,6 +540,7 @@ function getAuditWorstDetails()
   function getAuditDetails()
   {
     value = $("#auditRndNo").val();
+    console.log(value);
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {roundno:value},
       function (data) {
 	  $("#radarChart").html(data);
@@ -683,6 +684,9 @@ function getAuditWorstDetails()
 		
 		//$("#righter").css("height",$("#righter").height());
 		
-
+	  $(".select2").select2({
+            allowClear: true,
+            width: "250px"
+        });
       });
     </script>
