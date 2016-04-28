@@ -114,6 +114,9 @@ class Module
                 'OdkFormService' => function($sm) {
                     return new OdkFormService($sm);
                 },
+                'CommonService' => function($sm) {
+                    return new CommonService($sm);
+                },
                 'UserService' => function($sm) {
                     return new UserService($sm);
                 },

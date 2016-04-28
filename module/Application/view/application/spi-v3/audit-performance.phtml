@@ -1,6 +1,8 @@
-<div class="chart-container">
-    <canvas id="radar-chart1" height="280px" style="max-width:100%;"></canvas>
-</div>
+<style>
+    .highcharts-legend{display: none;}
+    .highcharts-title{display: none;}
+</style>
+<div id="container" style="min-width: 400px; max-width: 600px; height: 400px; margin: 0 auto"></div>
             <div class="row chart-info">
               <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
               <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
@@ -12,57 +14,65 @@
         radar_chart();
     });
     function radar_chart(){
-<?php
-if(count($auditRoundWiseData)>0){
-?>
-      var color1 = tinycolor( colors.primary ).lighten( 6 );
-      var color2 = tinycolor( colors.alt4 ).lighten( 6.5 );
-      var color3 = tinycolor( colors.success ).lighten( 6.5 );
-      var color4 = tinycolor( colors.info ).lighten( 6.5 );
-      var color5 = tinycolor( colors.warning ).lighten( 6.5 );
-      var color6 = tinycolor( colors.danger ).lighten( 6.5 );
-      var color7 = tinycolor( colors.alt1 ).lighten( 6.5 );
-      var color8 = tinycolor( colors.alt2 ).lighten( 6.5 );
-      var color9 = tinycolor( colors.alt3 ).lighten( 6.5 );
+$('#container').highcharts({
 
-      var data = {
-        labels: ["Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"],
-        datasets: [
-		  <?php
-		  $colorCounter = 1;
-		  foreach ($auditRoundWiseData as $auditNo => $adata){ ?>
-          {
-            label: "Audit Round No. <?php echo $auditNo; ?>",
-            fillColor: color<?php echo $colorCounter; ?>.setAlpha(.5).toString(),
-            pointColor: color<?php echo $colorCounter; ?>.setAlpha(.8).toString(),
-            strokeColor: color<?php echo $colorCounter; ?>.setAlpha(.8).toString(),
-            highlightFill: color<?php echo $colorCounter; ?>.setAlpha(.75).toString(),
-            highlightStroke: color<?php echo $colorCounter; ?>.toString(),
-            data: [
-				   <?php echo round($adata['PERSONAL_SCORE'],2); ?>,
-				   <?php echo round($adata['PHYSICAL_SCORE'],2); ?>,
+        chart: {
+            polar: true,
+            type: 'line'
+        },
+
+        title: {
+            text: 'Audit Performance',
+            x: -80
+        },
+
+        pane: {
+            size: '90%'
+        },
+
+        xAxis: {
+            categories: ["Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"],
+            tickmarkPlacement: 'on',
+            lineWidth: 0
+        },
+
+	
+        yAxis: {
+            gridLineInterpolation: 'polygon',
+            lineWidth: 0,
+            min: 0
+        },
+
+        tooltip: {
+            shared: true,
+            pointFormat: '<span style="color:{series.color}">X: <b>{point.y:0f}</b><br/>'
+        },
+
+        legend: {
+            align: 'right',
+            verticalAlign: 'top',
+            y: 70,
+            layout: 'vertical'
+        },
+
+        series: [
+	    <?php
+	    foreach ($auditRoundWiseData as $auditNo => $adata){
+		?>
+		{
+		
+		data:[<?php echo round($adata['PERSONAL_SCORE'],2); ?>,<?php echo round($adata['PHYSICAL_SCORE'],2); ?>,
 				   <?php echo round($adata['SAFETY_SCORE'],2); ?>,
 				   <?php echo round($adata['PRETEST_SCORE'],2); ?>,
 				   <?php echo round($adata['TEST_SCORE'],2); ?>,
 				   <?php echo round($adata['POST_SCORE'],2); ?>,
-				   <?php echo round($adata['EQA_SCORE'],2); ?>,
-				   ]
-          },
-		  <?php
-		  $colorCounter++;
-		  if($colorCounter > 9){
-			$colorCounter = 1;
-		  }
-		  } ?>
+				   <?php echo round($adata['EQA_SCORE'],2); ?>,],
+		},
+		<?php
+	    }
+	    ?>
         ]
-      };
 
-      var radarChart = new Chart( $("#radar-chart1").get(0).getContext("2d") ).Radar(data, {
-        scaleShowLine : true,
-        responsive: true,
-        maintainAspectRatio: true,
-        legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-      });
-    <?php }   ?>
+    });
     }
 </script>

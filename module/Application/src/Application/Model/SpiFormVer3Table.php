@@ -421,8 +421,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	
-        $aColumns = array('facilityname','facilityname','formId','formVersion','auditroundno','testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
-        $orderColumns = array('facilityname','facilityname','formId','formVersion','auditroundno','testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $aColumns = array('id','facilityname','formId', 'formVersion','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $orderColumns = array('id','facilityname','formId', 'formVersion','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
 
        /*
         * Paging
@@ -558,9 +558,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
            "aaData" => array()
 	);
 	
+       $commonService = new \Application\Service\CommonService();
        foreach ($rResult as $aRow) {
         $row = array();
         $approve = '';
+        
+        
         $row['DT_RowId'] = "row_".$aRow['id'];
         if(isset($aRow['level_other']) && $aRow['level_other'] != ""){
             $level = " - " .$aRow['level_other'];
@@ -572,6 +575,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row[] = $aRow['formId'];
         $row[] = $aRow['formVersion'];
         $row[] = $aRow['auditroundno'];
+        $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
         $row[] = $aRow['testingpointtype'];
         $row[] = $aRow['level'].$level;
         $row[] = $aRow['affiliation'];
@@ -603,7 +607,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->order(array("id DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['roundno']."'");
+            $roundNo = implode(",",$params['roundno']);
+            $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+            
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -649,7 +655,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['roundno']."'");
+            $roundNo = implode(",",$params['roundno']);
+            $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
@@ -735,7 +742,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         foreach($rResult as $row){
             foreach($row as $col => $val){
                 if(in_array($col,$questionColums)){
-                    if($val == 0){
+                    if($val == "0"){
                         if(isset($response[$col])){
                             $response[$col] = $response[$col] + 1;    
                         }else{
@@ -782,7 +789,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['roundno']."'");
+            $roundNo = implode(",",$params['roundno']);
+            $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
