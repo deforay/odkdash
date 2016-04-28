@@ -37,6 +37,19 @@ class CommonController extends AbstractActionController {
 
                 return $viewModel;
     }
+    public function auditLocationsAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isGet()) {
+            $val = $request->getQuery();
+            $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
+            return new ViewModel(array(
+                'id' => $val,
+                'spiV3auditRoundNo'=>$spiV3auditRoundNo
+            ));
+        }
+    }
 
 }
 
