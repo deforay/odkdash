@@ -822,6 +822,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function updateSpiFormDetails($params){
+		
         if (trim($params['formId']) != "") {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
@@ -830,11 +831,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
             if(isset($params['sectionNo'])){
                 $n=count($params['sectionNo']);
                 for ($i = 0; $i < $n; $i++) {
-					if(isset($params['sectionNo'][$i]) && trim($params['sectionNo'][$i])!="" && trim($params['deficiency'][$i])!="" && trim($params['correction'][$i])!=""){
+					$rowId=$params['rowId'][$i];
+					if(isset($params['sectionNo'][$i]) && trim($params['sectionNo'][$i])!="" && trim($params['deficiency'][$i])!="" && trim($params['correction'.$rowId])!=""){
 						$summationData[] = array(
 						'sectionno' => $params['sectionNo'][$i],
 						'deficiency' => $params['deficiency'][$i],
-						'correction' => $params['correction'][$i],
+						'correction' => $params['correction'.$rowId],
 						'auditorcomment' => $params['auditorComment'][$i],
 						'action' => $params['action'][$i],
 						'timeline' => $params['timeline'][$i],
@@ -843,6 +845,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 }
                 $summationData=json_encode($summationData,true);
             }
+            
             
             if($params['testingFacilityName']!=$params['oldFacilityName']){
                 $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
