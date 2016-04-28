@@ -830,15 +830,16 @@ class SpiFormVer3Table extends AbstractTableGateway {
             if(isset($params['sectionNo'])){
                 $n=count($params['sectionNo']);
                 for ($i = 0; $i < $n; $i++) {
-                    $summationData[] = array(
-                    'sectionno' => $params['sectionNo'][$i],
-                    'deficiency' => $params['deficiency'][$i],
-                    'correction' => $params['correction'][$i],
-                    'auditorcomment' => $params['auditorComment'][$i],
-                    'action' => $params['action'][$i],
-                    'timeline' => $params['timeline'][$i],
-                    );
-                    
+					if(isset($params['sectionNo'][$i]) && trim($params['sectionNo'][$i])!="" && trim($params['deficiency'][$i])!="" && trim($params['correction'][$i])!=""){
+						$summationData[] = array(
+						'sectionno' => $params['sectionNo'][$i],
+						'deficiency' => $params['deficiency'][$i],
+						'correction' => $params['correction'][$i],
+						'auditorcomment' => $params['auditorComment'][$i],
+						'action' => $params['action'][$i],
+						'timeline' => $params['timeline'][$i],
+						);
+					}
                 }
                 $summationData=json_encode($summationData,true);
             }
@@ -940,6 +941,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'EQA_C_7_12' => $params['eqa_c_7_12'],
                 'EQA_C_7_13' => $params['eqa_c_7_13'],
                 'EQA_C_7_14' => $params['eqa_c_7_14'],
+                'Latitude' => $params['latitude'],
+                'Longitude' => $params['longitude'],
                 
                 'staffaudited' => $params['staffAuditedName'],
                 'durationaudit' => $params['durationAudit'],
