@@ -58,6 +58,12 @@ class OdkFormService {
      $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchPendingFacilityNames();   
     }
+    //merge all facility name
+    public function mergeAllFacilityName()
+    {
+        $db = $this->sm->get('SpiRtFacilitiesTable');
+        return $db->mergeAllFacilityName();  
+    }
     
     public function getAuditRoundWiseData($params) {
         $db = $this->sm->get('SpiFormVer3Table');
