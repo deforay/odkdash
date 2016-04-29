@@ -564,7 +564,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $approve = '';
         
         
-        $row['DT_RowId'] = "row_".$aRow['id'];
+        $row['DT_RowId'] = $aRow['id'];
         if(isset($aRow['level_other']) && $aRow['level_other'] != ""){
             $level = " - " .$aRow['level_other'];
         }else{
@@ -581,13 +581,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row[] = $aRow['affiliation'];
         $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
         $row[] = ucwords($aRow['status']);
-        $print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
+        //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
         if($aRow['status']=='pending'){
             $approve = '<br><a href="javascript:void(0);" onclick="approveStatus('.$aRow['id'].')"  style="white-space:nowrap;"><i class="fa fa-check"></i>  Approve</a>';
         }
         $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
-        $pending = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
-        $row[] = $print." ".$approve." ".$downloadPdf." ".$pending;
+        //$pending = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+        $row[] = $approve." ".$downloadPdf;
         $output['aaData'][] = $row;
        }
        return $output;
