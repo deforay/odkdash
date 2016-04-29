@@ -52,7 +52,7 @@ class SpiV3Controller extends AbstractActionController
          if ($request->isPost()) {
             $params = $request->getPost();
             $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result= $odkFormService->approveFormStatus($params['id']);
+            $result= $odkFormService->approveFormStatus($params);
             $viewModel = new ViewModel(array(
                         'result' => $result
                     ));
@@ -128,6 +128,23 @@ class SpiV3Controller extends AbstractActionController
                 $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
                         ->setTerminal(true);
                 return $viewModel;
+        }
+    }
+    public function approveAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $param = $request->getPost();
+            
+            $result = $odkFormService->getAllSubmissionsDatas($param);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }else{
+            $result = $odkFormService->getPendingFacilityNames();
+            
+                return new ViewModel(array(
+                    'pendingFacilityName' => $result,
+                ));
         }
     }
 }

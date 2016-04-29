@@ -48,6 +48,16 @@ class OdkFormService {
         return $db->fetchAllSubmissionsDetails($params);
     }
     
+    public function getAllSubmissionsDatas($params) {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchAllSubmissionsDatas($params);
+    }
+    //get pending facility names
+    public function getPendingFacilityNames()
+    {
+     $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchPendingFacilityNames();   
+    }
     
     public function getAuditRoundWiseData($params) {
         $db = $this->sm->get('SpiFormVer3Table');
@@ -64,14 +74,24 @@ class OdkFormService {
         return $db->getAllLabels();
     }
     
-    public function approveFormStatus($id){
+    public function approveFormStatus($params){
+        //\Zend\Debug\Debug::dump(count($params['idList']));die;
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer3Table');
-            $result = $db->updateFormStatus($id,'approved');
-            $facilityDb->addFacilityBasedOnForm($id);
+            if(isset($params['idList']) && $params['idList']!='')
+            {
+                for($i=0;$i<count($params['idList']);$i++){
+                $result = $db->updateFormStatus($params['idList'][$i],'approved');
+                $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
+                }
+            }
+            if(isset($params['id'])){
+            $result = $db->updateFormStatus($params['id'],'approved');
+            $facilityDb->addFacilityBasedOnForm($params['id']);
+            }
             if ($result > 0) {
                 $adapter->commit();
                 return $result;
