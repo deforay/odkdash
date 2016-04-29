@@ -33,8 +33,11 @@ class UsersTable extends AbstractTableGateway {
     public function login($params) {
         
         $username = $params['username'];
-        $password = $params['password'];
-
+        //$password = $params['password'];
+        $config = new \Zend\Config\Reader\Ini();
+        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $password = sha1($params['password'] . $configResult["password"]["salt"]);
+        
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
@@ -62,8 +65,8 @@ class UsersTable extends AbstractTableGateway {
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $config = new \Zend\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-        //$password = sha1($params['password'] . $configResult["password"]["salt"]);
-        $password = $params['password'];
+        $password = sha1($params['password'] . $configResult["password"]["salt"]);
+        //$password = $params['password'];
         if (isset($params['userName']) && trim($params['userName']) != "") {
             $data = array(
                 'first_name' => $params['firstName'],
@@ -92,8 +95,8 @@ class UsersTable extends AbstractTableGateway {
         if (isset($params['password']) && $params['password'] != '') {
             $config = new \Zend\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-            //$password = sha1($params['password'] . $configResult["password"]["salt"]);
-            $password = $params['password'];
+            $password = sha1($params['password'] . $configResult["password"]["salt"]);
+            //$password = $params['password'];
             $data = array('password' => $password);
         }
         if (isset($params['userName']) && trim($params['userName']) != "") {
