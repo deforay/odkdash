@@ -1,0 +1,179 @@
+<?php
+//\Zend\Debug\Debug::dump($name);die;
+?>
+<style>
+    .facilityName{height: 200px !important;width: 100%;}
+    .moveButtons{line-height: 35px;}
+    .updateButton{padding:15px;}
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
+<div class="am-content">
+        <div class="page-head">
+          <h2>SPI-RT 3.0 Checklist</h2>
+        </div>
+
+        <div class="main-content">
+            
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+                <?php
+                if(count($pendingFacilityName)>0){
+                ?>
+                <div class="row" id="pendingFacilityName">
+                    <div class="col-sm-12">
+                      <div class="panel panel-default">
+                        <div class="panel-body">
+                            <table class="col-lg-6">
+                                <tr>
+                                    <td>
+                                        <h4><b>Pending Facility Name</b></h4>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <h4><b>Selected Facility Name</b></h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-lg-3">
+                                        <select id="facilityNameLeft" name="facilityNameLeft[]" class="facilityName" multiple="multiple">
+                                            <?php
+                                            foreach($pendingFacilityName as $name)
+                                            {
+                                                ?>
+                                                <option value="<?php echo $name['id'];?>"><?php echo $name['facilityname'];?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                   </td>
+                                    <td class="col-lg-2 moveButtons">
+                                        <input type="button" id="moveright" class="btn btn-xs btn-info" value="Right >>" onclick="move_list_items('facilityNameLeft','facilityNameRight');" />
+                                        <input type="button" id="moverightall" class="btn btn-xs btn-info" value="Move To Right All >>" onclick="move_list_items_all('facilityNameLeft','facilityNameRight');" />
+                                        <input type="button" id="moveleft" class="btn btn-xs btn-info" value="<< Left" onclick="move_list_items('facilityNameRight','facilityNameLeft');" />
+                                        <input type="button" id="moveleftall" class="btn btn-xs btn-info" value="<< Move To Left All" onclick="move_list_items_all('facilityNameRight','facilityNameLeft');" />
+                                    </td>
+                                    <td class="col-lg-3">
+                                        <select id="facilityNameRight" name="facilityNameRight[]" class="facilityName" multiple="multiple">
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="updateButton">
+                                        <button type="button" onclick="updateFacilityName()" class="btn btn-space btn-primary">Update</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <?php } ?>
+
+                <table id="example" class="table table-bordered table-striped table-hover table-fw-widget">
+                  <thead>
+                    <tr>
+                      <th>Facility Name</th>
+                      <th>Form ID</th>
+                      <th>Form Version</th>
+                      <th>Audit Round No.</th>
+                      <th>Audit Date</th>
+                      <th>Testing Point Type</th>
+                      <th>Level</th>
+                      <th>Affiliation</th>
+                      <th>Audit Score Percentage</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                   <tr>
+                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        <br>
+        <br>
+        <br>
+        <br>
+            
+        </div>
+</div>
+<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
+<script type="text/javascript">
+    table = null;
+  
+  $(document).ready(function () {
+   table = $('#example').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+                {"sClass":"center"},
+            ],
+         "iDisplayLength": 50,
+         "aaSorting": [[ 4, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'approve')); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      fnCallback(json);
+                     }
+                });
+            }
+    } );
+      //
+      //var table = $('#example').DataTable({"order": [[1, 'asc']]});
+      //
+      // Add event listener for opening and closing details
+  });
+    function move_list_items(sourceid, destinationid)
+    {
+      $("#"+sourceid+"  option:selected").appendTo("#"+destinationid);
+    }
+    
+    //this will move all selected items from source list to destination list
+    function move_list_items_all(sourceid, destinationid)
+    {
+      $("#"+sourceid+" option").appendTo("#"+destinationid);
+    }
+    
+    function updateFacilityName()
+    {
+        var val = []; 
+        $('#facilityNameRight option').each(function(i, selected){
+            val[i] = $(selected).val(); 
+        });
+        if(val.length!=0){
+          $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{idList: val},
+           function(data) {
+            if (data>0) {
+                alert("Form status updated successfully");
+                $("#facilityNameRight").html("");
+                
+                var selectArr = []; 
+                $('#facilityNameLeft option').each(function() {
+                    selectArr.push($(this).val());
+                });
+                if(selectArr.length==0){
+                    $("#pendingFacilityName").hide();
+                }
+                
+                table.draw();
+            }
+          });
+        }
+    }
+    
+</script>
