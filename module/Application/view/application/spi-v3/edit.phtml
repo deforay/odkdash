@@ -1,3 +1,12 @@
+<style>
+        th.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_open.png'); ?>') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown th.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_close.png'); ?>') no-repeat center center;
+}
+</style>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <div class="am-content">
         <div class="page-head">
@@ -9,87 +18,112 @@
             <div class="col-sm-12">
               <div class="panel panel-default">
                 <div class="panel-body">
-                  <form role="form" name="editSPIRT" id="editSPIRT" method="post" action="<?php echo $this->url('spi-v3-form', array('action' => 'edit')); ?>" autocomplete="off" >
+                  <form role="form" class="form-horizontal" name="editSPIRT" id="editSPIRT" method="post" action="<?php echo $this->url('spi-v3-form', array('action' => 'edit')); ?>" autocomplete="off" >
                    <h4><b>PART A: CHARACTERISTICS OF THE FACILITY OR TESTING POINT AUDITED</b></h4>
                    <p>Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.</p>
-                    <div class="form-group col-lg-6">
-                      <label>Date of Audit (dd/mm/yyyy)</label>
-                      <input type="text" placeholder="Enter Date" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                    <div class="form-group">
+                      <label for="auditDate" class="col-sm-2 control-label">Date of Audit (dd/mm/yyyy)</label>
+                      <div class=" col-lg-4">
+                        <input type="text" placeholder="Enter Date" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                      </div>
+                      <label for="auditRound" class="col-sm-2 control-label">Audit Round No.</label>
+                      <div class=" col-lg-4">
+                        <input type="text" placeholder="Audit Round No" name="auditRound" class="form-control" value="<?php echo $formData['auditroundno']; ?>">
+                        <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
+                      </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Audit Round No.</label>
-                      <input type="text" placeholder="Audit Round No" name="auditRound" class="form-control" value="<?php echo $formData['auditroundno']; ?>">
-                      <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
+                    
+                    <div class="form-group ">
+                      <label for="testingFacilityName" class="col-sm-2 control-label">Testing Facility Name</label>
+                      <div class=" col-lg-4">
+                        <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo $formData['facilityname']; ?>" onblur="copyFacilityName(this.value)">
+                        <input type="hidden" name="oldFacilityName" id="oldFacilityName" class="form-control" value="<?php echo $formData['facilityname']; ?>">
+                        <input type="hidden" name="selectedFacilityId" id="selectedFacilityId" class="form-control" value="">
+                      </div>
+                      <label for="testingFacilityId" class="col-sm-2 control-label">Testing Facility ID</label>
+                      <div class=" col-lg-4">
+                        <input type="text" placeholder="Testing Facility ID" name="testingFacilityId" class="form-control" value="<?php echo $formData['facilityid']; ?>">
+                      </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Testing Facility Name</label>
-                      <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo $formData['facilityname']; ?>" onblur="copyFacilityName(this.value)">
-                      <input type="hidden" name="oldFacilityName" id="oldFacilityName" class="form-control" value="<?php echo $formData['facilityname']; ?>">
-                      <input type="hidden" name="selectedFacilityId" id="selectedFacilityId" class="form-control" value="">
+                    
+                    <div class="form-group ">
+                      <label for="testingPointName" class="col-sm-2 control-label">Testing Point Name</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Testing Point Name" name="testingPointName" class="form-control" value="<?php echo $formData['testingpointname']; ?>">
+                        </div>
+                        <label for="testingPointType" class="col-sm-2 control-label">Type of testing point</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Type of testing point" name="testingPointType" class="form-control" value="<?php echo $formData['testingpointtype']; ?>" onblur="copySiteType(this.value)">
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Testing Facility ID</label>
-                      <input type="text" placeholder="Testing Facility ID" name="testingFacilityId" class="form-control" value="<?php echo $formData['facilityid']; ?>">
+                    
+                    <div class="form-group">
+                      <label for="testingPointTypeOther" class="col-sm-2 control-label">Testing point type other</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Testing point type other" name="testingPointTypeOther" class="form-control" value="<?php echo $formData['testingpointtype_other']; ?>">
+                        </div>
+                    
+                      <label for="location" class="col-sm-2 control-label">Location/Address</label>
+                        <div class="col-lg-4">
+                                <textarea class="form-control" name="location" rows="5"><?php echo $formData['locationaddress']; ?></textarea>
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Testing Point Name</label>
-                      <input type="text" placeholder="Testing Point Name" name="testingPointName" class="form-control" value="<?php echo $formData['testingpointname']; ?>">
+                    <div class="form-group">
+                        <label for="level" class="col-sm-2 control-label">Level</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Level" name="level" class="form-control" value="<?php echo $formData['level']; ?>">
+                        </div>
+                        <label for="levelOther" class="col-sm-2 control-label">Level Other</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Level Other" name="levelOther" class="form-control" value="<?php echo $formData['level_other']; ?>">
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Type of testing point</label>
-                      <input type="text" placeholder="Type of testing point" name="testingPointType" class="form-control" value="<?php echo $formData['testingpointtype']; ?>" onblur="copySiteType(this.value)">
+                    <div class="form-group">
+                      <label for="levelName" class="col-sm-2 control-label">Level Name</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Level Other" name="levelName" class="form-control" value="<?php echo $formData['level_name']; ?>">
+                        </div>
+                      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Affiliation" name="affiliation" class="form-control" value="<?php echo $formData['affiliation']; ?>">
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Testing point type other</label>
-                      <input type="text" placeholder="Testing point type other" name="testingPointTypeOther" class="form-control" value="<?php echo $formData['testingpointtype_other']; ?>">
+                    <div class="form-group">
+                      <label for="affiliationOther" class="col-sm-2 control-label">Affiliation Other</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Affiliation" name="affiliationOther" class="form-control" value="<?php echo $formData['affiliation_other']; ?>">
+                        </div>
+                        <label for="numberOfTester" class="col-sm-2 control-label">Number of Testers</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Number of Testers" name="numberOfTester" class="form-control" value="<?php echo $formData['NumberofTester']; ?>" onblur="copyNoOfTest(this.value)">
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Location/Address</label>
-                      <textarea class="form-control" name="location" rows="5"><?php echo $formData['locationaddress']; ?></textarea>
+                    <div class="form-group">
+                      <label for="averageTestedPerMonth" class="col-sm-2 control-label">Average tested per month</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Average tested per month" name="averageTestedPerMonth" class="form-control" value="<?php echo $formData['avgMonthTesting']; ?>">
+                        </div>
+                    
+                        <label for="nameOfAuditor1" class="col-sm-2 control-label">Name of the Auditor 1</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Name of the Auditor 1" name="nameOfAuditor1" class="form-control" value="<?php echo $formData['name_auditor_lead']; ?>">
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Level</label>
-                      <input type="text" placeholder="Level" name="level" class="form-control" value="<?php echo $formData['level']; ?>">
+                    <div class="form-group ">
+                      <label for="nameOfAuditor2" class="col-sm-2 control-label">Name of the Auditor 2</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Name of the Auditor 2" name="nameOfAuditor2" class="form-control" value="<?php echo $formData['name_auditor2']; ?>">
+                        </div>
+                        <label for="nameOfAuditor2" class="col-sm-2 control-label">Latitude</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Latitude" name="latitude" class="form-control" value="<?php echo $formData['Latitude']; ?>">
+                        </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Level Other</label>
-                      <input type="text" placeholder="Level Other" name="levelOther" class="form-control" value="<?php echo $formData['level_other']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Level Name</label>
-                      <input type="text" placeholder="Level Other" name="levelName" class="form-control" value="<?php echo $formData['level_name']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Affiliation</label>
-                      <input type="text" placeholder="Affiliation" name="affiliation" class="form-control" value="<?php echo $formData['affiliation']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Affiliation Other</label>
-                      <input type="text" placeholder="Affiliation" name="affiliationOther" class="form-control" value="<?php echo $formData['affiliation_other']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Number of Testers</label>
-                      <input type="text" placeholder="Number of Testers" name="numberOfTester" class="form-control" value="<?php echo $formData['NumberofTester']; ?>" onblur="copyNoOfTest(this.value)">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Average tested per month</label>
-                      <input type="text" placeholder="Average tested per month" name="averageTestedPerMonth" class="form-control" value="<?php echo $formData['avgMonthTesting']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Name of the Auditor 1</label>
-                      <input type="text" placeholder="Name of the Auditor 1" name="nameOfAuditor1" class="form-control" value="<?php echo $formData['name_auditor_lead']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Name of the Auditor 2</label>
-                      <input type="text" placeholder="Name of the Auditor 2" name="nameOfAuditor2" class="form-control" value="<?php echo $formData['name_auditor2']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Latitude</label>
-                      <input type="text" placeholder="Latitude" name="latitude" class="form-control" value="<?php echo $formData['Latitude']; ?>">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Longitude</label>
-                      <input type="text" placeholder="Longitude" name="longitude" class="form-control" value="<?php echo $formData['Longitude']; ?>">
+                    <div class="form-group">
+                      <label for="longitude" class="col-sm-2 control-label">Longitude</label>
+                        <div class="col-lg-4">
+                                <input type="text" placeholder="Longitude" name="longitude" class="form-control" value="<?php echo $formData['Longitude']; ?>">
+                        </div>
                     </div>
                     <br/>
                     <div class="form-group col-lg-12">
@@ -100,11 +134,14 @@
                     </div>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
-                     <tr>
+                     <tr id="personal1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#personal').slideToggle('slow'),addShowClass('shown','personal1');">
+                             
+                        </th>
                        <th  style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#personal').slideToggle('slow');">1.0 PERSONNEL TRAINING AND CERTIFICATION</a>
+                        <a href="javascript:void(0);" onclick="$('#personal').slideToggle('slow'),addShowClass('shown','personal1');">1.0 PERSONNEL TRAINING AND CERTIFICATION</a>
                        </th>
-                        <th style="text-align:center;width:7%">10</th>
+                        <th style="text-align:center;width:5%">10</th>
                      </tr>
                      <tr id="personal" style="display: none;">
                        <td colspan="7">
@@ -288,14 +325,17 @@
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
                      
-                     <tr>
+                     <tr id="physical1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#physical').slideToggle('slow'),addShowClass('shown','physical1');">
+                             
+                        </th>
                       <th style="width:93%">
                        <a href="javascript:void(0);" onclick="$('#physical').slideToggle('slow');">2.0 PHYSICAL FACILITY </a>
                       </th>
-                      <th style="text-align:center;width:7%">5</th>
+                      <th style="text-align:center;width:5%">5</th>
                      </tr>
                      <tr id="physical" style="display: none;">
-                       <td colspan="2">
+                       <td colspan="3">
                         <table class="table table-bordered">
                          <tr>
                           <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
@@ -390,14 +430,17 @@
                     </table>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
-                     <tr>
+                     <tr id="safetyTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#safetyTable').slideToggle('slow'),addShowClass('shown','safetyTable1');">
+                             
+                        </th>
                        <th  style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#safetyTable').slideToggle('slow');">3.0 SAFETY</a>
+                        <a href="javascript:void(0);" onclick="$('#safetyTable').slideToggle('slow'),addShowClass('shown','safetyTable1');">3.0 SAFETY</a>
                        </th>
-                        <th style="text-align:center;width:7%">11</th>
+                        <th style="text-align:center;width:5%">11</th>
                      </tr>
                      <tr id="safetyTable" style="display: none;">
-                       <td colspan="2">
+                       <td colspan="3">
                        <table cellspacing="0" cellpadding="5" class="table table-bordered">
                     <tr>
                           <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
@@ -582,14 +625,17 @@
                     </table>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
-                     <tr>
+                     <tr id="preTestingTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#preTestingTable').slideToggle('slow'),addShowClass('shown','preTestingTable1');">
+                             
+                        </th>
                        <th  style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#preTestingTable').slideToggle('slow');">4.0 PRE-TESTING PHASE</a>
+                        <a href="javascript:void(0);" onclick="$('#preTestingTable').slideToggle('slow'),addShowClass('shown','preTestingTable1');">4.0 PRE-TESTING PHASE</a>
                        </th>
-                        <th style="text-align:center;width:7%">12</th>
+                        <th style="text-align:center;width:5%">12</th>
                      </tr>
                      <tr id="preTestingTable" style="display: none;">
-                      <td colspan="2">
+                      <td colspan="3">
                        <table cellspacing="0" cellpadding="5" class="table table-bordered">
                        <tr>
                              <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
@@ -789,14 +835,17 @@
                     </table>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
-                     <tr>
+                     <tr id="testingPhaseTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#testingPhaseTable').slideToggle('slow'),addShowClass('shown','testingPhaseTable1');">
+                             
+                        </th>
                        <th  style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#testingPhaseTable').slideToggle('slow');">5.0 TESTING PHASE</a>
+                        <a href="javascript:void(0);" onclick="$('#testingPhaseTable').slideToggle('slow'),addShowClass('shown','testingPhaseTable1');">5.0 TESTING PHASE</a>
                        </th>
-                        <th style="text-align:center;width:7%">9</th>
+                        <th style="text-align:center;width:5%">9</th>
                      </tr>
                      <tr id="testingPhaseTable" style="display: none;">
-                      <td colspan="2">
+                      <td colspan="3">
                        <table cellspacing="0" cellpadding="5" class="table table-bordered">
                          <tr>
                              <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
@@ -952,14 +1001,17 @@
                     </table>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
-                     <tr>
+                     <tr id="postTestingTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#postTestingTable').slideToggle('slow'),addShowClass('shown','postTestingTable1');">
+                             
+                        </th>
                        <th  style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#postTestingTable').slideToggle('slow');">6.0 POST TESTING PHASE - DOCUMENTS AND RECORDS</a>
+                        <a href="javascript:void(0);" onclick="$('#postTestingTable').slideToggle('slow'),addShowClass('shown','postTestingTable1');">6.0 POST TESTING PHASE - DOCUMENTS AND RECORDS</a>
                        </th>
-                        <th style="text-align:center;width:7%">9</th>
+                        <th style="text-align:center;width:5%">9</th>
                      </tr>
                      <tr id="postTestingTable" style="display: none;">
-                      <td colspan="2">
+                      <td colspan="3">
                         <table cellspacing="0" cellpadding="5" class="table table-bordered">
                          <tr>
                                <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
@@ -1115,14 +1167,17 @@
                     </table>
                     
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
-                     <tr>
+                     <tr id="externalTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#externalTable').slideToggle('slow'),addShowClass('shown','externalTable1');">
+                             
+                        </th>
                        <th  style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#externalTable').slideToggle('slow');">7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING)</a>
+                        <a href="javascript:void(0);" onclick="$('#externalTable').slideToggle('slow'),addShowClass('shown','externalTable1');">7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING)</a>
                        </th>
-                        <th style="text-align:center;width:7%">8/14</th>
+                        <th style="text-align:center;width:5%">8/14</th>
                      </tr>
                      <tr id="externalTable" style="display: none;">
-                      <td colspan="2">
+                      <td colspan="3">
                         <table cellspacing="0" cellpadding="5" class="table table-bordered">
                          <tr>
                                <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
@@ -1549,7 +1604,7 @@
                     </table>
                     <div class="spacer  col-lg-12">
                      
-                     <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
+                     <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Save</button>
                      <a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
                     </div>
                    
@@ -1670,5 +1725,9 @@ function copyNoOfTest(objVal) {
 			insRow();
 		    }
 		});
+     }
+     function addShowClass(className,idName)
+     {
+        $('#'+idName).toggleClass(className);
      }
 </script>
