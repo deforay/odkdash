@@ -171,13 +171,13 @@
                     <div class="widget-head">
 		      
                       <span class="title"><b>Audit Performance</b></span>
-		      <label style="margin-left:5%;">Select Audit Round</label>
+		      <label style="margin-left:5%;">Audit Round</label>
                       <select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
 			    ?>
-			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"><?php echo $auditRoundNo['auditroundno'];?></option>
+			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
 			    <?php
 			  }
 			  ?>
@@ -191,13 +191,13 @@
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title"><b>Worst Performing Questions</b></span>
-		      <label style="margin-left:1%;">Select Audit Round</label>
+		      <label style="margin-left:1%;">Audit Round</label>
                       <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
 			    ?>
-			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"><?php echo $auditRoundNo['auditroundno'];?></option>
+			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
 			    <?php
 			  }
 			  ?>
@@ -219,7 +219,7 @@
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
 			    ?>
-			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"><?php echo $auditRoundNo['auditroundno'];?></option>
+			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
 			    <?php
 			  }
 			  ?>
