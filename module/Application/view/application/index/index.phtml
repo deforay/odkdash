@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
 <style>
   
   .auditPointName{
@@ -30,17 +31,18 @@
     white-space:normal !important;
 }
 
-/*.select2{
-  max-width:150px;
-}*/
+.select2{
+  width:300px !important;
+}
 /*multiselect*/
-.ui-state-hover, .ui-widget-content .ui-state-hover{color: #1c94c4;border: 1px solid #cccccc;background:none;}
+/*.ui-state-hover, .ui-widget-content .ui-state-hover{color: #1c94c4;border: 1px solid #cccccc;background:none;}
 .ui-state-active{color: #1c94c4;border: 1px solid #cccccc;background:none;}
 .ui-multiselect-header{display: none;}
-
+*/
 .widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-highlight{
   background: none !important;
   color: #888;
+  border:none;
 }
   
 </style>
@@ -120,15 +122,13 @@
 				
                 <div class="cal-container">
                   <div class="cal-notes">
-					<h3 style="color:#fff;">Last 8 Audits Received</h3>
-                    <ul style="max-height:240px;overflow-y:scroll;">
+					<h3 style="color:#fff;">Latest Audits</h3>
+                    <ul style="max-height:270px;overflow-y:scroll;">
 					  <?php
 					  $count = 0;
 					  foreach($rawSubmissions as $row) {
-						if($count == 8) break;
 						
-						//$metaSubmissionDate = explode("T", $row['meta-submission-date']);
-						
+						if($count == 25) break;
 						
 						
 					  ?>					  
@@ -136,7 +136,7 @@
 						  <span class="auditPointName"><?php echo $row['facilityname']." - " .$row['testingpointname']. "<br> <small> Status : " . ucfirst($row['status']). "</small>"; ?></span>
 						</li>
                       <?php
-					  $count++;
+						$count++;
 					  }
 					  ?>
                     </ul>
@@ -169,9 +169,9 @@
                     <div class="widget-head">
 		      
                       <span class="title"><b>Audit Performance</b></span>
-		      <div  style="float: right;">
-		      <label>Audit Round</label>
-                      <select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
+		      <div  style="width:100%;margin-top:20px;margin-bottom:20px;">
+		      <label style="">Select Audit Round</label>
+                      <select class="select2" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
@@ -191,9 +191,9 @@
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title"><b>Worst Performing Questions</b></span>
-		      <div  style="float: right;">
-		      <label>Audit Round</label>
-                      <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+		      <div  style="width:100%;margin-top:20px;margin-bottom:20px;">
+		      <label style="">Select Audit Round</label>
+                      <select class="select2" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
@@ -215,9 +215,9 @@
             <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
                 <div class="widget-head"><span class="title"><b>Audit Locations</b></span>
-		<div  style="float: right;">
-		      <label>Audit Round</label>
-                      <select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+		<div  style="width:100%;margin-top:20px;margin-bottom:20px;">
+		      <label style="">Select Audit Round</label>
+                      <select class="select2" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
@@ -244,6 +244,7 @@
 </script>
 
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
 
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -689,6 +690,14 @@ function getAuditWorstDetails()
     }
       $(document).ready(function(){
       	//initialize the javascript
+		
+		
+    $(".select2").select2({
+      width: '100%',
+	  placeholder: '',
+	  allowClear: true,
+	  tags : false
+    });		
         widget_top_1();
         widget_top_2();
         widget_top_3();
@@ -712,8 +721,8 @@ function getAuditWorstDetails()
 	//	}).Load();
 		
 		
-	  $("#auditRndNo").multiselect({height: 100,minWidth: 150,});
-	  $("#auditRndWorstNo").multiselect({height: 100,minWidth: 150,});
-	  $("#auditRndNoLocations").multiselect({height: 100, minWidth: 150,});
+	  //$("#auditRndNo").multiselect({height: 100,minWidth: 150,});
+	  //$("#auditRndWorstNo").multiselect({height: 100,minWidth: 150,});
+	  //$("#auditRndNoLocations").multiselect({height: 100, minWidth: 150,});
       });
     </script>

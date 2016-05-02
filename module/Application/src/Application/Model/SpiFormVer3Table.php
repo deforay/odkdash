@@ -405,9 +405,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->order(array("id $sortOrder"));
+                                ->order(array("status DESC","id $sortOrder"));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        //echo $sQueryStr;//die;
+        //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;

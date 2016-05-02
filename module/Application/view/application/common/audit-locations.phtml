@@ -8,14 +8,11 @@ $round = array();
 ?>
 <style>
 /*multiselect*/
-.ui-state-hover, .ui-widget-content .ui-state-hover{color: #1c94c4;border: 1px solid #cccccc;background:none;}
-.ui-state-active{color: #1c94c4;border: 1px solid #cccccc;background:none;}
-.ui-multiselect-header{display: none;}
+.select2{
+  width:350px !important;
+}
 </style>
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
       <div class="am-content">
         <div class="main-content">
           <div class="row">
@@ -24,16 +21,16 @@ $round = array();
                 <div class="widget-head"><span class="title"><b>Audit Locations</b></span>
 		<div  style="float: right;">
 		      <label>Audit Round</label>
-                      <select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
-                          <?php
-			  foreach($spiV3auditRoundNo as $auditRoundNo)
-			  {
-			    ?>
-			    <option value="<?php echo $auditRoundNo['auditroundno'];?>"<?php echo in_array($auditRoundNo['auditroundno'],$round) ? "selected=selected" : ""; ?>><?php echo $auditRoundNo['auditroundno'];?></option>
-			    <?php
-			  }
-			  ?>
-                        </select>
+			  <select class="select2" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+				  <?php
+				  foreach($spiV3auditRoundNo as $auditRoundNo)
+				  {
+					?>
+					<option value="<?php echo $auditRoundNo['auditroundno'];?>"<?php echo in_array($auditRoundNo['auditroundno'],$round) ? "selected=selected" : ""; ?>><?php echo $auditRoundNo['auditroundno'];?></option>
+					<?php
+				  }
+				  ?>
+				</select>
 		      </div>
 		</div>
                 <div class="map-container" id="auditLocations">
@@ -44,6 +41,8 @@ $round = array();
           </div>
         </div>
       </div>
+	  
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>	  
 <script type="text/javascript"
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places">
 </script>
@@ -63,6 +62,15 @@ $round = array();
 
       $(document).ready(function(){
 	getAuditLocationDetails();
-	$("#auditRndNoLocations").multiselect({height: 100, minWidth: 150,});
+	
+	
+    $(".select2").select2({
+      width: '100%',
+	  placeholder: '',
+	  allowClear: true,
+	  tags : false
+    });		
+	
+	
       });
     </script>
