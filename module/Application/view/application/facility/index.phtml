@@ -10,7 +10,7 @@
 				</div>
 				<div class="col-sm-4">
 					<a href="<?php echo $this->url('spi-facility',array('action' => 'add'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
-					<a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="mergeFacilityData();"><i class="fa fa-file-o"></i>&nbsp;Merge Facilities</a>
+					<a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="showModal('/facility/get-facility-name',800,400);"><i class="fa fa-file-o"></i>&nbsp;Merge Facilities</a>
 				</div>
 		  </div>
 		  
@@ -81,21 +81,5 @@
         });
        
 	} );
-	function mergeFacilityData()
-	{
-		var cnfm = confirm("Do you wish to merge facility names?");
-		if(cnfm){
-		$.blockUI({ message: '<h1>Loading...</h1>' });
-		$.post("<?php echo $this->url('spi-v3-form',array('action'=>'merge-facility-name')); ?>",
-		function(data) {
-		if (data>0) {
-		alert("Facility name merged successfully");
-		oTable.draw();
-		$.unblockUI();
-		}else{
-		$.unblockUI();	
-		}
-		});
-		}
-	}
+	
 </script>

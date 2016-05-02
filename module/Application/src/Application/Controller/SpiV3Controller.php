@@ -152,7 +152,8 @@ class SpiV3Controller extends AbstractActionController
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if($this->getRequest()->isPost()){
-            $result = $odkFormService->mergeAllFacilityName();
+            $params=$this->getRequest()->getPost();
+            $result = $odkFormService->mergeFacilityName($params);
             $viewModel = new ViewModel();
                 $viewModel->setVariables(array('result' => $result))
                             ->setTerminal(true);

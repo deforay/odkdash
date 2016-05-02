@@ -59,4 +59,15 @@ class FacilityController extends AbstractActionController {
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
+    
+    public function getFacilityNameAction()
+    {
+        $layout = $this->layout();
+        $layout->setTemplate('layout/modal');
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $result = $odkFormService->getAllFacilityNames();
+        return new ViewModel(array(
+            'facilityName' => $result,
+        ));
+    }
 }

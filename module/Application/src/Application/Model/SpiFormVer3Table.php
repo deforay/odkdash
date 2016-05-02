@@ -1123,4 +1123,39 @@ class SpiFormVer3Table extends AbstractTableGateway {
         
         return $rResult;
     }
+    public function mergeFacilityName($params)
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $c = count($params['upFaciltyName']);
+        for($i=0;$i<$c;$i++)
+        {
+            $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname','id'))
+                                    ->where(array('spiv3.facilityname'=>$params['upFaciltyName'][$i]));
+            $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            
+            if(count($aResult)>0){
+                for($k=0;$k<count($aResult);$k++){
+                    $result =  $this->update(array('facilityname'=>$params['fName']),array('id'=>$aResult[$k]['id']));
+                }
+            }
+        }
+        return $result;
+    }
+    //get all faciltiy name
+    public function fetchAllFacilityNames()
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'=>new Expression("DISTINCT facilityname")));
+        $uQueryStr = $sql->getSqlStringForSqlObject($uQuery);
+        $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        $aQuery = $sql->select()->from(array('spiv3' => 'spi_rt_3_facilities'));
+        $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+        $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return array('uniqueName'=>$uResult,'allName'=>$aResult);
+    }
 }
