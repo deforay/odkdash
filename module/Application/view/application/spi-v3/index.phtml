@@ -27,13 +27,14 @@ tr.shown td.details-control {
             <div class="col-sm-12">
               <div class="panel panel-default">
                 <div class="panel-body">
-                  <form role="form">
-                    <div class="form-group col-lg-6">
-                      <label>Date</label>
+                  <form role="form" class="form-horizontal">
+                    <div class="form-group">
+                     <label for="date" class="col-sm-2 control-label">Date</label>
+                     <div class=" col-lg-4">
                       <input type="text" placeholder="Enter Date" class="form-control" id="date">
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Audit Round No.</label>
+                     </div>
+                      <label for="auditRndNo" class="col-sm-2 control-label">Audit Round No.</label>
+                      <div class=" col-lg-4">
                       <select class="form-control" id="auditRndNo">
                         <option value=''>--Select--</option>
                           <option value="1">1</option>
@@ -42,9 +43,12 @@ tr.shown td.details-control {
                           <option value="4">4</option>
                           <option value="5">5</option>
                         </select>
+                      </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Type of testing point</label>
+                    
+                    <div class="form-group">
+                      <label for="testPoint" class="col-sm-2 control-label">Type of testing point</label>
+                      <div class=" col-lg-4">
                       <select class="form-control" id="testPoint">
                         <option value="">--Select--</option>
                         <option value="VCT/HTC">VCT/HTC</option>          
@@ -55,9 +59,9 @@ tr.shown td.details-control {
                         <option value="Treatment Center">Treatment Center</option>
                         <option value="other">Other</option>
                         </select>
-                    </div>
-                    <div class="form-group col-lg-6">
-                      <label>Level</label>
+                     </div>
+                      <label for="level" class="col-sm-2 control-label">Level</label>
+                      <div class=" col-lg-4">
                       <select class="form-control" id="level">
                         <option value="">--Select--</option>
                         <option value="Region/Province/Zone">Region/Province/Zone</option>         
@@ -68,9 +72,11 @@ tr.shown td.details-control {
                         <option value="Health Post">Health Post</option>
                         <option value="Other">Other</option>
                         </select>
+                      </div>
                     </div>
-                    <div class="form-group col-lg-6">
-                      <label>Affiliation</label>
+                    <div class="form-group">
+                      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+                      <div class=" col-lg-4">
                       <select class="form-control" id="affiliation">
                         <option value="">--Select--</option>
                         <option value="Government">Government</option>
@@ -79,10 +85,13 @@ tr.shown td.details-control {
                         <option value="Non-governmental organization">Non-governmental organization</option>
                         <option value="Other">Other</option>
                         </select>
+                      </div>
                     </div>
-                    
-                    <div class="spacer  col-lg-12">
+                    <div class="form-group">
+                      <label for="affiliation" class="col-sm-2 control-label"></label>
+                    <div class="col-lg-4">
                       <button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
+                    </div>
                     </div>
                   </form>
                 </div>
