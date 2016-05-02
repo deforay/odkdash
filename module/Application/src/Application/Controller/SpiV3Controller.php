@@ -130,7 +130,7 @@ class SpiV3Controller extends AbstractActionController
                 return $viewModel;
         }
     }
-    public function approveAction()
+    public function manageFacilityAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
@@ -145,6 +145,18 @@ class SpiV3Controller extends AbstractActionController
                 return new ViewModel(array(
                     'pendingFacilityName' => $result,
                 ));
+        }
+    }
+    
+    public function mergeFacilityNameAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $result = $odkFormService->mergeAllFacilityName();
+            $viewModel = new ViewModel();
+                $viewModel->setVariables(array('result' => $result))
+                            ->setTerminal(true);
+                return $viewModel;
         }
     }
 }

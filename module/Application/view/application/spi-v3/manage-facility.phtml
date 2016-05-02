@@ -2,9 +2,10 @@
 //\Zend\Debug\Debug::dump($name);die;
 ?>
 <style>
-    .facilityName{height: 200px !important;width: 100%;}
+    .facilityName{height: 200px !important;width: 200px;}
     .moveButtons{line-height: 35px;}
-    .updateButton{padding:15px;}
+    .updateButton{padding:15px 0px 0px 45px;}
+    .btn{font-weight: bold;}
 </style>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
 <div class="am-content">
@@ -18,22 +19,23 @@
                 <?php
                 if(count($pendingFacilityName)>0){
                 ?>
-                <div class="row" id="pendingFacilityName">
+                <div class="row" id="pendingFacilityName" align="center">
                     <div class="col-sm-12">
                       <div class="panel panel-default">
                         <div class="panel-body">
-                            <table class="col-lg-6">
+                            <div class="col-md-2"></div>
+                            <table class="col-lg-8">
                                 <tr>
                                     <td>
-                                        <h4><b>Pending Facility Name</b></h4>
+                                        <h4 align="center"><b>Pending Facility Name</b></h4>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <h4><b>Selected Facility Name</b></h4>
+                                        <h4 align="center"><b>Selected Facility Name</b></h4>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="col-lg-3">
+                                    <td class="col-lg-3" align="center">
                                         <select id="facilityNameLeft" name="facilityNameLeft[]" class="facilityName" multiple="multiple">
                                             <?php
                                             foreach($pendingFacilityName as $name)
@@ -45,13 +47,13 @@
                                             ?>
                                         </select>
                                    </td>
-                                    <td class="col-lg-2 moveButtons">
-                                        <input type="button" id="moveright" class="btn btn-xs btn-info" value="Right >>" onclick="move_list_items('facilityNameLeft','facilityNameRight');" />
-                                        <input type="button" id="moverightall" class="btn btn-xs btn-info" value="Move To Right All >>" onclick="move_list_items_all('facilityNameLeft','facilityNameRight');" />
-                                        <input type="button" id="moveleft" class="btn btn-xs btn-info" value="<< Left" onclick="move_list_items('facilityNameRight','facilityNameLeft');" />
-                                        <input type="button" id="moveleftall" class="btn btn-xs btn-info" value="<< Move To Left All" onclick="move_list_items_all('facilityNameRight','facilityNameLeft');" />
+                                    <td class="col-lg-2 moveButtons" >
+                                        <input type="button" id="moveright" class="btn btn-xs btn-primary" value="Right >>" onclick="move_list_items('facilityNameLeft','facilityNameRight');" />
+                                        <input type="button" id="moverightall" class="btn btn-xs btn-primary" value="Move To Right All >>" onclick="move_list_items_all('facilityNameLeft','facilityNameRight');" />
+                                        <input type="button" id="moveleft" class="btn btn-xs btn-primary" value="<< Left" onclick="move_list_items('facilityNameRight','facilityNameLeft');" />
+                                        <input type="button" id="moveleftall" class="btn btn-xs btn-primary" value="<< Move To Left All" onclick="move_list_items_all('facilityNameRight','facilityNameLeft');" />
                                     </td>
-                                    <td class="col-lg-3">
+                                    <td class="col-lg-3" align="center">
                                         <select id="facilityNameRight" name="facilityNameRight[]" class="facilityName" multiple="multiple">
                                         </select>
                                     </td>
@@ -82,6 +84,7 @@
                       <th>Affiliation</th>
                       <th>Audit Score Percentage</th>
                       <th>Status</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -117,10 +120,11 @@
                 {"sClass":"center"},
                 {"sClass":"center"},
                 {"sClass":"center"},
+                {"sClass":"center","bSortable":false},
             ],
          "iDisplayLength": 50,
          "aaSorting": [[ 4, "desc" ]],
-         "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'approve')); ?>",
+         "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'manage-facility')); ?>",
          "fnServerData": function ( sSource, aoData, fnCallback ) {
                 $.ajax({
                     "dataType": 'json',
@@ -175,5 +179,9 @@
           });
         }
     }
+    function downloadPdf(formId){
+    window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+    return false;
+   }
     
 </script>

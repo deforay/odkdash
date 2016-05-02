@@ -259,4 +259,25 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 			$this->insert($data);
 		}
 	}
+	public function mergeAllFacilityName()
+	{
+	    $dbAdapter = $this->adapter;
+	    $sql = new Sql($dbAdapter);
+	    $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'=>new Expression("DISTINCT facilityname"),'Latitude','Longitude','facilityid'));
+	    $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+	    $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+	    $delete = $this->delete(array('id'));
+	    foreach($rResult as $val){
+		if(trim($val['facilityname'])!=""){
+		$data = array(
+		'facility_id' => $val['facilityid'],
+		'facility_name' => $val['facilityname'],
+		'latitude' => $val['Latitude'],
+		'longitude' => $val['Longitude']
+		);
+		$result=$this->insert($data);
+		}
+	    }
+	    return $result;
+	}
 }

@@ -725,6 +725,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row[] = $aRow['affiliation'];
         $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
         $row[] = ucwords($aRow['status']);
+        $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+        $edit = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+        $row[] = $edit." ".$downloadPdf;
         $output['aaData'][] = $row;
        }
        return $output;

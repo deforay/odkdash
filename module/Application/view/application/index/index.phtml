@@ -288,37 +288,100 @@ function widget_top_1(){
 			$perf1[0]['level2'] = ($perf1[0]['level2'] > 0) ? $perf1[0]['level2'] : 0;
 			$perf1[0]['level3'] = ($perf1[0]['level3'] > 0) ? $perf1[0]['level3'] : 0;
 			$perf1[0]['level4'] = ($perf1[0]['level4'] > 0) ? $perf1[0]['level4'] : 0;
-		
+			
+			$level0Color="";
+			if($perf1[0]['level0']<40){
+			  $level0Color='red';
+			}else if($perf1[0]['level0']>=40 && $perf1[0]['level0']<=59){
+			  $level0Color='orange';
+			}
+			else if($perf1[0]['level0']>=60 && $perf1[0]['level0']<=79){
+			  $level0Color='yellow';
+			}else if($perf1[0]['level0']>=80 && $perf1[0]['level0']<=89){
+			  $level0Color='#8DD63E';
+			}else if($perf1[0]['level0']>=90){
+			  $level0Color='#528A16';
+			}
+			//level1
+			if($perf1[0]['level1']<40){
+			  $level1Color='red';
+			}else if($perf1[0]['level1']>=40 && $perf1[0]['level1']<=59){
+			  $level1Color='orange';
+			}
+			else if($perf1[0]['level1']>=60 && $perf1[0]['level1']<=79){
+			  $level1Color='yellow';
+			}else if($perf1[0]['level1']>=80 && $perf1[0]['level1']<=89){
+			  $level1Color='#8DD63E';
+			}else if($perf1[0]['level1']>=90){
+			  $level1Color='#528A16';
+			}
+			//level2
+			if($perf1[0]['level2']<40){
+			  $level2Color='red';
+			}else if($perf1[0]['level2']>=40 && $perf1[0]['level2']<=59){
+			  $level2Color='orange';
+			}
+			else if($perf1[0]['level2']>=60 && $perf1[0]['level2']<=79){
+			  $level2Color='yellow';
+			}else if($perf1[0]['level2']>=80 && $perf1[0]['level2']<=89){
+			  $level2Color='#8DD63E';
+			}else if($perf1[0]['level2']>=90){
+			  $level2Color='#528A16';
+			}
+			//level3
+			if($perf1[0]['level3']<40){
+			  $level3Color='red';
+			}else if($perf1[0]['level3']>=40 && $perf1[0]['level3']<=59){
+			  $level3Color='orange';
+			}
+			else if($perf1[0]['level3']>=60 && $perf1[0]['level3']<=79){
+			  $level3Color='yellow';
+			}else if($perf1[0]['level3']>=80 && $perf1[0]['level3']<=89){
+			  $level3Color='#8DD63E';
+			}else if($perf1[0]['level3']>=90){
+			  $level3Color='#528A16';
+			}
+			//level4
+			if($perf1[0]['level4']<40){
+			  $level4Color='red';
+			}else if($perf1[0]['level4']>=40 && $perf1[0]['level4']<=59){
+			  $level4Color='orange';
+			}
+			else if($perf1[0]['level4']>=60 && $perf1[0]['level4']<=79){
+			  $level4Color='yellow';
+			}else if($perf1[0]['level4']>=80 && $perf1[0]['level4']<=89){
+			  $level4Color='#8DD63E';
+			}else if($perf1[0]['level4']>=90){
+			  $level4Color='#528A16';
+			}
 	  	?>	  		    
 			
 	  var data = [
-		 {
+		{
 		  value: <?php echo $perf1[0]['level0']; ?>,
-		  color: color1,
+		  color: '<?php echo $level0Color; ?>',
 		  label: "Level 0 (Below 40)"
-	  },
+		},
 		 {
 		  value: <?php echo $perf1[0]['level1']; ?>,
-		  color: color2,
+		  color: '<?php echo $level1Color; ?>',
 		  label: "Level 1 (40-59)"
-	  },
+		},
 		 {
 		  value: <?php echo $perf1[0]['level2']; ?>,
-		  color: color3,
+		  color: '<?php echo $level2Color; ?>',
 		  label: "Level 2 (60-79)"
-	  },
+		},
 		 {
 		  value: <?php echo $perf1[0]['level3']; ?>,
-		  color: color4,
+		  color: '<?php echo $level3Color; ?>',
 		  label: "Level 3 (80-89)"
-	  },
-		 {
+		},
+		{
 		  value: <?php echo $perf1[0]['level4']; ?>,
-		  color: color5,
+		  color: '<?php echo $level4Color; ?>',
 		  label: "Level 4 (90 and above)"
-	  },
-	  
-	  
+		},
 	  
 	  ];
 	  
@@ -336,7 +399,6 @@ function widget_top_1(){
 	  
 	  var myChart = new Chart(ctx).Pie(data, options);
 	  
-	  
 	  document.getElementById('legendOverall').innerHTML = myChart.generateLegend();	  
 	  
         
@@ -351,33 +413,98 @@ function widget_top_1(){
 			$perflast30[0]['level2'] = ($perflast30[0]['level2'] > 0) ? $perflast30[0]['level2'] : 0;
 			$perflast30[0]['level3'] = ($perflast30[0]['level3'] > 0) ? $perflast30[0]['level3'] : 0;
 			$perflast30[0]['level4'] = ($perflast30[0]['level4'] > 0) ? $perflast30[0]['level4'] : 0;
-		
+			
+			$perflast30Color0="";
+			if($perflast30[0]['level0']<40){
+			  $perflast30Color0='red';
+			}else if($perflast30[0]['level0']>=40 && $perflast30[0]['level0']<=59){
+			  $perflast30Color0='orange';
+			}
+			else if($perflast30[0]['level0']>=60 && $perflast30[0]['level0']<=79){
+			  $perflast30Color0='yellow';
+			}else if($perflast30[0]['level0']>=80 && $perflast30[0]['level0']<=89){
+			  $perflast30Color0='#8DD63E';
+			}else if($perflast30[0]['level0']>=90){
+			  $perflast30Color0='#528A16';
+			}
+			//level1
+			if($perflast30[0]['level1']<40){
+			  $perflast30Color1='red';
+			}else if($perflast30[0]['level1']>=40 && $perflast30[0]['level1']<=59){
+			  $perflast30Color1='orange';
+			}
+			else if($perflast30[0]['level1']>=60 && $perflast30[0]['level1']<=79){
+			  $perflast30Color1='yellow';
+			}else if($perflast30[0]['level1']>=80 && $perflast30[0]['level1']<=89){
+			  $perflast30Color1='#8DD63E';
+			}else if($perflast30[0]['level1']>=90){
+			  $perflast30Color1='#528A16';
+			}
+			//level2
+			if($perflast30[0]['level2']<40){
+			  $perflast30Color2='red';
+			}else if($perflast30[0]['level2']>=40 && $perflast30[0]['level2']<=59){
+			  $perflast30Color2='orange';
+			}
+			else if($perflast30[0]['level2']>=60 && $perflast30[0]['level2']<=79){
+			  $perflast30Color2='yellow';
+			}else if($perflast30[0]['level2']>=80 && $perflast30[0]['level2']<=89){
+			  $perflast30Color2='#8DD63E';
+			}else if($perflast30[0]['level2']>=90){
+			  $perflast30Color2='#528A16';
+			}
+			//level3
+			if($perflast30[0]['level3']<40){
+			  $perflast30Color3='red';
+			}else if($perflast30[0]['level3']>=40 && $perflast30[0]['level3']<=59){
+			  $perflast30Color3='orange';
+			}
+			else if($perflast30[0]['level3']>=60 && $perflast30[0]['level3']<=79){
+			  $perflast30Color3='yellow';
+			}else if($perflast30[0]['level3']>=80 && $perflast30[0]['level3']<=89){
+			  $perflast30Color3='#8DD63E';
+			}else if($perflast30[0]['level3']>=90){
+			  $perflast30Color3='#528A16';
+			}
+			//level4
+			if($perflast30[0]['level4']<40){
+			  $perflast30Color4='red';
+			}else if($perflast30[0]['level4']>=40 && $perflast30[0]['level4']<=59){
+			  $perflast30Color4='orange';
+			}
+			else if($perflast30[0]['level4']>=60 && $perflast30[0]['level4']<=79){
+			  $perflast30Color4='yellow';
+			}else if($perflast30[0]['level4']>=80 && $perflast30[0]['level4']<=89){
+			  $perflast30Color4='#8DD63E';
+			}else if($perflast30[0]['level4']>=90){
+			  $perflast30Color4='#528A16';
+			}
 	  	?>
 			
 	  var data = [
 		 {
 		  value: <?php echo $perflast30[0]['level0']; ?>,
-		  color: color1,
+		  color: '<?php echo $perflast30Color0; ?>',
 		  label: "Level 0 (Below 40)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level1']; ?>,
-		  color: color2,
+		  color: '<?php echo $perflast30Color1; ?>',
 		  label: "Level 1 (40-59)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level2']; ?>,
-		  color: color3,
+		  color: '<?php echo $perflast30Color2; ?>',
 		  label: "Level 2 (60-79)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level3']; ?>,
-		  color: color4,
+		  color: '<?php echo $perflast30Color3; ?>',
 		  label: "Level 3 (80-89)"
 	  },
 		 {
 		  value: <?php echo $perflast30[0]['level4']; ?>,
-		  color: color5,
+		  color: '<?php echo $perflast30Color4; ?>',
 		  label: "Level 4 (90 and above)"
 	  },
 	  
@@ -415,33 +542,98 @@ function widget_top_1(){
 			$perflast180[0]['level2'] = ($perflast180[0]['level2'] > 0) ? $perflast180[0]['level2'] : 0;
 			$perflast180[0]['level3'] = ($perflast180[0]['level3'] > 0) ? $perflast180[0]['level3'] : 0;
 			$perflast180[0]['level4'] = ($perflast180[0]['level4'] > 0) ? $perflast180[0]['level4'] : 0;
-		
+			
+			$perflast180Color0="";
+			if($perflast180[0]['level0']<40){
+			  $perflast180Color0='red';
+			}else if($perflast180[0]['level0']>=40 && $perflast180[0]['level0']<=59){
+			  $perflast180Color0='orange';
+			}
+			else if($perflast180[0]['level0']>=60 && $perflast180[0]['level0']<=79){
+			  $perflast180Color0='yellow';
+			}else if($perflast180[0]['level0']>=80 && $perflast180[0]['level0']<=89){
+			  $perflast180Color0='#8DD63E';
+			}else if($perflast180[0]['level0']>=90){
+			  $perflast180Color0='#528A16';
+			}
+			//level1
+			if($perflast180[0]['level1']<40){
+			  $perflast180Color1='red';
+			}else if($perflast180[0]['level1']>=40 && $perflast180[0]['level1']<=59){
+			  $perflast180Color1='orange';
+			}
+			else if($perflast180[0]['level1']>=60 && $perflast180[0]['level1']<=79){
+			  $perflast180Color1='yellow';
+			}else if($perflast180[0]['level1']>=80 && $perflast180[0]['level1']<=89){
+			  $perflast180Color1='#8DD63E';
+			}else if($perflast180[0]['level1']>=90){
+			  $perflast180Color1='#528A16';
+			}
+			//level2
+			if($perflast180[0]['level2']<40){
+			  $perflast180Color2='red';
+			}else if($perflast180[0]['level2']>=40 && $perflast180[0]['level2']<=59){
+			  $perflast180Color2='orange';
+			}
+			else if($perflast180[0]['level2']>=60 && $perflast180[0]['level2']<=79){
+			  $perflast180Color2='yellow';
+			}else if($perflast180[0]['level2']>=80 && $perflast180[0]['level2']<=89){
+			  $perflast180Color2='#8DD63E';
+			}else if($perflast180[0]['level2']>=90){
+			  $perflast180Color2='#528A16';
+			}
+			//level3
+			if($perflast180[0]['level3']<40){
+			  $perflast180Color3='red';
+			}else if($perflast180[0]['level3']>=40 && $perflast180[0]['level3']<=59){
+			  $perflast180Color3='orange';
+			}
+			else if($perflast180[0]['level3']>=60 && $perflast180[0]['level3']<=79){
+			  $perflast180Color3='yellow';
+			}else if($perflast180[0]['level3']>=80 && $perflast180[0]['level3']<=89){
+			  $perflast180Color3='#8DD63E';
+			}else if($perflast180[0]['level3']>=90){
+			  $perflast180Color3='#528A16';
+			}
+			//level4
+			if($perflast180[0]['level4']<40){
+			  $perflast180Color4='red';
+			}else if($perflast180[0]['level4']>=40 && $perflast180[0]['level4']<=59){
+			  $perflast180Color4='orange';
+			}
+			else if($perflast180[0]['level4']>=60 && $perflast180[0]['level4']<=79){
+			  $perflast180Color4='yellow';
+			}else if($perflast180[0]['level4']>=80 && $perflast180[0]['level4']<=89){
+			  $perflast180Color4='#8DD63E';
+			}else if($perflast180[0]['level4']>=90){
+			  $perflast180Color4='#528A16';
+			}
 	  	?>	  		
 			
 	  var data = [
 		 {
 		  value: <?php echo $perflast180[0]['level0']; ?>,
-		  color: color1,
+		  color: '<?php echo $perflast180Color0; ?>',
 		  label: "Level 0 (Below 40)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level1']; ?>,
-		  color: color2,
+		  color: '<?php echo $perflast180Color1; ?>',
 		  label: "Level 1 (40-59)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level2']; ?>,
-		  color: color3,
+		  color: '<?php echo $perflast180Color2; ?>',
 		  label: "Level 2 (60-79)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level3']; ?>,
-		  color: color4,
+		  color: '<?php echo $perflast180Color3; ?>',
 		  label: "Level 3 (80-89)"
 	  },
 		 {
 		  value: <?php echo $perflast180[0]['level4']; ?>,
-		  color: color5,
+		  color: '<?php echo $perflast180Color4; ?>',
 		  label: "Level 4 (90 and above)"
 	  },
 	  
