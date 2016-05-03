@@ -46,6 +46,7 @@
   color: #888;
   border:none;
 }
+.limitBar{width: 10%;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
   
 </style>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
@@ -191,6 +192,7 @@
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title"><b>Worst Performing Questions</b></span>
+		      <div style="margin-top:2%;">
 		      <label style="margin-left:1%;">Audit Round</label>
                       <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
                           <?php
@@ -202,7 +204,15 @@
 			  }
 			  ?>
                         </select>
+		      <label style="margin-left: 1%;">Limit</label>
+                      <select class="limitBar" style="" id="limitBar" onchange="getAuditWorstDetails()">
+			<option value="5" selected="selected">5</option>
+			<option value="10">10</option>
+			<option value="15">15</option>
+			<option value="20">20</option>
+                        </select>
 		      </div>
+		    </div>
                     <div class="chart-container" id="zeroCountChart">
                       
                     </div>				
@@ -741,7 +751,8 @@ $('#audit-points-barchart').highcharts({
 function getAuditWorstDetails()
   {
     value = $("#auditRndWorstNo").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {roundno:value},
+    limitBar = $("#limitBar").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {roundno:value,limitBar:limitBar},
       function (data) {
 	  $("#zeroCountChart").html(data);
       });

@@ -113,7 +113,7 @@ class SpiV3Controller extends AbstractActionController
             $zeroCounts = $odkFormService->getZeroQuestionCounts($params);
             $spiV3Labels = $odkFormService->getSpiV3FormLabels();
             $viewModel = new ViewModel();
-                $viewModel->setVariables(array('zeroCounts' => $zeroCounts,'spiV3Labels' => $spiV3Labels))
+                $viewModel->setVariables(array('zeroCounts' => $zeroCounts,'spiV3Labels' => $spiV3Labels,'limitBar'=>$params['limitBar']))
                         ->setTerminal(true);
                 return $viewModel;
         }
