@@ -1,0 +1,61 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<div class="am-content">
+    <div class="page-head">
+        <div class="row">
+				<div class="col-sm-8">
+				<h2>Global Config</h2>
+				</div>
+				<div class="col-sm-4">
+				    <a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;Edit Global Config</a>
+				</div>
+		  </div>
+      
+    </div>
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <table id="config" class="table table-bordered table-striped table-hover table-fw-widget">
+              <thead>
+                <tr>
+                    <th>Config Name</th>
+                    <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<script type="text/javascript">
+    table = null;
+    $(document).ready(function () {
+    table = $('#config').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                {"sClass":"center"},
+                {"sClass":"center"},
+            ],
+         "aaSorting": [[ 0, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('config',array('action' => 'index')); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      $.unblockUI();
+                      fnCallback(json);
+                     }
+                });
+            }
+    } );
+  });  
+</script>

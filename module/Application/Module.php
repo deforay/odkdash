@@ -16,6 +16,7 @@ use Application\Model\SpiFormLabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
+use Application\Model\GlobalTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -108,6 +109,11 @@ class Module
 				'UserRoleMapTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UserRoleMapTable($dbAdapter);
+                    return $table;
+                },
+		'GlobalTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new GlobalTable($dbAdapter);
                     return $table;
                 },
 				

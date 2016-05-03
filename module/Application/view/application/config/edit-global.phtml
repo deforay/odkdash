@@ -1,0 +1,48 @@
+<?php
+
+?>
+
+<div class="am-content">
+        <div class="page-head">
+          <h2>Edit Global Config</h2>
+        </div>
+        <div class="main-content">
+         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+         <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <form role="form" class="form-horizontal" name="editConfig" id="editConfig" method="post" action="<?php echo $this->url('config', array('action' => 'edit-global')); ?>" autocomplete="off" >
+                    <div class="form-group ">
+                      <label for="approve_status" class="col-sm-2 control-label">Auto Approval Status<span class="mandatory">*</span></label>
+                        <div class="col-lg-4">
+                            <select name="approve_status" id="approve_status" class="form-control">
+                                <option value="">--select</option>
+                                <option value="yes" <?php echo ($config['approve_status'] == 'yes' ? " selected='selected'" : ""); ?>>Yes</option>
+                                <option value="no"<?php echo ($config['approve_status'] == 'no' ? " selected='selected'" : ""); ?>>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="spacer  col-lg-5" align="center">
+                     <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Update</button>
+                     <a href="<?php echo $this->url('config', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
+                    </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+         </div>
+         </div>
+        </div>
+</div>
+<script>
+    function validateNow() {
+        flag = deforayValidator.init({
+            formId: 'editConfig'
+        });
+        if (flag) {
+            document.getElementById('editConfig').submit();
+        }
+ }
+</script>

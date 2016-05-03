@@ -113,6 +113,16 @@ return array(
                     ),
                 ),
             ),
+            'config' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/config[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Config',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
@@ -143,7 +153,8 @@ return array(
             'Application\Controller\Facility' => "Application\Controller\FacilityController",
             'Application\Controller\Roles' => "Application\Controller\RolesController",
             'Application\Controller\Common' => "Application\Controller\CommonController",
-            'Application\Controller\Users' => "Application\Controller\UsersController"
+            'Application\Controller\Users' => "Application\Controller\UsersController",
+            'Application\Controller\Config' => "Application\Controller\ConfigController"
         ),
     ),
     'view_manager' => array(

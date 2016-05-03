@@ -271,6 +271,21 @@ class CommonService {
         return $data;
     }
     
+    public function getAllConfig($params){
+        $configDb = $this->sm->get('GlobalTable');
+        return $configDb->fetchAllConfig($params);      
+    }
+    public function getGlobalConfigDetails(){
+        $globalDb = $this->sm->get('GlobalTable');
+        return $globalDb->getGlobalConfig();        
+    }
+    public function updateConfig($params) {
+        $globalDb = $this->sm->get('GlobalTable');
+	$updateRes = $globalDb->updateConfigDetails($params);
+        $container = new Container('alert');
+        $container->alertMsg ="Global Config Details Updated Successfully.";
+    }
+    
 }
 
 ?>
