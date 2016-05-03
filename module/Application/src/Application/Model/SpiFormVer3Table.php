@@ -8,6 +8,7 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Application\Model\SpiRtFacilitiesTable;
+use Application\Model\GlobalTable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -39,11 +40,18 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $selectString = $sql->getSqlStringForSqlObject($insert);
         $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
        
+       //get global values
+       $globalDB = new GlobalTable($dbAdapter);
+       $globalValue = $globalDB->getGlobalValue('approve_status');
+       if($globalValue=='yes')
+       {
+        $approveStatus = 'approved';
+       }else{
+        $approveStatus = 'pending';
+       }
        
         foreach($params['data'] as $datar){
             $par = array();
-            
-            
             $data = array();
             foreach($datar as $key=>$val){
                $key = preg_replace('/[\*]+/', '', $key);
@@ -54,7 +62,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 $data[$key] = $val."";
             
             }
-
         
             try{
                
@@ -298,11 +305,18 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'auditorSignature' => $data['auditorSignature'],
                 'instanceID' => $data['instanceID'],
                 'instanceName' => $data['instanceName'],
+                'status'=>$approveStatus
             );
             $dbAdapter = $this->adapter;
             $insert->values($par);
             $selectString = $sql->getSqlStringForSqlObject($insert);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
+            
+            if($approveStatus=='approved')
+            {
+                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+                $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue());
+            }
             
             }catch(Exception $e){
                 error_log($e->getMessage());

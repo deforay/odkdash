@@ -54,7 +54,6 @@ ALTER TABLE  `users` ADD  `created_on` DATETIME NULL DEFAULT NULL ;
 ALTER TABLE  `users` ADD  `email` VARCHAR( 255 ) NULL DEFAULT NULL AFTER  `password` ;
 
 
-
 CREATE TABLE IF NOT EXISTS `user_role_map` (
   `map_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -70,3 +69,14 @@ CREATE TABLE IF NOT EXISTS `user_role_map` (
 ALTER TABLE `user_role_map`
   ADD CONSTRAINT `user_role_map_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `user_role_map_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`);
+
+--saravanna 03-may-2016
+CREATE TABLE IF NOT EXISTS  `global_config` (
+ `config_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+ `display_name` VARCHAR( 255 ) NOT NULL ,
+ `global_name` VARCHAR( 255 ) DEFAULT NULL ,
+ `global_value` VARCHAR( 255 ) DEFAULT NULL ,
+PRIMARY KEY (  `config_id` )
+) ENGINE = MYISAM DEFAULT CHARSET = latin1 AUTO_INCREMENT =1;
+
+INSERT INTO `odkdash`.`global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Auto Approve Status', 'approve_status', 'yes');
