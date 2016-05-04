@@ -1022,7 +1022,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             }
             
             $data = array(
-                'assesmentofaudit' => $this->dateFormat($params['auditDate']),
+                //'assesmentofaudit' => $this->dateFormat($params['auditDate']),
                 'auditroundno' => $params['auditRound'],
                 'facilityname' => $params['testingFacilityName'],
                 'facilityid' => $params['testingFacilityId'],

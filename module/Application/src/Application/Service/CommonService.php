@@ -280,10 +280,24 @@ class CommonService {
         return $globalDb->getGlobalConfig();        
     }
     public function updateConfig($params) {
-        $globalDb = $this->sm->get('GlobalTable');
-	$updateRes = $globalDb->updateConfigDetails($params);
-        $container = new Container('alert');
-        $container->alertMsg ="Global Config Details Updated Successfully.";
+        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $globalDb = $this->sm->get('GlobalTable');
+            $updateRes = $globalDb->updateConfigDetails($params);
+            $subject = '';
+            $eventType = 'global-config-update';
+            $action = 'updated global config details';
+            $resourceName = 'global-config-update';
+            $eventLogDb = $this->sm->get('EventLogTable');
+            $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
+            $adapter->commit();
+            $container = new Container('alert');
+            $container->alertMsg ="Global Config Details Updated Successfully.";
+        }catch (Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
     }
     
 }

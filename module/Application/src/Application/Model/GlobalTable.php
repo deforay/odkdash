@@ -164,7 +164,7 @@ class GlobalTable extends AbstractTableGateway {
     }
     public function updateConfigDetails($params) {
         foreach ($params as $fieldName => $fieldValue) {
-	    $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
+            $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
         }
     }
     public function getGlobalValue($globalName) {
