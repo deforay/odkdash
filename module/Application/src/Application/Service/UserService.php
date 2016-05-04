@@ -30,6 +30,14 @@ class UserService {
             $result = $userDb->addUserDetails($params);
             if ($result > 0) {
                 $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'user-add';
+                $action = 'added a new user '.$params['userName'];
+                $resourceName = 'users';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User added successfully';
             }
@@ -47,6 +55,14 @@ class UserService {
             $result = $userDb->updateUserDetails($params);
             if ($result > 0) {
                 $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'user-update';
+                $action = 'updates a user '.$params['userName'];
+                $resourceName = 'users';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User details updated successfully';
             }

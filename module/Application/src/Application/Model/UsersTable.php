@@ -93,11 +93,13 @@ class UsersTable extends AbstractTableGateway {
         $userRoleMap = new UserRoleMapTable($dbAdapter);
        
         if (isset($params['password']) && $params['password'] != '') {
+            $userId=base64_decode($params['userId']);
             $config = new \Zend\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $password = sha1($params['password'] . $configResult["password"]["salt"]);
             //$password = $params['password'];
             $data = array('password' => $password);
+            $this->update($data,array('id'=>$userId));
         }
         if (isset($params['userName']) && trim($params['userName']) != "") {
             $userId=base64_decode($params['userId']);

@@ -24,6 +24,14 @@ class FacilityService {
             $result = $facilityDb->addFacilityDetails($params);
             if ($result > 0) {
                 $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'facility-add';
+                $action = 'added a new facility '.$params['facilityName'];
+                $resourceName = 'Facility';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Facility details added successfully';
                 return $result;
@@ -43,6 +51,14 @@ class FacilityService {
             $result = $facilityDb->updateFacilityDetails($params);
             if ($result > 0) {
                 $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'facility-update';
+                $action = 'updated a facility '.$params['facilityName'];
+                $resourceName = 'Facility';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Facility details updated successfully';
                 return $result;

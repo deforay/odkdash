@@ -80,3 +80,21 @@ PRIMARY KEY (  `config_id` )
 ) ENGINE = MYISAM DEFAULT CHARSET = latin1 AUTO_INCREMENT =1;
 
 INSERT INTO `odkdash`.`global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Auto Approve Status', 'approve_status', 'yes');
+
+
+
+--ilahir 04-May-2016
+CREATE TABLE IF NOT EXISTS `event_log` (
+  `event_id` int(11) NOT NULL AUTO_INCREMENT,
+  `actor` int(11) NOT NULL,
+  `subject` varchar(255) DEFAULT NULL,
+  `event_type` varchar(255) DEFAULT NULL,
+  `action` varchar(255) DEFAULT NULL,
+  `resource_name` varchar(255) DEFAULT NULL,
+  `date_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`event_id`),
+  KEY `actor` (`actor`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+ALTER TABLE `event_log`
+  ADD CONSTRAINT `event_log_ibfk_1` FOREIGN KEY (`actor`) REFERENCES `users` (`id`);

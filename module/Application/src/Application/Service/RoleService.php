@@ -24,6 +24,14 @@ class RoleService {
             $rolesResult = $rolesDb->addRolesDetails($params);
             if ($rolesResult > 0) {
                 $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'role-add';
+                $action = 'added a new role '.$params['roleName'];
+                $resourceName = 'Roles';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Roles added successfully';
             }
@@ -41,6 +49,14 @@ class RoleService {
             $rolesResult = $rolesDb->updateRolesDetails($params);
             if ($rolesResult > 0) {
                 $adapter->commit();
+                $subject = $result;
+                //<-- Event log
+                $eventType = 'role-update';
+                $action = 'updated a role '.$params['roleName'];
+                $resourceName = 'Roles';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Roles updated successfully';
             }
