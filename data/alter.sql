@@ -98,3 +98,51 @@ CREATE TABLE IF NOT EXISTS `event_log` (
 
 ALTER TABLE `event_log`
   ADD CONSTRAINT `event_log_ibfk_1` FOREIGN KEY (`actor`) REFERENCES `users` (`id`);
+  
+--ilahir 10-MAY-2016
+
+CREATE TABLE IF NOT EXISTS `resources` (
+  `resource_id` varchar(255) NOT NULL,
+  `display_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`resource_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE IF NOT EXISTS `privileges` (
+  `resource_id` varchar(255) NOT NULL DEFAULT '',
+  `privilege_name` varchar(255) NOT NULL DEFAULT '',
+  `display_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`resource_id`,`privilege_name`),
+  UNIQUE KEY `resource_id_2` (`resource_id`,`privilege_name`),
+  KEY `resource_id` (`resource_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES
+('Application\\Controller\\Config', 'Global Config'),
+('Application\\Controller\\Facility', 'Manage Facility'),
+('Application\\Controller\\Index', 'Dashboard'),
+('Application\\Controller\\Roles', 'Manage Roles'),
+('Application\\Controller\\SpiV3', 'Manage SpiV3 Form'),
+('Application\\Controller\\Users', 'Manage Users');
+
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES
+('Application\\Controller\\Config', 'edit', 'Edit'),
+('Application\\Controller\\Config', 'index', 'Access'),
+('Application\\Controller\\Facility', 'add', 'Add'),
+('Application\\Controller\\Facility', 'edit', 'Edit'),
+('Application\\Controller\\Facility', 'get-facility-name', 'Merge Facilities'),
+('Application\\Controller\\Facility', 'index', 'Access'),
+('Application\\Controller\\Index', 'index', 'Access'),
+('Application\\Controller\\Roles', 'add', 'Add'),
+('Application\\Controller\\Roles', 'edit', 'Edit'),
+('Application\\Controller\\Roles', 'index', 'Access'),
+('Application\\Controller\\SpiV3', 'approve-status', 'Approved Status'),
+('Application\\Controller\\SpiV3', 'download-pdf', 'Download pdf'),
+('Application\\Controller\\SpiV3', 'edit', 'Edit'),
+('Application\\Controller\\SpiV3', 'index', 'Access'),
+('Application\\Controller\\Users', 'add', 'Add'),
+('Application\\Controller\\Users', 'edit', 'Edit'),
+('Application\\Controller\\Users', 'index', 'Access');
+

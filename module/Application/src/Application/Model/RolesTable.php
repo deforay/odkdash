@@ -7,6 +7,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Debug\Debug;
+use Zend\Config\Writer\PhpArray;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -57,7 +58,7 @@ class RolesTable extends AbstractTableGateway  {
         }
     }
     
-    public function fetchAllRoles($parameters) {
+    public function fetchAllRoleDetails($parameters) {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
@@ -196,5 +197,40 @@ class RolesTable extends AbstractTableGateway  {
         $roleQueryStr = $sql->getSqlStringForSqlObject($query); // Get the string of the Sql, instead of the Select-instance
         return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
-
+    
+    public function fetchAllRoles() {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $resourceQuery = $sql->select()->from('resources')->order('display_name');
+        $resourceQueryStr = $sql->getSqlStringForSqlObject($resourceQuery); // Get the string of the Sql, instead of the Select-instance
+        $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $n = sizeof($resourceResult);
+        for ($i = 0; $i < $n; $i++) {
+            $privilageQuery = $sql->select()->from('privileges')->where(array('resource_id' => $resourceResult[$i]['resource_id']))->order('display_name');
+            $privilageQueryStr = $sql->getSqlStringForSqlObject($privilageQuery); // Get the string of the Sql, instead of the Select-instance
+            $resourceResult[$i]['privileges'] = $dbAdapter->query($privilageQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        }
+        return $resourceResult;
+    }
+    
+    public function mapRolesPrivileges($params) {    
+        try {
+                $roleCode=$params['roleCode'];
+                $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
+                $config = new \Zend\Config\Config(include($configFile), true);
+                $config->$roleCode = array();
+                
+                foreach ($params['resource'] as $resourceName => $privilege) {
+                    $config->$roleCode->$resourceName = $privilege;
+                }
+        
+                $writer = new PhpArray();
+                $writer->toFile($configFile, $config);
+                
+            } catch (Exception $exc) {
+        
+                error_log($exc->getMessage());
+                error_log($exc->getTraceAsString());
+           }
+    }
 }

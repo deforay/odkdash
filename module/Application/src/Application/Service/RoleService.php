@@ -20,9 +20,11 @@ class RoleService {
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
+            
             $rolesDb = $this->sm->get('RolesTable');
             $rolesResult = $rolesDb->addRolesDetails($params);
             if ($rolesResult > 0) {
+                $rolesDb->mapRolesPrivileges($params);
                 $adapter->commit();
                 //<-- Event log
                 $subject = $result;
@@ -48,8 +50,9 @@ class RoleService {
             $rolesDb = $this->sm->get('RolesTable');
             $rolesResult = $rolesDb->updateRolesDetails($params);
             if ($rolesResult > 0) {
+                $rolesDb->mapRolesPrivileges($params);
                 $adapter->commit();
-                $subject = $result;
+                $subject = $rolesResult;
                 //<-- Event log
                 $eventType = 'role-update';
                 $action = 'updated a role '.$params['roleName'];
@@ -67,10 +70,10 @@ class RoleService {
         }
     }
     
-    public function getAllRoles($params) {
+    public function getAllRolesDetails($params) {
         $rolesDb = $this->sm->get('RolesTable');
         //$acl = $this->sm->get('AppAcl');
-        return $rolesDb->fetchAllRoles($params);
+        return $rolesDb->fetchAllRoleDetails($params);
     }
     
     public function getRole($id) {
@@ -81,6 +84,11 @@ class RoleService {
     public function getAllActiveRoles(){
         $rolesDb = $this->sm->get('RolesTable');
         return $rolesDb->fecthAllActiveRoles();
+    }
+    
+    public function getAllRoles() {
+        $rolesDb = $this->sm->get('RolesTable');
+        return $rolesDb->fetchAllRoles();
     }
 }
 

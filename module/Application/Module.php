@@ -18,6 +18,7 @@ use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
+use Application\Model\ResourcesTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -120,6 +121,11 @@ class Module
 				'EventLogTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new EventLogTable($dbAdapter);
+                    return $table;
+                },
+				'ResourcesTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new ResourcesTable($dbAdapter);
                     return $table;
                 },
 				
