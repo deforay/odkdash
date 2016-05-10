@@ -27,7 +27,7 @@ class RoleService {
                 $rolesDb->mapRolesPrivileges($params);
                 $adapter->commit();
                 //<-- Event log
-                $subject = $result;
+                $subject = $rolesResult;
                 $eventType = 'role-add';
                 $action = 'added a new role '.$params['roleName'];
                 $resourceName = 'Roles';

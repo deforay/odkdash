@@ -63,4 +63,36 @@ return array(
             'edit' => 'allow',
         ),
     ),
+    'US' => array(
+        'Application\\Controller\\Index' => array(
+            'index' => 'deny',
+        ),
+        'Application\\Controller\\Config' => array(
+            'index' => 'deny',
+            'edit-global' => 'deny',
+        ),
+        'Application\\Controller\\Facility' => array(
+            'index' => 'deny',
+            'add' => 'deny',
+            'edit' => 'deny',
+            'get-facility-name' => 'deny',
+        ),
+        'Application\\Controller\\Roles' => array(
+            'index' => 'deny',
+            'add' => 'deny',
+            'edit' => 'deny',
+        ),
+        'Application\\Controller\\SpiV3' => array(
+            'index' => 'allow',
+            'manage-facility' => 'deny',
+            'approve-status' => 'deny',
+            'download-pdf' => 'allow',
+            'edit' => 'deny',
+        ),
+        'Application\\Controller\\Users' => array(
+            'index' => 'deny',
+            'add' => 'deny',
+            'edit' => 'deny',
+        ),
+    ),
 );
