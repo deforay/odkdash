@@ -72,8 +72,8 @@ class FacilityService {
     
     public function getAllFacilities($parameters){
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        //$acl = $this->sm->get('AppAcl');
-        return $facilityDb->fetchAllFacilities($parameters);
+        $acl = $this->sm->get('AppAcl');
+        return $facilityDb->fetchAllFacilities($parameters,$acl);
     }
     
     public function getFacility($id){

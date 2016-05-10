@@ -1,3 +1,14 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
 <div class="am-content">
         <div class="page-head">
@@ -6,7 +17,9 @@
 				<h2>User List</h2>
 				</div>
 				<div class="col-sm-4">
+						<?php if ($acl->isAllowed($role, 'Application\Controller\Users', 'add')) { ?>
 						<a href="<?php echo $this->url('users',array('action' => 'add'));?>" class="btn btn-dark pull-right" style=""><i class="fa fa-plus"></i>&nbsp;Add User</a>
+						<?php } ?>
 				</div>
 		  </div>
 		  
@@ -24,22 +37,19 @@
 						<th>User Name</th>
 						<th>Email</th>
 						<th>Status</th>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) { ?>
 						<th>Action</th>
+						<?php } ?>
 					</tr>
 					</thead>
 					<tbody>
 					<tr>
-						 <td colspan="4" class="dataTables_empty">Loading data from server</td>
+						<td colspan="4" class="dataTables_empty">Loading data from server</td>
 					</tr>
 					</tbody>
 				</table>
-
-
             </div>
-       
         <br>
-      
-            
             
         </div>
 </div>
@@ -53,10 +63,7 @@
             "bScrollCollapse": true,
             "bRetrieve": true,                        
             "aoColumns": [
-				{"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center","bSortable":false}
+				<?php echo $editAction;?>
             ],
             "aaSorting": [[ 0, "desc" ]],
             "bProcessing": true,

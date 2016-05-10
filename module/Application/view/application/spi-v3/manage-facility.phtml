@@ -1,5 +1,13 @@
 <?php
-//\Zend\Debug\Debug::dump($name);die;
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
 ?>
 <style>
     .facilityName{height: 200px !important;width: 200px;}
@@ -17,6 +25,7 @@
             
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
                 <?php
+                if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-facility-name')) {
                 if(count($pendingFacilityName)>0){
                 ?>
                 <div class="row" id="pendingFacilityName" align="center">
@@ -69,7 +78,8 @@
                       </div>
                     </div>
                 </div>
-                <?php } ?>
+                <?php }
+                } ?>
 
                 <table id="example" class="table table-bordered table-striped table-hover table-fw-widget">
                   <thead>
@@ -84,7 +94,9 @@
                       <th>Affiliation</th>
                       <th>Audit Score Percentage</th>
                       <th>Status</th>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) { ?>
                       <th>Action</th>
+                      <?php } ?>
                     </tr>
                   </thead>
                   <tbody>
@@ -110,17 +122,7 @@
         "bProcessing": true,
         "bServerSide": true,
          "aoColumns": [
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center","bSortable":false},
+                <?php echo $editAction; ?>
             ],
          "iDisplayLength": 50,
          "aaSorting": [[ 4, "desc" ]],

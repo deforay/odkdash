@@ -1,3 +1,14 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\Roles', 'edit')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
 <div class="am-content">
         <div class="page-head">
@@ -6,13 +17,14 @@
 				<h2>Role List</h2>
 				</div>
 				<div class="col-sm-4">
+						<?php
+						if ($acl->isAllowed($role, 'Application\Controller\Roles', 'add')) {
+						?>
 						<a href="<?php echo $this->url('roles',array('action' => 'add'));?>" class="btn btn-dark pull-right" style=""><i class="fa fa-plus"></i>&nbsp;Add Role</a>
+						<?php } ?>
 				</div>
 		  </div>
-		  
-		 
         </div>
-        
         
         <div class="main-content">
              
@@ -24,7 +36,9 @@
 						<th>Role Name</th>
 						<th>Role Code</th>
 						<th>Status</th>
+						<?php if ($acl->isAllowed($role,'Application\Controller\Roles','edit')) { ?>
 						<th>Action</th>
+						<?php } ?>
 					</tr>
 					</thead>
 					<tbody>
@@ -33,12 +47,8 @@
 					</tr>
 					</tbody>
 				</table>
-
-
             </div>
-       
         <br>
-      
             
             
         </div>
@@ -53,10 +63,7 @@
             "bScrollCollapse": true,
             "bRetrieve": true,                        
             "aoColumns": [
-				{"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center","bSortable":false}
+				<?php echo $editAction;?>
             ],
             "aaSorting": [[ 0, "desc" ]],
             "bProcessing": true,

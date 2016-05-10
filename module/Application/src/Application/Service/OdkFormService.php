@@ -45,12 +45,14 @@ class OdkFormService {
     }
     public function getAllSubmissionsDetails($params) {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->fetchAllSubmissionsDetails($params);
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllSubmissionsDetails($params,$acl);
     }
     
     public function getAllSubmissionsDatas($params) {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->fetchAllSubmissionsDatas($params);
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllSubmissionsDatas($params,$acl);
     }
     //get pending facility names
     public function getPendingFacilityNames()

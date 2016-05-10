@@ -1,5 +1,11 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+
+?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
 <div class="am-content">
     <div class="page-head">
         <div class="row">
@@ -7,7 +13,9 @@
 				<h2>Global Config</h2>
 				</div>
 				<div class="col-sm-4">
-				    <a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;Edit Global Config</a>
+				    <?php if ($acl->isAllowed($role, 'Application\Controller\Config','edit-global')) { ?>
+					<a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;Edit Global Config</a>
+					<?php } ?>
 				</div>
 		  </div>
       

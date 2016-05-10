@@ -128,7 +128,7 @@ INSERT INTO `resources` (`resource_id`, `display_name`) VALUES
 
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES
-('Application\\Controller\\Config', 'edit', 'Edit'),
+('Application\\Controller\\Config', 'edit-global', 'Edit'),
 ('Application\\Controller\\Config', 'index', 'Access'),
 ('Application\\Controller\\Facility', 'add', 'Add'),
 ('Application\\Controller\\Facility', 'edit', 'Edit'),
@@ -142,6 +142,7 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 ('Application\\Controller\\SpiV3', 'download-pdf', 'Download pdf'),
 ('Application\\Controller\\SpiV3', 'edit', 'Edit'),
 ('Application\\Controller\\SpiV3', 'index', 'Access'),
+('Application\\Controller\\SpiV3', 'manage-facility', 'Access to edit SPI Form'),
 ('Application\\Controller\\Users', 'add', 'Add'),
 ('Application\\Controller\\Users', 'edit', 'Edit'),
 ('Application\\Controller\\Users', 'index', 'Access');

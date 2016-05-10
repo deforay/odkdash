@@ -1,6 +1,42 @@
 <?php
 use Zend\Session\Container;
 $container = new Container('alert');
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$adminMenu = "";
+$auditMenu = "";
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Roles", "index")) {
+  $adminMenu.="<li><a href=".$this->url('roles',array('action' => 'index')).">Roles</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Users", "index")) {
+  $adminMenu.="<li><a href=".$this->url('users',array('action' => 'index')).">Users</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Config", "index")) {
+  $adminMenu.="<li><a href=" . $this->url('config',array('action' => 'index')) . ">Global Config</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "manage-facility")) {
+  $adminMenu.="<li><a href=".$this->url('spi-v3-form',array('action' => 'manage-facility')).">Manage SPI RT Form</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
+  $auditMenu.='<li><a href="javascript:alert(\'Under Construction\')">Logbook Data Analysis</a></li>';
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
+  $auditMenu.='<li><a href="javascript:alert(\'Under Construction\')">SPI M&E</a></li>';
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
+  $auditMenu.='<li><a href="javascript:alert(\'Under Construction\')">SPI RT 2.x</a></li>';
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
+  $auditMenu.="<li><a href=".$this->url('spi-v3-form',array('action' => 'index')).">Manage SPI RT Form</a></li>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,29 +116,36 @@ $container = new Container('alert');
         <div class="content">
           <div class="am-logo"><img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:50px;margin-left:10px;"/></div>
           <ul class="sidebar-elements">
+            <?php
+            if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
+            ?>
             <li class="parent"><a href="/"><i class="icon s7-monitor"></i><span>Dashboard</span></a></li>
+            <?php } ?>
+            <?php if(trim($auditMenu)!=""){ ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span>Audit</span></a>
               <ul class="sub-menu">
-                <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
-                <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
-                <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>                
-                <li><a href="<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>">SPI RT Version 3</a></li>
-                
+                <?php echo $auditMenu; ?>
               </ul>
             </li>
+            <?php } ?>
+            <?php
+            if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Facility", "index")) {
+            ?>
             <li class="parent"><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span>Facility List</span></a></li>
+            <?php } ?>
             
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Reports</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-mail"></i><span>Email</span></a></li>
             <li class="parent"><a href="#"><i class="icon s7-map-marker"></i><span>Maps</span></a></li>
+            <?php
+            if(trim($adminMenu)!=""){
+            ?>
             <li class="parent"><a href="#"><i class="icon s7-config"></i><span>Configure</span></a>
               <ul class="sub-menu">
-                <li><a href="<?php echo $this->url('roles',array('action' => 'index')); ?>">Roles</a></li>               
-                <li><a href="<?php echo $this->url('users',array('action' => 'index')); ?>">Users</a></li>
-                <li><a href="<?php echo $this->url('spi-v3-form',array('action' => 'manage-facility')); ?>">Manage SPI RT Form</a></li>
-                <li><a href="<?php echo $this->url('config',array('action' => 'index')); ?>">Global Config</a></li>
+                <?php echo $adminMenu; ?>
               </ul>
             </li>
+            <?php } ?>
           </ul>
           <!--Sidebar bottom content-->
         </div>

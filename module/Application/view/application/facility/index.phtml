@@ -1,7 +1,15 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
-
-
-
 <div class="am-content">
         <div class="page-head">
           <div class="row">
@@ -9,8 +17,12 @@
 				<h2>SPI RT Facilities</h2>
 				</div>
 				<div class="col-sm-4">
-					<a href="<?php echo $this->url('spi-facility',array('action' => 'add'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
-					<a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="showModal('/facility/get-facility-name',800,400);"><i class="fa fa-file-o"></i>&nbsp;Merge Facilities</a>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) { ?>
+						<a href="<?php echo $this->url('spi-facility',array('action' => 'add'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
+						<?php } ?>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-facility-name')) { ?>
+						<a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="showModal('/facility/get-facility-name',800,400);"><i class="fa fa-file-o"></i>&nbsp;Merge Facilities</a>
+						<?php } ?>
 				</div>
 		  </div>
 		  
@@ -29,7 +41,9 @@
 						<th>Facility Name</th>
 						<th>Email</th>
 						<th>Contact Person</th>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) { ?>
 						<th>Action</th>
+						<?php } ?>
 					</tr>
 					</thead>
 					<tbody>
@@ -38,12 +52,9 @@
 					</tr>
 					</tbody>
 				</table>
-
-
             </div>
        
         <br>
-      
             
             
         </div>
@@ -59,11 +70,7 @@
             "bScrollCollapse": true,
             "bRetrieve": true,                        
             "aoColumns": [
-				{"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center","bSortable":false}
+				<?php echo $editAction;?>
             ],
             "aaSorting": [[ 0, "desc" ]],
             "bProcessing": true,

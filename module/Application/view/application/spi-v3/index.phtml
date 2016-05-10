@@ -1,3 +1,14 @@
+<?php
+use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+}else{
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
 <style>
@@ -17,11 +28,9 @@ tr.shown td.details-control {
           <h2>SPI-RT 3.0 Checklist</h2>
         </div>
         
-        
         <div class="main-content">
             
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-
 
         <div class="row">
             <div class="col-sm-12">
@@ -113,13 +122,15 @@ tr.shown td.details-control {
                       <th>Affiliation</th>
                       <th>Audit Score Percentage</th>
                       <th>Status</th>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
                       <th>Action</th>
+                      <?php } ?>
                     </tr>
                   </thead>
                   <tbody>
                   <tr>
-                                <td colspan="10" class="dataTables_empty">Loading data from server</td>
-                            </tr>
+                       <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                   </tr>
                   </tbody>
                 </table>
 
@@ -174,18 +185,7 @@ tr.shown td.details-control {
         "bProcessing": true,
         "bServerSide": true,
          "aoColumns": [
-		{"sClass":"center details-control","bSortable":false},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center"},
-                {"sClass":"center","bSortable":false}
+                <?php echo $editAction;?>
             ],
          "iDisplayLength": 50,
          "aaSorting": [[ 5, "desc" ]],

@@ -26,6 +26,14 @@ class ResourcesTable extends AbstractTableGateway {
         $this->adapter = $adapter;
     }
 
-    
+    public function fetchAllResourceMap() {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $resourceQuery = $sql->select()->from('resources')
+                                       ->order('display_name');
+        $resourceQueryStr = $sql->getSqlStringForSqlObject($resourceQuery);
+        $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $resourceResult;
+    }
 
 }

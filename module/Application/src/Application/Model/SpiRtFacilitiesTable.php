@@ -86,7 +86,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         }
     }
     
-    public function fetchAllFacilities($parameters)
+    public function fetchAllFacilities($parameters,$acl)
     {
         
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -206,19 +206,29 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
            "iTotalDisplayRecords" => $iFilteredTotal,
            "aaData" => array()
         );
-	
-       foreach ($rResult as $aRow) {
-        $row = array();
-        
-        $row[] = $aRow['facility_id'];
-        $row[] = $aRow['facility_name'];
-        $row[] = $aRow['email'];
-        $row[] = $aRow['contact_person'];
-        $edit = '<a href="/facility/edit/'.base64_encode($aRow['id']).'" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
-        $row[] =$edit;
-        $output['aaData'][] = $row;
-       }
-       return $output;
+		
+		$loginContainer = new Container('credo');
+        $role = $loginContainer->roleCode;
+        if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
+            $update = true;
+        } else {
+            $update = false;
+        }
+		
+		foreach ($rResult as $aRow) {
+		 $row = array();
+		 
+		 $row[] = $aRow['facility_id'];
+		 $row[] = $aRow['facility_name'];
+		 $row[] = $aRow['email'];
+		 $row[] = $aRow['contact_person'];
+		 if($update){
+		 $edit = '<a href="/facility/edit/'.base64_encode($aRow['id']).'" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
+		 $row[] =$edit;
+		 }
+		 $output['aaData'][] = $row;
+		}
+		return $output;
     }
     
     public function fetchFacility($id){

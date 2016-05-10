@@ -41,7 +41,9 @@ class UsersTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
-                ->where(array('login' => $username, 'password' => $password));
+                ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
+                ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name','role_code'))
+                ->where(array('login' => $username, 'password' => $password,'u.status' =>'active'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -51,6 +53,7 @@ class UsersTable extends AbstractTableGateway {
         if (count($rResult) > 0) {
             $logincontainer->userId = $rResult[0]["id"];
             $logincontainer->login = $rResult[0]["login"];
+            $logincontainer->roleCode = $rResult[0]["role_code"];
             return 'home';
         } else {
             $container->alertMsg = 'Please check your login credentials';
@@ -118,7 +121,7 @@ class UsersTable extends AbstractTableGateway {
         }
     }
     
-    public function fetchAllUsers($parameters)
+    public function fetchAllUsers($parameters,$acl)
     {
         
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
@@ -237,18 +240,28 @@ class UsersTable extends AbstractTableGateway {
            "iTotalDisplayRecords" => $iFilteredTotal,
            "aaData" => array()
         );
-	
-       foreach ($rResult as $aRow) {
-        $row = array();
         
-        $row[] = ucwords($aRow['first_name']." ".$aRow['last_name']);
-        $row[] = $aRow['email'];
-        $row[] = ucwords($aRow['status']);
-        $edit = '<a href="/users/edit/'.base64_encode($aRow['id']).'" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
-        $row[] =$edit;
-        $output['aaData'][] = $row;
-       }
-       return $output;
+        $loginContainer = new Container('credo');
+        $role = $loginContainer->roleCode;
+        if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
+            $update = true;
+        } else {
+            $update = false;
+        }
+        
+        foreach ($rResult as $aRow) {
+         $row = array();
+         
+         $row[] = ucwords($aRow['first_name']." ".$aRow['last_name']);
+         $row[] = $aRow['email'];
+         $row[] = ucwords($aRow['status']);
+         if($update){
+         $edit = '<a href="/users/edit/'.base64_encode($aRow['id']).'" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
+         $row[] =$edit;
+         }
+         $output['aaData'][] = $row;
+        }
+        return $output;
     }
     
     public function fetchUser($id){
