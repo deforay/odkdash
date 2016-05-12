@@ -800,8 +800,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row = $this->select(array('id' => (int) $id))->current();
         return $row;
     }
-    
-    
 
     public function getAuditRoundWiseData($params) {
         //$rResult = $this->getAllSubmissions();
@@ -1198,8 +1196,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         return $result;
     }
     //get all faciltiy name
-    public function fetchAllFacilityNames()
-    {
+    public function fetchAllFacilityNames(){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'=>new Expression("DISTINCT facilityname")));
@@ -1211,5 +1208,26 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return array('uniqueName'=>$uResult,'allName'=>$aResult);
+    }
+    
+    public function fetchFacilitiesAudits($params){
+        $audits = array();
+        $aResult = '';
+        if(isset($params['facilityName']) && trim($params['facilityName'])!= '') {
+            $dbAdapter = $this->adapter;
+            $sql = new Sql($dbAdapter);
+            $query = $sql->select()->from(array('spiv3'=>'spi_form_v_3'))
+                                   ->columns(array('id','testingpointname','assesmentofaudit'))
+                                   ->where(array('spiv3.facilityname'=>$params['facilityName'],'spiv3.status'=>'approved'));
+            $queryStr = $sql->getSqlStringForSqlObject($query);
+            $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            
+            $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
+                                    ->columns(array('email'))
+                                    ->where(array('spiv3_fclt.facility_name'=>$params['facilityName']));
+            $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        }
+      return array('audits'=>$audits,'facilityProfile'=>$aResult);
     }
 }

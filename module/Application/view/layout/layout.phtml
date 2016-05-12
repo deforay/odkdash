@@ -135,7 +135,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
             <?php } ?>
             
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Reports</span></a></li>
-            <li class="parent"><a href="#"><i class="icon s7-mail"></i><span>Email</span></a></li>
+            <?php
+            if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index")) {
+            ?>
+              <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'index')); ?>"><i class="icon s7-mail"></i><span>Email</span></a></li>
+            <?php } ?>
             <li class="parent"><a href="#"><i class="icon s7-map-marker"></i><span>Maps</span></a></li>
             <?php
             if(trim($adminMenu)!=""){

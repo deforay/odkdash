@@ -300,6 +300,9 @@ class CommonService {
         }
     }
     
+    public function addEmail($params){
+        \Zend\Debug\Debug::dump($params);die;
+    }
 }
 
 ?>

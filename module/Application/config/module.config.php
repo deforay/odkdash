@@ -123,6 +123,16 @@ return array(
                     ),
                 ),
             ),
+            'email' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/email[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Email',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
@@ -154,7 +164,8 @@ return array(
             'Application\Controller\Roles' => "Application\Controller\RolesController",
             'Application\Controller\Common' => "Application\Controller\CommonController",
             'Application\Controller\Users' => "Application\Controller\UsersController",
-            'Application\Controller\Config' => "Application\Controller\ConfigController"
+            'Application\Controller\Config' => "Application\Controller\ConfigController",
+            'Application\Controller\Email' => "Application\Controller\EmailController"
         ),
     ),
     'view_manager' => array(

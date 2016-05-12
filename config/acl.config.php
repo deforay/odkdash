@@ -39,6 +39,9 @@ return array(
             'index' => 'allow',
             'edit-global' => 'allow',
         ),
+        'Application\\Controller\\Email' => array(
+            'index' => 'allow',
+        ),
         'Application\\Controller\\Facility' => array(
             'index' => 'allow',
             'add' => 'allow',

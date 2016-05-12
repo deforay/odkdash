@@ -156,4 +156,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchSpiV3FormAuditNo();
     }
+    
+    public function getFacilitiesAudits($params){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchFacilitiesAudits($params);
+    }
 }

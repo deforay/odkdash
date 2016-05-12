@@ -236,37 +236,37 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         return $row;
     }
 	
-	public function fetchFacilityList($strSearch){
-		$dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $query = $sql->select()->from('spi_rt_3_facilities')->where("facility_name like '%$strSearch%'");
+    public function fetchFacilityList($strSearch){
+	$dbAdapter = $this->adapter;
+	$sql = new Sql($dbAdapter);
+	$query = $sql->select()->from('spi_rt_3_facilities')->where("facility_name like '%$strSearch%'");
 		$queryStr = $sql->getSqlStringForSqlObject($query);
 		$result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 		$echoResult = array();
-        foreach ($result as $row) {
-            $echoResult[] = array("id" => $row['id'], "name" => ucwords($row['facility_name']));
-        }
-		return array("result" => $echoResult);
+	foreach ($result as $row) {
+	    $echoResult[] = array("id" => $row['id'], "name" => ucwords($row['facility_name']));
 	}
-	
-	public function updateFacilityName($id,$facilityName){
-		if($id!="" && $facilityName!=""){
-			$data = array(
-				'facility_name' => trim($facilityName)
-			);
-			$this->update($data,array('facility_id'=>$id));
-		}
+	return array("result" => $echoResult);
+    }
+    
+    public function updateFacilityName($id,$facilityName){
+	if($id!="" && $facilityName!=""){
+	    $data = array(
+		    'facility_name' => trim($facilityName)
+	    );
+	    $this->update($data,array('facility_id'=>$id));
 	}
-	
-	public function addFacilityName($facilityName){
-		$fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$facilityName));
-		$fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
-		$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-		if($fResult==""){
-			$data = array(
-				'facility_name' => $facilityName
-			);
-			$this->insert($data);
-		}
+    }
+    
+    public function addFacilityName($facilityName){
+	$fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$facilityName));
+	$fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+	$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+	if($fResult==""){
+		$data = array(
+			'facility_name' => $facilityName
+		);
+		$this->insert($data);
 	}
+    }
 }
