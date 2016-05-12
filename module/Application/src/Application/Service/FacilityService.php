@@ -85,4 +85,10 @@ class FacilityService {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchFacilityList($val);
     }
+    
+    public function getAllTestingPoints($parameters){
+        $sbiFormDb = $this->sm->get('SpiFormVer3Table');
+        $acl = $this->sm->get('AppAcl');
+        return $sbiFormDb->fetchAllTestingPointsBasedOnFacility($parameters,$acl);
+    }
 }

@@ -70,4 +70,14 @@ class FacilityController extends AbstractActionController {
             'facilityName' => $result,
         ));
     }
+    
+    public function getTestingPointAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $facilityService= $this->getServiceLocator()->get('FacilityService');
+            $result = $facilityService->getAllTestingPoints($params);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+    }
 }
