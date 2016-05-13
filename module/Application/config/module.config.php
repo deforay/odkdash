@@ -154,7 +154,8 @@ return array(
             'Application\Controller\Roles' => "Application\Controller\RolesController",
             'Application\Controller\Common' => "Application\Controller\CommonController",
             'Application\Controller\Users' => "Application\Controller\UsersController",
-            'Application\Controller\Config' => "Application\Controller\ConfigController"
+            'Application\Controller\Config' => "Application\Controller\ConfigController",
+            'Application\Controller\Cron' => "Application\Controller\CronController"
         ),
     ),
     'view_manager' => array(
@@ -177,6 +178,16 @@ return array(
     'console' => array(
         'router' => array(
             'routes' => array(
+                'db-backup-console-route' => array(
+                    'type'    => 'simple',
+                    'options' => array(
+                        'route'    => 'db-backup',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Cron',
+                            'action' => 'db-backup',
+                        ),
+                    ),
+                ),
             ),
         ),
     ),

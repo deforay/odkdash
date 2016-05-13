@@ -342,15 +342,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'oldestDate' => new \Zend\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
                                                 'newestDate' => new \Zend\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
                                                 'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
-                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
-                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
-                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
-                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 80 and AUDIT_SCORE_PERCANTAGE < 90, 1,0))"),
-                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
+                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
+                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 40 and ROUND(AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
+                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 60 and ROUND(AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
+                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 80 and ROUND(AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
+                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where(array('status'=>'approved'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-//die($sQueryStr);
+        //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
@@ -372,11 +372,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'newestDate' => new \Zend\Db\Sql\Expression("'$today'"),
                                                 'oldestDate' => new \Zend\Db\Sql\Expression("'$last30Date'"),
                                                 'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),                                    
-                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
-                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
-                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
-                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 80 and AUDIT_SCORE_PERCANTAGE < 90, 1,0))"),
-                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
+                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
+                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 40 and ROUND(AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
+                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 60 and ROUND(AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
+                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 80 and ROUND(AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
+                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where("status='approved'")
                                 ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
@@ -400,11 +400,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'newestDate' => new \Zend\Db\Sql\Expression("'$today'"),
                                                 'oldestDate' => new \Zend\Db\Sql\Expression("'$last180Date'"),
                                                 'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
-                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE < 40, 1,0))"),
-                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 40 and AUDIT_SCORE_PERCANTAGE < 60, 1,0))"),
-                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 60 and AUDIT_SCORE_PERCANTAGE < 80, 1,0))"),
-                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 80 and AUDIT_SCORE_PERCANTAGE < 90, 1,0))"),
-                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF(AUDIT_SCORE_PERCANTAGE >= 90, 1,0))"),
+                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
+                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 40 and ROUND(AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
+                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 60 and ROUND(AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
+                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 80 and ROUND(AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
+                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where(array('status'=>'approved'))
                                 ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -1358,8 +1358,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
 		 $row[] = $aRow['facilityid'];
          $row[] = $aRow['testingpointname'];
 		 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
-		 $row[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-		 
+		 $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
 		 $output['aaData'][] = $row;
 		}
 		return $output;

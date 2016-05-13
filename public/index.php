@@ -21,6 +21,9 @@ defined('UPLOAD_PATH')
     
 defined('TEMP_UPLOAD_PATH')
     || define('TEMP_UPLOAD_PATH', realpath(dirname(__FILE__) . '/temporary'));
+
+defined('BACKUP_PATH')
+    || define('BACKUP_PATH', realpath(dirname(__FILE__) . '/../backup'));
     
 // Setup autoloading
 require 'init_autoloader.php';
