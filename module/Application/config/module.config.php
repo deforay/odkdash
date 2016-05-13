@@ -199,13 +199,16 @@ return array(
                         ),
                     ),
                 ),
+                'mail-console-route' => array(
                     'type'    => 'simple',
                     'options' => array(
                         'route'    => 'db-backup',
                         'defaults' => array(
                             'controller' => 'Application\Controller\Cron',
+                             'action' => 'db-backup'
                         ),
                     ),
+                ),
             ),
         ),
     ),

@@ -210,7 +210,40 @@ class CommonService {
                     if(is_dir($dirPath)) {
                         $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id);
                         while (false !== ($filename = readdir($dh))) {
-                           
+                           $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                           if ($extension == 'msg') {
+                                $mimeType = 'application/vnd.ms-outlook';
+                            } else if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'jpe') {
+                                $mimeType = 'image/jpeg';
+                            } else if ($extension == 'gif') {
+                                $mimeType = 'image/gif';
+                            } else if ($extension == 'png') {
+                                $mimeType = 'image/png';
+                            } else if ($extension == 'pdf') {
+                                $mimeType = 'application/pdf';
+                            } else if ($extension == 'ppt' || $extension == 'pptx' || $extension == 'pps' || $extension == 'pot') {
+                                $mimeType = 'application/vnd.ms-powerpoint';
+                            } else if ($extension == 'zip') {
+                                $mimeType = 'application/zip';
+                            } else if ($extension == 'txt' || $extension == 'h' || $extension == 'c') {
+                                $mimeType = 'text/plain';
+                            } else if ($extension == 'xla' || $extension == 'xlsx' || $extension == 'xlc' || $extension == 'xlm' || $extension == 'xls' || $extension == 'xlt' || $extension == 'xlw') {
+                                $mimeType = 'application/vnd.ms-excel';
+                            } else if ($extension == 'sql') {
+                                $mimeType = 'application/soffice';
+                            }
+                            
+                            //Check if the file exists and is readable
+                            if (!$fileHandler = fopen($dirPath. DIRECTORY_SEPARATOR . $filename, 'rb')) {
+                                throw new Exception("The file could not be found or is not readable.");
+                            }
+                            $fileContent = fread($fileHandler, filesize($dirPath. DIRECTORY_SEPARATOR . $filename));
+                            fflush($fileHandler);
+                            fclose($fileHandler);
+                            
+                            $fileName = basename($dirPath. DIRECTORY_SEPARATOR . $filename);
+                            $at = $alertMail->createAttachment($fileContent, $mimeType, Zend_Mime::DISPOSITION_ATTACHMENT);
+                            $at->filename = $fileName;
                         }
                     }
     
