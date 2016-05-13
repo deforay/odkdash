@@ -10,6 +10,8 @@ use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
+use Zend\Mime\Mime;
+use Zend\Mail\Transport\Sendmail;
 use Zend\Db\Sql\Expression;
 
 class CommonService {
@@ -179,18 +181,11 @@ class CommonService {
                     $alertMail = new Mail\Message();
                     $id = $result['temp_id'];
                     $tempMailDb->updateTempMailStatus($id);
-                       
+                
                     $fromEmail = $result['from_mail'];
                     $fromFullName = $result['from_full_name'];
                     $subject = $result['subject'];
-
-                    $html = new MimePart($result['message']);
-                    $html->type = "text/html";
-
-                    $body = new MimeMessage();
-                    $body->setParts(array($html));
-
-                    $alertMail->setBody($body);
+                    
                     $alertMail->addFrom($fromEmail, $fromFullName);
                     $alertMail->addReplyTo($fromEmail, $fromFullName);
                     $alertMail->addTo($result['to_email']);
@@ -205,48 +200,32 @@ class CommonService {
 
                     $alertMail->setSubject($subject);
                     
+                    $html = new MimePart($result['message']);
+                    $html->type = "text/html";
+
+                    $body = new MimeMessage();
+                    $body->setParts(array($html));
                     
                     $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id;
                     if(is_dir($dirPath)) {
                         $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id);
-                        while (false !== ($filename = readdir($dh))) {
-                           $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                           if ($extension == 'msg') {
-                                $mimeType = 'application/vnd.ms-outlook';
-                            } else if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'jpe') {
-                                $mimeType = 'image/jpeg';
-                            } else if ($extension == 'gif') {
-                                $mimeType = 'image/gif';
-                            } else if ($extension == 'png') {
-                                $mimeType = 'image/png';
-                            } else if ($extension == 'pdf') {
-                                $mimeType = 'application/pdf';
-                            } else if ($extension == 'ppt' || $extension == 'pptx' || $extension == 'pps' || $extension == 'pot') {
-                                $mimeType = 'application/vnd.ms-powerpoint';
-                            } else if ($extension == 'zip') {
-                                $mimeType = 'application/zip';
-                            } else if ($extension == 'txt' || $extension == 'h' || $extension == 'c') {
-                                $mimeType = 'text/plain';
-                            } else if ($extension == 'xla' || $extension == 'xlsx' || $extension == 'xlc' || $extension == 'xlm' || $extension == 'xls' || $extension == 'xlt' || $extension == 'xlw') {
-                                $mimeType = 'application/vnd.ms-excel';
-                            } else if ($extension == 'sql') {
-                                $mimeType = 'application/soffice';
+                        while (($filename = readdir($dh)) !== false) {
+                            if ($filename != "." && $filename != "..") {
+                                $extension = strtolower(pathinfo($dirPath . DIRECTORY_SEPARATOR . $filename, PATHINFO_EXTENSION));
+                                $attachment = new MimePart($dh. DIRECTORY_SEPARATOR. $filename);
+                                $attachment->filename    = $filename;
+                                $attachment->type        = Mime::TYPE_OCTETSTREAM;
+                                $attachment->encoding    = Mime::ENCODING_BASE64;
+                                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
+                                $body->addPart($attachment);
                             }
-                            
-                            //Check if the file exists and is readable
-                            if (!$fileHandler = fopen($dirPath. DIRECTORY_SEPARATOR . $filename, 'rb')) {
-                                throw new Exception("The file could not be found or is not readable.");
-                            }
-                            $fileContent = fread($fileHandler, filesize($dirPath. DIRECTORY_SEPARATOR . $filename));
-                            fflush($fileHandler);
-                            fclose($fileHandler);
-                            
-                            $fileName = basename($dirPath. DIRECTORY_SEPARATOR . $filename);
-                            $at = $alertMail->createAttachment($fileContent, $mimeType, Zend_Mime::DISPOSITION_ATTACHMENT);
-                            $at->filename = $fileName;
                         }
+                        closedir($dh);
+                        $this->removeDirectory($dirPath);
                     }
-    
+                    
+                    $alertMail->setBody($body);
+                    
                     $transport->send($alertMail);
                     $tempMailDb->deleteTempMail($id);
                 }
@@ -360,6 +339,34 @@ class CommonService {
             error_log($exc->getTraceAsString());
             error_log('whoops! Something went wrong in cron/dbBackup');
         }
+    }
+    
+    function removeDirectory($dirname) {
+        // Sanity check
+        if (!file_exists($dirname)) {
+            return false;
+        }
+
+        // Simple delete for a file
+        if (is_file($dirname) || is_link($dirname)) {
+            return unlink($dirname);
+        }
+
+        // Loop through the folder
+        $dir = dir($dirname);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Recurse
+            $this->removeDirectory($dirname . DIRECTORY_SEPARATOR . $entry);
+        }
+
+        // Clean up
+        $dir->close();
+        return rmdir($dirname);
     }
 }
 

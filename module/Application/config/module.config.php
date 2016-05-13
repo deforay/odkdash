@@ -199,7 +199,7 @@ return array(
                         ),
                     ),
                 ),
-                'mail-console-route' => array(
+                'db-backup-console-route' => array(
                     'type'    => 'simple',
                     'options' => array(
                         'route'    => 'db-backup',

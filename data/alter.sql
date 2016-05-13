@@ -154,3 +154,17 @@ INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_na
 
 
 INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'corrective-action-pdf', 'Download corrective action pdf');
+
+--Pal 13-MAY-2016
+CREATE TABLE IF NOT EXISTS `temp_mail` (
+  `temp_id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_full_name` varchar(255) DEFAULT NULL,
+  `from_mail` varchar(255) DEFAULT NULL,
+  `to_email` varchar(255) NOT NULL,
+  `cc` varchar(500) DEFAULT NULL,
+  `bcc` varchar(500) DEFAULT NULL,
+  `subject` mediumtext,
+  `message` mediumtext,
+  `status` varchar(255) NOT NULL DEFAULT 'pending',
+  PRIMARY KEY (`temp_id`)
+)
