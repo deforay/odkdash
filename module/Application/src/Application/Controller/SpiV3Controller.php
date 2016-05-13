@@ -71,7 +71,17 @@ class SpiV3Controller extends AbstractActionController
         
         $viewModel->setTerminal(true);
         return $viewModel;
+    }
+    public function correctiveActionPdfAction(){
         
+        $id = ($this->params()->fromRoute('id'));
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $formData = $odkFormService->getFormData($id);
+        
+        $viewModel = new ViewModel(array('formData' => $formData));
+        
+        $viewModel->setTerminal(true);
+        return $viewModel;
     }
     
     public function editAction()

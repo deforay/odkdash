@@ -39,6 +39,9 @@ return array(
             'index' => 'allow',
             'edit-global' => 'allow',
         ),
+        'Application\\Controller\\Email' => array(
+            'index' => 'deny',
+        ),
         'Application\\Controller\\Facility' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -54,6 +57,7 @@ return array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
+            'corrective-action-pdf' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
         ),

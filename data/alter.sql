@@ -147,3 +147,5 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 ('Application\\Controller\\Users', 'edit', 'Edit'),
 ('Application\\Controller\\Users', 'index', 'Access');
 
+--saravanan 13-may-2016
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'corrective-action-pdf', 'Download corrective action pdf');
