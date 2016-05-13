@@ -11,13 +11,29 @@ class EmailController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $commonService = $this->getServiceLocator()->get('CommonService');
-            $commonService->addEmail($params);
+            $facilityService = $this->getServiceLocator()->get('FacilityService');
+            $tempId = $facilityService->addEmail($params);
+            if($tempId >0){
+                $ids = ''; 
+                if(isset($params['audits']) && count($params['audits'])>0){
+                    $idArray = array();
+                    for($au=0;$au<count($params['audits']);$au++){
+                      $idArray[] = $params['audits'][$au];
+                    }
+                    $auditIds = implode("#",$idArray);
+                    $ids = base64_encode($tempId."#".$auditIds);
+                }
+               return $this->redirect()->toUrl("/email/index/".$ids);
+            }else{
+              return $this->redirect()->toRoute("email");
+            }
         }
+        $ids = $this->params()->fromRoute('id');
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $result = $odkFormService->getAllFacilityNames();
         return new ViewModel(array(
-            'facilityName' => $result
+            'facilityName' => $result,
+            'ids' => $ids
         ));
     }
     
@@ -29,6 +45,21 @@ class EmailController extends AbstractActionController {
             $result= $odkFormService->getFacilitiesAudits($params);
             $viewModel = new ViewModel(array(
                     'result' => $result
+                ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
+    
+    public function downloadPdfAction(){
+        $request = $this->getRequest();                
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getFormData($params['auditId']);
+            $viewModel = new ViewModel(array(
+                'formData' => $result,
+                'tempId' => $params['tempId']
                 ));
             $viewModel->setTerminal(true);
             return $viewModel;

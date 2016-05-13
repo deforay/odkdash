@@ -2,6 +2,7 @@
 
 namespace Application\Service;
 
+use Zend\Session\Container;
 use Exception;
 use Zend\Db\Sql\Sql;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
@@ -9,7 +10,6 @@ use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
-use Zend\Session\Container;
 use Zend\Db\Sql\Expression;
 
 class CommonService {
@@ -151,10 +151,9 @@ class CommonService {
 
     public function sendTempMail() {
         try {
-            $tempDb = $this->sm->get('TempMailTable');
+            $tempMailDb = $this->sm->get('TempMailTable');
             $config = new \Zend\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-            //\Zend\Debug\Debug::dump($configResult["email"]["config"]["username"]);die;
             $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
 
@@ -175,16 +174,12 @@ class CommonService {
             $mailQuery = $sql->select()->from(array('tm' => 'temp_mail'))->where("status='pending'")->limit($limit);
             $mailQueryStr = $sql->getSqlStringForSqlObject($mailQuery);
             $mailResult = $dbAdapter->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
             if (count($mailResult) > 0) {
                 foreach ($mailResult as $result) {
-                    if(trim($result['from_mail'])==""){
-                        $result['from_mail']='info@nestbuilders.in';
-                    }
                     $alertMail = new Mail\Message();
                     $id = $result['temp_id'];
-                    $tempDb->updateTempMailStatus($id);
-
+                    $tempMailDb->updateTempMailStatus($id);
+                       
                     $fromEmail = $result['from_mail'];
                     $fromFullName = $result['from_full_name'];
                     $subject = $result['subject'];
@@ -198,40 +193,35 @@ class CommonService {
                     $alertMail->setBody($body);
                     $alertMail->addFrom($fromEmail, $fromFullName);
                     $alertMail->addReplyTo($fromEmail, $fromFullName);
-
-                    $toArray = explode(",", $result['to_email']);
-                    foreach ($toArray as $toId) {
-                        if ($toId != '') {
-                            $alertMail->addTo($toId);
-                        }
-                    }
+                    $alertMail->addTo($result['to_email']);
+                    
                     if (isset($result['cc']) && trim($result['cc']) != "") {
-                        $ccArray = explode(",", $result['cc']);
-                        foreach ($ccArray as $ccId) {
-                            if ($ccId != '') {
-                                $alertMail->addCc($ccId);
-                            }
-                        }
+                        $alertMail->addCc($result['cc']);
                     }
 
                     if (isset($result['bcc']) && trim($result['bcc']) != "") {
-                        $bccArray = explode(",", $result['bcc']);
-                        foreach ($bccArray as $bccId) {
-                            if ($bccId != '') {
-                                $alertMail->addBcc($bccId);
-                            }
-                        }
+                        $alertMail->addBcc($result['bcc']);
                     }
 
                     $alertMail->setSubject($subject);
+                    
+                    
+                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id;
+                    if(is_dir($dirPath)) {
+                        $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id);
+                        while (false !== ($filename = readdir($dh))) {
+                           
+                        }
+                    }
+    
                     $transport->send($alertMail);
-                    $tempDb->deleteTempMail($id);
+                    $tempMailDb->deleteTempMail($id);
                 }
             }
         } catch (Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
-            error_log('whoops! Something went wrong in cron/SendMailAlerts.php');
+            error_log('whoops! Something went wrong in send-mail.');
         }
     }
 
@@ -279,6 +269,7 @@ class CommonService {
         $globalDb = $this->sm->get('GlobalTable');
         return $globalDb->getGlobalConfig();        
     }
+    
     public function updateConfig($params) {
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
@@ -298,10 +289,6 @@ class CommonService {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
-    }
-    
-    public function addEmail($params){
-        \Zend\Debug\Debug::dump($params);die;
     }
 }
 

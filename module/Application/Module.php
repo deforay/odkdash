@@ -19,6 +19,7 @@ use Application\Model\UserRoleMapTable;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Model\ResourcesTable;
+use Application\Model\TempMailTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -124,37 +125,42 @@ class Module
                     $table = new SpiFormLabelsTable($dbAdapter);
                     return $table;
                 },
-				'SpiRtFacilitiesTable' => function($sm) {
+		'SpiRtFacilitiesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SpiRtFacilitiesTable($dbAdapter);
                     return $table;
                 },
-				'RolesTable' => function($sm) {
+		'RolesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new RolesTable($dbAdapter);
                     return $table;
                 },
-				'UserRoleMapTable' => function($sm) {
+		'UserRoleMapTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UserRoleMapTable($dbAdapter);
                     return $table;
                 },
-				'GlobalTable' => function($sm) {
+		'GlobalTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new GlobalTable($dbAdapter);
                     return $table;
                 },
-				'EventLogTable' => function($sm) {
+		'EventLogTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new EventLogTable($dbAdapter);
                     return $table;
                 },
-				'ResourcesTable' => function($sm) {
+		'ResourcesTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new ResourcesTable($dbAdapter);
                     return $table;
                 },
-				
+		'TempMailTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new TempMailTable($dbAdapter);
+                    return $table;
+                },
+		
                 'OdkFormService' => function($sm) {
                     return new OdkFormService($sm);
                 },

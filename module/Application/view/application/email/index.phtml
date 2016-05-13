@@ -24,10 +24,10 @@
                                 <select class="form-control isRequired" name="facility" id="facility" title="Please select the facility" onchange="getSelectedFacilitesAudits(this.value);">
                                     <option value="">-- Select Facility --</option>
                                     <?php
-                                    if(isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
-                                      foreach($facilityName['uniqueName'] as $facilities) {
+                                    if(isset($facilityName['allName']) && count($facilityName['allName']) > 0) {
+                                      foreach($facilityName['allName'] as $facilities) {
                                     ?>
-                                      <option value="<?php echo $facilities['facilityname']; ?>"><?php echo ucwords($facilities['facilityname']); ?></option>
+                                      <option value="<?php echo $facilities['facility_name']; ?>"><?php echo ucwords($facilities['facility_name']); ?></option>
                                     <?php } } ?>
                                 </select>
                             </div>
@@ -35,6 +35,7 @@
 			<div class="row facilityProfile" style="display:none;">
                             <div class="form-group col-lg-6">
                                 <label>Facility Email Address <span class="mandatory">*</span></label>
+				<input type="hidden" class="" name="facilityName" id="facilityName"/>
                                 <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="Enter Email Address" title="Please enter facility email address"/>
                             </div>
                         </div>
@@ -86,6 +87,16 @@
               tags : false
         });		
 	$("#audits").multipleSelect({placeholder:'Please select audits',width: '100%'});
+	
+	<?php
+	if(isset($ids) && trim($ids)!= ''){
+	  $xplodeIds = explode("#",base64_decode($ids));
+	  if(count($xplodeIds) >1){
+	    for($d=1;$d<count($xplodeIds);$d++){
+	?>
+	    generatePdf('<?php echo $xplodeIds[0]; ?>','<?php echo $xplodeIds[$d]; ?>');
+	<?php } } }
+	?>
     });
     
     duplicateName = true;
@@ -109,7 +120,8 @@
 	    }else{
 		$(".facilityProfile").show();
 	    }
-            $("#emailAddress").val(splitData[1]);
+            $("#facilityName").val(splitData[1]);
+            $("#emailAddress").val(splitData[2]);
             $("#ajaxAudit").html(splitData[0]);
             $(".select2").select2({
               width: '100%',
@@ -119,5 +131,12 @@
             });		
             $("#audits").multipleSelect({placeholder:'Please select audits',width: '100%'});
         });
+    }
+    
+    function generatePdf(tId,auId){
+	$.post("<?php echo $this->url('email', array('action' =>'download-pdf')); ?>", {tempId: tId,auditId:auId},
+        function(data) {
+		
+	});
     }
 </script>

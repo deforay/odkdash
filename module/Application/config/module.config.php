@@ -165,7 +165,8 @@ return array(
             'Application\Controller\Common' => "Application\Controller\CommonController",
             'Application\Controller\Users' => "Application\Controller\UsersController",
             'Application\Controller\Config' => "Application\Controller\ConfigController",
-            'Application\Controller\Email' => "Application\Controller\EmailController"
+            'Application\Controller\Email' => "Application\Controller\EmailController",
+            'Application\Controller\Cron' => "Application\Controller\CronController"
         ),
     ),
     'view_manager' => array(
@@ -188,6 +189,16 @@ return array(
     'console' => array(
         'router' => array(
             'routes' => array(
+                'mail-console-route' => array(
+                    'type' => 'simple',
+                    'options' => array(
+                        'route' => 'send-mail',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Cron',
+                            'action' => 'send-mail'
+                        ),
+                    ),
+                )
             ),
         ),
     ),

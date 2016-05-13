@@ -1223,7 +1223,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
             $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
-                                    ->columns(array('email'))
+                                    ->columns(array('facility_name','email'))
                                     ->where(array('spiv3_fclt.facility_name'=>$params['facilityName']));
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();

@@ -8,8 +8,10 @@ $audits.='<select class="" name="audits[]" id="audits" multiple="multiple" title
     }
 $audits.='</select>';
 
+$facilityName = '';
 $emailAddress = '';
-if(isset($result['facilityProfile']->email)){
+if(isset($result['facilityProfile']->facility_name)){
+    $facilityName = $result['facilityProfile']->facility_name;
     $emailAddress = $result['facilityProfile']->email;
 }
-echo $audits."##".$emailAddress;
+echo $audits."##".$facilityName."##".$emailAddress;
