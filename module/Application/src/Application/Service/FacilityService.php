@@ -155,4 +155,10 @@ class FacilityService {
             error_log($exc->getTraceAsString());
         } 
     }
+    
+    public function getAllTestingPoints($parameters){
+        $sbiFormDb = $this->sm->get('SpiFormVer3Table');
+        $acl = $this->sm->get('AppAcl');
+        return $sbiFormDb->fetchAllTestingPointsBasedOnFacility($parameters,$acl);
+    }
 }

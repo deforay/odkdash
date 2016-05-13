@@ -198,7 +198,14 @@ return array(
                             'action' => 'send-mail'
                         ),
                     ),
-                )
+                ),
+                    'type'    => 'simple',
+                    'options' => array(
+                        'route'    => 'db-backup',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Cron',
+                        ),
+                    ),
             ),
         ),
     ),

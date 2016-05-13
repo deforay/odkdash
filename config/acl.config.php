@@ -57,6 +57,7 @@ return array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
+            'corrective-action-pdf' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
         ),

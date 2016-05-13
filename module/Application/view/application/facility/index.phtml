@@ -55,7 +55,33 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
             </div>
        
         <br>
-            
+        </div>
+		
+		<div class="main-content">
+             
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+
+                <table  cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" id="testingPointDataTable">
+					<thead>
+					<tr>
+						<th>Facility Id</th>
+						<th>Facility Name</th>
+						<th>Testing Point Type</th>
+						<th>Date of Audit</th>
+						<th>Score(%)</th>
+						<th>Report</th>
+						
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						 <td colspan="6" class="dataTables_empty">Loading data from server</td>
+					</tr>
+					</tbody>
+				</table>
+            </div>
+       
+        <br>
             
         </div>
 </div>
@@ -89,4 +115,39 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
        
 	} );
 	
+	function getTestingPoint(val,fieldName) {
+        fTable = $('#testingPointDataTable').DataTable({
+            "bScrollCollapse": false,
+            "bRetrieve": false,
+            "bDestroy": true,
+            "aoColumns": [
+				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
+            ],
+            "aaSorting": [[ 0, "desc" ]],
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "<?php echo $this->url('spi-facility',array('action' => 'get-testing-point')); ?>",
+            "fnServerData": function ( sSource, aoData, fnCallback ) {
+				aoData.push({"name": "val", "value": val});
+				aoData.push({"name": "fieldName", "value": fieldName});
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": fnCallback
+                });
+            }
+        });
+    }
+	
+	function downloadPdf(formId){
+	window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+	return false;
+	}
 </script>

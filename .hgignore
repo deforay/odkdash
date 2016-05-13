@@ -1,6 +1,7 @@
 syntax: regexp
 makkacm.komodoproject
 ^application/cache/(?!index.php)
+^backup/(?!index.php)
 ^public/uploads/(?!index.php)
 ^public/temporary/(?!index.php)
 ^public/.htaccess

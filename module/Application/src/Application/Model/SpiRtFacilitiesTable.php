@@ -218,8 +218,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 		foreach ($rResult as $aRow) {
 		 $row = array();
 		 
-		 $row[] = $aRow['facility_id'];
-		 $row[] = $aRow['facility_name'];
+		 $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(\''.$aRow['facility_id'].'\',\'facilityId\')">'.$aRow['facility_id'].'</a>';
+		 $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(\''.$aRow['facility_name'].'\',\'facilityName\')">'.$aRow['facility_name'].'</a>';
 		 $row[] = $aRow['email'];
 		 $row[] = $aRow['contact_person'];
 		 if($update){
