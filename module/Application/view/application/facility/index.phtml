@@ -65,15 +65,17 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 					<thead>
 					<tr>
 						<th>Facility Id</th>
-						<th>Testing Point Name</th>
-						<th>Audit Date</th>
-						<th>Audit Score(%)</th>
+						<th>Facility Name</th>
+						<th>Testing Point Type</th>
+						<th>Date of Audit</th>
+						<th>Score(%)</th>
+						<th>Report</th>
 						
 					</tr>
 					</thead>
 					<tbody>
 					<tr>
-						 <td colspan="4" class="dataTables_empty">Loading data from server</td>
+						 <td colspan="6" class="dataTables_empty">Loading data from server</td>
 					</tr>
 					</tbody>
 				</table>
@@ -123,6 +125,8 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 				{"sClass":"center noWrap"},
 				{"sClass":"center noWrap"},
 				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
+				{"sClass":"center noWrap"},
             ],
             "aaSorting": [[ 0, "desc" ]],
             "bProcessing": true,
@@ -141,4 +145,9 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
             }
         });
     }
+	
+	function downloadPdf(formId){
+	window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+	return false;
+	}
 </script>

@@ -1223,8 +1223,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	
-        $aColumns = array('facilityname','testingpointname',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'AUDIT_SCORE_PERCANTAGE');
-        $orderColumns = array('facilityname','testingpointname','assesmentofaudit','AUDIT_SCORE_PERCANTAGE');
+        $aColumns = array('facilityid','facilityname','testingpointname',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'AUDIT_SCORE_PERCANTAGE');
+        $orderColumns = array('facilityid','facilityname','testingpointname','assesmentofaudit','AUDIT_SCORE_PERCANTAGE');
 
         /*
         * Paging
@@ -1349,16 +1349,27 @@ class SpiFormVer3Table extends AbstractTableGateway {
            "iTotalDisplayRecords" => $iFilteredTotal,
            "aaData" => array()
         );
-		
+		$loginContainer = new Container('credo');
+        $role = $loginContainer->roleCode;
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+            $downloadPdfAction = true;
+        } else {
+            $downloadPdfAction = false;
+        }
 		$commonService = new \Application\Service\CommonService();
 		foreach ($rResult as $aRow) {
 		 $row = array();
-		 
+		 $downloadPdf="";
 		 
 		 $row[] = $aRow['facilityid'];
-         $row[] = $aRow['testingpointname'];
+		 $row[] = ucwords($aRow['facilityname']);
+         $row[] = $aRow['testingpointtype'];
 		 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
 		 $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
+        if($downloadPdfAction){
+            $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+        }
+        $row[] = $downloadPdf;
 		 $output['aaData'][] = $row;
 		}
 		return $output;
