@@ -107,9 +107,8 @@ class FacilityService {
             $message = '';
             $message.= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#DFDFDF;">';
               $message.= '<tr><td align="center">';
-                $message.= '<table cellpadding="3" style="width:55%;font-family:Helvetica,Arial,sans-serif;margin:30px 0px 30px 0px;padding:2% 0% 0% 2%;background-color:#ffffff;">';
+                $message.= '<table cellpadding="3" style="width:92%;font-family:Helvetica,Arial,sans-serif;margin:30px 0px 30px 0px;padding:2% 0% 0% 2%;background-color:#ffffff;">';
                   $message.= '<tr><td>Hi <strong>'.ucwords($params['facilityName']).'</strong>,</td></tr>';
-                  $message.= '<tr><td>Message details is showing below..</td></tr>';
                   $message.= '<tr><td><p>'.ucfirst(trim($params['message'])).'</p></td></tr>';
                 $message.= '</table>';
               $message.= '</tr></td>';

@@ -211,8 +211,8 @@ class CommonService {
                         $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id);
                         while (($filename = readdir($dh)) !== false) {
                             if ($filename != "." && $filename != "..") {
-                                $extension = strtolower(pathinfo($dirPath . DIRECTORY_SEPARATOR . $filename, PATHINFO_EXTENSION));
-                                $attachment = new MimePart($dh. DIRECTORY_SEPARATOR. $filename);
+                                $fileContent = fopen($dirPath. DIRECTORY_SEPARATOR. $filename, 'r');
+                                $attachment = new MimePart($fileContent);
                                 $attachment->filename    = $filename;
                                 $attachment->type        = Mime::TYPE_OCTETSTREAM;
                                 $attachment->encoding    = Mime::ENCODING_BASE64;
