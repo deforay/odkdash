@@ -1,6 +1,7 @@
 <?php
-// Extend the TCPDF class to create custom Header and Footer
-class MYPDF extends TCPDF {
+if($formData){
+    // Extend the TCPDF class to create custom Header and Footer
+    class MYPDF extends TCPDF {
 
     //Page header
     public function Header() {
@@ -1725,3 +1726,6 @@ $pdf->Output($filePath, "F");
 //============================================================+
 // END OF FILE
 //============================================================+
+}else{
+    //No CASE
+}
