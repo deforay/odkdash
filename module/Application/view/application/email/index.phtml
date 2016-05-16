@@ -91,11 +91,15 @@
 	<?php
 	if(isset($ids) && trim($ids)!= ''){
 	  $xplodeIds = explode("#",base64_decode($ids));
-	  if(count($xplodeIds) >1){
-	    for($d=1;$d<count($xplodeIds);$d++){
+	  if(count($xplodeIds) >1){ ?>
+	    if(getCookie('dpdf') == null || getCookie('dpdf')!= '<?php echo $ids; ?>' ) {
+	    <?php for($d=1;$d<count($xplodeIds);$d++){
 	?>
 	    generatePdf('<?php echo $xplodeIds[0]; ?>','<?php echo $xplodeIds[$d]; ?>');
-	<?php } } }
+	<?php } ?>
+	      setCookie('dpdf','<?php echo $ids; ?>');
+	    }
+	<?php } }
 	?>
     });
     
