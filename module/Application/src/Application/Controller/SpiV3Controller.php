@@ -4,7 +4,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Json\Json;
+
 class SpiV3Controller extends AbstractActionController
 {
 
@@ -25,13 +25,12 @@ class SpiV3Controller extends AbstractActionController
 
     public function printAction()
     {
-        
         $id = ($this->params()->fromRoute('id'));
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $formData = $odkFormService->getFormData($id);
-        
+
         $viewModel = new ViewModel(array('formData' => $formData));
-        
+
         $viewModel->setTerminal(true);
         return $viewModel;
     }
@@ -40,28 +39,30 @@ class SpiV3Controller extends AbstractActionController
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $allSubmissions = $odkFormService->getAllSubmissions('DESC');
-        
+
         $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
-        
+
         $viewModel->setTerminal(true);
         return $viewModel;
     }
 
-    public function approveStatusAction(){
+    public function approveStatusAction()
+    {
         $request = $this->getRequest();                
-         if ($request->isPost()) {
-            $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result= $odkFormService->approveFormStatus($params);
-            $viewModel = new ViewModel(array(
-                        'result' => $result
-                    ));
-            $viewModel->setTerminal(true);
-            return $viewModel;
-        }
+                 if ($request->isPost()) {
+                    $params = $request->getPost();
+                    $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+                    $result= $odkFormService->approveFormStatus($params);
+                    $viewModel = new ViewModel(array(
+        'result' => $result
+                            ));
+                    $viewModel->setTerminal(true);
+                    return $viewModel;
+                }
     }
-    
-    public function downloadPdfAction(){
+
+    public function downloadPdfAction()
+    {
         $id = ($this->params()->fromRoute('id'));
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $formData = $odkFormService->getFormData($id);
@@ -69,18 +70,19 @@ class SpiV3Controller extends AbstractActionController
         $viewModel->setTerminal(true);
         return $viewModel;
     }
-    public function correctiveActionPdfAction(){
-        
+
+    public function correctiveActionPdfAction()
+    {
         $id = ($this->params()->fromRoute('id'));
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $formData = $odkFormService->getFormData($id);
-        
+
         $viewModel = new ViewModel(array('formData' => $formData));
-        
+
         $viewModel->setTerminal(true);
         return $viewModel;
     }
-    
+
     public function editAction()
     {
         $request = $this->getRequest();
@@ -97,8 +99,8 @@ class SpiV3Controller extends AbstractActionController
                     'formData' => $result,
                 ));
         }
-       
     }
+
     public function auditPerformanceAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -107,11 +109,12 @@ class SpiV3Controller extends AbstractActionController
             $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
             $perf1 = $odkFormService->getPerformance();
             $viewModel = new ViewModel();
-                $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
-                        ->setTerminal(true);
-                return $viewModel;
+            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
+                      ->setTerminal(true);
+            return $viewModel;
         }
     }
+
     public function worstPerformanceAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -120,11 +123,12 @@ class SpiV3Controller extends AbstractActionController
             $zeroCounts = $odkFormService->getZeroQuestionCounts($params);
             $spiV3Labels = $odkFormService->getSpiV3FormLabels();
             $viewModel = new ViewModel();
-                $viewModel->setVariables(array('zeroCounts' => $zeroCounts,'spiV3Labels' => $spiV3Labels,'limitBar'=>$params['limitBar']))
+            $viewModel->setVariables(array('zeroCounts' => $zeroCounts,'spiV3Labels' => $spiV3Labels,'limitBar'=>$params['limitBar']))
                         ->setTerminal(true);
-                return $viewModel;
+            return $viewModel;
         }
     }
+
     public function auditLocationsAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -137,6 +141,7 @@ class SpiV3Controller extends AbstractActionController
                 return $viewModel;
         }
     }
+
     public function manageFacilityAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -154,7 +159,7 @@ class SpiV3Controller extends AbstractActionController
                 ));
         }
     }
-    
+
     public function mergeFacilityNameAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -167,5 +172,12 @@ class SpiV3Controller extends AbstractActionController
                 return $viewModel;
         }
     }
+
+    public function mapAction()
+    {
+        return new ViewModel();
+    }
+
+
 }
 

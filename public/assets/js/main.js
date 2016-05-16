@@ -247,77 +247,6 @@ var App = (function () {
     });
   }
 
-  function chatWidget(){
-    var chat = $(".am-right-sidebar .tab-pane.chat");
-    var contactsEl = $(".chat-contacts", chat);
-    var conversationEl = $(".chat-window", chat);
-    var messagesContainer = $(".chat-messages", conversationEl);
-    var messagesList = $(".content > ul", messagesContainer);
-    var messagesScrollContent = $(".nano-content", messagesContainer);
-    var chatInputContainer = $(".chat-input", conversationEl);
-    var chatInput = $("input", chatInputContainer);
-    var chatInputSendButton = $(".send-msg", chatInputContainer);
-
-    function openChatWindow(){
-      if( !chat.hasClass("chat-opened") ){
-        chat.addClass("chat-opened");
-        $(".am-scroller", messagesContainer).nanoScroller();
-      }
-    }
-
-    function closeChatWindow(){
-      if( chat.hasClass("chat-opened") ){
-        chat.removeClass("chat-opened");
-      }
-    }
-
-    /*Open Conversation Window when click on chat user*/
-    $(".user a", contactsEl).on('click',function( e ){
-      $(".am-scroller", contactsEl).nanoScroller({ stop: true });
-      openChatWindow();
-      e.preventDefault();
-    });
-
-    /*Close chat conv window*/
-    $(".title .return", conversationEl).on('click',function( e ){
-      closeChatWindow();
-      scrollerInit();
-    });
-
-    /*Send message*/
-    function sendMsg(msg, self){
-      var $message = $('<li class="' + ((self)?'self':'friend') + '"></li>');
-
-      if( msg != '' ){
-        $('<div class="msg">' + msg + '</div>').appendTo($message);
-        $message.appendTo(messagesList);
-
-        messagesScrollContent.stop().animate({
-          'scrollTop': messagesScrollContent.prop("scrollHeight")
-        }, 900, 'swing');
-
-        scrollerInit();
-      }
-    }
-
-    /*Send msg when click on 'send' button or press 'Enter'*/
-      chatInput.keypress(function(event){
-        var keycode = (event.keyCode ? event.keyCode : event.which);
-        var msg = $(this).val();
-
-        if(keycode == '13'){
-          sendMsg(msg, true);
-          $(this).val("");
-        }
-        event.stopPropagation();
-      });
-
-      chatInputSendButton.on('click',function(){
-        var msg = chatInput.val();
-        sendMsg(msg, true);
-        chatInput.val("");
-      });
-  }
 
   function scrollerInit(){
     $(".am-scroller").nanoScroller();
@@ -376,7 +305,7 @@ var App = (function () {
       
       /*Right Sidebar*/
         rightSidebarInit();
-        chatWidget();
+        
 
       /*Sidebars Swipe*/
         sidebarSwipe();

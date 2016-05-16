@@ -82,8 +82,9 @@ class Module
 		$privilege = $params['action'];
 		
 		$role = $session->roleCode;
+		
 	       //\Zend\Debug\Debug::dump($resource);die;
-		if($e->getRequest()->isXmlHttpRequest()) {
+		if($e->getRequest()->isXmlHttpRequest() || $role == 'SA') {
 		  return;
 		}else{
 		    if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {

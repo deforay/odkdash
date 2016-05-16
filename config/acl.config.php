@@ -24,6 +24,7 @@ return array(
             'approve-status' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
+            'audit-locations' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
@@ -60,6 +61,7 @@ return array(
             'corrective-action-pdf' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
+            'audit-locations' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
@@ -92,6 +94,7 @@ return array(
             'approve-status' => 'deny',
             'download-pdf' => 'allow',
             'edit' => 'deny',
+            'audit-locations' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'deny',

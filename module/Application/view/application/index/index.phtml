@@ -51,6 +51,10 @@
 }
 .limitBar{width: 10%;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
   
+  
+ 
+    .highcharts-legend{display: block !important;}
+ 
 </style>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
@@ -126,24 +130,19 @@
 			<div class="col-md-6">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3 style="">Audit Dates</h3></span>
+				  <span class="title"><h3>Testing Volume</h3></span>
 				</div>
-				<div class="widget-calendar">
-				  <div class="cal-container">
-					<div class="cal-calendar">
-			  
-					  <div class="ui-datepicker"></div>
-					</div>
-				  </div>
+				<div class="chart-container">
+				  <div style="width:100%;height:340px" id="volumeChart"></div>
 				</div>
-			</div>
-		  </div>			
+			  </div>			  
+			</div>			
 			
 			
 			<div class="col-md-6">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3>Last 30 Audits</h3></span>
+				  <span class="title"><h3>Last 20 Audits</h3></span>
 				</div>
 				<div class="chart-container">
 				  <div id="audit-points-barchart"  style="width:100%;height:340px"></div>
@@ -197,7 +196,7 @@
 							  </select>
 					  </div>
 					</div>
-                    <div class="chart-container" id="zeroCountChart"></div>				
+                    <div class="chart-container" id="zeroCountChart"></div>
                   </div>
 				  
 			</div>			
@@ -224,6 +223,40 @@
             </div>
 
           </div>
+		  
+		  <div class="row">
+			
+			
+			<div class="col-md-6">
+			  <div class="widget">
+
+				<div class="widget-calendar">
+				  <div class="widget-head">
+					<span class="title"><h3 style="">Audit Dates</h3></span>
+				  </div>				  
+				  <div class="cal-container">
+					<div class="cal-calendar">
+					  <div class="ui-datepicker"></div>
+					</div>
+				  </div>
+				</div>
+			</div>
+		  </div>			
+			
+			
+			<div class="col-md-6">
+			  <div class="widget">
+				<div class="widget-head">
+				  <span class="title"><h3></h3></span>
+				</div>
+				<div class="chart-container">
+				  
+				</div>
+			  </div>
+			</div>
+
+		  </div>
+		  
 		  
 		  <div class="row">
 			<div class="col-md-12 col-sm-12">
@@ -274,9 +307,7 @@
 
         </div>
       </div>
-<script type="text/javascript"
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places">
-</script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
 
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
@@ -284,26 +315,27 @@
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://highcharts.github.io/pattern-fill/pattern-fill.js"></script>
 
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
 
     <script type="text/javascript">
       
-      var color1 = "red";
-      var color2 = "orange";
-      var color3 = "yellow";
-      var color4 = "#8DD63E";
-      var color5 = "#528A16";
+		var color1 = "red";
+		var color2 = "orange";
+		var color3 = "yellow";
+		var color4 = "#8DD63E";
+		var color5 = "#528A16";
 
-  //Get the template css colors into js vars
-  function getColor( c ){
-    var tmp = $("<div>", { class: c }).appendTo("body");
-    var color = tmp.css("background-color");
-    tmp.remove();
-
-    return color;
-  }
+		//Get the template css colors into js vars
+		function getColor( c ){
+		  var tmp = $("<div>", { class: c }).appendTo("body");
+		  var color = tmp.css("background-color");
+		  tmp.remove();
+	  
+		  return color;
+		}
   
 		var colors = {};
 		colors.primary = getColor('clr-primary');
@@ -316,7 +348,7 @@
         colors.alt3    = getColor('clr-alt3');
         colors.alt4    = getColor('clr-alt4');
       
-function widget_top_1(){
+		function widget_top_1(){
 
 
 		<?php
@@ -421,12 +453,12 @@ function widget_top_1(){
 	  
 	  var options = {
 		  segmentShowStroke: false,
-		      animationSteps : 20,
+		  animationSteps : 20,
 		  animateRotate: true,
 		  animateScale: false,
 		  percentageInnerCutout: 50,
 		  tooltipTemplate: "<%= value %>",
-		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
+		  legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
 	  }
 	  
 	  var ctx = document.getElementById("widget-top-2").getContext("2d");
@@ -485,12 +517,12 @@ function widget_top_1(){
 	  
 	  var options = {
 		  segmentShowStroke: false,
-		      animationSteps : 20,
+		  animationSteps : 20,
 		  animateRotate: true,
 		  animateScale: false,
 		  percentageInnerCutout: 50,
 		  tooltipTemplate: "<%= value %>",
-		      legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
+		  legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
 
 	  }
 	  
@@ -508,34 +540,37 @@ function widget_top_1(){
 	
 <?php
 
-
-					  $counter = 0;
-					  $barData = array();
-					  $labNameData = array();
-					  foreach($allSubmissions as $row) {
-						if($counter == 30) break;
-						
-						if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
-						  $color = '#FF0000';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <60){
-						  $color = '#FFA500';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <80){
-						  $color = '#FFFF00';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <90){
-						  $color = '#8DD63E';
-						}else if($row['AUDIT_SCORE_PERCANTAGE'] >= 90){
-						  $color = '#528A16';
-						}
-						
-						$barData[] = "{ y : ".round($row['AUDIT_SCORE_PERCANTAGE'],2). ", color : '".$color."' }"; 
-						$labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
-						$counter++;
-					  }
-					?>		
+	$counter = 0;
+	$barData = array();
+	$volumeData = array();
+	$labNameData = array();
+	foreach($allSubmissions as $row) {
+	  if($counter == 20) break;
+	  if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
+		$color = '#FF0000';
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <60){
+		$color = '#FFA500';
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <80){
+		$color = '#FFFF00';
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <90){
+		$color = '#8DD63E';
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 90){
+		$color = '#528A16';
+	  }
+	  
+	  $barData[] = "{ y : ".round($row['AUDIT_SCORE_PERCANTAGE'],2). ", color : '".$color."' }"; 
+	  $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0); 
+	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
+	  $counter++;
+	  
+	  
+	  
+	}
+?>
 	
 $('#audit-points-barchart').highcharts({
         chart: {
-            type: 'column'
+			zoomType: 'xy'
         },
         title: {
             text: ''
@@ -551,34 +586,79 @@ $('#audit-points-barchart').highcharts({
 			  enabled: false
 			}
         },
-		 legend: {
-            enabled: false
+		  legend: {
+            enabled: true
         },
-        yAxis: {
-            min: 0,
-			max : 100,
+        yAxis: [
+		  
+		  { // Primary yAxis
+            labels: {
+                format: '{value}%',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
             title: {
-                text: 'Audit Score in %'
-            }
-        },
+                text: 'Audit score in %',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+			min : 0,
+			max : 100
+        }, { // Secondary yAxis
+            title: {
+                text: 'Testing Volume',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            labels: {
+                format: '{value}',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            opposite: true
+        }
+        ],
         tooltip: {
             headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
             pointFormat: '<tr><td style="padding:0;font-size:10px">{series.name}: </td>' +
-                '<td style="padding:0;font-size:10px">{point.y:.1f}</td></tr>',
+                '<td style="padding:0;font-size:10px">{point.y:.2f}</td></tr>',
             footerFormat: '</table>',
             shared: true,
             useHTML: true
         },
         plotOptions: {
             column: {
-                pointPadding: 0.2,
+                pointPadding: 0,
                 borderWidth: 0
             }
         },
         series: [{
-            name: 'Audit Score Percentage',
-            data: [<?php echo implode(",",$barData); ?>]
-        }]
+					  name: 'Audit Score Percentage',
+					  data: [<?php echo implode(",",$barData); ?>],
+					  stack : 'score',
+					  type : 'column',
+					  tooltip: {
+		                valueSuffix: ' %'
+		              }
+				  },{
+					  name: 'Testing Volume',
+					  type : 'column',
+					  data: [<?php echo implode(",",$volumeData); ?>],
+					  stack : 'volume',
+					  color: {
+							  pattern : "https://raw.githubusercontent.com/highslide-software/pattern-fill/master/graphics/pattern3.png",
+							  width: 6,
+							  height: 6
+							 },
+					  yAxis: 1,
+					  tooltip: {
+		                valueSuffix: ' Tests'
+		              }
+				  }]
     });	
 	
     }
@@ -739,27 +819,181 @@ function getAuditWorstDetails()
         widget_top_2();
         widget_top_3();
         //radar_chart();
-	getAuditDetails();
+		getAuditDetails();
         calendar_widget();
 		bar_chart();
 		//zeroCountsBarChart();
 		getAuditWorstDetails();
 		
 		getAuditLocationDetails();
-	//	new Maplace({
-	//	  locations: LocsA,
-	//	  map_div: '#gmap',
-	//      controls_on_map: true,
-	//	  map_options : {
-	//		  mapTypeId: google.maps.MapTypeId.ROADMAP,
-	//		  zoom: 8,
-	//		   scrollwheel: false
-	//	  }
-	//	}).Load();
+
 		
 		
 	  $("#auditRndNo").multipleSelect({placeholder:'Select audit round(s)',width: '31%',minimumCountSelected:'2'});
 	  $("#auditRndWorstNo").multipleSelect({placeholder:'Select audit round(s)',width: '31%',minimumCountSelected:'2'});
 	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '40%',minimumCountSelected:'2'});
       });
+	  
+	  
+	  
+	  
+	  
+$(function () {
+  
+  
+<?php
+
+	$counter = 0;
+	$barData = array();
+	$volumeData = array();
+	$labNameData = array();
+	
+	foreach($allSubmissions as $row) {
+	  if($counter == 10) break;
+	  if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
+		$color = '#FF0000';
+		$level = 0;
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <60){
+		$color = '#FFA500';
+		$level = 1;
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <80){
+		$color = '#FFFF00';
+		$level = 2;
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <90){
+		$color = '#8DD63E';
+		$level = 3;
+	  }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 90){
+		$color = '#528A16';
+		$level = 4;
+	  }
+	  
+	  $levelData[] = "{ y : ".$level. ", color : '".$color."' }"; 
+	  $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0); 
+	  $testerData[] = (isset($row['NumberofTester']) ? floor($row['avgMonthTesting']/$row['NumberofTester']) : 0); 
+	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
+	  $counter++;
+	  
+	}
+?>  
+  
+  
+  
+  
+    $('#volumeChart').highcharts({
+        chart: {
+            zoomType: 'xy'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: [{
+            categories: [<?php echo implode(",",$labNameData); ?>],
+            crosshair: true,
+			labels:
+			{
+			  enabled: false
+			}
+        }],
+        yAxis: [{ // Primary yAxis
+            labels: {
+                format: '{value}',
+                style: {
+                    color: Highcharts.getOptions().colors[2]
+                }
+            },
+            title: {
+                text: 'No. of Tests/Tester',
+                style: {
+                    color: Highcharts.getOptions().colors[2]
+                }
+            },
+            opposite: true
+
+        }, { // Secondary yAxis
+            gridLineWidth: 0,
+            title: {
+                text: 'Level',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            labels: {
+                format: '{value}',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+			min : 0,
+			max : 4
+
+        }, { // Tertiary yAxis
+            gridLineWidth: 0,
+            title: {
+                text: 'Testing Volume',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            labels: {
+                format: '{value}',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            opposite: true
+        }],
+        tooltip: {
+            shared: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0,
+                borderWidth: 0
+            }
+        },		
+        legend: {
+            enabled: true
+        },
+        series: [{
+            name: 'Level',
+            type: 'column',
+            yAxis: 1,
+            data: [<?php echo implode(",",$levelData); ?>],
+            tooltip: {
+                valueSuffix: ' '
+            }
+
+        }, {
+            name: 'Testing Volume',
+            type: 'column',
+            yAxis: 2,
+            data: [<?php echo implode(",",$volumeData); ?>],
+			color: {
+			  pattern : "https://raw.githubusercontent.com/highslide-software/pattern-fill/master/graphics/pattern3.png",
+			  width: 6,
+			  height: 6
+			},	
+            tooltip: {
+                valueSuffix: ' Tests'
+            }
+
+        }, {
+            name: 'Testers',
+            type: 'column',
+            data: [<?php echo implode(",",$testerData); ?>],
+            tooltip: {
+                valueSuffix: ' Tests'
+            },
+			color: '#3598DC',
+
+        }]
+    });
+});
+
+	  
+	  
+	  
     </script>
