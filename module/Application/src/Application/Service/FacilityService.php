@@ -169,4 +169,9 @@ class FacilityService {
         $acl = $this->sm->get('AppAcl');
         return $sbiFormDb->fetchAllTestingPointsBasedOnFacility($parameters,$acl);
     }
+    
+    public function getFacilityProfileByAudit($ids){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchFacilityProfileByAudit($ids);
+    }
 }

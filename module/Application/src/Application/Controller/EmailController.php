@@ -30,9 +30,12 @@ class EmailController extends AbstractActionController {
         }
         $ids = $this->params()->fromRoute('id');
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $facilityService = $this->getServiceLocator()->get('FacilityService');
         $result = $odkFormService->getAllFacilityNames();
+        $facilityResult = $facilityService->getFacilityProfileByAudit($ids);
         return new ViewModel(array(
             'facilityName' => $result,
+            'facilityResult' => $facilityResult,
             'ids' => $ids
         ));
     }

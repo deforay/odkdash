@@ -27,16 +27,16 @@
                                     if(isset($facilityName['allName']) && count($facilityName['allName']) > 0) {
                                       foreach($facilityName['allName'] as $facilities) {
                                     ?>
-                                      <option value="<?php echo $facilities['facility_name']; ?>"><?php echo ucwords($facilities['facility_name']); ?></option>
+                                      <option value="<?php echo $facilities['facility_name']; ?>" <?php if(isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facility_name']) { ?> selected="selected"<?php } ?>><?php echo ucwords($facilities['facility_name']); ?></option>
                                     <?php } } ?>
                                 </select>
                             </div>
                         </div>
-			<div class="row facilityProfile" style="display:none;">
+			<div class="row facilityProfile" <?php if(!isset($facilityResult['fResult']->facility_name)) { ?>style="display:none;"<?php } ?>>
                             <div class="form-group col-lg-6">
                                 <label>Facility Email Address <span class="mandatory">*</span></label>
 				<input type="hidden" class="" name="facilityName" id="facilityName"/>
-                                <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="Enter Email Address" title="Please enter facility email address"/>
+                                <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="Enter Email Address" title="Please enter facility email address" <?php if(isset($facilityResult['fResult']->facility_name)) { ?> value="<?php echo $facilityResult['fResult']->email; ?>"<?php } ?>/>
                             </div>
                         </div>
                         <div class="row">
@@ -44,7 +44,11 @@
                                 <label>Choose Audits </label>
                                 <div id="ajaxAudit">
                                     <select class="" name="audits[]" id="audits" multiple="multiple" title="Please select the audits">
-                                        
+					 <?php if(isset($facilityResult['auditsResult']) && count($facilityResult['auditsResult']) > 0) {
+						foreach($facilityResult['auditsResult'] as $audits){
+					?>
+					  <option value="<?php echo $audits['id']; ?>" <?php echo ($ids == base64_encode($audits['id']))? 'selected=selected':''; ?>><?php echo $audits['testingpointname'].' - '.$audits['assesmentofaudit']; ?></option>
+					<?php } } ?>
                                     </select>
                                 </div>
                             </div>

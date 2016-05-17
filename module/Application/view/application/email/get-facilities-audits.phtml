@@ -3,7 +3,7 @@ $audits = '';
 $audits.='<select class="" name="audits[]" id="audits" multiple="multiple" title="Please select the audits">';
     if(count($result['audits']) > 0){
         foreach($result['audits'] as $audit){
-            $audits.='<option value="'.$audit['id'].'"> '.$audit['testingpointname'].' -'.$audit['assesmentofaudit'].'</option>';
+            $audits.='<option value="'.$audit['id'].'"> '.$audit['testingpointname'].' - '.$audit['assesmentofaudit'].'</option>';
         }
     }
 $audits.='</select>';

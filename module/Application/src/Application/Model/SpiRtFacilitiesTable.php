@@ -259,6 +259,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
     }
     
     public function addFacilityName($facilityName){
+	$dbAdapter = $this->adapter;
+	$sql = new Sql($dbAdapter);
 	$fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$facilityName));
 	$fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
 	$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -275,6 +277,35 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	if(isset($params['facilityName']) && trim($params['facilityName'])!= ''){
 	    $result = 1;
 	    $this->update(array('email'=>$params['emailAddress']),array('facility_name'=>$params['facilityName']));
+	}
+      return $result;
+    }
+    
+    public function fetchFacilityProfileByAudit($ids){
+	$result = array();
+	$dbAdapter = $this->adapter;
+	$sql = new Sql($dbAdapter);
+	if(isset($ids) && trim($ids)!= ''){
+	    $auditId = base64_decode($ids);
+	    $auditQuery = $sql->select()->from(array('spiv3'=>'spi_form_v_3'))
+	                                ->columns(array('facilityname'))
+	                                ->where(array('spiv3.id'=>$auditId));
+	    $auditQueryStr = $sql->getSqlStringForSqlObject($auditQuery);
+	    $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+	    if($auditResult){
+		$auditsQuery = $sql->select()->from(array('spiv3'=>'spi_form_v_3'))
+	                                     ->columns(array('id','testingpointname','assesmentofaudit'))
+					     ->where(array('spiv3.facilityname'=>$auditResult->facilityname,'spiv3.status'=>'approved'));
+	        $auditsQueryStr = $sql->getSqlStringForSqlObject($auditsQuery);
+	        $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+		
+		$fQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+	                                ->columns(array('facility_name','email'))
+	                                ->where(array('spirt3.facility_name'=>$auditResult->facilityname));
+	        $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+	        $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+	    }
+	   $result = array('fResult'=>$fResult,'auditsResult'=>$auditsResult);
 	}
       return $result;
     }

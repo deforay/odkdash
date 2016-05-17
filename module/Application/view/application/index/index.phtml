@@ -272,7 +272,7 @@
 						  <td>Testing Point Name</td>
 						  <td>Testing Point Type</td>
 						  <td>Status</td>
-						  
+						  <td>Actions</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -289,7 +289,7 @@
 						  <td><?php echo $row['testingpointname']; ?></td>
 						  <td><?php echo $row['testingpointtype']; ?></td>
 						  <td><?php echo ucfirst($row['status']); ?></td>
-						  
+						  <td><?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>" class="btn btn-primary btn-sm">Send Mail</a><?php } ?></td>
 						</tr>
                       <?php
 						$count++;
