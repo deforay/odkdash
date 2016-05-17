@@ -359,18 +359,29 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     
-    public function getPerformanceLast30Days(){
-     
+    public function getPerformanceLast30Days($params){
+        //\Zend\Debug\Debug::dump($params);die;
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         
-        $today = date('Y-m-d');
-        $last30Date = date('Y-m-d', strtotime('-30 days', strtotime($today)));
+        $start_date = date('Y-m-d');
+        $end_date = date('Y-m-d', strtotime('-30 days', strtotime($start_date)));
+        
+        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+            $dateField = explode(" ", $params['dateRange']);
+            if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                $start_date = $this->dateFormat($dateField[2]);                
+            }
+            if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                $end_date = $this->dateFormat($dateField[0]);
+            }
+        }
+        
         
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
-                                                'newestDate' => new \Zend\Db\Sql\Expression("'$today'"),
-                                                'oldestDate' => new \Zend\Db\Sql\Expression("'$last30Date'"),
+                                                'newestDate' => new \Zend\Db\Sql\Expression("'$start_date'"),
+                                                'oldestDate' => new \Zend\Db\Sql\Expression("'$end_date'"),
                                                 'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),                                    
                                                 'level0' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
                                                 'level1' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 40 and ROUND(AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
@@ -378,8 +389,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level3' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 80 and ROUND(AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
-                                ->where("status='approved'")
-                                ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
+                                ->where("status='approved'");
+        if (trim($start_date) != "" && trim($end_date) != "") {
+            //$sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
+            $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN '" . $start_date ."' - INTERVAL DATEDIFF('".$start_date."','".$end_date."') DAY AND '".$start_date."')");
+        }else{
+            $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
+        }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -862,6 +878,19 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $roundNo = implode(",",$params['roundno']);
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
+        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+            $dateField = explode(" ", $params['dateRange']);
+            if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                $start_date = $this->dateFormat($dateField[0]);                
+            }
+            if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                $end_date = $this->dateFormat($dateField[2]);
+            }
+        }
+        if (trim($start_date) != "" && trim($end_date) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
+        }
+        
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

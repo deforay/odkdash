@@ -28,9 +28,9 @@ class OdkFormService {
     }
    
     
-    public function getPerformanceLast30Days($params = null) {
+    public function getPerformanceLast30Days($params) {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getPerformanceLast30Days();
+        return $db->getPerformanceLast30Days($params);
     }
    
     

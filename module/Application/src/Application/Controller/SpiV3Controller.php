@@ -177,6 +177,19 @@ class SpiV3Controller extends AbstractActionController
     {
         return new ViewModel();
     }
+    
+    public function spirtv3DatewiseAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $perflast30 = $odkFormService->getPerformanceLast30Days($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('perflast30' => $perflast30))
+                        ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 
 
 }
