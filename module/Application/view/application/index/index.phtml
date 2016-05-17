@@ -182,33 +182,37 @@
 				  </div>
 				  <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
-                      <span class="title"><h3>Worst Performing Questions</h3></span>
+                      <span class="title"><h3>Worst Performing Questions</h3>
+			    <label style="margin-left:2%;">Rounds</label>
+				  <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+					<?php
+					  foreach($spiV3auditRoundNo as $auditRoundNo)
+					  {
+						?>
+						<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+						<?php
+					  }
+					  ?>
+					</select>
+		      </span>
+		      
 					  <div style="margin-top:2%;">
-						<label style="margin-left:1%;">Audit Round</label>
-							  <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
-								<?php
-								  foreach($spiV3auditRoundNo as $auditRoundNo)
-								  {
-									?>
-									<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
-									<?php
-								  }
-								  ?>
-								</select>
-								<label style="margin-left: 1%;">Limit</label>
-							  <select class="limitBar" style="" id="limitBar" onchange="getAuditWorstDetails()">
-								<option value="5">5</option>
-								<option value="10" selected="selected">10</option>
-								<option value="15">15</option>
-								<option value="20">20</option>
-								<option value="30">30</option>
-							  </select>
+						<label style="margin-left: 1%;">Limit</label>
+			    <select class="limitBar" style="" id="limitBar" onchange="getAuditWorstDetails()">
+				  <option value="5">5</option>
+				  <option value="10" selected="selected">10</option>
+				  <option value="15">15</option>
+				  <option value="20">20</option>
+				  <option value="30">30</option>
+			    </select>
+								
+							  <label style="margin-left: 1%;">Testing Volume</label>
+							  <input style="width:38%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="worstDate">
+							  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>
+							  </div>
 					  </div>
 					  <div style="margin-top:2%">
-					  <label style="float: left;margin-right: 1%;">Testing Volume</label>
-					  <input style="width: 35%" type="text" placeholder="Enter Date" class="col-lg-6 limitBar datepicker" id="worstDate">
-					  <a style="margin-left: 1%;" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>
-					  </div>
+					  
 					</div>
                     <div class="chart-container" id="zeroCountChart" style="height:420px;"></div>
                   </div>
@@ -847,8 +851,8 @@ function getAuditWorstDetails()
 
 		
 		
-	  $("#auditRndNo").multipleSelect({placeholder:'Select audit round(s)',width: '31%',minimumCountSelected:'2'});
-	  $("#auditRndWorstNo").multipleSelect({placeholder:'Select audit round(s)',width: '31%',minimumCountSelected:'2'});
+	  $("#auditRndNo").multipleSelect({placeholder:'Select Audit round(s)',width: '31%',minimumCountSelected:'2'});
+	  $("#auditRndWorstNo").multipleSelect({placeholder:'Audit round(s)',width: '25%',minimumCountSelected:'2'});
 	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '40%',minimumCountSelected:'2'});
       });
 	  
