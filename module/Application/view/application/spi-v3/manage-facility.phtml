@@ -114,7 +114,6 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
 </div>
 <script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
 <script type="text/javascript">
-    table = null;
   
   $(document).ready(function () {
    table = $('#example').DataTable({
@@ -181,8 +180,25 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
         }
     }
     function downloadPdf(formId){
-    window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
-    return false;
-   }
+      window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+      return false;
+    }
     
+    function deleteAudit(auditId){
+        if($.trim(auditId)!= ""){
+            var conf = confirm("Are you sure you want to delete this audit?");
+            if(conf){
+                $.post("<?php echo $this->url('spi-v3-form',array('action'=>'delete')); ?>", {deleteId:auditId},
+                    function(data){
+                        if(data == 0){
+                          alert("OOPS..We have experienced the problem.Please try again!");
+                        }else{
+                          table.draw();
+                        }
+                    });
+            }
+        }else{
+           alert("OOPS..We have experienced the problem.Please try again!");
+        }
+    }
 </script>

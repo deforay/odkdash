@@ -161,4 +161,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchFacilitiesAudits($params);
     }
+    
+    public function deleteAuditData($params){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->deleteAuditRowData($params);
+    }
 }

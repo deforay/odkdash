@@ -178,6 +178,16 @@ class SpiV3Controller extends AbstractActionController
         return new ViewModel();
     }
 
-
+    public function deleteAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $result=$odkFormService->deleteAuditData($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
 
