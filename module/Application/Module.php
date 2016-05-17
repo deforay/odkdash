@@ -71,28 +71,30 @@ class Module
                 //Attach the "break" as a listener with a high priority
                 $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
                 return $response;
-            }else {
-		$sm = $e->getApplication()->getServiceManager();
-		$viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
-		$acl = $sm->get('AppAcl');
-		$viewModel->acl = $acl;
-
-		$params = $e->getRouteMatch()->getParams();
-		$resource = $params['controller'];
-		$privilege = $params['action'];
+            }
+			else {
+				$sm = $e->getApplication()->getServiceManager();
+				$viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
+				$acl = $sm->get('AppAcl');
+				$viewModel->acl = $acl;
+				$session->acl = serialize($acl);
 		
-		$role = $session->roleCode;
+				$params = $e->getRouteMatch()->getParams();
+				$resource = $params['controller'];
+				$privilege = $params['action'];
+				
+				$role = $session->roleCode;
 		
-	       //\Zend\Debug\Debug::dump($resource);die;
-		if($e->getRequest()->isXmlHttpRequest() || $role == 'SA') {
-		  return;
-		}else{
-		    if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
-			$e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
-			$e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
-		    }
-		}
-	    }
+					//\Zend\Debug\Debug::dump($resource);die;
+				 if($e->getRequest()->isXmlHttpRequest() || $role == 'SA') {
+				   return;
+				 }else{
+					 if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
+					 $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
+					 $e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
+					 }
+				 }
+			}
         }
     }
     
