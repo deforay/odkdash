@@ -168,3 +168,6 @@ CREATE TABLE IF NOT EXISTS `temp_mail` (
   `status` varchar(255) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (`temp_id`)
 )
+
+--Pal 13-MAY-2016
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'delete', 'Delete');

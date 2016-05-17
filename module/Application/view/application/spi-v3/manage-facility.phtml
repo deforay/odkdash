@@ -47,8 +47,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                                     <td class="col-lg-3" align="center">
                                         <select id="facilityNameLeft" name="facilityNameLeft[]" class="facilityName" multiple="multiple">
                                             <?php
-                                            foreach($pendingFacilityName as $name)
-                                            {
+                                            foreach($pendingFacilityName as $name){
                                                 ?>
                                                 <option value="<?php echo $name['id'];?>"><?php echo $name['facilityname'];?></option>
                                                 <?php
@@ -94,7 +93,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                       <th>Affiliation</th>
                       <th>Audit Score Percentage</th>
                       <th>Status</th>
-                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) { ?>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) { ?>
                       <th>Action</th>
                       <?php } ?>
                     </tr>

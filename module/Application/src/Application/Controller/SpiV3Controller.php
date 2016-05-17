@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Json\Json;
 
 class SpiV3Controller extends AbstractActionController
 {
@@ -142,8 +143,7 @@ class SpiV3Controller extends AbstractActionController
         }
     }
 
-    public function manageFacilityAction()
-    {
+    public function manageFacilityAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {

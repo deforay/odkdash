@@ -629,8 +629,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         return $output;
     }
     
-    public function fetchAllSubmissionsDatas($parameters,$acl)
-    {
+    public function fetchAllSubmissionsDatas($parameters,$acl){
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -754,6 +753,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $update = false;
         }
         
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) {
+            $delete = true;
+        } else {
+            $delete = false;
+        }
+        
         if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
@@ -765,6 +770,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row = array();
         $downloadPdf="";
         $edit="";
+        $remove="";
         $row['DT_RowId'] = $aRow['id'];
         $row[] = $aRow['facilityname'];
         $row[] = $aRow['formId'];
@@ -781,6 +787,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         if($update){
             $edit = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+        }
+        if($delete){
+            $remove = '<br><a href="#" style="white-space:nowrap;"> Delete</a>';
         }
         $row[] = $edit." ".$downloadPdf;
         $output['aaData'][] = $row;
@@ -1347,12 +1356,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
            "aaData" => array()
         );
 		$loginContainer = new Container('credo');
-        $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
-            $downloadPdfAction = true;
-        } else {
-            $downloadPdfAction = false;
-        }
+                $role = $loginContainer->roleCode;
+                if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+                    $downloadPdfAction = true;
+                } else {
+                    $downloadPdfAction = false;
+                }
 		$commonService = new \Application\Service\CommonService();
 		foreach ($rResult as $aRow) {
 		 $row = array();
@@ -1360,13 +1369,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
 		 
 		 $row[] = $aRow['facilityid'];
 		 $row[] = ucwords($aRow['facilityname']);
-         $row[] = $aRow['testingpointtype'];
+                 $row[] = $aRow['testingpointtype'];
 		 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
 		 $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
-        if($downloadPdfAction){
-            $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
-        }
-        $row[] = $downloadPdf;
+                if($downloadPdfAction){
+                    $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+                }
+                $row[] = $downloadPdf;
 		 $output['aaData'][] = $row;
 		}
 		return $output;
@@ -1374,7 +1383,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
     public function fetchFacilitiesAudits($params){
         $audits = array();
-        $aResult = '';
+        $aResult = "";
         if(isset($params['facilityName']) && trim($params['facilityName'])!= '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
