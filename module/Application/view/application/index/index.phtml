@@ -278,6 +278,15 @@
 					<tbody>
 					  <?php
 					  $count = 0;
+					  
+					  $loginContainer = new \Zend\Session\Container('credo');
+					  $role = $loginContainer->roleCode;
+					  $acl = (isset($loginContainer->acl) && $loginContainer->acl != "") ? unserialize($loginContainer->acl) : null;
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+						  $update = true;
+					  } else {
+						  $update = false;
+					  }					  
 					  foreach($rawSubmissions as $row) {
 						
 						if($count == 25) break;
@@ -289,7 +298,9 @@
 						  <td><?php echo $row['testingpointname']; ?></td>
 						  <td><?php echo $row['testingpointtype']; ?></td>
 						  <td><?php echo ucfirst($row['status']); ?></td>
-						  <td><?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>" class="btn btn-primary btn-sm">Send Mail</a><?php } ?></td>
+						  <td><?php if($update) { ?>
+							<a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>
+							<?php } ?><?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>" class="btn btn-primary btn-sm">Send Mail</a><?php } ?></td>
 						</tr>
                       <?php
 						$count++;
@@ -869,14 +880,12 @@ $(function () {
 	  
 	  $levelData[] = "{ y : ".$level. ", color : '".$color."' }"; 
 	  $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0); 
-	  $testerData[] = (isset($row['NumberofTester']) ? floor($row['avgMonthTesting']/$row['NumberofTester']) : 0); 
+	  $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0); 
 	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
 	  $counter++;
 	  
 	}
 ?>  
-  
-  
   
   
     $('#volumeChart').highcharts({
