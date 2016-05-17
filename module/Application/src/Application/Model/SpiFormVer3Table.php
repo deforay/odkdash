@@ -433,6 +433,21 @@ class SpiFormVer3Table extends AbstractTableGateway {
         
     }
     
+    public function getAllApprovedTestingVolume($sortOrder = 'DESC'){
+     
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->order(array("avgMonthTesting $sortOrder"));
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return $rResult;
+     
+        
+    }
+    
     public function fetchAllSubmissionsDetails($parameters,$acl)
     {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where

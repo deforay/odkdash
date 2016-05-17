@@ -196,7 +196,7 @@
 							  </select>
 					  </div>
 					</div>
-                    <div class="chart-container" id="zeroCountChart"></div>
+                    <div class="chart-container" id="zeroCountChart" style="height:420px;"></div>
                   </div>
 				  
 			</div>			
@@ -216,7 +216,7 @@
 			  ?>
                         </select>
 		      </div>
-                <div class="map-container" id="auditLocations">
+                <div class="map-container" id="auditLocations" style="max-height:1150px;">
                   
                 </div>
               </div>
@@ -227,33 +227,18 @@
 		  <div class="row">
 			
 			
-			<div class="col-md-6">
-			  <div class="widget">
-
-				<div class="widget-calendar">
-				  <div class="widget-head">
-					<span class="title"><h3 style="">Audit Dates</h3></span>
-				  </div>				  
-				  <div class="cal-container">
-					<div class="cal-calendar">
-					  <div class="ui-datepicker"></div>
-					</div>
-				  </div>
-				</div>
-			</div>
-		  </div>			
-			
-			
-			<div class="col-md-6">
+			<div class="col-md-12 col-sm-12">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3></h3></span>
+				  <span class="title"><h3>Audit Dates</h3></span>
 				</div>
 				<div class="chart-container">
-				  
+				  <div style="width:100%;height:340px" id="auditDates"></div>
 				</div>
-			  </div>
-			</div>
+			  </div>			  
+			</div>			
+			
+			
 
 		  </div>
 		  
@@ -832,7 +817,7 @@ function getAuditWorstDetails()
         widget_top_3();
         //radar_chart();
 		getAuditDetails();
-        calendar_widget();
+        //calendar_widget();
 		bar_chart();
 		//zeroCountsBarChart();
 		getAuditWorstDetails();
@@ -860,7 +845,7 @@ $(function () {
 	$volumeData = array();
 	$labNameData = array();
 	
-	foreach($allSubmissions as $row) {
+	foreach($testingVolume as $row) {
 	  if($counter == 10) break;
 	  if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
 		$color = '#FF0000';
@@ -911,13 +896,13 @@ $(function () {
             labels: {
                 format: '{value}',
                 style: {
-                    color: Highcharts.getOptions().colors[2]
+                    color: 'black'
                 }
             },
             title: {
-                text: 'No. of Tests/Tester',
+                text: 'No. of Testers',
                 style: {
-                    color: Highcharts.getOptions().colors[2]
+                    color: 'black'
                 }
             },
             opposite: true
@@ -937,7 +922,8 @@ $(function () {
                 }
             },
 			min : 0,
-			max : 4
+			max : 4,
+            opposite: true
 
         }, { // Tertiary yAxis
             gridLineWidth: 0,
@@ -952,8 +938,7 @@ $(function () {
                 style: {
                     color: Highcharts.getOptions().colors[1]
                 }
-            },
-            opposite: true
+            }
         }],
         tooltip: {
             shared: true
@@ -967,16 +952,7 @@ $(function () {
         legend: {
             enabled: true
         },
-        series: [{
-            name: 'Level',
-            type: 'column',
-            yAxis: 1,
-            data: [<?php echo implode(",",$levelData); ?>],
-            tooltip: {
-                valueSuffix: ' '
-            }
-
-        }, {
+        series: [ {
             name: 'Testing Volume',
             type: 'column',
             yAxis: 2,
@@ -999,10 +975,94 @@ $(function () {
             },
 			color: '#3598DC',
 
+        },{
+            name: 'Level',
+            type: 'column',
+            yAxis: 1,
+            data: [<?php echo implode(",",$levelData); ?>],
+            tooltip: {
+                valueSuffix: ' '
+            }
+
         }]
     });
-});
+	
+	
 
+<?php
+
+		$eventDatesArray = array();
+		$eventCount = array();
+		foreach($allSubmissions as $row) {
+		  $humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+		  $eventDatesArray[] = "'".$humanDate."'";
+		  if(isset($eventCount[$humanDate])){
+			$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
+		  }else{
+			$eventCount[$humanDate] = 1;
+		  }
+		  
+		  if(count($eventCount) >= 40){
+			break;
+		  }
+		}
+		
+		$eventDatesArray = array_unique($eventDatesArray);
+		
+	  
+?>  	
+	
+$('#auditDates').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            categories: [<?php echo implode(",",$eventDatesArray); ?>],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Audit Counts'
+            }
+        },
+		legend :{
+		  enabled : false
+		},
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Audit Counts',
+            data: [<?php echo implode(",",$eventCount); ?>]
+
+        }]
+    });	
+	
+	
+	
+	
+	
+});
+  
+    
 	  
 	  
 	  

@@ -22,6 +22,7 @@ class IndexController extends AbstractActionController
         $perflast30 = $odkFormService->getPerformanceLast30Days();        
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
+        $testingVolume = $odkFormService->getAllApprovedTestingVolume();        
         $rawSubmissions = $odkFormService->getAllSubmissions();        
         //$auditRoundWiseData = $odkFormService->getAuditRoundWiseData('');
         //$zeroCounts = $odkFormService->getZeroQuestionCounts();
@@ -33,6 +34,7 @@ class IndexController extends AbstractActionController
                                    'perflast30' => $perflast30,
                                    'perflast180' => $perflast180,
                                    'allSubmissions' => $allSubmissions,
+                                   'testingVolume' => $testingVolume,
                                    'rawSubmissions' => $rawSubmissions,
                                    //'auditRoundWiseData' => $auditRoundWiseData,
                                    //'spiV3Labels' => $spiV3Labels,
