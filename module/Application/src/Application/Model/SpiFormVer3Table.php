@@ -903,6 +903,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $roundNo = implode(",",$params['roundno']);
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
+        $start_date = '';
+        $end_date = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
