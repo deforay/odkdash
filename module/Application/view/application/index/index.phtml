@@ -109,11 +109,9 @@
             <div class="col-md-4">
               <div class="widget widget-pie">
                 <div class="widget-head"><span class="title">
-		SPI RT v3 Last 30 Days
-		<div style="margin-top:2%;">
-		<input style="width:70%;" type="text" placeholder="Enter Date" class="datepicker" id="spiRTv3">
-		  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">Get Report</a>
-		</div>
+		SPI RT v3 &nbsp;
+		<input style="width:62%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
+		  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
 		</span></div>
 		
 		
@@ -208,8 +206,8 @@
 					  </div>
 					  <div style="margin-top:2%">
 					  <label style="float: left;margin-right: 1%;">Date</label>
-					  <input style="width: 43%" type="text" placeholder="Enter Date" class="col-lg-6 datepicker" id="worstDate">
-					  <a style="margin-left: 1%;" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">Get Report</a>
+					  <input style="width: 35%" type="text" placeholder="Enter Date" class="col-lg-6 limitBar datepicker" id="worstDate">
+					  <a style="margin-left: 1%;" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>
 					  </div>
 					</div>
                     <div class="chart-container" id="zeroCountChart" style="height:420px;"></div>
@@ -1089,13 +1087,17 @@ var startDate = "";
 		'Last 30 Days': [moment().subtract('days', 29), moment()],
 		'This Month': [moment().startOf('month'), moment().endOf('month')],
 		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-	    }
+	    },
 	},
 	function(start, end) {
 	    startDate = start.format('YYYY-MM-DD');
 	    endDate = end.format('YYYY-MM-DD');
 	});	
-	
+	<?php
+	$start_date = date('d-M-Y');
+        $end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
+	?>
+	$("#spiRTv3").val('<?php echo $end_date." - ".$start_date;?>');
 	
 });
 
