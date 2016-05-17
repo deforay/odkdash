@@ -389,13 +389,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level3' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 80 and ROUND(AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
-                                ->where("status='approved'");
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            //$sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
-            $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN '" . $start_date ."' - INTERVAL DATEDIFF('".$start_date."','".$end_date."') DAY AND '".$start_date."')");
-        }else{
-            $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
-        }
+                                ->where("status='approved'")
+                                ->where("(`assesmentofaudit` BETWEEN '" . $start_date ."' - INTERVAL DATEDIFF('".$start_date."','".$end_date."') DAY AND '".$start_date."')");
+        //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

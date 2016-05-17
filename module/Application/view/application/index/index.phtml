@@ -1009,6 +1009,7 @@ $(function () {
 
         }]
     });
+    <?php
 		$eventDatesArray = array();
 		$eventCount = array();
 		foreach($allSubmissions as $row) {
@@ -1093,9 +1094,7 @@ var startDate = "";
 	function(start, end) {
 	    startDate = start.format('YYYY-MM-DD');
 	    endDate = end.format('YYYY-MM-DD');
-	});
-});	
-	
+	});	
 	
 	
 });
