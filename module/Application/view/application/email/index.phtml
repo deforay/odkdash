@@ -35,7 +35,7 @@
 			<div class="row facilityProfile" <?php if(!isset($facilityResult['fResult']->facility_name)) { ?>style="display:none;"<?php } ?>>
                             <div class="form-group col-lg-6">
                                 <label>Facility Email Address <span class="mandatory">*</span></label>
-				<input type="hidden" class="" name="facilityName" id="facilityName"/>
+				<input type="hidden" class="" name="facilityName" id="facilityName" <?php if(isset($facilityResult['fResult']->facility_name)) { ?>value="<?php echo $facilityResult['fResult']->facility_name; ?>"<?php } ?>/>
                                 <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="Enter Email Address" title="Please enter facility email address" <?php if(isset($facilityResult['fResult']->facility_name)) { ?> value="<?php echo $facilityResult['fResult']->email; ?>"<?php } ?>/>
                             </div>
                         </div>
