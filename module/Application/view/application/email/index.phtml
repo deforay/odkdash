@@ -24,10 +24,10 @@
                                 <select class="form-control isRequired" name="facility" id="facility" title="Please select the facility" onchange="getSelectedFacilitesAudits(this.value);">
                                     <option value="">-- Select Facility --</option>
                                     <?php
-                                    if(isset($facilityName['allName']) && count($facilityName['allName']) > 0) {
-                                      foreach($facilityName['allName'] as $facilities) {
+                                    if(isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
+                                      foreach($facilityName['uniqueName'] as $facilities) {
                                     ?>
-                                      <option value="<?php echo $facilities['facility_name']; ?>" <?php if(isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facility_name']) { ?> selected="selected"<?php } ?>><?php echo ucwords($facilities['facility_name']); ?></option>
+                                      <option value="<?php echo $facilities['facilityname']; ?>" <?php if(isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected"<?php } ?>><?php echo ucwords($facilities['facilityname']); ?></option>
                                     <?php } } ?>
                                 </select>
                             </div>

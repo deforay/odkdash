@@ -438,7 +438,23 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where('spiv3.status != "deleted"')
                                 ->order(array("status DESC","id $sortOrder"));
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return $rResult;
+     
+        
+    }
+    
+    public function getAllApprovedTestingVolume($sortOrder = 'DESC'){
+     
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->order(array("avgMonthTesting $sortOrder"));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -530,7 +546,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $start_date = "";
         $end_date = "";
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where('spiv3.status != "deleted"');
        
         if (isset($parameters['date']) && ($parameters['date'] != "")) {
             $dateField = explode(" ", $parameters['date']);
@@ -580,7 +597,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'));
+        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                 ->where('spiv3.status != "deleted"');
         $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -645,8 +663,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         return $output;
     }
     
-    public function fetchAllSubmissionsDatas($parameters,$acl)
-    {
+    public function fetchAllSubmissionsDatas($parameters,$acl){
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -725,7 +742,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         */
        $dbAdapter = $this->adapter;
        $sql = new Sql($dbAdapter);
-       $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'));
+       $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                               ->where('spiv3.status != "deleted"');
        
        if (isset($sWhere) && $sWhere != "") {
            $sQuery->where($sWhere);
@@ -752,7 +770,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
        $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'));
+        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                 ->where('spiv3.status != "deleted"');
         $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -770,6 +789,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $update = false;
         }
         
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) {
+            $delete = true;
+        } else {
+            $delete = false;
+        }
+        
         if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
@@ -781,6 +806,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row = array();
         $downloadPdf="";
         $edit="";
+        $remove="";
         $row['DT_RowId'] = $aRow['id'];
         $row[] = $aRow['facilityname'];
         $row[] = $aRow['formId'];
@@ -798,7 +824,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if($update){
             $edit = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
         }
-        $row[] = $edit." ".$downloadPdf;
+        if($delete){
+            $remove = '<br><a href="javascript:void(0);" onclick="deleteAudit('.$aRow['id'].');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
+        }
+        $row[] = $edit." ".$downloadPdf. " ".$remove;
         $output['aaData'][] = $row;
        }
        return $output;
@@ -1376,12 +1405,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
            "aaData" => array()
         );
 		$loginContainer = new Container('credo');
-        $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
-            $downloadPdfAction = true;
-        } else {
-            $downloadPdfAction = false;
-        }
+                $role = $loginContainer->roleCode;
+                if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+                    $downloadPdfAction = true;
+                } else {
+                    $downloadPdfAction = false;
+                }
 		$commonService = new \Application\Service\CommonService();
 		foreach ($rResult as $aRow) {
 		 $row = array();
@@ -1389,13 +1418,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
 		 
 		 $row[] = $aRow['facilityid'];
 		 $row[] = ucwords($aRow['facilityname']);
-         $row[] = $aRow['testingpointtype'];
+                 $row[] = $aRow['testingpointtype'];
 		 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
 		 $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
-        if($downloadPdfAction){
-            $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
-        }
-        $row[] = $downloadPdf;
+                if($downloadPdfAction){
+                    $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+                }
+                $row[] = $downloadPdf;
 		 $output['aaData'][] = $row;
 		}
 		return $output;
@@ -1403,7 +1432,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
     public function fetchFacilitiesAudits($params){
         $audits = array();
-        $aResult = '';
+        $aResult = "";
         if(isset($params['facilityName']) && trim($params['facilityName'])!= '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
@@ -1420,5 +1449,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         }
       return array('audits'=>$audits,'facilityProfile'=>$aResult);
+    }
+    
+    public function deleteAuditRowData($params){
+        $result = 0;
+        if (trim($params['deleteId']) != "" && trim($params['deleteId'])!= '') {
+            $data = array('status' => 'deleted');
+            $result = $this->update($data, array('id' => $params['deleteId']));
+        }
+      return $result;
     }
 }

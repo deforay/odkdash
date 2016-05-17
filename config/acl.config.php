@@ -58,10 +58,9 @@ return array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
+            'delete' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
-            'audit-locations' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',

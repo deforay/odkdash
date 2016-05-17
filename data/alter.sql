@@ -168,3 +168,10 @@ CREATE TABLE IF NOT EXISTS `temp_mail` (
   `status` varchar(255) NOT NULL DEFAULT 'pending',
   PRIMARY KEY (`temp_id`)
 )
+
+--Pal 17-MAY-2016
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'delete', 'Delete');
+
+
+--Amit 17-MAY-2016
+ALTER TABLE `spi_form_v_3` CHANGE `avgMonthTesting` `avgMonthTesting` INT NULL DEFAULT '0';

@@ -47,8 +47,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                                     <td class="col-lg-3" align="center">
                                         <select id="facilityNameLeft" name="facilityNameLeft[]" class="facilityName" multiple="multiple">
                                             <?php
-                                            foreach($pendingFacilityName as $name)
-                                            {
+                                            foreach($pendingFacilityName as $name){
                                                 ?>
                                                 <option value="<?php echo $name['id'];?>"><?php echo $name['facilityname'];?></option>
                                                 <?php
@@ -94,7 +93,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                       <th>Affiliation</th>
                       <th>Audit Score Percentage</th>
                       <th>Status</th>
-                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) { ?>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) { ?>
                       <th>Action</th>
                       <?php } ?>
                     </tr>
@@ -115,7 +114,6 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
 </div>
 <script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
 <script type="text/javascript">
-    table = null;
   
   $(document).ready(function () {
    table = $('#example').DataTable({
@@ -182,8 +180,25 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
         }
     }
     function downloadPdf(formId){
-    window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
-    return false;
-   }
+      window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
+      return false;
+    }
     
+    function deleteAudit(auditId){
+        if($.trim(auditId)!= ""){
+            var conf = confirm("Are you sure you want to delete this audit?");
+            if(conf){
+                $.post("<?php echo $this->url('spi-v3-form',array('action'=>'delete')); ?>", {deleteId:auditId},
+                    function(data){
+                        if(data == 0){
+                          alert("OOPS..We have experienced the problem.Please try again!");
+                        }else{
+                          table.draw();
+                        }
+                    });
+            }
+        }else{
+           alert("OOPS..We have experienced the problem.Please try again!");
+        }
+    }
 </script>

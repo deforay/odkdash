@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Json\Json;
 
 class SpiV3Controller extends AbstractActionController
 {
@@ -142,8 +143,7 @@ class SpiV3Controller extends AbstractActionController
         }
     }
 
-    public function manageFacilityAction()
-    {
+    public function manageFacilityAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -177,7 +177,18 @@ class SpiV3Controller extends AbstractActionController
     {
         return new ViewModel();
     }
-    
+
+    public function deleteAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $result=$odkFormService->deleteAuditData($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
     public function spirtv3DatewiseAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -190,7 +201,5 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
-
-
 }
 
