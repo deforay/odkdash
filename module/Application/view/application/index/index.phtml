@@ -298,9 +298,10 @@
 						  <td><?php echo $row['testingpointname']; ?></td>
 						  <td><?php echo $row['testingpointtype']; ?></td>
 						  <td><?php echo ucfirst($row['status']); ?></td>
-						  <td><?php if($update) { ?>
-							<a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>
-							<?php } ?><?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>" class="btn btn-primary btn-sm">Send Mail</a><?php } ?></td>
+						  <td>
+						      <?php if($update) { ?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;&nbsp;<?php } ?>
+						      <?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Send Mail</a><?php } ?>
+						  </td>
 						</tr>
                       <?php
 						$count++;
