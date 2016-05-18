@@ -110,7 +110,7 @@
               <div class="widget widget-pie">
                 <div class="widget-head"><span class="title">
 		SPI RT v3 &nbsp;
-		<input style="width:62%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
+		<input style="width:42%;font-size:12px;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
 		  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
 		</span></div>
 		
@@ -186,8 +186,8 @@
 				  <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title"><h3>Worst Performing Questions</h3>
-			    <label style="margin-left:2%;">Rounds</label>
-				  <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+				  <label style="margin-left:2%;">Round</label>
+				  <select class="" style="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
 					<?php
 					  foreach($spiV3auditRoundNo as $auditRoundNo)
 					  {
@@ -237,7 +237,7 @@
 			  ?>
                         </select>
 		      </div>
-                <div class="map-container" id="auditLocations" style="max-height:1150px;">
+                <div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
                   
                 </div>
               </div>
