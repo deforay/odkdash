@@ -22,7 +22,7 @@ class IndexController extends AbstractActionController
         $perflast30 = $odkFormService->getPerformanceLast30Days('');        
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
-        $testingVolume = $odkFormService->getAllApprovedTestingVolume();        
+        $testingVolume = $odkFormService->getAllApprovedTestingVolume('');        
         $rawSubmissions = $odkFormService->getAllSubmissions();        
         //$auditRoundWiseData = $odkFormService->getAuditRoundWiseData('');
         //$zeroCounts = $odkFormService->getZeroQuestionCounts();

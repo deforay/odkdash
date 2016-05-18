@@ -131,9 +131,9 @@ class OdkFormService {
         return $db->getZeroQuestionCounts($params);
     }
     
-    public function getAllApprovedTestingVolume() {
+    public function getAllApprovedTestingVolume($params) {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getAllApprovedTestingVolume();
+        return $db->getAllApprovedTestingVolume($params);
     }
     
     public function updateSpiForm($params){

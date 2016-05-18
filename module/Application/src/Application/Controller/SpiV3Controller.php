@@ -201,5 +201,17 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    public function testingVolumeDatewiseAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $testingVolume = $odkFormService->getAllApprovedTestingVolume($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('testingVolume' => $testingVolume))
+                        ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
 

@@ -139,9 +139,12 @@
 			<div class="col-md-6">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3>Testing Volume</h3></span>
+				  <span class="title"><h3>Testing Volume</h3>
+				    <input style="width:55%;margin-left:1%" type="text" placeholder="Enter Date" class="datepicker limitBar" id="testingVolumeDate">
+				    <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()">OK</a>
+				  </span>
 				</div>
-				<div class="chart-container">
+				<div class="chart-container" id="testVolumeValues">
 				  <div style="width:100%;height:340px" id="volumeChart"></div>
 				</div>
 			  </div>			  
@@ -683,6 +686,14 @@ function getspiRTv3()
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'spirtv3-datewise')); ?>", {dateRange:dateRange},
       function (data) {
 	  $("#dateRangePickerValue").html(data);
+      });
+}
+function getTestingVolumeValue()
+{
+      dateRange = $("#testingVolumeDate").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'testing-volume-datewise')); ?>", {dateRange:dateRange},
+      function (data) {
+	  $("#testVolumeValues").html(data);
       });
 }
 function getAuditWorstDetails()
