@@ -1411,13 +1411,39 @@ class SpiFormVer3Table extends AbstractTableGateway {
         
         return $rResult;
     }
-    public function mergeFacilityName($params)
-    {
+    
+    public function mergeFacilityName($params){
+        $result = 0;
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
+        $facilityDb= new \Application\Model\SpiRtFacilitiesTable($this->adapter);
+        if(isset($params['editFacilityName']) && trim($params['editFacilityName'])!= ''){
+            $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
+                                           ->where(array('spirt3.facility_name'=>$params['dafaultFacilityName']));
+            $facilityQueryStr = $sql->getSqlStringForSqlObject($facilityQuery);
+            $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if($facilityResult){
+                $data = array(
+                              'facility_id'=>$params['facilityId'],
+                              'facility_name'=>$params['editFacilityName']
+                            );
+                $facilityDb->update($data,array('facility_name'=>$params['dafaultFacilityName']));
+            }
+            
+            $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
+                                    ->where(array('spiv3.facilityname'=>$params['dafaultFacilityName']));
+            $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if($aResult){
+                $data = array(
+                              'facilityid'=>$params['facilityId'],
+                              'facilityname'=>$params['editFacilityName']
+                            );
+                $this->update($data,array('facilityname'=>$params['dafaultFacilityName']));
+            }
+        }
         $c = count($params['upFaciltyName']);
-        for($i=0;$i<$c;$i++)
-        {
+        for($i=0;$i<$c;$i++){
             $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname','id'))
                                     ->where(array('spiv3.facilityname'=>$params['upFaciltyName'][$i]));
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
@@ -1425,12 +1451,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
             
             if(count($aResult)>0){
                 for($k=0;$k<count($aResult);$k++){
-                    $result =  $this->update(array('facilityname'=>$params['fName']),array('id'=>$aResult[$k]['id']));
+                    $result =  $this->update(array('facilityname'=>$params['editFacilityName']),array('id'=>$aResult[$k]['id']));
                 }
             }
+            //Update status in Facility table
+            $facilityDb->update(array('status'=>'deleted'),array('facility_name'=>$params['upFaciltyName'][$i]));
         }
         return $result;
     }
+    
     //get all faciltiy name
     public function fetchAllFacilityNames(){
         $dbAdapter = $this->adapter;
@@ -1439,7 +1468,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $uQueryStr = $sql->getSqlStringForSqlObject($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
-        $aQuery = $sql->select()->from(array('spiv3' => 'spi_rt_3_facilities'));
+        $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                                ->where('spirt3.status != "deleted"');
         $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         

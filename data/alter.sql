@@ -175,3 +175,7 @@ INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_na
 
 --Amit 17-MAY-2016
 ALTER TABLE `spi_form_v_3` CHANGE `avgMonthTesting` `avgMonthTesting` INT NULL DEFAULT '0';
+
+
+--Pal 17-MAY-2016
+ALTER TABLE `spi_rt_3_facilities` ADD `status` VARCHAR(255) NOT NULL DEFAULT 'active' AFTER `longitude`;
