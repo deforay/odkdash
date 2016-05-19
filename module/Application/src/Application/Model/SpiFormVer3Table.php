@@ -1414,7 +1414,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $facilityQueryStr = $sql->getSqlStringForSqlObject($facilityQuery);
             $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($facilityResult){
-                $facilityDb->update(array('facility_name'=>$params['editFacilityName']),array('facility_name'=>$params['fName']));
+                $facilityDb->update(array('facility_id'=>$params['facilityId'],'facility_name'=>$params['editFacilityName']),array('facility_name'=>$params['fName']));
             }
             
             $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
@@ -1422,7 +1422,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($aResult){
-                $this->update(array('facilityname'=>$params['editFacilityName']),array('facilityname'=>$params['fName']));
+                $this->update(array('facilityid'=>$params['facilityId'],'facilityname'=>$params['editFacilityName']),array('facilityname'=>$params['fName']));
             }
         }
         $c = count($params['upFaciltyName']);
@@ -1437,6 +1437,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                     $result =  $this->update(array('facilityname'=>$params['editFacilityName']),array('id'=>$aResult[$k]['id']));
                 }
             }
+            //Update status in Facility table
+            $facilityDb->update(array('status'=>'deleted'),array('facility_name'=>$params['upFaciltyName'][$i]));
         }
         return $result;
     }
@@ -1449,7 +1451,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $uQueryStr = $sql->getSqlStringForSqlObject($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
-        $aQuery = $sql->select()->from(array('spiv3' => 'spi_rt_3_facilities'));
+        $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                                ->where('spirt3.status != "deleted"');
         $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
