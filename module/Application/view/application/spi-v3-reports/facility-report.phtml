@@ -1,79 +1,37 @@
-<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css"/>
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
-<style>
-  .auditPointName{
-	color:#fff;
-	margin:0;
-	
-	min-width: 200px;
-	vertical-align:top;
-  }
-  
-  .auditPointName:hover{
-	white-space: normal !important;
-	overflow: visible;
-	text-overflow: '';
-  }
-  
-  .event a {
-    background-color: #8eaffe !important;
-    background-image :none !important;
-    color: #ffffff !important;
-	border-radius:50%;
-}
-
-
-.highcharts-tooltip span {
-    width:250px;
-    overflow:auto;
-    white-space:normal !important;
-}
-
-.select2{
-  width:200px !important;
-}
-
-.title h3{
-  display:inline;
-}
-
-/*multiselect*/
-/*.ui-state-hover, .ui-widget-content .ui-state-hover{color: #1c94c4;border: 1px solid #cccccc;background:none;}
-.ui-state-active{color: #1c94c4;border: 1px solid #cccccc;background:none;}
-.ui-multiselect-header{display: none;}
-*/
-.widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-highlight{
-  background: none !important;
-  color: #888;
-  border:none;
-}
-.limitBar{width: 10%;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
-  
-  
- 
-    .highcharts-legend{display: block !important;}
- 
-</style>
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
       <div class="am-content">
-		<div class="page-head">
-          <h2>SPI-RT 3.0 Facility Report</h2>
-        </div>
+	<div class="page-head">
+	<div class="row">
+	  <div class="col-sm-8">
+	  <h2>SPI-RT 3.0 Facility Report</h2>
+	  </div>
+	  <div class="col-sm-4">
+	    <a href="javascript:void(0);" class="btn btn-dark pull-right" onclick="exportFacility();"><i class="fa fa-cloud"></i>&nbsp;EXport Facility Report</a>
+	  </div>
+	</div>
+      </div>
         <div class="main-content">
         
           <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
 		  
-		  
-		  
 		  <div class="row">
 			<div class="col-md-12 col-sm-12">
-			                   <div class="widget widget-table">
+			   <div class="widget widget-table">
+			    <table class="table table-bordered" style="width: 50%;" align="center">
+			    <tr>
+				<td style="vertical-align: middle;">
+				    Date : 
+				</td>
+				<td style="vertical-align: middle;">
+				    <input type="text" name="dateRange" id="dateRange" class="form-control readonly" placeholder="Select Date Range" readonly="readonly"/>
+				</td>
+				<td style="vertical-align: middle;">
+				    <input type="button" onclick="getReport();" value="Get report" style="" class="btn btn-success">
+					&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+				</td>
+			    </tr>
+			    </table>
                     <div class="widget-head">
 
 <br>
@@ -83,68 +41,24 @@ Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
                     <table class="datatables table table-striped table-bordered">
 					<thead>
 					  <tr>
-						  <td>Facility name</td>
-                          <td>Audit Date</td>
-						  <td>Testing Point</td>
-						  <td>Personnel Training & Certification</td>
-						  <td>Physical</td>
-						  <td>Safety</td>
-						  <td>Pre-Testing</td>
-						  <td>Testing</td>
-						  <td>Post-Testing</td>
-						  <td>External QA</td>
-						  <td>Total</td>
-						  <td>% Scores</td>
-						</tr>
+					    <td>Facility name</td>
+					    <td>Audit Date</td>
+					    <td>Testing Point</td>
+					    <td>Personnel Training & Certification</td>
+					    <td>Physical</td>
+					    <td>Safety</td>
+					    <td>Pre-Testing</td>
+					    <td>Testing</td>
+					    <td>Post-Testing</td>
+					    <td>External QA</td>
+					    <td>Total</td>
+					    <td>% Scores</td>
+					  </tr>
 					</thead>
 					<tbody>
-					  <?php
-					  $count = 0;
-					  
-					  $loginContainer = new \Zend\Session\Container('credo');
-					  $role = $loginContainer->roleCode;
-                      
-					  foreach($allSubmissions as $row) {
-						
-						//if($count == 25) break;
-						
-                        
-                        if($row['AUDIT_SCORE_PERCANTAGE'] < 40){
-                            $color = '#FF0000';
-                            $level = 0;
-                          }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <60){
-                            $color = '#FFA500';
-                            $level = 1;
-                          }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <80){
-                            $color = '#FFFF00';
-                            $level = 2;
-                          }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <90){
-                            $color = '#8DD63E';
-                            $level = 3;
-                          }else if($row['AUDIT_SCORE_PERCANTAGE'] >= 90){
-                            $color = '#528A16';
-                            $level = 4;
-                          }
-                        
-					  ?>					  
-						<tr>
-						  <td><?php echo $row['facilityname']; ?></td>
-						  <td><?php echo $this->humanDateFormat($row['assesmentofaudit']); ?></td>
-						  <td><?php echo $row['testingpointname']. " - " .$row['testingpointtype']; ?></td>
-						  <td><?php echo $row['PERSONAL_SCORE']; ?></td>
-						  <td><?php echo $row['PHYSICAL_SCORE']; ?></td>
-						  <td><?php echo $row['SAFETY_SCORE']; ?></td>
-						  <td><?php echo $row['PRETEST_SCORE']; ?></td>
-						  <td><?php echo $row['TEST_SCORE']; ?></td>
-						  <td><?php echo $row['POST_SCORE']; ?></td>
-						  <td><?php echo $row['EQA_SCORE']; ?></td>
-						  <td><?php echo $row['FINAL_AUDIT_SCORE']; ?></td>
-						  <td><?php echo round($row['AUDIT_SCORE_PERCANTAGE'],2); ?></td>
-						</tr>
-                      <?php
-						$count++;
-					  }
-					  ?>
+					<tr>
+						 <td colspan="11" class="dataTables_empty">Loading data from server</td>
+					</tr>
 					  </tbody>
                     </table>
                   
@@ -159,22 +73,79 @@ Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
       </div>
 
 
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 
     <script type="text/javascript">
     
-      $(document).ready(function(){
-      	//initialize the javascript
-		
-		$(".datatables").DataTable( {
-        "order": [[ 1, "desc" ]]
-		});
-	
-    });
+     var oTable = null;
 
+ $(document).ready(function() {
+	
+        oTable = $('.datatables').dataTable({
+            "bScrollCollapse": true,
+            "bRetrieve": true,                        
+            "aoColumns": [
+		{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}
+            ],
+            "aaSorting": [[ 1, "desc" ]],
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "<?php echo $this->url('spi-v3-reports',array('action' => 'facility-report')); ?>",
+            "fnServerData": function ( sSource, aoData, fnCallback ) {
+	      aoData.push( { "name":"dateRange","value": $("#dateRange").val()} );
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      $.unblockUI();
+                      fnCallback(json);
+                     }
+                });
+            }
+        });
+       var startDate = "";
+    var endDate = "";
+    $('#dateRange').daterangepicker({
+	    format: 'DD-MMM-YYYY',
+	    startDate: moment().subtract('days', 29),
+	    endDate: moment(),
+	    maxDate: moment(),
+	    ranges: {
+		'Today': [moment(), moment()],
+		'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+		'Last 7 Days': [moment().subtract('days', 6), moment()],
+		'Last 30 Days': [moment().subtract('days', 29), moment()],
+		'This Month': [moment().startOf('month'), moment().endOf('month')],
+		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+	    },
+	},
+	function(start, end) {
+	    startDate = start.format('YYYY-MM-DD');
+	    endDate = end.format('YYYY-MM-DD');
+	});
+	});
+      function exportFacility()
+      {
+	$.blockUI({ message: '<h1>Loading...</h1>' });
+	var dateRange = $("#dateRange").val();
+	  $.post("<?php echo $this->url('spi-v3-reports',array('action'=>'export-facility-report')); ?>",{dateRange: dateRange},
+		  function(data){
+		      if(data == "" || data == null || data == undefined){
+			  alert('Unable to generate download');
+		      }else{
+			  document.location.href = '/temporary/'+data;
+		      }
+		      $.unblockUI();
+		  });
 	  
-	  
-	  
+      }
+      function getReport()
+      {
+	$.blockUI({ message: '<h1>Loading...</h1>' });
+	oTable.fnDraw();
+      }
     </script>

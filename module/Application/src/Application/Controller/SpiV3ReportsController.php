@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Json\Json;
 
 class SpiV3ReportsController extends AbstractActionController
 {
@@ -16,15 +17,33 @@ class SpiV3ReportsController extends AbstractActionController
     public function facilityReportAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
-        $rawSubmissions = $odkFormService->getAllSubmissions();
-        $pendingCount = $odkFormService->getSpiV3PendingCount();
-        $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $param = $request->getPost();
+            $result = $odkFormService->getAllApprovedSubmissionsTable($param);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
         
-        return new ViewModel(array('allSubmissions' => $allSubmissions,
-                                   'rawSubmissions' => $rawSubmissions,
-                                   'pendingCount' => $pendingCount,
-                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo));
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$allSubmissions = $odkFormService->getAllApprovedSubmissions();        
+        //$rawSubmissions = $odkFormService->getAllSubmissions();
+        $pendingCount = $odkFormService->getSpiV3PendingCount();
+        //$spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
+        //
+        return new ViewModel(array('pendingCount' => $pendingCount));
+    }
+    
+    public function exportFacilityReportAction()
+    {
+        $request = $this->getRequest();                
+        if ($request->isPost()) {
+           $params = $request->getPost();
+           $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+           $result= $odkFormService->exportFacilityReport($params);
+           $viewModel = new ViewModel(array('result' => $result));
+           $viewModel->setTerminal(true);
+           return $viewModel;
+       }
     }
 
 
