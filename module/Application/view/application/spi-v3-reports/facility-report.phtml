@@ -6,9 +6,6 @@
 	  <div class="col-sm-8">
 	  <h2>SPI-RT 3.0 Facility Report</h2>
 	  </div>
-	  <div class="col-sm-4">
-	    <a href="javascript:void(0);" class="btn btn-dark pull-right" onclick="exportFacility();"><i class="fa fa-cloud"></i>&nbsp;EXport Facility Report</a>
-	  </div>
 	</div>
       </div>
         <div class="main-content">
@@ -85,8 +82,8 @@
                     <div class="form-group">
                       <label for="affiliation" class="col-sm-2 control-label"></label>
                     <div class="col-lg-4">
-                      <button type="button" onclick="getReport()" class="btn btn-space btn-success">Get report</button>
-		      &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                      <button type="button" onclick="getReport()" class="btn btn-sm btn-success">Get Report</button>
+                     &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
                     </div>
                     </div>
                   </form>
@@ -110,7 +107,16 @@
                     <div class="widget-head">
 
 <br>
-Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
+
+
+	<div class="row">
+	  <div class="col-sm-8">
+	  Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
+	  </div>
+	  <div class="col-sm-4">
+	    <a href="javascript:void(0);" class="btn btn-danger pull-right" onclick="exportFacility();"><i class="fa fa-file-excel-o"></i>&nbsp;Export to Excel</a>
+	  </div>
+	</div>
 					<br>
 					<br>
                     <table class="datatables table table-striped table-bordered">

@@ -229,12 +229,12 @@ tr.shown td.details-control {
   });
   
   function approveStatus(id) {
-    conf=confirm("Are you sure,you want approved this form");
+    conf=confirm("Are you sure you want to approve this audit ?");
     if (conf) {
       $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{id: id},
        function(data) {
         if (data>0) {
-            alert("Form status updated successfully");
+            alert("Audit updated successfully");
             table.draw();
         }
          
