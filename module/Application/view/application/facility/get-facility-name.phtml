@@ -48,7 +48,7 @@
                                 </tr>
 				<tr class="editFC" style="display:none;">
 				    <td class="col-lg-6"><b>Facility Name</b> <span class="mandatory">*</span></td>
-				    <td class="col-lg-6"><input type="text" name="editFacilityName" id="editFacilityName" class="form-control"/></td>
+				    <td class="col-lg-6"><input type="hidden" name="defaultFacilityName" id="defaultFacilityName"/><input type="text" name="editFacilityName" id="editFacilityName" class="form-control"/></td>
 				</tr>
 				<tr class="editFC" style="display:none;">
                                     <td colspan="2"><hr></td>
@@ -104,6 +104,7 @@
     {
         var fName = $("#facilityName").val();
         var facilityId = $("#facilityId").val();
+        var dafaultFacilityName = $("#defaultFacilityName").val();
         var editFacilityName = $("#editFacilityName").val();
         var upFaciltyName = $("#upFaciltyName").val();
 	
@@ -120,7 +121,7 @@
 	    }
         var cnfm = confirm("Do you wish to merge facility names?");
         if(cnfm){
-        $.post("<?php echo $this->url('spi-v3-form',array('action'=>'merge-facility-name')); ?>",{fName:fName,facilityId:facilityId,editFacilityName:editFacilityName,upFaciltyName:upFaciltyName},
+        $.post("<?php echo $this->url('spi-v3-form',array('action'=>'merge-facility-name')); ?>",{fName:fName,facilityId:facilityId,dafaultFacilityName:dafaultFacilityName,editFacilityName:editFacilityName,upFaciltyName:upFaciltyName},
         function(data) {
         if (data>0) {
           alert("Facility name merged successfully");
@@ -144,10 +145,12 @@
 	    splitObjVal = objVal.split("##");
 	    $(".editFC").show();
 	    $("#facilityId").val(splitObjVal[0]);
+	    $("#defaultFacilityName").val(splitObjVal[1]);
 	    $("#editFacilityName").val(splitObjVal[1]);
 	}else{
 	    $(".editFC").hide();
 	    $("#facilityId").val("");
+	    $("#defaultFacilityName").val("");
 	    $("#editFacilityName").val("");
 	}
     }
