@@ -136,6 +136,12 @@ class OdkFormService {
         return $db->getAllApprovedTestingVolume($params);
     }
     
+    
+    public function getSpiV3PendingCount() {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->getSpiV3PendingCount();
+    }
+    
     public function updateSpiForm($params){
         $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();

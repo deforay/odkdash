@@ -139,7 +139,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
             <li class="parent"><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span>Facility List</span></a></li>
             <?php } ?>
             
-            <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Reports</span></a></li>
+            <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Reports</span></a>
+            <ul class="sub-menu">
+              <li><a href="<?php echo $this->url('spi-v3-reports',array('action' => 'facility-report')); ?>">SPI V3 Facility Report</a></li>
+            </ul>
+            </li>
             <?php
             if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index")) {
             ?>

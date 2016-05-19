@@ -83,6 +83,16 @@ return array(
                     ),
                 ),
             ),
+            'spi-v3-reports' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v3-reports[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV3Reports',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'common' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -166,7 +176,8 @@ return array(
             'Application\Controller\Users' => "Application\Controller\UsersController",
             'Application\Controller\Config' => "Application\Controller\ConfigController",
             'Application\Controller\Email' => "Application\Controller\EmailController",
-            'Application\Controller\Cron' => "Application\Controller\CronController"
+            'Application\Controller\Cron' => "Application\Controller\CronController",
+            'Application\Controller\SpiV3Reports' => "Application\Controller\SpiV3ReportsController",
         ),
     ),
     'view_manager' => array(

@@ -1463,6 +1463,18 @@ class SpiFormVer3Table extends AbstractTableGateway {
       return array('audits'=>$audits,'facilityProfile'=>$aResult);
     }
     
+    public function getSpiV3PendingCount(){
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where('spiv3.status = "pending"');
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return count($rResult);
+    }
+    
     public function deleteAuditRowData($params){
         $result = 0;
         if (trim($params['deleteId']) != "" && trim($params['deleteId'])!= '') {
