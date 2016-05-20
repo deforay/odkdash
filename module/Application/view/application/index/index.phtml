@@ -30,8 +30,8 @@
     white-space:normal !important;
 }
 
-.select2{
-  width:200px !important;
+.ms-parent {
+  width:100% !important;
 }
 
 .title h3{
@@ -48,10 +48,14 @@
   color: #888;
   border:none;
 }
-.limitBar{width: 10%;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
+.limitBar{color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
   
 .highcharts-legend{display: block !important;}
  
+ 
+.center{
+  text-align:center;
+} 
 </style>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
@@ -67,13 +71,10 @@
           <div class="row">
             <div class="col-md-4">
               <div class="widget widget-pie">
-                <div class="widget-head"><span class="title">SPI RT v3 Overall</span></div>
-                <div class="row chart-container">
-                  <div class="col-md-6">
-		    <canvas id="widget-top-1" style="width: 100%; height: 177px;"></canvas>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="legend" id="legendOverall"></div>
+                <div class="widget-head"><span  class="title"><h3>Overall Performance</h3></span></div>
+                <div class="row chart-container" style="min-height:430px !important;">
+                  <div class="col-md-12">
+					<div id="widget-top-1" style="width: 100%;"></div>
                   </div>
                 </div>
 				<div class="row chart-info">
@@ -85,16 +86,13 @@
             </div>
             <div class="col-md-4">
               <div class="widget widget-pie widget-pie-stats">
-                <div class="widget-head"><span class="title">SPI RT v3 Last 180 days</span></div>
-                <div class="row chart-container">
-                  <div class="col-md-6">
-		    <canvas id="widget-top-3" style="width: 100%; height: 177px;"></canvas>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="legend" id="legend180"></div>
+                <div class="widget-head"><span class="title"><h3>Performance - Last 180 days</h3></span></div>
+                <div class="row chart-container" style="min-height:430px !important;">
+                  <div class="col-md-12">
+					<div id="widget-top-3" style="width: 100%;"></div>
                   </div>
                 </div>
-		<div class="row chart-info">
+				<div class="row chart-info">
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
@@ -104,20 +102,18 @@
 
             <div class="col-md-4">
               <div class="widget widget-pie">
-                <div class="widget-head"><span class="title">
-		SPI RT v3 &nbsp;
-		<input style="width:42%;font-size:12px;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
-		  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
-		</span></div>
+                <div class="widget-head">
+				<span class="title">
+				  <h3>Performance</h3>
+				  </span>
+				</div>
 		
-		
+		<input style="width:70%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
+		<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
 		<div id="dateRangePickerValue">
                 <div class="row chart-container">
-                  <div class="col-md-6">
-		    <canvas id="widget-top-2" style="width: 100%; height: 170px;"></canvas>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="legend" id="legend30"></div>
+                  <div class="col-md-12">
+					<div id="widget-top-2" style="width: 100%;"></div>
                   </div>
                 </div>
 		  <div class="row chart-info">
@@ -150,7 +146,7 @@
 			<div class="col-md-6">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3>Last 20 Audits</h3></span>
+				  <span class="title"><h3>Latest Audits</h3></span>
 				</div>
 				<div class="chart-container">
 				  <div id="audit-points-barchart"  style="width:100%;height:345px"></div>
@@ -163,10 +159,12 @@
 			
 			<div class="col-md-6" id="lefter">
                   <div class="widget widget-radar widget-pie">
-                    <div class="widget-head">
-                      <span class="title"><h3>Audit Performance</h3></span>
-					  <label style="margin-left:5%;">Audit Round</label>
-                      <select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
+                    <div class="widget-head row">
+                      <div class="title col-lg-6 col-md-6">
+						<h3>Audit Performance</h3>
+					  </div>
+					  <div class="col-lg-6 col-md-6">
+						<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
 						<?php
 						  foreach($spiV3auditRoundNo as $auditRoundNo)
 						  {
@@ -176,53 +174,64 @@
 						  }
 						  ?>
                         </select>
+					  </div>
                     </div>
 					<div id="radarChart"></div>
 				  </div>
 				  <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
-                      <span class="title"><h3>Worst Performing Questions</h3>
-				  <label style="margin-left:2%;">Round</label>
-				  <select class="" style="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
-					<?php
-					  foreach($spiV3auditRoundNo as $auditRoundNo)
-					  {
-						?>
-						<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
-						<?php
-					  }
-					  ?>
-					</select>
-		      </span>
+                      <div class="title row">
+						<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+						  <h3>Worst Performing Questions</h3>
+						</div>
+						<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3" style="white-space:nowrap">
+						  <label style="">Limit</label>
+						  <select class="limitBar" id="limitBar" style="" onchange="getAuditWorstDetails()">
+							<option value="5">5</option>
+							<option value="10" selected="selected">10</option>
+							<option value="15">15</option>
+							<option value="20">20</option>
+							<option value="30">30</option>
+						  </select>
+						</div>
+					  </div>
 		      
-					  <div style="margin-top:2%;">
-						<label style="margin-left: 1%;">Limit</label>
-						<select class="limitBar" style="" id="limitBar" onchange="getAuditWorstDetails()">
-						  <option value="5">5</option>
-						  <option value="10" selected="selected">10</option>
-						  <option value="15">15</option>
-						  <option value="20">20</option>
-						  <option value="30">30</option>
-						</select>
-								
-						<label style="margin-left: 1%;">Testing Volume</label>
-						<input style="width:38%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="worstDate">
-						<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>
+					  <div style="margin-top:2%;" class="row">
+						<div class="col-lg-6 col-md-6">
+						  <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+							<?php
+							  foreach($spiV3auditRoundNo as $auditRoundNo)
+							  {
+								?>
+								<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+								<?php
+							  }
+							  ?>
+							</select>	
+						</div>
+						<div class="col-lg-6 col-md-6">
+						  <label style="margin-left: 1%;">Date</label>
+						  <input style="width:57%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="worstDate">
+						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>						  
+						</div>
 					  </div>
 					  </div>
 					  <div style="margin-top:2%">
 					  
 					</div>
-                    <div class="chart-container" id="zeroCountChart" style="height:420px;"></div>
+                    <div class="chart-container" id="zeroCountChart" style="height:220px;"></div>
                   </div>
 				  
 			</div>			
 			
             <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
-                <div class="widget-head"><span class="title"><h3>Audit Locations</h3></span>
-		      <label style="margin-left:5%;">Audit Round</label>
-                      <select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+                  <div class="widget-head row">
+                      <div class="title col-lg-6 col-md-6">
+						<span class="title"><h3>Audit Locations</h3></span>
+					  </div>
+					  <div class="col-lg-6 col-md-6">
+						<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
                           <?php
 						  foreach($spiV3auditRoundNo as $auditRoundNo)
 						  {
@@ -232,6 +241,7 @@
 						  }
 						  ?>
                         </select>
+					  </div>
 		      </div>
                 <div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
                   
@@ -371,7 +381,7 @@
         colors.alt3    = getColor('clr-alt3');
         colors.alt4    = getColor('clr-alt4');
       
-		function widget_top_1(){
+function widget_top_1(){
 
 
 		<?php
@@ -386,51 +396,92 @@
 			
 	  var data = [
 		{
-		  value: <?php echo $perf1[0]['level0']; ?>,
+		  y: <?php echo $perf1[0]['level0']; ?>,
 		  color: color1,
-		  label: "Level 0 (Below 40)"
 		},
 		 {
-		  value: <?php echo $perf1[0]['level1']; ?>,
-		  color: color2,
-		  label: "Level 1 (40-59)"
+		  y: <?php echo $perf1[0]['level1']; ?>,
+		  color: color2
 		},
 		 {
-		  value: <?php echo $perf1[0]['level2']; ?>,
+		  y: <?php echo $perf1[0]['level2']; ?>,
 		  color: color3,
 		  label: "Level 2 (60-79)"
 		},
 		 {
-		  value: <?php echo $perf1[0]['level3']; ?>,
-		  color: color4,
-		  label: "Level 3 (80-89)"
+		  y: <?php echo $perf1[0]['level3']; ?>,
+		  color: color4
 		},
 		{
-		  value: <?php echo $perf1[0]['level4']; ?>,
-		  color: color5,
-		  label: "Level 4 (90 and above)"
+		  y: <?php echo $perf1[0]['level4']; ?>,
+		  color: color5
 		},
 	  
 	  ];
 	  
-	  var options = {
-		  segmentShowStroke: false,
-		  animationSteps : 20,
-		  animateRotate: true,
-		  animateScale: false,
-		  tooltipTemplate: "<%= value %>",
-		  legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
-
-	  }
 	  
-	  var ctx = document.getElementById("widget-top-1").getContext("2d");
+	  var data = [
+		 {
+		  y: <?php echo $perf1[0]['level0']; ?>,
+		  color: color1,
+		  name: "Level 0 (Below 40)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level1']; ?>,
+		  color: color2,
+		  name: "Level 1 (40-59)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level2']; ?>,
+		  color: color3,
+		  name: "Level 2 (60-79)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level3']; ?>,
+		  color: color4,
+		  name: "Level 3 (80-89)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level4']; ?>,
+		  color: color5,
+		  name: "Level 4 (90 and above)"
+	  },
 	  
-	  var myChart = new Chart(ctx).Pie(data, options);
 	  
-	  document.getElementById('legendOverall').innerHTML = myChart.generateLegend();	  
+	  ];
+	  
+	  
+	  
+	  $('#widget-top-1').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },title: {
+                text: ''
+            },			
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Audit Performance',
+                colorByPoint: true,
+                data: data
+            }]
+        });
 	 
-    }
-    
+    }    
     function widget_top_2(){
 		<?php
 		
@@ -444,50 +495,68 @@
 			
 	  var data = [
 		 {
-		  value: <?php echo $perflast30[0]['level0']; ?>,
+		  y: <?php echo $perflast30[0]['level0']; ?>,
 		  color: color1,
-		  label: "Level 0 (Below 40)"
+		  name: "Level 0 (Below 40)"
 	  },
 		 {
-		  value: <?php echo $perflast30[0]['level1']; ?>,
+		  y: <?php echo $perflast30[0]['level1']; ?>,
 		  color: color2,
-		  label: "Level 1 (40-59)"
+		  name: "Level 1 (40-59)"
 	  },
 		 {
-		  value: <?php echo $perflast30[0]['level2']; ?>,
+		  y: <?php echo $perflast30[0]['level2']; ?>,
 		  color: color3,
-		  label: "Level 2 (60-79)"
+		  name: "Level 2 (60-79)"
 	  },
 		 {
-		  value: <?php echo $perflast30[0]['level3']; ?>,
+		  y: <?php echo $perflast30[0]['level3']; ?>,
 		  color: color4,
-		  label: "Level 3 (80-89)"
+		  name: "Level 3 (80-89)"
 	  },
 		 {
-		  value: <?php echo $perflast30[0]['level4']; ?>,
+		  y: <?php echo $perflast30[0]['level4']; ?>,
 		  color: color5,
-		  label: "Level 4 (90 and above)"
+		  name: "Level 4 (90 and above)"
 	  },
 	  
 	  
 	  ];
 	  
-	  var options = {
-		  segmentShowStroke: false,
-		  animationSteps : 20,
-		  animateRotate: true,
-		  animateScale: false,
-		  percentageInnerCutout: 50,
-		  tooltipTemplate: "<%= value %>",
-		  legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
-	  }
+
 	  
-	  var ctx = document.getElementById("widget-top-2").getContext("2d");
+	  $('#widget-top-2').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },title: {
+                text: ''
+            },			
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true,
+					shadow: false,
+				    center: ['50%', '50%']					
+                }
+            },
+            series: [{
+                name: 'Audit Performance',
+                colorByPoint: true,
+                data: data
+            }]
+        });  
 	  
-	  var myChart = new Chart(ctx).Doughnut(data, options);
 	  
-	  
-	  document.getElementById('legend30').innerHTML = myChart.generateLegend();	  
 	  
 	  
     }
@@ -507,52 +576,66 @@
 			
 	  var data = [
 		 {
-		  value: <?php echo $perflast180[0]['level0']; ?>,
+		  y: <?php echo $perflast180[0]['level0']; ?>,
 		  color: color1,
-		  label: "Level 0 (Below 40)"
+		  name: "Level 0 (Below 40)"
 	  },
 		 {
-		  value: <?php echo $perflast180[0]['level1']; ?>,
+		  y: <?php echo $perflast180[0]['level1']; ?>,
 		  color: color2,
-		  label: "Level 1 (40-59)"
+		  name: "Level 1 (40-59)"
 	  },
 		 {
-		  value: <?php echo $perflast180[0]['level2']; ?>,
+		  y: <?php echo $perflast180[0]['level2']; ?>,
 		  color: color3,
-		  label: "Level 2 (60-79)"
+		  name: "Level 2 (60-79)"
 	  },
 		 {
-		  value: <?php echo $perflast180[0]['level3']; ?>,
+		  y: <?php echo $perflast180[0]['level3']; ?>,
 		  color: color4,
-		  label: "Level 3 (80-89)"
+		  name: "Level 3 (80-89)"
 	  },
 	  {
-		  value: <?php echo $perflast180[0]['level4']; ?>,
+		  y: <?php echo $perflast180[0]['level4']; ?>,
 		  color: color5,
-		  label: "Level 4 (90 and above)"
+		  name: "Level 4 (90 and above)"
 	  }
 	  
 	  
 	  
 	  ];
 	  
-	  var options = {
-		  segmentShowStroke: false,
-		  animationSteps : 20,
-		  animateRotate: true,
-		  animateScale: false,
-		  percentageInnerCutout: 50,
-		  tooltipTemplate: "<%= value %>",
-		  legendTemplate : '<table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,0,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 0 (Below 40)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,165,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 1 (40-59)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(255,255,0);overflow:hidden"></div></div></td><td class="legendLabel">Level 2 (60-79)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(141,214,62);overflow:hidden"></div></div></td><td class="legendLabel">Level 3 (80-89)</td></tr><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid rgb(82,138,22);overflow:hidden"></div></div></td><td class="legendLabel">Level 4 (90 and above)</td></tr></tbody></table>'
 
-	  }
-	  
-	  var ctx = document.getElementById("widget-top-3").getContext("2d");
-	  
-	  var myChart = new Chart(ctx).Doughnut(data, options);
 	  
 	  
-	  document.getElementById('legend180').innerHTML = myChart.generateLegend();	  
+	  $('#widget-top-3').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },title: {
+                text: ''
+            },			
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Audit Performance',
+                colorByPoint: true,
+                data: data
+            }]
+        });  
 	  
 	  
     }

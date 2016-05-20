@@ -7528,7 +7528,7 @@ button:focus {
           transition: all 0.35s ease;
 }
 .am-top-header .navbar-header .navbar-brand {
-  background-color: #3d3c3c;
+  background-color: #3598DC;
   color: #ffffff;
   padding-top: 0;
   padding-bottom: 0;
@@ -7539,7 +7539,7 @@ button:focus {
   background-repeat: no-repeat;
   background-position: center center;
   margin-right: 20px;
-  border-bottom: 1px solid #474646;
+  border-bottom: 1px solid #3aadfc;
 }
 @media (max-width: 767px) {
   .am-top-header .navbar-header .navbar-brand {
@@ -8226,7 +8226,7 @@ button:focus {
 	[Left sidebar]
 */
 .am-left-sidebar {
-  background-color: #3d3c3c;
+  background-color: #3598DC;
   width: 100px;
   height: 100%;
   left: 0;
@@ -8237,7 +8237,7 @@ button:focus {
   padding: 0;
 }
 .am-left-sidebar .sidebar-elements > li {
-  border-bottom: 1px solid #474646;
+  border-bottom: 1px solid #3aadfc;
   list-style: none;
 }
 .am-left-sidebar .sidebar-elements > li > a {
@@ -8245,11 +8245,13 @@ button:focus {
   padding: 15px;
   color: #e1e1e1;
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight:bold;
 }
 .am-left-sidebar .sidebar-elements > li > a .icon {
   display: block;
   font-size: 33px;
+  font-weight:bold;
 }
 .am-left-sidebar .sidebar-elements > li > a span {
   display: block;
@@ -8261,7 +8263,7 @@ button:focus {
   left: 100px;
   top: 0;
   height: 100%;
-  background-color: #484747;
+  background-color: #3aadfc;
   z-index: 1031;
   padding: 0;
   table-layout: fixed;
@@ -8276,7 +8278,7 @@ button:focus {
 }
 .am-left-sidebar .sidebar-elements > li > ul > li.title {
   color: #ffffff;
-  border-bottom: 1px solid #6d6b6b;
+  border-bottom: 1px solid #236fa2;
   font-size: 26px;
   font-weight: 300;
   margin: 0 25px 0;
@@ -8296,10 +8298,10 @@ button:focus {
 }
 .am-left-sidebar .sidebar-elements > li > ul > .nav-items .am-scroller .content > ul > li > a {
   padding: 11px 25px;
-  color: #b3b3b3;
+  color: #194f74;
   font-size: 13px;
   display: block;
-  font-weight: 300;
+  font-weight: 400;
 }
 .am-left-sidebar .sidebar-elements > li > ul > .nav-items .am-scroller .content > ul > li > a .label {
   border-radius: 2px;
@@ -8308,14 +8310,15 @@ button:focus {
   padding: 5px 10px;
 }
 .am-left-sidebar .sidebar-elements > li > ul > .nav-items .am-scroller .content > ul > li > a:hover {
-  background-color: #424141;
+  background-color: #194f74;
   color: #ffffff;
 }
 .am-left-sidebar .sidebar-elements > li > ul > .nav-items .am-scroller .content > ul li.active > a {
   color: #f17979;
 }
 .am-left-sidebar .sidebar-elements > li:hover {
-  background-color: #424141;
+  background-color: #3aadfc;
+  color: #194f74 !important;
 }
 .am-left-sidebar .sidebar-elements > li:hover > ul {
   display: table;
