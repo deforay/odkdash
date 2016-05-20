@@ -80,4 +80,18 @@ class FacilityController extends AbstractActionController {
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
+    
+    public function getFacilityAuditRoundAction(){
+        $request = $this->getRequest();                
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getSpiV3FormFacilityAuditNo($params);
+            $viewModel = new ViewModel(array(
+                'spiV3auditRoundNo'=>$result
+                ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }

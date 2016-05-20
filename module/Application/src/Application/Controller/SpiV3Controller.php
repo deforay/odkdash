@@ -108,7 +108,7 @@ class SpiV3Controller extends AbstractActionController
         if($this->getRequest()->isPost()){
             $params=$this->getRequest()->getPost();
             $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
-            $perf1 = $odkFormService->getPerformance();
+            $perf1 = $odkFormService->getPerformance($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
                       ->setTerminal(true);

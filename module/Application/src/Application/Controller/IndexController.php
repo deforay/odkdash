@@ -16,9 +16,9 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        
+        $params = array();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $perf1 = $odkFormService->getPerformance();
+        $perf1 = $odkFormService->getPerformance($params);
         $perflast30 = $odkFormService->getPerformanceLast30Days('');        
         $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        

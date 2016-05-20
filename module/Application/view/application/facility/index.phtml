@@ -10,6 +10,27 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 }
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<style>
+    .highcharts-tooltip span {
+	width:250px;
+	overflow:auto;
+	white-space:normal !important;
+    }
+
+    .select2{
+      width:200px !important;
+    }
+
+    .title h3{
+      display:inline;
+    }
+</style>
 <div class="am-content">
         <div class="page-head">
           <div class="row">
@@ -57,7 +78,25 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
         <br>
         </div>
 		
-		<div class="main-content">
+	<div class="audit-section main-content" style="display:none;">
+	  <input type="hidden" name="fieldName" id="fieldName"/>
+	  <input type="hidden" name="fieldVal" id="fieldVal"/>
+	  <div class="row">
+	       <div class="col-md-6" id="lefter">
+		  <div class="widget widget-radar widget-pie">
+                    <div class="widget-head">
+                      <span class="title"><h3>Audit Performance</h3></span>
+		      <label style="margin-left:5%;">Audit Round</label>
+			<select class="" id="auditRndNo" name="auditRndNo[]" multiple="multiple" onchange="getAuditData('','');">
+			</select>
+                    </div>
+		    <div id="radarChart"></div>
+		   </div>
+	       </div>
+	  </div>
+	</div>
+	
+	<div class="main-content">
              
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
 
@@ -85,18 +124,25 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
             
         </div>
 </div>
-<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.js"></script>
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://highcharts.github.io/pattern-fill/pattern-fill.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
 <script type="text/javascript">
     var oTable = null;
 
  $(document).ready(function() {
-	
         oTable = $('#facilityDataTable').DataTable({
             "bScrollCollapse": true,
             "bRetrieve": true,                        
             "aoColumns": [
-				<?php echo $editAction;?>
+		<?php echo $editAction;?>
             ],
             "aaSorting": [[ 0, "desc" ]],
             "bProcessing": true,
@@ -112,7 +158,13 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
                 });
             }
         });
-       
+	
+	$(".select2").select2({
+	    width: '100%',
+		placeholder: '',
+		allowClear: true,
+		tags : false
+	});
 	} );
 	
 	function getTestingPoint(val,fieldName) {
@@ -146,8 +198,33 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
         });
     }
 	
-	function downloadPdf(formId){
+    function downloadPdf(formId){
 	window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);
 	return false;
-	}
+    }
+    
+    function getAuditData(val,fieldName){
+      getFacilityAuditRounds(val,fieldName);	
+      if($.trim(fieldName)!= ''){
+	$("#fieldName").val(fieldName); 	
+        $("#fieldVal").val(val);
+      }
+      
+      roundno = $("#auditRndNo").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {val:$("#fieldVal").val(),fieldName:$("#fieldName").val(),roundno:roundno},
+      function (data) {
+	  $("#radarChart").html(data);
+	  $(".audit-section").show();
+      });
+    }
+    
+    function getFacilityAuditRounds(val,fieldName){
+	 if($.trim(fieldName)!= ''){
+	    $.post("<?php echo $this->url('spi-facility', array('action' => 'get-facility-audit-round')); ?>", {val:val,fieldName:fieldName},
+	    function (data) {
+	      $("#auditRndNo").html(data);
+	      $("#auditRndNo").multipleSelect({placeholder:'Select Audit round(s)',width: '31%',minimumCountSelected:'2'});
+	   });
+	 }
+    }
 </script>

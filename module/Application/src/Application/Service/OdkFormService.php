@@ -25,7 +25,7 @@ class OdkFormService {
         return $db->saveData($params);
     }
     
-    public function getPerformance($params = null) {
+    public function getPerformance($params) {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getPerformance($params);
     }
@@ -345,5 +345,10 @@ class OdkFormService {
     public function deleteAuditData($params){
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->deleteAuditRowData($params);
+    }
+    
+    public function getSpiV3FormFacilityAuditNo($params){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchSpiV3FormFacilityAuditNo($params);
     }
 }

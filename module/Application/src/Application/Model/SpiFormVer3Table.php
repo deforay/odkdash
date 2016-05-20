@@ -333,8 +333,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     
-    public function getPerformance(){
-     
+    public function getPerformance($params){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
@@ -349,13 +348,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                                 'level4' => new \Zend\Db\Sql\Expression("SUM(IF(ROUND(AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where(array('status'=>'approved'));
+        if(isset($params['fieldName']) && trim($params['fieldName'])!= ''){
+            $sQuery = $sQuery->where(array($params['fieldName']=>$params['val']));
+        }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        
         return $rResult;
-     
-        
     }
     
     
@@ -870,13 +869,16 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
             
         }
+        
+        if(isset($params['fieldName']) && trim($params['fieldName'])!=''){
+            $sQuery = $sQuery->where(array($params['fieldName']=>$params['val']));
+        }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         $response = array();
         
         foreach($rResult as $row){
-            
             $response[$row['auditroundno']]['PERSONAL_SCORE'][]=  $row['PERSONAL_SCORE'];
             $response[$row['auditroundno']]['PHYSICAL_SCORE'][]=  $row['PHYSICAL_SCORE'];
             $response[$row['auditroundno']]['SAFETY_SCORE'][]=  $row['SAFETY_SCORE'];
@@ -1397,14 +1399,28 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         
     }
-    public function fetchSpiV3FormAuditNo()
-    {
+    public function fetchSpiV3FormAuditNo(){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'),'rowCount' => new Expression("COUNT('auditroundno')")))
                                ->group('auditroundno')
                                ->order("auditroundno ASC");
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        
+        return $rResult;
+    }
+    
+    public function fetchSpiV3FormFacilityAuditNo($params){
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'),'rowCount' => new Expression("COUNT('auditroundno')")))
+                                ->where(array($params['fieldName']=>$params['val']))
+                                ->group('auditroundno')
+                                ->order("auditroundno ASC");
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
