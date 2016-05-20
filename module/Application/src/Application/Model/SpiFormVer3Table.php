@@ -1442,11 +1442,21 @@ class SpiFormVer3Table extends AbstractTableGateway {
             
             if(count($aResult)>0){
                 for($k=0;$k<count($aResult);$k++){
-                    $result =  $this->update(array('facilityname'=>$params['editFacilityName']),array('id'=>$aResult[$k]['id']));
+                    $data = array(
+                       'facilityid'=>$params['facilityId'],
+                       'facilityname'=>$params['editFacilityName']
+                    );
+                    $result =  $this->update($data,array('id'=>$aResult[$k]['id']));
                 }
             }
             //Update status in Facility table
-            $facilityDb->update(array('status'=>'deleted'),array('facility_name'=>$params['upFaciltyName'][$i]));
+            $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
+                                           ->where(array('spirt3.facility_name'=>$params['upFaciltyName'][$i]));
+            $facilityQueryStr = $sql->getSqlStringForSqlObject($facilityQuery);
+            $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if($facilityResult){
+                $facilityDb->update(array('status'=>'deleted'),array('facility_name'=>$params['upFaciltyName'][$i]));
+            }
         }
         return $result;
     }
