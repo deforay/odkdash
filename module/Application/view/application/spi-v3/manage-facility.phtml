@@ -163,7 +163,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
           $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{idList: val},
            function(data) {
             if (data>0) {
-                alert("Form status updated successfully");
+                alert("Audit updated successfully");
                 $("#facilityNameRight").html("");
                 
                 var selectArr = []; 

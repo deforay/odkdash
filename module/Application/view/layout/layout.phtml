@@ -49,9 +49,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
     <title>Malawi – Dashboard for Quality Improvement of HIV Rapid Testing </title>
     
     <style type="text/css">
-      .mandatory {
-        color: red;
-      }
+      
     </style>
     <!-- Latest compiled and minified CSS -->
     
@@ -70,9 +68,21 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
     
     <style>
       .widget{
-        border: 1px solid #9edcff;
+        border: 2px solid #9edcff;
         border-radius:5px;
       }
+      
+    
+      .table thead tr th, .table thead tr td {
+        background:#3598DC;
+        color : #fff;
+        text-align:center;
+        vertical-align:middle !important;
+      }
+      
+      .mandatory {
+        color: red;
+      }    
     </style>
     
     <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/style.css?v=0.2'); ?>" type="text/css"/>

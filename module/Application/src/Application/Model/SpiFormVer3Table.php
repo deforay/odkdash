@@ -1152,6 +1152,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
         }
+        if($parameters['testPoint']!=''){
+         $sQuery = $sQuery->where("spiv3.testingpointtype='".$parameters['testPoint']."'");
+        } if($parameters['level']!=''){
+         $sQuery = $sQuery->where("spiv3.level='".$parameters['level']."'");
+        } if($parameters['affiliation']!=''){
+         $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
+        } if($parameters['auditRndNo']!=''){
+         $sQuery = $sQuery->where("spiv3.auditroundno='".$parameters['auditRndNo']."'");
+        }
        if (isset($sWhere) && $sWhere != "") {
            $sQuery->where($sWhere);
        }

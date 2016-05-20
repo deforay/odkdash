@@ -6,36 +6,117 @@
 	  <div class="col-sm-8">
 	  <h2>SPI-RT 3.0 Facility Report</h2>
 	  </div>
-	  <div class="col-sm-4">
-	    <a href="javascript:void(0);" class="btn btn-dark pull-right" onclick="exportFacility();"><i class="fa fa-cloud"></i>&nbsp;EXport Facility Report</a>
-	  </div>
 	</div>
       </div>
         <div class="main-content">
-        
           <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
 		  
 		  <div class="row">
 			<div class="col-md-12 col-sm-12">
 			   <div class="widget widget-table">
-			    <table class="table table-bordered" style="width: 50%;" align="center">
-			    <tr>
-				<td style="vertical-align: middle;">
-				    Date : 
-				</td>
-				<td style="vertical-align: middle;">
-				    <input type="text" name="dateRange" id="dateRange" class="form-control readonly" placeholder="Select Date Range" readonly="readonly"/>
-				</td>
-				<td style="vertical-align: middle;">
-				    <input type="button" onclick="getReport();" value="Get report" style="" class="btn btn-success">
-					&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-				</td>
-			    </tr>
-			    </table>
+			                  <div class="panel panel-default">
+                <div class="panel-body">
+                  <form role="form" class="form-horizontal">
+                    <div class="form-group">
+                     <label for="date" class="col-sm-2 control-label">Date</label>
+                     <div class=" col-lg-4">
+                      <input type="text" placeholder="Enter Date" class="form-control" id="dateRange">
+                     </div>
+                      <label for="auditRndNo" class="col-sm-2 control-label">Audit Round No.</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="auditRndNo">
+                        <option value=''>--Select--</option>
+                          <?php
+			  foreach($spiV3auditRoundNo as $auditRoundNo)
+			  {
+				?>
+				<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno'];?></option>
+				<?php
+			  }
+			  ?>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="testPoint" class="col-sm-2 control-label">Type of testing point</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="testPoint">
+                        <option value="">--Select--</option>
+                        <option value="VCT/HTC">VCT/HTC</option>          
+                        <option value="PITC">PITC</option>            
+                        <option value="PMTCT">PMTCT</option>        
+                        <option value="TB clinic">TB clinic</option>
+                        <option value="Laboratory">Laboratory</option>
+                        <option value="Treatment Center">Treatment Center</option>
+                        <option value="other">Other</option>
+                        </select>
+                     </div>
+                      <label for="level" class="col-sm-2 control-label">Level</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="level">
+                        <option value="">--Select--</option>
+                        <option value="Region/Province/Zone">Region/Province/Zone</option>         
+                        <option value="District">District</option>
+                        <option value="Referral center">Referral center</option>
+                        <option value="Health center">Health center</option>
+                        <option value="Dispensary">Dispensary</option>
+                        <option value="Health Post">Health Post</option>
+                        <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="affiliation">
+                        <option value="">--Select--</option>
+                        <option value="Government">Government</option>
+                        <option value="Private">Private</option>
+                        <option value="Faith-based Organization">Faith-based Organization</option>
+                        <option value="Non-governmental organization">Non-governmental organization</option>
+                        <option value="Other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="affiliation" class="col-sm-2 control-label"></label>
+                    <div class="col-lg-4">
+                      <button type="button" onclick="getReport()" class="btn btn-sm btn-success">Get Report</button>
+                     &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                    </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+			<!--    <table class="table table-bordered" style="width: 50%;" align="center">-->
+			<!--    <tr>-->
+			<!--	<td style="vertical-align: middle;">-->
+			<!--	    Date : -->
+			<!--	</td>-->
+			<!--	<td style="vertical-align: middle;">-->
+			<!--	    <input type="text" name="dateRange" id="dateRange" class="form-control readonly" placeholder="Select Date Range" readonly="readonly"/>-->
+			<!--	</td>-->
+			<!--	<td style="vertical-align: middle;">-->
+			<!--	    <input type="button" onclick="getReport();" value="Get report" style="" class="btn btn-success">-->
+			<!--		&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>-->
+			<!--	</td>-->
+			<!--    </tr>-->
+			<!--    </table>-->
                     <div class="widget-head">
 
 <br>
-Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
+
+
+	<div class="row">
+	  <div class="col-sm-8">
+	  Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
+	  </div>
+	  <div class="col-sm-4">
+	    <a href="javascript:void(0);" class="btn btn-danger pull-right" onclick="exportFacility();"><i class="fa fa-file-excel-o"></i>&nbsp;Export to Excel</a>
+	  </div>
+	</div>
 					<br>
 					<br>
                     <table class="datatables table table-striped table-bordered">
@@ -94,6 +175,10 @@ Pending Audits (Audits not yet Accepted) : <?php echo $pendingCount; ?>
             "bServerSide": true,
             "sAjaxSource": "<?php echo $this->url('spi-v3-reports',array('action' => 'facility-report')); ?>",
             "fnServerData": function ( sSource, aoData, fnCallback ) {
+	      aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );
+	      aoData.push( { "name":"level","value": $("#level").val()} );
+	      aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
+	      aoData.push( { "name":"auditRndNo","value": $("#auditRndNo").val()} );
 	      aoData.push( { "name":"dateRange","value": $("#dateRange").val()} );
                 $.ajax({
                     "dataType": 'json',

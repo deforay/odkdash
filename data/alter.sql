@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS  `global_config` (
 PRIMARY KEY (  `config_id` )
 ) ENGINE = MYISAM DEFAULT CHARSET = latin1 AUTO_INCREMENT =1;
 
-INSERT INTO `odkdash`.`global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Auto Approve Status', 'approve_status', 'yes');
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Auto Approve Status', 'approve_status', 'yes');
 
 
 
@@ -148,12 +148,12 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 ('Application\\Controller\\Users', 'index', 'Access');
 
 --Pal 12-MAY-2016
-INSERT INTO `odkdash`.`resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\Email', 'Manage Email');
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\Email', 'Manage Email');
 
-INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Email', 'index', 'Access');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Email', 'index', 'Access');
 
 
-INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'corrective-action-pdf', 'Download corrective action pdf');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'corrective-action-pdf', 'Download corrective action pdf');
 
 --Pal 13-MAY-2016
 CREATE TABLE IF NOT EXISTS `temp_mail` (
@@ -170,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `temp_mail` (
 )
 
 --Pal 17-MAY-2016
-INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'delete', 'Delete');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'delete', 'Delete');
 
 
 --Amit 17-MAY-2016

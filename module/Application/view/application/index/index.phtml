@@ -52,9 +52,7 @@
 }
 .limitBar{width: 10%;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;padding: 1px;vertical-align: middle;}
   
-  
- 
-    .highcharts-legend{display: block !important;}
+.highcharts-legend{display: block !important;}
  
 </style>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
@@ -74,7 +72,7 @@
                 <div class="widget-head"><span class="title">SPI RT v3 Overall</span></div>
                 <div class="row chart-container">
                   <div class="col-md-6">
-		    <canvas id="widget-top-1" style="width: 100%; height: 170px;;"></canvas>
+		    <canvas id="widget-top-1" style="width: 100%; height: 177px;"></canvas>
                   </div>
                   <div class="col-md-6">
                     <div class="legend" id="legendOverall"></div>
@@ -92,7 +90,7 @@
                 <div class="widget-head"><span class="title">SPI RT v3 Last 180 days</span></div>
                 <div class="row chart-container">
                   <div class="col-md-6">
-		    <canvas id="widget-top-3" style="width: 100%; height: 170px;;"></canvas>
+		    <canvas id="widget-top-3" style="width: 100%; height: 177px;"></canvas>
                   </div>
                   <div class="col-md-6">
                     <div class="legend" id="legend180"></div>
@@ -157,7 +155,7 @@
 				  <span class="title"><h3>Last 20 Audits</h3></span>
 				</div>
 				<div class="chart-container">
-				  <div id="audit-points-barchart"  style="width:100%;height:340px"></div>
+				  <div id="audit-points-barchart"  style="width:100%;height:345px"></div>
 				</div>
 			  </div>
 			</div>
@@ -201,18 +199,18 @@
 		      
 					  <div style="margin-top:2%;">
 						<label style="margin-left: 1%;">Limit</label>
-			    <select class="limitBar" style="" id="limitBar" onchange="getAuditWorstDetails()">
-				  <option value="5">5</option>
-				  <option value="10" selected="selected">10</option>
-				  <option value="15">15</option>
-				  <option value="20">20</option>
-				  <option value="30">30</option>
-			    </select>
+						<select class="limitBar" style="" id="limitBar" onchange="getAuditWorstDetails()">
+						  <option value="5">5</option>
+						  <option value="10" selected="selected">10</option>
+						  <option value="15">15</option>
+						  <option value="20">20</option>
+						  <option value="30">30</option>
+						</select>
 								
-							  <label style="margin-left: 1%;">Testing Volume</label>
-							  <input style="width:38%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="worstDate">
-							  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>
-							  </div>
+						<label style="margin-left: 1%;">Testing Volume</label>
+						<input style="width:38%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="worstDate">
+						<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>
+					  </div>
 					  </div>
 					  <div style="margin-top:2%">
 					  
@@ -275,8 +273,9 @@
 					  <tr>
 						  <td>Facility ID</td>
 						  <td>Facility name</td>
-						  <td>Testing Point Name</td>
-						  <td>Testing Point Type</td>
+						  <td>Audit Date</td>
+						  <td>Received Date</td>
+						  <td>Testing Point</td>
 						  <td>Status</td>
 						  <td>Actions</td>
 						</tr>
@@ -287,11 +286,16 @@
 					  
 					  $loginContainer = new \Zend\Session\Container('credo');
 					  $role = $loginContainer->roleCode;
-					  $acl = (isset($loginContainer->acl) && $loginContainer->acl != "") ? unserialize($loginContainer->acl) : null;
+					  $acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;
 					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
 						  $update = true;
 					  } else {
 						  $update = false;
+					  }					  
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+						  $approve = true;
+					  } else {
+						  $approve = false;
 					  }					  
 					  foreach($rawSubmissions as $row) {
 						
@@ -301,12 +305,15 @@
 						<tr>
 						  <td><?php echo $row['facilityid']; ?></td>
 						  <td><?php echo $row['facilityname']; ?></td>
-						  <td><?php echo $row['testingpointname']; ?></td>
-						  <td><?php echo $row['testingpointtype']; ?></td>
+						  <td><?php echo $this->humanDateFormat($row['assesmentofaudit']); ?></td>
+						  <td><?php echo $this->humanDateFormat($row['today']); ?></td>
+						  <td><?php echo $row['testingpointname']; ?> - <?php echo $row['testingpointtype']; ?></td>
 						  <td><?php echo ucfirst($row['status']); ?></td>
 						  <td>
 						      <?php if($update) { ?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;&nbsp;<?php } ?>
 						      <?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Send Mail</a><?php } ?>
+							  
+							  <?php if($row['status']=='pending' && $approve) { ?> <a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')"  style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;<?php } ?>
 						  </td>
 						</tr>
                       <?php
@@ -840,7 +847,7 @@ function getAuditWorstDetails()
       	//initialize the javascript
 		
 		$(".datatables").DataTable( {
-        "order": [[ 4, "desc" ]]
+        "order": [[ 5, "desc" ],[ 2, "desc" ]]
 		});
     $(".select2").select2({
       width: '100%',
@@ -869,7 +876,19 @@ function getAuditWorstDetails()
 	  
 	  
 	  
-	  
+  function approveStatus(id) {
+    conf=confirm("Are you sure you want to approve this audit ?");
+    if (conf) {
+      $.post("<?php echo $this->url('spi-v3-form',array('action'=>'approve-status')); ?>",{id: id},
+       function(data) {
+        if (data>0) {
+            alert("Audit updated successfully");
+            window.location.href= window.location;
+        }
+         
+      });
+    }
+  }
 	  
 $(function () {
   
@@ -1008,8 +1027,7 @@ $(function () {
             data: [<?php echo implode(",",$testerData); ?>],
             tooltip: {
                 valueSuffix: ' Tests'
-            },
-			color: '#3598DC',
+            }
 
         },{
             name: 'Level',
@@ -1019,6 +1037,8 @@ $(function () {
             tooltip: {
                 valueSuffix: ' '
             }
+			,
+			color: '#a058c4',
 
         }]
     });
