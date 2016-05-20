@@ -169,7 +169,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $start_date = "";
         $end_date = "";
-        $sQuery = $sql->select()->from('spi_rt_3_facilities');
+        $sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+	                        ->where('spirt3.status != "deleted"');
        
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
@@ -196,7 +197,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from('spi_rt_3_facilities');
+        $tQuery =  $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+	                         ->where('spirt3.status != "deleted"');
         $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -207,7 +209,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
            "aaData" => array()
         );
 		
-		$loginContainer = new Container('credo');
+	$loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
         if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
             $update = true;
