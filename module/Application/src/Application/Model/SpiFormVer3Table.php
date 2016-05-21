@@ -351,6 +351,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if(isset($params['fieldName']) && trim($params['fieldName'])!= ''){
             $sQuery = $sQuery->where(array($params['fieldName']=>$params['val']));
         }
+        
+        if(isset($params['roundno']) && $params['roundno']!=''){
+            $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+        }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -865,7 +869,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->order(array("id DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $roundNo = implode(",",$params['roundno']);
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
             
         }
@@ -916,7 +919,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $roundNo = implode(",",$params['roundno']);
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
         $start_date = '';
@@ -1221,14 +1223,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function fetchAllApprovedSubmissionLocation($params){
-     
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $roundNo = implode(",",$params['roundno']);
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
@@ -1236,9 +1236,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
-     
-        
     }
+    
     public function dateFormat($date) {
         if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
             return "0000-00-00";
