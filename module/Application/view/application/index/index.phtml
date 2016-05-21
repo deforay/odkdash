@@ -227,21 +227,30 @@
             <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
                   <div class="widget-head row">
-                      <div class="title col-lg-6 col-md-6">
-						<span class="title"><h3>Audit Locations</h3></span>
+                      <div class="title col-lg-5 col-md-5">
+						<h3>Audit Locations</h3>
+		      </div>
+		      <div class="col-lg-6 col-md-6">
+						  <select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+						  <?php
+						    foreach($spiV3auditRoundNo as $auditRoundNo)
+						    {
+							  ?>
+							  <option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+							  <?php
+						    }
+						    ?>
+						</select>
+		      </div>
+					  <div style="margin-top:6%;margin-left: -0%" class="row">
+					  
+						<div class="col-lg-10 col-md-10">
+						  <label style="margin-left: 1%;">Date</label>
+						  <input style="width:43%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="locationDateRange">
+						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()">OK</a>						  
+						</div>
 					  </div>
-					  <div class="col-lg-6 col-md-6">
-						<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
-                          <?php
-						  foreach($spiV3auditRoundNo as $auditRoundNo)
-						  {
-							?>
-							<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
-							<?php
-						  }
-						  ?>
-                        </select>
-					  </div>
+					  
 		      </div>
                 <div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
                   
@@ -806,7 +815,8 @@ function getAuditWorstDetails()
   function getAuditLocationDetails()
   {
     value = $("#auditRndNoLocations").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {roundno:value},
+    dateRange = $("#locationDateRange").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {roundno:value,dateRange:dateRange},
       function (data) {
 	  $("#auditLocations").html(data);
       });
@@ -951,7 +961,7 @@ function getAuditWorstDetails()
 		
 	  $("#auditRndNo").multipleSelect({placeholder:'Select Audit round(s)',width: '31%',minimumCountSelected:'2'});
 	  $("#auditRndWorstNo").multipleSelect({placeholder:'Audit round(s)',width: '25%',minimumCountSelected:'2'});
-	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '40%',minimumCountSelected:'2'});
+	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '30%',minimumCountSelected:'2'});
       });
 	  
 	  
