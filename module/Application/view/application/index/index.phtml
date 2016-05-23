@@ -36,6 +36,7 @@
 
 .title h3{
   display:inline;
+  font-weight:400;
 }
 
 /*multiselect*/
@@ -129,13 +130,20 @@
 			<div class="col-md-6">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3>Testing Volume</h3>
-				    <input style="width:55%;margin-left:1%" type="text" placeholder="Enter Date" class="datepicker limitBar" id="testingVolumeDate">
-				    <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()">OK</a>
-				  </span>
+					<div class="title row">
+					  <div class="col-lg-12 col-sm-12 col-md-12">
+					  <h3>Performance of High Volume Sites</h3>
+					  </div>
+					</div>
+					<div style="margin-top:2%;" class="row">
+						<div class="col-lg-6 col-md-6">
+					  <input style="width:70%;margin-left:1%" type="text" placeholder="Enter Date" class="datepicker limitBar" id="testingVolumeDate">
+					  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()">OK</a>
+						</div>
+					</div>
 				</div>
 				<div class="chart-container" id="testVolumeValues">
-				  <div style="width:100%;height:340px" id="volumeChart"></div>
+				  <div style="width:100%;height:304px" id="volumeChart"></div>
 				</div>
 			  </div>			  
 			</div>			
@@ -225,9 +233,6 @@
 						</div>
 					  </div>
 					  </div>
-					  <div style="margin-top:2%">
-					  
-					</div>
                     <div class="chart-container" id="zeroCountChart" style="height:220px;"></div>
                   </div>
 				  
@@ -235,32 +240,44 @@
 			
             <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
-                  <div class="widget-head row">
-                      <div class="title col-lg-5 col-md-5">
-						<h3>Audit Locations</h3>
-		      </div>
-		      <div class="col-lg-6 col-md-6">
+				
+				
+				
+				
+				
+                    <div class="widget-head">
+                      <div class="title row">
+						<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+						  <h3>Audit Locations</h3>
+						</div>
+					  </div>
+		      
+					  <div style="margin-top:2%;" class="row">
+						<div class="col-lg-6 col-md-6">
 						  <select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
-						  <?php
-						    foreach($spiV3auditRoundNo as $auditRoundNo)
-						    {
+							<?php
+							  foreach($spiV3auditRoundNo as $auditRoundNo)
+							  {
+								?>
+								<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+								<?php
+							  }
 							  ?>
-							  <option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
-							  <?php
-						    }
-						    ?>
-						</select>
-		      </div>
-					  <div style="margin-top:6%;margin-left: -0%" class="row">
-					  
-						<div class="col-lg-10 col-md-10">
+							</select>	
+						</div>
+						<div class="col-lg-6 col-md-6">
 						  <label style="margin-left: 1%;">Date</label>
-						  <input style="width:43%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="locationDateRange">
+						  <input style="width:60%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="locationDateRange">
 						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()">OK</a>						  
 						</div>
 					  </div>
-					  
-		      </div>
+					  </div>
+				
+				
+				
+				
+				
+				
                 <div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
                   
                 </div>
