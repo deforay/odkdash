@@ -157,10 +157,14 @@
 			
 			<div class="col-md-6" id="lefter">
                   <div class="widget widget-radar widget-pie">
-                    <div class="widget-head row">
-                      <div class="title col-lg-6 col-md-6">
+                    <div class="widget-head">
+		      <div class="title row">
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
 						<h3>Audit Performance</h3>
+						
 					  </div>
+		      </div>
+		      <div style="margin-top:2%;" class="row">
 					  <div class="col-lg-6 col-md-6">
 						<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
 						<?php
@@ -173,6 +177,13 @@
 						  ?>
                         </select>
 					  </div>
+					  
+						<div class="col-lg-6 col-md-6">
+						  <label style="">Date</label>
+						  <input style="width:65%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="audiPerformanceDate">
+						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditDetails()">OK</a>						  
+						</div>
+		      </div>
                     </div>
 					<div id="radarChart"></div>
 				  </div>
@@ -804,7 +815,8 @@ function getAuditWorstDetails()
   function getAuditDetails()
   {
       value = $("#auditRndNo").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {roundno:value},
+      dateRange = $("#audiPerformanceDate").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {roundno:value,dateRange:dateRange},
       function (data) {
 	  $("#radarChart").html(data);
       });
@@ -957,7 +969,7 @@ function getAuditWorstDetails()
 
 		
 		
-	  $("#auditRndNo").multipleSelect({placeholder:'Select Audit round(s)',width: '31%',minimumCountSelected:'2'});
+	  $("#auditRndNo").multipleSelect({placeholder:'Audit round(s)',width: '31%',minimumCountSelected:'2'});
 	  $("#auditRndWorstNo").multipleSelect({placeholder:'Audit round(s)',width: '25%',minimumCountSelected:'2'});
 	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '30%',minimumCountSelected:'2'});
       });
