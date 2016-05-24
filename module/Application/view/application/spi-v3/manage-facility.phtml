@@ -4,9 +4,9 @@ $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl=$this->layout()->acl;
 if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
-    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 }else{
-    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
 }
 ?>
 <style>
@@ -80,21 +80,19 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                 <?php }
                 } ?>
 
-                <table id="example" class="table table-bordered table-striped table-hover table-fw-widget">
+                <table id="example" class="datatables table-condensed table table-bordered table-striped table-hover table-fw-widget">
                   <thead>
                     <tr>
                       <th>Facility Name</th>
-                      <th>Form ID</th>
-                      <th>Form Version</th>
-                      <th>Audit Round No.</th>
-                      <th>Audit Date</th>
-                      <th>Testing Point Type</th>
+                      <th style="width:5%;">Audit Round</th>
+                      <th style="width:5%;">Audit Date</th>
+                      <th style="width:5%;">Testing Point Type</th>
                       <th>Level</th>
                       <th>Affiliation</th>
-                      <th>Audit Score Percentage</th>
-                      <th>Status</th>
+                      <th style="width:5%;">Audit Score %</th>
+                      <th style="width:5%;">Status</th>
                       <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) { ?>
-                      <th>Action</th>
+                      <th style="width:15%;">Action</th>
                       <?php } ?>
                     </tr>
                   </thead>
@@ -119,6 +117,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
    table = $('#example').DataTable({
         "bProcessing": true,
         "bServerSide": true,
+        "pageLength": 50,
          "aoColumns": [
                 <?php echo $editAction; ?>
             ],

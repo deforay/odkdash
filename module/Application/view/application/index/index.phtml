@@ -105,11 +105,11 @@
               <div class="widget widget-pie">
                 <div class="widget-head">
 				<span class="title">
-				  <h3>Performance</h3>
+				  <h3>Audit Performance</h3>
 				  </span>
 				</div>
 		
-		<input style="width:70%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
+		Date : <input style="width:57%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
 		<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
 		<div id="dateRangePickerValue">
                 <div class="row chart-container">
@@ -310,17 +310,18 @@
 			                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
                       <span class="title"><h3>Latest Audits</h3></span> 
-					<br>
-                    <table class="datatables table table-striped table-bordered">
+					</div>
+					<div class="table-container">
+                    <table id="latestAuditsTbl" class="datatables table table-striped table-bordered table-condensed">
 					<thead>
 					  <tr>
-						  <td>Facility ID</td>
-						  <td>Facility name</td>
-						  <td>Audit Date</td>
-						  <td>Received Date</td>
-						  <td>Testing Point</td>
-						  <td>Status</td>
-						  <td>Actions</td>
+						  <th style="width:8%;">Facility ID</th>
+						  <th>Facility name</th>
+						  <th style="width:10%;">Audit Date</th>
+						  <th style="width:10%;">Received Date</th>
+						  <th>Testing Point</th>
+						  <th style="width:8%;">Status</th>
+						  <th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -350,11 +351,11 @@
 						  <td><?php echo $row['facilityname']; ?></td>
 						  <td><?php echo $this->humanDateFormat($row['assesmentofaudit']); ?></td>
 						  <td><?php echo $this->humanDateFormat($row['today']); ?></td>
-						  <td><?php echo $row['testingpointname']; ?> - <?php echo $row['testingpointtype']; ?></td>
+						  <td><?php echo (isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype']); ?> - <?php echo $row['testingpointtype']; ?></td>
 						  <td><?php echo ucfirst($row['status']); ?></td>
 						  <td>
-						      <?php if($update) { ?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;&nbsp;<?php } ?>
-						      <?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Send Mail</a><?php } ?>
+						      <?php if($update) { ?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;<?php } ?>
+						      <?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a><?php } ?>
 							  
 							  <?php if($row['status']=='pending' && $approve) { ?> <a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')"  style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;<?php } ?>
 						  </td>
@@ -366,7 +367,7 @@
 					  </tbody>
                     </table>
                   
-
+					</div>
 			</div>
 		  </div>
 
@@ -963,8 +964,9 @@ function getAuditWorstDetails()
       $(document).ready(function(){
       	//initialize the javascript
 		
-		$(".datatables").DataTable( {
-        "order": [[ 5, "desc" ],[ 2, "desc" ]]
+		$("#latestAuditsTbl").DataTable( {
+		  "order": [[ 5, "desc" ],[ 2, "desc" ]],
+		  "pageLength": 50
 		});
       $(".select2").select2({
 	width: '100%',

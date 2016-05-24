@@ -119,21 +119,21 @@
 	</div>
 					<br>
 					<br>
-                    <table class="datatables table table-striped table-bordered">
+                    <table class="datatables table-condensed table table-striped table-bordered">
 					<thead>
 					  <tr>
-					    <td>Facility name</td>
-					    <td>Audit Date</td>
-					    <td>Testing Point</td>
-					    <td>Personnel Training & Certification</td>
-					    <td>Physical</td>
-					    <td>Safety</td>
-					    <td>Pre-Testing</td>
-					    <td>Testing</td>
-					    <td>Post-Testing</td>
-					    <td>External QA</td>
-					    <td>Total</td>
-					    <td>% Scores</td>
+					    <th>Facility name</th>
+					    <th style="width:9%;">Audit Date</th>
+					    <th>Testing Point</th>
+					    <th style="width:5%;">Personnel Training & Certification</th>
+					    <th style="width:5%;">Physical</th>
+					    <th style="width:5%;">Safety</th>
+					    <th style="width:5%;">Pre-Testing</th>
+					    <th style="width:5%;">Testing</th>
+					    <th style="width:5%;">Post-Testing</th>
+					    <th style="width:5%;">External QA</th>
+					    <th style="width:5%;">Total</th>
+					    <th style="width:5%;">% Scores</th>
 					  </tr>
 					</thead>
 					<tbody>
@@ -166,7 +166,8 @@
 	
         oTable = $('.datatables').dataTable({
             "bScrollCollapse": true,
-            "bRetrieve": true,                        
+            "bRetrieve": true,      
+			"pageLength": 50,                  
             "aoColumns": [
 		{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}
             ],

@@ -4,9 +4,9 @@ $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl=$this->layout()->acl;
 if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
-    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 }else{
-    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
 }
 ?>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jqc-1.12.0,dt-1.10.11,r-2.0.2,sc-1.4.1/datatables.min.css"/>
@@ -108,20 +108,19 @@ tr.shown td.details-control {
             </div>
         </div>
 
-                <table id="example" class="table table-bordered table-striped table-hover table-fw-widget">
+                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                   <thead>
                     <tr>
                       <th></th>
                       <th>Facility Name</th>
-                      <th>Form ID</th>
-                      <th>Form Version</th>
-                      <th>Audit Round No.</th>
-                      <th>Audit Date</th>
-                      <th>Testing Point Type</th>
-                      <th>Level</th>
+                      <th style="width:8%;">Audit Round No.</th>
+                      <th style="width:10%;">Audit Date</th>
+                      <th style="width:10%;">Testing Point Name</th>
+                      <th style="width:6%;">Testing Point Type</th>
+                      <th style="width:8%;">Level</th>
                       <th>Affiliation</th>
-                      <th>Audit Score Percentage</th>
-                      <th>Status</th>
+                      <th style="width:5%;">Audit Score %</th>
+                      <th style="width:8%;">Status</th>
                       <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
                       <th>Action</th>
                       <?php } ?>
@@ -188,7 +187,8 @@ tr.shown td.details-control {
                 <?php echo $editAction;?>
             ],
          "iDisplayLength": 50,
-         "aaSorting": [[ 5, "desc" ]],
+         "pageLength": 50,
+         "aaSorting": [[ 3, "desc" ]],
          "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>",
          "fnServerData": function ( sSource, aoData, fnCallback ) {
           aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );

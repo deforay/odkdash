@@ -483,8 +483,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	
-        $aColumns = array('id','facilityname','formId', 'formVersion','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
-        $orderColumns = array('id','facilityname','formId', 'formVersion','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $aColumns = array('id','facilityname','auditroundno','assesmentofaudit' , 'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $orderColumns = array('id','facilityname','auditroundno','assesmentofaudit', 'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
 
         /*
         * Paging
@@ -650,10 +650,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
          }
          $row[] = '';
          $row[] = $aRow['facilityname'];
-         $row[] = $aRow['formId'];
-         $row[] = $aRow['formVersion'];
          $row[] = $aRow['auditroundno'];
          $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+         $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
          $row[] = $aRow['testingpointtype'];
          $row[] = $aRow['level'].$level;
          $row[] = $aRow['affiliation'];
@@ -681,8 +680,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	
-        $aColumns = array('facilityname','formId', 'formVersion','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
-        $orderColumns = array('facilityname','formId', 'formVersion','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $aColumns = array('facilityname','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $orderColumns = array('facilityname','auditroundno','assesmentofaudit' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
 
         /*
         * Paging
@@ -822,8 +821,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $remove="";
         $row['DT_RowId'] = $aRow['id'];
         $row[] = $aRow['facilityname'];
-        $row[] = $aRow['formId'];
-        $row[] = $aRow['formVersion'];
         $row[] = $aRow['auditroundno'];
         $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
         $row[] = $aRow['testingpointtype'];
@@ -832,13 +829,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
         $row[] = ucwords($aRow['status']);
         if($downloadPdfAction){
-            $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+            $downloadPdf = '<a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
         }
         if($update){
-            $edit = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+            $edit = '&nbsp;<a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
         }
         if($delete){
-            $remove = '<br><a href="javascript:void(0);" onclick="deleteAudit('.$aRow['id'].');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
+            $remove = '&nbsp;<a href="javascript:void(0);" onclick="deleteAudit('.$aRow['id'].');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
         }
         $row[] = $edit." ".$downloadPdf. " ".$remove;
         $output['aaData'][] = $row;

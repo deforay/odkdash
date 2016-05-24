@@ -57,10 +57,10 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
              
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
 
-                <table  cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" id="facilityDataTable">
+                <table  cellpadding="0" cellspacing="0" border="0" class="datatables table table-striped table-bordered table-condensed" id="facilityDataTable">
 					<thead>
 					<tr>
-						<th>Facility Id</th>
+						<th>Facility ID</th>
 						<th>Facility Name</th>
 						<th>Email</th>
 						<th>Contact Person</th>
@@ -142,7 +142,8 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
  $(document).ready(function() {
         oTable = $('#facilityDataTable').DataTable({
             "bScrollCollapse": true,
-            "bRetrieve": true,                        
+            "bRetrieve": true,
+			"pageLength": 50,
             "aoColumns": [
 		<?php echo $editAction;?>
             ],
@@ -174,6 +175,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
             "bScrollCollapse": false,
             "bRetrieve": false,
             "bDestroy": true,
+			"pageLength": 50,
             "aoColumns": [
 				{"sClass":"center noWrap"},
 				{"sClass":"center noWrap"},
