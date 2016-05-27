@@ -31,7 +31,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
     
       
     public function saveData($params) {
-       
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
         $d = array('data_dump' => json_encode($params) , 'received_on' => new \Zend\Db\Sql\Expression("NOW()"));
@@ -315,8 +314,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $selectString = $sql->getSqlStringForSqlObject($insert);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
-            if($approveStatus=='approved')
-            {
+            if($approveStatus=='approved'){
                 $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                 $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue());
             }

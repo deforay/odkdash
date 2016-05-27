@@ -121,7 +121,7 @@ $('#volumeChart').highcharts({
             yAxis: 2,
             data: [<?php echo implode(",",$volumeData); ?>],
 			color: {
-			  pattern : "https://raw.githubusercontent.com/highslide-software/pattern-fill/master/graphics/pattern3.png",
+			  pattern : "<?php echo $this->basePath('assets/img/pattern3.png'); ?>",
 			  width: 6,
 			  height: 6
 			},	
