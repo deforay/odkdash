@@ -16,6 +16,6 @@ return array(
         'username' => 'root',
         'password' => 'zaq12345',
         'data-base-name' => 'odkdash',
-        'data-base-host' => 'localhost',
+        'data-base-host' => 'localhost'
     )
 );
