@@ -14,7 +14,7 @@
 return array(
         'db' => array(
         'username' => 'root',
-        'password' => 'zaq12345',
+        'password' => '',
         'data-base-name' => 'odkdash',
         'data-base-host' => 'localhost'
     )
