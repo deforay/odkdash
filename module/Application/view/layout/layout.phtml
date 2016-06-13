@@ -46,7 +46,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="<?php echo $this->basePath('assets/img/favicon.png'); ?>">
-    <title>Malawi – Dashboard for Quality Improvement of HIV Rapid Testing </title>
+    <title><?php echo $sessionLogin->countryName; ?> Dashboard for Quality Improvement of HIV Rapid Testing </title>
     
     <style type="text/css">
       
@@ -112,7 +112,6 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                 <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><img src="/assets/img/nobody.jpg">
                 <span class="user-name">John Doe</span><span class="angle-down s7-angle-down"></span></a>
                 <ul role="menu" class="dropdown-menu">
-                  <li><a href="#"> <span class="icon s7-help1"></span>Help</a></li>
                   <li><a href="<?php echo $this->url('login', array('action' => 'logout')); ?>"> <span class="icon s7-power"></span>Sign Out</a></li>
                 </ul>
               </li>
@@ -152,17 +151,24 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
             <li class="parent"><a href="<?php echo $this->url('spi-facility',array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span>Facility List</span></a></li>
             <?php } ?>
             
+            <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report")) { ?>
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Reports</span></a>
             <ul class="sub-menu">
               <li><a href="<?php echo $this->url('spi-v3-reports',array('action' => 'facility-report')); ?>">SPI V3 Facility Report</a></li>
             </ul>
             </li>
+            <?php } ?>
             <?php
             if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index")) {
             ?>
               <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'index')); ?>"><i class="icon s7-mail"></i><span>Email</span></a></li>
             <?php } ?>
+            
+            <?php
+            if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Common", "audit-locations")) {
+            ?>            
             <li class="parent"><a href="/common/audit-locations"><i class="icon s7-map-marker"></i><span>Map</span></a></li>
+            <?php } ?>
             <?php
             if(trim($adminMenu)!=""){
             ?>

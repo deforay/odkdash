@@ -51,10 +51,21 @@ class Module
     
     
     public function preSetter(MvcEvent $e) {
+		
+		
+		$session = new Container('credo');
+		$sm = $e->getApplication()->getServiceManager();
+		$commonService = $sm->get('CommonService');
+		$config = $commonService->getGlobalConfigDetails();
+		$session->countryName = $config['country-name'];
+		
+		
+		
+		
 	if ($e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
         && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
         ) {
-            $session = new Container('credo');
+            
             if (!isset($session->userId) || $session->userId == "") {
                 $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
                 $response = $e->getResponse();

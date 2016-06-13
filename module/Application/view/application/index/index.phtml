@@ -1,3 +1,11 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+
+?>
+
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
@@ -64,7 +72,7 @@
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
       <div class="am-content">
 		<div class="page-head">
-          <h2>SPI-RT 3.0 Checklist</h2>
+          <h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> SPI-RT 3.0 Audits</h2>
         </div>
         <div class="main-content">
         
@@ -303,7 +311,32 @@
 			
 
 		  </div>
+		  <?php
 		  
+
+			  $loginContainer = new \Zend\Session\Container('credo');
+			  $role = $loginContainer->roleCode;
+			  $acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;		  
+		  
+		  
+
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+						  $update = true;
+					  } else {
+						  $update = false;
+					  }					  
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+						  $approve = true;
+					  } else {
+						  $approve = false;
+					  }			  
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\Email', 'index')) {
+						  $email = true;
+					  } else {
+						  $email = false;
+					  }			  
+		  
+		  ?>
 		  
 		  <div class="row">
 			<div class="col-md-12 col-sm-12">
@@ -321,26 +354,15 @@
 						  <th style="width:10%;">Received Date</th>
 						  <th>Testing Point</th>
 						  <th style="width:8%;">Status</th>
+						  <?php if($update || $approve) { ?>
 						  <th>Actions</th>
+						  <?php  } ?>
 						</tr>
 					</thead>
 					<tbody>
 					  <?php
 					  $count = 0;
-					  
-					  $loginContainer = new \Zend\Session\Container('credo');
-					  $role = $loginContainer->roleCode;
-					  $acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;
-					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
-						  $update = true;
-					  } else {
-						  $update = false;
-					  }					  
-					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
-						  $approve = true;
-					  } else {
-						  $approve = false;
-					  }					  
+					  				  
 					  foreach($rawSubmissions as $row) {
 						
 						if($count == 25) break;
@@ -353,12 +375,24 @@
 						  <td><?php echo $this->humanDateFormat($row['today']); ?></td>
 						  <td><?php echo (isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype']); ?> - <?php echo $row['testingpointtype']; ?></td>
 						  <td><?php echo ucfirst($row['status']); ?></td>
+						  
+						  <?php if($update || $approve || $email) { ?>
 						  <td>
-						      <?php if($update) { ?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;<?php } ?>
-						      <?php if($row['status'] == 'approved') { ?> <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a><?php } ?>
-							  
-							  <?php if($row['status']=='pending' && $approve) { ?> <a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')"  style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;<?php } ?>
+						      <?php
+							  if($update) {
+								?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+							  <?php }
+							  if($email && ($row['status'] == 'approved')) { ?>
+							  <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
+							  <?php
+							  }
+					  
+							  if($row['status']=='pending' && $approve) { ?>
+							  <a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')"  style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;
+							  <?php } ?>
 						  </td>
+						  
+						  <?php } ?>
 						</tr>
                       <?php
 						$count++;
