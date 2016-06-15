@@ -11,6 +11,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Json\Json;
 
 class IndexController extends AbstractActionController
 {
@@ -18,31 +19,44 @@ class IndexController extends AbstractActionController
     {
         $params = array();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $perf1 = $odkFormService->getPerformance($params);
-        $perflast30 = $odkFormService->getPerformanceLast30Days('');        
-        $perflast180 = $odkFormService->getPerformanceLast180Days();        
         $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
         $testingVolume = $odkFormService->getAllApprovedTestingVolume('');        
-        $rawSubmissions = $odkFormService->getAllSubmissions();        
-        //$auditRoundWiseData = $odkFormService->getAuditRoundWiseData('');
-        //$zeroCounts = $odkFormService->getZeroQuestionCounts();
-        //$spiV3Labels = $odkFormService->getSpiV3FormLabels();
-        $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
+  
         
-        
-        return new ViewModel(array('perf1' => $perf1,
-                                   'perflast30' => $perflast30,
-                                   'perflast180' => $perflast180,
+        //$viewModel = new ViewModel();
+        //$viewModel->setVariables(array('allSubmissions' => $allSubmissions,'testingVolume' => $testingVolume))
+        //              ->setTerminal(true);
+        //return $viewModel;
+        return new ViewModel(array(
                                    'allSubmissions' => $allSubmissions,
                                    'testingVolume' => $testingVolume,
-                                   'rawSubmissions' => $rawSubmissions,
-                                   //'auditRoundWiseData' => $auditRoundWiseData,
-                                   //'spiV3Labels' => $spiV3Labels,
-                                   //'zeroCounts' => $zeroCounts,
-                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo));
-    
-    
+                                ));
     }
     
+    public function auditLocationsAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $allSubmissions = $odkFormService->getAllApprovedSubmissionLocation($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
+                        ->setTerminal(true);
+            return $viewModel;
+        }
+    }
     
+    public function auditPerformanceAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
+            $perf1 = $odkFormService->getPerformance($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }

@@ -3,7 +3,6 @@
 use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
-
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -76,6 +75,70 @@ $sessionLogin = new Container('credo');
         </div>
         <div class="main-content">
         
+          <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="widget widget-pie">
+                <div class="widget-head"><span  class="title"><h3>Overall Performance</h3></span></div>
+                <div class="row chart-container" style="min-height:430px !important;">
+                  <div class="col-md-12">
+		    <div id="widget-top-1" style="width: 100%;"></div>
+                  </div>
+                </div>
+		<div class="row chart-info">
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+                </div>				
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="widget widget-pie widget-pie-stats">
+                <div class="widget-head"><span class="title"><h3>Performance - Last 180 days</h3></span></div>
+                <div class="row chart-container" style="min-height:430px !important;">
+                  <div class="col-md-12">
+		    <div id="widget-top-3" style="width: 100%;"></div>
+                  </div>
+                </div>
+		<div class="row chart-info">
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
+                  <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="widget widget-pie">
+                <div class="widget-head">
+				<span class="title">
+				  <h3>Audit Performance</h3>
+				  </span>
+				</div>
+		
+		Date : <input style="width:57%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
+		<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
+		<div id="dateRangePickerValue">
+                <div class="row chart-container">
+                  <div class="col-md-12">
+		    <div id="widget-top-2" style="width: 100%;">
+			  <?php
+			  if(isset($perflast30[0]['totalDataPoints']) && trim($perflast30[0]['totalDataPoints'])==0){
+				echo "<div style='height:380px;text-align:center;'><h3>No data available</h3></div>";
+			  }
+			  ?>
+			</div>
+                  </div>
+                </div>
+		  <div class="row chart-info">
+		    <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['oldestDate']) ?></span></div>
+		    <div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['newestDate']) ?></span></div>
+		    <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+                </div>
+		</div>
+              </div>
+            </div>			
+          </div>
 		  <div class="row">
 			<div class="col-md-6">
 			  <div class="widget">
@@ -85,7 +148,12 @@ $sessionLogin = new Container('credo');
 					  <h3>Performance of High Volume Sites</h3>
 					  </div>
 					</div>
-					
+					<div style="margin-top:2%;" class="row">
+						<div class="col-lg-6 col-md-6">
+					  <input style="width:70%;margin-left:1%" type="text" placeholder="Enter Date" class="datepicker limitBar" id="testingVolumeDate">
+					  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()">OK</a>
+						</div>
+					</div>
 				</div>
 				<div class="chart-container" id="testVolumeValues">
 				  <div style="width:100%;height:304px" id="volumeChart"></div>
@@ -117,7 +185,26 @@ $sessionLogin = new Container('credo');
 						
 					  </div>
 		      </div>
-		     
+		      <div style="margin-top:2%;" class="row">
+					  <div class="col-lg-6 col-md-6">
+						<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
+						<?php
+						  foreach($spiV3auditRoundNo as $auditRoundNo)
+						  {
+							?>
+							<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+							<?php
+						  }
+						  ?>
+                        </select>
+					  </div>
+					  
+						<div class="col-lg-6 col-md-6">
+						  <label style="">Date</label>
+						  <input style="width:65%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="audiPerformanceDate">
+						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditDetails()">OK</a>						  
+						</div>
+		      </div>
                     </div>
 					<div id="radarChart"></div>
 				  </div>
@@ -139,7 +226,25 @@ $sessionLogin = new Container('credo');
 						</div>
 					  </div>
 		      
-					  
+					  <div style="margin-top:2%;" class="row">
+						<div class="col-lg-6 col-md-6">
+						  <select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+							<?php
+							  foreach($spiV3auditRoundNo as $auditRoundNo)
+							  {
+								?>
+								<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+								<?php
+							  }
+							  ?>
+							</select>	
+						</div>
+						<div class="col-lg-6 col-md-6">
+						  <label style="margin-left: 1%;">Date</label>
+						  <input style="width:57%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="worstDate">
+						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()">OK</a>						  
+						</div>
+					  </div>
 					  </div>
                     <div class="chart-container" id="zeroCountChart" style="height:220px;"></div>
                   </div>
@@ -160,7 +265,25 @@ $sessionLogin = new Container('credo');
 						</div>
 					  </div>
 		      
-					  
+					  <div style="margin-top:2%;" class="row">
+						<div class="col-lg-6 col-md-6">
+						  <select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+							<?php
+							  foreach($spiV3auditRoundNo as $auditRoundNo)
+							  {
+								?>
+								<option value="<?php echo $auditRoundNo['auditroundno'];?>"> <?php echo $auditRoundNo['auditroundno']." (".$auditRoundNo['rowCount'].")";?></option>
+								<?php
+							  }
+							  ?>
+							</select>	
+						</div>
+						<div class="col-lg-6 col-md-6">
+						  <label style="margin-left: 1%;">Date</label>
+						  <input style="width:60%" type="text" placeholder="Enter Date" class="limitBar datepicker" id="locationDateRange">
+						  <a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()">OK</a>						  
+						</div>
+					  </div>
 					  </div>
 				
 				
@@ -193,8 +316,101 @@ $sessionLogin = new Container('credo');
 			
 
 		  </div>
+		  <?php
 		  
-		
+
+			  $loginContainer = new \Zend\Session\Container('credo');
+			  $role = $loginContainer->roleCode;
+			  $acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;		  
+		  
+		  
+
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+						  $update = true;
+					  } else {
+						  $update = false;
+					  }					  
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+						  $approve = true;
+					  } else {
+						  $approve = false;
+					  }			  
+					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\Email', 'index')) {
+						  $email = true;
+					  } else {
+						  $email = false;
+					  }			  
+		  
+		  ?>
+		  
+		  <div class="row">
+			<div class="col-md-12 col-sm-12">
+			                   <div class="widget widget-radar widget-pie">
+                    <div class="widget-head">
+                      <span class="title"><h3>Latest Audits</h3></span> 
+					</div>
+					<div class="table-container">
+                    <table id="latestAuditsTbl" class="datatables table table-striped table-bordered table-condensed">
+					<thead>
+					  <tr>
+						  <th style="width:8%;">Facility ID</th>
+						  <th>Facility name</th>
+						  <th style="width:10%;">Audit Date</th>
+						  <th style="width:10%;">Received Date</th>
+						  <th>Testing Point</th>
+						  <th style="width:8%;">Status</th>
+						  <?php if($update || $approve) { ?>
+						  <th>Actions</th>
+						  <?php  } ?>
+						</tr>
+					</thead>
+					<tbody>
+					  <?php
+					  $count = 0;
+					  				  
+					  foreach($rawSubmissions as $row) {
+						
+						if($count == 25) break;
+						
+					  ?>					  
+						<tr>
+						  <td><?php echo $row['facilityid']; ?></td>
+						  <td><?php echo $row['facilityname']; ?></td>
+						  <td><?php echo $this->humanDateFormat($row['assesmentofaudit']); ?></td>
+						  <td><?php echo $this->humanDateFormat($row['today']); ?></td>
+						  <td><?php echo (isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype']); ?> - <?php echo $row['testingpointtype']; ?></td>
+						  <td><?php echo ucfirst($row['status']); ?></td>
+						  
+						  <?php if($update || $approve || $email) { ?>
+						  <td>
+						      <?php
+							  if($update) {
+								?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+							  <?php }
+							  if($email && ($row['status'] == 'approved')) { ?>
+							  <a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
+							  <?php
+							  }
+					  
+							  if($row['status']=='pending' && $approve) { ?>
+							  <a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')"  style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;
+							  <?php } ?>
+						  </td>
+						  
+						  <?php } ?>
+						</tr>
+                      <?php
+						$count++;
+					  }
+					  ?>
+					  </tbody>
+                    </table>
+                  
+					</div>
+			</div>
+		  </div>
+
+			</div>
 		  </div>
 
         </div>
@@ -239,6 +455,267 @@ $sessionLogin = new Container('credo');
         colors.alt2    = getColor('clr-alt2');
         colors.alt3    = getColor('clr-alt3');
         colors.alt4    = getColor('clr-alt4');
+      
+function widget_top_1(){
+
+
+		<?php
+		
+			$perf1[0]['level0'] = ($perf1[0]['level0'] > 0) ? $perf1[0]['level0'] : 0;
+			$perf1[0]['level1'] = ($perf1[0]['level1'] > 0) ? $perf1[0]['level1'] : 0;
+			$perf1[0]['level2'] = ($perf1[0]['level2'] > 0) ? $perf1[0]['level2'] : 0;
+			$perf1[0]['level3'] = ($perf1[0]['level3'] > 0) ? $perf1[0]['level3'] : 0;
+			$perf1[0]['level4'] = ($perf1[0]['level4'] > 0) ? $perf1[0]['level4'] : 0;
+			
+	  	?>	  		    
+			
+	  var data = [
+		{
+		  y: <?php echo $perf1[0]['level0']; ?>,
+		  color: color1,
+		},
+		 {
+		  y: <?php echo $perf1[0]['level1']; ?>,
+		  color: color2
+		},
+		 {
+		  y: <?php echo $perf1[0]['level2']; ?>,
+		  color: color3,
+		  label: "Level 2 (60-79)"
+		},
+		 {
+		  y: <?php echo $perf1[0]['level3']; ?>,
+		  color: color4
+		},
+		{
+		  y: <?php echo $perf1[0]['level4']; ?>,
+		  color: color5
+		},
+	  
+	  ];
+	  
+	  
+	  var data = [
+		 {
+		  y: <?php echo $perf1[0]['level0']; ?>,
+		  color: color1,
+		  name: "Level 0 (Below 40)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level1']; ?>,
+		  color: color2,
+		  name: "Level 1 (40-59)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level2']; ?>,
+		  color: color3,
+		  name: "Level 2 (60-79)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level3']; ?>,
+		  color: color4,
+		  name: "Level 3 (80-89)"
+	  },
+		 {
+		  y: <?php echo $perf1[0]['level4']; ?>,
+		  color: color5,
+		  name: "Level 4 (90 and above)"
+	  },
+	  
+	  
+	  ];
+	  
+	  
+	  
+	  $('#widget-top-1').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },title: {
+                text: ''
+            },			
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Audit Performance',
+                colorByPoint: true,
+                data: data
+            }]
+        });
+	 
+    }    
+    function widget_top_2(){
+		<?php
+		if($perflast30[0]['totalDataPoints']>0){
+			$perflast30[0]['level0'] = ($perflast30[0]['level0'] > 0) ? $perflast30[0]['level0'] : 0;
+			$perflast30[0]['level1'] = ($perflast30[0]['level1'] > 0) ? $perflast30[0]['level1'] : 0;
+			$perflast30[0]['level2'] = ($perflast30[0]['level2'] > 0) ? $perflast30[0]['level2'] : 0;
+			$perflast30[0]['level3'] = ($perflast30[0]['level3'] > 0) ? $perflast30[0]['level3'] : 0;
+			$perflast30[0]['level4'] = ($perflast30[0]['level4'] > 0) ? $perflast30[0]['level4'] : 0;
+			
+	  	?>
+			
+	  var data = [
+		 {
+		  y: <?php echo $perflast30[0]['level0']; ?>,
+		  color: color1,
+		  name: "Level 0 (Below 40)"
+	  },
+		 {
+		  y: <?php echo $perflast30[0]['level1']; ?>,
+		  color: color2,
+		  name: "Level 1 (40-59)"
+	  },
+		 {
+		  y: <?php echo $perflast30[0]['level2']; ?>,
+		  color: color3,
+		  name: "Level 2 (60-79)"
+	  },
+		 {
+		  y: <?php echo $perflast30[0]['level3']; ?>,
+		  color: color4,
+		  name: "Level 3 (80-89)"
+	  },
+		 {
+		  y: <?php echo $perflast30[0]['level4']; ?>,
+		  color: color5,
+		  name: "Level 4 (90 and above)"
+	  },
+	  
+	  
+	  ];
+	  
+
+	  
+	  $('#widget-top-2').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },title: {
+                text: ''
+            },			
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true,
+					shadow: false,
+				    center: ['50%', '50%']					
+                }
+            },
+            series: [{
+                name: 'Audit Performance',
+                colorByPoint: true,
+                data: data
+            }]
+        });  
+	  
+	  <?php
+		}
+	  ?>
+	  
+	  
+    }
+    
+    function widget_top_3(){
+			
+
+		<?php
+		
+			$perflast180[0]['level0'] = ($perflast180[0]['level0'] > 0) ? $perflast180[0]['level0'] : 0;
+			$perflast180[0]['level1'] = ($perflast180[0]['level1'] > 0) ? $perflast180[0]['level1'] : 0;
+			$perflast180[0]['level2'] = ($perflast180[0]['level2'] > 0) ? $perflast180[0]['level2'] : 0;
+			$perflast180[0]['level3'] = ($perflast180[0]['level3'] > 0) ? $perflast180[0]['level3'] : 0;
+			$perflast180[0]['level4'] = ($perflast180[0]['level4'] > 0) ? $perflast180[0]['level4'] : 0;
+			
+	  	?>	  		
+			
+	  var data = [
+		 {
+		  y: <?php echo $perflast180[0]['level0']; ?>,
+		  color: color1,
+		  name: "Level 0 (Below 40)"
+	  },
+		 {
+		  y: <?php echo $perflast180[0]['level1']; ?>,
+		  color: color2,
+		  name: "Level 1 (40-59)"
+	  },
+		 {
+		  y: <?php echo $perflast180[0]['level2']; ?>,
+		  color: color3,
+		  name: "Level 2 (60-79)"
+	  },
+		 {
+		  y: <?php echo $perflast180[0]['level3']; ?>,
+		  color: color4,
+		  name: "Level 3 (80-89)"
+	  },
+	  {
+		  y: <?php echo $perflast180[0]['level4']; ?>,
+		  color: color5,
+		  name: "Level 4 (90 and above)"
+	  }
+	  
+	  
+	  
+	  ];
+	  
+
+	  
+	  
+	  $('#widget-top-3').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },title: {
+                text: ''
+            },			
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                name: 'Audit Performance',
+                colorByPoint: true,
+                data: data
+            }]
+        });  
+	  
+	  
+    }
 	
     function bar_chart(){
 	
@@ -264,7 +741,7 @@ $sessionLogin = new Container('credo');
 	  
 	  $barData[] = "{ y : ".round($row['AUDIT_SCORE_PERCANTAGE'],2). ", color : '".$color."' }"; 
 	  $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0); 
-	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>'"); 
+	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
 	  $counter++;
 	  
 	  
@@ -372,15 +849,15 @@ function getspiRTv3()
       dateRange = $("#spiRTv3").val();
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'spirtv3-datewise')); ?>", {dateRange:dateRange},
       function (data) {
-	  $("#dateRangePickerValue").html(data);
+		$("#dateRangePickerValue").html(data);
       });
 }
 function getTestingVolumeValue()
 {
-      dateRange ='';
+      dateRange = $("#testingVolumeDate").val();
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'testing-volume-datewise')); ?>", {dateRange:dateRange},
       function (data) {
-	  
+	  $("#testVolumeValues").html(data);
       });
 }
 function getAuditWorstDetails()
@@ -396,9 +873,9 @@ function getAuditWorstDetails()
   }
   function getAuditDetails()
   {
-      value = '';
-      dateRange = '';
-      $.post("<?php echo $this->url('homeAuditPerformance', array('action' => 'audit-performance')); ?>", {roundno:value,dateRange:dateRange},
+      value = $("#auditRndNo").val();
+      dateRange = $("#audiPerformanceDate").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {roundno:value,dateRange:dateRange},
       function (data) {
 	  $("#radarChart").html(data);
       });
@@ -406,9 +883,9 @@ function getAuditWorstDetails()
   }
   function getAuditLocationDetails()
   {
-    value = '';
-    dateRange = '';
-      $.post("<?php echo $this->url('homeAuditLocations'); ?>", {roundno:value,dateRange:dateRange},
+    value = $("#auditRndNoLocations").val();
+    dateRange = $("#locationDateRange").val();
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {roundno:value,dateRange:dateRange},
       function (data) {
 	  $("#auditLocations").html(data);
       });
@@ -527,15 +1004,20 @@ function getAuditWorstDetails()
     }
       $(document).ready(function(){
       	//initialize the javascript
-
+		
+		$("#latestAuditsTbl").DataTable( {
+		  "order": [[ 5, "desc" ],[ 2, "desc" ]],
+		  "pageLength": 50
+		});
       $(".select2").select2({
 	width: '100%',
 	    placeholder: '',
 	    allowClear: true,
 	    tags : false
       });	
-        
-        
+        widget_top_1();
+        widget_top_2();
+        widget_top_3();
         //radar_chart();
 	      getAuditDetails();
         //calendar_widget();
@@ -600,7 +1082,7 @@ $(function () {
 	  $levelData[] = "{ y : ".$level. ", color : '".$color."' }"; 
 	  $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0); 
 	  $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0); 
-	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>'"); 
+	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
 	  $counter++;
 	  
 	}

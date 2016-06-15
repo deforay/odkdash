@@ -63,10 +63,14 @@ class Module
 		
 		
 	if ($e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
+		&& $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
         && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
         ) {
             
             if (!isset($session->userId) || $session->userId == "") {
+				 if ($e->getRequest()->isXmlHttpRequest()) {
+                return;
+				} 
                 $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
                 $response = $e->getResponse();
                 $response->getHeaders()->addHeaderLine('Location', $url);

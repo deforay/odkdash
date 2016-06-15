@@ -20,26 +20,31 @@ return array(
             'home' => array(
                 'type'    => 'Segment',
                 'options' => array(
-                    'route'    => '/',
+                    'route' => '/[/:action][/][:id]',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
+                        'controller'    => 'Application\Controller\Index',
                         'action'        => 'index',
                     ),
                 ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
-                        'options' => array(
-                            'route'    => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
+                
+            ),
+            'homeAuditPerformance' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/audit-performance',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action' => 'audit-performance',
+                    ),
+                ),
+            ),
+            'homeAuditLocations' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/audit-locations',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Index',
+                        'action' => 'audit-locations',
                     ),
                 ),
             ),
@@ -143,6 +148,16 @@ return array(
                     ),
                 ),
             ),
+            'dashboard' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/dashboard[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Dashboard',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
@@ -178,6 +193,7 @@ return array(
             'Application\Controller\Email' => "Application\Controller\EmailController",
             'Application\Controller\Cron' => "Application\Controller\CronController",
             'Application\Controller\SpiV3Reports' => "Application\Controller\SpiV3ReportsController",
+            'Application\Controller\Dashboard' => "Application\Controller\DashboardController",
         ),
     ),
     'view_manager' => array(

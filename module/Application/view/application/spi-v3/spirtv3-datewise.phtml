@@ -1,5 +1,6 @@
 <?php
 //\Zend\Debug\Debug::dump($perflast30);die;
+if($perflast30[0]['totalDataPoints']>0){
 ?>
 <div class="row chart-container">
                   <div class="col-md-12">
@@ -121,3 +122,6 @@
     });
     
 </script>
+<?php }else{
+   echo "<div style='height:470px;text-align:center;'><h3>No data available</h3></div>";
+}?>

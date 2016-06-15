@@ -54,7 +54,7 @@ class UsersTable extends AbstractTableGateway {
             $logincontainer->userId = $rResult[0]["id"];
             $logincontainer->login = $rResult[0]["login"];
             $logincontainer->roleCode = $rResult[0]["role_code"];
-            return 'home';
+            return 'dashboard';
         } else {
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
