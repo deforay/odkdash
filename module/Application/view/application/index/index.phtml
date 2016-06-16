@@ -369,26 +369,24 @@ $('#audit-points-barchart').highcharts({
     
 function getspiRTv3()
 {
-      dateRange = $("#spiRTv3").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'spirtv3-datewise')); ?>", {dateRange:dateRange},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'spirtv3-datewise')); ?>",
       function (data) {
 	  $("#dateRangePickerValue").html(data);
       });
 }
 function getTestingVolumeValue()
 {
-      dateRange ='';
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'testing-volume-datewise')); ?>", {dateRange:dateRange},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'testing-volume-datewise')); ?>",
       function (data) {
 	  
       });
 }
 function getAuditWorstDetails()
   {
-    value = $("#auditRndWorstNo").val();
+    
     limitBar = $("#limitBar").val();
-    dateRange = $("#worstDate").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {roundno:value,limitBar:limitBar,dateRange:dateRange},
+    
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {limitBar:limitBar},
       function (data) {
 	  $("#zeroCountChart").html(data);
       });
@@ -396,9 +394,8 @@ function getAuditWorstDetails()
   }
   function getAuditDetails()
   {
-      value = '';
-      dateRange = '';
-      $.post("<?php echo $this->url('homeAuditPerformance', array('action' => 'audit-performance')); ?>", {roundno:value,dateRange:dateRange},
+      
+      $.post("<?php echo $this->url('homeAuditPerformance', array('action' => 'audit-performance')); ?>",
       function (data) {
 	  $("#radarChart").html(data);
       });
@@ -406,9 +403,7 @@ function getAuditWorstDetails()
   }
   function getAuditLocationDetails()
   {
-    value = '';
-    dateRange = '';
-      $.post("<?php echo $this->url('homeAuditLocations'); ?>", {roundno:value,dateRange:dateRange},
+      $.post("<?php echo $this->url('homeAuditLocations'); ?>",
       function (data) {
 	  $("#auditLocations").html(data);
       });
@@ -536,9 +531,9 @@ function getAuditWorstDetails()
       });	
         
         
-        //radar_chart();
-	      getAuditDetails();
-        //calendar_widget();
+        
+	    getAuditDetails();
+        
 		bar_chart();
 		//zeroCountsBarChart();
 		getAuditWorstDetails();
@@ -548,7 +543,6 @@ function getAuditWorstDetails()
 		
 		
 	  $("#auditRndNo").multipleSelect({placeholder:'Audit round(s)',width: '31%',minimumCountSelected:'2'});
-	  $("#auditRndWorstNo").multipleSelect({placeholder:'Audit round(s)',width: '25%',minimumCountSelected:'2'});
 	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '30%',minimumCountSelected:'2'});
       });
 	  
@@ -786,31 +780,6 @@ $('#auditDates').highcharts({
         }]
     });	
 	
-var startDate = "";
-    var endDate = "";
-    $('.datepicker').daterangepicker({
-	    format: 'DD-MMM-YYYY',
-	    startDate: moment().subtract('days', 29),
-	    endDate: moment(),
-	    maxDate: moment(),
-	    ranges: {
-		'Today': [moment(), moment()],
-		'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-		'Last 7 Days': [moment().subtract('days', 6), moment()],
-		'Last 30 Days': [moment().subtract('days', 29), moment()],
-		'This Month': [moment().startOf('month'), moment().endOf('month')],
-		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-	    },
-	},
-	function(start, end) {
-	    startDate = start.format('YYYY-MM-DD');
-	    endDate = end.format('YYYY-MM-DD');
-	});	
-	<?php
-	$start_date = date('d-M-Y');
-        $end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
-	?>
-	$("#spiRTv3").val('<?php echo $end_date." - ".$start_date;?>');
 	
 });
   </script>

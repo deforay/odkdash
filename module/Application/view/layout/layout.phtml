@@ -157,7 +157,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
             <?php
             if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
             ?>
-            <li class="parent"><a href="/"><i class="icon s7-monitor"></i><span>Dashboard</span></a></li>
+            <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span>Dashboard</span></a></li>
             <?php } ?>
             <?php if(trim($auditMenu)!=""){ ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span>Audit</span></a>

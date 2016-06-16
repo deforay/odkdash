@@ -286,11 +286,6 @@ $sessionLogin = new Container('credo');
 					  </div>
 					  </div>
 				
-				
-				
-				
-				
-				
                 <div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
                   
                 </div>
@@ -1204,10 +1199,13 @@ $(function () {
     });
     <?php
 		$eventDatesArray = array();
+		$eventDatesArrayFormat = array();
+		$auditDataList = array();
 		$eventCount = array();
 		foreach($allSubmissions as $row) {
 		  $humanDate = $this->humanDateFormat($row['assesmentofaudit']);
 		  $eventDatesArray[] = "'".$humanDate."'";
+		  $eventDatesArrayFormat[] = $humanDate;
 		  if(isset($eventCount[$humanDate])){
 			$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
 		  }else{
@@ -1217,13 +1215,22 @@ $(function () {
 		  if(count($eventCount) >= 40){
 			break;
 		  }
+		  
+		 
 		}
 		
 		$eventDatesArray = array_unique($eventDatesArray);
+		$eventDatesArrayFormat = array_unique($eventDatesArrayFormat);
 		
+		foreach($eventDatesArrayFormat as $val){
+		   $auditDataList[] = array(
+						'y' => $eventCount[$val],
+						'url' => '/dashboard/audit-details/'.base64_encode($val)
+					);
+		}
+		$auditDataList=json_encode($auditDataList);
 	  
-?>  	
-	
+?>
 $('#auditDates').highcharts({
         chart: {
             type: 'column'
@@ -1259,11 +1266,21 @@ $('#auditDates').highcharts({
             column: {
                 pointPadding: 0.2,
                 borderWidth: 0
+            },
+			 series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function () {
+                            location.href = this.options.url;
+                        }
+                    }
+                }
             }
         },
         series: [{
             name: 'Audit Counts',
-            data: [<?php echo implode(",",$eventCount); ?>]
+            data: $.parseJSON('<?php echo $auditDataList; ?>')
 
         }]
     });	

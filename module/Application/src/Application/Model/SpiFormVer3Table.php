@@ -1726,4 +1726,181 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
       return $result;
     }
+    
+    public function fetchAllApprovedSubmissionsDetailsBasedOnAuditDate($parameters,$acl)
+    {
+        /* Array of database columns which should be read and sent back to DataTables. Use a space where
+        * you want to insert a non-database field (for example a counter or static image)
+        */
+	
+        $aColumns = array('facilityname','auditroundno','assesmentofaudit' , 'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $orderColumns = array('facilityname','auditroundno','assesmentofaudit', 'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+
+        /*
+        * Paging
+        */
+        $sLimit = "";
+        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
+            $sOffset = $parameters['iDisplayStart'];
+            $sLimit = $parameters['iDisplayLength'];
+        }
+
+        /*
+        * Ordering
+        */
+
+        $sOrder = "";
+        if (isset($parameters['iSortCol_0'])) {
+            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
+                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
+                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ( $parameters['sSortDir_' . $i] ) . ",";
+                }
+            }
+            $sOrder = substr_replace($sOrder, "", -1);
+        }
+
+        /*
+        * Filtering
+        * NOTE this does not match the built-in DataTables filtering which does it
+        * word by word on any field. It's possible to do here, but concerned about efficiency
+        * on very large tables, and MySQL's regex functionality is very limited
+        */
+
+        $sWhere = "";
+        if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
+            $searchArray = explode(" ", $parameters['sSearch']);
+            $sWhereSub = "";
+            foreach ($searchArray as $search) {
+                if ($sWhereSub == "") {
+                    $sWhereSub .= "(";
+                } else {
+                    $sWhereSub .= " AND (";
+                }
+                $colSize = count($aColumns);
+ 
+                for ($i = 0; $i < $colSize; $i++) {
+                    if ($i < $colSize - 1) {
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' OR ";
+                    } else {
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' ";
+                    }
+                }
+                $sWhereSub .= ")";
+            }
+            $sWhere .= $sWhereSub;
+        }
+
+        /* Individual column filtering */
+        for ($i = 0; $i < count($aColumns); $i++) {
+            if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
+                if ($sWhere == "") {
+                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
+                } else {
+                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
+                }
+            }
+        }
+
+        /*
+        * SQL queries
+        * Get data to display
+        */
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $start_date = "";
+        $end_date = "";
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->where('spiv3.status != "deleted"');
+       
+        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                 ->where('spiv3.status != "deleted"');
+                                 
+        if(isset($parameters['assesmentOfAuditDate']) && $parameters['assesmentOfAuditDate']!=''){
+            $sQuery = $sQuery->where("spiv3.assesmentofaudit='".$this->dateFormat($parameters['assesmentOfAuditDate'])."'");
+            $tQuery = $tQuery->where("spiv3.assesmentofaudit='".$this->dateFormat($parameters['assesmentOfAuditDate'])."'");
+        }
+        
+        if (isset($sWhere) && $sWhere != "") {
+            $sQuery->where($sWhere);
+        }
+ 
+        if (isset($sOrder) && $sOrder != "") {
+            $sQuery->order($sOrder);
+        }
+ 
+        if (isset($sLimit) && isset($sOffset)) {
+            $sQuery->limit($sLimit);
+            $sQuery->offset($sOffset);
+        }
+
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        //echo $sQueryStr;die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+
+        /* Data set length after filtering */
+        $sQuery->reset('limit');
+        $sQuery->reset('offset');
+        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
+        $iFilteredTotal = count($aResultFilterTotal);
+
+        /* Total data set length */
+        
+        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $iTotal = count($tResult);
+        $output = array(
+               "sEcho" => intval($parameters['sEcho']),
+               "iTotalRecords" => $iTotal,
+               "iTotalDisplayRecords" => $iFilteredTotal,
+               "aaData" => array()
+        );
+        
+        $loginContainer = new Container('credo');
+        $role = $loginContainer->roleCode;
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+            $downloadPdfAction = true;
+        } else {
+            $downloadPdfAction = false;
+        }
+        
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+            $approveStatusAction = true;
+        } else {
+            $approveStatusAction = false;
+        }
+        
+        $commonService = new \Application\Service\CommonService();
+        foreach ($rResult as $aRow) {
+         $row = array();
+         $downloadPdf="";
+         
+         
+         if(isset($aRow['level_other']) && $aRow['level_other'] != ""){
+             $level = " - " .$aRow['level_other'];
+         }else{
+             $level = '';
+         }
+         
+         $row[] = $aRow['facilityname'];
+         $row[] = $aRow['auditroundno'];
+         $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+         $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+         $row[] = $aRow['testingpointtype'];
+         $row[] = $aRow['level'].$level;
+         $row[] = $aRow['affiliation'];
+         $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
+         $row[] = ucwords($aRow['status']);
+         //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
+       
+         
+        if($downloadPdfAction){
+            $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+        }
+         //$pending = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+         $row[] = $downloadPdf;
+         $output['aaData'][] = $row;
+        }
+        return $output;
+    }
 }

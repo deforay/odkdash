@@ -42,4 +42,20 @@ class DashboardController extends AbstractActionController
                                    //'zeroCounts' => $zeroCounts,
                                    'spiV3auditRoundNo'=>$spiV3auditRoundNo));
     }
+    
+    public function auditDetailsAction(){
+        $request = $this->getRequest();
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getAllApprovedSubmissionsDetailsBasedOnAuditDate($params);
+            return $this->getResponse()->setContent(Json::encode($result));
+        } else {
+            $assesmentOfAuditDate = base64_decode($this->params()->fromRoute('id'));
+            return new ViewModel(array(
+                'assesmentOfAuditDate' => $assesmentOfAuditDate,
+            ));
+        }
+    }
 }

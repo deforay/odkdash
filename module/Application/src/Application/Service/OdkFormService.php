@@ -351,4 +351,10 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchSpiV3FormFacilityAuditNo($params);
     }
+    
+    public function getAllApprovedSubmissionsDetailsBasedOnAuditDate($params) {
+        $db = $this->sm->get('SpiFormVer3Table');
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllApprovedSubmissionsDetailsBasedOnAuditDate($params,$acl);
+    }
 }
