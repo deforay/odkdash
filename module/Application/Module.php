@@ -110,7 +110,15 @@ class Module
 					 }
 				 }
 			}
-        }
+        }else{
+			if(isset($session->userId)) {
+				$sm = $e->getApplication()->getServiceManager();
+				$viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
+				$acl = $sm->get('AppAcl');
+				$viewModel->acl = $acl;
+				$session->acl = serialize($acl);
+			}
+		}
     }
     
 
