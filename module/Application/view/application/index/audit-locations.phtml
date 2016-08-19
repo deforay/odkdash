@@ -19,11 +19,11 @@
 		  
 		?>
 		{
-			lat: <?php echo $row['Latitude'] ?>,
-			lon: <?php echo $row['Longitude'] ?>,
-			title: '<?php echo addslashes($row['facilityname']); ?>',
+			lat: "<?php echo $row['Latitude'] ?>",
+			lon: "<?php echo $row['Longitude'] ?>",
+			title: "<?php echo addslashes($row['facilityname']); ?>",
 			animation: google.maps.Animation.DROP,
-			icon : '<?php echo $icon; ?>'
+			icon : "<?php echo $icon; ?>"
 		},
 	  <?php }
 	  }?>

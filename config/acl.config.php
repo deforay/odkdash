@@ -33,6 +33,9 @@ return array(
         ),
     ),
     'SA' => array(
+        'Application\\Controller\\Common' => array(
+            'audit-locations' => 'allow',
+        ),
         'Application\\Controller\\Index' => array(
             'index' => 'allow',
         ),
@@ -56,16 +59,20 @@ return array(
         ),
         'Application\\Controller\\SpiV3' => array(
             'index' => 'allow',
-            'manage-facility' => 'allow',
             'approve-status' => 'allow',
+            'corrective-action-pdf' => 'allow',
             'delete' => 'allow',
-            'download-pdf' => 'allow',
             'edit' => 'allow',
+            'manage-facility' => 'allow',
+            'download-pdf' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+        ),
+        'Application\\Controller\\SpiV3Reports' => array(
+            'facility-report' => 'allow',
         ),
     ),
     'US' => array(
