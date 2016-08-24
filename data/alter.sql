@@ -200,3 +200,6 @@ CREATE TABLE `audit_mails` (
 
 ALTER TABLE `audit_mails`
   ADD PRIMARY KEY (`mail_id`);
+  
+ALTER TABLE `audit_mails`
+  MODIFY `mail_id` int(11) NOT NULL AUTO_INCREMENT;
