@@ -89,7 +89,7 @@ class FacilityService {
     public function addEmail($params){
         $result = 0;
         $container = new Container('alert');
-        $tempMailDb = $this->sm->get('TempMailTable');
+        $auditMailDb = $this->sm->get('AuditMailTable');
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer3Table');
         $commonService = new \Application\Service\CommonService();
@@ -113,16 +113,16 @@ class FacilityService {
                 $message.= '</table>';
               $message.= '</tr></td>';
             $message.= '</table>';
-            $tempId = $tempMailDb->insertTempMailDetails($toEmailAddress,$cc,$subject,$message,$fromName,$fromEmailAddress);
-            if($tempId> 0){
+            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress,$cc,$subject,$message,$fromName,$fromEmailAddress);
+            if($mailId> 0){
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if($result> 0){
-                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email") && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email")) {
-                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email");
+                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email") && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email")) {
+                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email");
                     }
                     
-                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $tempId) && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $tempId)) {
-                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $tempId);
+                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId) && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId)) {
+                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId);
                     }
                     
                     //Move Attachement File(s)
@@ -132,7 +132,7 @@ class FacilityService {
                             if(trim($_FILES['attchement']['name'][$attch])!= ''){
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
                                 $fileName = $commonService->generateRandomString(5, 'alphanum') . "." . $extension;
-                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $tempId. DIRECTORY_SEPARATOR . $fileName)) {
+                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId. DIRECTORY_SEPARATOR . $fileName)) {
                                 }else{
                                     $errorAttachement+=1;
                                 }
@@ -150,13 +150,13 @@ class FacilityService {
                        $container->alertMsg = 'Mail queue added successfully.';
                     }
                 }else{
-                    $tempId = 0;
+                    $mailId = 0;
                     $container->alertMsg = 'We have experienced the problem..Please try again!';
                 }
             }else{
                 $container->alertMsg = 'We have experienced the problem..Please try again!';
             }
-          return $tempId;
+          return $mailId;
         }catch (Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());

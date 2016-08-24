@@ -237,6 +237,93 @@ class CommonService {
         }
     }
 
+    public function sendAuditMail() {
+        try {
+            $auditMailDb = $this->sm->get('AuditMailTable');
+            $config = new \Zend\Config\Reader\Ini();
+            $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+            $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
+            $sql = new Sql($dbAdapter);
+
+            // Setup SMTP transport using LOGIN authentication
+            $transport = new SmtpTransport();
+            $options = new SmtpOptions(array(
+                'host' => $configResult["email"]["host"],
+                'port' => $configResult["email"]["config"]["port"],
+                'connection_class' => $configResult["email"]["config"]["auth"],
+                'connection_config' => array(
+                    'username' => $configResult["email"]["config"]["username"],
+                    'password' => $configResult["email"]["config"]["password"],
+                    'ssl' => $configResult["email"]["config"]["ssl"],
+                ),
+            ));
+            $transport->setOptions($options);
+            $limit = '10';
+            $mailQuery = $sql->select()->from(array('a_mail' => 'audit_mails'))->where("status='pending'")->limit($limit);
+            $mailQueryStr = $sql->getSqlStringForSqlObject($mailQuery);
+            $mailResult = $dbAdapter->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            if (count($mailResult) > 0) {
+                foreach ($mailResult as $result) {
+                    $alertMail = new Mail\Message();
+                    $id = $result['mail_id'];
+                    $auditMailDb->updateInitialAuditMailStatus($id);
+                    
+                    $fromEmail = $result['from_mail'];
+                    $fromFullName = $result['from_full_name'];
+                    $subject = $result['subject'];
+                    
+                    $alertMail->addFrom($fromEmail, $fromFullName);
+                    $alertMail->addReplyTo($fromEmail, $fromFullName);
+                    $alertMail->addTo($result['to_email']);
+                    
+                    if (isset($result['cc']) && trim($result['cc']) != "") {
+                        $alertMail->addCc($result['cc']);
+                    }
+
+                    if (isset($result['bcc']) && trim($result['bcc']) != "") {
+                        $alertMail->addBcc($result['bcc']);
+                    }
+
+                    $alertMail->setSubject($subject);
+                    
+                    $html = new MimePart($result['message']);
+                    $html->type = "text/html";
+
+                    $body = new MimeMessage();
+                    $body->setParts(array($html));
+                    
+                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id;
+                    if(is_dir($dirPath)) {
+                        $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id);
+                        while (($filename = readdir($dh)) !== false) {
+                            if ($filename != "." && $filename != "..") {
+                                $fileContent = fopen($dirPath. DIRECTORY_SEPARATOR. $filename, 'r');
+                                $attachment = new MimePart($fileContent);
+                                $attachment->filename    = $filename;
+                                $attachment->type        = Mime::TYPE_OCTETSTREAM;
+                                $attachment->encoding    = Mime::ENCODING_BASE64;
+                                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
+                                $body->addPart($attachment);
+                            }
+                        }
+                        closedir($dh);
+                        $this->removeDirectory($dirPath);
+                    }
+                    
+                    $alertMail->setBody($body);
+                    
+                    if($transport->send($alertMail){
+                       $auditMailDb->updateAuditMailStatus($id);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            error_log($e->getTraceAsString());
+            error_log('whoops! Something went wrong in send-audit-mail.');
+        }
+    }
+    
     public static function getDate($timezone = 'Asia/Calcutta') {
         $date = new \DateTime(date('Y-m-d'), new \DateTimeZone($timezone));
         return $date->format('Y-m-d');

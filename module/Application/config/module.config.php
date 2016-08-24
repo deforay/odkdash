@@ -236,6 +236,16 @@ return array(
                         ),
                     ),
                 ),
+                'audit-mail-console-route' => array(
+                    'type'    => 'simple',
+                    'options' => array(
+                        'route'    => 'send-audit-mail',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Cron',
+                             'action' => 'send-audit-mail'
+                        ),
+                    ),
+                ),
             ),
         ),
     ),

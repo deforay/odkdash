@@ -20,6 +20,7 @@ use Application\Model\EventLogTable;
 use Application\Model\ResourcesTable;
 use Application\Model\TempMailTable;
 use Application\Model\UserTokenMapTable;
+use Application\Model\AuditMailTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -188,6 +189,10 @@ class Module
                 },'UserTokenMapTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new UserTokenMapTable($dbAdapter);
+                    return $table;
+                },'AuditMailTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new AuditMailTable($dbAdapter);
                     return $table;
                 },
 		

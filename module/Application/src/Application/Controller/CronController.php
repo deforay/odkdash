@@ -16,6 +16,11 @@ class CronController extends AbstractActionController {
        $commonService->sendTempMail();
     }
     
+    public function sendAuditMailAction(){
+       $commonService = $this->getServiceLocator()->get('CommonService');
+       $commonService->sendAuditMail();
+    }
+    
     public function dbBackupAction(){
         $commonService = $this->getServiceLocator()->get('CommonService');
         $commonService->dbBackup();

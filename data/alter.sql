@@ -185,3 +185,18 @@ CREATE TABLE `user_token_map` (
   `user_id` int(11) NOT NULL,
   `token` varchar(45) NOT NULL
 )
+
+CREATE TABLE `audit_mails` (
+  `mail_id` int(11) NOT NULL,
+  `from_full_name` varchar(255) DEFAULT NULL,
+  `from_mail` varchar(255) DEFAULT NULL,
+  `to_email` varchar(255) NOT NULL,
+  `cc` varchar(500) DEFAULT NULL,
+  `bcc` varchar(500) DEFAULT NULL,
+  `subject` mediumtext,
+  `message` mediumtext,
+  `status` varchar(255) NOT NULL DEFAULT 'pending'
+)
+
+ALTER TABLE `audit_mails`
+  ADD PRIMARY KEY (`mail_id`);
