@@ -28,7 +28,14 @@ class EmailController extends AbstractActionController {
               return $this->redirect()->toRoute("email");
             }
         }
+        
+        $pdfIds = '';
         $ids = $this->params()->fromRoute('id');
+        $splitIds = explode("#",base64_decode($ids));
+        if(count($splitIds)>1){
+            $pdfIds = $ids;
+            $ids = '';
+        }
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $facilityService = $this->getServiceLocator()->get('FacilityService');
         $result = $odkFormService->getAllFacilityNames();
@@ -36,7 +43,7 @@ class EmailController extends AbstractActionController {
         return new ViewModel(array(
             'facilityName' => $result,
             'facilityResult' => $facilityResult,
-            'ids' => $ids
+            'ids' => $pdfIds
         ));
     }
     

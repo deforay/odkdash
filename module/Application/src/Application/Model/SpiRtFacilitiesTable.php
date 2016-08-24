@@ -51,7 +51,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         }
     }
     
-	public function addFacilityDetails($params){
+    public function addFacilityDetails($params){
         if(isset($params['facilityId']) && trim($params['facilityId'])!=""){
             $data = array(
                 'facility_id' => $params['facilityId'],
@@ -285,6 +285,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
     
     public function fetchFacilityProfileByAudit($ids){
 	$result = array();
+	$fResult = array();
+	$auditsResult = array();
 	$dbAdapter = $this->adapter;
 	$sql = new Sql($dbAdapter);
 	if(isset($ids) && trim($ids)!= ''){
