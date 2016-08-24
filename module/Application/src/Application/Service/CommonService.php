@@ -312,7 +312,7 @@ class CommonService {
                     
                     $alertMail->setBody($body);
                     
-                    if($transport->send($alertMail){
+                    if($transport->send($alertMail)){
                        $auditMailDb->updateAuditMailStatus($id);
                     }
                 }
