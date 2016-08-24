@@ -9,7 +9,6 @@
 
 namespace Application;
 
-
 use Application\Model\SpiFormVer3Table;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
@@ -20,6 +19,7 @@ use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Model\ResourcesTable;
 use Application\Model\TempMailTable;
+use Application\Model\UserTokenMapTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -131,7 +131,7 @@ class Module
     public function getServiceConfig() {
         return array(
             'factories' => array(
-				'AppAcl' => function($sm) {
+		    'AppAcl' => function($sm) {
                     $resourcesTable = $sm->get('ResourcesTable');
                     $rolesTable = $sm->get('RolesTable');
                     return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles());
@@ -184,6 +184,10 @@ class Module
 		'TempMailTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new TempMailTable($dbAdapter);
+                    return $table;
+                },'UserTokenMapTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new UserTokenMapTable($dbAdapter);
                     return $table;
                 },
 		

@@ -305,7 +305,6 @@ class OdkFormService {
         return $db->getAllApprovedTestingVolume($params);
     }
     
-    
     public function getSpiV3PendingCount() {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getSpiV3PendingCount();
@@ -331,8 +330,7 @@ class OdkFormService {
     }
     
     //get all audit round no
-    public function getSpiV3FormAuditNo()
-    {
+    public function getSpiV3FormAuditNo(){
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchSpiV3FormAuditNo();
     }
@@ -356,5 +354,10 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         $acl = $this->sm->get('AppAcl');
         return $db->fetchAllApprovedSubmissionsDetailsBasedOnAuditDate($params,$acl);
+    }
+    
+    public function getSpiV3FormUniqueTokens(){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchSpiV3FormUniqueTokens();
     }
 }

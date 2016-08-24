@@ -9,6 +9,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
+use Application\Model\UserTokenMapTable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,29 +32,35 @@ class UsersTable extends AbstractTableGateway {
     
     
     public function login($params) {
-        
+        $container = new Container('alert');
+        $logincontainer = new Container('credo');
         $username = $params['username'];
-        //$password = $params['password'];
         $config = new \Zend\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-        $password = sha1($params['password'] . $configResult["password"]["salt"]);
-        
+        $password = sha1($params['password'] . $configResult["password"]["salt"]);        
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
-                ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
-                ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name','role_code'))
-                ->where(array('login' => $username, 'password' => $password,'u.status' =>'active'));
+                                ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
+                                ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name','role_code'))
+                                ->where(array('login' => $username, 'password' => $password,'u.status' =>'active'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        //\Zend\Debug\Debug::dump($rResult);die;
-        $container = new Container('alert');
-        $logincontainer = new Container('credo');
-        if (count($rResult) > 0) {
-            $logincontainer->userId = $rResult[0]["id"];
-            $logincontainer->login = $rResult[0]["login"];
-            $logincontainer->roleCode = $rResult[0]["role_code"];
+        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        if ($sResult) {
+            $token = array();
+            $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
+                                            ->columns(array('token'))
+                                            ->where(array('user_id'=>$sResult->id))
+                                            ->order("token ASC");
+            $userTokenQueryStr = $sql->getSqlStringForSqlObject($userTokenQuery);
+            $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            foreach($userTokenResult as $userToken){
+                $token[] = $userToken['token'];
+            }
+            $logincontainer->userId = $sResult->id;
+            $logincontainer->login = $sResult->login;
+            $logincontainer->roleCode = $sResult->role_code;
+            $logincontainer->token = $token;
             return 'dashboard';
         } else {
             $container->alertMsg = 'Please check your login credentials';
@@ -66,10 +73,11 @@ class UsersTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
+        $userTokenMap = new UserTokenMapTable($dbAdapter);
         $config = new \Zend\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);
-        //$password = $params['password'];
+        $lastInsertId = 0;
         if (isset($params['userName']) && trim($params['userName']) != "") {
             $data = array(
                 'first_name' => $params['firstName'],
@@ -84,6 +92,13 @@ class UsersTable extends AbstractTableGateway {
             $lastInsertId=$this->lastInsertValue;
             if($lastInsertId>0){
                 $userRoleMap->insert(array('user_id'=>$lastInsertId,'role_id'=>$params['roleId']));
+                //Add User-Token
+                if(isset($params['token']) && trim($params['token'])!= ''){
+                    $splitToken = explode(",",$params['token']);
+                    for($t=0;$t<count($splitToken); $t++){
+                        $userTokenMap->insert(array('user_id'=>$lastInsertId,'token'=>trim($splitToken[$t])));
+                    }
+                }
             }
             return $lastInsertId;
         }
@@ -94,18 +109,16 @@ class UsersTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
-       
+        $userTokenMap = new UserTokenMapTable($dbAdapter);
+        $userId=base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
-            $userId=base64_decode($params['userId']);
             $config = new \Zend\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $password = sha1($params['password'] . $configResult["password"]["salt"]);
-            //$password = $params['password'];
             $data = array('password' => $password);
             $this->update($data,array('id'=>$userId));
         }
         if (isset($params['userName']) && trim($params['userName']) != "") {
-            $userId=base64_decode($params['userId']);
             $data = array(
                 'first_name' => $params['firstName'],
                 'last_name' => $params['lastName'],
@@ -116,6 +129,14 @@ class UsersTable extends AbstractTableGateway {
             $this->update($data,array('id'=>$userId));
             if($userId>0){
                 $userRoleMap->update(array('role_id'=>$params['roleId']),array('user_id'=>$userId));
+                //Update User-Token
+                $userTokenMap->delete(array('user_id'=>$userId));
+                if(isset($params['token']) && trim($params['token'])!= ''){
+                    $splitToken = explode(",",$params['token']);
+                    for($t=0;$t<count($splitToken); $t++){
+                        $userTokenMap->insert(array('user_id'=>$userId,'token'=>trim($splitToken[$t])));
+                    }
+                }
             }
             return $userId;
         }
@@ -268,9 +289,18 @@ class UsersTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from(array('u'=>'users'))
-                        ->join(array('urm' => 'user_role_map'), "urm.user_id=u.id", array('role_id'),'left')
-                        ->where(array('id'=>$id));
+                               ->join(array('urm' => 'user_role_map'), "urm.user_id=u.id", array('role_id'),'left')
+                               ->where(array('id'=>$id));
         $queryStr = $sql->getSqlStringForSqlObject($query);
-        return $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        if($queryResult){
+            $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
+                                            ->columns(array('token'))
+                                            ->where(array('user_id'=>$id))
+                                            ->order("token ASC");
+            $userTokenQueryStr = $sql->getSqlStringForSqlObject($userTokenQuery);
+            $queryResult['userToken'] = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        }
+        return $queryResult;
     }
 }

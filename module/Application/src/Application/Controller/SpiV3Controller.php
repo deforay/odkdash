@@ -9,8 +9,7 @@ use Zend\Json\Json;
 class SpiV3Controller extends AbstractActionController
 {
 
-    public function indexAction()
-    {
+    public function indexAction(){
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -18,10 +17,6 @@ class SpiV3Controller extends AbstractActionController
             $result = $odkFormService->getAllSubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
-          
-        //return new ViewModel(array(
-        //                           'allSubmissions' => $allSubmissions,
-        //                           ));
     }
 
     public function printAction()

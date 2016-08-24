@@ -15,8 +15,7 @@ use Zend\Json\Json;
 
 class DashboardController extends AbstractActionController
 {
-    public function indexAction()
-    {
+    public function indexAction(){
         $params = array();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $perf1 = $odkFormService->getPerformance($params);
