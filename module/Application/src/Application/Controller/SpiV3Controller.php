@@ -143,7 +143,6 @@ class SpiV3Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            
             $result = $odkFormService->getAllSubmissionsDatas($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }else{

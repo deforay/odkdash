@@ -700,6 +700,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function fetchAllSubmissionsDatas($parameters,$acl){
+        $logincontainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -780,7 +781,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
        $sql = new Sql($dbAdapter);
        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                ->where('spiv3.status != "deleted"');
-       
+        if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }
        if (isset($sWhere) && $sWhere != "") {
            $sQuery->where($sWhere);
        }
@@ -808,6 +811,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         /* Total data set length */
         $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                  ->where('spiv3.status != "deleted"');
+        if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }
         $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -884,6 +890,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
 
     public function getAuditRoundWiseData($params) {
+        $logincontainer = new Container('credo');
         //$rResult = $this->getAllSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
@@ -891,7 +898,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
                                 ->order(array("id DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
-            
+        }
+        if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $start_date = '';
         $end_date = '';
