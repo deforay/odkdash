@@ -70,8 +70,7 @@ class OdkFormService {
         return $db->fetchAllFacilityNames();   
     }
      //merge all facility name
-    public function mergeFacilityName($params)
-    {
+    public function mergeFacilityName($params){
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->mergeFacilityName($params);  
     }

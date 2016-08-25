@@ -1094,19 +1094,19 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function fetchAllApprovedSubmissions($sortOrder = 'DESC'){
-     
+        $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit $sortOrder"));
+        if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        
         return $rResult;
-     
-        
     }
     
     public function fecthAllApprovedSubmissionsTable($parameters){

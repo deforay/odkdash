@@ -154,21 +154,19 @@ class SpiV3Controller extends AbstractActionController
         }
     }
 
-    public function mergeFacilityNameAction()
-    {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+    public function mergeFacilityNameAction(){
         if($this->getRequest()->isPost()){
             $params=$this->getRequest()->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $odkFormService->mergeFacilityName($params);
             $viewModel = new ViewModel();
-                $viewModel->setVariables(array('result' => $result))
-                            ->setTerminal(true);
-                return $viewModel;
+            $viewModel->setVariables(array('result' => $result))
+                        ->setTerminal(true);
+            return $viewModel;
         }
     }
 
-    public function mapAction()
-    {
+    public function mapAction(){
         return new ViewModel();
     }
 

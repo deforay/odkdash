@@ -212,7 +212,6 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 	$("#fieldName").val(fieldName); 	
         $("#fieldVal").val(val);
       }
-      
       roundno = $("#auditRndNo").val();
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {val:$("#fieldVal").val(),fieldName:$("#fieldName").val(),roundno:roundno},
       function (data) {
@@ -229,5 +228,17 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 	      $("#auditRndNo").multipleSelect({placeholder:'Select Audit round(s)',width: '31%',minimumCountSelected:'2'});
 	   });
 	 }
+    }
+    
+    function showModal(url, w, h) {
+        showdefModal('dDiv', w, h);
+        document.getElementById('dFrame').style.height = h + 'px';
+        document.getElementById('dFrame').style.width = w + 'px';
+        document.getElementById('dFrame').src = url;
+    }
+    
+    function closeModal() {
+        document.getElementById('dFrame').src = "";
+        hidedefModal('dDiv');
     }
 </script>
