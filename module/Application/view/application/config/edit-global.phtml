@@ -31,7 +31,7 @@
                                 </div>
                                 <div>
                                   <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-                                  <input type="file" id="logo" name="logo" title="Please select logo image">
+                                  <input type="file" id="logo" name="logo" title="Please select logo image" onchange="getNewImage('<?php echo $config['logo']; ?>');">
                                   </span>
                                   <?php
                                   if(isset($config['logo']) && trim($config['logo'])!= '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])){
