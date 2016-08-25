@@ -19,19 +19,18 @@
                     <div class="form-group">
                       <label for="" class="col-sm-2 control-label">Logo</label>
                         <div class="col-lg-4">
-                           <div class="fileinput fileinput-new" data-provides="fileinput">
-                                <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
                                   <?php
                                   if(isset($config['logo']) && trim($config['logo'])!= '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])){
                                   ?>
-                                   <img src="uploads/logo/<?php echo $config['logo']; ?>" alt="Logo image">
+                                   <img src="/uploads/logo/<?php echo $config['logo']; ?>" alt="Logo image"/>
                                   <?php } else { ?>
-                                   <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image">
+                                   <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image"/>
                                   <?php } ?>
                                 </div>
                                 <div>
                                   <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-                                  <input type="hidden" name="removedLogoImage" id="removedLogoImage" onclick="getNewImage('<?php echo $config['logo']; ?>');"/>
                                   <input type="file" id="logo" name="logo" title="Please select logo image">
                                   </span>
                                   <?php
@@ -65,7 +64,7 @@
                     </div>
                     <hr>
                     <div class="spacer col-lg-5" align="center">
-                     <input type="hidden" id="removedImage" name="removedImage"/>   
+                     <input type="hidden" name="removedLogoImage" id="removedLogoImage"/>  
                      <button type="button" onclick="validateNow();" class="btn btn-space btn-primary">Update</button>
                      <a href="<?php echo $this->url('config', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
                     </div>
@@ -91,11 +90,11 @@
         $('.fileinput').fileinput('clear');
         $('#clearImage').hide();
         $("#offerImage").addClass("isRequired");
-        $("#removedImage").val(img);
+        $("#removedLogoImage").val(img);
      }
      
      function getNewImage(img){
         $('#clearImage').hide();
-        $("#removedImage").val(img);
+        $("#removedLogoImage").val(img);
      }
 </script>
