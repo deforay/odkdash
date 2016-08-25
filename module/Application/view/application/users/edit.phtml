@@ -97,7 +97,7 @@ if(isset($result->userToken) && count($result->userToken)>0){
 			  source: <?php echo json_encode($tokenArray); ?>,
 			  delay: 100
 			},
-			showAutocompleteOnFocus: true
+			showAutocompleteOnFocus: false
 		      })
 		      
 		      $('#token').on('tokenfield:createtoken', function (event) {

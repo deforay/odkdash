@@ -5,6 +5,7 @@ namespace Application\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\Sql;
+use Application\Service\CommonService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -156,17 +157,40 @@ class GlobalTable extends AbstractTableGateway {
         for ($i = 0; $i < $size; $i++) {
             $arr[$configValues[$i]['global_name']] = $configValues[$i]['global_value'];
         }
-
         // using assign to automatically create view variables
         // the column names will now become view variables
         return $arr;
         
     }
+    
     public function updateConfigDetails($params) {
-        foreach ($params as $fieldName => $fieldValue) {
-            $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
+        $result = 0;
+        $common=new CommonService();
+        if(isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])){
+            unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
+            $this->update(array('global_value'=>''),array('global_name'=>'logo'));
         }
+        
+        if(isset($_FILES['logo']['name']) && $_FILES['logo']['name']!= ""){
+            if(!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
+                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
+            }
+            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
+            $string = $common->generateRandomString(6).".";
+            $imageName = "logo".$string.$extension;
+            if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
+                $this->update(array('global_value'=>$imageName),array('global_name'=>'logo'));
+            }
+        }
+        
+        foreach ($params as $fieldName => $fieldValue) {
+            if($fieldName!= 'removedLogoImage'){
+               $result = $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
+            }
+        }
+      return $result;
     }
+    
     public function getGlobalValue($globalName) {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);

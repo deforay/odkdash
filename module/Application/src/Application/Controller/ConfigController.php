@@ -18,8 +18,8 @@ class ConfigController extends AbstractActionController
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
-    public function editGlobalAction()
-    {
+    
+    public function editGlobalAction(){
         $commonService = $this->getServiceLocator()->get('CommonService');
        $request = $this->getRequest();
         if ($request->isPost()) {
