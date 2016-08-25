@@ -42,8 +42,7 @@ class SpiV3Controller extends AbstractActionController
         return $viewModel;
     }
 
-    public function approveStatusAction()
-    {
+    public function approveStatusAction(){
         $request = $this->getRequest();                
                  if ($request->isPost()) {
                     $params = $request->getPost();
@@ -57,24 +56,24 @@ class SpiV3Controller extends AbstractActionController
                 }
     }
 
-    public function downloadPdfAction()
-    {
+    public function downloadPdfAction(){
         $id = ($this->params()->fromRoute('id'));
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $commonService = $this->getServiceLocator()->get('CommonService');
         $formData = $odkFormService->getFormData($id);
-        $viewModel = new ViewModel(array('formData' => $formData));
+        $configData = $commonService->getGlobalConfigDetails();
+        $viewModel = new ViewModel(array('formData' => $formData,'configData'=>$configData));
         $viewModel->setTerminal(true);
         return $viewModel;
     }
 
-    public function correctiveActionPdfAction()
-    {
+    public function correctiveActionPdfAction(){
         $id = ($this->params()->fromRoute('id'));
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $commonService = $this->getServiceLocator()->get('CommonService');
         $formData = $odkFormService->getFormData($id);
-
-        $viewModel = new ViewModel(array('formData' => $formData));
-
+        $configData = $commonService->getGlobalConfigDetails();
+        $viewModel = new ViewModel(array('formData' => $formData,'configData'=>$configData));
         $viewModel->setTerminal(true);
         return $viewModel;
     }

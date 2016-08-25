@@ -668,9 +668,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
          
          $row['DT_RowId'] = $aRow['id'];
          if(isset($aRow['level_other']) && $aRow['level_other'] != ""){
-             $level = " - " .$aRow['level_other'];
+            $level = " - " .$aRow['level_other'];
          }else{
-             $level = '';
+            $level = '';
          }
          $row[] = '';
          $row[] = $aRow['facilityname'];

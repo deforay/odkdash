@@ -66,9 +66,12 @@ class EmailController extends AbstractActionController {
         if ($request->isPost()) {
             $params = $request->getPost();
             $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $commonService = $this->getServiceLocator()->get('CommonService');
             $result = $odkFormService->getFormData($params['auditId']);
+            $configData = $commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel(array(
                 'formData' => $result,
+                'configData'=>$configData,
                 'tempId' => $params['tempId']
                 ));
             $viewModel->setTerminal(true);
