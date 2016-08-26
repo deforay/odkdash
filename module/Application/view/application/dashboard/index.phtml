@@ -67,7 +67,7 @@ $sessionLogin = new Container('credo');
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
       <div class="am-content">
-		<div class="page-head">
+	<div class="page-head">
           <h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> SPI-RT 3.0 Audits</h2>
         </div>
         <div class="main-content">
@@ -299,31 +299,28 @@ $sessionLogin = new Container('credo');
           </div>
 		  
 		  <div class="row">
-			
-			
 			<div class="col-md-12 col-sm-12">
 			  <div class="widget">
 				<div class="widget-head">
-				  <span class="title"><h3>Audit Dates</h3></span>
+				  <div class="title row">
+				    <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+					<h3>Audit Dates</h3>
+				    </div>
+				    <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2" style="text-align:center;">
+				      <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('ad')">View Data</a>
+				    </div>
+				  </div>
 				</div>
 				<div class="chart-container">
 				  <div style="width:100%;height:340px" id="auditDates"></div>
 				</div>
 			  </div>			  
-			</div>			
-			
-			
-
+			</div>		
 		  </div>
 		  <?php
-		  
-
 			  $loginContainer = new \Zend\Session\Container('credo');
 			  $role = $loginContainer->roleCode;
 			  $acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;		  
-		  
-		  
-
 					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
 						  $update = true;
 					  } else {

@@ -1583,9 +1583,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         return array('uniqueName'=>$uResult,'allName'=>$aResult);
     }
     
-    public function fetchAllTestingPointsBasedOnFacility($parameters,$acl)
-    {
-        
+    public function fetchAllTestingPointsBasedOnFacility($parameters,$acl){
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -1988,6 +1986,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }else if($parameters['source'] == 'la'){
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'facilityname','testingpointname','avgMonthTesting','AUDIT_SCORE_PERCANTAGE');
             $orderColumns = array('assesmentofaudit','facilityname','testingpointname','avgMonthTesting','AUDIT_SCORE_PERCANTAGE');
+        }else if($parameters['source'] == 'ad'){
+            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')","DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
+            $orderColumns = array('assesmentofaudit','assesmentofaudit');
         }
 
         /*
@@ -2072,12 +2073,19 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 $end_date = $this->dateFormat($dateField[2]);
             }
         }
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->columns(array('assesmentofaudit','facilityname','testingpointname','testingpointtype','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCANTAGE'));
+        
+        if($parameters['source'] == 'ad'){
+            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                    ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'),'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)")));
+            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                    ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'),'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)")));
+        }else{
+            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                    ->columns(array('assesmentofaudit','facilityname','testingpointname','testingpointtype','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCANTAGE'));
        
-        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                 ->columns(array('assesmentofaudit','facilityname','testingpointname','testingpointtype','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCANTAGE'));
-                                 
+            $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                     ->columns(array('assesmentofaudit','facilityname','testingpointname','testingpointtype','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCANTAGE'));
+        }
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
@@ -2086,6 +2094,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
             $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
+        }
+        
+        if($parameters['source'] == 'ad'){
+            $sQuery = $sQuery->where(array('spiv3.status'=>'approved'))
+                              ->group('spiv3.assesmentofaudit');
+            $tQuery = $tQuery->where(array('spiv3.status'=>'approved'))
+                             ->group('spiv3.assesmentofaudit');
         }
         
         if (isset($sWhere) && $sWhere != "") {
@@ -2145,12 +2160,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
            $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
            $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
            $row[] = $level;
-          }if($parameters['source'] == 'la') {
+          }else if($parameters['source'] == 'la') {
             $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
             $row[] = ucwords($aRow['facilityname']);
             $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
             $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+          }else if($parameters['source'] == 'ad') {
+            $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+            $row[] = $aRow['totalDataPoints'];
           }
          $output['aaData'][] = $row;
         }

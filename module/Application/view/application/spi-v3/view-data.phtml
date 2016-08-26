@@ -17,12 +17,14 @@ tr.shown td.details-control {
             <h2>Performance of High Volume Sites</h2>
           <?php } else if($source == 'la'){ ?>
             <h2> Latest Audits</h2>
-          <?php } ?>
+          <?php } else if($source == 'ad'){ ?>
+            <h2> Audit Dates</h2>
+          <?php }?>
         </div>
         
         <div class="main-content">
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-                <table id="hv" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+                <table id="<?php echo $source; ?>" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                   <thead>
                     <?php
                     if($source == 'hv') {
@@ -50,7 +52,16 @@ tr.shown td.details-control {
                           <th style="width:20%;">Audit Score Percentage</th>
                           <th style="width:20%;">Testing Volume</th>
                         </tr>
-                    <?php } ?>
+                    <?php } else if($source == 'ad'){
+                        $columns = 2;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center","bSortable":false}';
+                        $descColumn = 0;
+                        ?>
+                        <tr>
+                          <th style="width:50%;">Audit Date</th>
+                          <th style="width:50%;">Audit Count</th>
+                        </tr>
+                    <?php }?>
                   </thead>
                   <tbody>
                   <tr>
@@ -69,7 +80,7 @@ tr.shown td.details-control {
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
 <script>
     $(document).ready(function () {
-        table = $('#hv').DataTable({
+        table = $('#<?php echo $source; ?>').DataTable({
         "bProcessing": true,
         "bServerSide": true,
          "aoColumns": [
