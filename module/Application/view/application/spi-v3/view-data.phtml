@@ -1,0 +1,98 @@
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+<style>
+
+ td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_open.png'); ?>') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('<?php echo $this->basePath('assets/img/details_close.png'); ?>') no-repeat center center;
+}
+</style> 
+<div class="am-content">
+        <div class="page-head">
+          <?php
+          if($source == 'hv') {
+          ?>
+            <h2>Performance of High Volume Sites</h2>
+          <?php } else if($source == 'la'){ ?>
+            <h2> Latest Audits</h2>
+          <?php } ?>
+        </div>
+        
+        <div class="main-content">
+            <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+                <table id="hv" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+                  <thead>
+                    <?php
+                    if($source == 'hv') {
+                        $columns = 6;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+                        $descColumn = 3;
+                    ?>
+                        <tr>
+                          <th style="width:20%;">Assesment of Audit</th>
+                          <th style="width:20%;">Facility Name</th>
+                          <th style="width:20%;">Testing Point Name</th>
+                          <th style="width:20%;">Testing Volume</th>
+                          <th style="width:10%;">Testers</th>
+                          <th style="width:10%;">Level</th>
+                        </tr>
+                    <?php } else if($source == 'la'){
+                        $columns = 5;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+                        $descColumn = 4;
+                        ?>
+                        <tr>
+                          <th style="width:20%;">Assesment of Audit</th>
+                          <th style="width:20%;">Facility Name</th>
+                          <th style="width:20%;">Testing Point Name</th>
+                          <th style="width:20%;">Audit Score Percentage</th>
+                          <th style="width:20%;">Testing Volume</th>
+                        </tr>
+                    <?php } ?>
+                  </thead>
+                  <tbody>
+                  <tr>
+                       <td colspan="<?php echo $columns; ?>" class="dataTables_empty">Loading data from server</td>
+                   </tr>
+                  </tbody>
+                </table>
+            </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        </div>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/datatables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script>
+    $(document).ready(function () {
+        table = $('#hv').DataTable({
+        "bProcessing": true,
+        "bServerSide": true,
+         "aoColumns": [
+                <?php echo $aColumns; ?>
+            ],
+         "iDisplayLength": 50,
+         "pageLength": 50,
+         "aaSorting": [[ <?php echo $descColumn; ?>, "desc" ]],
+         "sAjaxSource": "<?php echo $this->url('view-data'); ?>",
+         "fnServerData": function ( sSource, aoData, fnCallback ) {
+          aoData.push( { "name":"source","value": '<?php echo $source; ?>'} );
+          aoData.push( { "name":"drange","value": '<?php echo $drange; ?>'} );
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": function(json){
+                      $.unblockUI();
+                      fnCallback(json);
+                     }
+                });
+            }
+       });
+    });
+</script>

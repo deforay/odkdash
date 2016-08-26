@@ -359,4 +359,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchSpiV3FormUniqueTokens();
     }
+    
+    public function getViewDataDetails($params){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchViewDataDetails($params);
+    }
 }

@@ -158,6 +158,16 @@ return array(
                     ),
                 ),
             ),
+            'view-data' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV3',
+                        'action' => 'view-data',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(

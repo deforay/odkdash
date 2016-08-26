@@ -192,8 +192,8 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
-    public function testingVolumeDatewiseAction()
-    {
+    
+    public function testingVolumeDatewiseAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if($this->getRequest()->isPost()){
             $params=$this->getRequest()->getPost();
@@ -203,6 +203,22 @@ class SpiV3Controller extends AbstractActionController
                         ->setTerminal(true);
             return $viewModel;
         }
+    }
+    
+    public function viewDataAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getViewDataDetails($params);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+        $source = $this->params()->fromQuery('source');
+        $drange = $this->params()->fromQuery('drange');
+        return new ViewModel(array(
+            'source' => $source,
+            'drange' => $drange
+        ));
     }
 }
 
