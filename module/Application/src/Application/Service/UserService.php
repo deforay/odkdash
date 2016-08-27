@@ -16,7 +16,6 @@ class UserService {
         return $this->sm;
     }
 
-    
     public function login($params) {
         $db = $this->sm->get('UsersTable');
         return $db->login($params);

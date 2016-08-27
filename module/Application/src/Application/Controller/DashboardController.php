@@ -29,7 +29,6 @@ class DashboardController extends AbstractActionController
         //$spiV3Labels = $odkFormService->getSpiV3FormLabels();
         $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
         
-        
         return new ViewModel(array('perf1' => $perf1,
                                    'perflast30' => $perflast30,
                                    'perflast180' => $perflast180,
