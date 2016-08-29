@@ -54,7 +54,8 @@
 		{
 		name : 'Audit <?php echo $auditNo; ?>',
         pointPlacement: 'on',
-		data:[<?php echo round($adata['PERSONAL_SCORE'],2); ?>,<?php echo round($adata['PHYSICAL_SCORE'],2); ?>,
+		data:[<?php echo round($adata['PERSONAL_SCORE'],2); ?>,
+		                   <?php echo round($adata['PHYSICAL_SCORE'],2); ?>,
 				   <?php echo round($adata['SAFETY_SCORE'],2); ?>,
 				   <?php echo round($adata['PRETEST_SCORE'],2); ?>,
 				   <?php echo round($adata['TEST_SCORE'],2); ?>,

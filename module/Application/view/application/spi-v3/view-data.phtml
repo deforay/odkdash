@@ -19,6 +19,12 @@ tr.shown td.details-control {
             <h2> Latest Audits</h2>
           <?php } else if($source == 'ad'){ ?>
             <h2> Audit Dates</h2>
+          <?php } else if($source == 'ap' || $source == 'apspi'){ ?>
+            <h2> Audit Performance</h2>
+          <?php } else if($source == 'apall'){ ?>
+            <h2> Overall Audit Performance</h2>
+          <?php } else if($source == 'apl180'){ ?>
+            <h2> Performance - Last 180 days</h2>
           <?php }?>
         </div>
         
@@ -61,6 +67,31 @@ tr.shown td.details-control {
                           <th style="width:50%;">Audit Date</th>
                           <th style="width:50%;">Audit Count</th>
                         </tr>
+                    <?php } else if($source == 'ap' || $source == 'apall' || $source == 'apl180'){
+                        $columns = 3;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center","bSortable":false},{"sClass":"center"}';
+                        $descColumn = 0;
+                        ?>
+                        <tr>
+                          <th style="width:34%;">Audit Date</th>
+                          <th style="width:33%;">Level</th>
+                          <th style="width:33%;">Percentage</th>
+                        </tr>
+                    <?php } else if($source == 'apspi'){
+                        $columns = 8;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+                        $descColumn = 0;
+                        ?>
+                        <tr>
+                          <th style="width:10%;">Audit Date</th>
+                          <th style="width:14%;">Personal Training and Certifications</th>
+                          <th style="width:14%;">Physical</th>
+                          <th style="width:10%;">Saftey</th>
+                          <th style="width:14%;">Pre-Testing</th>
+                          <th style="width:10%;">Testing</th>
+                          <th style="width:14%;">Post Testing Phase</th>
+                          <th style="width:14%;">External Quality Audit</th>
+                        </tr>
                     <?php }?>
                   </thead>
                   <tbody>
@@ -92,6 +123,7 @@ tr.shown td.details-control {
          "sAjaxSource": "<?php echo $this->url('view-data'); ?>",
          "fnServerData": function ( sSource, aoData, fnCallback ) {
           aoData.push( { "name":"source","value": '<?php echo $source; ?>'} );
+          aoData.push( { "name":"roundno","value": '<?php echo $roundno; ?>'} );
           aoData.push( { "name":"drange","value": '<?php echo $drange; ?>'} );
                 $.ajax({
                     "dataType": 'json',

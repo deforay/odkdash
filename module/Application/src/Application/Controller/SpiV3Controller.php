@@ -110,8 +110,7 @@ class SpiV3Controller extends AbstractActionController
         }
     }
 
-    public function worstPerformanceAction()
-    {
+    public function worstPerformanceAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if($this->getRequest()->isPost()){
             $params=$this->getRequest()->getPost();
@@ -213,10 +212,21 @@ class SpiV3Controller extends AbstractActionController
             $result = $odkFormService->getViewDataDetails($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
-        $source = $this->params()->fromQuery('source');
-        $drange = $this->params()->fromQuery('drange');
+        $source = '';
+        $roundno = '';
+        $drange = '';
+        if($this->params()->fromQuery('source')){
+          $source = $this->params()->fromQuery('source');
+        }
+        if($this->params()->fromQuery('roundno')){
+          $roundno = $this->params()->fromQuery('roundno');
+        }
+        if($this->params()->fromQuery('drange')){
+          $drange = $this->params()->fromQuery('drange');
+        }
         return new ViewModel(array(
             'source' => $source,
+            'roundno' => $roundno,
             'drange' => $drange
         ));
     }

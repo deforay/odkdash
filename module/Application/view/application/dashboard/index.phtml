@@ -71,12 +71,20 @@ $sessionLogin = new Container('credo');
           <h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> SPI-RT 3.0 Audits</h2>
         </div>
         <div class="main-content">
-        
           <!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
           <div class="row">
             <div class="col-md-4">
               <div class="widget widget-pie">
-                <div class="widget-head"><span  class="title"><h3>Overall Performance</h3></span></div>
+                <div class="widget-head">
+		  <div class="title row">
+		    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+		      <h3>Overall Performance</h3>
+		    </div>
+		    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+		      <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apall')">View Data</a>
+		    </div>
+		  </div>
+		</div>
                 <div class="row chart-container" style="min-height:430px !important;">
                   <div class="col-md-12">
 		    <div id="widget-top-1" style="width: 100%;"></div>
@@ -91,7 +99,16 @@ $sessionLogin = new Container('credo');
             </div>
             <div class="col-md-4">
               <div class="widget widget-pie widget-pie-stats">
-                <div class="widget-head"><span class="title"><h3>Performance - Last 180 days</h3></span></div>
+                <div class="widget-head">
+		  <div class="title row">
+		    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+		      <h3>Performance - Last 180 days</h3>
+		    </div>
+		    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+		      <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apl180')">View Data</a>
+		    </div>
+		  </div>
+		</div>
                 <div class="row chart-container" style="min-height:430px !important;">
                   <div class="col-md-12">
 		    <div id="widget-top-3" style="width: 100%;"></div>
@@ -108,10 +125,15 @@ $sessionLogin = new Container('credo');
             <div class="col-md-4">
               <div class="widget widget-pie">
                 <div class="widget-head">
-				<span class="title">
-				  <h3>Audit Performance</h3>
-				  </span>
-				</div>
+		  <div class="title row">
+		    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+		      <h3>Audit Performance</h3>
+		    </div>
+		    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+		      <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('ap')">View Data</a>
+		    </div>
+		  </div>
+		</div>
 		
 		Date : <input style="width:57%;" type="text" placeholder="Enter Date" class="datepicker limitBar" id="spiRTv3">
 		<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()">OK</a>
@@ -181,14 +203,16 @@ $sessionLogin = new Container('credo');
 			</div>
 		  </div>
           <div class="row">
-			
-			<div class="col-md-6" id="lefter">
+		<div class="col-md-6" id="lefter">
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
 		      <div class="title row">
-                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
-			  <h3>Audit Performance</h3>
-		      </div>
+			<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+			    <h3>Audit Performance</h3>
+			</div>
+			<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+			    <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apspi')">View Data</a>
+			</div>
 		      </div>
 		      <div style="margin-top:2%;" class="row">
 					  <div class="col-lg-6 col-md-6">
@@ -252,8 +276,7 @@ $sessionLogin = new Container('credo');
 					  </div>
                     <div class="chart-container" id="zeroCountChart" style="height:220px;"></div>
                   </div>
-				  
-			</div>			
+		</div>			
 			
             <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
@@ -856,8 +879,7 @@ function getTestingVolumeValue()
 	  $("#testVolumeValues").html(data);
       });
 }
-function getAuditWorstDetails()
-  {
+function getAuditWorstDetails(){
     value = $("#auditRndWorstNo").val();
     limitBar = $("#limitBar").val();
     dateRange = $("#worstDate").val();
@@ -1316,6 +1338,17 @@ function viewSpiV3Data(source){
   if(source == 'hv'){
     var testVolumeDate = $("#testingVolumeDate").val();
     params = '&drange='+testVolumeDate;
+  }else if(source == 'ap'){
+    var auditDate = $("#spiRTv3").val();
+    params = '&drange='+auditDate;
+  }else if(source == 'apspi'){
+    if($("#auditRndNo").val() == null){
+      var auditRoundNo = '';
+    }else{
+      var auditRoundNo = $("#auditRndNo").val();
+    }
+    var auditPerformanceDate = $("#audiPerformanceDate").val();
+    params = '&roundno='+auditRoundNo+'&drange='+auditPerformanceDate;
   }
   window.open('/view-data?source='+source+params, '_blank');
 }
