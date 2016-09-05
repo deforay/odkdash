@@ -149,7 +149,7 @@ tr.shown td.details-control {
                 <tr>
                     <td style="width:10%;"></td>
                     <td style="width:10%;background-color:red;"></td>
-                    <td>Level 0(Below 40)</td>
+                    <td style="padding-left:2%;">Level 0(Below 40)</td>
                     <td style="text-align:center;">:</td>
                     <td id="level0"></td>
                 </tr>
@@ -157,7 +157,7 @@ tr.shown td.details-control {
                 <tr>
                     <td style="width:10%;"></td>
                     <td style="background-color:orange;"></td>
-                    <td>Level 1(40-59)</td>
+                    <td style="padding-left:2%;">Level 1(40-59)</td>
                     <td style="text-align:center;">:</td>
                     <td id="level1"></td>
                 </tr>
@@ -165,7 +165,7 @@ tr.shown td.details-control {
                 <tr>
                     <td style="width:10%;"></td>
                     <td style="background-color:yellow;"></td>
-                    <td>Level 2(60-79)</td>
+                    <td style="padding-left:2%;">Level 2(60-79)</td>
                     <td style="text-align:center;">:</td>
                     <td id="level2"></td>
                 </tr>
@@ -173,7 +173,7 @@ tr.shown td.details-control {
                 <tr>
                     <td style="width:10%;"></td>
                     <td style="background-color:#8DD63E;"></td>
-                    <td>Level 3(80-89)</td>
+                    <td style="padding-left:2%;">Level 3(80-89)</td>
                     <td style="text-align:center;">:</td>
                     <td id="level3"></td>
                 </tr>
@@ -181,7 +181,7 @@ tr.shown td.details-control {
                 <tr>
                     <td style="width:10%;"></td>
                     <td style="background-color:#528A16;"></td>
-                    <td>Level 4(90 and above)</td>
+                    <td style="padding-left:2%;">Level 4(90 and above)</td>
                     <td style="text-align:center;">:</td>
                     <td id="level4"></td>
                 </tr>
@@ -255,7 +255,7 @@ tr.shown td.details-control {
                     "success": function(json){
                       $.unblockUI();
                       $("#totalAudit").html(json.iTotalDisplayRecords);
-                      $("#avgAuditScore").html(json.avgAuditScore);
+                      $("#avgAuditScore").html(json.avgAuditScore+"%");
                       $("#level0").html(json.levelZeroCount);
                       $("#level1").html(json.levelOneCount);
                       $("#level2").html(json.levelTwoCount);
