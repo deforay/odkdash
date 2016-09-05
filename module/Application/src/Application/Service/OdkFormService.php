@@ -46,6 +46,7 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getAllSubmissions($sortOrder);
     }
+    
     public function getAllSubmissionsDetails($params) {
         $db = $this->sm->get('SpiFormVer3Table');
         $acl = $this->sm->get('AppAcl');

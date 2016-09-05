@@ -485,8 +485,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	
-        $aColumns = array('id','facilityname','auditroundno','assesmentofaudit' , 'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
-        $orderColumns = array('id','facilityname','auditroundno','assesmentofaudit', 'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $aColumns = array('id','facilityname','auditroundno',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $orderColumns = array('id','facilityname','auditroundno','assesmentofaudit','testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
 
         /*
         * Paging
@@ -654,11 +654,28 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         
         $commonService = new \Application\Service\CommonService();
+        $auditScore = 0;
+        $levelZero = array();
+        $levelOne = array();
+        $levelTwo = array();
+        $levelThree = array();
+        $levelFour = array();
         foreach ($rResult as $aRow) {
          $row = array();
          $approve = '';
          $downloadPdf="";
-         
+         $auditScore+=$aRow['AUDIT_SCORE_PERCANTAGE'];
+         if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40){
+            $levelZero[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
+         }else if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCANTAGE'] <60){
+            $levelOne[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
+         }else if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCANTAGE'] <80){
+           $levelTwo[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
+         }else if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCANTAGE'] <90){
+           $levelThree[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
+         }else if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 90){
+           $levelFour[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
+         }
          $row['DT_RowId'] = $aRow['id'];
          if(isset($aRow['level_other']) && $aRow['level_other'] != ""){
             $level = " - " .$aRow['level_other'];
@@ -689,6 +706,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
          $row[] = $approve." ".$downloadPdf;
          $output['aaData'][] = $row;
         }
+        $output['avgAuditScore'] = round($auditScore/count($rResult),2);
+        $output['levelZeroCount'] = count($levelZero);
+        $output['levelOneCount'] = count($levelOne);
+        $output['levelTwoCount'] = count($levelTwo);
+        $output['levelThreeCount'] = count($levelThree);
+        $output['levelFourCount'] = count($levelFour);
         return $output;
     }
     
@@ -2149,7 +2172,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
@@ -2170,6 +2192,20 @@ class SpiFormVer3Table extends AbstractTableGateway {
         );
         
         $commonService = new \Application\Service\CommonService();
+        //$personalScoreArray = array();
+        //$physicalScoreArray = array();
+        //$safetyScoreArray = array();
+        //$preTestScoreArray = array();
+        //$testScoreArray = array();
+        //$postTestScoreArray = array();
+        //$eqaScoreArray = array();
+        //$personalScore = 0;
+        //$physicalScore = 0;
+        //$safetyScore = 0;
+        //$preTestScore = 0;
+        //$testScore = 0;
+        //$postTestScore = 0;
+        //$eqaScore = 0;
         foreach ($rResult as $aRow) {
           $row = array();  
             if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40){
@@ -2212,6 +2248,20 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $row[] = round($aRow['TEST_SCORE'],2);
             $row[] = round($aRow['POST_SCORE'],2);
             $row[] = round($aRow['EQA_SCORE'],2);
+            //$personalScoreArray[] = $aRow['PERSONAL_SCORE'];
+            //$physicalScoreArray[] = $aRow['PHYSICAL_SCORE'];
+            //$safetyScoreArray[] = $aRow['SAFETY_SCORE'];
+            //$preTestScoreArray[] = $aRow['PRETEST_SCORE'];
+            //$testScoreArray[] = $aRow['TEST_SCORE'];
+            //$postTestScoreArray[] = $aRow['POST_SCORE'];
+            //$eqaScoreArray[] = $aRow['EQA_SCORE'];
+            //$personalScore+=$aRow['PERSONAL_SCORE'];
+            //$physicalScore+=$aRow['PHYSICAL_SCORE'];
+            //$safetyScore+=$aRow['SAFETY_SCORE'];
+            //$preTestScore+=$aRow['PRETEST_SCORE'];
+            //$testScore+=$aRow['TEST_SCORE'];
+            //$postTestScore+=$aRow['POST_SCORE'];
+            //$eqaScore+=$aRow['EQA_SCORE'];
           }
          $output['aaData'][] = $row;
         }
