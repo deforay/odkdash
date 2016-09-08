@@ -899,8 +899,7 @@ function getAuditWorstDetails(){
       });
       
   }
-  function getAuditLocationDetails()
-  {
+  function getAuditLocationDetails(){
     value = $("#auditRndNoLocations").val();
     dateRange = $("#locationDateRange").val();
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {roundno:value,dateRange:dateRange},
