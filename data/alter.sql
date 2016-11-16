@@ -206,3 +206,7 @@ ALTER TABLE `audit_mails`
   
 --Pal 25th-Aug-2016
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Header', 'header', NULL), (NULL, 'Logo', 'logo', NULL);
+
+
+--ilahir 16-NOV-2016
+INSERT INTO `odkdash`.`global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Language', 'language', 'English');
