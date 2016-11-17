@@ -139,7 +139,7 @@
     }
     
     function generatePdf(tId,auId){
-	$.post("<?php echo $this->url('email', array('action' =>'download-pdf')); ?>", {tempId: tId,auditId:auId},
+	$.post("<?php echo $this->url('spi-v3-form', array('action' =>'download-pdf')); ?>", {tempId: tId,auditId:auId},
         function(data) {
 		
 	});

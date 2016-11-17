@@ -57,14 +57,28 @@ class SpiV3Controller extends AbstractActionController
     }
 
     public function downloadPdfAction(){
-        $id = ($this->params()->fromRoute('id'));
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $commonService = $this->getServiceLocator()->get('CommonService');
-        $formData = $odkFormService->getFormData($id);
         $configData = $commonService->getGlobalConfigDetails();
-        $viewModel = new ViewModel(array('formData' => $formData,'configData'=>$configData));
-        $viewModel->setTerminal(true);
-        return $viewModel;
+        $request = $this->getRequest();                
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getFormData($params['auditId']);
+            $viewModel = new ViewModel(array(
+                'formData' => $result,
+                'configData'=>$configData,
+                'tempId' => $params['tempId']
+                ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }else{
+            $id = ($this->params()->fromRoute('id'));
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $formData = $odkFormService->getFormData($id);
+            $viewModel = new ViewModel(array('formData' => $formData,'configData'=>$configData));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
     }
 
     public function correctiveActionPdfAction(){

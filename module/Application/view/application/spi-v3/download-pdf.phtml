@@ -563,9 +563,14 @@ $pdf->writeHTMLCell(80,18,115,'',$signBox2,1,1, 0, true, 'L');
 
 //Close and output PDF document
 $fileName = "SPI-RT-CHECKLIST-".date('d-M-Y-H-i-s').".pdf";
+if(isset($tempId)){
+$filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "audit-email". DIRECTORY_SEPARATOR . $tempId. DIRECTORY_SEPARATOR . $fileName;
+$pdf->Output($filePath, "F");    
+}else{
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR.$fileName;
 //$pdf->Output('example_003.pdf', 'I');
 $pdf->Output($filePath, "I");
+}
 //echo $fileName;
 //============================================================+
 // END OF FILE
