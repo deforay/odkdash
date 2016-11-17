@@ -84,7 +84,7 @@ $pdf->SetFont('times', '', 10);
 $pdf->AddPage();
 //$pdf->SetY(20,true,false);
 
-$partA='<p style="font-weight:bold;line-height:24px;">PART A: CHARACTERISTICS OF THE FACILITY OR TESTING POINT AUDITED</p>';
+$partA='<p style="font-weight:bold;line-height:24px;">'.$decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:label'].'</p>';
 //$partA.='<br/>';
 
 $pdf->writeHTML($partA, true, 0, true, 0);
@@ -94,55 +94,54 @@ $pdf->writeHTMLCell('',12,'','','<p>Before completing the checklist, it is impor
 $testingTab='<table border="1" cellspacing="0" cellpadding="5">';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>Date of Audit</b>(dd/mm/yyyy): '.$this->humanDateFormat($formData['assesmentofaudit']).'</td>';
-$testingTab.='<td><b>Audit Round No:</b> '.$formData['auditroundno'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'].'</b>(dd/mm/yyyy): '.$this->humanDateFormat($formData['assesmentofaudit']).'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'].'</b> '.$formData['auditroundno'].'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>Testing Facility Name:</b> '.$formData['facilityname'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'].'</b> '.$formData['facilityname'].'</td>';
 $testingTab.='<td><b>Testing Facility ID</b>(if applicable) : '.$formData['facilityid'].'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>Testing Point Name:</b> '.$formData['testingpointname'].'</td>';
-$testingTab.='<td><b>Type of testing point : </b>'.$formData['testingpointtype'];
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'].'</b> '.$formData['testingpointname'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'].'</b>'.$formData['testingpointtype'];
 $testingTab.=((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other']: "").'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td colspan="2"><b>Location/Address:</b> '.$formData['locationaddress'].'</td>';
+$testingTab.='<td colspan="2"><b>'.$decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'].'</b> '.$formData['locationaddress'].'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>Level</b> <br/>'.$formData['level'];
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/level:label'].'</b> <br/>'.$formData['level'];
 $testingTab.=((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "").':'.$formData['level_name'];
 $testingTab.='</td>';
-$testingTab.='<td><b>Affiliation</b><br/>'.$formData['affiliation'];
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'].'</b><br/>'.$formData['affiliation'];
 $testingTab.=((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
 $testingTab.='</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>Number of Testers: </b>'.$formData['NumberofTester'].'</td>';
-$testingTab.='<td><b>Average tested per month: </b>'.$formData['avgMonthTesting'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'].'</b>'.$formData['NumberofTester'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'].'</b>'.$formData['avgMonthTesting'].'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>Name of the Auditor 1: </b>'.$formData['name_auditor_lead'].'</td>';
-$testingTab.='<td><b>Name of the Auditor 2: </b>'.$formData['name_auditor2'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'].'</b>'.$formData['name_auditor_lead'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'].'</b>'.$formData['name_auditor2'].'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='</table>';
 
 $pdf->writeHTML($testingTab, true, 0, true, 0);
 
-$partBHeading="<b>PART B. SPI- RT Checklist</b>";
+$partBHeading='<b>'.$decoded[$language]['/SPI_RT/SPIRT/info4:label'].'</b>';
 
 $pdf->writeHTML($partBHeading, true, 0, true, 0);
 
 
-$partBCont="<br/><div>For each of the sections listed below, please check <b>Yes, Partial or No</b>, where applicable. Indicate";
-$partBCont.='"<b>Yes</b>" only when all elements are satisfactorily present. Provide comments for each "<b>Partial</b>" or "<b>No</b>" response. State N/A in the comments section if "not applicable" where appropriate (*).</div>';
+$partBCont='<br/><div>'.$decoded[$language]['/SPI_RT/SPIRT/info4:hint'].'State N/A in the comments section if "not applicable" where appropriate (*).</div>';
 
 $pdf->writeHTML($partBCont, true, 0, true, 0);
 
@@ -413,12 +412,9 @@ $partBTable.='<p>*Those marked with an asterisk are only applicable to sites whe
 
 $pdf->writeHTML($partBTable, true, 0, true, 0);
 
-$partC='<br/><p style="font-weight:bold;">PART C: SCORING CRITERIA</p>';
-$partC.='<br/><span>Each element marked will be assigned a point value:</span><br/>';
-$partC.=' <span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "Yes" receive 1 point each.</span><br/>';
-$partC.=' <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "Partial" receive 0.5 point each.</span><br/>';
-$partC.=' <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * Items marked "No" receive 0 point each.</span>';
-$partC.='<p>Total points scored for each section should be tallied and recorded at the end of the section.</p>';
+$partC='<br/><p style="font-weight:bold;">'.$decoded[$language]['/SPI_RT/scoring/info5:label'].'</p>';
+$partC.='<br/><span>'.$decoded[$language]['/SPI_RT/scoring/info6:label'].'</span>';
+$partC.='<p>'.$decoded[$language]['/SPI_RT/scoring/info10:label'].'</p>';
 $partC.='<p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance level.</p>';
 
 $pdf->writeHTML($partC, true, 0, true, 0);
@@ -510,19 +506,23 @@ $partDtableBox3.='</table>';
 
 $pdf->writeHTMLCell(70,26,125,'',$partDtableBox3,1,1, 0, true, 'L',true);
 
+// set recommend
+$recommend = explode("-",$decoded[$language]['/SPI_RT/correctiveaction/action:label']);
+$timeLine = explode("-",$decoded[$language]['/SPI_RT/correctiveaction/timeline:label']);
+
 $partDTable='<br/><br/><table border="1" cellspacing="0" cellpadding="5" style="width:100%">';
 $partDTable.='<tr>';
-$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>Section No.</td>';
-$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>Deficiency/Issue observed</td>';
-$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:20%">Correction Actions</td>';
-$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">Auditor\'s <br/>Comments</td>';
-$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:26%">Recommendations</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>'.$decoded[$language]['/SPI_RT/correctiveaction/sectionno:label'].'</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>'.$decoded[$language]['/SPI_RT/correctiveaction/deficiency:label'].'</td>';
+$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:20%">'.$decoded[$language]['/SPI_RT/correctiveaction/correction:label'].'</td>';
+$partDTable.='<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">'.$decoded[$language]['/SPI_RT/correctiveaction/auditorcomment:label'].'</td>';
+$partDTable.='<td colspan="2" style="font-weight:bold;text-align:center;width:26%">'.$recommend[0].'</td>';
 $partDTable.='</tr>';
 $partDTable.='<tr>';
-$partDTable.='<td style="font-weight:bold;text-align:center;width:12%;">Immediate</td>';
-$partDTable.='<td style="font-weight:bold;text-align:center;width:8%;">Follow up</td>';
-$partDTable.='<td style="font-weight:bold;text-align:center;">Actions</td>';
-$partDTable.='<td style="font-weight:bold;text-align:center;">Timeline / Person responsible</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;width:12%;">'.$decoded[$language]['/SPI_RT/correctiveaction/correction/Immediate:label'].'</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;width:8%;">'.$decoded[$language]['/SPI_RT/correctiveaction/correction/Followup:label'].'</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;">'.$recommend[1].'</td>';
+$partDTable.='<td style="font-weight:bold;text-align:center;">'.$timeLine[1].'</td>';
 $partDTable.='</tr>';
 if(isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  && $formData['correctiveaction'] != "[]"){
     $correctiveActions = json_decode($formData['correctiveaction'],true);
@@ -550,13 +550,13 @@ $partDTable.='</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable,true,0,true,0);
 
 $signBox1='<table cellspacing="0" cellpadding="4">';
-$signBox1.="<tr><td>Staff Audited Signature:</td></tr>";
-$signBox1.="<tr><td>Person in Charge Name and Signature : ".$formData['personincharge']."</td></tr>";
+$signBox1.='<tr><td>'.$decoded[$language]['/SPI_RT/staffaudited:label'].'</td></tr>';
+$signBox1.='<tr><td>'.$decoded[$language]['/SPI_RT/personincharge:label'].$formData["personincharge"].'</td></tr>';
 $signBox1.='</table>';
 $pdf->writeHTMLCell(90,18,'','',$signBox1,1, 0, 0, true, 'L');
 
 $signBox2='<table cellspacing="0" cellpadding="4">';
-$signBox2.="<tr><td>Auditor Name and Signature:</td></tr>";
+$signBox2.='<tr><td>'.$decoded[$language]['/SPI_RT/SUMMARY/info26:label'].'</td></tr>';
 $signBox2.="<tr><td>Date (dd/mm/yyyy):</td></tr>";
 $signBox2.='</table>';
 $pdf->writeHTMLCell(80,18,115,'',$signBox2,1,1, 0, true, 'L');
