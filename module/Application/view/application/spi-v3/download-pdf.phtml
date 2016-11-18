@@ -89,7 +89,7 @@ $partA='<p style="font-weight:bold;line-height:24px;">'.$decoded[$language]['/SP
 
 $pdf->writeHTML($partA, true, 0, true, 0);
 
-$pdf->writeHTMLCell('',12,'','','<p>Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.</p>',0,1,false,true,'L',true);
+$pdf->writeHTMLCell('',12,'','','<p>'.$decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'].'</p>',0,1,false,true,'L',true);
 
 $testingTab='<table border="1" cellspacing="0" cellpadding="5">';
 
@@ -141,17 +141,17 @@ $partBHeading='<b>'.$decoded[$language]['/SPI_RT/SPIRT/info4:label'].'</b>';
 $pdf->writeHTML($partBHeading, true, 0, true, 0);
 
 
-$partBCont='<br/><div>'.$decoded[$language]['/SPI_RT/SPIRT/info4:hint'].'State N/A in the comments section if "not applicable" where appropriate (*).</div>';
+$partBCont='<br/><div>'.$decoded[$language]['/SPI_RT/SPIRT/info4:hint'].'</div>';
 
 $pdf->writeHTML($partBCont, true, 0, true, 0);
 
 $partBTable='<table border="1" cellspacing="0" cellpadding="5" style="width:100%;">';
 $partBTable.="<tr>";
 $partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">YES</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Partial</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">NO</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;width:18%;">Comments</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_10/PERSONAL_Q_1_10/1:label'].'</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_3/PERSONAL_Q_1_3/0.5:label'].'</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_8/PERSONAL_Q_1_8/0:label'].'</td>';
+$partBTable.='<td style="text-align:center;font-weight:bold;width:18%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_5/PERSONAL_C_1_5:label'].'</td>';
 $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Score</td>';
 $partBTable.='</tr>';
 
@@ -415,7 +415,7 @@ $pdf->writeHTML($partBTable, true, 0, true, 0);
 $partC='<br/><p style="font-weight:bold;">'.$decoded[$language]['/SPI_RT/scoring/info5:label'].'</p>';
 $partC.='<br/><span>'.$decoded[$language]['/SPI_RT/scoring/info6:label'].'</span>';
 $partC.='<p>'.$decoded[$language]['/SPI_RT/scoring/info10:label'].'</p>';
-$partC.='<p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance level.</p>';
+$partC.='<p>'.$decoded[$language]['/SPI_RT/scoring/info11:label'].'</p>';
 
 $pdf->writeHTML($partC, true, 0, true, 0);
 
@@ -427,33 +427,48 @@ $partCTable.='<td  style="width:20%">% Score</td>';
 $partCTable.='<td  style="width:65%">Description of results</td>';
 $partCTable.='</tr>';
 
+$level0=explode("-",$decoded[$language]['/SPI_RT/SUMMARY/info21:label']);
+$level1=explode("-",$decoded[$language]['/SPI_RT/SUMMARY/info22:label']);
+if(count($level1)>2){
+	$level1[1]=$level1[1]." - ".$level1[2];
+}
+$level2=explode("-",$decoded[$language]['/SPI_RT/SUMMARY/info23:label']);
+if(count($level2)>2){
+	$level2[1]=$level2[1]." - ".$level2[2];
+}
+$level3=explode("-",$decoded[$language]['/SPI_RT/SUMMARY/info24:label']);
+if(count($level3)>2){
+	$level3[1]=$level3[1]." - ".$level3[2];
+}
+$level4=explode("-",$decoded[$language]['/SPI_RT/SUMMARY/info25:label']);
+
 $partCTable.='<tr>';
-$partCTable.='<td style="background-color:#C00000;">Level 0</td>';
-$partCTable.='<td>Less than 40%</td>';
+$partCTable.='<td style="background-color:#C00000;">'.$level0[0].'</td>';
+$partCTable.='<td>'.$level0[1].'</td>';
 $partCTable.='<td>Needs improvement in all areas and immediate remediation</td>';
 $partCTable.='</tr>';
 
 $partCTable.='<tr>';
-$partCTable.='<td style="background-color:#E36C0A;">Level 1</td>';
-$partCTable.='<td>40% - 59%</td>';
+$partCTable.='<td style="background-color:#E36C0A;">'.$level1[0].'</td>';
+$partCTable.='<td>'.$level1[1].'</td>';
 $partCTable.='<td>Needs improvement in specific areas</td>';
 $partCTable.='</tr>';
 
 $partCTable.='<tr>';
-$partCTable.='<td style="background-color:#FFFF00;">Level 2</td>';
-$partCTable.='<td>60% - 79%</td>';
+$partCTable.='<td style="background-color:#FFFF00;">'.$level2[0].'</td>';
+$partCTable.='<td>'.$level2[1].'</td>';
 $partCTable.='<td>Partially eligible</td>';
 $partCTable.='</tr>';
 
 $partCTable.='<tr>';
-$partCTable.='<td style="background-color:#92D050;">Level 3</td>';
-$partCTable.='<td>80% - 89%</td>';
+$partCTable.='<td style="background-color:#92D050;">'.$level3[0].'</td>';
+$partCTable.='<td>'.$level3[1].'</td>';
 $partCTable.='<td>Close to national site certification</td>';
 $partCTable.='</tr>';
 
 $partCTable.='<tr>';
-$partCTable.='<td style="background-color:#00B050;">Level 4</td>';
-$partCTable.='<td>90% or higher</td>';
+$partCTable.='<td style="background-color:#00B050;">'.$level4[0].'</td>';
+$partCTable.='<td>'.$level4[1].'</td>';
 $partCTable.='<td>Eligible to national site certification</td>';
 $partCTable.='</tr>';
 
