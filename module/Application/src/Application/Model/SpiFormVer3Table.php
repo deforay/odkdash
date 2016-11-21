@@ -105,8 +105,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'level_name' => $data['level_name'],
                 'affiliation' => $data['affiliation'],
                 'affiliation_other' => $data['affiliation_other'],
-                'NumberofTester' => $data['NumberofTester'],
-                'avgMonthTesting' => $data['avgMonthTesting'],
+                'NumberofTester' => (isset($params['numberOfTester']) && $params['numberOfTester'] > 0 ? $params['numberOfTester'] : 0),
+                'avgMonthTesting' => (isset($params['averageTestedPerMonth']) && $params['averageTestedPerMonth'] > 0 ? $params['averageTestedPerMonth'] : 0),
                 'name_auditor_lead' => $data['name_auditor_lead'],
                 'name_auditor2' => $data['name_auditor2'],
                 'info4' => $data['info4'],
@@ -312,6 +312,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $dbAdapter = $this->adapter;
             $insert->values($par);
             $selectString = $sql->getSqlStringForSqlObject($insert);
+            error_log($selectString);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
             if($approveStatus=='approved'){
@@ -706,7 +707,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
          $row[] = $approve." ".$downloadPdf;
          $output['aaData'][] = $row;
         }
-        $output['avgAuditScore'] = round($auditScore/count($rResult),2);
+        $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore/count($rResult),2) : 0;
         $output['levelZeroCount'] = count($levelZero);
         $output['levelOneCount'] = count($levelOne);
         $output['levelTwoCount'] = count($levelTwo);
@@ -1406,8 +1407,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'level_name' => $params['levelName'],
                 'affiliation' => $params['affiliation'],
                 'affiliation_other' => $params['affiliationOther'],
-                'NumberofTester' => $params['numberOfTester'],
-                'avgMonthTesting' => $params['averageTestedPerMonth'],
+                'NumberofTester' => (isset($params['numberOfTester']) && $params['numberOfTester'] > 0 ? $params['numberOfTester'] : 0),
+                'avgMonthTesting' => (isset($params['averageTestedPerMonth']) && $params['averageTestedPerMonth'] > 0 ? $params['averageTestedPerMonth'] : 0),
                 'name_auditor_lead' => $params['nameOfAuditor1'],
                 'name_auditor2' => $params['nameOfAuditor2'],
                 'PERSONAL_C_1_1' => $params['personal_c_1_1'],
