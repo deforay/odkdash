@@ -108,4 +108,47 @@ return array(
             'edit' => 'deny',
         ),
     ),
+    'VIEWER' => array(
+        'Application\\Controller\\Common' => array(
+            'audit-locations' => 'allow',
+        ),
+        'Application\\Controller\\Index' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\Config' => array(
+            'index' => 'allow',
+            'edit-global' => 'deny',
+        ),
+        'Application\\Controller\\Email' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\Facility' => array(
+            'index' => 'allow',
+            'add' => 'deny',
+            'edit' => 'deny',
+            'get-facility-name' => 'deny',
+        ),
+        'Application\\Controller\\Roles' => array(
+            'index' => 'deny',
+            'add' => 'deny',
+            'edit' => 'deny',
+        ),
+        'Application\\Controller\\SpiV3' => array(
+            'index' => 'deny',
+            'approve-status' => 'deny',
+            'corrective-action-pdf' => 'deny',
+            'delete' => 'deny',
+            'edit' => 'deny',
+            'manage-facility' => 'deny',
+            'download-pdf' => 'deny',
+        ),
+        'Application\\Controller\\Users' => array(
+            'index' => 'deny',
+            'add' => 'deny',
+            'edit' => 'deny',
+        ),
+        'Application\\Controller\\SpiV3Reports' => array(
+            'facility-report' => 'deny',
+        ),
+    ),
 );

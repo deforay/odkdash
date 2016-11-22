@@ -55,7 +55,7 @@ echo "<tr class=''>";
 echo "<td><strong>" . ucwords($value['display_name']) . "</strong></td>";
 
 foreach ($value['privileges'] as $privilege) {
-if(isset($resourceResult->$value['resource_id']->$privilege['privilege_name']) && $resourceResult->$value['resource_id']->$privilege['privilege_name'] == 'allow'){
+if(isset($resourceResult[$value['resource_id']][$privilege['privilege_name']]) && $resourceResult[$value['resource_id']][$privilege['privilege_name']] == 'allow'){
                        $allowActive = ' active ';
                        $allowChecked = " checked='' ";
                        $denyActive = "";
