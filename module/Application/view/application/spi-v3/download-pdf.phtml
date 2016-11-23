@@ -22,7 +22,7 @@ class MYPDF extends TCPDF {
         // Set font
         $this->SetFont('helvetica', 'B', 12);
         // Title
-        $this->writeHTMLCell(0,'',30,10,$this->header,0,1,false,true,'C',true);
+        $this->writeHTMLCell(0,'',33,10,$this->header,0,1,false,true,'C',true);
         $this->writeHTMLCell(180,'',15,20,'<br/><hr/>',0,1,false,true,'C',true);
     }
 
@@ -156,8 +156,8 @@ $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Score</td
 $partBTable.='</tr>';
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/PERSONAL:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">10</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/PERSONAL:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">10</td>';
 $partBTable.='</tr>';
 
     for($i=1;$i<11;$i++)
@@ -189,8 +189,8 @@ $partBTable.='</tr>';
 
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/PHYSICAL:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">5</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/PHYSICAL:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">5</td>';
 $partBTable.='</tr>';
 
     for($i=1;$i<6;$i++)
@@ -224,8 +224,8 @@ $partBTable.='</tr>';
 
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/SAFETY:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">11</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/SAFETY:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">11</td>';
 $partBTable.='</tr>';
 
     for($i=1;$i<12;$i++)
@@ -255,8 +255,8 @@ $partBTable.='<td style="text-align:center;">'.$formData['SAFETY_SCORE'].'</td>'
 $partBTable.='</tr>';
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/PRETEST:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">12</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/PRETEST:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">12</td>';
 $partBTable.='</tr>';
     
     for($i=1;$i<13;$i++)
@@ -288,8 +288,8 @@ $partBTable.='</tr>';
 
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/TEST:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/TEST:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
 $partBTable.='</tr>';
 
     for($i=1;$i<10;$i++)
@@ -320,8 +320,8 @@ $partBTable.='</tr>';
 
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/POSTTEST:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/POSTTEST:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
 $partBTable.='</tr>';
 
     for($i=1;$i<10;$i++)
@@ -351,8 +351,8 @@ $partBTable.='<td style="text-align:center;">'.$formData['POST_SCORE'].'</td>';
 $partBTable.='</tr>';
 
 $partBTable.='<tr>';
-$partBTable.='<td colspan="5" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/EQA:label'].'</td>';
-$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">8/14</td>';
+$partBTable.='<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">'.$decoded[$language]['/SPI_RT/EQA:label'].'</td>';
+//$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">8/14</td>';
 $partBTable.='</tr>';
 
     for($i=1;$i<9;$i++)
@@ -419,11 +419,26 @@ $partC.='<p>'.$decoded[$language]['/SPI_RT/scoring/info11:label'].'</p>';
 
 $pdf->writeHTML($partC, true, 0, true, 0);
 
+$summaryExp=explode(PHP_EOL,$decoded[$language]['/SPI_RT/SUMMARY/info17:label']);
+$totPointScored='';
+$totExpectScored='';
+$perScored='';
+if(isset($summaryExp[8]) && trim($summaryExp[8])!=""){
+	$totPointScored=$summaryExp[8];
+}
+if(isset($summaryExp[9]) && trim($summaryExp[9])!=""){
+	$totExpectScored=$summaryExp[9];
+}
+if(isset($summaryExp[10]) && trim($summaryExp[10])!=""){
+	$expPerScored=explode("=",$summaryExp[10]);
+	$perScored=(string) $expPerScored[0];
+}
+
 $partCTable='<table border="1" cellspacing="0" cellpadding="5">';
 
 $partCTable.='<tr style="font-weight:bold;text-align:center;">';
 $partCTable.='<td style="width:15%">Levels</td>';
-$partCTable.='<td  style="width:20%">% Score</td>';
+$partCTable.='<td  style="width:20%">'.$perScored.'</td>';
 $partCTable.='<td  style="width:65%">Description of results</td>';
 $partCTable.='</tr>';
 
@@ -495,20 +510,7 @@ if(isset($summationExp[5]) && trim($summationExp[5])!=""){
 	$noOfTester=$expStaffAuditedName[1];
 }
 
-$summaryExp=explode(PHP_EOL,$decoded[$language]['/SPI_RT/SUMMARY/info17:label']);
-$totPointScored='';
-$totExpectScored='';
-$perScored='';
-if(isset($summaryExp[8]) && trim($summaryExp[8])!=""){
-	$totPointScored=$summaryExp[8];
-}
-if(isset($summaryExp[9]) && trim($summaryExp[9])!=""){
-	$totExpectScored=$summaryExp[9];
-}
-if(isset($summaryExp[10]) && trim($summaryExp[10])!=""){
-	$expPerScored=explode("=",$summaryExp[10]);
-	$perScored=(string) $expPerScored[0]."= ";
-}
+
 $partDTitle='<p style="font-weight:bold;line-height:30px;">'.$heading.'</p>';
 $pdf->writeHTML($partDTitle,true,0,true,0);
 
@@ -554,7 +556,7 @@ if($scorePer<40){
 $partDtableBox3='<table cellspacing="0" cellpadding="5">';
 $partDtableBox3.="<tr><td>".$totPointScored.$formData['FINAL_AUDIT_SCORE']."</td></tr>";
 $partDtableBox3.="<tr><td>".$totExpectScored.$formData['MAX_AUDIT_SCORE']."</td></tr>";
-$partDtableBox3.='<tr><td>'.$perScored.round($formData['AUDIT_SCORE_PERCANTAGE'],2).'% &nbsp; <span style="'.$colorCode.'">  &nbsp;&nbsp;'.$level.'  &nbsp;&nbsp;</span></td></tr>';
+$partDtableBox3.='<tr><td>'.$perScored."= ".round($formData['AUDIT_SCORE_PERCANTAGE'],2).'% &nbsp; <span style="'.$colorCode.'">  &nbsp;&nbsp;'.$level.'  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3.='</table>';
 
 $pdf->writeHTMLCell(70,26,125,'',$partDtableBox3,1,1, 0, true, 'L',true);
@@ -596,7 +598,7 @@ if(isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  
     }
 }else {
     $partDTable.='<tr>';
-    $partDTable.='<td colspan="7">No Corrective Actions</td>';
+    $partDTable.='<td colspan="7">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_8/PERSONAL_Q_1_8/0:label'].' '.$decoded[$language]['SPI_RT/correctiveaction:label'].'</td>';
     $partDTable.='</tr>';
 }
 $partDTable.='</table><br/><br/><br/>';
