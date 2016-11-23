@@ -24,7 +24,23 @@ $container = new Container('alert');
         <div class="main-content">
           <div class="login-container" style="text-align:center;">
             <div class="panel panel-default">
-              <div class="panel-heading"><img src="<?php echo $this->basePath('assets/img/logo.png'); ?>" style="width:120px;" alt="logo" class="logo-img"><span>Dashboard for Quality Improvement of HIV Rapid Testing </span></div>
+	      <!--get global config logo image-->
+              <div class="panel-heading">
+		<?php
+		$config = $this->GlobalConfigHelper();
+		if(isset($config) && count($config)>0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo". DIRECTORY_SEPARATOR . $config['logo']))
+		{
+		  ?>
+		  <img src="<?php echo $this->basePath('uploads/logo/'.$config['logo']); ?>" style="width:120px;" alt="logo" class="logo-img">
+		  <?php
+		}else{
+		  ?>
+		  <img src="<?php echo $this->basePath('assets/img/logo.png'); ?>" style="width:120px;" alt="logo" class="logo-img">
+		  <?php
+		}
+		?>
+		<span>Dashboard for Quality Improvement of HIV Rapid Testing </span>
+	      </div>
               <div class="panel-body">
                 <form action="<?php echo $this->url('login'); ?>" method="post" class="form-horizontal">
                   <div class="login-form">

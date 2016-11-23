@@ -38,6 +38,7 @@ class RolesTable extends AbstractTableGateway  {
                 'description' => $params['description'],
                 'status' => 'active'
             );
+            
             $this->insert($rolesdata);
             $lastInsertId=$this->lastInsertValue;
             return $lastInsertId;
