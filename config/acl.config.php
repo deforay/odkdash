@@ -36,12 +36,16 @@ return array(
         'Application\\Controller\\Common' => array(
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Index' => array(
-            'index' => 'allow',
-        ),
         'Application\\Controller\\Config' => array(
             'index' => 'allow',
             'edit-global' => 'allow',
+        ),
+        'Application\\Controller\\Index' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\Dashboard' => array(
+            'index' => 'allow',
+            'audi-details' => 'allow',
         ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',

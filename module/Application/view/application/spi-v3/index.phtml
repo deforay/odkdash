@@ -58,13 +58,13 @@ tr.shown td.details-control {
                       <div class=" col-lg-4">
                       <select class="form-control" id="testPoint">
                         <option value="">--Select--</option>
-                        <option value="VCT/HTC">VCT/HTC</option>          
-                        <option value="PITC">PITC</option>            
-                        <option value="PMTCT">PMTCT</option>        
-                        <option value="TB clinic">TB clinic</option>
-                        <option value="Laboratory">Laboratory</option>
-                        <option value="Treatment Center">Treatment Center</option>
-                        <option value="other">Other</option>
+                        <?php
+                        foreach($testingPointResult as $val){
+                        ?>
+                        <option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+                        <?php
+                        }
+                        ?>
                         </select>
                      </div>
                       <label for="level" class="col-sm-2 control-label">Level</label>
