@@ -49,6 +49,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $approveStatus = 'pending';
        }
        
+        //error_log(print_r($params,true));
+
         foreach($params['data'] as $datar){
             $par = array();
             $data = array();
@@ -312,7 +314,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $dbAdapter = $this->adapter;
             $insert->values($par);
             $selectString = $sql->getSqlStringForSqlObject($insert);
-            error_log($selectString);
+            //error_log($selectString);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
             if($approveStatus=='approved'){

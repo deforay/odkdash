@@ -12,7 +12,7 @@ class ReceiverController extends AbstractActionController
     {        
         $viewModel = new ViewModel();
         
-        $jsonData = file_get_contents('php://input');
+        $jsonData = utf8_encode(file_get_contents('php://input'));
         
         $params = json_decode($jsonData,true);
         
