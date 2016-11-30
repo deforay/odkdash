@@ -11,12 +11,18 @@ class SpiV3Controller extends AbstractActionController
 
     public function indexAction(){
         $request = $this->getRequest();
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $testingPointResult=$odkFormService->getAllTestingPointType();
+        
         if ($request->isPost()) {
             $param = $request->getPost();
             $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $odkFormService->getAllSubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
+        return new ViewModel(array(
+            'testingPointResult' => $testingPointResult
+        ));
     }
 
     public function printAction()

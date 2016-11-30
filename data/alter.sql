@@ -210,3 +210,15 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 
 --ilahir 16-NOV-2016
 INSERT INTO `odkdash`.`global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Language', 'language', 'English');
+
+
+
+
+
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\Dashboard', 'Manage Dashboard');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Dashboard', 'index', 'Access'), ('Application\\Controller\\Dashboard', 'audi-details', 'Manage Audit details');
+UPDATE `resources` SET `display_name` = 'Home' WHERE `resources`.`resource_id` = 'Application\\Controller\\Index';
+
+ALTER TABLE `roles` ADD PRIMARY KEY(`role_id`);
+ALTER TABLE `roles` ADD UNIQUE(`role_id`);
+ALTER TABLE `roles` CHANGE `role_id` `role_id` INT(11) NOT NULL AUTO_INCREMENT;

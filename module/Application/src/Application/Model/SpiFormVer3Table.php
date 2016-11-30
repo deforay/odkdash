@@ -2270,4 +2270,16 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         return $output;
     }
+    
+    public function fetchAllTestingPointType(){
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                    ->columns(array(new Expression('DISTINCT(testingPointType) as testingPointType')))
+                                    ->group('testingPointType')
+                                    ->order("testingPointType ASC");
+        $queryStr = $sql->getSqlStringForSqlObject($query);
+        
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
 }

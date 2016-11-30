@@ -224,9 +224,11 @@ class Module
         return array(
            'invokables' => array(
               'humanDateFormat' => 'Application\View\Helper\HumanDateFormat',
+              'GlobalConfigHelper' => 'Application\View\Helper\GlobalConfigHelper',
            ),
         );
-    }	
+    }
+    
 
     public function getAutoloaderConfig()
     {

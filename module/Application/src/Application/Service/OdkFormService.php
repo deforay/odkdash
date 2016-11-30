@@ -144,15 +144,15 @@ class OdkFormService {
             $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-		$dateRangeDate = explode(" - ", $params['dateRange']);
-		if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
-		    $fromDate = $dateRangeDate[0];
-		}
-		if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
-		    $toDate = $dateRangeDate[1];
-		}
+                $dateRangeDate = explode(" - ", $params['dateRange']);
+                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+                    $fromDate = $dateRangeDate[0];
+                }
+                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+                    $toDate = $dateRangeDate[1];
+                }
                 if($fromDate == $toDate){
-               $displayDate="Date : ".$fromDate;
+                $displayDate="Date : ".$fromDate;
                 }else{
                     $displayDate="Date : ".$fromDate." to ".$toDate;
                 }
@@ -166,9 +166,13 @@ class OdkFormService {
             if(count($sResult) > 0) {
                 
                 foreach($sResult as $aRow) {
+                    $auditDate="";
+                    if(isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit'])!=""){
+                        $auditDate=$common->humanDateFormat($aRow['assesmentofaudit']);
+                    }
                     $row = array();
                     $row[] = $aRow['facilityname'];
-                    $row[] = $common->humanDateFormat($aRow['assesmentofaudit']);
+                    $row[] = $auditDate;
                     $row[] = $aRow['testingpointname']. " - " .$aRow['testingpointtype'];
                     $row[] = $aRow['PERSONAL_SCORE'];
                     $row[] = $aRow['PHYSICAL_SCORE'];
@@ -364,5 +368,10 @@ class OdkFormService {
     public function getViewDataDetails($params){
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchViewDataDetails($params);
+    }
+    
+    public function getAllTestingPointType(){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchAllTestingPointType();
     }
 }
