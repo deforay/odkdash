@@ -92,7 +92,10 @@ $pdf->writeHTML($partA, true, 0, true, 0);
 $pdf->writeHTMLCell('',12,'','','<p>'.$decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'].'</p>',0,1,false,true,'L',true);
 if($language=='Portuguese'){
 	$langDateFormat='(dd/mm/aaaa)';
-}else{
+}else if($language=='Spanish'){
+	$langDateFormat='(dd/mm/aaaa)';
+}
+else{
 	$langDateFormat='(dd/mm/yyyy)';
 }
 $testingTab='<table border="1" cellspacing="0" cellpadding="5">';
@@ -106,7 +109,10 @@ $testingTab.='<tr>';
 $testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'].'</b> '.$formData['facilityname'].'</td>';
 if($language=='Portuguese'){
 $testingTab.='<td><b>Identificacao do local de testagem </b>(se aplicavel): '.$formData['facilityid'].'</td>';
-}else{
+}else if($language=='Spanish'){
+$testingTab.='<td><b>Tipo de sitio de pruebas </b>(seleccione uno): '.$formData['facilityid'].'</td>';
+}
+else{
 $testingTab.='<td><b>Testing Facility ID</b>(if applicable) : '.$formData['facilityid'].'</td>';	
 }
 $testingTab.='</tr>';
@@ -159,9 +165,6 @@ $language;
 if($language=='Portuguese'){
 	$partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">SECÇÃO</td>';
 }
-else if($language=='Spanish'){
-	$partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">Preguntas por Seccion</td>';
-}
 else{
 	$partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
 }
@@ -172,7 +175,11 @@ $partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">'.$decode
 $partBTable.='<td style="text-align:center;font-weight:bold;width:18%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_5/PERSONAL_C_1_5:label'].'</td>';
 if($language=='Portuguese'){
 	$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Pontuação</td>';
-}else{
+}
+elseif($language=='Spanish'){
+	$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Punteo</td>';
+}
+else{
 	$partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Score</td>';	
 }
 
@@ -433,6 +440,9 @@ $partBTable.='</tr>';
 $partBTable.='</table>';
 if($language=='Portuguese'){
 $partBTable.='<p>*A area marcada com asteriscos so é aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
+}
+else if($language=='Spanish'){
+$partBTable.='<p>*Lo que aparece marcado con un asterisco son solo aplicables a sitios donde la repetición de las pruebas se hace.</p>';
 }else{
 $partBTable.='<p>*Those marked with an asterisk are only applicable to sites where sample retesting is performed.</p>';	
 }
@@ -466,6 +476,9 @@ $partCTable='<table border="1" cellspacing="0" cellpadding="5">';
 $partCTable.='<tr style="font-weight:bold;text-align:center;">';
 if($language=='Portuguese'){
 $partCTable.='<td style="width:15%">NIVEL</td>';
+}
+else if($language=='Spanish'){
+$partCTable.='<td style="width:15%">Nivel</td>';
 }else{
 $partCTable.='<td style="width:15%">Levels</td>';	
 }
@@ -474,7 +487,12 @@ $partCTable.='<td style="width:15%">Levels</td>';
 if($language=='Portuguese'){
 $partCTable.='<td  style="width:25%">PONTUACAO EM %</td>';
 $partCTable.='<td  style="width:60%">DESCRIÇAO DOS RESULTADOS</td>';
-}else{
+}
+else if($language=='Spanish'){
+$partCTable.='<td  style="width:25%">% Puntaje</td>';
+$partCTable.='<td  style="width:60%">Descripción de los resultados</td>';
+}
+else{
 $partCTable.='<td  style="width:25%">'.$perScored.'</td>';
 $partCTable.='<td  style="width:60%">Description of results</td>';	
 }
@@ -495,11 +513,24 @@ if(count($level3)>2){
 }
 $level4=explode("-",$decoded[$language]['/SPI_RT/SUMMARY/info25:label']);
 
+if($language=='Spanish'){
+	$level0[0]="Nivel 0";
+	$level0[1]="Menos de 40% ";
+	$level1[0]="Nivel 1";
+	$level2[0]="Nivel 2";
+	$level3[0]="Nivel 3";
+	$level4[0]="Nivel 4";
+	$level4[1]="90% a más";
+}
+
 $partCTable.='<tr>';
 $partCTable.='<td style="background-color:#C00000;">'.$level0[0].'</td>';
 $partCTable.='<td>'.$level0[1].'</td>';
 if($language=='Portuguese'){
 $partCTable.='<td>Necessidade de melhoria em todas as areas e remediaçoes imediatas</td>';
+}
+else if($language=='Spanish'){
+$partCTable.='<td>Necesita mejorar en todas las áreas y es necesaria corrección inmediata</td>';
 }else{
 $partCTable.='<td>Needs improvement in all areas and immediate remediation</td>';	
 }
@@ -511,7 +542,11 @@ $partCTable.='<td style="background-color:#E36C0A;">'.$level1[0].'</td>';
 $partCTable.='<td>'.$level1[1].'</td>';
 if($language=='Portuguese'){
 $partCTable.='<td>Necessidade de melhorias em areas especificas</td>';
-}else{
+}
+else if($language=='Spanish'){
+	$partCTable.='<td>Necesita mejorar en áreas específicas</td>';
+}
+else{
 $partCTable.='<td>Needs improvement in specific areas</td>';	
 }
 $partCTable.='</tr>';
@@ -521,7 +556,11 @@ $partCTable.='<td style="background-color:#FFFF00;">'.$level2[0].'</td>';
 $partCTable.='<td>'.$level2[1].'</td>';
 if($language=='Portuguese'){
 $partCTable.='<td>Parcialmente admissivel ou aceitavel</td>';
-}else{
+}
+else if($language=='Spanish'){
+	$partCTable.='<td>Parcialmente elegible</td>';
+}
+else{
 $partCTable.='<td>Partially eligible</td>';	
 }
 $partCTable.='</tr>';
@@ -531,7 +570,11 @@ $partCTable.='<td style="background-color:#92D050;">'.$level3[0].'</td>';
 $partCTable.='<td>'.$level3[1].'</td>';
 if($language=='Portuguese'){
 $partCTable.='<td>Proximo da certificaçao nacional</td>';
-}else{
+}
+else if($language=='Spanish'){
+$partCTable.='<td>Cercano a sitio nacional certificado</td>';
+}
+else{
 $partCTable.='<td>Close to national site certification</td>';	
 }
 $partCTable.='</tr>';
@@ -541,7 +584,11 @@ $partCTable.='<td style="background-color:#00B050;">'.$level4[0].'</td>';
 $partCTable.='<td>'.$level4[1].'</td>';
 if($language=='Portuguese'){
 $partCTable.='<td>Admissivel a certificaçao nacional</td>';
-}else{
+}
+else if($language=='Spanish'){
+$partCTable.='<td>Elegible para ser certificado</td>';
+}
+else{
 $partCTable.='<td>Eligible to national site certification</td>';	
 }
 $partCTable.='</tr>';
@@ -568,7 +615,9 @@ if(isset($summationExp[5]) && trim($summationExp[5])!=""){
 	$staffAuditedName=$expStaffAuditedName[0];
 	$noOfTester=$expStaffAuditedName[1];
 }
-
+if($language=='Spanish'){
+	$heading="PARTE D: Informe resumido del evaluador de la auditoría SPI-RT";
+}
 
 $partDTitle='<p style="font-weight:bold;line-height:30px;">'.$heading.'</p>';
 $pdf->writeHTML($partDTitle,true,0,true,0);
@@ -579,8 +628,12 @@ $partDtableBox1.="<tr><td>".$facilityName.$formData['facilityname']."</td></tr>"
 $partDtableBox1.="<tr><td>";
 if($language=='Portuguese'){
 $partDtableBox1.="Tipo de local:";
-}else{
-$partDtableBox1.="Site Type:";	
+}
+else if($language=='Spanish'){
+$partDtableBox1.="Tipo de sitio:";
+}
+else{
+$partDtableBox1.="Site Type:";
 }
 $partDtableBox1.=$formData['testingpointtype'];
 
@@ -679,10 +732,20 @@ $signBox1.='</table>';
 $pdf->writeHTMLCell(90,18,'','',$signBox1,1, 0, 0, true, 'L');
 
 $signBox2='<table cellspacing="0" cellpadding="4">';
-$signBox2.='<tr><td>'.$decoded[$language]['/SPI_RT/SUMMARY/info26:label'].'</td></tr>';
+
+if($language=='Spanish'){
+$signBox2.='<tr><td>Nombre y firma del auditor:</td></tr>';
+}else{
+$signBox2.='<tr><td>'.$decoded[$language]['/SPI_RT/SUMMARY/info26:label'].'</td></tr>';	
+}
+
 if($language=='Portuguese'){
 $signBox2.="<tr><td>Date ".$langDateFormat.":</td></tr>";
-}else{
+}
+else if($language=='Spanish'){
+$signBox2.="<tr><td>Fecha ".$langDateFormat.":</td></tr>";
+}
+else{
 $signBox2.="<tr><td>Date ".$langDateFormat.":</td></tr>";	
 }
 $signBox2.='</table>';
