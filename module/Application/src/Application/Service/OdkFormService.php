@@ -2,9 +2,9 @@
 
 namespace Application\Service;
 
+use Zend\Session\Container;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
-use Zend\Session\Container;
 use PHPExcel;
 
 class OdkFormService {
@@ -373,5 +373,10 @@ class OdkFormService {
     public function getAllTestingPointType(){
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchAllTestingPointType();
+    }
+    
+    public function getTestingPointTypeNamesByType($params){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchTestingPointTypeNamesByType($params);
     }
 }

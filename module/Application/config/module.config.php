@@ -12,7 +12,6 @@ namespace Application;
 return array(
     'router' => array(
         'routes' => array(
-            
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them

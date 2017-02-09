@@ -16,7 +16,6 @@ class SpiV3Controller extends AbstractActionController
         
         if ($request->isPost()) {
             $param = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $odkFormService->getAllSubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
@@ -225,10 +224,10 @@ class SpiV3Controller extends AbstractActionController
     }
     
     public function viewDataAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $odkFormService->getViewDataDetails($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
@@ -244,11 +243,25 @@ class SpiV3Controller extends AbstractActionController
         if($this->params()->fromQuery('drange')){
           $drange = $this->params()->fromQuery('drange');
         }
+        $testingPointResult=$odkFormService->getAllTestingPointType();
         return new ViewModel(array(
             'source' => $source,
             'roundno' => $roundno,
-            'drange' => $drange
+            'drange' => $drange,
+            'testingPointResult' => $testingPointResult
         ));
+    }
+    
+    public function getTestingPointTypeNamesAction(){
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $odkFormService->getTestingPointTypeNamesByType($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                        ->setTerminal(true);
+            return $viewModel;
+        }
     }
 }
 

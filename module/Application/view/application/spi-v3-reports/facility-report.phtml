@@ -38,19 +38,6 @@
                     </div>
                     
                     <div class="form-group">
-                      <label for="testPoint" class="col-sm-2 control-label">Type of testing point</label>
-                      <div class=" col-lg-4">
-                      <select class="form-control" id="testPoint">
-                        <option value="">--Select--</option>
-                        <option value="VCT/HTC">VCT/HTC</option>          
-                        <option value="PITC">PITC</option>            
-                        <option value="PMTCT">PMTCT</option>        
-                        <option value="TB clinic">TB clinic</option>
-                        <option value="Laboratory">Laboratory</option>
-                        <option value="Treatment Center">Treatment Center</option>
-                        <option value="other">Other</option>
-                        </select>
-                     </div>
                       <label for="level" class="col-sm-2 control-label">Level</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="level">
@@ -64,9 +51,7 @@
                         <option value="Other">Other</option>
                         </select>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+		      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="affiliation">
                         <option value="">--Select--</option>
@@ -79,11 +64,24 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <label for="affiliation" class="col-sm-2 control-label"></label>
-                    <div class="col-lg-4">
+		      <label for="testPoint" class="col-sm-2 control-label">Type of testing point</label>
+                      <div class=" col-lg-4">
+                      <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
+                        <option value="">--Select--</option>
+                        <option value="VCT/HTC">VCT/HTC</option>          
+                        <option value="PITC">PITC</option>            
+                        <option value="PMTCT">PMTCT</option>        
+                        <option value="TB clinic">TB clinic</option>
+                        <option value="Laboratory">Laboratory</option>
+                        <option value="Treatment Center">Treatment Center</option>
+                        <option value="other">Other</option>
+                        </select>
+                     </div>
+		     <div class="testPointNameSection"></div>
+                    </div>
+                    <div class="form-group" style="text-align:center;">
                       <button type="button" onclick="getReport()" class="btn btn-sm btn-success">Get Report</button>
                      &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-                    </div>
                     </div>
                   </form>
                 </div>
@@ -174,11 +172,12 @@
             "bServerSide": true,
             "sAjaxSource": "<?php echo $this->url('spi-v3-reports',array('action' => 'facility-report')); ?>",
             "fnServerData": function ( sSource, aoData, fnCallback ) {
-	      aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );
-	      aoData.push( { "name":"level","value": $("#level").val()} );
-	      aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
 	      aoData.push( { "name":"auditRndNo","value": $("#auditRndNo").val()} );
 	      aoData.push( { "name":"dateRange","value": $("#dateRange").val()} );
+	      aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );
+	      aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
+	      aoData.push( { "name":"level","value": $("#level").val()} );
+	      aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -230,5 +229,15 @@
       function getReport(){
 	$.blockUI({ message: '<h1>Loading...</h1>' });
 	oTable.fnDraw();
+      }
+      
+      function getTestingPointTypeNames(){
+	$.blockUI();
+	var testingPointType = $('#testPoint').val();
+	$.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-testing-point-type-names')); ?>",{testingPointType: testingPointType},
+	  function(data) {
+	   $('.testPointNameSection').html(data);
+	   $.unblockUI();
+	 });
       }
     </script>

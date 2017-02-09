@@ -43,10 +43,6 @@ return array(
         'Application\\Controller\\Index' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Dashboard' => array(
-            'index' => 'allow',
-            'audi-details' => 'allow',
-        ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
         ),
@@ -123,10 +119,6 @@ return array(
         'Application\\Controller\\Index' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Dashboard' => array(
-            'index' => 'allow',
-            'audit-details' => 'allow',
-        ),
         'Application\\Controller\\Email' => array(
             'index' => 'deny',
         ),
@@ -169,10 +161,6 @@ return array(
         ),
         'Application\\Controller\\Index' => array(
             'index' => 'allow',
-        ),
-        'Application\\Controller\\Dashboard' => array(
-            'index' => 'allow',
-            'audit-details' => 'allow',
         ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
