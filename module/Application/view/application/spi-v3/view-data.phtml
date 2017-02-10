@@ -192,43 +192,46 @@ tr.shown td.details-control {
                     </tfoot>-->
                 </table>
             </div>
-            <div class="spacer col-lg-12">
-            <table style="width:100%;background-color:#fff;margin-bottom:20px;font-size:13px;">
-                <tr>
-                    <td>&nbsp;<strong>No.of Audit(s)</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="totalAudit" style=""></td>
-                    <td style="padding-left:1%;"><strong>Avg. Audit Score</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="avgAuditScore"></td>
-                    <td style="width:2%;"></td>
-                    <td style="width:2%;background-color:red;"></td>
-                    <td style="padding-left:1%;"><strong>Level 0<br>(Below 40)</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="level0"></td>
-                    <td style="width:2%;"></td>
-                    <td style="width:2%;background-color:orange;"></td>
-                    <td style="padding-left:1%;"><strong>Level 1<br>(40-59)</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="level1"></td>
-                    <td style="width:2%;"></td>
-                    <td style="width:2%;background-color:yellow;"></td>
-                    <td style="padding-left:1%;"><strong>Level 2<br>(60-79)</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="level2"></td>
-                    <td style="width:2%;"></td>
-                    <td style="width:2%;background-color:#8DD63E;"></td>
-                    <td style="padding-left:1%;"><strong>Level 3<br>(80-89)</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="level3"></td>
-                    <td style="width:2%;"></td>
-                    <td style="width:2%;background-color:#528A16;"></td>
-                    <td style="padding-left:1%;"><strong>Level 4<br>(90 and above)</strong></td>
-                    <td style="text-align:center;">:&nbsp;</td>
-                    <td id="level4"></td>
-                </tr>
-            </table>
-          </div>
+            <?php
+            if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
+              <div class="spacer col-lg-12">
+              <table style="width:100%;background-color:#fff;margin-bottom:20px;font-size:13px;">
+                  <tr>
+                      <td>&nbsp;<strong>No.of Audit(s)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="totalAudit" style=""></td>
+                      <td style="padding-left:1%;"><strong>Avg. Audit Score</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="avgAuditScore"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:red;"></td>
+                      <td style="padding-left:1%;"><strong>Level 0<br>(Below 40)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level0"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:orange;"></td>
+                      <td style="padding-left:1%;"><strong>Level 1<br>(40-59)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level1"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:yellow;"></td>
+                      <td style="padding-left:1%;"><strong>Level 2<br>(60-79)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level2"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:#8DD63E;"></td>
+                      <td style="padding-left:1%;"><strong>Level 3<br>(80-89)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level3"></td>
+                      <td style="width:2%;"></td>
+                      <td style="width:2%;background-color:#528A16;"></td>
+                      <td style="padding-left:1%;"><strong>Level 4<br>(90 and above)</strong></td>
+                      <td style="text-align:center;">:&nbsp;</td>
+                      <td id="level4"></td>
+                  </tr>
+              </table>
+            </div>
+          <?php } ?>
         <br>
         <br>
         <br>
@@ -307,6 +310,8 @@ tr.shown td.details-control {
                     "url": sSource,
                     "data": aoData,
                     "success": function(json){
+                     <?php
+                     if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
                       $.unblockUI();
                       $("#totalAudit").html(json.iTotalDisplayRecords);
                       $("#avgAuditScore").html(json.avgAuditScore+"%");
@@ -315,6 +320,7 @@ tr.shown td.details-control {
                       $("#level2").html(json.levelTwoCount);
                       $("#level3").html(json.levelThreeCount);
                       $("#level4").html(json.levelFourCount+"&nbsp;");
+                      <?php } ?>
                       fnCallback(json);
                      }
                 });
