@@ -2097,8 +2097,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')","DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
             $orderColumns = array('assesmentofaudit','assesmentofaudit');
         }else if($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap'){
-            $aColumns = array('facilityid','facilityname','AUDIT_SCORE_PERCANTAGE',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'testingpointtype','testingpointname','testingpointtype_other','level','affiliation','AUDIT_SCORE_PERCANTAGE');
-            $orderColumns = array('facilityid','facilityname','AUDIT_SCORE_PERCANTAGE','assesmentofaudit','testingpointtype','testingpointname','level','affiliation','AUDIT_SCORE_PERCANTAGE');
+            $aColumns = array('facilityid','facilityname','AUDIT_SCORE_PERCANTAGE',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'testingpointtype','testingpointname','testingpointtype_other','level','affiliation','AUDIT_SCORE_PERCANTAGE','AUDIT_SCORE_PERCANTAGE');
+            $orderColumns = array('facilityid','facilityname','AUDIT_SCORE_PERCANTAGE','assesmentofaudit','testingpointtype','testingpointname','level','affiliation','AUDIT_SCORE_PERCANTAGE','AUDIT_SCORE_PERCANTAGE');
         }else if($parameters['source'] == 'apspi'){
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'PERSONAL_SCORE','PHYSICAL_SCORE','SAFETY_SCORE','PRETEST_SCORE','TEST_SCORE','POST_SCORE','EQA_SCORE');
             $orderColumns = array('assesmentofaudit','PERSONAL_SCORE','PHYSICAL_SCORE','SAFETY_SCORE','PRETEST_SCORE','TEST_SCORE','POST_SCORE','EQA_SCORE');
@@ -2210,11 +2210,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
             }
             //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                    ->columns(array('facilityid','facilityname','auditroundno','assesmentofaudit','testingpointtype','testingpointname','testingpointtype_other','affiliation','AUDIT_SCORE_PERCANTAGE'))
+                                    ->columns(array('facilityid','facilityname','auditroundno','assesmentofaudit','testingpointtype','testingpointname','testingpointtype_other','level','affiliation','AUDIT_SCORE_PERCANTAGE'))
                                     ->where(array('spiv3.status'=>'approved'));
             
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                    ->columns(array('facilityid','facilityname','auditroundno','assesmentofaudit','testingpointtype','testingpointname','testingpointtype_other','assesmentofaudit','affiliation','AUDIT_SCORE_PERCANTAGE'))
+                                    ->columns(array('facilityid','facilityname','auditroundno','assesmentofaudit','testingpointtype','testingpointname','testingpointtype_other','level','affiliation','AUDIT_SCORE_PERCANTAGE'))
                                     ->where(array('spiv3.status'=>'approved'));
                                     
             if($parameters['source'] == 'apl180'){
@@ -2397,8 +2397,9 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
             $row[] = ucwords($aRow['testingpointtype']);
             $row[] = ($aRow['testingpointtype'] == 'other')?ucwords($aRow['testingpointtype_other']):ucwords($aRow['testingpointname']);
-            $row[] = $level;
+            $row[] = ucwords($aRow['level']);
             $row[] = ucwords($aRow['affiliation']);
+            $row[] = $level;
             $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
           }else if($parameters['source'] == 'apspi') {
             $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);

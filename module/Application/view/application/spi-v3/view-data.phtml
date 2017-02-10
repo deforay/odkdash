@@ -156,19 +156,20 @@ tr.shown td.details-control {
                           <th style="width:50%;">Audit Count</th>
                         </tr>
                     <?php } else if($source == 'apl180' || $source == 'apall' || $source == 'ap'){
-                        $columns = 9;
-                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"centerText","bSortable":false},{"sClass":"center"},{"sClass":"center"}';
+                        $columns = 10;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"centerText","bSortable":false},{"sClass":"center"}';
                         $descColumn = 3;
                         ?>
                         <tr>
-                          <th style="width:10%;">Facility Id</th>
-                          <th style="width:16%;">Facility Name</th>
+                          <th style="width:8%;">Facility Id</th>
+                          <th style="width:12%;">Facility Name</th>
                           <th style="width:10%;">Audit Round No.</th>
                           <th style="width:10%;">Audit Date</th>
-                          <th style="width:12%;">Testing Point Type</th>
-                          <th style="width:12%;">Testing Point Name</th>
+                          <th style="width:10%;">Testing Point Type</th>
+                          <th style="width:10%;">Testing Point Name</th>
                           <th style="width:10%;">Level</th>
                           <th style="width:10%;">Affiliation</th>
+                          <th style="width:10%;">Score Level</th>
                           <th style="width:10%;">Percentage</th>
                         </tr>
                     <?php } else if($source == 'apspi'){
@@ -289,18 +290,18 @@ tr.shown td.details-control {
          <?php
           if($source == 'apl180' || $source == 'apall' || $source == 'ap'){ ?>
          "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            $(nRow.childNodes[6]).css("font-weight","bold");
-            $(nRow.childNodes[6]).css("color","black");
-            if(aData[6] == 0){
-              $(nRow.childNodes[6]).css("background-color","red");
-            }else if(aData[6] == 1){
-              $(nRow.childNodes[6]).css("background-color","orange");
-            }else if(aData[6] == 2){
-              $(nRow.childNodes[6]).css("background-color","yellow");
-            }else if(aData[6] == 3){
-              $(nRow.childNodes[6]).css("background-color","#8DD63E");
-            }else if(aData[6] == 4){
-              $(nRow.childNodes[6]).css("background-color","#528A16");
+            $(nRow.childNodes[8]).css("font-weight","bold");
+            $(nRow.childNodes[8]).css("color","black");
+            if(aData[8] == 0){
+              $(nRow.childNodes[8]).css("background-color","red");
+            }else if(aData[8] == 1){
+              $(nRow.childNodes[8]).css("background-color","orange");
+            }else if(aData[8] == 2){
+              $(nRow.childNodes[8]).css("background-color","yellow");
+            }else if(aData[8] == 3){
+              $(nRow.childNodes[8]).css("background-color","#8DD63E");
+            }else if(aData[8] == 4){
+              $(nRow.childNodes[8]).css("background-color","#528A16");
             }
          },
          <?php } ?>
