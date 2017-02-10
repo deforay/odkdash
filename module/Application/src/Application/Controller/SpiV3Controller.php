@@ -13,6 +13,7 @@ class SpiV3Controller extends AbstractActionController
         $request = $this->getRequest();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $testingPointResult=$odkFormService->getAllTestingPointType();
+        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
         
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -20,7 +21,8 @@ class SpiV3Controller extends AbstractActionController
             return $this->getResponse()->setContent(Json::encode($result));
         }
         return new ViewModel(array(
-            'testingPointResult' => $testingPointResult
+            'testingPointResult' => $testingPointResult,
+            'levelNamesResult' => $levelNamesResult
         ));
     }
 

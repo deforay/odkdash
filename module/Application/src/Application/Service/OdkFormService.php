@@ -379,4 +379,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchTestingPointTypeNamesByType($params);
     }
+    
+    public function getSpiV3FormUniqueLevelNames(){
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchSpiV3FormUniqueLevelNames();
+    }
 }

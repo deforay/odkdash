@@ -7,6 +7,9 @@
 tr.shown td.details-control {
     background: url('<?php echo $this->basePath('assets/img/details_close.png'); ?>') no-repeat center center;
 }
+.centerText{
+   text-align:center;
+}
 </style> 
 <div class="am-content">
         <div class="page-head">
@@ -43,7 +46,7 @@ tr.shown td.details-control {
                                <label for="auditRndNo" class="col-sm-2 control-label">Audit Round No.</label>
                                <div class=" col-lg-4">
                                <select class="form-control" id="auditRndNo">
-                                 <option value=''>--Select--</option>
+                                 <option value=''>All</option>
                                    <option value="1">1</option>
                                    <option value="2">2</option>
                                    <option value="3">3</option>
@@ -57,18 +60,20 @@ tr.shown td.details-control {
                                <label for="level" class="col-sm-2 control-label">Level</label>
                                <div class=" col-lg-4">
                                <select class="form-control" id="level">
-                                 <option value="">--Select--</option>
-                                 <option value="0">0</option>
-                                 <option value="1">1</option>
-                                 <option value="2">2</option>
-                                 <option value="3">3</option>
-                                 <option value="4">4</option>
+                                 <option value="">All</option>
+                                 <option value="Region/Province/Zone">Region/Province/Zone</option>         
+                                 <option value="District">District</option>
+                                 <option value="Referral center">Referral center</option>
+                                 <option value="Health center">Health center</option>
+                                 <option value="Dispensary">Dispensary</option>
+                                 <option value="Health Post">Health Post</option>
+                                 <option value="Other">Other</option>
                                  </select>
                                </div>
                                <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
                                <div class=" col-lg-4">
                                <select class="form-control" id="affiliation">
-                                 <option value="">--Select--</option>
+                                 <option value="">All</option>
                                  <option value="Government">Government</option>
                                  <option value="Private">Private</option>
                                  <option value="Faith-based Organization">Faith-based Organization</option>
@@ -77,12 +82,22 @@ tr.shown td.details-control {
                                  </select>
                                </div>
                              </div>
-                             
                              <div class="form-group">
+                               <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+                               <div class=" col-lg-4">
+                               <select class="form-control" id="scoreLevel">
+                                 <option value="">All</option>
+                                 <option value="0">0</option>
+                                 <option value="1">1</option>
+                                 <option value="2">2</option>
+                                 <option value="3">3</option>
+                                 <option value="4">4</option>
+                                 </select>
+                               </div>
                                <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
                                <div class=" col-lg-4">
                                <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
-                                 <option value="">--Select--</option>
+                                 <option value="">All</option>
                                  <?php
                                  foreach($testingPointResult as $val){
                                  ?>
@@ -92,8 +107,8 @@ tr.shown td.details-control {
                                  ?>
                                  </select>
                                </div>
-                               <div class="testPointNameSection"></div>
                              </div>
+                             <div class="form-group testPointNameSection"></div>
                              <div class="form-group" style="text-align:center;">
                                <button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
                              </div>
@@ -142,7 +157,7 @@ tr.shown td.details-control {
                         </tr>
                     <?php } else if($source == 'apl180' || $source == 'apall' || $source == 'ap'){
                         $columns = 9;
-                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false},{"sClass":"center"},{"sClass":"center"}';
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"centerText","bSortable":false},{"sClass":"center"},{"sClass":"center"}';
                         $descColumn = 3;
                         ?>
                         <tr>
@@ -303,6 +318,7 @@ tr.shown td.details-control {
            aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
            aoData.push( { "name":"level","value": $("#level").val()} );
            aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
+           aoData.push( { "name":"scoreLevel","value": $("#scoreLevel").val()} );
           <?php } ?>
                 $.ajax({
                     "dataType": 'json',

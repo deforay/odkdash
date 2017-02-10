@@ -24,7 +24,7 @@
                       <label for="auditRndNo" class="col-sm-2 control-label">Audit Round No.</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="auditRndNo">
-                        <option value=''>--Select--</option>
+                        <option value=''>All</option>
                           <?php
 			  foreach($spiV3auditRoundNo as $auditRoundNo)
 			  {
@@ -41,7 +41,7 @@
                       <label for="level" class="col-sm-2 control-label">Level</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="level">
-                        <option value="">--Select--</option>
+                        <option value="">All</option>
                         <option value="Region/Province/Zone">Region/Province/Zone</option>         
                         <option value="District">District</option>
                         <option value="Referral center">Referral center</option>
@@ -54,7 +54,7 @@
 		      <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="affiliation">
-                        <option value="">--Select--</option>
+                        <option value="">All</option>
                         <option value="Government">Government</option>
                         <option value="Private">Private</option>
                         <option value="Faith-based Organization">Faith-based Organization</option>
@@ -64,10 +64,21 @@
                       </div>
                     </div>
                     <div class="form-group">
-		      <label for="testPoint" class="col-sm-2 control-label">Type of testing point</label>
+		      <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+		      <div class=" col-lg-4">
+		      <select class="form-control" id="scoreLevel">
+			<option value="">All</option>
+			<option value="0">0</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			</select>
+		      </div>
+		      <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
-                        <option value="">--Select--</option>
+                        <option value="">All</option>
                         <option value="VCT/HTC">VCT/HTC</option>          
                         <option value="PITC">PITC</option>            
                         <option value="PMTCT">PMTCT</option>        
@@ -77,8 +88,8 @@
                         <option value="other">Other</option>
                         </select>
                      </div>
-		     <div class="testPointNameSection"></div>
                     </div>
+		    <div class="form-group testPointNameSection"></div>
                     <div class="form-group" style="text-align:center;">
                       <button type="button" onclick="getReport()" class="btn btn-sm btn-success">Get Report</button>
                      &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -178,6 +189,7 @@
 	      aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
 	      aoData.push( { "name":"level","value": $("#level").val()} );
 	      aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
+	      aoData.push( { "name":"scoreLevel","value": $("#scoreLevel").val()} );
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
