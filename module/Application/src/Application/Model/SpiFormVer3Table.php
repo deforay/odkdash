@@ -2181,8 +2181,22 @@ class SpiFormVer3Table extends AbstractTableGateway {
                $tQuery = $tQuery->where("spiv3.auditroundno='".$parameters['auditRndNo']."'");
             }
             if(isset($parameters['level']) && $parameters['level']!=''){
-              $sQuery = $sQuery->where("spiv3.level='".$parameters['level']."'");
-              $tQuery = $tQuery->where("spiv3.level='".$parameters['level']."'");
+              if($parameters['level'] == 0){
+                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+              }else if($parameters['level'] == 1){
+                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+              }else if($parameters['level'] == 2){
+                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+              }else if($parameters['level'] == 3){
+                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+              }else if($parameters['level'] == 4){
+                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+              }
             }
             if(isset($parameters['affiliation']) && $parameters['affiliation']!=''){
               $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");

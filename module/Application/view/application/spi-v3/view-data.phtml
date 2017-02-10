@@ -58,13 +58,11 @@ tr.shown td.details-control {
                                <div class=" col-lg-4">
                                <select class="form-control" id="level">
                                  <option value="">--Select--</option>
-                                 <option value="Region/Province/Zone">Region/Province/Zone</option>         
-                                 <option value="District">District</option>
-                                 <option value="Referral center">Referral center</option>
-                                 <option value="Health center">Health center</option>
-                                 <option value="Dispensary">Dispensary</option>
-                                 <option value="Health Post">Health Post</option>
-                                 <option value="Other">Other</option>
+                                 <option value="0">0</option>
+                                 <option value="1">1</option>
+                                 <option value="2">2</option>
+                                 <option value="3">3</option>
+                                 <option value="4">4</option>
                                  </select>
                                </div>
                                <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
@@ -144,8 +142,8 @@ tr.shown td.details-control {
                         </tr>
                     <?php } else if($source == 'apl180' || $source == 'apall' || $source == 'ap'){
                         $columns = 9;
-                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false},{"sClass":"center"}';
-                        $descColumn = 4;
+                        $aColumns = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false},{"sClass":"center"},{"sClass":"center"}';
+                        $descColumn = 3;
                         ?>
                         <tr>
                           <th style="width:10%;">Facility Id</th>
