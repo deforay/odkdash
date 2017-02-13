@@ -194,7 +194,8 @@ tr.shown td.details-control {
             </table>
         </div>
         <div class="spacer col-lg-12">
-            <button type="button" onclick="window.location.href='<?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>'" class="btn btn-space btn-primary">Export All Data</button>
+            <!--<button type="button" onclick="window.location.href='< ?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>'" class="btn btn-space btn-primary">Export All Data</button>-->
+            <button type="button" onclick="exportData();" class="btn btn-space btn-primary">Export All Data</button>
         </div>
         <br>
         <br>
@@ -329,6 +330,26 @@ tr.shown td.details-control {
        function(data) {
         $('.testPointNameSection').html(data);
         $.unblockUI();
+      });
+  }
+  function exportData(){
+     $.blockUI();
+     var dateRange = $('#date').val();
+     var auditRndNo = $('#auditRndNo').val();
+     var level = $('#level').val();
+     var affiliation = $('#affiliation').val();
+     var province = $('#province').val();
+     var scoreLevel = $('#scoreLevel').val();
+     var testPoint = $('#testPoint').val();
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,scoreLevel:scoreLevel,testPoint:testPoint},
+       function(data) {
+	    if(data == "" || data == null || data == undefined){
+		$.unblockUI();
+		alert('Unable to generate download');
+	    }else{
+		$.unblockUI();
+		document.location.href = '/temporary/'+data;
+	    }
       });
   }
 </script>

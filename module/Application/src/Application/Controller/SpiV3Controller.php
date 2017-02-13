@@ -40,13 +40,17 @@ class SpiV3Controller extends AbstractActionController
 
     public function exportAction()
     {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+        $params = $request->getPost();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->getAllSubmissions('DESC');
+        $allSubmissions = $odkFormService->exportAllSubmissions($params);
 
         $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
         $viewModel->setTerminal(true);
         return $viewModel;
+        }
     }
 
     public function approveStatusAction(){
