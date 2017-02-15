@@ -94,7 +94,7 @@ $sessionLogin = new Container('credo');
                   <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
                   <div class="col-xs-4" style="text-align:center;"><span class="title">No. of Audits</span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
-                </div>				
+                </div>
               </div>
             </div>
             <div class="col-md-4">
@@ -207,10 +207,11 @@ $sessionLogin = new Container('credo');
                   <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
 		      <div class="title row">
-			<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+			<div class="col-lg-7 col-sm-7 col-md-7 col-xs-7">
 			    <h3>Audit Performance</h3>
 			</div>
-			<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+			<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
+			    <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSpiderPDF()">PDF</a>
 			    <a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apspi')">View Data</a>
 			</div>
 		      </div>
@@ -1065,6 +1066,18 @@ function getAuditWorstDetails(){
          
       });
     }
+  }	  
+  function downloadSpiderPDF() {
+    value = $("#auditRndNo").val();
+      dateRange = $("#audiPerformanceDate").val();
+      $.post("<?php echo $this->url('spi-v3-form',array('action'=>'download-spider-chart')); ?>",{roundno:value,dateRange:dateRange},
+       function(data) {
+	 if(data == "" || data == null || data == undefined){
+		alert('Unable to generate download');
+	    }else{
+	      window.open('/temporary/'+data,'_blank');
+	    }
+      });
   }
 	  
 $(function () {
@@ -1098,11 +1111,9 @@ $(function () {
 	  $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0); 
 	  $labNameData[] = ("'Date : ".$this->humanDateFormat($row['assesmentofaudit'])."<br>' + ' ' + 'Facility Name : ".addslashes($row['facilityname'])." <br> Testing Point Name : ".addslashes($row['testingpointname'])."<br>'"); 
 	  $counter++;
-	  
 	}
-?>  
-  
-  
+?>
+
     $('#volumeChart').highcharts({
         chart: {
             zoomType: 'xy'

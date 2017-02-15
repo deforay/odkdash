@@ -22,6 +22,10 @@ defined('UPLOAD_PATH')
 defined('TEMP_UPLOAD_PATH')
     || define('TEMP_UPLOAD_PATH', realpath(dirname(__FILE__) . '/temporary'));
 
+defined('font_path')
+    || define('font_path', realpath(dirname(__FILE__) . '/assets/fonts/'));
+
+
 defined('BACKUP_PATH')
     || define('BACKUP_PATH', realpath(dirname(__FILE__) . '/../backup'));
     

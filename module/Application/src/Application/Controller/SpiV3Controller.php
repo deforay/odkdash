@@ -269,5 +269,35 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    public function downloadSpiderChartAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $commonService = $this->getServiceLocator()->get('CommonService');
+        if($this->getRequest()->isPost()){
+            $params=$this->getRequest()->getPost();
+            $result=$odkFormService->getAuditRoundWiseDataChart($params);
+            $configData = $commonService->getGlobalConfigDetails();
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result,'configData'=>$configData))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
+    public function exportAsPdfAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $commonService = $this->getServiceLocator()->get('CommonService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $param = $request->getPost();
+            $result = $odkFormService->getAllSubmissionsDetails($param);
+            $spiderResult = $odkFormService->getAuditRoundWiseDataChart($param);
+            $pieResult = $odkFormService->getPerformancePieChart($param);
+            $configData = $commonService->getGlobalConfigDetails();
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result,'configData'=>$configData,'argument'=>$param,'spiderResult'=>$spiderResult,'pieResult'=>$pieResult))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
 

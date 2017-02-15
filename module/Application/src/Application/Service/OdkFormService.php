@@ -6,6 +6,11 @@ use Zend\Session\Container;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use PHPExcel;
+use pData;
+use pDraw;
+use pRadar;
+use pImage;
+use pPie;
 
 class OdkFormService {
 
@@ -271,7 +276,6 @@ class OdkFormService {
             $sheet->setCellValue('N'.$rCount, html_entity_decode($outputScore['levelFourCount']." ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
             $sheet->getStyle('M'.$rCount.':N'.$rCount)->getFont()->setBold(TRUE)->setSize(13);
             
-	    
             $writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
             $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.csv';
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
@@ -316,6 +320,111 @@ class OdkFormService {
     public function getAuditRoundWiseData($params) {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getAuditRoundWiseData($params);
+    }
+    //download pie chart
+    public function getPerformancePieChart($params) {
+        $db = $this->sm->get('SpiFormVer3Table');
+        $result = $db->getPerformance($params);
+        $MyData = new pData();
+        
+        if(count($result)>0){
+            foreach($result as $key=>$data){
+                $MyData->addPoints(array($data['level0'],$data['level1'],$data['level2'],$data['level3'],$data['level4']),"Level".$key);
+                $MyData->setSerieDescription("Level".$key);
+                $rgbColor = array();
+                //Create a loop.
+                foreach(array('r', 'g', 'b') as $color){
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Level".$key,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
+            }
+        }
+        
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Level 0 (Below 40)","Level 1 (40-59)","Level 2 (60-79)","Level 3 (80-89)","Level 4 (90 and above)"),"Labels");
+        $MyData->setAbscissa("Labels");
+       
+        /* Create the pChart object */
+        $myPicture = new pImage(230,510,$MyData);
+        $myPicture->drawRectangle(0,0,220,500,array("R"=>0,"G"=>0,"B"=>0));
+        $path = font_path . DIRECTORY_SEPARATOR;
+        
+        /* Set the default font properties */ 
+        $myPicture->setFontProperties(array("FontName"=>$path."/Forgotte.ttf","FontSize"=>13,"R"=>80,"G"=>80,"B"=>80));
+       
+        /* Enable shadow computing */ 
+        $myPicture->setShadow(TRUE,array("X"=>0,"Y"=>0,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>0));
+       
+        $PieChart = new pPie($myPicture,$MyData);
+        $PieChart->draw2DPie(105,150,array("Radius"=>95,"Border"=>TRUE));
+        $PieChart->drawPieLegend(40,300);
+        $fileName =  'piechart.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart.png");
+        return $fileName;
+    }
+    
+    //download spider chart pdf
+    public function getAuditRoundWiseDataChart($params)
+    {
+        $db = $this->sm->get('SpiFormVer3Table');
+        $result = $db->getAuditRoundWiseData($params);
+        $MyData = new pData();
+        /* Create and populate the pData object */
+        $filename = '';
+        if(count($result)>0){
+            foreach ($result as $auditNo => $adata){
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->setSerieDescription("Score".$auditNo,"Application ".$auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach(array('r', 'g', 'b') as $color){
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Score".$auditNo,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
+            }
+            /* Define the absissa serie */
+            $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"),"Label");
+            $MyData->setAbscissa("Label");
+
+            /* Create the pChart object */
+            $myPicture = new pImage(450,480,$MyData);
+            //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
+            //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
+            //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
+            //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
+           
+            /* Add a border to the picture */
+            $myPicture->drawRectangle(0,0,398,478,array("R"=>0,"G"=>0,"B"=>0));
+           
+            $path = font_path . DIRECTORY_SEPARATOR;
+            /* Write the picture title */ 
+            //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
+            //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
+           
+            /* Set the default font properties */ 
+            $myPicture->setFontProperties(array("FontName"=>$path."/Forgotte.ttf","FontSize"=>15,"R"=>80,"G"=>80,"B"=>80));
+           
+            /* Enable shadow computing */ 
+            $myPicture->setShadow(TRUE,array("X"=>1,"Y"=>1,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>10));
+           
+            /* Create the pRadar object */ 
+            $SplitChart = new pRadar();
+            /* Draw a radar chart */ 
+            $myPicture->setGraphArea(15,15,370,370);
+            $Options = array("Layout"=>RADAR_LAYOUT_STAR,"BackgroundGradient"=>array("StartR"=>510,"StartG"=>510,"StartB"=>510,"StartAlpha"=>10,"EndR"=>414,"EndG"=>454,"EndB"=>250,"EndAlpha"=>10), "FontName"=>$path."/pf_arma_five.ttf","FontSize"=>15);
+            $SplitChart->drawRadar($myPicture,$MyData,$Options);
+           
+            /* Write the chart legend */
+            $myPicture->setFontProperties(array("FontName"=>$path."/pf_arma_five.ttf","FontSize"=>7));
+            $myPicture->drawLegend(230,370,array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL));
+           
+            /* Render the picture (choose the best way) */
+            $fileName =  'radar.png';
+            $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar.png");
+            return $fileName;
+        }
     }
     
     public function getFormData($id) {

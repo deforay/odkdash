@@ -61,7 +61,7 @@ tr.shown td.details-control {
                         <option value="Region/Province/Zone">Region/Province/Zone</option>         
                         <option value="District">District</option>
                         <option value="Referral center">Referral center</option>
-                        <option value="Health center">Health center</option>
+                        <option value="HealthCenter">Health center</option>
                         <option value="Dispensary">Dispensary</option>
                         <option value="Health Post">Health Post</option>
                         <option value="Other">Other</option>
@@ -196,6 +196,7 @@ tr.shown td.details-control {
         <div class="spacer col-lg-12">
             <!--<button type="button" onclick="window.location.href='< ?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>'" class="btn btn-space btn-primary">Export All Data</button>-->
             <button type="button" onclick="exportData();" class="btn btn-space btn-primary">Export All Data</button>
+            &nbsp;&nbsp;<button type="button" onclick="exportPDFData();" class="btn btn-space btn-primary">Export as PDF</button>
         </div>
         <br>
         <br>
@@ -249,7 +250,7 @@ tr.shown td.details-control {
          "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>",
          "fnServerData": function ( sSource, aoData, fnCallback ) {
           aoData.push( { "name":"auditRndNo","value": $("#auditRndNo").val()} );
-          aoData.push( { "name":"date","value": $("#date").val()} );
+          aoData.push( { "name":"dateRange","value": $("#date").val()} );
           aoData.push( { "name":"testPoint","value": $("#testPoint").val()} );
           aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
           aoData.push( { "name":"level","value": $("#level").val()} );
@@ -349,6 +350,26 @@ tr.shown td.details-control {
 	    }else{
 		$.unblockUI();
 		document.location.href = '/temporary/'+data;
+	    }
+      });
+  }
+  function exportPDFData(){
+     $.blockUI();
+     var dateRange = $('#date').val();
+     var auditRndNo = $('#auditRndNo').val();
+     var level = $('#level').val();
+     var affiliation = $('#affiliation').val();
+     var province = $('#province').val();
+     var scoreLevel = $('#scoreLevel').val();
+     var testPoint = $('#testPoint').val();
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'export-as-pdf')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,scoreLevel:scoreLevel,testPoint:testPoint},
+       function(data) {
+	    if(data == "" || data == null || data == undefined){
+		$.unblockUI();
+		alert('Unable to generate download');
+	    }else{
+		$.unblockUI();
+		window.open('/temporary/'+data,'_blank');
 	    }
       });
   }

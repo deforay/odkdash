@@ -4,6 +4,11 @@
 
 require_once __DIR__ . '/composer' . '/autoload_real.php';
 require_once __DIR__ . '/tcpdf' . '/tcpdf.php';
+require_once __DIR__ . '/pChart' . '/pData.class.php';
+require_once __DIR__ . '/pChart' . '/pDraw.class.php';
+require_once __DIR__ . '/pChart' . '/pRadar.class.php';
+require_once __DIR__ . '/pChart' . '/pImage.class.php';
+require_once __DIR__ . '/pChart' . '/pPie.class.php';
 require_once __DIR__ . '/phpoffice/phpexcel/Classes/PHPExcel' . '/IOFactory.php';
 
 return ComposerAutoloaderInit36df57b44d1c7166612f7e6191ecbebe::getLoader();

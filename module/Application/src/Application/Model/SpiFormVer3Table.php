@@ -354,6 +354,52 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if(isset($params['roundno']) && $params['roundno']!=''){
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
+        $start_date = '';
+        $end_date = '';
+        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+            $dateField = explode(" ", $params['dateRange']);
+            if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                $start_date = $this->dateFormat($dateField[0]);                
+            }
+            if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                $end_date = $this->dateFormat($dateField[2]);
+            }
+        }
+        if (trim($start_date) != "" && trim($end_date) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
+        }
+        
+        if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
+            $tQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+                 if(trim($params['testPoint'])!= 'other'){
+                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
+                 }else{
+                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
+                 }
+            }
+            } if(isset($params['level']) && $params['level']!=''){
+               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+            }
+            if(isset($params['affiliation']) && $params['affiliation']!=''){
+               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+            }
+            if(isset($params['province']) && trim($params['province'])!=''){
+               $sQuery = $sQuery->where("spiv3.level_name='".$params['province']."'");
+            }
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+                if($params['scoreLevel'] == 0){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+                }else if($params['scoreLevel'] == 1){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+                }else if($params['scoreLevel'] == 2){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+                }else if($params['scoreLevel'] == 3){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+                }else if($params['scoreLevel'] == 4){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+                }
+            }
         
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
@@ -564,8 +610,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $start_date = "";
         $end_date = "";
-        if (isset($parameters['date']) && ($parameters['date'] != "")) {
-            $dateField = explode(" ", $parameters['date']);
+        if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
+            $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
                 $start_date = $this->dateFormat($dateField[0]);                
@@ -986,6 +1032,42 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
         }
+        if($params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['auditRndNo']."'");
+        }
+        
+        if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
+            $tQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+                 if(trim($params['testPoint'])!= 'other'){
+                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
+                 }else{
+                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
+                 }
+            }
+            } if(isset($params['level']) && $params['level']!=''){
+               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+            }
+            if(isset($params['affiliation']) && $params['affiliation']!=''){
+               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+            }
+            if(trim($params['province']) && $params['province']!=''){
+               $sQuery = $sQuery->where("spiv3.level_name='".$params['province']."'");
+            }
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+                if($params['scoreLevel'] == 0){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+                }else if($params['scoreLevel'] == 1){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+                }else if($params['scoreLevel'] == 2){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+                }else if($params['scoreLevel'] == 3){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+                }else if($params['scoreLevel'] == 4){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+                }
+            }
+        
         
         if(isset($params['fieldName']) && trim($params['fieldName'])!=''){
             $sQuery = $sQuery->where(array($params['fieldName']=>$params['val']));
