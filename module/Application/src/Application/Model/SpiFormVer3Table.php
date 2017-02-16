@@ -1087,7 +1087,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $response[$row['auditroundno']]['EQA_SCORE'][]=  $row['EQA_SCORE'];
         }
         
-        
         $auditRoundWiseData = array();
         
         foreach($response as $auditNo => $auditScores){
@@ -1099,7 +1098,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $auditRoundWiseData[$auditNo]['POST_SCORE'] = array_sum($auditScores['POST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['EQA_SCORE'] = array_sum($auditScores['EQA_SCORE']) / count($auditScores['PERSONAL_SCORE']);
         }
-        
         $response = array('');
         return $auditRoundWiseData;
      

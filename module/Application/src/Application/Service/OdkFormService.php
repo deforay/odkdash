@@ -375,7 +375,7 @@ class OdkFormService {
         if(count($result)>0){
             foreach ($result as $auditNo => $adata){
                 $MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
-                $MyData->setSerieDescription("Score".$auditNo,"Application ".$auditNo);
+                $MyData->setSerieDescription("Score".$auditNo,$auditNo);
                 $rgbColor = array();
                 //Create a loop.
                 foreach(array('r', 'g', 'b') as $color){
@@ -384,6 +384,7 @@ class OdkFormService {
                 }
                 $MyData->setPalette("Score".$auditNo,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
             }
+        }
             /* Define the absissa serie */
             $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"),"Label");
             $MyData->setAbscissa("Label");
@@ -424,7 +425,6 @@ class OdkFormService {
             $fileName =  'radar.png';
             $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar.png");
             return $fileName;
-        }
     }
     
     public function getFormData($id) {
