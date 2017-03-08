@@ -85,6 +85,20 @@ tr.shown td.details-control {
                              <div class="form-group">
                                <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
                                <div class=" col-lg-4">
+                               <?php
+                               if($level!=''){
+                                ?>
+                                <select class="form-control" id="scoreLevel">
+                                 <option value="">All</option>
+                                 <option value="0" <?php echo($level == 'level0')?'selected="selected"':''; ?>>0</option>
+                                 <option value="1" <?php echo($level == 'level1')?'selected="selected"':''; ?>>1</option>
+                                 <option value="2" <?php echo($level == 'level2')?'selected="selected"':''; ?>>2</option>
+                                 <option value="3" <?php echo($level == 'level3')?'selected="selected"':''; ?>>3</option>
+                                 <option value="4" <?php echo($level == 'level4')?'selected="selected"':''; ?>>4</option>
+                                 </select>
+                                <?php
+                               }else{
+                               ?>
                                <select class="form-control" id="scoreLevel">
                                  <option value="">All</option>
                                  <option value="0">0</option>
@@ -93,6 +107,7 @@ tr.shown td.details-control {
                                  <option value="3">3</option>
                                  <option value="4">4</option>
                                  </select>
+                               <?php } ?>
                                </div>
                                <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
                                <div class=" col-lg-4">

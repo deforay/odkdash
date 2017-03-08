@@ -240,8 +240,12 @@ class SpiV3Controller extends AbstractActionController
         $source = '';
         $roundno = '';
         $drange = '';
+        $level = '';
         if($this->params()->fromQuery('source')){
           $source = $this->params()->fromQuery('source');
+        }
+        if($this->params()->fromQuery('level')){
+          $level = $this->params()->fromQuery('level');
         }
         if($this->params()->fromQuery('roundno')){
           $roundno = $this->params()->fromQuery('roundno');
@@ -254,6 +258,7 @@ class SpiV3Controller extends AbstractActionController
             'source' => $source,
             'roundno' => $roundno,
             'drange' => $drange,
+            'level'=>$level,
             'testingPointResult' => $testingPointResult
         ));
     }

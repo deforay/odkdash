@@ -54,31 +54,36 @@ if($perflast30[0]['totalDataPoints']>0){
 		  y: <?php echo $perflast30[0]['level0']; ?>,
 		  color: color1,
 		  name: "Level 0 (Below 40)",
-		  number:"No.Of Audits <?php echo $perflast30[0]['level0']; ?>"
+		  number:"No.Of Audits <?php echo $perflast30[0]['level0']; ?>",
+		  url:'/view-data?source=ap&level=level0&drange='+$("#spiRTv3").val()
 	  },
 		 {
 		  y: <?php echo $perflast30[0]['level1']; ?>,
 		  color: color2,
 		  name: "Level 1 (40-59)",
-		  number:"No.Of Audits <?php echo $perflast30[0]['level1']; ?>"
+		  number:"No.Of Audits <?php echo $perflast30[0]['level1']; ?>",
+		  url:'/view-data?source=ap&level=level1&drange='+$("#spiRTv3").val()
 	  },
 		 {
 		  y: <?php echo $perflast30[0]['level2']; ?>,
 		  color: color3,
 		  name: "Level 2 (60-79)",
-		  number:"No.Of Audits <?php echo $perflast30[0]['level2']; ?>"
+		  number:"No.Of Audits <?php echo $perflast30[0]['level2']; ?>",
+		  url:'/view-data?source=ap&level=level2&drange='+$("#spiRTv3").val()
 	  },
 		 {
 		  y: <?php echo $perflast30[0]['level3']; ?>,
 		  color: color4,
 		  name: "Level 3 (80-89)",
-		  number:"No.Of Audits <?php echo $perflast30[0]['level3']; ?>"
+		  number:"No.Of Audits <?php echo $perflast30[0]['level3']; ?>",
+		  url:'/view-data?source=ap&level=level3&drange='+$("#spiRTv3").val()
 	  },
 		 {
 		  y: <?php echo $perflast30[0]['level4']; ?>,
 		  color: color5,
 		  name: "Level 4 (90 and above)",
-		  number:"No.Of Audits <?php echo $perflast30[0]['level4']; ?>"
+		  number:"No.Of Audits <?php echo $perflast30[0]['level4']; ?>",
+		  url:'/view-data?source=ap&level=level4&drange='+$("#spiRTv3").val()
 	  },
 	  
 	  
@@ -113,6 +118,14 @@ if($perflast30[0]['totalDataPoints']>0){
             series: [{
                 name: 'Audit Performance',
                 colorByPoint: true,
+		point: {
+		events: {
+                     click: function(e) {
+                        window.open(e.point.url, '_blank');
+                        e.preventDefault();
+                     }
+		  }
+		},
                 data: data
             }]
         });  
