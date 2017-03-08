@@ -1365,7 +1365,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
             }
         }if($parameters['level']!=''){
          $sQuery = $sQuery->where("spiv3.level='".$parameters['level']."'");
-        } if($parameters['affiliation']!=''){
+        }
+        if(trim($parameters['province'])!=''){
+           $sQuery = $sQuery->where("spiv3.level_name='".$parameters['province']."'");
+        }
+        if($parameters['affiliation']!=''){
          $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
         }if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
@@ -2340,7 +2344,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
             if(isset($parameters['level']) && $parameters['level']!=''){
                $sQuery = $sQuery->where("spiv3.level='".$parameters['level']."'");
                $tQuery = $tQuery->where("spiv3.level='".$parameters['level']."'");
-            } 
+            }
+            if(trim($parameters['province'])!=''){
+               $sQuery = $sQuery->where("spiv3.level_name='".$parameters['province']."'");
+               $tQuery = $tQuery->where("spiv3.level_name='".$parameters['province']."'");
+            }
             if(isset($parameters['affiliation']) && $parameters['affiliation']!=''){
               $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
               $tQuery = $tQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");

@@ -28,9 +28,11 @@ class SpiV3ReportsController extends AbstractActionController
         //$allSubmissions = $odkFormService->getAllApprovedSubmissions();        
         //$rawSubmissions = $odkFormService->getAllSubmissions();
         $pendingCount = $odkFormService->getSpiV3PendingCount();
+        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
         //$spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
         //
-        return new ViewModel(array('pendingCount' => $pendingCount,'spiV3auditRoundNo'=>$spiV3auditRoundNo));
+        return new ViewModel(array('pendingCount' => $pendingCount,'spiV3auditRoundNo'=>$spiV3auditRoundNo,
+            'levelNamesResult'=>$levelNamesResult));
     }
     
     public function exportFacilityReportAction()

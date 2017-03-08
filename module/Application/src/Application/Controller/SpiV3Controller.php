@@ -254,12 +254,14 @@ class SpiV3Controller extends AbstractActionController
           $drange = $this->params()->fromQuery('drange');
         }
         $testingPointResult=$odkFormService->getAllTestingPointType();
+        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
         return new ViewModel(array(
             'source' => $source,
             'roundno' => $roundno,
             'drange' => $drange,
             'level'=>$level,
-            'testingPointResult' => $testingPointResult
+            'testingPointResult' => $testingPointResult,
+            'levelNamesResult'=>$levelNamesResult
         ));
     }
     
