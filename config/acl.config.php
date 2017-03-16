@@ -117,7 +117,7 @@ return array(
             'audit-locations' => 'deny',
         ),
         'Application\\Controller\\Config' => array(
-            'index' => 'deny',
+            'index' => 'allow',
             'edit-global' => 'deny',
         ),
         'Application\\Controller\\Index' => array(
@@ -128,21 +128,21 @@ return array(
             'audi-details' => 'deny',
         ),
         'Application\\Controller\\Email' => array(
-            'index' => 'deny',
+            'index' => 'allow',
         ),
         'Application\\Controller\\Facility' => array(
-            'index' => 'deny',
+            'index' => 'allow',
             'add' => 'deny',
             'edit' => 'deny',
             'get-facility-name' => 'deny',
         ),
         'Application\\Controller\\Roles' => array(
-            'index' => 'deny',
+            'index' => 'allow',
             'add' => 'deny',
             'edit' => 'deny',
         ),
         'Application\\Controller\\SpiV3' => array(
-            'index' => 'deny',
+            'index' => 'allow',
             'approve-status' => 'deny',
             'corrective-action-pdf' => 'deny',
             'delete' => 'deny',
@@ -151,12 +151,12 @@ return array(
             'download-pdf' => 'deny',
         ),
         'Application\\Controller\\Users' => array(
-            'index' => 'deny',
+            'index' => 'allow',
             'add' => 'deny',
             'edit' => 'deny',
         ),
         'Application\\Controller\\SpiV3Reports' => array(
-            'facility-report' => 'deny',
+            'facility-report' => 'allow',
         ),
     ),
     'DE' => array(

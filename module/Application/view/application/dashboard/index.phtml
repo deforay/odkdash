@@ -379,7 +379,7 @@ $sessionLogin = new Container('credo');
 						  <th style="width:10%;">Received Date</th>
 						  <th>Testing Point</th>
 						  <th style="width:8%;">Status</th>
-						  <?php if($update || $approve) { ?>
+						  <?php if($update || $approve || $email) { ?>
 						  <th>Actions</th>
 						  <?php  } ?>
 						</tr>
@@ -1098,7 +1098,7 @@ function getAuditWorstDetails(){
 		//zeroCountsBarChart();
 		getAuditWorstDetails();
 		
-		getAuditLocationDetails();
+		//getAuditLocationDetails();
 
 		
 		
