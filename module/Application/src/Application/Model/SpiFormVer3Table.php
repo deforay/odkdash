@@ -827,14 +827,22 @@ class SpiFormVer3Table extends AbstractTableGateway {
          $row[] = $aRow['TEST_SCORE'];
          $row[] = $aRow['POST_SCORE'];
          $row[] = $aRow['EQA_SCORE'];
+         $t = $aRow['PERSONAL_SCORE'] + $aRow['PHYSICAL_SCORE'] +$aRow['SAFETY_SCORE'] + $aRow['PRETEST_SCORE'] + $aRow['TEST_SCORE'] + $aRow['POST_SCORE'] + $aRow['EQA_SCORE'];
+         $row[] = $t."(".round($aRow['AUDIT_SCORE_PERCANTAGE'],2).")";
          $output['aaData'][] = $row;
         }
+        //get earliest date
+        $eQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
+        $eQueryStr = $sql->getSqlStringForSqlObject($eQuery); // Get the string of the Sql, instead of the Select-instance
+        $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore/count($rResult),2) : 0;
         $output['levelZeroCount'] = count($levelZero);
         $output['levelOneCount'] = count($levelOne);
         $output['levelTwoCount'] = count($levelTwo);
         $output['levelThreeCount'] = count($levelThree);
         $output['levelFourCount'] = count($levelFour);
+        $output['eDate'] = $eResult['assesmentofaudit'];
         return $output;
     }
     

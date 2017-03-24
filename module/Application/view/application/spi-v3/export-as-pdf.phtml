@@ -1,4 +1,5 @@
 <?php
+$common = new \Application\Service\CommonService();
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
 
@@ -79,6 +80,7 @@ $pdf->SetFont('times', '', 10);
 $pdf->AddPage('L');
 
 if($argument['dateRange']==''){
+   $argument['dateRange'] = $common->humanDateFormat($result['eDate'])." - " .date('d-M-Y');
 }if($argument['auditRndNo']==''){
     $argument['auditRndNo'] = "All";
 }if($argument['level']==''){
@@ -93,10 +95,11 @@ if($argument['dateRange']==''){
     $argument['testPoint'] = "All";
 }
 $filter = '';
-$filter.= "<tr><td><b>Date Range </b></td><td>&nbsp;&nbsp;".$argument['dateRange']."</td><td><b>Audit Round No. </b></td><td>&nbsp;&nbsp;".$argument['auditRndNo']."</td><td><b>Level </b></td><td>&nbsp;&nbsp;".$argument['level']."</td><td><b>Affiliation </b></td><td>&nbsp;&nbsp;".$argument['affiliation']."</td></tr>";
-$filter.= "<tr><td><b>Province </b></td><td>&nbsp;&nbsp;".implode(',',$argument['province'])."</td><td><b>Score Level </b></td><td>&nbsp;&nbsp;".$argument['scoreLevel']."</td><td><b>Type Of Testing Point </b></td><td>&nbsp;&nbsp;".$argument['testPoint']."</td></tr>";
+$filter.= "<tr><td><b>Date Range </b>: ".$argument['dateRange']."</td><td><b>Audit Round No. </b>: ".$argument['auditRndNo']."</td><td><b>Level </b>: ".$argument['level']."</td></tr>";
+$filter.= "<tr><td><b>Affiliation </b>: ".$argument['affiliation']."</td><td><b>Province </b>: ".implode(',',$argument['province'])."</td><td><b>Score Level </b>: ".$argument['scoreLevel']."</td></tr>";
+$filter .="<tr><td><b>Type Of Testing Point </b>: ".$argument['testPoint']."</td></tr>";
 $partA = '';
-$partA.='<table border="1" style="line-height:22px;width:97%;" >'.$filter.'</table>';
+$partA.='<table border="1" cellspacing="0" cellpadding="5" style="width:97%;" >'.$filter.'</table>';
 $pdf->writeHTML($partA, true, 0, true, 0);
 $h = $pdf->getY();
 
@@ -123,11 +126,11 @@ $pdf->writeHTML($pdfContent,true,0,true,0);
 
 $testingResult='<table border="1" BORDERCOLOR=RED cellspacing="0" cellpadding="5" >';
     $testingResult.='<tr style="background-color:#3598DC;color:#fff;text-align:center">';
-        $testingResult.='<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Audit Score %</b></th><th><b>Personnel Training & Certification</b></th><th><b>Physical</b></th><th><b>Safety</b></th><th><b>Pre-Testing</b></th><th><b>Testing</b></th><th><b>Post-Testing</b></th><th><b>External QA</b></th>';
+        $testingResult.='<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Personnel Training & Certification</b></th><th><b>Physical</b></th><th><b>Safety</b></th><th><b>Pre-Testing</b></th><th><b>Testing</b></th><th><b>Post-Testing</b></th><th><b>External QA</b></th><th><b>Total(%)</b></th>';
     $testingResult.='</tr>';
     foreach($result['aaData'] as $aRow){
         $testingResult.='<tr style="border:1px solid #dddddd;">';
-            $testingResult.='<td>'.$aRow[1].'</td><td>'.$aRow[2].'</td><td>'.$aRow[3].'</td><td>'.$aRow[4].'</td><td>'.$aRow[5].'</td><td>'.$aRow[6].'</td><td>'.$aRow[7].'</td><td>'.$aRow[8].'</td><td>'.$aRow[11].'</td><td>'.$aRow[12].'</td><td>'.$aRow[13].'</td><td>'.$aRow[14].'</td><td>'.$aRow[15].'</td><td>'.$aRow[16].'</td><td>'.$aRow[17].'</td>';
+            $testingResult.='<td>'.$aRow[1].'</td><td>'.$aRow[2].'</td><td>'.$aRow[3].'</td><td>'.$aRow[4].'</td><td>'.$aRow[5].'</td><td>'.$aRow[6].'</td><td>'.$aRow[7].'</td><td>'.$aRow[11].'</td><td>'.$aRow[12].'</td><td>'.$aRow[13].'</td><td>'.$aRow[14].'</td><td>'.$aRow[15].'</td><td>'.$aRow[16].'</td><td>'.$aRow[17].'</td><td>'.$aRow[18].'</td>';
         $testingResult.='</tr>';
     }
 $testingResult.='</table>';
