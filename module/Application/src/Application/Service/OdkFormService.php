@@ -92,7 +92,7 @@ class OdkFormService {
                 $affiliation = "Affiliation : ".$params['affiliation'];
             }
             if (isset($params['province']) && ($params['province'] != "")) {
-                $province = "Province/District : ". $params['province'];
+                $province = "Province/District(s) : ". implode(',',$params['province']);
             }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : ". $params['scoreLevel'];
