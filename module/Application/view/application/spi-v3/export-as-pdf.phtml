@@ -75,7 +75,7 @@ if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
 $pdf->SetFont('times', '', 10);
 
 // add a page
-$pdf->AddPage();
+$pdf->AddPage('L');
 
 $pdfContent = '';
 $pdfContent .= '<br/><table style="background-color:#fff;margin-bottom:20px;width:100%;">';
@@ -113,11 +113,11 @@ $pdf->writeHTML($partA, true, 0, true, 0);
 
 $testingResult='<table border="1" BORDERCOLOR=RED cellspacing="0" cellpadding="5" >';
     $testingResult.='<tr style="background-color:#3598DC;color:#fff;">';
-        $testingResult.='<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Audit Score %</b></th><th><b>Status</b></th>';
+        $testingResult.='<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Audit Score %</b></th><th><b>Status</b></th><th><b>Personnel Training & Certification</b></th><th><b>Physical</b></th><th><b>Safety</b></th><th><b>Pre-Testing</b></th><th><b>Testing</b></th><th><b>Post-Testing</b></th><th><b>External QA</b></th>';
     $testingResult.='</tr>';
     foreach($result['aaData'] as $aRow){
         $testingResult.='<tr style="border:1px solid #dddddd;">';
-            $testingResult.='<td>'.$aRow[1].'</td><td>'.$aRow[2].'</td><td>'.$aRow[3].'</td><td>'.$aRow[4].'</td><td>'.$aRow[5].'</td><td>'.$aRow[6].'</td><td>'.$aRow[7].'</td><td>'.$aRow[8].'</td><td>'.$aRow[9].'</td>';
+            $testingResult.='<td>'.$aRow[1].'</td><td>'.$aRow[2].'</td><td>'.$aRow[3].'</td><td>'.$aRow[4].'</td><td>'.$aRow[5].'</td><td>'.$aRow[6].'</td><td>'.$aRow[7].'</td><td>'.$aRow[8].'</td><td>'.$aRow[9].'</td><td>'.$aRow[11].'</td><td>'.$aRow[12].'</td><td>'.$aRow[13].'</td><td>'.$aRow[14].'</td><td>'.$aRow[15].'</td><td>'.$aRow[16].'</td><td>'.$aRow[17].'</td>';
         $testingResult.='</tr>';
     }
 $testingResult.='</table>';
@@ -148,7 +148,6 @@ $testingResultAvg .= '<table style="background-color:#fff;margin-bottom:20px;fon
         $testingResultAvg .= '<td style="padding-left:0%;width:25%;"><strong>Level 4 (90 and above):&nbsp;</strong>'.$result['levelFourCount'].'</td>';
     $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
-
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
 
 $fileName = "SPI-V3.pdf";

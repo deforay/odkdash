@@ -374,15 +374,16 @@ class OdkFormService {
         $filename = '';
         if(count($result)>0){
             foreach ($result as $auditNo => $adata){
-                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
-                $MyData->setSerieDescription("Score".$auditNo,$auditNo);
+                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)));
+                //$MyData->setSerieDescription("Score".$auditNo,$auditNo);
                 $rgbColor = array();
                 //Create a loop.
                 foreach(array('r', 'g', 'b') as $color){
                     //Generate a random number between 0 and 255.
                     $rgbColor[$color] = mt_rand(0, 255);
                 }
-                $MyData->setPalette("Score".$auditNo,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
+                //$MyData->setPalette("Score".$auditNo,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
             }
         }
             /* Define the absissa serie */

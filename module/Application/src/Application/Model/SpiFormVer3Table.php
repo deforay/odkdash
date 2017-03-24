@@ -805,6 +805,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
          //$pending = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
          $row[] = $approve." ".$downloadPdf;
+         $row[] = $aRow['PERSONAL_SCORE'];
+         $row[] = $aRow['PHYSICAL_SCORE'];
+         $row[] = $aRow['SAFETY_SCORE'];
+         $row[] = $aRow['PRETEST_SCORE'];
+         $row[] = $aRow['TEST_SCORE'];
+         $row[] = $aRow['POST_SCORE'];
+         $row[] = $aRow['EQA_SCORE'];
          $output['aaData'][] = $row;
         }
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore/count($rResult),2) : 0;
@@ -1075,20 +1082,27 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
+        
         $response = array();
         
         foreach($rResult as $row){
-            $response[$row['auditroundno']]['PERSONAL_SCORE'][]=  $row['PERSONAL_SCORE'];
-            $response[$row['auditroundno']]['PHYSICAL_SCORE'][]=  $row['PHYSICAL_SCORE'];
-            $response[$row['auditroundno']]['SAFETY_SCORE'][]=  $row['SAFETY_SCORE'];
-            $response[$row['auditroundno']]['PRETEST_SCORE'][]=  $row['PRETEST_SCORE'];
-            $response[$row['auditroundno']]['TEST_SCORE'][]=  $row['TEST_SCORE'];
-            $response[$row['auditroundno']]['POST_SCORE'][]=  $row['POST_SCORE'];
-            $response[$row['auditroundno']]['EQA_SCORE'][]=  $row['EQA_SCORE'];
+            //$response[$row['auditroundno']]['PERSONAL_SCORE'][]=  $row['PERSONAL_SCORE'];
+            //$response[$row['auditroundno']]['PHYSICAL_SCORE'][]=  $row['PHYSICAL_SCORE'];
+            //$response[$row['auditroundno']]['SAFETY_SCORE'][]=  $row['SAFETY_SCORE'];
+            //$response[$row['auditroundno']]['PRETEST_SCORE'][]=  $row['PRETEST_SCORE'];
+            //$response[$row['auditroundno']]['TEST_SCORE'][]=  $row['TEST_SCORE'];
+            //$response[$row['auditroundno']]['POST_SCORE'][]=  $row['POST_SCORE'];
+            //$response[$row['auditroundno']]['EQA_SCORE'][]=  $row['EQA_SCORE'];
+            $response[0]['PERSONAL_SCORE'][]=  $row['PERSONAL_SCORE'];
+            $response[0]['PHYSICAL_SCORE'][]=  $row['PHYSICAL_SCORE'];
+            $response[0]['SAFETY_SCORE'][]=  $row['SAFETY_SCORE'];
+            $response[0]['PRETEST_SCORE'][]=  $row['PRETEST_SCORE'];
+            $response[0]['TEST_SCORE'][]=  $row['TEST_SCORE'];
+            $response[0]['POST_SCORE'][]=  $row['POST_SCORE'];
+            $response[0]['EQA_SCORE'][]=  $row['EQA_SCORE'];
         }
         
         $auditRoundWiseData = array();
-        
         foreach($response as $auditNo => $auditScores){
             $auditRoundWiseData[$auditNo]['PERSONAL_SCORE'] = array_sum($auditScores['PERSONAL_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['PHYSICAL_SCORE'] = array_sum($auditScores['PHYSICAL_SCORE']) / count($auditScores['PERSONAL_SCORE']);
@@ -1097,6 +1111,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $auditRoundWiseData[$auditNo]['TEST_SCORE'] = array_sum($auditScores['TEST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['POST_SCORE'] = array_sum($auditScores['POST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['EQA_SCORE'] = array_sum($auditScores['EQA_SCORE']) / count($auditScores['PERSONAL_SCORE']);
+            
         }
         $response = array('');
         return $auditRoundWiseData;
