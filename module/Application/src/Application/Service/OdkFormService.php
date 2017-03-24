@@ -346,8 +346,8 @@ class OdkFormService {
         $MyData->setAbscissa("Labels");
        
         /* Create the pChart object */
-        $myPicture = new pImage(230,510,$MyData);
-        $myPicture->drawRectangle(0,0,220,500,array("R"=>0,"G"=>0,"B"=>0));
+        $myPicture = new pImage(400,510,$MyData);
+        $myPicture->drawRectangle(0,0,390,480,array("R"=>0,"G"=>0,"B"=>0));
         $path = font_path . DIRECTORY_SEPARATOR;
         
         /* Set the default font properties */ 
@@ -357,8 +357,8 @@ class OdkFormService {
         $myPicture->setShadow(TRUE,array("X"=>0,"Y"=>0,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>0));
        
         $PieChart = new pPie($myPicture,$MyData);
-        $PieChart->draw2DPie(105,150,array("Radius"=>95,"Border"=>TRUE));
-        $PieChart->drawPieLegend(40,300);
+        $PieChart->draw2DPie(195,195,array("Radius"=>190,"Border"=>TRUE));
+        $PieChart->drawPieLegend(5,390);
         $fileName =  'piechart.png';
         $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart.png");
         return $fileName;
@@ -375,15 +375,15 @@ class OdkFormService {
         if(count($result)>0){
             foreach ($result as $auditNo => $adata){
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
-                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)));
-                //$MyData->setSerieDescription("Score".$auditNo,$auditNo);
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Audit Performance");
+                $MyData->setSerieDescription("Audit Performance".$auditNo,$auditNo);
                 $rgbColor = array();
                 //Create a loop.
                 foreach(array('r', 'g', 'b') as $color){
                     //Generate a random number between 0 and 255.
                     $rgbColor[$color] = mt_rand(0, 255);
                 }
-                //$MyData->setPalette("Score".$auditNo,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
+                $MyData->setPalette("Audit Performance".$auditNo,array("R"=>$rgbColor['r'],"G"=>$rgbColor['g'],"B"=>$rgbColor['b']));
             }
         }
             /* Define the absissa serie */
@@ -391,14 +391,14 @@ class OdkFormService {
             $MyData->setAbscissa("Label");
 
             /* Create the pChart object */
-            $myPicture = new pImage(450,480,$MyData);
+            $myPicture = new pImage(600,690,$MyData);
             //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
             //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
             //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
             //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
            
             /* Add a border to the picture */
-            $myPicture->drawRectangle(0,0,398,478,array("R"=>0,"G"=>0,"B"=>0));
+            $myPicture->drawRectangle(0,0,599,678,array("R"=>0,"G"=>0,"B"=>0));
            
             $path = font_path . DIRECTORY_SEPARATOR;
             /* Write the picture title */ 
@@ -414,13 +414,13 @@ class OdkFormService {
             /* Create the pRadar object */ 
             $SplitChart = new pRadar();
             /* Draw a radar chart */ 
-            $myPicture->setGraphArea(15,15,370,370);
+            $myPicture->setGraphArea(15,15,590,590);
             $Options = array("Layout"=>RADAR_LAYOUT_STAR,"BackgroundGradient"=>array("StartR"=>510,"StartG"=>510,"StartB"=>510,"StartAlpha"=>10,"EndR"=>414,"EndG"=>454,"EndB"=>250,"EndAlpha"=>10), "FontName"=>$path."/pf_arma_five.ttf","FontSize"=>15);
             $SplitChart->drawRadar($myPicture,$MyData,$Options);
            
             /* Write the chart legend */
             $myPicture->setFontProperties(array("FontName"=>$path."/pf_arma_five.ttf","FontSize"=>7));
-            $myPicture->drawLegend(230,370,array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL));
+            $myPicture->drawLegend(330,620,array("Style"=>LEGEND_BOX,"Mode"=>LEGEND_VERTICAL));
            
             /* Render the picture (choose the best way) */
             $fileName =  'radar.png';
