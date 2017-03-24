@@ -384,10 +384,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
             if(isset($params['affiliation']) && $params['affiliation']!=''){
                $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
             }
-            if(is_array($params['province']) && count($params['province'])>0 ){
+            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
                 $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
             }else{
-                if($params['province']!=''){
+                if(isset($params['province']) && $params['province']!=''){
                     $provinces = explode(",",$params['province']);
                     $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
                 }
@@ -1066,10 +1066,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
             if(isset($params['affiliation']) && $params['affiliation']!=''){
                $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
             }
-            if(is_array($params['province']) && count($params['province'])>0 ){
+            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
                 $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
             }else{
-                if($params['province']!=''){
+                if(isset($params['province']) && $params['province']!=''){
                     $provinces = explode(",",$params['province']);
                     $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
                 }
