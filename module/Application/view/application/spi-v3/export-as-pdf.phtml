@@ -96,20 +96,20 @@ $filter = '';
 $filter.= "<tr><td><b>Date Range </b></td><td>&nbsp;&nbsp;".$argument['dateRange']."</td><td><b>Audit Round No. </b></td><td>&nbsp;&nbsp;".$argument['auditRndNo']."</td><td><b>Level </b></td><td>&nbsp;&nbsp;".$argument['level']."</td><td><b>Affiliation </b></td><td>&nbsp;&nbsp;".$argument['affiliation']."</td></tr>";
 $filter.= "<tr><td><b>Province </b></td><td>&nbsp;&nbsp;".implode(',',$argument['province'])."</td><td><b>Score Level </b></td><td>&nbsp;&nbsp;".$argument['scoreLevel']."</td><td><b>Type Of Testing Point </b></td><td>&nbsp;&nbsp;".$argument['testPoint']."</td></tr>";
 $partA = '';
-$partA.='<table border="1" style="line-height:22px;width:100%;" >'.$filter.'</table>';
+$partA.='<table border="1" style="line-height:22px;width:97%;" >'.$filter.'</table>';
 $pdf->writeHTML($partA, true, 0, true, 0);
 $h = $pdf->getY();
 
 if($h<52)
 {
     $style1 = "height:450px;width:500px;";
-    $style2 = "height:440px;width:400px;";
+    $style2 = "height:440px;width:450px;";
 }else{
     $diff = $h-52;
     $h1 = 450-($diff*3.5);
     $h2 = 440-($diff*3.5);
     $style1 = "height:".$h1."px;width:500px;";
-    $style2 = "height:".$h2."px;width:400px;";
+    $style2 = "height:".$h2."px;width:450px;";
 }
 $pdfContent = '';
 $pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
