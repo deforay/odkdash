@@ -214,7 +214,70 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                 <?php echo $adminMenu; ?>
               </ul>
             </li>
-            <?php } ?>
+
+<?php } ?>
+            
+            
+                   <!--menu personnel certification--> 
+<?php
+            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Provider", "index")) {
+            ?>
+                       <li class="parent"><a href="#"><i class="icon s7-file"></i><span> Personnel Certification</span></a>
+                           <ul>
+                               <ul  id="menu-accordeon">
+
+                                   <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>"> Provider</a></li>
+                               </ul>
+
+
+                               <ul  id="menu-accordeon">
+
+
+                                   <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Training<span class="caret"></span></a>
+                                       <ul>
+                                           <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Training</a></li>
+                                           <li><a href="<?php echo $this->url('trainer', array('action' => 'index')); ?>">Trainer</a></li>
+                                           <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
+                                       </ul>
+                                   </li>
+                               </ul>
+
+                               <ul  id="menu-accordeon">
+
+
+                                   <li ><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Examination<span class="caret"></span></a>
+                                       <ul >
+                                           <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
+                                           <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
+                                           <li><a href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>">Practical Exam</a></li>
+                                           <li><a href="<?php echo $this->url('exam-admin', array('action' => 'index')); ?>">Exam Administrator</a></li>
+
+
+                                       </ul>
+                                   </li>
+                               </ul>
+
+
+                               <ul  id="menu-accordeon">
+
+
+
+                                   <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Certification<span class="caret"></span></a>
+                                       <ul >
+                                           <li><a href="<?php echo $this->url('provider', array('action' => 'certification')); ?>">Certification</a></li>
+                                           <li><a href="<?php echo $this->url('certification-issuer', array('action' => 'index')); ?>">Certification Issuer</a></li>
+
+
+                                           <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Re-Certification</a></li>
+
+                                       </ul>
+                                   </li>
+                               </ul>
+
+
+                           </ul> </li>
+                           <?php } ?>
+            
           </ul>
           <!--Sidebar bottom content-->
         </div>
