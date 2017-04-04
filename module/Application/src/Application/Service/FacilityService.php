@@ -174,4 +174,14 @@ class FacilityService {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchFacilityProfileByAudit($ids);
     }
+    
+    public function getProvinceList(){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchProvinceList();
+    }
+    
+    public function mapProvince($params){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->mapProvince($params);
+    }
 }
