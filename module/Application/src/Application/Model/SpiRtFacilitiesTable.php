@@ -313,4 +313,26 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	}
       return $result;
     }
+    
+    public function fetchProvinceList(){
+	$dbAdapter = $this->adapter;
+	$sql = new Sql($dbAdapter);
+	$provinceQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+	                               ->columns(array('name'=>new Expression("DISTINCT province")));
+	$provinceQueryStr = $sql->getSqlStringForSqlObject($provinceQuery);
+	return $dbAdapter->query($provinceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+    
+    public function mapProvince($params){
+	$result = 0;
+	if(isset($params['province']) && trim($params['province'])!= ''){
+	    if(isset($params['facility']) && count($params['facility']) >0){
+		$result = 1;
+		for($f=0;$f<count($params['facility']);$f++){
+		    $this->update(array('province'=>$params['province']),array('facility_name'=>$params['facility'][$f]));
+		}
+	    }
+	}
+      return $result;
+    }
 }

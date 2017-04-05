@@ -45,7 +45,7 @@ return array(
         ),
         'Application\\Controller\\Dashboard' => array(
             'index' => 'allow',
-            'audi-details' => 'allow',
+            'audit-details' => 'deny',
         ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
@@ -54,6 +54,7 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
         ),
         'Application\\Controller\\Roles' => array(

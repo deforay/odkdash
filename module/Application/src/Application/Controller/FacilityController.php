@@ -94,4 +94,31 @@ class FacilityController extends AbstractActionController {
             return $viewModel;
         }
     }
+    
+    public function getProvinceListAction(){
+        $layout = $this->layout();
+        $layout->setTemplate('layout/modal');
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $facilityService= $this->getServiceLocator()->get('FacilityService');
+        $result = $odkFormService->getAllFacilityNames();
+        $provinceResult = $facilityService->getProvinceList();
+        return new ViewModel(array(
+            'facilityName' => $result,
+            'provinces' => $provinceResult
+        ));
+    }
+    
+    public function mapProvinceAction(){
+        $request = $this->getRequest();                
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $facilityService= $this->getServiceLocator()->get('FacilityService');
+            $result = $facilityService->mapProvince($params);
+            $viewModel = new ViewModel(array(
+                'result'=>$result
+                ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
