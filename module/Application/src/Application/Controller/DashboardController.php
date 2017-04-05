@@ -28,6 +28,8 @@ class DashboardController extends AbstractActionController
         //$zeroCounts = $odkFormService->getZeroQuestionCounts();
         //$spiV3Labels = $odkFormService->getSpiV3FormLabels();
         $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
+        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
+        $testingPointResult=$odkFormService->getAllTestingPointType();
         
         return new ViewModel(array('perf1' => $perf1,
                                    'perflast30' => $perflast30,
@@ -38,7 +40,9 @@ class DashboardController extends AbstractActionController
                                    //'auditRoundWiseData' => $auditRoundWiseData,
                                    //'spiV3Labels' => $spiV3Labels,
                                    //'zeroCounts' => $zeroCounts,
-                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo));
+                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo,
+                                   'testingPointResult' => $testingPointResult,
+                                    'levelNamesResult' => $levelNamesResult));
     }
     
     public function auditDetailsAction(){

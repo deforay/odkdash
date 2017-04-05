@@ -103,6 +103,19 @@ if($perflast30[0]['totalDataPoints']>0){
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
             },
+	    legend: {
+            layout: 'vertical',
+            align: 'center',
+            verticalAlign: 'bottom',
+            backgroundColor: '#f3f3f3',
+            borderWidth: 0,
+            useHTML: true,
+            itemMarginBottom: 10,
+            labelFormatter: function () {
+                return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">'+ this.percentage.toFixed(1)+'% (No.of Audits '+Highcharts.numberFormat(this.y, 0)+')</span></div>';
+            }
+        },
+	    
             plotOptions: {
                 pie: {
                     allowPointSelect: true,
