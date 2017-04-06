@@ -369,7 +369,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
-            $tQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
             if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
                  if(trim($params['testPoint'])!= 'other'){
                     $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
@@ -451,6 +451,46 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
+        if(isset($params['auditRndNo']) && $params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['auditRndNo']."'");
+        }
+        if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
+            $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+                 if(trim($params['testPoint'])!= 'other'){
+                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
+                 }else{
+                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
+                 }
+            }
+            } if(isset($params['level']) && $params['level']!=''){
+               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+            }
+            if(isset($params['affiliation']) && $params['affiliation']!=''){
+               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+            }
+            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+                $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
+            }else{
+                if(isset($params['province']) && $params['province']!=''){
+                    $provinces = explode(",",$params['province']);
+                    $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
+                }
+            }
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+            if($params['scoreLevel'] == 0){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+            }else if($params['scoreLevel'] == 1){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+            }else if($params['scoreLevel'] == 2){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+            }else if($params['scoreLevel'] == 3){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+            }else if($params['scoreLevel'] == 4){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+            }
+        }
+        
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -525,6 +565,46 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
         if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
+        }
+        
+        if(isset($params['auditRndNo']) && $params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['auditRndNo']."'");
+        }
+        if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
+            $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+                 if(trim($params['testPoint'])!= 'other'){
+                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
+                 }else{
+                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
+                 }
+            }
+            } if(isset($params['level']) && $params['level']!=''){
+               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+            }
+            if(isset($params['affiliation']) && $params['affiliation']!=''){
+               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+            }
+            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+                $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
+            }else{
+                if(isset($params['province']) && $params['province']!=''){
+                    $provinces = explode(",",$params['province']);
+                    $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
+                }
+            }
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+            if($params['scoreLevel'] == 0){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+            }else if($params['scoreLevel'] == 1){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+            }else if($params['scoreLevel'] == 2){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+            }else if($params['scoreLevel'] == 3){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+            }else if($params['scoreLevel'] == 4){
+              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+            }
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
@@ -1175,6 +1255,46 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
         }
+        if($params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['auditRndNo']."'");
+        }
+        
+        if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
+            $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+                 if(trim($params['testPoint'])!= 'other'){
+                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
+                 }else{
+                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
+                 }
+            }
+            } if(isset($params['level']) && $params['level']!=''){
+               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+            }
+            if(isset($params['affiliation']) && $params['affiliation']!=''){
+               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+            }
+            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+                $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
+            }else{
+                if(isset($params['province']) && $params['province']!=''){
+                    $provinces = explode(",",$params['province']);
+                    $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
+                }
+            }
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+                if($params['scoreLevel'] == 0){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+                }else if($params['scoreLevel'] == 1){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+                }else if($params['scoreLevel'] == 2){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+                }else if($params['scoreLevel'] == 3){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+                }else if($params['scoreLevel'] == 4){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+                }
+            }
         
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
@@ -1548,6 +1668,46 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
         }
+        if($params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['auditRndNo']."'");
+        }
+        
+        if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
+            $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
+            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+                 if(trim($params['testPoint'])!= 'other'){
+                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
+                 }else{
+                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
+                 }
+            }
+            } if(isset($params['level']) && $params['level']!=''){
+               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+            }
+            if(isset($params['affiliation']) && $params['affiliation']!=''){
+               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+            }
+            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+                $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
+            }else{
+                if(isset($params['province']) && $params['province']!=''){
+                    $provinces = explode(",",$params['province']);
+                    $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
+                }
+            }
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+                if($params['scoreLevel'] == 0){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+                }else if($params['scoreLevel'] == 1){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+                }else if($params['scoreLevel'] == 2){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+                }else if($params['scoreLevel'] == 3){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+                }else if($params['scoreLevel'] == 4){
+                  $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+                }
+            }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
