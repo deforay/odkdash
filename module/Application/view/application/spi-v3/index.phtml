@@ -130,9 +130,13 @@ tr.shown td.details-control {
                     </div>
                   </form>
                 </div>
+                <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'duplicate')) { ?>
+                <a style="" id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"></a>
+                <?php } ?>
               </div>
             </div>
           </div>
+            
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
               <thead>
                 <tr>
@@ -281,6 +285,7 @@ tr.shown td.details-control {
                       $("#level2").html(json.levelTwoCount);
                       $("#level3").html(json.levelThreeCount);
                       $("#level4").html(json.levelFourCount+"&nbsp;");
+                      $("#duplicate").html(json.duplicate+"&nbsp;duplicate data(s)");
                       fnCallback(json);
                      }
                 });

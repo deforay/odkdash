@@ -70,6 +70,7 @@ return array(
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
+            'duplicate' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',

@@ -293,6 +293,10 @@ class OdkFormService {
         $acl = $this->sm->get('AppAcl');
         return $db->fetchAllSubmissionsDetails($params,$acl);
     }
+    public function getAllDuplicateSubmissionsDetails() {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchAllDuplicateSubmissionsDetails();
+    }
     
     public function getAllSubmissionsDatas($params) {
         $db = $this->sm->get('SpiFormVer3Table');
@@ -731,4 +735,10 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchSpiV3FormUniqueLevelNames();
     }
+    public function removeAudit($params)
+    {
+        $db = $this->sm->get('SpiFormVer3DuplicateTable');
+        return $db->removeAuditData($params);
+    }
+    
 }
