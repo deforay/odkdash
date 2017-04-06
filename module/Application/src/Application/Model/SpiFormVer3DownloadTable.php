@@ -126,4 +126,13 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway {
             return $newDate .= $mon . "-" . $dateArray[0];
         }
     }
+    
+    public function fetchDownloadFilesRow(){
+        $logincontainer = new Container('credo');
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status'=>1,'user'=>$logincontainer->userId))->order('r_download_id desc')->limit(5);
+        $queryStr = $sql->getSqlStringForSqlObject($query);
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
 }

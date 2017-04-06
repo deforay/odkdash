@@ -306,12 +306,14 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
-        public function duplicateAction(){
+    
+    public function duplicateAction(){
         $request = $this->getRequest();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $result = $odkFormService->getAllDuplicateSubmissionsDetails();
         return new ViewModel(array('result' => $result));
     }
+    
     public function removeAuditAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if($this->getRequest()->isPost()){
@@ -335,6 +337,13 @@ class SpiV3Controller extends AbstractActionController
                       ->setTerminal(true);
             return $viewModel;
         }
+    }
+    
+    public function downloadFilesAction(){
+        $request = $this->getRequest();
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $result = $odkFormService->getDownloadFilesRow();
+       return new ViewModel(array('result' => $result));
     }
 }
 

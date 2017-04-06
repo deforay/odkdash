@@ -132,8 +132,9 @@ tr.shown td.details-control {
                   </form>
                 </div>
                 <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'duplicate')) { ?>
-                <a style="" id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"></a>
+                <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"></a>&nbsp;&nbsp;
                 <?php } ?>
+                <a href="/spi-v3/download-files" target="_blank" style="text-decoration:underline;">Download Zipped Files</a>
               </div>
             </div>
           </div>

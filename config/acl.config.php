@@ -67,10 +67,11 @@ return array(
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
             'delete' => 'allow',
+            'download-files' => 'allow',
+            'duplicate' => 'allow',
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
-            'duplicate' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',

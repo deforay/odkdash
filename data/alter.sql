@@ -494,3 +494,9 @@ ALTER TABLE `spi_form_v_3_duplicate`
 
 ALTER TABLE `spi_form_v_3_duplicate`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  
+
+--Pal 06-Apr-2017
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'download-files', 'Download Zipped Files');
+
+ALTER TABLE `r_spi_form_v_3_download` DROP `file_name`;

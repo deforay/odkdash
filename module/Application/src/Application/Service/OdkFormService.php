@@ -1509,4 +1509,9 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3DuplicateTable');
         return $db->removeAuditData($params);
     }
+    
+    public function getDownloadFilesRow(){
+        $db = $this->sm->get('SpiFormVer3DownloadTable');
+        return $db->fetchDownloadFilesRow();
+    }
 }
