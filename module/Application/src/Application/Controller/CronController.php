@@ -25,4 +25,9 @@ class CronController extends AbstractActionController {
         $commonService = $this->getServiceLocator()->get('CommonService');
         $commonService->dbBackup();
     }
+    
+    public function generatePdfAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $odkFormService->getDownloadDataList();
+    }
 }

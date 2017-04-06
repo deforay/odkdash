@@ -29,6 +29,8 @@ defined('font_path')
 defined('BACKUP_PATH')
     || define('BACKUP_PATH', realpath(dirname(__FILE__) . '/../backup'));
     
+defined('APPLICATION_PATH')
+    || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/assets'));
 // Setup autoloading
 require 'init_autoloader.php';
 

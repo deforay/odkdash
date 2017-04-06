@@ -255,6 +255,16 @@ return array(
                         ),
                     ),
                 ),
+                'generate-pdf' => array(
+                    'type'    => 'simple',
+                    'options' => array(
+                        'route'    => 'generate-pdf',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Cron',
+                             'action' => 'generate-pdf'
+                        ),
+                    ),
+                ),
             ),
         ),
     ),

@@ -306,5 +306,18 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    
+    public function saveDownloadDataAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $odkFormService->addDownloadData($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
 
