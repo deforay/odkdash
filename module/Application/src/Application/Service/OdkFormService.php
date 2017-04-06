@@ -1495,7 +1495,7 @@ class OdkFormService {
             if(count($file_list) >2){
                 foreach ($file_list as $file) {
                   if (in_array($file, array(".",".."))) continue;
-                  $filter->filter($file);
+                  $filter->filter(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id . DIRECTORY_SEPARATOR . $file);
                 }
             }
             //zip end
