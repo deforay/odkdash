@@ -244,3 +244,5 @@ ALTER TABLE `r_spi_form_v_3_download`
   
 ALTER TABLE `r_spi_form_v_3_download`
   MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT
+  
+ALTER TABLE `r_spi_form_v_3_download` ADD `user` INT(11) NOT NULL AFTER `r_download_id`;

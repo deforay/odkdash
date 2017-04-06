@@ -1468,6 +1468,9 @@ class OdkFormService {
                 $pdf->writeHTMLCell(80,18,115,'',$signBox2,1,1, 0, true, 'L');
                 //Close and output PDF document
                 $fileName = "SPI-RT-CHECKLIST-".date('d-M-Y-H-i-s').".pdf";
+                if(!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download")){
+                    mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download");
+                }
                 if(!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id)){
                     mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
                 }
@@ -1478,20 +1481,22 @@ class OdkFormService {
                 //============================================================+
             }
            //zip part
-            //$filter = new Compress(array(
-            //    'adapter' => 'Zip',
-            //    'options' => array(
-            //        'archive' => TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download" . DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id.'.zip'
-            //    )
-            //));
-            //$file_list = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
-            //if(count($file_list) >2){
-            //    foreach ($file_list as $file) {
-            //      if (in_array($file, array(".",".."))) continue;
-            //      $filter->filter($file);
-            //    }
-            //}
-            //zip end  
+            $filter = new Compress(array(
+                'adapter' => 'Zip',
+                'options' => array(
+                    'archive' => TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download" . DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id.'.zip'
+                )
+            ));
+            $file_list = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
+            if(count($file_list) >2){
+                foreach ($file_list as $file) {
+                  if (in_array($file, array(".",".."))) continue;
+                  $filter->filter($file);
+                }
+            }
+            //zip end
+            //remove source pdf(s)
+            $common->removeDirectory(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
         }
     }
 }

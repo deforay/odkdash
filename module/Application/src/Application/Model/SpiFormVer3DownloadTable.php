@@ -34,6 +34,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway {
             $province = implode(',',$params['province']);
         }
         $downloadData = array(
+                'user'=>$logincontainer->userId,
                 'auditroundno'=>(isset($params['auditRndNo']) && trim($params['auditRndNo'])!= '')?$params['auditRndNo']:null,
                 'assesmentofaudit'=>(isset($params['dateRange']) && trim($params['dateRange'])!= '')?$params['dateRange']:null,
                 'testingpointtype'=>(isset($params['testPoint']) && trim($params['testPoint'])!= '')?$params['testPoint']:null,
@@ -100,7 +101,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway {
             $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
             $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             //update download status
-            //$this->update(array('download_status'=>1),array('r_download_id'=>$queryResult->r_download_id));
+            $this->update(array('download_status'=>1),array('r_download_id'=>$queryResult->r_download_id));
         }
        return array('downloadResult'=>$queryResult,'formResult'=>$result);
     }
