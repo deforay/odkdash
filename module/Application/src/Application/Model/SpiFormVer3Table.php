@@ -29,7 +29,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $this->adapter = $adapter;
     }
     
-      
     public function saveData($params) {
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');

@@ -22,12 +22,14 @@ use Application\Model\ResourcesTable;
 use Application\Model\TempMailTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\AuditMailTable;
+use Application\Model\SpiFormVer3DownloadTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
 use Application\Service\FacilityService;
 use Application\Service\CommonService;
 use Application\Service\RoleService;
+use Application\Service\TcpdfExtends;
 
 use Application\Model\Acl;
 use Zend\Mvc\ModuleRouteListener;
@@ -196,6 +198,10 @@ class Module
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new AuditMailTable($dbAdapter);
                     return $table;
+                },'SpiFormVer3DownloadTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SpiFormVer3DownloadTable($dbAdapter);
+                    return $table;
                 },'SpiFormVer3DuplicateTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SpiFormVer3DuplicateTable($dbAdapter);
@@ -211,14 +217,17 @@ class Module
                 'UserService' => function($sm) {
                     return new UserService($sm);
                 },
-				'FacilityService' => function($sm) {
+		'FacilityService' => function($sm) {
                     return new FacilityService($sm);
                 },
-				'CommonService' => function($sm) {
+		'CommonService' => function($sm) {
                     return new CommonService($sm);
                 },
-				'RoleService' => function($sm) {
+		'RoleService' => function($sm) {
                     return new RoleService($sm);
+                },
+		'TcpdfExtends' => function($sm) {
+                    return new TcpdfExtends($sm);
                 }
             ),
           

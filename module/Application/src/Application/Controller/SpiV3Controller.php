@@ -306,7 +306,7 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
-    public function duplicateAction(){
+        public function duplicateAction(){
         $request = $this->getRequest();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $result = $odkFormService->getAllDuplicateSubmissionsDetails();
@@ -317,6 +317,19 @@ class SpiV3Controller extends AbstractActionController
         if($this->getRequest()->isPost()){
             $params=$this->getRequest()->getPost();
             $result=$odkFormService->removeAudit($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
+    
+    public function saveDownloadDataAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $odkFormService->addDownloadData($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                       ->setTerminal(true);

@@ -223,3 +223,24 @@ ALTER TABLE `roles` CHANGE `role_id` `role_id` INT(11) NOT NULL AUTO_INCREMENT;
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Facility', 'map-province', 'Map Province');
 
 UPDATE `privileges` SET `privilege_name` = 'get-province-list' WHERE `privileges`.`resource_id` = 'Application\\Controller\\Facility' AND `privileges`.`privilege_name` = 'map-province';
+
+--Pal 06-Apr-2017
+CREATE TABLE `r_spi_form_v_3_download` (
+  `r_download_id` int(11) NOT NULL,
+  `auditroundno` varchar(255) DEFAULT NULL,
+  `assesmentofaudit` varchar(255) DEFAULT NULL,
+  `testingpointtype` varchar(255) DEFAULT NULL,
+  `testingpointname` varchar(255) DEFAULT NULL,
+  `level` varchar(255) DEFAULT NULL,
+  `affiliation` varchar(255) DEFAULT NULL,
+  `level_name` varchar(255) DEFAULT NULL,
+  `AUDIT_SCORE_PERCANTAGE` varchar(255) DEFAULT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
+  `download_status` int(11) NOT NULL DEFAULT '0'
+)
+
+ALTER TABLE `r_spi_form_v_3_download`
+  ADD PRIMARY KEY (`r_download_id`);
+  
+ALTER TABLE `r_spi_form_v_3_download`
+  MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT

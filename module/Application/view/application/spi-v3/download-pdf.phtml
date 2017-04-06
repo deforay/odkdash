@@ -609,15 +609,17 @@ if(isset($summationExp[3]) && trim($summationExp[3])!=""){
 $auditorName=$summationExp[3];
 }
 if(isset($summationExp[4]) && trim($summationExp[4])!=""){
-$textPointName=$summationExp[4];
+  $textPointName=$summationExp[4];
 }
-if(isset($summationExp[5]) && trim($summationExp[5])!=""){
-	$expStaffAuditedName=explode(":",$summationExp[5]);
-	$staffAuditedName=$expStaffAuditedName[0];
-	$noOfTester=$expStaffAuditedName[1];
+$staffAuditedName = '';
+$noOfTester = '';
+if(isset($summationExp[5]) && trim($summationExp[5])!= ""){
+    $expStaffAuditedName=explode(":",$summationExp[5]);
+    $staffAuditedName=$expStaffAuditedName[0];
+    $noOfTester=$expStaffAuditedName[1];
 }
 if($language=='Spanish'){
-	$heading="PARTE D: Informe resumido del evaluador de la auditoría SPI-RT";
+    $heading="PARTE D: Informe resumido del evaluador de la auditoría SPI-RT";
 }
 
 $partDTitle='<p style="font-weight:bold;line-height:30px;">'.$heading.'</p>';
