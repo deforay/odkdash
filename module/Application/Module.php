@@ -10,6 +10,7 @@
 namespace Application;
 
 use Application\Model\SpiFormVer3Table;
+use Application\Model\SpiFormVer3DuplicateTable;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
@@ -200,6 +201,10 @@ class Module
                 },'SpiFormVer3DownloadTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SpiFormVer3DownloadTable($dbAdapter);
+                    return $table;
+                },'SpiFormVer3DuplicateTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SpiFormVer3DuplicateTable($dbAdapter);
                     return $table;
                 },
 		

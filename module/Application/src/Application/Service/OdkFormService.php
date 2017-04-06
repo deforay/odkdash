@@ -296,6 +296,10 @@ class OdkFormService {
         $acl = $this->sm->get('AppAcl');
         return $db->fetchAllSubmissionsDetails($params,$acl);
     }
+    public function getAllDuplicateSubmissionsDetails() {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->fetchAllDuplicateSubmissionsDetails();
+    }
     
     public function getAllSubmissionsDatas($params) {
         $db = $this->sm->get('SpiFormVer3Table');
@@ -877,7 +881,7 @@ class OdkFormService {
                 $partBTable.="<tr>";
                 $language;
                 if($language=='Portuguese'){
-                        $partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">SEC«√O</td>';
+                        $partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">SEC√á√ÉO</td>';
                 }
                 else{
                         $partBTable.='<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
@@ -888,7 +892,7 @@ class OdkFormService {
                 $partBTable.='<td style="text-align:center;font-weight:bold;width:7%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_8/PERSONAL_Q_1_8/0:label'].'</td>';
                 $partBTable.='<td style="text-align:center;font-weight:bold;width:18%;">'.$decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_5/PERSONAL_C_1_5:label'].'</td>';
                 if($language=='Portuguese'){
-                        $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">PontuaÁ„o</td>';
+                        $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Pontua√ß√£o</td>';
                 }
                 elseif($language=='Spanish'){
                         $partBTable.='<td style="text-align:center;font-weight:bold;width:8%;">Punteo</td>';
@@ -1153,10 +1157,10 @@ class OdkFormService {
                 
                 $partBTable.='</table>';
                 if($language=='Portuguese'){
-                $partBTable.='<p>*A area marcada com asteriscos so È aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
+                $partBTable.='<p>*A area marcada com asteriscos so √© aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
                 }
                 else if($language=='Spanish'){
-                $partBTable.='<p>*Lo que aparece marcado con un asterisco son solo aplicables a sitios donde la repeticiÛn de las pruebas se hace.</p>';
+                $partBTable.='<p>*Lo que aparece marcado con un asterisco son solo aplicables a sitios donde la repetici√≥n de las pruebas se hace.</p>';
                 }else{
                 $partBTable.='<p>*Those marked with an asterisk are only applicable to sites where sample retesting is performed.</p>';	
                 }
@@ -1200,11 +1204,11 @@ class OdkFormService {
                 
                 if($language=='Portuguese'){
                 $partCTable.='<td  style="width:25%">PONTUACAO EM %</td>';
-                $partCTable.='<td  style="width:60%">DESCRI«AO DOS RESULTADOS</td>';
+                $partCTable.='<td  style="width:60%">DESCRI√áAO DOS RESULTADOS</td>';
                 }
                 else if($language=='Spanish'){
                 $partCTable.='<td  style="width:25%">% Puntaje</td>';
-                $partCTable.='<td  style="width:60%">DescripciÛn de los resultados</td>';
+                $partCTable.='<td  style="width:60%">Descripci√≥n de los resultados</td>';
                 }
                 else{
                 $partCTable.='<td  style="width:25%">'.$perScored.'</td>';
@@ -1234,17 +1238,17 @@ class OdkFormService {
                         $level2[0]="Nivel 2";
                         $level3[0]="Nivel 3";
                         $level4[0]="Nivel 4";
-                        $level4[1]="90% a m·s";
+                        $level4[1]="90% a m√°s";
                 }
                 
                 $partCTable.='<tr>';
                 $partCTable.='<td style="background-color:#C00000;">'.$level0[0].'</td>';
                 $partCTable.='<td>'.$level0[1].'</td>';
                 if($language=='Portuguese'){
-                $partCTable.='<td>Necessidade de melhoria em todas as areas e remediaÁoes imediatas</td>';
+                $partCTable.='<td>Necessidade de melhoria em todas as areas e remedia√ßoes imediatas</td>';
                 }
                 else if($language=='Spanish'){
-                $partCTable.='<td>Necesita mejorar en todas las ·reas y es necesaria correcciÛn inmediata</td>';
+                $partCTable.='<td>Necesita mejorar en todas las √°reas y es necesaria correcci√≥n inmediata</td>';
                 }else{
                 $partCTable.='<td>Needs improvement in all areas and immediate remediation</td>';	
                 }
@@ -1258,7 +1262,7 @@ class OdkFormService {
                 $partCTable.='<td>Necessidade de melhorias em areas especificas</td>';
                 }
                 else if($language=='Spanish'){
-                        $partCTable.='<td>Necesita mejorar en ·reas especÌficas</td>';
+                        $partCTable.='<td>Necesita mejorar en √°reas espec√≠ficas</td>';
                 }
                 else{
                 $partCTable.='<td>Needs improvement in specific areas</td>';	
@@ -1283,7 +1287,7 @@ class OdkFormService {
                 $partCTable.='<td style="background-color:#92D050;">'.$level3[0].'</td>';
                 $partCTable.='<td>'.$level3[1].'</td>';
                 if($language=='Portuguese'){
-                $partCTable.='<td>Proximo da certificaÁao nacional</td>';
+                $partCTable.='<td>Proximo da certifica√ßao nacional</td>';
                 }
                 else if($language=='Spanish'){
                 $partCTable.='<td>Cercano a sitio nacional certificado</td>';
@@ -1297,7 +1301,7 @@ class OdkFormService {
                 $partCTable.='<td style="background-color:#00B050;">'.$level4[0].'</td>';
                 $partCTable.='<td>'.$level4[1].'</td>';
                 if($language=='Portuguese'){
-                $partCTable.='<td>Admissivel a certificaÁao nacional</td>';
+                $partCTable.='<td>Admissivel a certifica√ßao nacional</td>';
                 }
                 else if($language=='Spanish'){
                 $partCTable.='<td>Elegible para ser certificado</td>';
@@ -1332,7 +1336,7 @@ class OdkFormService {
                     $noOfTester=$expStaffAuditedName[1];
                 }
                 if($language=='Spanish'){
-                    $heading="PARTE D: Informe resumido del evaluador de la auditorÌa SPI-RT";
+                    $heading="PARTE D: Informe resumido del evaluador de la auditor√≠a SPI-RT";
                 }
                 
                 $partDTitle='<p style="font-weight:bold;line-height:30px;">'.$heading.'</p>';
@@ -1498,5 +1502,10 @@ class OdkFormService {
             //remove source pdf(s)
             $common->removeDirectory(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
         }
+    }
+    public function removeAudit($params)
+    {
+        $db = $this->sm->get('SpiFormVer3DuplicateTable');
+        return $db->removeAuditData($params);
     }
 }

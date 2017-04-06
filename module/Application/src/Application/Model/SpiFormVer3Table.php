@@ -755,16 +755,16 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
         }
- 
+
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
         }
- 
+
         if (isset($sLimit) && isset($sOffset)) {
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
-
+        
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
         $queryContainer->exportAllDataQuery = $sQuery;
         //echo $sQueryStr;die;
@@ -914,6 +914,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $eQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
         $eQueryStr = $sql->getSqlStringForSqlObject($eQuery); // Get the string of the Sql, instead of the Select-instance
         $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        //get duplicate value
+        $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();;
         
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore/count($rResult),2) : 0;
         $output['levelZeroCount'] = count($levelZero);
@@ -922,8 +924,17 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $output['levelThreeCount'] = count($levelThree);
         $output['levelFourCount'] = count($levelFour);
         $output['eDate'] = $eResult['assesmentofaudit'];
+        $output['duplicate'] = count($dpResult);
         return $output;
     }
+    
+    public function fetchAllDuplicateSubmissionsDetails(){
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $rResult = $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCANTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`,`testingpointname`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $rResult;
+    }
+    
     
     public function fetchAllSubmissionsDatas($parameters,$acl){
         $logincontainer = new Container('credo');
@@ -2182,6 +2193,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         }
       return $result;
     }
+   
     
     public function fetchAllApprovedSubmissionsDetailsBasedOnAuditDate($parameters,$acl){
         $logincontainer = new Container('credo');
