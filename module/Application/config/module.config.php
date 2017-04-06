@@ -255,13 +255,13 @@ return array(
                         ),
                     ),
                 ),
-                'generate-pdf' => array(
+                'generate-bulk-pdf' => array(
                     'type'    => 'simple',
                     'options' => array(
-                        'route'    => 'generate-pdf',
+                        'route'    => 'generate-bulk-pdf',
                         'defaults' => array(
                             'controller' => 'Application\Controller\Cron',
-                             'action' => 'generate-pdf'
+                             'action' => 'generate-bulk-pdf'
                         ),
                     ),
                 ),
