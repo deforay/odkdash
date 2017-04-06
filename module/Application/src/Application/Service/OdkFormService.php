@@ -7,6 +7,8 @@ use Zend\Session\Container;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Filter\Compress;
+use Zend\Filter\Exception;
+use ZipArchive;
 use PHPExcel;
 use pData;
 use pDraw;
@@ -1485,26 +1487,25 @@ class OdkFormService {
                 //============================================================+
             }
            //zip part
-            $filter = new Compress(array(
-                'adapter' => 'Zip',
-                'options' => array(
-                    'archive' => TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download" . DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id.'.zip'
-                )
-            ));
-            $file_list = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
-            if(count($file_list) >2){
-                foreach ($file_list as $file) {
-                  if (in_array($file, array(".",".."))) continue;
-                  $filter->filter(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id . DIRECTORY_SEPARATOR . $file);
+            $zip = new ZipArchive();
+            $filename = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download" . DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id.'.zip';
+            if($zip->open($filename, ZipArchive::CREATE)== TRUE) {
+                $file_list = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
+                if(count($file_list) >2){
+                    foreach ($file_list as $file) {
+                      if (in_array($file, array(".",".."))) continue;
+                      $zip->addFile(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id . DIRECTORY_SEPARATOR . $file, $file);
+                    }
                 }
             }
+            $zip->close();
             //zip end
             //remove source pdf(s)
             $common->removeDirectory(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $result['downloadResult']->r_download_id);
         }
     }
-    public function removeAudit($params)
-    {
+    
+    public function removeAudit($params){
         $db = $this->sm->get('SpiFormVer3DuplicateTable');
         return $db->removeAuditData($params);
     }
