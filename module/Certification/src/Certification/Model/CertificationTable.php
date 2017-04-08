@@ -14,47 +14,49 @@ class CertificationTable {
 
     public function fetchAll() {
         $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('certification_id', 'provider_id', 'score', 'final_decision', 'certificate_issued_by_id', 'date_certificate_issued', 'date_certificate_sent', 'certification_type', 'issued'));
-        $sqlSelect->join('provider', 'provider.certification_id = certification.provider_id' , array('last_name','first_name','middle_name'), 'left');
+        $sqlSelect->columns(array('id', 'certification_id','final_decision', 'certification_issuer_id', 'date_certificate_issued', 'date_certificate_sent', 'certification_type', 'issued'));
+        $sqlSelect->join('provider', 'provider.certification_id = certification.certification_id', array('last_name', 'first_name', 'middle_name'), 'left')
+                  ->join('certification_issuer', 'certification_issuer.certification_issuer_id = certification.certification_issuer_id', array('issuer_last_name', 'issuer_first_name', 'issuer_middle_name'), 'left');
         $sqlSelect->order('last_name ASC');
+        
 
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
-    
-    public function getCertification($certification_id)
-     {
-         $certification_id  = (int) $certification_id;
-         $rowset = $this->tableGateway->select(array('certification_id' => $certification_id));
-         $row = $rowset->current();
-         if (!$row) {
-             throw new \Exception("Could not find row $certification_id");
-         }
-         return $row;
-     }
 
-     public function saveCertification(Certification $certification)
-     {
-         $data = array(
-             'provider_id' => $certification->provider_id,
-             'score'  => $certification->score,
-             'final_decision'  => $certification->final_decision,
-             'certificate_issued_by_id'  => $certification->certificate_issued_by_id,
-             'date_certificate_issued'  => $certification->date_certificate_issued,
-             'date_certificate_sent'  => $certification->date_certificate_sent,
-             'certification_type'  => $certification->certification_type,
-         );
+    public function getCertification($id) {
+        $id = (int) $id;
+        $rowset = $this->tableGateway->select(array('id' => $id));
+        $row = $rowset->current();
+        if (!$row) {
+            throw new \Exception("Could not find row $id");
+        }
+        return $row;
+    }
 
-         $certification_id = (int) $certification->certification_id;
-         if ($certification_id == 0) {
-             $this->tableGateway->insert($data);
-         } else {
-             if ($this->getCertification($certification_id)) {
-                 $this->tableGateway->update($data, array('certification_id' => $certification_id));
-             } else {
-                 throw new \Exception('Certification id does not exist');
-             }
-         }
-     }
+    public function saveCertification(Certification $certification) {
+        $data = array(
+            'certification_id' => $certification->certification_id,
+            'final_decision' => $certification->final_decision,
+            'certification_issuer_id' => $certification->certification_issuer_id,
+            'date_certificate_issued' => $certification->date_certificate_issued,
+            'date_certificate_sent' => $certification->date_certificate_sent,
+            'certification_type' => $certification->certification_type,
+            'issued' => $certification->issued
+        );
+       print_r($data);
+        $id = (int) $certification->id;
+        if ($id == 0) {
+            $this->tableGateway->insert($data);
+        } else {
+            if ($this->getCertification($id)) {
+                $this->tableGateway->update($data, array('id' => $id));
+            } else {
+                throw new \Exception('certificaton id does not exist');
+            }
+        }
+        
+        
+    }
 
 }

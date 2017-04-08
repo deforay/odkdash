@@ -16,7 +16,7 @@ class PracticalExamTable extends AbstractTableGateway {
 
     public function fetchAll() {
          $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin_by_id', 'provider_id', 'pre_analytic', 'analytic', 'post_analytic', 'Sample_testing_score', 'date'));
+        $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin_by_id', 'provider_id', 'pre_analytic', 'analytic', 'post_analytic', 'Sample_testing_score','practical_total_score', 'date'));
         $sqlSelect->join('provider', ' provider.certification_id = practical_exam.provider_id ', array('last_name','first_name','middle_name'), 'left')
                   ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id = practical_exam.exam_admin_by_id ', array('admin_last_name','admin_first_name','admin_middle_name',), 'left');
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
@@ -44,6 +44,7 @@ class PracticalExamTable extends AbstractTableGateway {
              'analytic'=>$practicalExam->analytic,
              'post_analytic'=>$practicalExam->post_analytic,
              'Sample_testing_score'=>$practicalExam->Sample_testing_score,
+             'practical_total_score'=>($practicalExam->pre_analytic+$practicalExam->analytic+$practicalExam->post_analytic+$practicalExam->Sample_testing_score)/4,
              'date'=>$practicalExam->date
              
          );

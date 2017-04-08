@@ -48,6 +48,7 @@ class Provider {
         $this->analytic = (isset($data['analytic'])) ? $data['analytic'] : null;
         $this->post_analytic = (isset($data['post_analytic'])) ? $data['post_analytic'] : null;
         $this->Sample_testing_score = (isset($data['Sample_testing_score'])) ? $data['Sample_testing_score'] : null;
+        $this->practical_total_score = (isset($data['practical_total_score'])) ? $data['practical_total_score'] : null;
 
     }
 

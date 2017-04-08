@@ -16,6 +16,7 @@ class PracticalExam implements InputFilterAwareInterface {
     public $analytic;
     public $post_analytic;
     public $Sample_testing_score;
+    public $practical_total_score;
     public $date;
     protected $inputFilter;
 
@@ -29,6 +30,7 @@ class PracticalExam implements InputFilterAwareInterface {
         $this->analytic = (!empty($data['analytic'])) ? $data['analytic'] : null;
         $this->post_analytic = (!empty($data['post_analytic'])) ? $data['post_analytic'] : null;
         $this->Sample_testing_score = (!empty($data['Sample_testing_score'])) ? $data['Sample_testing_score'] : null;
+        $this->practical_total_score = (!empty($data['practical_total_score'])) ? $data['practical_total_score'] : null;
         $this->date = (!empty($data['date'])) ? $data['date'] : null;
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;

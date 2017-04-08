@@ -16,10 +16,10 @@ return array(
             'certification' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/certification[/:action][/:certification_id]',
+                    'route' => '/certification[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'certification_id' => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Certification\Controller\Certification',

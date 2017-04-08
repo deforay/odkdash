@@ -33,8 +33,8 @@ $sessionLogin = new Container('credo');
                     <tr>
 
                         <th>Provider </th>
-                        <th>Score </th>
-                        <th>Final Decision </th>
+                         <th>Certification ID </th>
+                         <th>Final Decision </th>
                          <th>Certificate Issued By</th>
                         <th>Date Certificate Issued</th>
                         <th>Date Certificate Sent</th>
@@ -42,7 +42,7 @@ $sessionLogin = new Container('credo');
                         <th>Approved</th>
                         
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {   ?>
-                        <th style="width:30%;">Certification</th>
+                        <th style="width:30%;">Edit</th>
                         <?php // }   ?>
                     </tr>
 
@@ -54,9 +54,9 @@ $sessionLogin = new Container('credo');
                     <?php foreach ($certifications as $certification) : ?>
                         <tr>
                             <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name.' '.$certification->first_name.' '.$certification->middle_name); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->score); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
                             <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certificate_issued_by_id); ?></div></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->issuer_last_name.' '.$certification->issuer_first_name.''.$certification->issuer_middle_name); ?></div></td>
                             <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_issued); ?></div></td>
                             <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_sent); ?></div></td>
                             <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
@@ -64,9 +64,9 @@ $sessionLogin = new Container('credo');
                            
 
                             <td>
-                                <a href="<?php echo $this->url('certification', array('action' => 'edit','provider_id' => $certification->provider_id)); ?>"> <span class="glyphicon glyphicon-list-alt"></span></a> 
+                                <a href="<?php echo $this->url('certification', array('action' => 'edit','id' => $certification->id)); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> 
                             </td>
-                            <td><a href="<?php echo $this->url('certification', array('action' => 'pdf')); ?>"  style="white-space: nowrap" target="_blank"><i class="fa fa-download"></i> PDF</a></td>
+                            <td></td>
 
 
 

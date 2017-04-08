@@ -67,7 +67,7 @@ class ProviderTable extends AbstractTableGateway {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('certification_id','provider_id', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'first_name', 'test_site_in_charge'));
         $sqlSelect->join('written_exam', 'written_exam.provider_id = provider.certification_id ', array('final_score'), 'left')
-                  ->join('practical_exam', 'practical_exam.provider_id = provider.certification_id ', array('pre_analytic', 'analytic', 'post_analytic', 'Sample_testing_score'), 'left');
+                  ->join('practical_exam', 'practical_exam.provider_id = provider.certification_id', array('practical_total_score'), 'left');
         $sqlSelect->order('last_name ASC');
 
         $resultSet = $this->tableGateway->selectWith($sqlSelect);

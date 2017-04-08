@@ -33,14 +33,11 @@ $sessionLogin = new Container('credo');
                     <tr>
 
                         <th>Provider </th>
+                         <th>Certification ID </th>
                         <th>Written Exam Score </th>
-                        <th>Pre-analytic </th>
-                        <th>Analytic</th>
-                        <th>Post-analytic</th>
-                        <th>Sample Testing Score</th>
-                        <th>Score Final</th>
+                        <th>Practical Exam Score</th>
                         <th>Certification</th>
-                        <th>PDF</th>
+                       
 
                     </tr>
 
@@ -51,18 +48,16 @@ $sessionLogin = new Container('credo');
                     </tr>
                     <?php foreach ($certifications as $certification) : ?>
                         <tr>
-                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->final_score . ' %'); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->pre_analytic . ' %'); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->analytic . ' %'); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->post_analytic . ' %'); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->Sample_testing_score . ' %'); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml(($certification->final_score + $certification->pre_analytic + $certification->analytic + $certification->post_analytic + $certification->Sample_testing_score) / 5 . ' %'); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->final_score . ' %'); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo  $this->escapeHtml($certification->practical_total_score. ' %'); ?></div></td>
+                            
 
                             <td>
-                                <a href="<?php echo $this->url('certification', array('action' => 'add', 'certification_id' => $certification->certification_id)); ?>"> <span class="glyphicon glyphicon-list-alt"></span></a> 
+                              <div style="width:100px;height:40px;overflow:auto;">  <a href="<?php echo $this->url('certification', array('action' => 'add','id'=>$certification->certification_id)); ?>"> <span class="glyphicon glyphicon-list-alt"></span></a> </div>
                             </td>
-                            <td><a href="<?php echo $this->url('certification', array('action' => 'pdf')); ?>"  style="white-space: nowrap" target="_blank"><i class="fa fa-download"></i> PDF</a></td>
+                            
 
 
 
