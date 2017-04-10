@@ -850,14 +850,7 @@ function widget_top_1(){
 		  name: "Level 4 (90 and above)",
 		  number:"No.Of Audits <?php echo $perflast180[0]['level4']; ?>",
 		  url:'/view-data?source=apl180&level=level4'
-	  }
-	  
-	  
-	  
-	  ];
-	  
-
-	  
+	  }];
 	  
 	  $('#widget-top-3').highcharts({
             chart: {
@@ -883,7 +876,6 @@ function widget_top_1(){
             labelFormatter: function () {
                 return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">'+ this.percentage.toFixed(1)+'% (No.of Audits '+Highcharts.numberFormat(this.y, 0)+')</span></div>';
             }
-
         },
             plotOptions: {
                 pie: {
@@ -908,6 +900,7 @@ function widget_top_1(){
 		},
                 data: data
             }]
+	    
         });  
 	  
 	  
