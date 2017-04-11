@@ -245,9 +245,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                <ul  id="menu-accordeon">
 
 
-                                   <li ><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Examination<span class="caret"></span></a>
-                                       <ul >
-                                           <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
+                                   <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Examination<span class="caret"></span></a>
+                                       <ul>
                                            <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
                                            <li><a href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>">Practical Exam</a></li>
                                            <li><a href="<?php echo $this->url('exam-admin', array('action' => 'index')); ?>">Exam Administrator</a></li>
@@ -263,7 +262,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
 
 
                                    <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Certification<span class="caret"></span></a>
-                                       <ul >
+                                       <ul>
                                            <li><a href="<?php echo $this->url('provider', array('action' => 'certification')); ?>">Certification</a></li>
                                            <li><a href="<?php echo $this->url('certification-issuer', array('action' => 'index')); ?>">Certification Issuer</a></li>
 

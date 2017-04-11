@@ -19,9 +19,15 @@ class ExamAdminController extends AbstractActionController {
 
     public function indexAction() {
 
-        return new ViewModel(array(
-            'examAdmins' => $this->getExamAdminTable()->fetchAll(),
-        ));
+     $paginator = $this->getExamAdminTable()->fetchAll(true);
+     // set the current page to what has been passed in query string, or to 1 if none set
+     $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+     // set the number of items per page to 10
+     $paginator->setItemCountPerPage(10);
+
+     return new ViewModel(array(
+         'paginator' => $paginator
+     ));
     }
 
     public function addAction() {

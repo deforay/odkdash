@@ -4,6 +4,8 @@ namespace Certification\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Certification\Model\Certification;
+use Certification\Form\CertificationForm;
 
 class CertificationController extends AbstractActionController {
 
@@ -23,19 +25,17 @@ class CertificationController extends AbstractActionController {
         ));
     }
 
-    
-
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-
+        
         $id = (int) $this->params()->fromRoute('id', 0);
-
-        $form = new \Certification\Form\CertificationForm($dbAdapter);
+        
+        $form = new CertificationForm($dbAdapter);
         $form->get('submit')->setValue('Add');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $certification = new \Certification\Model\Certification();
+            $certification = new Certification();
             $form->setInputFilter($certification->getInputFilter());
             $form->setData($request->getPost());
 
@@ -46,14 +46,12 @@ class CertificationController extends AbstractActionController {
                 return $this->redirect()->toRoute('certification');
             }
         }
-
-        return array('form' => $form,
-            'id' => $id);
+        return array('id' => $id,
+            'form' => $form);
     }
 
     public function editAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
             return $this->redirect()->toRoute('certification', array(
@@ -68,8 +66,7 @@ class CertificationController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-
-        $form = new \Certification\Form\CertificationForm($dbAdapter);
+        $form = new CertificationForm($dbAdapter);
         $form->bind($certification);
         $form->get('submit')->setAttribute('value', 'Edit');
 
@@ -91,8 +88,8 @@ class CertificationController extends AbstractActionController {
         );
     }
 
-    
     public function pdfAction() {
-     
+        
     }
+
 }

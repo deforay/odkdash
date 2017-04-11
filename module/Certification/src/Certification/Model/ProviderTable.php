@@ -2,8 +2,12 @@
 
 namespace Certification\Model;
 
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Sql\Select;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 class ProviderTable extends AbstractTableGateway {
 
@@ -13,10 +17,28 @@ class ProviderTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll() {
-        $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('certification_id','provider_id', 'last_name', 'first_name','middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod','first_name','test_site_in_charge'));
+    public function fetchAll($paginated = false) {
+        if ($paginated) {
+            // create a new Select object for the table provider
+            $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('certification_id', 'provider_id', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod','facility_id', 'test_site_in_charge'));
         $sqlSelect->join('spi_rt_3_facilities', ' spi_rt_3_facilities.id = provider.facility_id ', array('facility_name'), 'left');
+        
+            // create a new result set based on the provider entity
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype(new Provider());
+            // create a new pagination adapter object
+            $paginatorAdapter = new DbSelect(
+                    // our configured select object
+                    $sqlSelect,
+                    // the adapter to run it against
+                    $this->tableGateway->getAdapter(),
+                    // the result set to hydrate
+                    $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return $paginator;
+        }
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -62,15 +84,32 @@ class ProviderTable extends AbstractTableGateway {
             }
         }
     }
-    
-    public function fetchExam() {
-        $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('certification_id','provider_id', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'first_name', 'test_site_in_charge'));
+
+    public function fetchExam($paginated = false) {
+        
+        if ($paginated) {
+            
+             $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('certification_id', 'provider_id', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'facility_id', 'test_site_in_charge'));
         $sqlSelect->join('written_exam', 'written_exam.provider_id = provider.certification_id ', array('final_score'), 'left')
                   ->join('practical_exam', 'practical_exam.provider_id = provider.certification_id', array('practical_total_score'), 'left');
         $sqlSelect->order('last_name ASC');
-
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+             
+             $resultSetPrototype = new ResultSet();
+             $resultSetPrototype->setArrayObjectPrototype(new Provider());
+             // create a new pagination adapter object
+             $paginatorAdapter = new DbSelect(
+                 // our configured select object
+                 $sqlSelect,
+                 // the adapter to run it against
+                 $this->tableGateway->getAdapter(),
+                 // the result set to hydrate
+                 $resultSetPrototype
+             );
+             $paginator = new Paginator($paginatorAdapter);
+             return $paginator;
+         }
+       $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
 

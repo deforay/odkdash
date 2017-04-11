@@ -17,7 +17,7 @@ class ProviderForm extends Form {
         parent::__construct("provider");
         $this->setAttribute('method', 'post');
 
-         $this->add(array(
+        $this->add(array(
             'name' => 'certification_id',
             'type' => 'Hidden',
         ));
@@ -95,8 +95,8 @@ class ProviderForm extends Form {
                 'label' => 'Phone',
             ),
             'attributes' => array(
-             'min' => '0',
-                )
+                'min' => '0',
+            )
         ));
         $this->add(array(
             'name' => 'email',
@@ -112,16 +112,28 @@ class ProviderForm extends Form {
                 'label' => 'Prefered Contact Method',
                 'empty_option' => 'Please choose a methode',
                 'value_options' => array(
-                   'Phone' => 'Phone',
+                    'Phone' => 'Phone',
                     'Email' => 'Email'
                 )
             ),
         ));
         $this->add(array(
             'name' => 'current_jod',
-            'type' => 'Text',
+            'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Current Job',
+                'label' => 'Current Job Title',
+                'empty_option' => 'Please choose a Job Title',
+                'value_options' => array(
+                    'Counselor' => 'Counselor',
+                    'Health assistant' => 'Health assistant',
+                    'Health attendant' => 'Health attendant',
+                    'Lab technician' => 'Lab technician',
+                    'Lab technologist' => 'Lab technologist',
+                    'Medical doctor' => 'Medical doctor',
+                    'Midwife' => 'Midwife',
+                    'Nurse' => 'Nurse',
+                    'Nurse assistant' => 'Nurse assistant'
+                ),
             ),
         ));
         $this->add(array(
@@ -137,7 +149,7 @@ class ProviderForm extends Form {
             'name' => 'test_site_in_charge',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Testing Site In Charge (Manager Or Supervisor)',
+                'label' => 'Name of Testing Site In Charge (Manager Or Supervisor)',
             ),
         ));
 

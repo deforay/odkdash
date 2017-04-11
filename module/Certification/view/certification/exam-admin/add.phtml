@@ -34,40 +34,49 @@ $sessionLogin = new Container('credo');
                             $form->prepare();
                             $form->get('admin_last_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Admin Last Name'
+                                'placeholder' => 'Admin Last Name',
+                                'autocomplete' => 'off',
                             ]);
 
                             $form->get('admin_first_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Admin First Name']);
+                                'placeholder' => 'Admin First Name',
+                                'autocomplete' => 'off',]);
                             
                             $form->get('admin_middle_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'AdminMiddle Name']);
+                                'placeholder' => 'AdminMiddle Name',
+                                'autocomplete' => 'off',]);
 
                             $form->get('region')->setAttributes([
                                 'class' => 'form-control',
+                                'autocomplete' => 'off',
                                 'placeholder' => 'Region']);
                             $form->get('district')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'District']);
+                                'placeholder' => 'District',
+                                'autocomplete' => 'off',]);
                            
                             $form->get('phone')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Phone']);
+                                'placeholder' => 'Phone',
+                                'autocomplete' => 'off',]);
                             $form->get('email')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Email']);
+                                'placeholder' => 'Email',
+                                'autocomplete' => 'off',]);
 
                             $form->get('prefered_contact_method')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Prefered Contact Method']);
                             $form->get('current_job')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Current Job']);
+                                'placeholder' => 'Current Job',
+                                'autocomplete' => 'off',]);
                             $form->get('job_address')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Job Address']);
+                                'placeholder' => 'Job Address',
+                                'autocomplete' => 'off',]);
                           
 
                             echo $this->form()->openTag($form);

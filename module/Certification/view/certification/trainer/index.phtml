@@ -5,10 +5,10 @@ use Zend\Session\Container;
 $sessionLogin = new Container('credo');
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
-$acl=$this->layout()->acl;
+$acl = $this->layout()->acl;
 if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
-}else{
+} else {
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
 }
 ?>
@@ -30,9 +30,9 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                 <h2>list of Trainers</h2>
             </div>
             <div class="col-sm-4">
-                <?php if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'add')) {  ?>
-                <a href="<?php echo $this->url('trainer', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Trainer</a>
-                <?php }  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'add')) { ?>
+                    <a href="<?php echo $this->url('trainer', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Trainer</a>
+                <?php } ?>
 
             </div>
         </div>
@@ -45,7 +45,7 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                 <thead>
                     <tr>
                         <th style="width:8%;">Trainer  </th>
-                       
+
                         <th style="width:10%;"> Region</th>
                         <th style="width:6%;">District</th>
 
@@ -65,9 +65,9 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                     <tr>
                         <td colspan="10" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                    <?php foreach ($trainers as $trainer) : ?>
+                    <?php foreach ($this->paginator as $trainer) : ?>
                         <tr>
-                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->trainer_last_name.' '.$trainer->trainer_first_name.' '.$trainer->trainer_middle_name); ?></div></td>
+                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->trainer_last_name . ' ' . $trainer->trainer_first_name . ' ' . $trainer->trainer_middle_name); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->region); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->district); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->phone); ?></div></td>
@@ -82,6 +82,21 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'trainer'
+                    )
+            );
+            ?>
         </div>
     </div>
 </div>

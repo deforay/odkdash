@@ -49,8 +49,8 @@ $sessionLogin = new Container('credo');
                         <th><div style="width:60px;">Prefered Contact Methode</div></th>
                         <th >Current Job</th>
                         <th >Facility</th>
-                       <th>Name of Testing Site In charge</th >
-                        
+                        <th>Name of Testing Site In charge (Supervisor)</th >
+
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
                         <th >Edit</th>
                         <?php // }  ?>
@@ -63,13 +63,11 @@ $sessionLogin = new Container('credo');
                     </tr>
                 <pre>
                     <?PHP // print_r($providers) ?> </pre>
-                    <?php foreach ($providers as $provider) : ?>
+                <?php foreach ($this->paginator as $provider) : ?>
                     <tr>
                         <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->provider_id); ?></div></td>
                         <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
-                        <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name.' '.$provider->first_name.' '.$provider->middle_name); ?></div></td>
-                        <!--<td><div style="width:80px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($provider->first_name); ?></div></td>-->
-                        <!--<td><div style="width:80px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($provider->middle_name); ?></div></td>-->
+                        <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
                         <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
@@ -81,13 +79,28 @@ $sessionLogin = new Container('credo');
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge); ?></div></td>
                         <td>
                             <div style="width:40px;height:40px;overflow:auto;">
-                            <a href="<?php echo $this->url('provider', array('action' => 'edit', 'certification_id' => $provider->certification_id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
-</div>
+                                <a href="<?php echo $this->url('provider', array('action' => 'edit', 'certification_id' => $provider->certification_id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'provider'
+                    )
+            );
+            ?>
         </div>
     </div>
 </div>

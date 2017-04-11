@@ -2,9 +2,13 @@
 
 namespace Certification\Model;
 
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Certification\Model\Training;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 class TrainingTable extends AbstractTableGateway {
 
@@ -14,14 +18,23 @@ class TrainingTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll() {
-         $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('training_id','Provider_id','Start_date','end_date','type_of_training',
-        'training_organization_id','trainer_id','score','Pass_fail','training_certificate','Comments'));
-        $sqlSelect->join('provider', ' provider.certification_id = training.provider_id ', array('last_name','first_name'), 'left')
-                  ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name'), 'left')
-                  ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name','trainer_first_name'), 'left');
-                  
+    public function fetchAll($paginated = false) {
+        if ($paginated) {
+            $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array( 'training_id','Start_date', 'end_date', 'type_of_training', 'training_organization_id', 'trainer_id', 'score', 'Pass_fail', 'training_certificate', 'Comments'));
+            $sqlSelect->join('provider', 'provider.certification_id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'provider_id', 'certification_id'), 'left')
+                    ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left')
+                    ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name', 'trainer_first_name'), 'left');
+
+
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype(new Training());
+            $paginatorAdapter = new DbSelect(
+                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return $paginator;
+        }
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -51,7 +64,7 @@ class TrainingTable extends AbstractTableGateway {
         );
         print_r($data);
         $training_id = (int) $Training->training_id;
-       
+
         if ($training_id == 0) {
             $this->tableGateway->insert($data);
         } else {

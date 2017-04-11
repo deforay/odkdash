@@ -50,7 +50,7 @@ $sessionLogin = new Container('credo');
                     <tr>
                         <td colspan="10" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                    <?php foreach ($organizations as $organization) : ?>
+                    <?php foreach ($this->paginator as $organization) : ?>
                         <tr>
                             <td><?php echo $this->escapeHtml($organization->training_organization_name); ?></td>
                             <td><?php echo $this->escapeHtml($organization->type_organization); ?></td>
@@ -62,6 +62,23 @@ $sessionLogin = new Container('credo');
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'training-organization'
+                    )
+            );
+            ?>
+
         </div>
     </div>
 </div>

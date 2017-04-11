@@ -20,11 +20,15 @@ class ProviderController extends AbstractActionController {
     }
 
     public function indexAction() {
-
-        $providers = $this->getProviderTable()->fetchAll();
-        $view = new ViewModel(array('providers' => $providers));
-        $view->setTemplate("certification/provider/index.phtml");
-        return $view;
+        $paginator = $this->getProviderTable()->fetchAll(true);
+     // set the current page to what has been passed in query string, or to 1 if none set
+     $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+     // set the number of items per page to 10
+     $paginator->setItemCountPerPage(10);
+    
+        return new ViewModel(array(
+         'paginator' => $paginator
+     ));
     }
 
     public function addAction() {
@@ -98,8 +102,14 @@ class ProviderController extends AbstractActionController {
 
     public function certificationAction()
      {
-         return new ViewModel(array(
-             'certifications' => $this->getProviderTable()->fetchExam()
-         ));
+              $paginator = $this->getProviderTable()->fetchExam(true);
+     // set the current page to what has been passed in query string, or to 1 if none set
+     $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+     // set the number of items per page to 10
+     $paginator->setItemCountPerPage(10);
+
+     return new ViewModel(array(
+         'paginator' => $paginator
+     ));
      }
 }

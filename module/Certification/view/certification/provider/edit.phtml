@@ -31,50 +31,60 @@ $sessionLogin = new Container('credo');
                             $form->setAttribute('action', $this->url('provider', array('action' => 'edit', 'certification_id' => $this->certification_id,)));
                             $form->prepare();
                             
-                            $form->get('provider_id')->setAttributes([
+                           $form->get('provider_id')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Provider ID (if available)'
+                                'placeholder' => 'Provider ID (if available)',
+                                'autocomplete' => 'off',
                             ]);
                             $form->get('last_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'last name'
+                                'placeholder' => 'Last name',
+                                'autocomplete' => 'off',
                             ]);
 
                             $form->get('first_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'first name']);
-                             $form->get('middle_name')->setAttributes([
+                                'placeholder' => 'First name',
+                                'autocomplete' => 'off',]);
+                            
+                            $form->get('middle_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Middle Name']);
+                                'placeholder' => 'Middle name',
+                                'autocomplete' => 'off',]);
 
                             $form->get('region')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'region']);
+                                'placeholder' => 'Region',
+                                'autocomplete' => 'off',]);
                             $form->get('district')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'district']);
+                                'placeholder' => 'District',
+                                'autocomplete' => 'off',]);
                             $form->get('type_vih_test')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'type of VIH test']);
+                                'placeholder' => 'Type of VIH Test']);
                             $form->get('phone')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'phone']);
+                                'placeholder' => 'Phone',
+                                'autocomplete' => 'off',]);
                             $form->get('email')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'email']);
+                                'placeholder' => 'Email',
+                                'autocomplete' => 'off',]);
 
                             $form->get('prefered_contact_method')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'prefered contact method']);
+                                'placeholder' => 'Prefered Contact Method']);
                             $form->get('current_jod')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Current jod']);
+                                'placeholder' => 'Current Job']);
                             $form->get('facility_id')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'facility_id']);
-                             $form->get('test_site_in_charge')->setAttributes([
+                                'placeholder' => 'Facility Name']);
+                            $form->get('test_site_in_charge')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Test Site In Charge']);
+                                'placeholder' => 'Test Site In Charge',
+                                'autocomplete' => 'off',]);
 
                             echo $this->form()->openTag($form);
                             ?>

@@ -50,8 +50,8 @@ $sessionLogin = new Container('credo');
                         <th style="width: 5%">7.<br> EQA/PT (points)<br><br></th>
                         <th style="width: 5%">8.<br> Ethics (points)<br><br> </th>
                         <th style="width: 5%">Total Points (=25)</th>
-                       <th style="width: 5%"> Final Score (≥80%)</th>
-                        
+                        <th style="width: 5%"> Final Score (≥80%)</th>
+
 
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
                         <th >Action</th>
@@ -63,12 +63,12 @@ $sessionLogin = new Container('credo');
                     <tr>
                         <td colspan="15" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                    <?php foreach ($writtenExam as $written) : ?>
+                    <?php foreach ($this->paginator as $written) : ?>
                         <tr>
-                             <td><?php echo $this->escapeHtml($written->exam_type); ?></td>
-                            
-                            <td><?php echo $this->escapeHtml($written->last_name.' '.$written->first_name); ?></td>
-                            <td><?php echo $this->escapeHtml($written->admin_last_name.' '.$written->admin_first_name); ?></td>
+                            <td><?php echo $this->escapeHtml($written->exam_type); ?></td>
+
+                            <td><?php echo $this->escapeHtml($written->last_name . ' ' . $written->first_name); ?></td>
+                            <td><?php echo $this->escapeHtml($written->admin_last_name . ' ' . $written->admin_first_name); ?></td>
                             <td><?php echo $this->escapeHtml($written->date); ?></td>
                             <td><?php echo $this->escapeHtml($written->qa_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->rt_point); ?></td>
@@ -76,12 +76,12 @@ $sessionLogin = new Container('credo');
                             <td><?php echo $this->escapeHtml($written->specimen_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->testing_algo_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->report_keeping_point); ?></td>
-                             <td><?php echo $this->escapeHtml($written->EQA_PT_points); ?></td>
+                            <td><?php echo $this->escapeHtml($written->EQA_PT_points); ?></td>
                             <td><?php echo $this->escapeHtml($written->ethics_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->total_points); ?></td>
-                            <td><?php echo $this->escapeHtml($written->final_score.' %'); ?></td>
-                           
-                            
+                            <td><?php echo $this->escapeHtml($written->final_score . ' %'); ?></td>
+
+
                             <td>
                                 <a href="<?php echo $this->url('written-exam', array('action' => 'edit', 'id_written_exam' => $written->id_written_exam)); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> 
                             </td>
@@ -89,6 +89,22 @@ $sessionLogin = new Container('credo');
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'written-exam'
+                    )
+            );
+            ?>
         </div>
     </div>
 </div>

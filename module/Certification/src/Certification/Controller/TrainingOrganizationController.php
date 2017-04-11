@@ -21,10 +21,16 @@ class TrainingOrganizationController extends AbstractActionController {
 
     public function indexAction() {
 
-        $organizations = $this->getTrainingOrganizationTable()->fetchAll();
-        $view = new ViewModel(array('organizations' => $organizations));
-        $view->setTemplate("certification/training-organization/index.phtml");
-        return $view;
+        $paginator = $this->getTrainingOrganizationTable()->fetchAll(true);
+     // set the current page to what has been passed in query string, or to 1 if none set
+     $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+     // set the number of items per page to 10
+     $paginator->setItemCountPerPage(10);
+
+     return new ViewModel(array(
+         'paginator' => $paginator
+     ));
+       
     }
 
     public function addAction() {

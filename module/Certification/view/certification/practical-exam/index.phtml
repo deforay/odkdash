@@ -1,4 +1,5 @@
 <?php
+
 use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
@@ -21,9 +22,9 @@ $sessionLogin = new Container('credo');
                 <h2>Practical Exams</h2>
             </div>
             <div class="col-sm-4">
-                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
+                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {   ?>
                 <a href="<?php echo $this->url('practical-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add a practical exam</a>
-                <?php // }  ?>
+<?php // }   ?>
 
             </div>
         </div>
@@ -35,22 +36,23 @@ $sessionLogin = new Container('credo');
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
-<th>Date</th>
+                        <th>Date</th>
                         <th>Type of Exam</th>
-                         <th>Exam Administrator</th>
-                          <th>Provider </th>
-                          <th style="width: 60px;">Pre-analytic </th>
-                          <th style="width: 60px;">Analytic </th>
-                          <th style="width: 60px;">Post-analytic </th>
-                          <th style="width: 60px;">Sample testing Score</th>
-                          <th style="width: 60px;">Practical Total Score</th>
-                            
-                             
-                             
+                        <th>Exam Administrator</th>
+                        <th>Provider </th>
+                        <th style="width: 60px;">Pre-analytic </th>
+                        <th style="width: 60px;">Analytic </th>
+                        <th style="width: 60px;">Post-analytic </th>
+                        <th style="width: 60px;">Direct observation score (≥90%) </th>
+                        <th style="width: 60px;">Sample testing Score</th>
+                        <th style="width: 60px;">Practical Total Score</th>
 
-                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+
+
+
+                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {   ?>
                         <th style="width: 80px;">Edit</th>
-                        <?php // }  ?>
+<?php // }   ?>
                     </tr>
 
                 </thead>
@@ -58,18 +60,19 @@ $sessionLogin = new Container('credo');
                     <tr>
                         <td colspan="10" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                    <?php foreach ($exams as $exam) : ?>
+<?php foreach ($this->paginator as $exam) : ?>
                         <tr>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->date); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_type); ?></div></td>
-                             <td><div style="width:170px;height:50px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name.' '.$exam->admin_first_name.' '.$exam->admin_middle_name); ?></div></td>
-                              <td><div style="width:170px;height:50px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name.' '.$exam->first_name.' '.$exam->middle_name); ?></div></td>
-                              <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->pre_analytic.' %'); ?></div></td>
-                              <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->analytic.' %'); ?></div></td>
-                              <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->post_analytic.' %'); ?></div></td>
-                              <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score.' %'); ?></div></td>
-                              <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->practical_total_score.' %'); ?></div></td>
-                                
+                            <td><div style="width:170px;height:50px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name . ' ' . $exam->admin_first_name . ' ' . $exam->admin_middle_name); ?></div></td>
+                            <td><div style="width:170px;height:50px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->pre_analytic . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->analytic . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->post_analytic . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->direct_observation_score . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
+
 
 
                             <td>
@@ -77,9 +80,24 @@ $sessionLogin = new Container('credo');
 
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+<?php endforeach; ?>
                 </tbody>
             </table>
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'practical-exam'
+                    )
+            );
+            ?>
         </div>
     </div>
 </div>

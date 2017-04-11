@@ -30,10 +30,10 @@ return array(
              'certification-issuer' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/certification-issuer[/:action][/:id]',
+                    'route' => '/certification-issuer[/:action][/:certification_issuer_id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
+                        'certification_issuer_id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Certification\Controller\CertificationIssuer',
@@ -44,10 +44,10 @@ return array(
              'recertification' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/recertification[/:action][/:id]',
+                    'route' => '/recertification[/:action][/:recertification_id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
+                        'recertification_id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Certification\Controller\Recertification',
@@ -70,20 +70,7 @@ return array(
                     ),
                 ),
             ),
-            'examination' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/examination[/:action][/:id]',
-                    'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'Certification\Controller\Examination',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
+            
              
             'written-exam' => array(
                 'type' => 'segment',
@@ -127,7 +114,7 @@ return array(
                     ),
                 ),
             ),
-            'trainer' => array(
+           'trainer' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/trainer[/:action][/:trainer_id]',
@@ -170,9 +157,24 @@ return array(
                     ),
                 ),
             ),
-//              
+//              'certification-mail' => array(
+//                'type' => 'segment',
+//                'options' => array(
+//                    'route' => '/certification-mail[/:action][/:training_organization_id]',
+//                    'constraints' => array(
+//                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'training_organization_id' => '[0-9]+',
+//                    ),
+//                    'defaults' => array(
+//                            'controller' => 'Certification\Controller\Email',
+//                        'action' => 'index',
+//                    ),
+//                ),
+//            ), 
 //              
       ),
+        
+        
        
    ),
     'controllers' => array(
@@ -180,7 +182,6 @@ return array(
             'Certification\Controller\Certification' => "Certification\Controller\CertificationController",
             'Certification\Controller\CertificationIssuer' => "Certification\Controller\CertificationIssuerController",
             'Certification\Controller\ExamAdmin' => "Certification\Controller\ExamAdminController",
-            'Certification\Controller\Examination' => "Certification\Controller\ExaminationController",
             'Certification\Controller\PracticalExam' => "Certification\Controller\PracticalExamController",
             'Certification\Controller\Provider' => "Certification\Controller\ProviderController",
             'Certification\Controller\Recertification' => "Certification\Controller\RecertificationController",

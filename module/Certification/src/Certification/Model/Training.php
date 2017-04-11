@@ -32,12 +32,19 @@ class Training {
         $this->Pass_fail = (!empty($data['Pass_fail'])) ? $data['Pass_fail'] : null;
         $this->training_certificate = (!empty($data['training_certificate'])) ? $data['training_certificate'] : null;
         $this->Comments = (!empty($data['Comments'])) ? $data['Comments'] : null;
+        
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;
+        $this->middle_name = (!empty($data['middle_name'])) ? $data['middle_name'] : null;
+//        provider_id of provider table
+        $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
+        $this->certification_id = (!empty($data['certification_id'])) ? $data['certification_id'] : null;
 
         $this->training_organization_name = (!empty($data['training_organization_name'])) ? $data['training_organization_name'] : null;
         $this->trainer_last_name = (!empty($data['trainer_last_name'])) ? $data['trainer_last_name'] : null;
         $this->trainer_first_name = (!empty($data['trainer_first_name'])) ? $data['trainer_first_name'] : null;
+        $this->type_organization = (!empty($data['type_organization'])) ? $data['type_organization'] : null;
+        
     }
 
     public function getArrayCopy() {

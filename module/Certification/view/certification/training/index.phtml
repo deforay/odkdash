@@ -34,11 +34,14 @@ $sessionLogin = new Container('credo');
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
+                        <th>Provider ID (If Available)</th>
+                        <th>Certification ID</th>
                    <th>Provider</th>
                         <th>Start date</th>
                         <th>End date</th>
                         <th  style="width: 10%;">type of training</th>
                         <th  style="width: 10%;">Training organization</th> 
+                        <th  style="width: 10%;">Type of Training organization</th> 
                         <th style="width: 10%;">Trainer</th>
                         <th>Score</th>
                         <th>Pass/fail</th>
@@ -55,14 +58,17 @@ $sessionLogin = new Container('credo');
                         <td colspan="11" class="dataTables_empty">Loading data from server</td>
                     </tr>
                 
-                    <?php foreach ($trainings as $training) : ?>
+                    <?php foreach ($this->paginator as $training) : ?>
                     <tr>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name.' '.$training->first_name); ?></div></td>
+                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
+                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name.' '.$training->first_name.' '.$training->middle_name); ?></div></td>
                         <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
                         <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
                         <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
                         <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name.' '.$training->trainer_first_name); ?></div></td>
+                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name.' '.$training->trainer_first_name); ?></div></td>
                         <td><div style="width:40px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score.' '.'%'); ?></div></td>
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
                         <td><div style="width:60px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training-> training_certificate); ?></div></td>
@@ -75,6 +81,21 @@ $sessionLogin = new Container('credo');
                 <?php endforeach; ?>
                 </tbody>
             </table>
+            <?php
+ // add at the end of the file after the table
+ echo $this->paginationControl(
+     // the paginator object
+     $this->paginator,
+     // the scrolling style
+     'sliding',
+     // the partial to use to render the control
+     'partial/paginator.phtml',
+     // the route to link to when a user clicks a control link
+     array(
+         'route' => 'training'
+     )
+ );
+ ?>
         </div>
     </div>
 </div>

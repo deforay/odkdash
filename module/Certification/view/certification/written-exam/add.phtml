@@ -9,11 +9,11 @@ $sessionLogin = new Container('credo');
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
 
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
@@ -37,92 +37,88 @@ $sessionLogin = new Container('credo');
             $form->prepare();
             $form->get('exam_type')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'last name'
+                'placeholder' => 'Type of Exam',
+                'autocomplete' => 'off'
             ]);
 
             $form->get('provider_id')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'first name'
-                ]);
+                'placeholder' => 'Provider',
+                'autocomplete' => 'off'
+            ]);
 
             $form->get('exam_admin_by_id')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'region'
-                ]);
+                'placeholder' => 'Exam Admin By',
+                'autocomplete' => 'off'
+            ]);
             $form->get('date')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'district'
-                ]);
+                'placeholder' => 'date',
+                'autocomplete' => 'off'
+            ]);
             $form->get('qa_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'phone'
-                ]);
+            ]);
             $form->get('rt_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'email'
-                ]);
+            ]);
             $form->get('safety_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'job_address'
-                ]);
+            ]);
 
             $form->get('specimen_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'prefered contact method'
-                ]);
+            ]);
             $form->get('testing_algo_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
-                ]);
-              $form->get('report_keeping_point')->setAttributes([
+            ]);
+            $form->get('report_keeping_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
-                ]);
-                $form->get('EQA_PT_points')->setAttributes([
+            ]);
+            $form->get('EQA_PT_points')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
-                ]);
-                  $form->get('ethics_point')->setAttributes([
+            ]);
+            $form->get('ethics_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
-                ]);
+            ]);
 
             echo $this->form()->openTag($form);
             ?>
             <?php echo $this->formHidden($form->get('id_written_exam')->setAttribute('class', 'form-control')) ?>
             <div class="form-group col-lg-6"> 
-                <?= $this->formLabel($form->get('exam_type')); ?>
-                <?= $this->formElement($form->get('exam_type')); ?>
-                <?= $this->formElementErrors($form->get('exam_type')); ?>
+            <?= $this->formLabel($form->get('exam_type')); ?>
+            <?= $this->formElement($form->get('exam_type')); ?>
+            <?= $this->formElementErrors($form->get('exam_type')); ?>
             </div>
             <div class="form-group col-lg-6">
-                <?= $this->formLabel($form->get('provider_id')); ?>
-                <?= $this->formElement($form->get('provider_id')); ?>
+            <?= $this->formLabel($form->get('provider_id')); ?>
+            <?= $this->formElement($form->get('provider_id')); ?>
                 <?= $this->formElementErrors($form->get('provider_id')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('exam_admin_by_id')); ?>
-                <?= $this->formElement($form->get('exam_admin_by_id')); ?>
+<?= $this->formElement($form->get('exam_admin_by_id')); ?>
                 <?= $this->formElementErrors($form->get('exam_admin_by_id')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('date')); ?>
-                <?= $this->formElement($form->get('date')); ?>
+<?= $this->formElement($form->get('date')); ?>
                 <?= $this->formElementErrors($form->get('date')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('qa_point')); ?>
-                <?= $this->formElement($form->get('qa_point')); ?>
+<?= $this->formElement($form->get('qa_point')); ?>
                 <?= $this->formElementErrors($form->get('qa_point')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('rt_point')); ?>
-                <?= $this->formElement($form->get('rt_point')); ?>
+<?= $this->formElement($form->get('rt_point')); ?>
                 <?= $this->formElementErrors($form->get('rt_point')); ?> </div>
             <div class="form-group col-lg-6">  
                 <?= $this->formLabel($form->get('safety_point')); ?>
                 <?= $this->formElement($form->get('safety_point')); ?>
-                <?= $this->formElementErrors($form->get('safety_point')); ?>
+<?= $this->formElementErrors($form->get('safety_point')); ?>
             </div>
 
             <div class="form-group col-lg-6">
@@ -175,23 +171,23 @@ $sessionLogin = new Container('credo');
 
 
 <script>
-$(document).ready(function() {
- 
- $("#date").datepicker(
-	    		{	
-	    		  showButtonPanel: true
-	    		, dateFormat: 'yy/mm/dd'
-	    		, dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa']     			
-	    		, dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-	    		, monthNamesShort: ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Août','Sep','Oct','Nov','Déc']
-	    		, monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
-	    		, prevText: 'Précédent'
-	    		, nextText: 'Suivant'
-	    		, closeText: 'OK'
-	    		, currentText: "Aujourd'hui"	
-	    		});
- 
-}); //EOf:: DOM isReady
+    $(document).ready(function () {
+
+        $("#date").datepicker(
+                {
+                    showButtonPanel: true
+                    , dateFormat: 'yy/mm/dd'
+                    , dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa']
+                    , dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+                    , monthNamesShort: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+                    , monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+                    , prevText: 'Précédent'
+                    , nextText: 'Suivant'
+                    , closeText: 'OK'
+                    , currentText: "Aujourd'hui"
+                });
+
+    }); //EOf:: DOM isReady
 
 
 </script>

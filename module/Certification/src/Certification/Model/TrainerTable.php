@@ -5,6 +5,10 @@ namespace Certification\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Certification\Model\Trainer;
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Select;
+use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Paginator;
 
 class TrainerTable extends AbstractTableGateway {
 
@@ -14,7 +18,24 @@ class TrainerTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll() {
+    public function fetchAll($paginated = false) {
+        if ($paginated) {
+            $select = new Select('trainer');
+
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype(new Trainer());
+
+            $paginatorAdapter = new DbSelect(
+                    // our configured select object
+                    $select,
+                    // the adapter to run it against
+                    $this->tableGateway->getAdapter(),
+                    // the result set to hydrate
+                    $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return $paginator;
+        }
         $resultSet = $this->tableGateway->select();
         return $resultSet;
     }

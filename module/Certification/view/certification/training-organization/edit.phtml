@@ -37,7 +37,8 @@ $sessionLogin = new Container('credo');
                             $form->prepare();
                             $form->get('training_organization_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'training organization name'
+                                'placeholder' => 'training organization name',
+                                'autocomplete' => 'off'
                             ]);
                             $form->get('type_organization')->setAttributes([
                                 'class' => 'form-control',
@@ -59,7 +60,7 @@ $sessionLogin = new Container('credo');
 
 
                             <div class="row" style="margin-left: 18px;"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                                 <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>" >CANCEL</a> </div>
+                                <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>" >CANCEL</a> </div>
                                 <?php echo $this->form()->closeTag();
                                 ?>
                         </div>

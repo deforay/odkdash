@@ -36,40 +36,50 @@ $sessionLogin = new Container('credo');
                             )
             ));
             $form->prepare();
-            $form->get('trainer_last_name')->setAttributes([
+           $form->get('trainer_last_name')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'last name'
+                'placeholder' => 'last name',
+                'autocomplete' => 'off',
             ]);
 
             $form->get('trainer_first_name')->setAttributes([
                 'class' => 'form-control',
+                'autocomplete' => 'off',
                 'placeholder' => 'first name']);
             $form->get('trainer_middle_name')->setAttributes([
                 'class' => 'form-control',
+                'autocomplete' => 'off',
                 'placeholder' => 'Middle Name']);
+
 
             $form->get('region')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'region']);
+                'placeholder' => 'region',
+                'autocomplete' => 'off',]);
             $form->get('district')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'district']);
+                'placeholder' => 'district',
+                'autocomplete' => 'off',]);
             $form->get('phone')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'phone']);
+                'placeholder' => 'phone',
+                'autocomplete' => 'off',]);
             $form->get('email')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'email']);
+                'placeholder' => 'email',
+                'autocomplete' => 'off',]);
             $form->get('job_address')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'job_address']);
+                'placeholder' => 'job_address',
+                'autocomplete' => 'off',]);
 
             $form->get('prefered_contact_method')->setAttributes([
                 'class' => 'form-control',
                 'placeholder' => 'prefered contact method']);
             $form->get('current_jod')->setAttributes([
                 'class' => 'form-control',
-                'placeholder' => 'Current job']);
+                'placeholder' => 'Current job',
+                'autocomplete' => 'off']);
 
             echo $this->form()->openTag($form);
             ?>

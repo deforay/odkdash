@@ -34,42 +34,57 @@ $sessionLogin = new Container('credo');
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-           <th>Administrator</th>
+                        <th>Administrator</th>
                         <th>Region</th>
                         <th>District</th>
                         <th  style="width: 10%;">Email</th>
                         <th  style="width: 10%;">Prefered Contact Method</th> 
                         <th style="width: 10%;">Current Job</th>
                         <th>Job Address</th>
-                        
+
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
                         <th >Action</th>
                         <?php // }  ?>
                     </tr>
-               
+
                 </thead>
                 <tbody>
                     <tr>
                         <td colspan="11" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                
-                    <?php foreach ($examAdmins as $exam) : ?>
-                    <tr>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name.' '.$exam->admin_first_name.' '.$exam->admin_middle_name); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->region ); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->district ); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->email ); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->prefered_contact_method ); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->current_job ); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->job_address ); ?></div></td>
-                        <td>
-                            <a href="<?php echo $this->url('exam-admin', array('action' => 'edit', 'exam_admin_by_id' => $exam->exam_admin_by_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
 
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($this->paginator as $exam) : ?>
+                        <tr>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name . ' ' . $exam->admin_first_name . ' ' . $exam->admin_middle_name); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->region); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->district); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->email); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->prefered_contact_method); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->current_job); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->job_address); ?></div></td>
+                            <td>
+                                <a href="<?php echo $this->url('exam-admin', array('action' => 'edit', 'exam_admin_by_id' => $exam->exam_admin_by_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
+
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'exam-admin'
+                    )
+            );
+            ?>
         </div>
     </div>
 </div>

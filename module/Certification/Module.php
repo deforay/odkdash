@@ -100,6 +100,28 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Certification());
                     return new TableGateway('certification', $dbAdapter, null, $resultSetPrototype);
                 },
+                'Certification\Model\CertificationIssuerTable' => function($sm) {
+                    $tableGateway = $sm->get('CertificationIssuerTableGateway');
+                    $table = new \Certification\Model\CertificationIssuerTable($tableGateway);
+                    return $table;
+                },
+                'CertificationIssuerTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\CertificationIssuer());
+                    return new TableGateway('certification_issuer', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Certification\Model\RecertificationTable' => function($sm) {
+                    $tableGateway = $sm->get('RecertificationTableGateway');
+                    $table = new \Certification\Model\RecertificationTable($tableGateway);
+                    return $table;
+                },
+                'RecertificationTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Recertification());
+                    return new TableGateway('recertification', $dbAdapter, null, $resultSetPrototype);
+                },
             ),
         );
     }

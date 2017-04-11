@@ -32,7 +32,8 @@ $sessionLogin = new Container('credo');
                             $form->prepare();
                             $form->get('training_organization_name')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Training Organization Name'
+                                'placeholder' => 'Training Organization Name',
+                                    'autocomplete' => 'off'
                             ]);
                             
                             $form->get('type_organization')->setAttributes([

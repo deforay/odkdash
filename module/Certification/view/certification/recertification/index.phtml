@@ -1,8 +1,118 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>list of Re-certifications</h2>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr>
+                        <th>Due Date</th>
+                        <th style="width:80px;">Certification ID</th>
+                        <th>Type of Reminder</th>
+                        <th>Reminder sent to</th>
+                        <th  style="width:80px;">Name of Recipient</th>
+                        <th style="width:80px;">Date Reminder sent </th>
+                        
+                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <th >Edit</th>
+                         <th >PDF</th>
+                        <?php // }  ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                <pre>
+                   
+                <?php foreach ($this->paginator as $recertification) : ?>
+                    <tr>
+                        <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->due_date); ?></div></td>
+                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->certification_id); ?></div></td>
+                        <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->reminder_type); ?></div></td>
+                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->reminder_sent_to); ?></div></td>
+                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->name_of_recipient); ?></div></td>
+                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->date_reminder_sent); ?></div></td>
+                       
+                        <td>
+                            <div style="width:80px;height:40px;overflow:auto;">
+                                <a href="<?php echo $this->url('recertification', array('action' => 'edit', 'recertification_id' => $recertification->recertification_id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                            </div>
+                        </td>
+                        <td>
+                            <div style="width:80px;height:40px;overflow:auto;">
+                                <a href="<?php echo $this->url('certification', array('action' => 'pdf')); ?> " target="_blank"><span class="glyphicon glyphicon-download-alt">PDF</span></a> 
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php
+ // add at the end of the file after the table
+ echo $this->paginationControl(
+     // the paginator object
+     $this->paginator,
+     // the scrolling style
+     'sliding',
+     // the partial to use to render the control
+     'partial/paginator.phtml',
+     // the route to link to when a user clicks a control link
+     array(
+         'route' => 'album'
+     )
+ );
+ ?>
+
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+<script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+
+
+
+
+
+
+
 

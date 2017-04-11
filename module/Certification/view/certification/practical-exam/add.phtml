@@ -36,8 +36,7 @@ $sessionLogin = new Container('credo');
                             $form->prepare();
                             $form->get('exam_type')->setAttributes([
                                 'class' => 'form-control',
-//                                
-                            ]);
+                                ]);
 
                             $form->get( 'exam_admin_by_id')->setAttributes([
                                 'class' => 'form-control',
@@ -62,6 +61,7 @@ $sessionLogin = new Container('credo');
 
                             $form->get('date')->setAttributes([
                                 'class' => 'form-control',
+                                'autocomplete' => 'off',
                                ]);
                             
                             echo $this->form()->openTag($form);
