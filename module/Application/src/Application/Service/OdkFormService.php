@@ -335,7 +335,6 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         $result = $db->getPerformance($params);
         $MyData = new pData();
-        
         if(count($result)>0){
             foreach($result as $key=>$data){
                 $MyData->addPoints(array($data['level0'],$data['level1'],$data['level2'],$data['level3'],$data['level4']),"Level".$key);
@@ -350,8 +349,10 @@ class OdkFormService {
             }
         }
         
+        $percentage = $result[0]['level0'] + $result[0]['level1'] + $result[0]['level2'] + $result[0]['level3'] + $result[0]['level4'];
+        
         /* Define the absissa serie */
-        $MyData->addPoints(array("Level 0 (Below 40)","Level 1 (40-59)","Level 2 (60-79)","Level 3 (80-89)","Level 4 (90 and above)"),"Labels");
+        $MyData->addPoints(array("Level 0 (Below 40)&nbsp;&nbsp;&nbsp;&nbsp;".round(($result[0]['level0'] / $percentage) * 100,1)." %&nbsp;(NO.Of Audits&nbsp;".$result[0]['level0'].")","Level 1 (40-59)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".round(($result[0]['level1'] / $percentage) * 100,1)."%&nbsp;(NO.Of Audits&nbsp;".$result[0]['level1'].")","Level 2 (60-79) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".round(($result[0]['level2'] / $percentage) * 100,1)."%&nbsp;(NO.Of Audits&nbsp;".$result[0]['level2'].")","Level 3 (80-89) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".round(($result[0]['level3'] / $percentage) * 100,1)."%&nbsp;(NO.Of Audits&nbsp;".$result[0]['level3'].")","Level 4 (90 and above) &nbsp;".round(($result[0]['level4'] / $percentage) * 100,1)."%&nbsp;(NO.Of Audits&nbsp;".$result[0]['level4'].")"),"Labels");
         $MyData->setAbscissa("Labels");
        
         /* Create the pChart object */
