@@ -287,7 +287,11 @@ tr.shown td.details-control {
                       $("#level2").html(json.levelTwoCount);
                       $("#level3").html(json.levelThreeCount);
                       $("#level4").html(json.levelFourCount+"&nbsp;");
-                      $("#duplicate").html(json.duplicate+"&nbsp;Possible Duplicate Audit(s)");
+                      if(json.duplicate >0){
+                        $("#duplicate").html(json.duplicate+"&nbsp;Possible Duplicate Audit(s)");
+                      }else{
+                        $("#duplicate").css('visibility','hidden');
+                      }
                       fnCallback(json);
                      }
                 });
