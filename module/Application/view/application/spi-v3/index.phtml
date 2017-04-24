@@ -132,7 +132,7 @@ tr.shown td.details-control {
                   </form>
                 </div>
                 <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'duplicate')) { ?>
-                <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"></a>&nbsp;&nbsp;
+                <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm" style="visibility:hidden;"></a>&nbsp;&nbsp;
                 <?php } ?>
                 <a href="/spi-v3/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Audits in Bulk </a>
               </div>
@@ -288,9 +288,8 @@ tr.shown td.details-control {
                       $("#level3").html(json.levelThreeCount);
                       $("#level4").html(json.levelFourCount+"&nbsp;");
                       if(json.duplicate >0){
+                        $("#duplicate").css('visibility','visible');
                         $("#duplicate").html(json.duplicate+"&nbsp;Possible Duplicate Audit(s)");
-                      }else{
-                        $("#duplicate").css('visibility','hidden');
                       }
                       fnCallback(json);
                      }
