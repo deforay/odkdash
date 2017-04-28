@@ -25,8 +25,8 @@ class WrittenExamForm extends Form {
             'name' => 'exam_type',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'type of exam',
-                'empty_option' => 'Please choose a type of exam',
+                'label' => 'Number of Attempts',
+                'empty_option' => 'Please choose a Number of Attempts',
                 'value_options' => array(
                     '1st attempt' => '1st attempt',
                     '2nd attempt' => '2nd attempt',
@@ -162,14 +162,14 @@ class WrittenExamForm extends Form {
 
     public function getListProvider() {
         $dbAdapter = $this->adapter;
-        $sql = 'SELECT certification_id,last_name,first_name FROM provider order by last_name asc ';
+        $sql = 'SELECT id,certification_id,last_name,first_name FROM provider order by last_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
 
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['certification_id']] = $res['last_name'] . ' ' . $res['first_name'];
+            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'];
         }
         return $selectData;
     }

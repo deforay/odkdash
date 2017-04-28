@@ -19,6 +19,7 @@ class RecertificationTable {
     public function fetchAll($paginated=false) {
         if ($paginated) {
              $select = new Select('recertification');
+             $select->order('recertification_id desc');
            $resultSetPrototype = new ResultSet();
              $resultSetPrototype->setArrayObjectPrototype(new Recertification());
              // create a new pagination adapter object

@@ -20,14 +20,22 @@ class TrainerTable extends AbstractTableGateway {
 
     public function fetchAll($paginated = false) {
         if ($paginated) {
-            $select = new Select('trainer');
+            
+            $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array('trainer_id', 'trainer_last_name', 'trainer_first_name', 'trainer_middle_name', 'district', 'region', 'phone', 'email', 'job_address', 'prefered_contact_method', 'current_jod'));
+//            $sqlSelect->join('written_exam', 'written_exam.id_written_exam = examination.id_written_exam', array('final_score'), 'left')
+//                    ->join('practical_exam', 'practical_exam.practice_exam_id = examination.practical_exam_id', array('practical_total_score'), 'left')
+//                    ->join('provider', 'provider.id=examination.provider', array('certification_id', 'provider_id', 'last_name', 'first_name', 'middle_name'), 'left')
+//                    ->where (array('add_to_certification'=>'no'));
+                    $sqlSelect->order('trainer_last_name asc');
+            
 
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new Trainer());
 
             $paginatorAdapter = new DbSelect(
                     // our configured select object
-                    $select,
+                    $sqlSelect,
                     // the adapter to run it against
                     $this->tableGateway->getAdapter(),
                     // the result set to hydrate
@@ -77,4 +85,19 @@ class TrainerTable extends AbstractTableGateway {
         }
     }
 
+    public function search($motCle) {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array( 'trainer_id', 'trainer_last_name', 'trainer_first_name', 'trainer_middle_name', 'district', 'region', 'phone', 'email', 'job_address', 'prefered_contact_method', 'current_jod'));
+         
+          $sqlSelect->where->like('trainer_last_name', '%'. $motCle .'%');
+          $sqlSelect->where->OR->like('trainer_middle_name', '%'. $motCle .'%');
+          $sqlSelect->where->OR->like('trainer_first_name', '%'. $motCle .'%');
+         
+        $sqlSelect->order('trainer_last_name ASC');
+        ?> 
+        <pre><?php // print_r($sqlSelect) ; ?></pre> <?php
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+        return $resultSet;
+    }
+    
 }

@@ -6,6 +6,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilterAwareInterface;
 
+
 class WrittenExam implements InputFilterAwareInterface {
 
     public $id_written_exam;
@@ -43,9 +44,11 @@ class WrittenExam implements InputFilterAwareInterface {
         $this->ethics_point = (!empty($data['ethics_point'])) ? $data['ethics_point'] : null;
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;
+         $this->middle_name = (!empty($data['middle_name'])) ? $data['middle_name'] : null;
         $this->name_exam_type = (!empty($data['name_exam_type'])) ? $data['name_exam_type'] : null;
         $this->admin_last_name = (!empty($data['admin_last_name'])) ? $data['admin_last_name'] : null;
         $this->admin_first_name = (!empty($data['admin_first_name'])) ? $data['admin_first_name'] : null;
+        $this->admin_middle_name = (!empty($data['admin_middle_name'])) ? $data['admin_middle_name'] : null;
          $this->total_points = (!empty($data['total_points'])) ? $data['total_points'] : null;
           $this->final_score = (!empty($data['final_score'])) ? $data['final_score'] : null;
     }

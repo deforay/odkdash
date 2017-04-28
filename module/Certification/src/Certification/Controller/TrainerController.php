@@ -91,5 +91,17 @@ class TrainerController extends AbstractActionController {
             'form' => $form,
         );
     }
+    
+    public function searchAction() {
+         $request = $this->getRequest();
+        if ($request->isPost()) {
+            $motCle = $request->getPost('motCle',null);
+        }
+//        die($motCle);
+        return new ViewModel(array(
+             'trainers' => $this->getTrainerTable()->search($motCle),
+         ));
+        
+    }
 
 }

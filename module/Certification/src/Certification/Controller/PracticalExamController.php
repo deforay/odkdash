@@ -44,6 +44,8 @@ class PracticalExamController extends AbstractActionController {
                 $practicalExam->exchangeArray($form->getData());
 //               
                 $this->getPracticalExamTable()->savePracticalExam($practicalExam);
+                $last_id = $this->getPracticalExamTable()->last_id();
+                $this->getPracticalExamTable()->insertToExamination($last_id);
 
                 return $this->redirect()->toRoute('practical-exam');
             }
@@ -90,6 +92,18 @@ class PracticalExamController extends AbstractActionController {
             'practice_exam_id' => $practice_exam_id,
             'form' => $form,
         );
+    }
+
+    public function searchAction() {
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $motCle = $request->getPost('motCle', null);
+        }
+//        die($motCle);
+        return new ViewModel(array(
+            'practicals' => $this->getPracticalExamTable()->search($motCle),
+        ));
     }
 
 }

@@ -32,7 +32,19 @@ $sessionLogin = new Container('credo');
 
 
     <div class="main-content">
+
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
+            <div class="col-sm-12">          
+                <form class="navbar-form navbar-right" action="<?php echo $this->url('provider', array('action' => 'search')); ?>" method="POST">
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
+
+                    </button>
+
+                </form>
+            </div>
+
+
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
@@ -66,8 +78,8 @@ $sessionLogin = new Container('credo');
                 <?php foreach ($this->paginator as $provider) : ?>
                     <tr>
                         <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->provider_id); ?></div></td>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
-                        <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
+                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
                         <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
@@ -79,7 +91,7 @@ $sessionLogin = new Container('credo');
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge); ?></div></td>
                         <td>
                             <div style="width:40px;height:40px;overflow:auto;">
-                                <a href="<?php echo $this->url('provider', array('action' => 'edit', 'certification_id' => $provider->certification_id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                <a href="<?php echo $this->url('provider', array('action' => 'edit', 'id' => $provider->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
                             </div>
                         </td>
                     </tr>

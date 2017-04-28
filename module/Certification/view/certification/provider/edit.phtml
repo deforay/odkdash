@@ -28,8 +28,13 @@ $sessionLogin = new Container('credo');
                         <div class="panel-body" >
                             <?php
                             $form = $this->form;
-                            $form->setAttribute('action', $this->url('provider', array('action' => 'edit', 'certification_id' => $this->certification_id,)));
+                            $form->setAttribute('action', $this->url('provider', array('action' => 'edit', 'id' => $this->id,)));
                             $form->prepare();
+                            $form->get('certification_id')->setAttributes([
+                                'class' => 'form-control',
+                                'autocomplete' => 'off',
+                                'readonly' => TRUE,
+                            ]);
                             
                            $form->get('provider_id')->setAttributes([
                                 'class' => 'form-control',
@@ -88,7 +93,12 @@ $sessionLogin = new Container('credo');
 
                             echo $this->form()->openTag($form);
                             ?>
-                            <?php echo $this->formHidden($form->get('certification_id')->setAttribute('class', 'form-control')) ?>
+                            <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
+                            <div class="form-group col-lg-4"> 
+                                <?= $this->formLabel($form->get('certification_id')); ?>
+                                <?= $this->formElement($form->get('certification_id')); ?>
+                                <?= $this->formElementErrors($form->get('certification_id')); ?>
+                            </div>
                             <div class="form-group col-lg-4"> 
                                 <?= $this->formLabel($form->get('provider_id')); ?>
                                 <?= $this->formElement($form->get('provider_id')); ?>

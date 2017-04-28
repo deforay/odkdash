@@ -1,16 +1,17 @@
 <?php
 
 namespace Certification\Form;
+
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Form\Form;
 
 class CertificationForm extends Form {
 
-     protected $adapter;
-     
+    protected $adapter;
+
     public function __construct(AdapterInterface $dbAdapter) {
-         $this->adapter = $dbAdapter;
+        $this->adapter = $dbAdapter;
         // we want to ignore the name passed
         parent::__construct('certification');
 
@@ -19,23 +20,17 @@ class CertificationForm extends Form {
             'type' => 'Hidden',
         ));
         $this->add(array(
-            'name' => 'certification_id',
+            'name' => 'examination',
             'type' => 'Number',
             'options' => array(
-                'label' => 'Certification ID',
+                'label' => 'examination',
             ),
         ));
         $this->add(array(
             'name' => 'final_decision',
-            'type' => 'Zend\Form\Element\Select',
+            'type' => 'Text',
             'options' => array(
                 'label' => 'Final Decision',
-                'empty_option' => 'Please choose an Type',
-                'value_options' => array(
-                    'Certified' => 'Certified',
-                    'Pending' => 'Pending',
-                    'Failed' => 'Failed',
-                ),
             ),
         ));
 
@@ -58,7 +53,6 @@ class CertificationForm extends Form {
                     'id' => 'date2',
                     'type' => 'text',
                 ],
-                
             ),
         ));
 
@@ -71,21 +65,14 @@ class CertificationForm extends Form {
                     'id' => 'date2',
                     'type' => 'text',
                 ],
-               
             ),
         ));
 
         $this->add(array(
             'name' => 'certification_type',
-            'type' => 'Zend\Form\Element\Select',
+            'type' => 'Text',
             'options' => array(
                 'label' => 'Type of Certificate',
-                'empty_option' => 'Please choose an Type',
-                'value_options' => array(
-                    'Initial' => 'Initial',
-                    'Re-certification' => 'Re-certification',
-                   
-                ),
             ),
         ));
 

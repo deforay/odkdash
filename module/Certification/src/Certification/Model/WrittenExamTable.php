@@ -8,6 +8,8 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Adapter\Adapter;
 
 class WrittenExamTable extends AbstractTableGateway {
 
@@ -22,8 +24,8 @@ class WrittenExamTable extends AbstractTableGateway {
             $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('id_written_exam', 'exam_type', 'provider_id', 'exam_admin_by_id', 'date', 'qa_point', 'rt_point',
                 'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'total_points', 'final_score'));
-            $sqlSelect->join('provider', ' provider.certification_id= written_exam.provider_id ', array('last_name', 'first_name'), 'left')
-                    ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id= written_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name'), 'left');
+            $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
+                    ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id= written_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name', 'admin_middle_name'), 'left');
 
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new WrittenExam());
@@ -70,9 +72,8 @@ class WrittenExamTable extends AbstractTableGateway {
             'total_points' => $written_exam->qa_point + $written_exam->rt_point + $written_exam->safety_point + $written_exam->specimen_point + $written_exam->testing_algo_point + $written_exam->report_keeping_point + $written_exam->EQA_PT_points + $written_exam->ethics_point,
             'final_score' => (($written_exam->qa_point + $written_exam->rt_point + $written_exam->safety_point + $written_exam->specimen_point + $written_exam->testing_algo_point + $written_exam->report_keeping_point + $written_exam->EQA_PT_points + $written_exam->ethics_point) * 100) / 25
         );
-?>  <?php // print_r($data);   ?>   
+        ?>  <?php // print_r($data);      ?>   
         <?php
-
         $id_written_exam = (int) $written_exam->id_written_exam;
         if ($id_written_exam == 0) {
             $this->tableGateway->insert($data);
@@ -82,6 +83,58 @@ class WrittenExamTable extends AbstractTableGateway {
             } else {
                 throw new \Exception('Written Exam id does not exist');
             }
+        }
+    }
+
+    public function search($motCle) {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('id_written_exam', 'exam_type', 'provider_id', 'exam_admin_by_id', 'date', 'qa_point', 'rt_point',
+            'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'total_points', 'final_score'));
+        $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
+                ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id= written_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name', 'admin_middle_name'), 'left');
+
+        $sqlSelect->where->like('last_name', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('admin_last_name', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('admin_first_name', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('admin_middle_name', '%' . $motCle . '%');
+        $sqlSelect->order('id_written_exam desc');
+        ?> 
+        <pre><?php // print_r($sqlSelect) ;    ?></pre> <?php
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+        return $resultSet;
+    }
+
+    public function last_id() {
+        $last_id = $this->tableGateway->lastInsertValue;
+//        die($last_id);
+        return $last_id;
+    }
+
+    public function insertToExamination($last_id) {
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'select provider_id,exam_type from written_exam where id_written_exam=' . $last_id;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $provider = $res['provider_id'];
+        }
+
+        $sql2 = 'SELECT count(*) as nombre FROM examination WHERE provider=' . $provider . ' and id_written_exam is null and practical_exam_id is not null';
+        $statement2 = $db->query($sql2);
+        $result2 = $statement2->execute();
+        foreach ($result2 as $res2) {
+            $nombre = $res2['nombre'];
+        }
+
+        if ($nombre == 0) {
+            $sql2 = 'insert into examination (id_written_exam,provider) values (' . $last_id . ',' . $provider . ')';
+            $statement2 = $db->query($sql2);
+            $result2 = $statement2->execute();
+        } else {
+            $sql = 'UPDATE examination SET id_written_exam=' . $last_id . ' WHERE provider=' . $provider;
+            $db->getDriver()->getConnection()->execute($sql);
         }
     }
 

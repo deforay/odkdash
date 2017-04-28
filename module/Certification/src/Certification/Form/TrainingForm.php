@@ -109,7 +109,7 @@ class TrainingForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'name' => 'Pass_fail',
             'options' => array(
-                'label' => 'Pass/fail',
+                'label' => 'Performance',
                 'empty_option' => 'Please choose an option',
                 'value_options' => array(
                    'Satisfactory' => 'Satisfactory',

@@ -33,11 +33,20 @@ $sessionLogin = new Container('credo');
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+             <div class="col-sm-12">          
+                <form class="navbar-form navbar-right" action="<?php echo $this->url('written-exam', array('action' => 'search')); ?>" method="POST">
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
+
+                    </button>
+
+                </form>
+            </div>
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
 
-                        <th style="width: 8%">Type of exam </th>
+                        <th style="width: 8%">Number of Attempts </th>
                         <th>Provider </th>
                         <th style="width: 10%" >Exam administered by </th>
                         <th style="width: 8%">Date </th>
@@ -65,10 +74,10 @@ $sessionLogin = new Container('credo');
                     </tr>
                     <?php foreach ($this->paginator as $written) : ?>
                         <tr>
-                            <td><?php echo $this->escapeHtml($written->exam_type); ?></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($written->exam_type); ?></div></td>
 
-                            <td><?php echo $this->escapeHtml($written->last_name . ' ' . $written->first_name); ?></td>
-                            <td><?php echo $this->escapeHtml($written->admin_last_name . ' ' . $written->admin_first_name); ?></td>
+                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($written->last_name . ' ' . $written->first_name. ' ' . $written->middle_name); ?></div></td>
+                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($written->admin_last_name . ' ' . $written->admin_first_name. ' ' . $written->admin_middle_name); ?></div></td>
                             <td><?php echo $this->escapeHtml($written->date); ?></td>
                             <td><?php echo $this->escapeHtml($written->qa_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->rt_point); ?></td>

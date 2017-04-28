@@ -16,7 +16,7 @@ return array(
             'certification' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/certification[/:action][/:id]',
+                    'route' => '/certification[/:action][/:id][/:written][/:practical][/:last][/:first][/:middle]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -100,13 +100,27 @@ return array(
                     ),
                 ),
             ),
+            'examination' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/examination[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Certification\Controller\Examination',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'provider' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/provider[/][:action][/:certification_id]',
+                    'route' => '/provider[/][:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'certification_id' => '[0-9]+',
+                        'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Certification\Controller\Provider',
@@ -157,20 +171,20 @@ return array(
                     ),
                 ),
             ),
-//              'certification-mail' => array(
-//                'type' => 'segment',
-//                'options' => array(
-//                    'route' => '/certification-mail[/:action][/:training_organization_id]',
-//                    'constraints' => array(
-//                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-//                        'training_organization_id' => '[0-9]+',
-//                    ),
-//                    'defaults' => array(
-//                            'controller' => 'Certification\Controller\Email',
-//                        'action' => 'index',
-//                    ),
-//                ),
-//            ), 
+              'certification-mail' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/certification-mail[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                            'controller' => 'Certification\Controller\CertificationMail',
+                        'action' => 'index',
+                    ),
+                ),
+            ), 
 //              
       ),
         
@@ -193,6 +207,8 @@ return array(
             'Certification\Controller\TypeExam' => "Certification\Controller\TypeExamController",
             'Certification\Controller\TypeTraining' => "Certification\Controller\TypeTrainingController",
             'Certification\Controller\WrittenExam' => "Certification\Controller\WrittenExamController",
+            'Certification\Controller\CertificationMail' => "Certification\Controller\CertificationMailController",
+            'Certification\Controller\Examination' => "Certification\Controller\ExaminationController",
             
             
         ),

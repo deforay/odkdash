@@ -48,12 +48,14 @@ class WrittenExamController extends AbstractActionController {
                 ?> <pre> <?php // print_r($writtenExam);?>    </pre>
                 <?php
                 $this->getWrittenExamTable()->saveWrittenExam($writtenExam);
-
+                $last_id = $this->getWrittenExamTable()->last_id();
+                $this->getWrittenExamTable()->insertToExamination($last_id);
                 return $this->redirect()->toRoute('written-exam');
             }
         }
 
-        return array('form' => $form);
+        return array('form' => $form,
+            );
     }
 
     public function editAction() {
@@ -96,4 +98,15 @@ class WrittenExamController extends AbstractActionController {
         );
     }
 
+    public function searchAction() {
+         $request = $this->getRequest();
+        if ($request->isPost()) {
+            $motCle = $request->getPost('motCle',null);
+        }
+//        die($motCle);
+        return new ViewModel(array(
+             'writtens' => $this->getWrittenExamTable()->search($motCle),
+         ));
+        
+    }
 }

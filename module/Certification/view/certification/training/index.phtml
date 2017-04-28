@@ -31,12 +31,22 @@ $sessionLogin = new Container('credo');
     </div>
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <div class="col-sm-12">          
+                <form class="navbar-form navbar-right" action="<?php echo $this->url('training', array('action' => 'search')); ?>" method="POST">
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
+
+                    </button>
+
+                </form>
+            </div>
+
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
                         <th>Provider ID (If Available)</th>
                         <th>Certification ID</th>
-                   <th>Provider</th>
+                        <th>Provider</th>
                         <th>Start date</th>
                         <th>End date</th>
                         <th  style="width: 10%;">type of training</th>
@@ -44,7 +54,7 @@ $sessionLogin = new Container('credo');
                         <th  style="width: 10%;">Type of Training organization</th> 
                         <th style="width: 10%;">Trainer</th>
                         <th>Score</th>
-                        <th>Pass/fail</th>
+                        <th>Performance</th>
                         <th  style="width: 6%;" >Training certificate</th>
                         <!--<th style="width: 10%;" >Comments</th>-->
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
@@ -57,46 +67,56 @@ $sessionLogin = new Container('credo');
                     <tr>
                         <td colspan="11" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                
-                    <?php foreach ($this->paginator as $training) : ?>
-                    <tr>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name.' '.$training->first_name.' '.$training->middle_name); ?></div></td>
-                        <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
-                        <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name.' '.$training->trainer_first_name); ?></div></td>
-                        <td><div style="width:40px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score.' '.'%'); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
-                        <td><div style="width:60px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training-> training_certificate); ?></div></td>
-                        <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments); ?></div></td>-->
-                        <td>
-                            <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => $training->training_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
 
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($this->paginator as $training) : ?>
+                        <tr>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
+                            <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
+                            <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
+                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
+                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
+                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name . ' ' . $training->trainer_first_name); ?></div></td>
+                            <td><div style="width:40px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score . ' ' . '%'); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
+                            <?php
+                            if (strcasecmp($training->training_certificate, 'yes') == 0) {
+                                echo "<td><span style='color: green; ' class='glyphicon glyphicon glyphicon-ok' ></span></td>";
+                            } else {
+                                echo "<td><span style='color: red' class='glyphicon glyphicon glyphicon-remove'></span></td>";
+                            }
+                            ?>
+                            <!--<td><div style="width:60px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->training_certificate);  ?></div></td>-->
+                            <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);   ?></div></td>-->
+                            <td>
+                                <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => $training->training_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
+
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
                 </tbody>
             </table>
             <?php
- // add at the end of the file after the table
- echo $this->paginationControl(
-     // the paginator object
-     $this->paginator,
-     // the scrolling style
-     'sliding',
-     // the partial to use to render the control
-     'partial/paginator.phtml',
-     // the route to link to when a user clicks a control link
-     array(
-         'route' => 'training'
-     )
- );
- ?>
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'training'
+                    )
+            );
+            ?>
         </div>
+
+
     </div>
 </div>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
@@ -119,4 +139,22 @@ $sessionLogin = new Container('credo');
 
 
 
-
+<!--
+foreach ($rolesresult as $value) {
+                                
+                                                                
+                                                                foreach ($value['privileges'] as $privilege) {
+                                
+                                                                                echo "<td>"
+                                                                                                        . "<label class='labelName'>" . ucwords($privilege['display_name']) . "</label> <br>
+                                                                                                                        <label>
+                                                                                                                                <input type='radio' class='cekAll' name='resource[" . $value['resource_id'] . "][" . $privilege['privilege_name'] . "]" . "' value='allow'> <i class='fa fa-check'></i>
+                                                                                                                        </label> &nbsp; 
+                                                                                                                        <label>
+                                                                                                                                <input type='radio' class='unCekAll' name='resource[" . $value['resource_id'] . "][" . $privilege['privilege_name'] . "]" . "' value='deny' checked=''>  <i class='fa fa-times'></i>
+                                                                                                                        </label>
+                                                                                                          </td>";
+                                                                                                }
+                                                                                echo "</tr>";
+                                                        }
+                                                        ?>	-->

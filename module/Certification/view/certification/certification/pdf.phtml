@@ -45,11 +45,11 @@ $pdf->setPrintFooter(false);
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 
 
 // set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+//$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -68,16 +68,6 @@ $pdf->SetFont('times', 'B', 25);
 // add a page
 $pdf->AddPage('L', 'A4');
 
-
-// create some HTML content
-$html = '<h1 style="text-align:center;">certificat de reusite</h1>
-<div style="text-align:center;">Ce certificate atteste que <br> <h1 style=" color:blue">DABRE ABJARATOU</h1> <br>A  apte a faire les test de depistage rapide
-</div>';
-
-// output the HTML content
-$pdf->writeHTML($html, true, false, true, false, '');
-
-
 // set JPEG quality
 $pdf->setJPEGQuality(75);
 
@@ -85,9 +75,32 @@ $pdf->setJPEGQuality(75);
 
 // Stretching, position and alignment example
 
-$pdf->SetXY(230, 150);
-//$pdf->Image('/home/rtqii/Documents/web/test-cert/public/assets/img/nobody.jpg', '', '', 40, 40, '', '', 'T', false, 300, '', false, false, 1, false, false, false);
-$pdf->Image(dirname(__CLASS__).'public/assets/img/signature.png', '', '', 25, 20, '', '', '', false, 300, '', false, false, 1, false, false, false);
+//$pdf->SetXY(250,100 );
+
+// create some HTML content
+$html = '
+<div style="text-align:center; border: 10px solid transparent;
+    padding: 15px;
+    border-image-source: url('.dirname(__CLASS__).'public/assets/img/images.png'.');
+    border-image-repeat: round;    
+    border-image-slice: 30;
+    border-image-width: 30px;
+    ">
+   <h1>Certificate</h1>
+    Ce certificate atteste que <br> <h1 style=" color:blue">'.strtoupper($last).' '.strtoupper($first).' '.strtoupper($middle).'</h1> <br>A  apte a faire les test de depistage rapide<br><br><br><br><br><br>
+ <img src="'.dirname(__CLASS__).'public/assets/img/signature.png'.'"  width="150" style="margin-right:0px" ></div>';
+
+
+// output the HTML content
+$pdf->writeHTML($html, true, false, true, false, '');
+
+$pdf->SetLineStyle( array( 'width' => 15, 'color' => array(0,0,0)));
+
+$pdf->Line(0,0,$pdf->getPageWidth(),0); 
+$pdf->Line($pdf->getPageWidth(),0,$pdf->getPageWidth(),$pdf->getPageHeight());
+$pdf->Line(0,$pdf->getPageHeight(),$pdf->getPageWidth(),$pdf->getPageHeight());
+$pdf->Line(0,0,0,$pdf->getPageHeight());
+
 
 // -------------------------------------------------------------------
 

@@ -20,6 +20,7 @@ class ExamAdminTable extends AbstractTableGateway {
     public function fetchAll($paginated=false) {
         if ($paginated) {
              $select = new Select('exam_admin_by');
+             $select->order('admin_last_name asc');
              $resultSetPrototype = new ResultSet();
              $resultSetPrototype->setArrayObjectPrototype(new ExamAdmin());
              // create a new pagination adapter object
@@ -72,6 +73,21 @@ class ExamAdminTable extends AbstractTableGateway {
                 throw new \Exception('Exam Administrator id does not exist');
             }
         }
+    }
+    
+     public function search($motCle) {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array('exam_admin_by_id', 'admin_last_name', 'admin_first_name', 'admin_middle_name', 'district', 'region', 'email', 'phone', 'prefered_contact_method', 'current_job', 'job_address'));
+         
+          $sqlSelect->where->like('admin_last_name', '%'. $motCle .'%');
+          $sqlSelect->where->OR->like('admin_middle_name', '%'. $motCle .'%');
+          $sqlSelect->where->OR->like('admin_first_name', '%'. $motCle .'%');
+         
+        $sqlSelect->order('admin_last_name ASC');
+        ?> 
+        <pre><?php // print_r($sqlSelect) ; ?></pre> <?php
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+        return $resultSet;
     }
 
 }

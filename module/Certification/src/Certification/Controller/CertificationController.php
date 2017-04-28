@@ -27,9 +27,12 @@ class CertificationController extends AbstractActionController {
 
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        
+
         $id = (int) $this->params()->fromRoute('id', 0);
-        
+        $written = $this->params()->fromQuery('written');
+        $practical = $this->params()->fromQuery('practical');
+
+
         $form = new CertificationForm($dbAdapter);
         $form->get('submit')->setValue('Add');
 
@@ -42,11 +45,15 @@ class CertificationController extends AbstractActionController {
             if ($form->isValid()) {
                 $certification->exchangeArray($form->getData());
                 $this->getCertificationTable()->saveCertification($certification);
+                $last_id = $this->getCertificationTable()->last_id();
+                $this->getCertificationTable()->updateExamination($last_id);
 
                 return $this->redirect()->toRoute('certification');
             }
         }
         return array('id' => $id,
+            'written' => $written,
+            'practical' => $practical,
             'form' => $form);
     }
 
@@ -89,7 +96,14 @@ class CertificationController extends AbstractActionController {
     }
 
     public function pdfAction() {
-        
+
+        $last = $this->params()->fromQuery('last');
+        $first = $this->params()->fromQuery('first');
+        $middle = $this->params()->fromQuery('middle');
+        return array(
+            'last' => $last,
+            'first' => $first,
+            'middle' => $middle);
     }
 
 }

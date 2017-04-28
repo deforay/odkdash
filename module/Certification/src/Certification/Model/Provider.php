@@ -7,7 +7,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilterAwareInterface;
 
 class Provider {
-
+    public $id;
     public $certification_id;
     public $provider_id;
     public $last_name;
@@ -27,6 +27,7 @@ class Provider {
     protected $inputFilter;
 
     public function exchangeArray($data) {
+        $this->id = (!empty($data['id'])) ? $data['id'] : null;
         $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
         $this->certification_id = (!empty($data['certification_id'])) ? $data['certification_id'] : null;
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
@@ -65,13 +66,29 @@ class Provider {
             $inputFilter = new InputFilter();
 
             $inputFilter->add(array(
-                'name' => 'certification_id',
+                'name' => 'id',
                 'required' => false,
                 'filters' => array(
                     array('name' => 'Int'),
                 ),
             ));
-
+$inputFilter->add(array(
+                'name' => 'certification_id',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+            
             $inputFilter->add(array(
                 'name' => 'provider_id',
                 'required' => false,

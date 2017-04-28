@@ -88,5 +88,15 @@ class TrainingOrganizationController extends AbstractActionController {
             'form' => $form,
         );
     }
-
+    
+     public function searchAction() {
+         $request = $this->getRequest();
+        if ($request->isPost()) {
+            $motCle = $request->getPost('motCle',null);
+        }
+//        die($motCle);
+        return new ViewModel(array(
+             'organizations' => $this->getTrainingOrganizationTable()->search($motCle),
+         ));
+     }
 }

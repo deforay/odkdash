@@ -124,14 +124,14 @@ class PracticalExamForm extends Form {
     
      public function getListProvider() {
         $dbAdapter = $this->adapter;
-        $sql = 'SELECT certification_id,last_name,first_name FROM provider order by last_name asc ';
+        $sql = 'SELECT id, certification_id,last_name,first_name FROM provider order by last_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
 
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['certification_id']] = $res['last_name'] . ' ' . $res['first_name'];
+            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'];
         }
         return $selectData;
     }

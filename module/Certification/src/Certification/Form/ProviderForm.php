@@ -18,9 +18,18 @@ class ProviderForm extends Form {
         $this->setAttribute('method', 'post');
 
         $this->add(array(
-            'name' => 'certification_id',
+            'name' => 'id',
             'type' => 'Hidden',
         ));
+        
+        $this->add(array(
+            'name' => 'certification_id',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Certification ID',
+            ),
+        ));
+        
         $this->add(array(
             'name' => 'provider_id',
             'type' => 'Text',
@@ -170,9 +179,7 @@ class ProviderForm extends Form {
         $sql = 'SELECT id,facility_name FROM spi_rt_3_facilities ORDER by facility_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
-
-        $selectData = array();
-
+        
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['facility_name'];
         }

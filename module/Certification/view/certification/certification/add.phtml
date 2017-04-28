@@ -32,73 +32,76 @@ $sessionLogin = new Container('credo');
                             <?php
                             $form->setAttribute('action', $this->url('certification', array('action' => 'add')));
                             $form->prepare();
-                            
-                            $form->get('certification_id')->setAttributes([
+
+                            $form->get('examination')->setAttributes([
                                 'class' => 'form-control',
                                 'value' => $this->id,
                                 'readonly' => true,
                                 'autocomplete' => 'off',
                             ]);
-                            $form->get('final_decision')->setAttributes([
-                                'class' => 'form-control',
-                                'placeholder' => 'Final Decision',
-                                'autocomplete' => 'off',
-                            ]);
+                            $practical_score = $this->practical;
+                            $written_score = $this->written;
+                             if ($written_score >= 80 && $practical_score >= 90) {
+                                $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Certified', 'readonly' => TRUE]);
+                            } elseif ($written_score <= 80 && $practical_score <= 90) {
+                                $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'failed','readonly' => TRUE]);
+                            } else {
+                                $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'pending','readonly' => TRUE]);
+                            }
+                            
 
                             $form->get('certification_issuer_id')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Certification Issued By']);
-                            
+
                             $form->get('date_certificate_issued')->setAttributes([
                                 'class' => 'form-control',
-                                'value' => date('Y-m-d')]);
+                                'value' => date('Y-m-d'),
+                                'readonly' => TRUE]);
+                           
 
-                            $form->get('date_certificate_sent')->setAttributes([
-                                'class' => 'form-control',
-                                'placeholder' => 'Date Certificate Sent',
-                                'autocomplete' => 'off',]);
                             $form->get('certification_type')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Type of Certition',
-                                'autocomplete' => 'off',]);
-                            
-                            
+                                'autocomplete' => 'off',
+                                'value' => 'initial',
+                                'readonly' => TRUE]);
+
+
                             echo $this->form()->openTag($form);
                             ?>
                             <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-                             <div class="form-group col-lg-6"> 
-                                <?= $this->formLabel($form->get('certification_id')); ?>
-                                <?= $this->formElement($form->get('certification_id')); ?>
-                                <?= $this->formElementErrors($form->get('certification_id')); ?>
+                            <div class="form-group col-lg-6"> 
+                                <?= $this->formLabel($form->get('examination')); ?>
+                                <?= $this->formElement($form->get('examination')); ?>
+                                <?= $this->formElementErrors($form->get('examination')); ?>
                             </div>
                             <div class="form-group col-lg-6"> 
                                 <?= $this->formLabel($form->get('final_decision')); ?>
                                 <?= $this->formElement($form->get('final_decision')); ?>
                                 <?= $this->formElementErrors($form->get('final_decision')); ?>
                             </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('certification_issuer_id')); ?>
-                                <?= $this->formElement($form->get('certification_issuer_id')); ?>
-                                <?= $this->formElementErrors($form->get('certification_issuer_id')); ?>
-                            </div>
+                             <div class="form-group col-lg-6">
+                                <?= $this->formLabel($form->get('certification_type')); ?>
+                                <?= $this->formElement($form->get('certification_type')); ?>
+                                <?= $this->formElementErrors($form->get('certification_type')); ?></div>
+
                             <div class="form-group col-lg-6">
                                 <?= $this->formLabel($form->get('date_certificate_issued')); ?>
                                 <?= $this->formElement($form->get('date_certificate_issued')); ?>
                                 <?= $this->formElementErrors($form->get('date_certificate_issued')); ?>
                             </div>
                             <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('date_certificate_sent')); ?>
-                                <?= $this->formElement($form->get('date_certificate_sent')); ?>
-                                <?= $this->formElementErrors($form->get('date_certificate_sent')); ?>
+                                <?= $this->formLabel($form->get('certification_issuer_id')); ?>
+                                <?= $this->formElement($form->get('certification_issuer_id')); ?>
+                                <?= $this->formElementErrors($form->get('certification_issuer_id')); ?>
                             </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('certification_type')); ?>
-                                <?= $this->formElement($form->get('certification_type')); ?>
-                                <?= $this->formElementErrors($form->get('certification_type')); ?></div>
                             
                            
+                           
+
                             <div class="form-group col-lg-6" style="margin-top: 30px"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                                 <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('certification', array('action' => 'index')); ?>" >CANCEL</a> </div>
+                                <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('certification', array('action' => 'index')); ?>" >CANCEL</a> </div>
                                 <?php echo $this->form()->closeTag();
                                 ?>
                         </div>

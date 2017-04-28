@@ -21,6 +21,7 @@ class TrainingOrganizationTable extends AbstractTableGateway {
 
         if ($paginated) {
            $select = new Select('training_organization');
+           $select->order('training_organization_name asc');
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new TrainingOrganization());
             // create a new pagination adapter object
@@ -67,4 +68,18 @@ class TrainingOrganizationTable extends AbstractTableGateway {
         }
     }
 
+    public function search($motCle) {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array('training_organization_id', 'training_organization_name', 'type_organization'));
+         
+          $sqlSelect->where->like('training_organization_name', '%'. $motCle .'%');
+          $sqlSelect->where->OR->like('type_organization', '%'. $motCle .'%');
+          
+         
+        $sqlSelect->order('training_organization_name');
+        ?> 
+        <pre><?php // print_r($sqlSelect) ; ?></pre> <?php
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+        return $resultSet;
+    }
 }
