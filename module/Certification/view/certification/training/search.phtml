@@ -26,13 +26,12 @@ $sessionLogin = new Container('credo');
     </div>
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-             
-            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+           <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
                         <th>Provider ID (If Available)</th>
                         <th>Certification ID</th>
-                   <th>Provider</th>
+                        <th>Provider</th>
                         <th>Start date</th>
                         <th>End date</th>
                         <th  style="width: 10%;">type of training</th>
@@ -51,34 +50,40 @@ $sessionLogin = new Container('credo');
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="11" class="dataTables_empty">Loading data from server</td>
+                        <td colspan="13" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                
-                    <?php foreach ($trainings as $training) : ?>
-                    <tr>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name.' '.$training->first_name.' '.$training->middle_name); ?></div></td>
-                        <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
-                        <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
-                        <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name.' '.$training->trainer_first_name); ?></div></td>
-                        <td><div style="width:40px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score.' '.'%'); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
-                        <td><div style="width:60px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training-> training_certificate); ?></div></td>
-                        <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments); ?></div></td>-->
-                        <td>
-                            <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => $training->training_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
 
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($trainings as $training) : ?>
+                        <tr>
+                            <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
+                            <td><div style="width:110px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
+                            <td><div style="width:180px;height:45px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
+                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
+                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name . ' ' . $training->trainer_first_name); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score . ' ' . '%'); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
+                            <?php
+                            if (strcasecmp($training->training_certificate, 'yes') == 0) {
+                                echo "<td><span style='color: green; ' class='glyphicon glyphicon glyphicon-ok' ></span></td>";
+                            } else {
+                                echo "<td><span style='color: red' class='glyphicon glyphicon glyphicon-remove'></span></td>";
+                            }
+                            ?>
+                            <!--<td><div style="width:60px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->training_certificate);  ?></div></td>-->
+                            <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);   ?></div></td>-->
+                            <td>
+                                <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => $training->training_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
+
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
                 </tbody>
             </table>
-          
- 
         </div>
     </div>
 </div>

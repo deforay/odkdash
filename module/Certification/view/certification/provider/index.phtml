@@ -51,14 +51,12 @@ $sessionLogin = new Container('credo');
                         <th>Provider Id</th>
                         <th>Certification ID</th>
                         <th>Provider</th>
-                        <!--<th>First Name</th>-->
-                        <!--<th ><div style="width:80px;">Middle Name (3rd name)</div></th>-->
                         <th>Region</th>
                         <th>District</th>
-                        <th><div style="width:80px;">Type VIH Test Modality/ Point </div></th> 
+                        <th><div>Type VIH Test Modality/ Point </div></th> 
                         <th>Phone</th>
                         <th >E-mail</th>
-                        <th><div style="width:60px;">Prefered Contact Methode</div></th>
+                        <th><div>Prefered Contact Methode</div></th>
                         <th >Current Job</th>
                         <th >Facility</th>
                         <th>Name of Testing Site In charge (Supervisor)</th >
@@ -77,20 +75,20 @@ $sessionLogin = new Container('credo');
                     <?PHP // print_r($providers) ?> </pre>
                 <?php foreach ($this->paginator as $provider) : ?>
                     <tr>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->provider_id); ?></div></td>
+                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->provider_id); ?></div></td>
                         <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
                         <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
-                        <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
+                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
                         <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->phone); ?></div></td>
-                        <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
-                        <td><div style="width:50px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->prefered_contact_method); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
+                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->prefered_contact_method); ?></div></td>
                         <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->current_jod); ?></div></td>
-                        <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_name); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_name); ?></div></td>
+                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge); ?></div></td>
                         <td>
-                            <div style="width:40px;height:40px;overflow:auto;">
+                            <div style="width:70px;height:40px;overflow:auto;">
                                 <a href="<?php echo $this->url('provider', array('action' => 'edit', 'id' => $provider->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
                             </div>
                         </td>

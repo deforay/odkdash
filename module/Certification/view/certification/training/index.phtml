@@ -65,21 +65,21 @@ $sessionLogin = new Container('credo');
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="11" class="dataTables_empty">Loading data from server</td>
+                        <td colspan="13" class="dataTables_empty">Loading data from server</td>
                     </tr>
 
                     <?php foreach ($this->paginator as $training) : ?>
                         <tr>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                            <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
+                            <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
-                            <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
-                            <td><div style="width:65px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
                             <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
                             <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
                             <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name . ' ' . $training->trainer_first_name); ?></div></td>
-                            <td><div style="width:40px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score . ' ' . '%'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score . ' ' . '%'); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
                             <?php
                             if (strcasecmp($training->training_certificate, 'yes') == 0) {

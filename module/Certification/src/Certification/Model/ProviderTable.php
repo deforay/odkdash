@@ -94,8 +94,7 @@ class ProviderTable extends AbstractTableGateway {
     public function search($motCle) {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('id', 'certification_id', 'provider_id', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'facility_id', 'test_site_in_charge'));
-        $sqlSelect->join('written_exam', 'written_exam.provider_id = provider.id ', array('final_score'), 'left')
-                ->join('practical_exam', 'practical_exam.provider_id = provider.id', array('practical_total_score', 'Sample_testing_score', 'direct_observation_score'), 'left');
+       $sqlSelect->join('spi_rt_3_facilities', ' spi_rt_3_facilities.id = provider.facility_id ', array('facility_name'), 'left');;
         $sqlSelect->where->like('last_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
