@@ -1,0 +1,103 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+} else {
+    $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+}
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>Results of Search</h2>
+            </div>
+                   </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+                        <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+                <thead>
+                    <tr>
+                        <th style="width:8%;">Trainer  </th>
+
+                        <th style="width:10%;"> Region</th>
+                        <th style="width:6%;">District</th>
+
+                        <th style="width:5%;">Phone</th>
+                        <th style="width:5%;">E-mail</th>
+                        <th style="width:6%;">job address</th> 
+                        <th style="width:8%;">prefered contact methode</th>
+                        <th style="width:8%;">Current job</th>
+
+                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <th style="width:6%;">Action</th>
+                        <?php // }  ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                    <?php foreach ($trainers as $trainer) : ?>
+                        <tr>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->trainer_last_name . ' ' . $trainer->trainer_first_name . ' ' . $trainer->trainer_middle_name); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->region); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->district); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->phone); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->email); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->job_address); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->prefered_contact_method); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->current_jod); ?></div></td>
+                            <td>
+                                <a href="<?php echo $this->url('trainer', array('action' => 'edit', 'trainer_id' => $trainer->trainer_id)); ?>"> <span class="glyphicon glyphicon-pencil"></span>   Edit</a> 
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+           
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+<script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+
+
+
+
+
+
+

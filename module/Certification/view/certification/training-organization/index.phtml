@@ -1,0 +1,111 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
+
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+
+<div class="am-content">
+    <div class="page-head">
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>list of Training organizations</h2>
+            </div>
+            <div class="col-sm-4">
+                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
+                <a href="<?php echo $this->url('training-organization', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training Organization</a>
+                <?php // }  ?>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <div class="col-sm-12">          
+                <form class="navbar-form" action="<?php echo $this->url('training-organization', array('action' => 'search')); ?>" method="POST" style="margin-left: 235px;">
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
+
+                    </button>
+
+                </form>
+            </div>
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 50%;">
+                <thead>
+                    <tr>
+
+                        <th style="width:50%;">Training Organization </th>
+                        <th style="width:50%;">Type of Training Organization </th>
+
+                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <th style="width:30%;">Edit</th>
+                        <?php // }  ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                    <?php foreach ($this->paginator as $organization) : ?>
+                        <tr>
+                            <td><?php echo $this->escapeHtml($organization->training_organization_name); ?></td>
+                            <td><?php echo $this->escapeHtml($organization->type_organization); ?></td>
+
+                            <td>
+                                <a href="<?php echo $this->url('training-organization', array('action' => 'edit', 'training_organization_id' => $organization->training_organization_id)); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <?php
+            // add at the end of the file after the table
+            echo $this->paginationControl(
+                    // the paginator object
+                    $this->paginator,
+                    // the scrolling style
+                    'sliding',
+                    // the partial to use to render the control
+                    'partial/paginator.phtml',
+                    // the route to link to when a user clicks a control link
+                    array(
+                'route' => 'training-organization'
+                    )
+            );
+            ?>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+
+<script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+
+
+
+
+
