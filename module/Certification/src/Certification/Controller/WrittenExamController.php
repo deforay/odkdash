@@ -35,6 +35,7 @@ class WrittenExamController extends AbstractActionController {
 
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $practical= (int) $this->params()->fromQuery('practice_exam_id',0);
         $form = new WrittenExamForm($dbAdapter);
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
@@ -42,8 +43,9 @@ class WrittenExamController extends AbstractActionController {
             $writtenExam = new \Certification\Model\WrittenExam();
             $form->setInputFilter($writtenExam->getInputFilter());
             $form->setData($request->getPost());
+$practical = $request->getPost('practical', null);
 
-            if ($form->isValid()) {
+            if ($form->isValid() && empty($practical)) {
                 $writtenExam->exchangeArray($form->getData());
                 ?> <pre> <?php // print_r($writtenExam);?>    </pre>
                 <?php
@@ -51,10 +53,19 @@ class WrittenExamController extends AbstractActionController {
                 $last_id = $this->getWrittenExamTable()->last_id();
                 $this->getWrittenExamTable()->insertToExamination($last_id);
                 return $this->redirect()->toRoute('written-exam');
+            } else {
+                $writtenExam->exchangeArray($form->getData());
+                ?> <pre> <?php // print_r($writtenExam);?>    </pre>
+                <?php
+                $this->getWrittenExamTable()->saveWrittenExam($writtenExam);
+                $last_id = $this->getWrittenExamTable()->last_id();
+                $this->getWrittenExamTable()->examination($last_id,$practical);
+                return $this->redirect()->toRoute('written-exam');
             }
         }
 
         return array('form' => $form,
+                     'practical' => $practical,
             );
     }
 

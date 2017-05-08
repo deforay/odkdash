@@ -71,11 +71,8 @@ $sessionLogin = new Container('credo');
                             echo $this->form()->openTag($form);
                             ?>
                             <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-                             <div class="form-group col-lg-6"> 
-                                <?= $this->formLabel($form->get('examination')); ?>
-                                <?= $this->formElement($form->get('examination')); ?>
-                                <?= $this->formElementErrors($form->get('examination')); ?>
-                            </div>
+                            <?php echo $this->formHidden($form->get('examination')->setAttribute('class', 'form-control')) ?>
+                             
                             <div class="form-group col-lg-6"> 
                                 <?= $this->formLabel($form->get('final_decision')); ?>
                                 <?= $this->formElement($form->get('final_decision')); ?>

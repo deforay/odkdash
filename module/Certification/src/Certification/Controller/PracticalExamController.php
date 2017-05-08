@@ -32,26 +32,39 @@ class PracticalExamController extends AbstractActionController {
 
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $id_written = (int) $this->params()->fromQuery('id_written_exam', 0);
+
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
+
         if ($request->isPost()) {
             $practicalExam = new PracticalExam();
             $form->setInputFilter($practicalExam->getInputFilter());
             $form->setData($request->getPost());
-
-            if ($form->isValid()) {
+            $written = $request->getPost('written', null);
+//            $written=$_POST['written'];
+            if ($form->isValid() && empty($written)) {
                 $practicalExam->exchangeArray($form->getData());
-//               
+
                 $this->getPracticalExamTable()->savePracticalExam($practicalExam);
                 $last_id = $this->getPracticalExamTable()->last_id();
                 $this->getPracticalExamTable()->insertToExamination($last_id);
 
                 return $this->redirect()->toRoute('practical-exam');
+            } else {
+                $practicalExam->exchangeArray($form->getData());
+
+                $this->getPracticalExamTable()->savePracticalExam($practicalExam);
+                $last_id = $this->getPracticalExamTable()->last_id();
+                $this->getPracticalExamTable()->examination($written, $last_id);
+                return $this->redirect()->toRoute('practical-exam');
             }
         }
 
-        return array('form' => $form);
+
+        return array('form' => $form,
+            'written' => $id_written);
     }
 
     public function editAction() {
@@ -79,7 +92,6 @@ class PracticalExamController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setInputFilter($practicalExam->getInputFilter());
             $form->setData($request->getPost());
-
             if ($form->isValid()) {
                 $this->getPracticalExamTable()->savePracticalExam($practicalExam);
 

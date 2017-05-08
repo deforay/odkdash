@@ -55,17 +55,26 @@ class TrainerTable extends AbstractTableGateway {
     }
 
     public function saveTrainer(Trainer $trainer) {
+        
+        $last_name = strtoupper($trainer->trainer_last_name);
+        $first_name = ucfirst($trainer->trainer_first_name);
+        $middle_name = ucfirst($trainer->trainer_middle_name);
+        $region = ucfirst($trainer->region);
+        $district = ucfirst($trainer->district);
+        $job_address= ucfirst($trainer->job_address);
+         $current_job = ucfirst($trainer->current_jod);
+        
         $data = array(
-            'trainer_last_name' => $trainer->trainer_last_name,
-            'trainer_first_name' => $trainer->trainer_first_name,
-            'trainer_middle_name' => $trainer->trainer_middle_name,
-            'region' => $trainer->region,
-            'district' => $trainer->district,
+            'trainer_last_name' => $last_name,
+            'trainer_first_name' => $first_name,
+            'trainer_middle_name' => $middle_name,
+            'region' => $region,
+            'district' => $district,
             'phone' => $trainer->phone,
             'email' => $trainer->email,
-            'job_address' => $trainer->job_address,
+            'job_address' => $job_address,
             'prefered_contact_method' => $trainer->prefered_contact_method,
-            'current_jod' => $trainer->current_jod,
+            'current_jod' => $current_job,
         );
 //        print_r($data);
 

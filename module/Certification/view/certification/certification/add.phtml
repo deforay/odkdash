@@ -32,13 +32,6 @@ $sessionLogin = new Container('credo');
                             <?php
                             $form->setAttribute('action', $this->url('certification', array('action' => 'add')));
                             $form->prepare();
-
-                            $form->get('examination')->setAttributes([
-                                'class' => 'form-control',
-                                'value' => $this->id,
-                                'readonly' => true,
-                                'autocomplete' => 'off',
-                            ]);
                             $practical_score = $this->practical;
                             $written_score = $this->written;
                              if ($written_score >= 80 && $practical_score >= 90) {
@@ -52,7 +45,8 @@ $sessionLogin = new Container('credo');
 
                             $form->get('certification_issuer_id')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Certification Issued By']);
+                                'placeholder' => 'Certification Issued By',
+                                'required'=> true]);
 
                             $form->get('date_certificate_issued')->setAttributes([
                                 'class' => 'form-control',
@@ -66,16 +60,17 @@ $sessionLogin = new Container('credo');
                                 'autocomplete' => 'off',
                                 'value' => 'initial',
                                 'readonly' => TRUE]);
+                            
+                            $form->get('submit')->setAttributes([
+                                'onclick'=>'alert()']);
 
 
                             echo $this->form()->openTag($form);
                             ?>
                             <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-                            <div class="form-group col-lg-6"> 
-                                <?= $this->formLabel($form->get('examination')); ?>
-                                <?= $this->formElement($form->get('examination')); ?>
-                                <?= $this->formElementErrors($form->get('examination')); ?>
-                            </div>
+                           
+                               <?php echo $this->formHidden($form->get('examination')->setAttributes(['class'=> 'form-control', 'value'=>$this->id])) ?>
+                            
                             <div class="form-group col-lg-6"> 
                                 <?= $this->formLabel($form->get('final_decision')); ?>
                                 <?= $this->formElement($form->get('final_decision')); ?>

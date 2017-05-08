@@ -182,6 +182,15 @@ class WrittenExam implements InputFilterAwareInterface {
                     array('name' => 'int'),
                 ),
             ));
+            
+            $inputFilter->add(array(
+                'name' => 'practical',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+            ));
+
 
             $this->inputFilter = $inputFilter;
         }

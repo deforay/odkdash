@@ -26,7 +26,7 @@ class WrittenExamTable extends AbstractTableGateway {
                 'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'total_points', 'final_score'));
             $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
                     ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id= written_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name', 'admin_middle_name'), 'left');
-
+            $sqlSelect->order('id_written_exam desc');
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new WrittenExam());
             // create a new pagination adapter object
@@ -112,9 +112,13 @@ class WrittenExamTable extends AbstractTableGateway {
         return $last_id;
     }
 
+    /**
+     * insert written exam id to  examination
+     * @param type $last_id
+     */
     public function insertToExamination($last_id) {
         $db = $this->tableGateway->getAdapter();
-        $sql1 = 'select provider_id,exam_type from written_exam where id_written_exam=' . $last_id;
+        $sql1 = 'select provider_id from written_exam where id_written_exam=' . $last_id;
         $statement = $db->query($sql1);
         $result = $statement->execute();
         foreach ($result as $res) {
@@ -136,6 +140,24 @@ class WrittenExamTable extends AbstractTableGateway {
             $sql = 'UPDATE examination SET id_written_exam=' . $last_id . ' WHERE provider=' . $provider;
             $db->getDriver()->getConnection()->execute($sql);
         }
+    }
+    /**
+     * insert written and practical exam id to examination
+     * @param type $written
+     * @param type $last_id
+     */
+    public function examination($last_id,$practical){
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'select provider_id from written_exam where id_written_exam=' . $last_id;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $provider = $res['provider_id'];
+        }
+        
+        $sql2 = 'insert into examination (provider,id_written_exam,practical_exam_id) values (' .  $provider . ',' .$last_id.','.$practical . ')';
+        $statement2 = $db->query($sql2);
+        $result2 = $statement2->execute();
     }
 
 }

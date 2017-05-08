@@ -96,7 +96,7 @@ class PracticalExamTable extends AbstractTableGateway {
     public function search($motCle) {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin_by_id', 'provider_id', 'pre_analytic', 'analytic', 'post_analytic', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
-        $sqlSelect->join('provider', ' provider.certification_id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
+        $sqlSelect->join('provider', 'provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
                 ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id = practical_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name', 'admin_middle_name',), 'left');
         $sqlSelect->where->like('last_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
@@ -121,7 +121,7 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     /**
-     * insert practical_exam to examination table
+     * insert practical_exam id to examination table
      * @param type $last_id
      */
     public function insertToExamination($last_id) {
@@ -151,5 +151,26 @@ class PracticalExamTable extends AbstractTableGateway {
             $db->getDriver()->getConnection()->execute($sql);
         }
     }
+    
+    /**
+     * insert written and practical exam id to examination
+     * @param type $written
+     * @param type $last_id
+     */
+    public function examination($written,$last_id){
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'select provider_id from practical_exam where practice_exam_id=' . $last_id;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $provider = $res['provider_id'];
+        }
+        
+        $sql2 = 'insert into examination (provider,id_written_exam,practical_exam_id) values (' .  $provider .','.$written . ',' .$last_id. ')';
+        $statement2 = $db->query($sql2);
+        $result2 = $statement2->execute();
+    }
+    
+    
 
 }

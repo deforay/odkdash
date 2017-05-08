@@ -50,16 +50,24 @@ class CertificationIssuerTable {
     }
 
     public function saveCertificationIssuer(CertificationIssuer $certification_issuer) {
+        
+        $last_name = strtoupper($certification_issuer->issuer_last_name);
+        $first_name = ucfirst($certification_issuer->issuer_first_name);
+        $middle_name = ucfirst($certification_issuer->issuer_middle_name);
+        $region = ucfirst($certification_issuer->region);
+        $district = ucfirst($certification_issuer->district);
+        $current_job = ucfirst($certification_issuer->current_job);
+        
         $data = array(
-            'issuer_last_name' => $certification_issuer->issuer_last_name,
-            'issuer_first_name' => $certification_issuer->issuer_first_name,
-            'issuer_middle_name' => $certification_issuer->issuer_middle_name,
-            'region' => $certification_issuer->region,
-            'district' => $certification_issuer->district,
+            'issuer_last_name' => $last_name,
+            'issuer_first_name' => $first_name,
+            'issuer_middle_name' => $middle_name,
+            'region' => $region,
+            'district' => $district,
             'phone' => $certification_issuer->phone,
             'email' => $certification_issuer->email,
             'prefered_contact_method' => $certification_issuer->prefered_contact_method,
-            'current_job' => $certification_issuer->current_job,
+            'current_job' => $current_job,
         );
         print_r($data);
         $certification_issuer_id = (int) $certification_issuer->certification_issuer_id;

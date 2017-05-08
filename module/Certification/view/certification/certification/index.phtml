@@ -32,13 +32,12 @@ $sessionLogin = new Container('credo');
                 <thead>
                     <tr>
                         <th>Certification ID</th>
+                        <th>Provider</th>
                         <th>Final Decision</th>
                         <th>Certificate Issuer</th>
                         <th  style="width:80px;">Date Certificate Issued</th>
                         <th style="width:80px;">Date Certificate Sent</th>
                         <th style="width:80px;">Type of Certification</th> 
-                        <th>Issued</th>
-
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
                         <th >Edit</th>
                         <th >PDF</th>
@@ -53,30 +52,43 @@ $sessionLogin = new Container('credo');
                 <pre>
                     
                     <?php foreach ($certifications as $certification) : ?>
-                        <tr>
-                            <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
-                            <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->issuer_last_name . ' ' . $certification->issuer_first_name . ' ' . $certification->issuer_middle_name); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_issued); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_sent); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
-                            <td><div style="width:60px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->issued); ?></div></td>
-                            <td>
-                                <div style="width:80px;height:40px;overflow:auto;">
-                                    <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => $certification->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
-                                </div>
-                            </td>
-                            <td>
-                                <div style="width:80px;height:40px;overflow:auto;">
-                                    <a href="<?php
-                                    echo $this->url('certification', array('action' => 'pdf'), array('query' => array('last' => $certification->last_name ,'first' => $certification->first_name ,'middle' => $certification->middle_name)
-                                    ));
-                                    ?> " target="_blank"><span class="glyphicon glyphicon-download-alt">PDF</span></a> 
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach;
-                    ; ?>
+                                <tr>
+                                    <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
+                                    <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
+                                    <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
+                                    <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->issuer_last_name . ' ' . $certification->issuer_first_name . ' ' . $certification->issuer_middle_name); ?></div></td>
+                                    <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_issued); ?></div></td>
+                                    <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_sent); ?></div></td>
+                                    <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
+                                    <td>
+                                        <div style="width:80px;height:40px;overflow:auto;">
+                                            <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => $certification->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                        </div>
+                                    </td>
+
+                            <?php
+                            if (strcasecmp($certification->final_decision, 'Certified') == 0) {
+
+                                echo "<td><div style='width:80px;height:40px;overflow:auto;'>
+                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array('last' => $certification->last_name, 'first' => $certification->first_name, 'middle' => $certification->middle_name)
+                                )) .
+                                " target='_blank'><span class='glyphicon glyphicon-download-alt'>PDF</span></a> 
+                                    </div>
+                                </td> ";
+                            } else {
+
+                                echo "<td><div style='width:80px;height:40px;overflow:auto;'>
+                                        <span class='glyphicon glyphicon-download-alt'>PDF</span>
+                                    </div>
+                                </td> ";
+                            }
+                            ?>
+                                   
+                                </tr>
+                    <?php
+                    endforeach;
+                    ;
+                    ?>
                 </tbody>
             </table>
 

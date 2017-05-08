@@ -21,11 +21,8 @@ class CertificationForm extends Form {
         ));
         $this->add(array(
             'name' => 'examination',
-            'type' => 'Number',
-            'options' => array(
-                'label' => 'examination',
-            ),
-        ));
+            'type' => 'hidden',
+             ));
         $this->add(array(
             'name' => 'final_decision',
             'type' => 'Text',

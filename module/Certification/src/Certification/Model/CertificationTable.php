@@ -17,7 +17,7 @@ class CertificationTable {
         $sqlSelect->columns(array('id', 'examination', 'final_decision', 'certification_issuer_id', 'date_certificate_issued', 'date_certificate_sent', 'certification_type', 'issued'));
         $sqlSelect->join('certification_issuer', ' certification_issuer.certification_issuer_id = certification.certification_issuer_id ', array('issuer_last_name', 'issuer_first_name', 'issuer_middle_name'), 'left')
                 ->join('examination', 'examination.id = certification.examination ', array('provider'), 'left')
-                ->join('provider', 'provider.id = examination.provider ', array('last_name','first_name','middle_name'), 'left');
+                ->join('provider', 'provider.id = examination.provider ', array('last_name','first_name','middle_name','certification_id'), 'left');
         $sqlSelect->order('id desc');
 //                   
 //                  ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name','trainer_first_name'), 'left')

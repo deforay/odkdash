@@ -30,10 +30,12 @@ class ExaminationController extends AbstractActionController {
          'paginator' => $paginator
      ));
      }
-    
+     
      public function addAction() {
          
      }
+    
+    
 }
 
 

@@ -82,6 +82,10 @@ $sessionLogin = new Container('credo');
             $form->get('ethics_point')->setAttributes([
                 'class' => 'form-control',
             ]);
+            
+            $form->get('practical')->setAttributes([
+                'value' => $this->practical,
+            ]);
 
             echo $this->form()->openTag($form);
             ?>
@@ -146,6 +150,8 @@ $sessionLogin = new Container('credo');
                 <?= $this->formElement($form->get('ethics_point')); ?>
                 <?= $this->formElementErrors($form->get('ethics_point')); ?>
             </div>
+            
+            <?php echo $this->formHidden($form->get('practical')) ?>
 
             <div class="row" style="margin-left: 18px;">
                 <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>

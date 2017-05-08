@@ -52,12 +52,12 @@ $sessionLogin = new Container('credo');
                     <?php foreach ($admins as $exam) : ?>
                         <tr>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name . ' ' . $exam->admin_first_name . ' ' . $exam->admin_middle_name); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->region); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->district); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->email); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->region); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->district); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->email); ?></div></td>
                             <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->prefered_contact_method); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->current_job); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->job_address); ?></div></td>
+                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->current_job); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->job_address); ?></div></td>
                             <td>
                                 <a href="<?php echo $this->url('exam-admin', array('action' => 'edit', 'exam_admin_by_id' => $exam->exam_admin_by_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
 

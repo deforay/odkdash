@@ -15,7 +15,8 @@ class ProviderForm extends Form {
         $this->adapter = $dbAdapter;
 
         parent::__construct("provider");
-        $this->setAttribute('method', 'post');
+        $this->setAttributes(array('method'=> 'post',
+            ));
 
         $this->add(array(
             'name' => 'id',
@@ -170,6 +171,7 @@ class ProviderForm extends Form {
             'attributes' => array(
                 'value' => 'Go',
                 'id' => 'submitbutton',
+                
             ),
         ));
     }

@@ -15,14 +15,9 @@ $pdf->SetTitle('Personnel Certificate');
 $pdf->SetSubject('Certificate');
 $pdf->SetKeywords('TCPDF, PDF, Certificate, test, guide');
 
-// set header and footer fonts
-$pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+$pdf->SetMargins(5,5, 5);
 $pdf->SetHeaderMargin(0);
 $pdf->SetFooterMargin(0);
 
@@ -30,7 +25,7 @@ $pdf->SetFooterMargin(0);
 $pdf->setPrintFooter(false);
 
 // set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+//$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -46,8 +41,6 @@ if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
 // set font
 $pdf->SetFont('times', '', 20);
 
-
-
 // remove default header
 $pdf->setPrintHeader(false);
 //$pdf->SetMargins(10, 20, 10, true);
@@ -56,60 +49,52 @@ $pdf->AddPage('L','A4');
 
 
 // -- set new background ---
-
-// get the current page break margin
-$bMargin = $pdf->getBreakMargin();
-// get current auto-page-break mode
-$auto_page_break = $pdf->getAutoPageBreak();
-// disable auto-page-break
 $pdf->SetAutoPageBreak(false, 0);
 // set bacground image
-$img_file = dirname(__CLASS__).'public/assets/img/certificate-templates-for-word2-1_1.png';
-$pdf->Image($img_file, 0, 0, 295, 210, '', '', '', false, 300, '', false, false, 0);
-// restore auto-page-break status
-//$pdf->SetAutoPageBreak($auto_page_break, $bMargin);
+$img_file = dirname(__CLASS__).'public/assets/img/microsoft-word-certificate-borders.png';
+$pdf->Image($img_file, 0, 0, 295, 209, '', '', '', false, 300, '', false, false, 0);
 // set the starting point for the page content
 $pdf->setPageMark();
 
 
-
-
-//$pdf->SetDisplayMode('fullpage', 'SinglePage', 'UseNone');
-//
-// set font
-//$pdf->SetFont('times', 'B', 20);
-// add a page
-//$pdf->AddPage('L', 'A4');
-
-// set JPEG quality
-//$pdf->setJPEGQuality(75);
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// Stretching, position and alignment example
-
-
-
 // create some HTML content
-$html = '<div style="text-align:center;
-    padding: 15px;">
-   <h1>Certificate</h1>
-    Ce certificate atteste que <br> <h1 style=" color:blue">'.strtoupper($last).' '.strtoupper($first).' '.strtoupper($middle).'</h1> <br>A  apte a faire les test de depistage rapide<br><br><br><br><br><br>
+$html = '<div style="text-align:center;">
+   
+  <p> Ministry Of Health, Community Development, Gender, Elderly <br>and Children. <br> Health Laboratory Practitioner Council</p> 
+ <span style="font-size:200%; line-height: 0.0">Certificate of Competency</span><br>
+ <span style="line-height: 0.0">is issued to</span>
+  
+  <div style=" color:blue; font-size:200%;">'.strtoupper($last).' '.strtoupper($first).' '.strtoupper($middle).'</div> 
+      <div>&nbsp;&nbsp;For Having Successfully Fulfilled the Requirements of the Health Laboratory Practitioners’ Council and Maintaining Competency in the Area of HIV Rapid Testing.
+      <br>Valid 2017/05/07 through 2019/05/07
+      <br>
+      Professional Registration No.: 
+      <br>
+Certification No.:
+<p style="text-align:left;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Signature of Registrar 
+ <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Registrar Name and Title </p></div>
  </div>';
 
 
 // output the HTML content
 $pdf->writeHTML($html, true, false, true, false, '');
 
-$html2='<div style="width:50px "><img src="'.dirname(__CLASS__).'public/assets/img/signature.png'.'"  width="150" style="text-align:right" ></div>';
 
+$img_file = dirname(__CLASS__).'public/assets/img/logo_cert1.jpg';
+$img_file2 = dirname(__CLASS__).'public/assets/img/logo_cert2.png';
+$img_file3 = dirname(__CLASS__).'public/assets/img/logo_cert3.png';
 
-$pdf->writeHTML($html2, true, false, true, false, '');
-//$pdf->SetXY(250,100 );
+$pdf->Image($img_file, 20, 35, 50, 35, '', '', '', false, 300, '', false, false, 0);
+
+$pdf->Image($img_file2,225, 35, 50, 35, '', '', '', false, 300, '', false, false, 0);
+
+$pdf->Image($img_file3,225, 150, 50, 35, '', '', '', false, 300, '', false, false, 0);
+
  //---------------------------------------------------------
 
 //Close and output PDF document
-$pdf->Output('example_051.pdf', 'I');
+$pdf->Output(ucfirst($last).' '.ucfirst($first).' '.ucfirst($middle).'_rtqii.pdf', 'I');
 
 //============================================================+
 // END OF FILE

@@ -152,7 +152,7 @@ return array(
         'Certification\\Controller\\Examination'=> array(
             'index' => 'allow',
             'add' => 'allow',
-            'edit' => 'allow',
+            'search' => 'allow',
         ),
         
     ),
@@ -358,7 +358,7 @@ return array(
         'Certification\\Controller\\Examination'=> array(
             'index' => 'allow',
             'add' => 'allow',
-            'edit' => 'allow',
+            'search' => 'allow',
         ),
     ),
 );

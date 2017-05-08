@@ -49,19 +49,17 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-                        <th style="width:5%;">Provider ID (if available)  </th>
-                        <th style="width:5%;">Certification ID  </th>
-                        <th style="width:8%;">Provider</th>
-                        <th style="width:8%;">attempts</th>
-                        
-                        <th style="width: 5%"> Final Score (≥80%)</th>
-                        <th style="width:6%;">Practical Exam</th>
+                       <th>Provider ID (if available)  </th>
+                       <th>Certification ID  </th>
+                       <th>Provider</th>
+                       <th> Final Score (≥80%)</th>
+                       <th>Practical Exam</th>
 
 
 
-                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Examination', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
+                        <?php // if ($acl->isAllowed($role, 'Certification\Controller\Examination', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
                             <th style="width:6%;">Action</th>
-                        <?php } ?>
+                        <?php // } ?>
                     </tr>
 
                 </thead>
@@ -74,9 +72,8 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->provider_id); ?></div></td>
                              <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
-                            <td><?php echo $this->escapeHtml($exam->exam_type); ?></td>
-                            <td><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></td>
-                            <td><?php echo $this->escapeHtml($exam->practical_total_score. ' %'); ?></td>
+                            <td><div style="color: red"><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></div></td>
+                            <td><div style="color: red"><?php echo $this->escapeHtml($exam->practical_total_score. ' %'); ?></div></td>
 
                             <td>
                                 <div style="width:100px;height:40px;overflow:auto;">  <a href="<?php echo $this->url('certification', array('action' => 'add', 'id' => $exam->id), array('query' => 

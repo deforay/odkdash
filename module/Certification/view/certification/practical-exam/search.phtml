@@ -46,34 +46,42 @@ $sessionLogin = new Container('credo');
 
 
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {   ?>
-                        <th style="width: 80px;">Edit</th>
+                        <th colspan="2">Action</th>
                         <?php // }   ?>
                     </tr>
 
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                        <td colspan="12" class="dataTables_empty">Loading data from server</td>
                     </tr>
                     <?php foreach ($practicals as $exam) : ?>
                         <tr>
                             <td><div style="width:100px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->date); ?></div></td>
                             <td><div style="width:100px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_type); ?></div></td>
-                            <td><div style="width:170px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name . ' ' . $exam->admin_first_name . ' ' . $exam->admin_middle_name); ?></div></td>
-                            <td><div style="width:170px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
+                            <td><div style="width:180px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name . ' ' . $exam->admin_first_name . ' ' . $exam->admin_middle_name); ?></div></td>
+                            <td><div style="width:180px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
                             <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->pre_analytic . ' %'); ?></div></td>
                             <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->analytic . ' %'); ?></div></td>
                             <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->post_analytic . ' %'); ?></div></td>
                             <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->direct_observation_score . ' %'); ?></div></td>
                             <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
-
-
-
+                            <td><div style="width:70px;height:30px;overflow:auto; color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
                             <td>
-                                <a href="<?php echo $this->url('practical-exam', array('action' => 'edit', 'practice_exam_id' => $exam->practice_exam_id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
-
+                                <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('practical-exam', array('action' => 'edit', 'practice_exam_id' => $exam->practice_exam_id)); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
                             </td>
+
+                            <?php
+                            if ($exam->practical_total_score >= 90) {
+
+                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><a href=" . $this->url('written-exam', array('action' => 'add'), array('query' => array('practice_exam_id' => $exam->practice_exam_id))) . "><span class='glyphicon glyphicon-repeat'></span> Another attempt</a> </div></td>";
+                            } else {
+
+                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Another attempt </div></td>";
+                            }
+                            ?>
+
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

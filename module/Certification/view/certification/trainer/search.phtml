@@ -61,14 +61,14 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                     </tr>
                     <?php foreach ($trainers as $trainer) : ?>
                         <tr>
-                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->trainer_last_name . ' ' . $trainer->trainer_first_name . ' ' . $trainer->trainer_middle_name); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->region); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->district); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->trainer_last_name . ' ' . $trainer->trainer_first_name . ' ' . $trainer->trainer_middle_name); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->region); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->district); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->phone); ?></div></td>
-                            <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->email); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->job_address); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->email); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->job_address); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->prefered_contact_method); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->current_jod); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($trainer->current_jod); ?></div></td>
                             <td>
                                 <a href="<?php echo $this->url('trainer', array('action' => 'edit', 'trainer_id' => $trainer->trainer_id)); ?>"> <span class="glyphicon glyphicon-pencil"></span>   Edit</a> 
                             </td>

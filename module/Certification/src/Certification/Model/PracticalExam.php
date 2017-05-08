@@ -153,6 +153,14 @@ class PracticalExam implements InputFilterAwareInterface {
                 'name' => 'date',
                 'required' => false,
             ));
+            
+             $inputFilter->add(array(
+                'name' => 'written',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'Int'),
+                ),
+            ));
 
 
             $this->inputFilter = $inputFilter;

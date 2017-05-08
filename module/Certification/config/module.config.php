@@ -89,7 +89,7 @@ return array(
             'practical-exam' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/practical-exam[/:action][/:practice_exam_id]',
+                    'route' => '/practical-exam[/:action][/:practice_exam_id][/:id_written_exam]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'practice_exam_id' => '[0-9]+',
