@@ -237,13 +237,13 @@ CREATE TABLE `r_spi_form_v_3_download` (
   `AUDIT_SCORE_PERCANTAGE` varchar(255) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
   `download_status` int(11) NOT NULL DEFAULT '0'
-)
+);
 
 ALTER TABLE `r_spi_form_v_3_download`
   ADD PRIMARY KEY (`r_download_id`);
   
 ALTER TABLE `r_spi_form_v_3_download`
-  MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT
+  MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT;
   
 ALTER TABLE `r_spi_form_v_3_download` ADD `user` INT(11) NOT NULL AFTER `r_download_id`;
 
@@ -500,3 +500,5 @@ ALTER TABLE `spi_form_v_3_duplicate`
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'download-files', 'Download Zipped Files');
 
 ALTER TABLE `r_spi_form_v_3_download` DROP `file_name`;
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'view-data', 'Dashboard - View Details');

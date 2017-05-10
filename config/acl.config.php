@@ -66,6 +66,7 @@ return array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
+            'view-data' => 'allow',
             'delete' => 'allow',
             'download-files' => 'allow',
             'duplicate' => 'allow',

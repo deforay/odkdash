@@ -30,6 +30,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function saveData($params) {
+        
+        if($params == null || $params == "" || (is_array($params) && count($params) ==0 )){
+            exit;
+        }
+        
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
         $d = array('data_dump' => json_encode($params) , 'received_on' => new \Zend\Db\Sql\Expression("NOW()"));
@@ -74,6 +79,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $data['testingpointname']=$data['testingpointtype'];
         }
         
+        
+        $data['instanceID'] = isset($data['instanceID']) ? $data['instanceID'] :"";
+        $data['instanceName'] = isset($data['instanceName']) ? $data['instanceName'] :"";
+        
         $par = array(
                 'token' => $params['token'],
                 'content' => $params['content'],
@@ -106,8 +115,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'level_name' => $data['level_name'],
                 'affiliation' => $data['affiliation'],
                 'affiliation_other' => $data['affiliation_other'],
-                'NumberofTester' => (isset($params['numberOfTester']) && $params['numberOfTester'] > 0 ? $params['numberOfTester'] : 0),
-                'avgMonthTesting' => (isset($params['averageTestedPerMonth']) && $params['averageTestedPerMonth'] > 0 ? $params['averageTestedPerMonth'] : 0),
+                'NumberofTester' => (isset($data['NumberofTester']) && $data['NumberofTester'] > 0 ? $data['NumberofTester'] : 0),
+                'avgMonthTesting' => (isset($data['avgMonthTesting']) && $data['avgMonthTesting'] > 0 ? $data['avgMonthTesting'] : 0),
                 'name_auditor_lead' => $data['name_auditor_lead'],
                 'name_auditor2' => $data['name_auditor2'],
                 'info4' => $data['info4'],
@@ -313,7 +322,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
             $dbAdapter = $this->adapter;
             $insert->values($par);
             $selectString = $sql->getSqlStringForSqlObject($insert);
-            //error_log($selectString);
+            error_log($selectString);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
             if($approveStatus=='approved'){
@@ -1796,10 +1805,10 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'level_name' => $params['levelName'],
                 'affiliation' => $params['affiliation'],
                 'affiliation_other' => $params['affiliationOther'],
-                'NumberofTester' => (isset($params['numberOfTester']) && $params['numberOfTester'] > 0 ? $params['numberOfTester'] : 0),
-                'avgMonthTesting' => (isset($params['averageTestedPerMonth']) && $params['averageTestedPerMonth'] > 0 ? $params['averageTestedPerMonth'] : 0),
-                'name_auditor_lead' => $params['nameOfAuditor1'],
-                'name_auditor2' => $params['nameOfAuditor2'],
+                'NumberofTester' => (isset($params['NumberofTester']) && $params['NumberofTester'] > 0 ? $params['NumberofTester'] : 0),
+                'avgMonthTesting' => (isset($params['avgMonthTesting']) && $params['avgMonthTesting'] > 0 ? $params['avgMonthTesting'] : 0),
+                'name_auditor_lead' => $params['name_auditor_lead'],
+                'name_auditor2' => $params['name_auditor2'],
                 'PERSONAL_C_1_1' => $params['personal_c_1_1'],
                 'PERSONAL_C_1_2' => $params['personal_c_1_2'],
                 'PERSONAL_C_1_3' => $params['personal_c_1_3'],
@@ -1874,7 +1883,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 'Longitude' => $params['longitude'],
                 
                 'staffaudited' => $params['staffAuditedName'],
-                'durationaudit' => $params['durationAudit'],
+                'durationaudit' => $params['durationaudit'],
                 //'FINAL_AUDIT_SCORE' => $params['totalPointsScored'],
                 //'MAX_AUDIT_SCORE' => $params['totalScoreExpect'],
                 //'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
