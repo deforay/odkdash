@@ -345,5 +345,17 @@ class SpiV3Controller extends AbstractActionController
         $result = $odkFormService->getDownloadFilesRow();
        return new ViewModel(array('result' => $result));
     }
+    public function getDistrictByProvinceAction(){
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $odkFormService->getDistrictData($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                      ->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
 

@@ -123,21 +123,33 @@ $sessionLogin = new Container('credo');
                       </div>
                     </div>
                     <div class="form-group">
-                       <label for="province" class="col-sm-2 control-label">Province/District</label>
+                       <label for="province" class="col-sm-2 control-label">Province</label>
                       <div class=" col-lg-4">
-                      <select class="select2" id="provinceDistrict" multiple="multiple">
+                      <select class="" id="provinceDistrict" multiple="multiple" onchange="getAllDistrict();">
                         <?php
                         foreach($levelNamesResult as $levelName){
-                            if(trim($levelName['level_name'])!= ''){
                         ?>
-                        <option value="<?php echo $levelName['level_name']; ?>"><?php echo ucwords($levelName['level_name']); ?></option>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
                         <?php
                             }
+                        ?>
+                      </select>
+                      </div>
+                      <label for="district" class="col-sm-2 control-label">District</label>
+                      <div class=" col-lg-4 districtFilter">
+                      <select class="form-control" id="district">
+                        <?php
+                        foreach($levelNamesResult as $levelName){
+                        ?>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <?php
                         }
                         ?>
                       </select>
                       </div>
-                      <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+                    </div>
+                    <div class="form-group">
+					  <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
                         <div class=" col-lg-4">
                           <select class="form-control" id="scoreLevel">
                             <option value="">All</option>
@@ -148,8 +160,6 @@ $sessionLogin = new Container('credo');
                             <option value="4">4</option>
                           </select>
                         </div>
-                    </div>
-                    <div class="form-group">
                       <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
@@ -163,8 +173,10 @@ $sessionLogin = new Container('credo');
                         ?>
                       </select>
                       </div>
-                      <div class="testPointNameSection"></div>
                     </div>
+					<div class="form-group">
+					  <div class="testPointNameSection"></div>
+					</div>
                     <div class="form-group" style="text-align:center;">
                       <button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
 		      &nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span>Hide Advanced Option</span></a>
@@ -384,10 +396,6 @@ $sessionLogin = new Container('credo');
 			
             <div class="col-md-6" id="righter">
 			  <div class="widget widget-map">
-				
-				
-				
-				
 				
                     <div class="widget-head">
                       <div class="title row">
@@ -740,7 +748,6 @@ function widget_top_1(){
 	  
 	  ];
 	  
-
 	  
 	  $('#widget-top-2').highcharts({
             chart: {
@@ -1033,7 +1040,7 @@ $('#audit-points-barchart').highcharts({
 function getspiRTv3()
 {
       dateRange = $("#spiRTv3").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'spirtv3-datewise')); ?>", {dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),scoreLevel:$("#scoreLevel").val()},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'spirtv3-datewise')); ?>", {dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),district:$("#district").val(),scoreLevel:$("#scoreLevel").val()},
       function (data) {
 		$("#dateRangePickerValue").html(data);
       });
@@ -1041,7 +1048,7 @@ function getspiRTv3()
 function getTestingVolumeValue()
 {
       dateRange = $("#testingVolumeDate").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'testing-volume-datewise')); ?>", {dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),scoreLevel:$("#scoreLevel").val()},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'testing-volume-datewise')); ?>", {dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),district:$("#district").val(),scoreLevel:$("#scoreLevel").val()},
       function (data) {
 	  $("#testVolumeValues").html(data);
       });
@@ -1050,7 +1057,7 @@ function getAuditWorstDetails(){
     value = $("#auditRndWorstNo").val();
     limitBar = $("#limitBar").val();
     dateRange = $("#worstDate").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {roundno:value,limitBar:limitBar,dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),scoreLevel:$("#scoreLevel").val()},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {roundno:value,limitBar:limitBar,dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),district:$("#district").val(),scoreLevel:$("#scoreLevel").val()},
       function (data) {
 	  $("#zeroCountChart").html(data);
       });
@@ -1060,7 +1067,7 @@ function getAuditWorstDetails(){
   {
       value = $("#auditRndNo").val();
       dateRange = $("#audiPerformanceDate").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {roundno:value,dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),scoreLevel:$("#scoreLevel").val()},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-performance')); ?>", {roundno:value,dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),district:$("#district").val(),scoreLevel:$("#scoreLevel").val()},
       function (data) {
 	  $("#radarChart").html(data);
       });
@@ -1069,7 +1076,7 @@ function getAuditWorstDetails(){
   function getAuditLocationDetails(){
     value = $("#auditRndNoLocations").val();
     dateRange = $("#locationDateRange").val();
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {roundno:value,dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),scoreLevel:$("#scoreLevel").val()},
+      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {roundno:value,dateRange:dateRange,auditRndNo:$("#auditRndNoFilter").val(),testPoint:$("#testPoint").val(),testPointName:$("#testPointName").val(),level:$("#level").val(),affiliation:$("#affiliation").val(),province:$("#provinceDistrict").val(),district:$("#district").val(),scoreLevel:$("#scoreLevel").val()},
       function (data) {
 	  $("#auditLocations").html(data);
       });
@@ -1188,17 +1195,37 @@ function getAuditWorstDetails(){
     }
       $(document).ready(function(){
       	//initialize the javascript
-		
+		var startDate = "";
+    var endDate = "";
+    $('.datepicker').daterangepicker({
+	    format: 'DD-MMM-YYYY',
+	    startDate: moment().subtract('days', 29),
+	    endDate: moment(),
+	    maxDate: moment(),
+	    ranges: {
+		'Today': [moment(), moment()],
+		'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+		'Last 7 Days': [moment().subtract('days', 6), moment()],
+		'Last 30 Days': [moment().subtract('days', 29), moment()],
+		'This Month': [moment().startOf('month'), moment().endOf('month')],
+		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+	    },
+	},
+	function(start, end) {
+	    startDate = start.format('YYYY-MM-DD');
+	    endDate = end.format('YYYY-MM-DD');
+	});	
+	<?php
+	$start_date = date('d-M-Y');
+        $end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
+	?>
+	$("#spiRTv3").val('<?php echo $end_date." - ".$start_date;?>');
+	
 		$("#latestAuditsTbl").DataTable( {
 		  "order": [[ 5, "desc" ],[ 2, "desc" ]],
 		  "pageLength": 50
 		});
-      $(".select2").select2({
-	width: '100%',
-	    placeholder: '',
-	    allowClear: true,
-	    tags : false
-      });	
+      
         widget_top_1();
         widget_top_2();
         widget_top_3();
@@ -1212,10 +1239,11 @@ function getAuditWorstDetails(){
 		//getAuditLocationDetails();
 
 		
-		
+		$("#provinceDistrict").multipleSelect({placeholder:'Select Province',width: '100%'});
 	  $("#auditRndNo").multipleSelect({placeholder:'Audit round(s)',width: '31%',minimumCountSelected:'2'});
 	  $("#auditRndWorstNo").multipleSelect({placeholder:'Audit round(s)',width: '25%',minimumCountSelected:'2'});
 	  $("#auditRndNoLocations").multipleSelect({placeholder:'Select audit round(s)',width: '30%',minimumCountSelected:'2'});
+	  
       });
 	  
 	  
@@ -1477,36 +1505,10 @@ $('#auditDates').highcharts({
         series: [{
             name: 'Audit Counts',
             data: $.parseJSON('<?php echo $auditDataList; ?>')
-
         }]
     });	
 	
-var startDate = "";
-    var endDate = "";
-    $('.datepicker').daterangepicker({
-	    format: 'DD-MMM-YYYY',
-	    startDate: moment().subtract('days', 29),
-	    endDate: moment(),
-	    maxDate: moment(),
-	    ranges: {
-		'Today': [moment(), moment()],
-		'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-		'Last 7 Days': [moment().subtract('days', 6), moment()],
-		'Last 30 Days': [moment().subtract('days', 29), moment()],
-		'This Month': [moment().startOf('month'), moment().endOf('month')],
-		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-	    },
-	},
-	function(start, end) {
-	    startDate = start.format('YYYY-MM-DD');
-	    endDate = end.format('YYYY-MM-DD');
-	});	
-	<?php
-	$start_date = date('d-M-Y');
-        $end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
-	?>
-	$("#spiRTv3").val('<?php echo $end_date." - ".$start_date;?>');
-	
+
 });
 
 function viewSpiV3Data(source){
@@ -1553,5 +1555,17 @@ function getTestingPointTypeNames(){
    getAuditLocationDetails();
    getAuditWorstDetails();
    $.unblockUI();
+  }
+  function getAllDistrict() {
+    var province = $('#provinceDistrict').val();
+    if (province!='' && province!=null) {
+        $.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-district-by-province')); ?>",{province: province},
+           function(data) {
+            $('.districtFilter').html(data);
+			$("#district").multipleSelect({placeholder:'Select District(s)',width: '100%'});
+        });
+    }else{
+        $('#district').html('');
+    }
   }
 </script>
