@@ -156,7 +156,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                         <ul class="nav navbar-nav am-nav-right">
                             <li><a href="/" style="font-size:1.8em;">Dashboard for Quality Improvement of HIV Rapid Testing</a></li>
                         </ul>
-                        <!--             <ul class="nav navbar-nav am-nav-right">
+<!--                                     <ul class="nav navbar-nav am-nav-right">
                                       <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
                                       <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
                                       <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>
@@ -247,9 +247,9 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
 
                                         <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Examination<span class="caret"></span></a>
                                             <ul>
-                                                <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
                                                 <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
                                                 <li><a href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>">Practical Exam</a></li>
+                                                <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
                                                 <li><a href="<?php echo $this->url('exam-admin', array('action' => 'index')); ?>">Exam Administrator</a></li>
 
 

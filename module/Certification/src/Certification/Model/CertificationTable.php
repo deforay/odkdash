@@ -83,5 +83,21 @@ class CertificationTable {
 
         $db->getDriver()->getConnection()->execute($sql);
     }
+    
+    
+    public function setToActive(){
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'select examination from certification where id=' . $last_id;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        $result = $statement->execute();
+//        
+        foreach ($result as $res) {
+            $examination = $res['examination'];
+        }
+        
+        
+        
+    }
 
 }

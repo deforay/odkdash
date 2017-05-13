@@ -31,6 +31,10 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
+        'Application\\Controller\\Dashboard' => array(
+            'index' => 'allow',
+            'audi-details' => 'allow',
+            ),
     ),
     'SA' => array(
         'Application\\Controller\\Common' => array(

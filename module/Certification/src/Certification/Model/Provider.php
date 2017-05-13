@@ -108,7 +108,7 @@ $inputFilter->add(array(
             
             $inputFilter->add(array(
                 'name' => 'last_name',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -126,7 +126,7 @@ $inputFilter->add(array(
 
             $inputFilter->add(array(
                 'name' => 'first_name',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),

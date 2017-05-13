@@ -25,7 +25,7 @@ class CertificationForm extends Form {
              ));
         $this->add(array(
             'name' => 'final_decision',
-            'type' => 'Text',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Final Decision',
             ),
@@ -43,7 +43,7 @@ class CertificationForm extends Form {
 
         $this->add(array(
             'name' => 'date_certificate_issued',
-            'type' => 'Text',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Date Certificate Issued',
                 'attributes' => [
@@ -67,7 +67,7 @@ class CertificationForm extends Form {
 
         $this->add(array(
             'name' => 'certification_type',
-            'type' => 'Text',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Type of Certificate',
             ),

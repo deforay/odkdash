@@ -38,51 +38,84 @@ $sessionLogin = new Container('credo');
             $form->get('exam_type')->setAttributes([
                 'class' => 'form-control',
                 'placeholder' => 'Type of Exam',
-                'autocomplete' => 'off'
+                'id' => 'exam_type'
             ]);
 
-            $form->get('provider_id')->setAttributes([
-                'class' => 'form-control',
-                'placeholder' => 'Provider',
-                'autocomplete' => 'off'
-            ]);
+            if (empty($this->provider)) {
+
+                $form->get('provider_id')->setAttributes([
+                    'class' => 'form-control',
+                    'required' => true
+                ]);
+            } else {
+
+                $form->get('provider_id')->setAttributes([
+                    'class' => 'form-control',
+                    'options' => $this->provider,
+                    'required' => true
+                ]);
+            }
+
 
             $form->get('exam_admin_by_id')->setAttributes([
                 'class' => 'form-control',
                 'placeholder' => 'Exam Admin By',
-                'autocomplete' => 'off'
+                'autocomplete' => 'off',
+                'id' => 'admin'
             ]);
             $form->get('date')->setAttributes([
                 'class' => 'form-control',
                 'placeholder' => 'date',
-                'autocomplete' => 'off'
+                'autocomplete' => 'off',
+                'id' => 'date'
             ]);
             $form->get('qa_point')->setAttributes([
                 'class' => 'form-control',
+                'id' => 'a',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('rt_point')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'b',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('safety_point')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'c',
+                'autocomplete' => 'off',
+                
             ]);
 
             $form->get('specimen_point')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'd',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('testing_algo_point')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'e'
             ]);
             $form->get('report_keeping_point')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'f','autocomplete' => 'off',
+                
             ]);
             $form->get('EQA_PT_points')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'g',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('ethics_point')->setAttributes([
                 'class' => 'form-control',
+                 'id' => 'h',
+                'autocomplete' => 'off',
+                
             ]);
-            
+
             $form->get('practical')->setAttributes([
                 'value' => $this->practical,
             ]);
@@ -91,38 +124,38 @@ $sessionLogin = new Container('credo');
             ?>
             <?php echo $this->formHidden($form->get('id_written_exam')->setAttribute('class', 'form-control')) ?>
             <div class="form-group col-lg-6"> 
-            <?= $this->formLabel($form->get('exam_type')); ?>
-            <?= $this->formElement($form->get('exam_type')); ?>
-            <?= $this->formElementErrors($form->get('exam_type')); ?>
+                <?= $this->formLabel($form->get('exam_type')); ?>
+                <?= $this->formElement($form->get('exam_type')); ?>
+                <?= $this->formElementErrors($form->get('exam_type')); ?>
             </div>
             <div class="form-group col-lg-6">
-            <?= $this->formLabel($form->get('provider_id')); ?>
-            <?= $this->formElement($form->get('provider_id')); ?>
+                <?= $this->formLabel($form->get('provider_id')); ?>
+                <?= $this->formElement($form->get('provider_id')); ?>
                 <?= $this->formElementErrors($form->get('provider_id')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('exam_admin_by_id')); ?>
-<?= $this->formElement($form->get('exam_admin_by_id')); ?>
+                <?= $this->formElement($form->get('exam_admin_by_id')); ?>
                 <?= $this->formElementErrors($form->get('exam_admin_by_id')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('date')); ?>
-<?= $this->formElement($form->get('date')); ?>
+                <?= $this->formElement($form->get('date')); ?>
                 <?= $this->formElementErrors($form->get('date')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('qa_point')); ?>
-<?= $this->formElement($form->get('qa_point')); ?>
+                <?= $this->formElement($form->get('qa_point')); ?>
                 <?= $this->formElementErrors($form->get('qa_point')); ?>
             </div>
             <div class="form-group col-lg-6">
                 <?= $this->formLabel($form->get('rt_point')); ?>
-<?= $this->formElement($form->get('rt_point')); ?>
+                <?= $this->formElement($form->get('rt_point')); ?>
                 <?= $this->formElementErrors($form->get('rt_point')); ?> </div>
             <div class="form-group col-lg-6">  
                 <?= $this->formLabel($form->get('safety_point')); ?>
                 <?= $this->formElement($form->get('safety_point')); ?>
-<?= $this->formElementErrors($form->get('safety_point')); ?>
+                <?= $this->formElementErrors($form->get('safety_point')); ?>
             </div>
 
             <div class="form-group col-lg-6">
@@ -150,14 +183,17 @@ $sessionLogin = new Container('credo');
                 <?= $this->formElement($form->get('ethics_point')); ?>
                 <?= $this->formElementErrors($form->get('ethics_point')); ?>
             </div>
-            
+
             <?php echo $this->formHidden($form->get('practical')) ?>
 
             <div class="row" style="margin-left: 18px;">
                 <?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
                 <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>" >CANCEL</a> </div>
-                <?php echo $this->form()->closeTag();
+                <?php
+                echo $this->form()->closeTag();
                 ?>
+
+
         </div>
     </div>
 </div>
@@ -177,6 +213,48 @@ $sessionLogin = new Container('credo');
 
 
 <script>
+    
+    function setAttempt() {
+        var nombre = '<?PHP echo $nombre; ?>';
+        var myAnchor = document.getElementById("exam_type");
+        var mySelect = document.createElement("select");
+        if (nombre == 1) {
+            mySelect.innerHTML = "<option>2nd attempt</option>";
+            mySelect.className = "form-control"
+            myAnchor.parentNode.replaceChild(mySelect, myAnchor);
+
+        } else if (nombre == 2) {
+            mySelect.innerHTML = "<option>3rd attempt</option>";
+            mySelect.className = "form-control"
+            myAnchor.parentNode.replaceChild(mySelect, myAnchor);
+
+        } else if (nombre >= 3) {
+            alert('Ce provider a deja fais trois tentative, il doit reprendre l examen ecrit');
+            window.location = "/practical-exam";
+        }
+    }
+    setAttempt();
+//  -------------------------------------------------------  
+
+function empty(){
+    var a= document.getElementById("a").value;
+     var b= document.getElementById("b").value;
+      var c= document.getElementById("c").value;
+       var d= document.getElementById("d").value;
+        var e= document.getElementById("e").value;
+         var f= document.getElementById("f").value;
+          var g= document.getElementById("g").value;
+           var h= document.getElementById("h").value;
+       
+       }   
+    empty();
+    
+    
+    
+    
+    
+}
+
     $(document).ready(function () {
 
         $("#date").datepicker(

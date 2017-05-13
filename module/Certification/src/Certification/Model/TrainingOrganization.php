@@ -41,7 +41,7 @@ class TrainingOrganization implements InputFilterAwareInterface {
 
             $inputFilter->add(array(
                 'name' => 'training_organization_name',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -55,10 +55,10 @@ class TrainingOrganization implements InputFilterAwareInterface {
                     ),
                 ),
             ));
-
+                        
             $inputFilter->add(array(
                 'name' => 'type_organization',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),

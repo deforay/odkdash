@@ -27,11 +27,8 @@ class PracticalExamForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Type of Exam',
-                 'empty_option' => 'Please choose an type',
                 'value_options' => array(
-                   '1st attempt' => '1st attempt',
-                    '2nd attempt' => '2nd attempt',
-                    '3rd attempt' => '3rd attempt'
+                    '1st attempt' => '1st attempt',
                 )
             ),
         ));
@@ -41,9 +38,8 @@ class PracticalExamForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Exam Administrator',
-                 'empty_option' => 'Please choose an administrator',
+                'empty_option' => 'Please choose an administrator',
                 'value_options' => $this->getListExamAdmin()
-                
             ),
         ));
 
@@ -52,52 +48,51 @@ class PracticalExamForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Provider',
-                 'empty_option' => 'Please choose a provider',
+                'empty_option' => 'Please choose a provider',
                 'value_options' => $this->getListProvider()
             ),
         ));
         $this->add(array(
             'name' => 'pre_analytic',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Pre-analytic',
             ),
             'attributes' => array(
-             'min' => '0',
-             
-     )
+                'min' => '0',
+            )
         ));
 
         $this->add(array(
             'name' => 'analytic',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Analytic',
             ),
             'attributes' => array(
-             'min' => '0',
-                )
+                'min' => '0',
+            )
         ));
         $this->add(array(
             'name' => 'post_analytic',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Post-analytic',
             ),
             'attributes' => array(
-             'min' => '0',
-                )
+                'min' => '0',
+            )
         ));
 
         $this->add(array(
             'name' => 'Sample_testing_score',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Sample Testing Score',
             ),
             'attributes' => array(
-             'min' => '0',
-                )
+                'min' => '0',
+            )
         ));
         $this->add(array(
             'type' => 'text',
@@ -120,15 +115,15 @@ class PracticalExamForm extends Form {
                 'id' => 'submitbutton',
             ),
         ));
-        
-        
-         $this->add(array(
+
+
+        $this->add(array(
             'name' => 'written',
             'type' => 'hidden',
-            ));
+        ));
     }
-    
-     public function getListProvider() {
+
+    public function getListProvider() {
         $dbAdapter = $this->adapter;
         $sql = 'SELECT id, certification_id,last_name,first_name,middle_name FROM provider order by last_name asc ';
         $statement = $dbAdapter->query($sql);
@@ -137,12 +132,12 @@ class PracticalExamForm extends Form {
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name']. ' ' . $res['middle_name'];
+            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
         }
         return $selectData;
     }
-    
-     public function getListExamAdmin() {
+
+    public function getListExamAdmin() {
         $dbAdapter = $this->adapter;
         $sql = 'SELECT exam_admin_by_id, admin_last_name, admin_first_name, admin_middle_name, district, region, email, phone, prefered_contact_method, current_job, job_address FROM exam_admin_by order by admin_last_name asc ';
         $statement = $dbAdapter->query($sql);
@@ -151,7 +146,7 @@ class PracticalExamForm extends Form {
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['exam_admin_by_id']] = $res['admin_last_name'] . ' ' . $res['admin_first_name']. ' ' . $res['admin_middle_name'];
+            $selectData[$res['exam_admin_by_id']] = $res['admin_last_name'] . ' ' . $res['admin_first_name'] . ' ' . $res['admin_middle_name'];
         }
         return $selectData;
     }

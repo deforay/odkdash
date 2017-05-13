@@ -10,170 +10,269 @@ $sessionLogin = new Container('credo');
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
 
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script>
-<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+            <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+    <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+            <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
 
-<div class="am-content">
-    <div class="page-head">
-        <h2>Add a Practical Exam</h2>
-    </div>
-
-    <div class="main-content">
-        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="panel panel-default">
-                        <div class="panel-body" >
-
-                            <?php
-                            $form->setAttribute('action', $this->url('practical-exam', array('action' => 'add')));
-                            $form->prepare();
-                            $form->get('exam_type')->setAttributes([
-                                'class' => 'form-control',
-                                ]);
-
-                            $form->get( 'exam_admin_by_id')->setAttributes([
-                                'class' => 'form-control',
-                                ]);
-
-                            $form->get( 'provider_id')->setAttributes([
-                                'class' => 'form-control ',
-                                'required' => true
-                                ]);
-                            $form->get('pre_analytic')->setAttributes([
-                                'class' => 'form-control',
-                                ]);
-                            $form->get('analytic')->setAttributes([
-                                'class' => 'form-control',
-                                ]);
-                            $form->get('post_analytic')->setAttributes([
-                                'class' => 'form-control',
-                                ]);
-                            $form->get('Sample_testing_score' )->setAttributes([
-                                'class' => 'form-control',
-//                                
-                                ]) ;
-
-                            $form->get('date')->setAttributes([
-                                'class' => 'form-control',
-                                'autocomplete' => 'off',
-                               ]);
-                            
-                             $form->get('written')->setAttributes([
-                                'value' => $this->written,
-                                
-                               ]);
-                            
-                            echo $this->form()->openTag($form);
-                            ?>
-                            <?php echo $this->formHidden($form->get('practice_exam_id')->setAttribute('class', 'form-control')) ?>
-                            <div class="form-group col-lg-6"> 
-                                <?= $this->formLabel($form->get('exam_type')); ?>
-                                <?= $this->formElement($form->get('exam_type')); ?>
-                                <?= $this->formElementErrors($form->get('exam_type')); ?>
-                            </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('exam_admin_by_id')); ?>
-                                <?= $this->formElement($form->get('exam_admin_by_id')); ?>
-                                <?= $this->formElementErrors($form->get('exam_admin_by_id')); ?>
-                            </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('provider_id')); ?>
-                                <?= $this->formElement($form->get('provider_id')); ?>
-                                <?= $this->formElementErrors($form->get('provider_id')); ?>
-                            </div>
-                            
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('pre_analytic')); ?>
-                                <?= $this->formElement($form->get('pre_analytic')); ?>
-                                <?= $this->formElementErrors($form->get('pre_analytic')); ?></div>
-                            <div class="form-group col-lg-6">  
-                                <?= $this->formLabel($form->get('analytic')); ?>
-                                <?= $this->formElement($form->get('analytic')); ?>
-                                <?= $this->formElementErrors($form->get('analytic')); ?>
-                            </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('post_analytic')); ?>
-                                <?= $this->formElement($form->get('post_analytic')); ?>
-                                <?= $this->formElementErrors($form->get('post_analytic')); ?>
-                            </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('Sample_testing_score')); ?>
-                                <?= $this->formElement($form->get('Sample_testing_score')); ?>
-                                <?= $this->formElementErrors($form->get('Sample_testing_score')); ?>
-                            </div>
-                          <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('date')); ?>
-                                <?= $this->formElement($form->get('date')); ?>
-                                <?= $this->formElementErrors($form->get('date')); ?>
-                            </div>
-                            <?php echo $this->formRow($form->get('written')) ?>
-                            
-                            <div class="row" style="margin-left: 18px;"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                                <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>" >CANCEL</a> </div>
-
-
-                                <?php echo $this->form()->closeTag();
-                                ?>
-                            
-                        </div>
-                    </div>
+            <div class="am-content">
+                <div class="page-head">
+                    <h2>Add a Practical Exam</h2>
                 </div>
+
+                <div class="main-content">
+                    <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body" >
+                                            <form action="<?php $this->url('practical-exam', array('action' => 'add')); ?>" method="POST" name="form" onsubmit="return validateForm()">
+                                                <?php
+                                                $form->setAttribute('action', $this->url('practical-exam', array('action' => 'add')));
+                                                $form->prepare();
+                                                $form->get('exam_type')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'id' => 'exam_type',
+                                                    'autocomplete' => 'off',
+                
+                                                ]);
+
+                                                $form->get('exam_admin_by_id')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'id' => 'Exam Administrator',
+                                                     'onclick'=>'inputAdmin()',
+                                                ]);
+                                                if (empty($this->provider)) {
+                                                    $form->get('provider_id')->setAttributes([
+                                                        'class' => 'form-control ',
+                                                        'id' => 'Provider',
+                                                        'onclick'=>'inputProvider()',
+                                                                                                           ]);
+                                                } else {
+                                                    $form->get('provider_id')->setAttributes([
+                                                        'class' => 'form-control ',
+                                                        'options' => $this->provider,
+                                                        'type'=>'select',
+                                                         'id' => 'Provider',
+                                                        'onclick'=>'inputProvider()',
+                                                         
+                                                    ]);
+                                                }
+                                                $form->get('pre_analytic')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'autocomplete' => 'off',
+                
+                                                ]);
+                                                $form->get('analytic')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'autocomplete' => 'off',
+                
+                                                ]);
+                                                $form->get('post_analytic')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'autocomplete' => 'off',
+                
+                                                ]);
+                                                $form->get('Sample_testing_score')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'autocomplete' => 'off',
+                
+//                                
+                                                ]);
+
+                                                $form->get('date')->setAttributes([
+                                                    'class' => 'form-control',
+                                                    'autocomplete' => 'off',
+                                                ]);
+
+                                                $form->get('written')->setAttributes([
+                                                    'value' => $this->written,
+                                                ]);
+
+                                                echo $this->form()->openTag($form);
+                                                ?>
+                                                <?php echo $this->formHidden($form->get('practice_exam_id')->setAttribute('class', 'form-control')) ?>
+                                                <div class="form-group col-lg-6"> 
+                                                    <?= $this->formLabel($form->get('exam_type')); ?>
+                                                    <?= $this->formElement($form->get('exam_type')); ?>
+                                                    <?= $this->formElementErrors($form->get('exam_type')); ?>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <?= $this->formLabel($form->get('exam_admin_by_id')); ?>
+                                                    <?= $this->formElement($form->get('exam_admin_by_id')); ?>
+                                                    <?= $this->formElementErrors($form->get('exam_admin_by_id')); ?>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <?= $this->formLabel($form->get('provider_id')); ?>
+                                                    <?= $this->formElement($form->get('provider_id')); ?>
+                                                    <?= $this->formElementErrors($form->get('provider_id')); ?>
+                                                </div>
+
+                                                <div class="form-group col-lg-6">
+                                                    <?= $this->formLabel($form->get('pre_analytic')); ?>
+                                                    <?= $this->formElement($form->get('pre_analytic')); ?>
+                                                    <?= $this->formElementErrors($form->get('pre_analytic')); ?></div>
+                                                <div class="form-group col-lg-6">  
+                                                    <?= $this->formLabel($form->get('analytic')); ?>
+                                                    <?= $this->formElement($form->get('analytic')); ?>
+                                                    <?= $this->formElementErrors($form->get('analytic')); ?>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <?= $this->formLabel($form->get('post_analytic')); ?>
+                                                    <?= $this->formElement($form->get('post_analytic')); ?>
+                                                    <?= $this->formElementErrors($form->get('post_analytic')); ?>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <?= $this->formLabel($form->get('Sample_testing_score')); ?>
+                                                    <?= $this->formElement($form->get('Sample_testing_score')); ?>
+                                                    <?= $this->formElementErrors($form->get('Sample_testing_score')); ?>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <?= $this->formLabel($form->get('date')); ?>
+                                                    <?= $this->formElement($form->get('date')); ?>
+                                                    <?= $this->formElementErrors($form->get('date')); ?>
+                                                </div>
+                                                <?php echo $this->formRow($form->get('written')) ?>
+
+                                                <div class="row" style="margin-left: 18px;"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
+                                                    <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>" >CANCEL</a> </div>
+
+
+                                                <?php echo $this->form()->closeTag();
+                                                
+ 
+                                                ?>
+
+
+                                            </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br>
+                    <br>
+
+                </div>
+
             </div>
 
-        </div>
-
-        <br>
-        <br>
-
-    </div>
-
-</div>
 
 
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
-
-<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+            <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+            <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
 
 
-<script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
-<script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
-<script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+            <script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+            <script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+            <script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
 
-<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
-<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
-<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+            <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+            <script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+            <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 
 <script>
-$(document).ready(function() {
+
+   
+    function main() {
+        var nombre = '<?PHP echo $nombre; ?>';
+        var myAnchor = document.getElementById("exam_type");
+        var mySelect = document.createElement("select");
+        if (nombre == 1) {
+            mySelect.innerHTML = "<option>2nd attempt</option>";
+           mySelect.className = "form-control";
+            myAnchor.parentNode.replaceChild(mySelect, myAnchor);
+            
+        } else if (nombre == 2) {
+            mySelect.innerHTML = "<option>3rd attempt</option>";
+            mySelect.className = "form-control";
+            myAnchor.parentNode.replaceChild(mySelect, myAnchor);
+
+        } else if (nombre >= 3) {
+            alert('Ce provider a deja fais trois tentative, il doit reprendre l examen ecrit');
+            window.location = "/written-exam";
+        }
+    }
+    main();
  
- $("#date").datepicker(
-	    		{	
-	    		  showButtonPanel: true
-	    		, dateFormat: 'yy/mm/dd'
-	    		, dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa']     			
-	    		, dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
-	    		, monthNamesShort: ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Août','Sep','Oct','Nov','Déc']
-	    		, monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
-	    		, prevText: 'Précédent'
-	    		, nextText: 'Suivant'
-	    		, closeText: 'OK'
-	    		, currentText: "Aujourd'hui"	
-	    		});
  
-}); //EOf:: DOM isReady
+                             //  -------------------------------------------------------  
+                                    
+                                    
+                                      function validateForm(){
+                                                
+        var a = document.forms["form"]["provider_id"].value;
+                                    var b = document.forms["form"]["exam_admin_by_id"].value;
+
+                                    var elmt = document.getElementById("Provider");
+                                    var elmt2 = document.getElementById("Exam Administrator");
 
 
- 
-  </script>
+                                    if (a == null || a == "")
+                                    {
+
+                                        elmt.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+                                        alert("Please enter the ''" + elmt.id + "''");
+
+
+                                        return false;
+                                    } else if (b == null || b == "") {
+
+
+                                        elmt2.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+                                        alert("Please enter the ''" + elmt2.id + "''");
+                                        return false;
+                                    }
+                                    
+        }
+        
+        
+                                     function inputProvider() {
+                                    var input = document.getElementById("Provider");
+                                    input.style.boxShadow = 'none';
+                                }
+
+
+                                function inputAdmin() {
+                                    var input = document.getElementById("Exam Administrator");
+                                    input.style.boxShadow = 'none';
+                                }
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    //    setthe datepicker
+    $(document).ready(function() {
+
+            $("#date").datepicker(
+    {
+    showButtonPanel: true
+            , dateFormat: 'yy/mm/dd'
+    , dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa']
+    , dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
+            , monthNamesShort: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+            , monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+            , prevText: 'Précédent'
+            , nextText: 'Suivant'
+            , closeText: 'OK'
+            , currentText: "Aujourd'hui"
+                                                });
+                                                    
+                                                    }); //EOf:: DOM isReady
+                                                    
+      
+                                                </script>
 
 
 

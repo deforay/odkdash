@@ -95,12 +95,10 @@ $sessionLogin = new Container('credo');
                             </td>
 
                             <?php
-                            if ($written->final_score >= 90) {
-
-                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array('id_written_exam' => $written->id_written_exam))) . "><span class='glyphicon glyphicon-repeat'></span> Another attempt</a> </div></td>";
-                            } else {
-
+                            if ($written->final_score < 80 || strcasecmp($written->exam_type, '3rd attempt') == 0) {
                                 echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Another attempt </div></td>";
+                            } else {
+                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array('id_written_exam' => $written->id_written_exam))) . "><span class='glyphicon glyphicon-repeat'></span> Another attempt</a> </div></td>";
                             }
                             ?>
 

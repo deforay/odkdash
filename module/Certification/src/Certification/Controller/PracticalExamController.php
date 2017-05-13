@@ -33,7 +33,7 @@ class PracticalExamController extends AbstractActionController {
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $id_written = (int) $this->params()->fromQuery('id_written_exam', 0);
-
+ $provider=$this->getPracticalExamTable()->getProviderName($id_written);
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
@@ -54,17 +54,19 @@ class PracticalExamController extends AbstractActionController {
                 return $this->redirect()->toRoute('practical-exam');
             } else {
                 $practicalExam->exchangeArray($form->getData());
-
                 $this->getPracticalExamTable()->savePracticalExam($practicalExam);
                 $last_id = $this->getPracticalExamTable()->last_id();
                 $this->getPracticalExamTable()->examination($written, $last_id);
                 return $this->redirect()->toRoute('practical-exam');
             }
         }
-
-
+        $nombre = $this->getPracticalExamTable()->countWritten($id_written);
         return array('form' => $form,
-            'written' => $id_written);
+            'written' => $id_written,
+            'nombre' => $nombre,
+             'provider' => $provider,
+            
+        );
     }
 
     public function editAction() {

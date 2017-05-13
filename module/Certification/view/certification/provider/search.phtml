@@ -30,8 +30,7 @@ $sessionLogin = new Container('credo');
         
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
        
-            
-           <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+              <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
                         <th>Provider Id</th>
@@ -52,39 +51,39 @@ $sessionLogin = new Container('credo');
                         <?php // }  ?>
                     </tr>
 
+
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                        <td colspan="13" class="dataTables_empty">Loading data from server</td>
                     </tr>
-                <pre>
                     <?PHP // print_r($providers) ?> </pre>
-                <?php foreach ($providers as $provider) : ?>
-                    <tr>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->provider_id); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
-                        <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->phone); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
-                        <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->prefered_contact_method); ?></div></td>
-                        <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->current_jod); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_name); ?></div></td>
-                        <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge); ?></div></td>
-                        <td>
-                            <div style="width:70px;height:40px;overflow:auto;">
-                                <a href="<?php echo $this->url('provider', array('action' => 'edit', 'id' => $provider->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach ($providers as $provider) : ?>
+                        <tr>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->provider_id); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->phone); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->prefered_contact_method); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->current_jod); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_name); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge); ?></div></td>
+                            <td>
+                                <div style="width:70px;height:40px;overflow:auto;">
+                                    <a href="<?php echo $this->url('provider', array('action' => 'edit', 'id' => $provider->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
-            <?php
+
+          
             
-            ?>
         </div>
     </div>
 </div>

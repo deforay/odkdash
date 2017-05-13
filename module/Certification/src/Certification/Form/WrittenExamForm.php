@@ -26,11 +26,9 @@ class WrittenExamForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Number of Attempts',
-                'empty_option' => 'Please choose a Number of Attempts',
                 'value_options' => array(
                     '1st attempt' => '1st attempt',
-                    '2nd attempt' => '2nd attempt',
-                    '3rd attempt' => '3rd attempt'
+                    
                 )
             ),
         ));
@@ -67,7 +65,7 @@ class WrittenExamForm extends Form {
 
         $this->add(array(
             'name' => 'qa_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '1.QA (points)',
             ),
@@ -77,7 +75,7 @@ class WrittenExamForm extends Form {
         ));
         $this->add(array(
             'name' => 'rt_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '2.RT (points)',
             ),
@@ -87,7 +85,7 @@ class WrittenExamForm extends Form {
         ));
         $this->add(array(
             'name' => 'safety_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '3.Safety (points)',
             ),
@@ -98,7 +96,7 @@ class WrittenExamForm extends Form {
 
         $this->add(array(
             'name' => 'specimen_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '4.Specimen collection (points)',
             ),
@@ -109,7 +107,7 @@ class WrittenExamForm extends Form {
 
         $this->add(array(
             'name' => 'testing_algo_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '5.Testing algorithm (points)',
             ),
@@ -119,7 +117,7 @@ class WrittenExamForm extends Form {
         ));
         $this->add(array(
             'name' => 'report_keeping_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '6.Record keeping (points)',
             ),
@@ -129,7 +127,7 @@ class WrittenExamForm extends Form {
         ));
         $this->add(array(
             'name' => 'EQA_PT_points',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '7. EQA/PT (points)',
             ),
@@ -140,7 +138,7 @@ class WrittenExamForm extends Form {
 
         $this->add(array(
             'name' => 'ethics_point',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => '8.Ethics (points)',
             ),

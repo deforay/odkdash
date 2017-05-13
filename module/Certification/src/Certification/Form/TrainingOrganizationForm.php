@@ -9,6 +9,11 @@ class TrainingOrganizationForm extends Form {
     public function __construct($name = null) {
 
         parent::__construct('trainning_organization');
+        $this->setAttributes(array(
+            'method'=> 'post',
+            
+            )
+                );
 
         $this->add(array(
             'name' => 'training_organization_id',
