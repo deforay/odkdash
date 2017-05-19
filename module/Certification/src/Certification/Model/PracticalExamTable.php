@@ -24,7 +24,7 @@ class PracticalExamTable extends AbstractTableGateway {
             $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin_by_id', 'provider_id', 'pre_analytic', 'analytic', 'post_analytic', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
             $sqlSelect->join('provider', ' provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
                     ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id = practical_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name', 'admin_middle_name',), 'left')
-                    ->where(array('active'=>'no'));
+                    ->where(array('display'=>'yes'));
             $sqlSelect->order('practice_exam_id desc');
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new PracticalExam());
@@ -129,10 +129,10 @@ class PracticalExamTable extends AbstractTableGateway {
         $db = $this->tableGateway->getAdapter();
 
         $sql1 = 'select provider_id from practical_exam where practice_exam_id=' . $last_id;
-        $statement = $db->query($sql1);
-        $result = $statement->execute();
-        foreach ($result as $res) {
-            $provider = $res['provider_id'];
+        $statement1 = $db->query($sql1);
+        $result1 = $statement1->execute();
+        foreach ($result1 as $res1) {
+            $provider = $res1['provider_id'];
         }
 
         $sql2 = 'SELECT count(*) as nombre FROM examination WHERE provider=' . $provider . ' and id_written_exam is not null and practical_exam_id is null';
@@ -144,9 +144,9 @@ class PracticalExamTable extends AbstractTableGateway {
         }
 
         if ($nombre == 0) {
-            $sql2 = 'insert into examination (practical_exam_id,provider) values (' . $last_id . ',' . $provider . ')';
-            $statement2 = $db->query($sql2);
-            $result2 = $statement2->execute();
+            $sql3 = 'insert into examination (practical_exam_id,provider) values (' . $last_id . ',' . $provider . ')';
+            $statement3 = $db->query($sql3);
+            $result3 = $statement3->execute();
         } else {
             $sql = 'UPDATE examination SET practical_exam_id=' . $last_id . ' WHERE provider=' . $provider;
             $db->getDriver()->getConnection()->execute($sql);

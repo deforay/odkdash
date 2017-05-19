@@ -49,7 +49,7 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-                       <th  style="width:10%;">Provider ID (if available)  </th>
+                       <th  style="width:10%;"> professional registration no </th>
                        <th  style="width:10%;">Certification ID  </th>
                        <th  style="width:10%;">Provider</th>
                        <th  style="width:10%;"> Final Score (≥80%)</th>
@@ -69,7 +69,7 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
                     </tr>
                     <?php foreach ( $this->paginator as $exam) : ?>
                         <tr>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->provider_id); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->professional_reg_no); ?></div></td>
                              <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></div></td>

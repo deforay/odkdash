@@ -22,7 +22,7 @@ class TrainingTable extends AbstractTableGateway {
         if ($paginated) {
             $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('training_id', 'Start_date', 'end_date', 'type_of_training', 'training_organization_id', 'trainer_id', 'score', 'Pass_fail', 'training_certificate', 'Comments'));
-            $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'provider_id', 'certification_id'), 'left')
+            $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id','certification_reg_no'), 'left')
                     ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left')
                     ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name', 'trainer_first_name'), 'left');
             $sqlSelect->order('training_id desc');

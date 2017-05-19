@@ -7,9 +7,11 @@ use Zend\InputFilter\InputFilterInterface;
 use Zend\InputFilter\InputFilterAwareInterface;
 
 class Provider {
+
     public $id;
+    public $certification_reg_no;
     public $certification_id;
-    public $provider_id;
+    public $professional_reg_no;
     public $last_name;
     public $first_name;
     public $middle_name;
@@ -20,15 +22,20 @@ class Provider {
     public $email;
     public $prefered_contact_method;
     public $current_jod;
+    public $time_worked;
+    public $test_site_in_charge_name;
+    public $test_site_in_charge_phone;
+    public $test_site_in_charge_email;
+    public $facility_in_charge_name;
+    public $facility_in_charge_phone;
+    public $facility_in_charge_email;
     public $facility_id;
-    public $test_site_in_charge;
-//     public $facility_name;
-
     protected $inputFilter;
 
     public function exchangeArray($data) {
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
-        $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
+        $this->certification_reg_no = (!empty($data['certification_reg_no'])) ? $data['certification_reg_no'] : null;
+        $this->professional_reg_no = (!empty($data['professional_reg_no'])) ? $data['professional_reg_no'] : null;
         $this->certification_id = (!empty($data['certification_id'])) ? $data['certification_id'] : null;
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;
@@ -40,17 +47,16 @@ class Provider {
         $this->email = (!empty($data['email'])) ? $data['email'] : null;
         $this->prefered_contact_method = (!empty($data['prefered_contact_method'])) ? $data['prefered_contact_method'] : null;
         $this->current_jod = (!empty($data['current_jod'])) ? $data['current_jod'] : null;
+        $this->time_worked = (!empty($data['time_worked'])) ? $data['time_worked'] : null;
+        $this->test_site_in_charge_name = (!empty($data['test_site_in_charge_name'])) ? $data['test_site_in_charge_name'] : null;
+        $this->test_site_in_charge_phone = (!empty($data['test_site_in_charge_phone'])) ? $data['test_site_in_charge_phone'] : null;
+        $this->test_site_in_charge_email = (!empty($data['test_site_in_charge_email'])) ? $data['test_site_in_charge_email'] : null;
+        $this->facility_in_charge_name = (!empty($data['facility_in_charge_name'])) ? $data['facility_in_charge_name'] : null;
+        $this->facility_in_charge_phone = (!empty($data['facility_in_charge_phone'])) ? $data['facility_in_charge_phone'] : null;
+        $this->facility_in_charge_email = (!empty($data['facility_in_charge_email'])) ? $data['facility_in_charge_email'] : null;
         $this->facility_id = (!empty($data['facility_id'])) ? $data['facility_id'] : null;
         $this->facility_name = (!empty($data['facility_name'])) ? $data['facility_name'] : null;
-        $this->test_site_in_charge = (!empty($data['test_site_in_charge'])) ? $data['test_site_in_charge'] : null;
-        
-        $this->final_score = (isset($data['final_score'])) ? $data['final_score'] : null;
-        $this->pre_analytic = (isset($data['pre_analytic'])) ? $data['pre_analytic'] : null;
-        $this->analytic = (isset($data['analytic'])) ? $data['analytic'] : null;
-        $this->post_analytic = (isset($data['post_analytic'])) ? $data['post_analytic'] : null;
-        $this->Sample_testing_score = (isset($data['Sample_testing_score'])) ? $data['Sample_testing_score'] : null;
-        $this->practical_total_score = (isset($data['practical_total_score'])) ? $data['practical_total_score'] : null;
-
+        $this->facility_address = (!empty($data['facility_address'])) ? $data['facility_address'] : null;
     }
 
     public function getArrayCopy() {
@@ -72,7 +78,25 @@ class Provider {
                     array('name' => 'Int'),
                 ),
             ));
-$inputFilter->add(array(
+
+            $inputFilter->add(array(
+                'name' => 'certification_reg_no',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+
+            $inputFilter->add(array(
                 'name' => 'certification_id',
                 'required' => false,
                 'filters' => array(
@@ -88,9 +112,9 @@ $inputFilter->add(array(
                     ),
                 ),
             ));
-            
+
             $inputFilter->add(array(
-                'name' => 'provider_id',
+                'name' => 'professional_reg_no',
                 'required' => false,
                 'filters' => array(
                     array('name' => 'StripTags'),
@@ -105,7 +129,7 @@ $inputFilter->add(array(
                     ),
                 ),
             ));
-            
+
             $inputFilter->add(array(
                 'name' => 'last_name',
                 'required' => true,
@@ -151,8 +175,7 @@ $inputFilter->add(array(
                 'validators' => array(
                     array(
                         'name' => 'StringLength',
-                        'options' => array(
-                        ),
+                        'options' => array('encoding' => 'UTF-8',),
                     ),
                 ),
             ));
@@ -160,7 +183,7 @@ $inputFilter->add(array(
 
             $inputFilter->add(array(
                 'name' => 'region',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -177,7 +200,7 @@ $inputFilter->add(array(
 
             $inputFilter->add(array(
                 'name' => 'district',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -195,7 +218,7 @@ $inputFilter->add(array(
 
             $inputFilter->add(array(
                 'name' => 'type_vih_test',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -213,31 +236,16 @@ $inputFilter->add(array(
 
             $inputFilter->add(array(
                 'name' => 'phone',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'int'),
-                ),
+                'required' => true,
             ));
 
             $inputFilter->add(array(
                 'name' => 'email',
                 'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                        ),
-                    ),
-                ),
             ));
             $inputFilter->add(array(
                 'name' => 'prefered_contact_method',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -254,7 +262,7 @@ $inputFilter->add(array(
 
             $inputFilter->add(array(
                 'name' => 'current_jod',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -267,11 +275,82 @@ $inputFilter->add(array(
                         ),
                     ),
                 ),
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'time_worked',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'test_site_in_charge_name',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'test_site_in_charge_phone',
+                'required' => true,
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'test_site_in_charge_email',
+                'required' => false,
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'facility_in_charge_name',
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
+                ),
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'facility_in_charge_phone',
+                'required' => true,
+            ));
+
+            $inputFilter->add(array(
+                'name' => 'facility_in_charge_email',
+                'required' => false,
             ));
 
             $inputFilter->add(array(
                 'name' => 'facility_id',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -285,24 +364,6 @@ $inputFilter->add(array(
                     ),
                 ),
             ));
-
-            $inputFilter->add(array(
-                'name' => 'test_site_in_charge',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                        ),
-                    ),
-                ),
-            ));
-
 
             $this->inputFilter = $inputFilter;
         }

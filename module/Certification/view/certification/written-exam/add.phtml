@@ -38,6 +38,7 @@ $sessionLogin = new Container('credo');
             $form->get('exam_type')->setAttributes([
                 'class' => 'form-control',
                 'placeholder' => 'Type of Exam',
+                'options'=>['1st attempt' => '1st attempt'],
                 'id' => 'exam_type'
             ]);
 
@@ -253,7 +254,7 @@ function empty(){
     
     
     
-}
+
 
     $(document).ready(function () {
 
@@ -268,7 +269,7 @@ function empty(){
                     , prevText: 'Précédent'
                     , nextText: 'Suivant'
                     , closeText: 'OK'
-                    , currentText: "Aujourd'hui"
+                    , currentText: "Today"
                 });
 
     }); //EOf:: DOM isReady

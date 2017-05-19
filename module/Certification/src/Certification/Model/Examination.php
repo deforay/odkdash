@@ -20,7 +20,7 @@ class Examination {
         $this->practical_exam_id = (!empty($data['practical_exam_id'])) ? $data['practical_exam_id'] : null;
         $this->id_written_exam = (!empty($data['id_written_exam'])) ? $data['id_written_exam'] : null;
 
-        $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
+        $this->professional_reg_no = (!empty($data['professional_reg_no'])) ? $data['professional_reg_no'] : null;
         $this->certification_id = (!empty($data['certification_id'])) ? $data['certification_id'] : null;
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;

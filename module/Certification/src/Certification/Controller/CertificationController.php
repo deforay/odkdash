@@ -47,6 +47,7 @@ class CertificationController extends AbstractActionController {
                 $this->getCertificationTable()->saveCertification($certification);
                 $last_id = $this->getCertificationTable()->last_id();
                 $this->getCertificationTable()->updateExamination($last_id);
+                $this->getCertificationTable()->setToActive($last_id);
 
                 return $this->redirect()->toRoute('certification');
             }

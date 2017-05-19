@@ -24,7 +24,7 @@ class ExaminationTable {
             $sqlSelect->columns(array('id', 'provider', 'id_written_exam', 'practical_exam_id'));
             $sqlSelect->join('written_exam', 'written_exam.id_written_exam = examination.id_written_exam', array('final_score'), 'left')
                     ->join('practical_exam', 'practical_exam.practice_exam_id = examination.practical_exam_id', array('practical_total_score'), 'left')
-                    ->join('provider', 'provider.id=examination.provider', array('certification_id', 'provider_id', 'last_name', 'first_name', 'middle_name'), 'left')
+                    ->join('provider', 'provider.id=examination.provider', array('certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name'), 'left')
                     ->where (array('add_to_certification'=>'no'));
                     $sqlSelect->order('id desc');
 

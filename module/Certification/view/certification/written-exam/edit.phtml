@@ -42,56 +42,73 @@ $sessionLogin = new Container('credo');
             $form->prepare();
             $form->get('exam_type')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'last name'
+                'placeholder' => 'Type of Exam',
+                'id' => 'exam_type'
             ]);
 
             $form->get('provider_id')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'first name'
+//                
             ]);
 
-            $form->get('exam_admin_by_id')->setAttributes([
+           $form->get('exam_admin_by_id')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'region'
+                'placeholder' => 'Exam Admin By',
+                'autocomplete' => 'off',
+                'id' => 'admin'
             ]);
             $form->get('date')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'district'
+                'placeholder' => 'date',
+                'autocomplete' => 'off',
+                'id' => 'date'
             ]);
             $form->get('qa_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'phone'
+                'id' => 'a',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('rt_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'email'
+                 'id' => 'b',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('safety_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'job_address'
+                 'id' => 'c',
+                'autocomplete' => 'off',
+                
             ]);
 
             $form->get('specimen_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'prefered contact method'
+                 'id' => 'd',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('testing_algo_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
+                 'id' => 'e'
             ]);
             $form->get('report_keeping_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
+                 'id' => 'f','autocomplete' => 'off',
+                
             ]);
             $form->get('EQA_PT_points')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
+                 'id' => 'g',
+                'autocomplete' => 'off',
+                
             ]);
             $form->get('ethics_point')->setAttributes([
                 'class' => 'form-control',
-//                'placeholder' => 'Current job'
+                 'id' => 'h',
+                'autocomplete' => 'off',
+                
             ]);
-
             echo $this->form()->openTag($form);
             ?>
             <?php echo $this->formHidden($form->get('id_written_exam')->setAttribute('class', 'form-control')) ?>
@@ -180,6 +197,31 @@ $sessionLogin = new Container('credo');
 
 
 <script>
+    
+    function setAttempt() {
+        var nombre = '<?PHP echo $nombre; ?>';
+        var myAnchor = document.getElementById("exam_type");
+        var mySelect = document.createElement("select");
+        if (nombre == 1) {
+            mySelect.innerHTML = "<option>2nd attempt</option>";
+            mySelect.className = "form-control"
+            myAnchor.parentNode.replaceChild(mySelect, myAnchor);
+
+        } else if (nombre == 2) {
+            mySelect.innerHTML = "<option>3rd attempt</option>";
+            mySelect.className = "form-control"
+            myAnchor.parentNode.replaceChild(mySelect, myAnchor);
+
+        } else if (nombre >= 3) {
+            alert('Ce provider a deja fais trois tentative, il doit reprendre l examen ecrit');
+            window.location = "/practical-exam";
+        }
+    }
+    setAttempt();
+    
+    
+    
+    
     $(document).ready(function () {
 
         $("#date").datepicker(

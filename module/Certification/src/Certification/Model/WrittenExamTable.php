@@ -26,7 +26,7 @@ class WrittenExamTable extends AbstractTableGateway {
                 'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'total_points', 'final_score'));
             $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
                     ->join('exam_admin_by', ' exam_admin_by.exam_admin_by_id= written_exam.exam_admin_by_id ', array('admin_last_name', 'admin_first_name', 'admin_middle_name'), 'left')
-                    ->where(array('active'=>'no'));
+                    ->where(array('display'=>'yes'));
             $sqlSelect->order('id_written_exam desc');
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new WrittenExam());

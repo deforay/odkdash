@@ -37,8 +37,9 @@ class Training {
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;
         $this->middle_name = (!empty($data['middle_name'])) ? $data['middle_name'] : null;
 //        provider_id of provider table
-        $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
+        $this->professional_reg_no = (!empty($data['professional_reg_no'])) ? $data['professional_reg_no'] : null;
         $this->certification_id = (!empty($data['certification_id'])) ? $data['certification_id'] : null;
+        $this->certification_reg_no = (!empty($data['certification_reg_no'])) ? $data['certification_reg_no'] : null;
 
         $this->training_organization_name = (!empty($data['training_organization_name'])) ? $data['training_organization_name'] : null;
         $this->trainer_last_name = (!empty($data['trainer_last_name'])) ? $data['trainer_last_name'] : null;

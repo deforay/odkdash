@@ -27,9 +27,9 @@ class PracticalExam implements InputFilterAwareInterface {
         $this->exam_type = (!empty($data['exam_type'])) ? $data['exam_type'] : null;
         $this->exam_admin_by_id = (!empty($data['exam_admin_by_id'])) ? $data['exam_admin_by_id'] : null;
         $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
-        $this->pre_analytic = (!empty($data['pre_analytic'])) ? $data['pre_analytic'] : null;
+        $this->pre_analytic = (!empty($data['pre_analytic'])) ? $data['pre_analytic'] : 0;
         $this->analytic = (!empty($data['analytic'])) ? $data['analytic'] : null;
-        $this->post_analytic = (!empty($data['post_analytic'])) ? $data['post_analytic'] : null;
+        $this->post_analytic = (!empty($data['post_analytic'])) ? $data['post_analytic'] : 0;
         $this->Sample_testing_score = (!empty($data['Sample_testing_score'])) ? $data['Sample_testing_score'] : null;
         $this->direct_observation_score = (!empty($data['direct_observation_score'])) ? $data['direct_observation_score'] : null;
         $this->practical_total_score = (!empty($data['practical_total_score'])) ? $data['practical_total_score'] : null;
@@ -118,10 +118,7 @@ class PracticalExam implements InputFilterAwareInterface {
             $inputFilter->add(array(
                 'name' => 'pre_analytic',
                 'required' => false,
-                'filters' => array(
-                    array('name' => 'Int'),
-                ),
-            ));
+                           ));
 
             $inputFilter->add(array(
                 'name' => 'analytic',

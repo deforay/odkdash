@@ -24,6 +24,14 @@ class ProviderForm extends Form {
         ));
         
         $this->add(array(
+            'name' => 'certification_reg_no',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Certification ID',
+            ),
+        ));
+        
+        $this->add(array(
             'name' => 'certification_id',
             'type' => 'Text',
             'options' => array(
@@ -32,10 +40,10 @@ class ProviderForm extends Form {
         ));
         
         $this->add(array(
-            'name' => 'provider_id',
+            'name' => 'professional_reg_no',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Provider ID (if available)',
+                'label' => 'Professional Registration No (if available)',
             ),
         ));
         $this->add(array(
@@ -96,21 +104,17 @@ class ProviderForm extends Form {
                 )
             ),
         ));
-
-
         $this->add(array(
             'name' => 'phone',
-            'type' => 'Number',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Phone',
             ),
-            'attributes' => array(
-                'min' => '0',
-            )
+            
         ));
         $this->add(array(
             'name' => 'email',
-            'type' => 'Text',
+            'type' => 'email',
             'options' => array(
                 'label' => 'Email',
             ),
@@ -134,9 +138,12 @@ class ProviderForm extends Form {
                 'label' => 'Current Job Title',
                 'empty_option' => 'Please choose a Job Title',
                 'value_options' => array(
+                    'Assistant Medical Officer'=>'Assistant Medical Officer',
                     'Counselor' => 'Counselor',
                     'Health assistant' => 'Health assistant',
                     'Health attendant' => 'Health attendant',
+                    'Lab Assistant' => 'Lab Assistant',
+                    'Lab Scientist' => 'Lab Scientist',
                     'Lab technician' => 'Lab technician',
                     'Lab technologist' => 'Lab technologist',
                     'Medical doctor' => 'Medical doctor',
@@ -146,6 +153,60 @@ class ProviderForm extends Form {
                 ),
             ),
         ));
+           
+        $this->add(array(
+            'name' => 'time_worked',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Time worked as tester',
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'test_site_in_charge_name',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Full Name',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'test_site_in_charge_phone',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Phone',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'test_site_in_charge_email',
+            'type' => 'email',
+            'options' => array(
+                'label' => 'Email',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'facility_in_charge_name',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Full Name',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'facility_in_charge_phone',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Phone',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'facility_in_charge_email',
+            'type' => 'email',
+            'options' => array(
+                'label' => 'Email',
+            ),
+        ));
+        
+        
+        
         $this->add(array(
             'name' => 'facility_id',
             'type' => 'Zend\Form\Element\Select',
@@ -155,16 +216,7 @@ class ProviderForm extends Form {
                 'value_options' => $this->getOptionsForSelect(),
             ),
         ));
-        $this->add(array(
-            'name' => 'test_site_in_charge',
-            'type' => 'Text',
-            'options' => array(
-                'label' => 'Name of Testing Site In Charge (Manager Or Supervisor)',
-            ),
-        ));
-
-
-
+       
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
@@ -178,7 +230,7 @@ class ProviderForm extends Form {
 
     public function getOptionsForSelect() {
         $dbAdapter = $this->adapter;
-        $sql = 'SELECT id,facility_name FROM spi_rt_3_facilities ORDER by facility_name asc ';
+        $sql = 'SELECT id,facility_name FROM certification_facilities ORDER by facility_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
         

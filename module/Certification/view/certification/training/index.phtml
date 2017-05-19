@@ -44,7 +44,8 @@ $sessionLogin = new Container('credo');
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-                        <th>Provider ID (If Available)</th>
+                        <th>Certification Registration No</th>
+                        <th>professional registration no</th>
                         <th>Certification ID</th>
                         <th>Provider</th>
                         <th>Start date</th>
@@ -70,7 +71,8 @@ $sessionLogin = new Container('credo');
 
                     <?php foreach ($this->paginator as $training) : ?>
                         <tr>
-                            <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
+                             <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_reg_no); ?></div></td>
+                            <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->professional_reg_no); ?></div></td>
                             <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
                             <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>

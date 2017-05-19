@@ -28,6 +28,8 @@ class WrittenExamForm extends Form {
                 'label' => 'Number of Attempts',
                 'value_options' => array(
                     '1st attempt' => '1st attempt',
+                    '2nd attempt' => '2nd attempt',
+                    '3rd attempt' => '3rd attempt'
                     
                 )
             ),

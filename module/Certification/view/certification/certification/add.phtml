@@ -36,7 +36,7 @@ $sessionLogin = new Container('credo');
                             $written_score = $this->written;
                              if ($written_score >= 80 && $practical_score >= 90) {
                                 $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Certified', 'readonly' => TRUE]);
-                            } elseif ($written_score <= 80 && $practical_score <= 90) {
+                            } elseif ($written_score < 80 && $practical_score < 90) {
                                 $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'failed','readonly' => TRUE]);
                             } else {
                                 $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'pending','readonly' => TRUE]);
