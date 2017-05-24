@@ -41,7 +41,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 	    <div class="col-sm-6"><h2>SPI RT Facilities</h2></div>
 	    <div class="col-sm-6">
 		<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'export-facility')) { ?>
-		<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;Export Facilities</a>
+		<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;Export All Facilities to Excel</a>
 		<?php } if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) { ?>
 		<a href="<?php echo $this->url('spi-facility',array('action' => 'add'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
 		<?php } ?>
