@@ -87,6 +87,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 	  <input type="hidden" name="fieldName" id="fieldName"/>
 	  <input type="hidden" name="fieldVal" id="fieldVal"/>
 	  <div class="row">
+		<div class="col-md-3"></div>
 	       <div class="col-md-6" id="lefter">
 		  <div class="widget widget-radar widget-pie">
                     <div class="widget-head">
@@ -98,6 +99,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 		    <div id="radarChart"></div>
 		   </div>
 	       </div>
+		   <div class="col-md-3"></div>
 	  </div>
 	</div>
 	
@@ -134,6 +136,8 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 
 <script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highchart-exporting.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highchart-offline-exporting.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
 
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
