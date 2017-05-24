@@ -87,7 +87,7 @@ var chart;
 	  },
 	  
 	  ];
-	  
+	  <?php $total = $perflast30[0]['level0'] + $perflast30[0]['level1'] + $perflast30[0]['level2'] + $perflast30[0]['level3'] + $perflast30[0]['level4'];?>
 	  $('#widget-top-2').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -96,7 +96,14 @@ var chart;
                 type: 'pie'
             },title: {
                 text: ''
-            },			
+            },
+			exporting:{
+            chartOptions:{
+                subtitle: {
+                    text:'Total Audits:- <?php echo $total;?>',
+                }
+            }
+        },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
             },
