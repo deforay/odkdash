@@ -13,6 +13,7 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'get-facility-name' => 'allow',
+            
         ),
         'Application\\Controller\\Roles' => array(
             'index' => 'allow',
@@ -56,6 +57,7 @@ return array(
             'edit' => 'allow',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
+            'export-facility' => 'allow',
         ),
         'Application\\Controller\\Roles' => array(
             'index' => 'allow',

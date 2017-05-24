@@ -40,7 +40,9 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
           <div class="row">
 	    <div class="col-sm-6"><h2>SPI RT Facilities</h2></div>
 	    <div class="col-sm-6">
-		<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) { ?>
+		<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'export-facility')) { ?>
+		<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;Export Facilities</a>
+		<?php } if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) { ?>
 		<a href="<?php echo $this->url('spi-facility',array('action' => 'add'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
 		<?php } ?>
 		<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-facility-name')) { ?>
@@ -242,5 +244,17 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
     function closeModal() {
         document.getElementById('dFrame').src = "";
         hidedefModal('dDiv');
+    }
+	function downloadFacility() {
+	    $.post("<?php echo $this->url('spi-facility', array('action' => 'export-facility')); ?>",
+	    function (data) {
+	      if(data == "" || data == null || data == undefined){
+			$.unblockUI();
+			alert('Unable to generate download');
+			}else{
+			$.unblockUI();
+			document.location.href = '/temporary/'+data;
+			}
+		});
     }
 </script>

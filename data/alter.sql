@@ -502,3 +502,6 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 ALTER TABLE `r_spi_form_v_3_download` DROP `file_name`;
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'view-data', 'Dashboard - View Details');
+
+--saravnana 24-may-2017
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Facility', 'export-facility', 'Export Facilities');

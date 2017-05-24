@@ -92,7 +92,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
-	
+		$queryContainer = new Container('query');
         $aColumns = array('facility_id','facility_name','email','contact_person');
         $orderColumns = array('facility_id','facility_name','email','contact_person');
 
@@ -185,6 +185,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
 
+		$queryContainer->exportAllFacilityQuery = $sQuery;
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);

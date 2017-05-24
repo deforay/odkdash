@@ -121,4 +121,16 @@ class FacilityController extends AbstractActionController {
             return $viewModel;
         }
     }
+    public function exportFacilityAction(){
+        $request = $this->getRequest();                
+        if ($request->isPost()) {
+            $facilityService= $this->getServiceLocator()->get('FacilityService');
+            $result = $facilityService->exportFacility();
+            $viewModel = new ViewModel(array(
+                'result'=>$result
+                ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
