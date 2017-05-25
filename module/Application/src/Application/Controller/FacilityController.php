@@ -133,4 +133,24 @@ class FacilityController extends AbstractActionController {
             return $viewModel;
         }
     }
+    public function searchProvinceListAction()
+    {
+        $facilityService= $this->getServiceLocator()->get('FacilityService');
+        $request = $this->getRequest();
+        if ($request->isGet()) {
+            $val = $request->getQuery('q');
+            $result=$facilityService->getProvinceData($val);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+    }
+    public function searchDistrictListAction()
+    {
+        $facilityService= $this->getServiceLocator()->get('FacilityService');
+        $request = $this->getRequest();
+        if ($request->isGet()) {
+            $val = $request->getQuery('q');
+            $result=$facilityService->getDistrictData($val);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+    }
 }

@@ -295,4 +295,12 @@ class FacilityService {
             error_log($exc->getTraceAsString());
         }
     }
+    public function getProvinceData($searchStr){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fecthProvinceData($searchStr);
+    }
+    public function getDistrictData($searchStr){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fecthDistrictData($searchStr);
+    }
 }
