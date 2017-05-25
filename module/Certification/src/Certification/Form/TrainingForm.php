@@ -25,54 +25,67 @@ class TrainingForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'name' => 'Provider_id',
             'options' => array(
-                'label' => 'Provider',
+                'label' => 'Tester',
                 'empty_option' => 'Please choose a Provider',
                 'value_options' => $this->getListProvider(),
             ),
-            
         ));
+
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Select',
+            'name' => 'type_of_competency',
+            'options' => array(
+                'label' => 'Type of Competency',
+                'empty_option' => 'Please choose a Type of Competency',
+                'value_options' => array(
+                    'Initial' => 'Initial',
+                    'Maintenance' => 'Maintenance',
+                ),
+            ),
+        ));
+
+
         $this->add(array(
             'type' => 'text',
-            'name' => 'Start_date',
+            'name' => 'last_training_date',
             'attributes' => [
                 'id' => 'date',
-               'type' => 'text'
+                'type' => 'text'
             ],
             'options' => array(
-                'label' => 'Start date'
+                'label' => 'Date of Last Training/Activity'
             )
         ));
 
-
-        $this->add(array(
-            'type' => 'text',
-            'name' => 'end_date',
-            'attributes' => [
-                'id' => 'date2',
-               'type' => 'text',
-            ],
-            'options' => array(
-                'label' => 'end date',
-               
-            )
-        ));
 
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'type_of_training',
             'options' => array(
-                'label' => 'Type of training',
+                'label' => 'Type of Activity/Training',
                 'empty_option' => 'Please choose a Type of Training',
                 'value_options' => array(
-                   'Initial (Nationally approved RT training)' => 'Initial (Nationally approved RT training)',
-                    'Initial (on the job training by peer)' => 'Initial (on the job training by peer)',
-                    'Refresher (Nationally approved RT training)' => 'Refresher (Nationally approved RT training)',
-                    'Refresher (Topic specific training)' => 'Refresher (Topic specific training)',
+                    'Initial training (Nationally approved RT training)' => 'Initial  training (Nationally approved RT training)',
+                    'Initial  training (on the job training by peer)' => 'Initial  training (on the job training by peer)',
+                    'In-service training (on job by supervisor)' => 'In-service training (on job by supervisor)',
+                    'In-service training (nationally approved)' => 'In-service training (nationally approved)',
+                    'In-service training (distance learning, i.e., ECHO)' => 'In-service training (distance learning, i.e., ECHO)',
                     'Mentoring (on job by supervisor)' => 'Mentoring (on job by supervisor)',
                     'Mentoring (Distance learning, i.e., ECHO)' => 'Mentoring (Distance learning, i.e., ECHO',
-                    ),
+                    'Refresher training (Nationally approved RT training)' => 'Refresher training (Nationally approved RT training)',
+                    'Refresher training (Topic specific training)' => 'Refresher training (Topic specific training)',
+                    'Regional workshop' => 'Regional workshop',
                 ),
-            ) );
+            ),
+        ));
+
+        $this->add(array(
+            'type' => 'text',
+            'name' => 'length_of_training',
+            'options' => array(
+                'label' => 'Length of Activity/Training',
+            ),
+        ));
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
             'name' => 'training_organization_id',
@@ -80,57 +93,44 @@ class TrainingForm extends Form {
                 'label' => 'Training Organization',
                 'empty_option' => 'Please choose an organization',
                 'value_options' => $this->getListTrainingOrganization(),
-                ),
-            
-           
+            ),
+        ));
+
+        $this->add(array(
+            'type' => 'text',
+            'name' => 'facilitator',
+            'options' => array(
+                'label' => 'Name of Facilitator(s)',
+            ),
         ));
 
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',
-            'name' => 'trainer_id',
-            'options' => array(
-                'label' => 'Trainer',
-                'empty_option' => 'Please choose a Trainer',
-                'value_options' => $this->getListTrainer(),
-            ),
-            
-        ));
-        $this->add(array(
-            'name' => 'score',
-            'type' => 'Number',
-            'options' => array(
-                'label' => 'Score',
-            ),
-            'attributes' => array(
-             'min' => '0',
-                )
-        ));
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Select',
-            'name' => 'Pass_fail',
-            'options' => array(
-                'label' => 'Performance',
-                'empty_option' => 'Please choose an option',
-                'value_options' => array(
-                   'Satisfactory' => 'Satisfactory',
-                    'Unsatisfactory' => 'Unsatisfactory',
-                ),
-            ),
-            
-        ));
-        $this->add(array(
-            'type' => 'Zend\Form\Element\Select',
             'name' => 'training_certificate',
             'options' => array(
-                'label' => 'Training certificate ',
+                'label' => 'Training certificate (if available)',
                 'empty_option' => 'Please choose a training certificate',
                 'value_options' => array(
-                   'Yes' => 'Yes',
+                    'Yes' => 'Yes',
                     'No' => 'No',
                 ),
             ),
-            
         ));
+
+
+
+        $this->add(array(
+            'type' => 'text',
+            'name' => 'date_certificate_issued',
+            'attributes' => [
+                'id' => 'date2',
+                'type' => 'text'
+            ],
+            'options' => array(
+                'label' => 'Date certificate issued (if available)'
+            )
+        ));
+
         $this->add(array(
             'name' => 'Comments',
             'attributes' => array(
@@ -162,13 +162,12 @@ class TrainingForm extends Form {
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['id']] = $res['last_name'].' '. $res['first_name'].' '. $res['middle_name'];
-           
+            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
         }
         return $selectData;
     }
-  
-     public function getListTrainingOrganization() {
+
+    public function getListTrainingOrganization() {
         $dbAdapter = $this->adapter;
         $sql = 'SELECT training_organization_id,training_organization_name FROM training_organization order by training_organization_name asc ';
         $statement = $dbAdapter->query($sql);
@@ -178,24 +177,8 @@ class TrainingForm extends Form {
 
         foreach ($result as $res) {
             $selectData[$res['training_organization_id']] = $res['training_organization_name'];
-           
         }
         return $selectData;
     }
-    
-     public function getListTrainer() {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT trainer_id,trainer_last_name,trainer_first_name FROM trainer order by trainer_last_name asc ';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
 
-        $selectData = array();
-
-        foreach ($result as $res) {
-            $selectData[$res['trainer_id']] = $res['trainer_last_name'].' '. $res['trainer_first_name'];
-           
-        }
-        return $selectData;
-    }
-    
 }

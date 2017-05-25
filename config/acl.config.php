@@ -97,12 +97,6 @@ return array(
             'edit' => 'allow',
             'search' => 'allow',
         ),
-        'Certification\\Controller\\ExamAdmin' => array(
-            'index' => 'allow',
-            'add' => 'allow',
-            'edit' => 'allow',
-            'search' => 'allow',
-        ),
         
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
@@ -123,12 +117,7 @@ return array(
             'edit' => 'allow',
             'search' => 'allow',
         ),
-        'Certification\\Controller\\Trainer' => array(
-            'index' => 'allow',
-            'add' => 'allow',
-            'edit' => 'allow',
-            'search' => 'allow',
-        ),
+        
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -303,13 +292,7 @@ return array(
             'edit' => 'allow',
             'search' => 'allow',
         ),
-        'Certification\\Controller\\ExamAdmin' => array(
-            'index' => 'allow',
-            'add' => 'allow',
-            'edit' => 'allow',
-            'search' => 'allow',
-        ),
-        
+                
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -329,12 +312,7 @@ return array(
             'edit' => 'allow',
             'search' => 'allow',
         ),
-        'Certification\\Controller\\Trainer' => array(
-            'index' => 'allow',
-            'add' => 'allow',
-            'edit' => 'allow',
-            'search' => 'allow',
-        ),
+        
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',

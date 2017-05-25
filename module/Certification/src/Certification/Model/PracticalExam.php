@@ -10,11 +10,8 @@ class PracticalExam implements InputFilterAwareInterface {
 
     public $practice_exam_id;
     public $exam_type;
-    public $exam_admin_by_id;
+    public $exam_admin;
     public $provider_id;
-    public $pre_analytic;
-    public $analytic;
-    public $post_analytic;
     public $Sample_testing_score;
     public $direct_observation_score;
     public $practical_total_score;
@@ -25,11 +22,8 @@ class PracticalExam implements InputFilterAwareInterface {
 
         $this->practice_exam_id = (!empty($data['practice_exam_id'])) ? $data['practice_exam_id'] : null;
         $this->exam_type = (!empty($data['exam_type'])) ? $data['exam_type'] : null;
-        $this->exam_admin_by_id = (!empty($data['exam_admin_by_id'])) ? $data['exam_admin_by_id'] : null;
+        $this->exam_admin = (!empty($data['exam_admin'])) ? $data['exam_admin'] : null;
         $this->provider_id = (!empty($data['provider_id'])) ? $data['provider_id'] : null;
-        $this->pre_analytic = (!empty($data['pre_analytic'])) ? $data['pre_analytic'] : 0;
-        $this->analytic = (!empty($data['analytic'])) ? $data['analytic'] : null;
-        $this->post_analytic = (!empty($data['post_analytic'])) ? $data['post_analytic'] : 0;
         $this->Sample_testing_score = (!empty($data['Sample_testing_score'])) ? $data['Sample_testing_score'] : null;
         $this->direct_observation_score = (!empty($data['direct_observation_score'])) ? $data['direct_observation_score'] : null;
         $this->practical_total_score = (!empty($data['practical_total_score'])) ? $data['practical_total_score'] : null;
@@ -64,7 +58,7 @@ class PracticalExam implements InputFilterAwareInterface {
 
             $inputFilter->add(array(
                 'name' => 'exam_type',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -81,8 +75,8 @@ class PracticalExam implements InputFilterAwareInterface {
 
 
             $inputFilter->add(array(
-                'name' => 'exam_admin_by_id',
-                'required' => false,
+                'name' => 'exam_admin',
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -99,7 +93,7 @@ class PracticalExam implements InputFilterAwareInterface {
 
             $inputFilter->add(array(
                 'name' => 'provider_id',
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -114,44 +108,22 @@ class PracticalExam implements InputFilterAwareInterface {
                 ),
             ));
 
-
             $inputFilter->add(array(
-                'name' => 'pre_analytic',
-                'required' => false,
-                           ));
-
-            $inputFilter->add(array(
-                'name' => 'analytic',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'Int'),
-                ),
+                'name' => 'direct_observation_score',
+                'required' => true,
             ));
-
-
-            $inputFilter->add(array(
-                'name' => 'post_analytic',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'Int'),
-                ),
-            ));
-
 
             $inputFilter->add(array(
                 'name' => 'Sample_testing_score',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'int'),
-                ),
+                'required' => true,
             ));
 
             $inputFilter->add(array(
                 'name' => 'date',
-                'required' => false,
+                'required' => true,
             ));
-            
-             $inputFilter->add(array(
+
+            $inputFilter->add(array(
                 'name' => 'written',
                 'required' => false,
                 'filters' => array(

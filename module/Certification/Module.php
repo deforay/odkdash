@@ -23,17 +23,7 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Provider());
                     return new TableGateway('provider', $dbAdapter, null, $resultSetPrototype);
                 },
-                'Certification\Model\TrainerTable' => function($sm) {
-                    $tableGateway = $sm->get('TrainerTableGateway');
-                    $table = new \Certification\Model\TrainerTable($tableGateway);
-                    return $table;
-                },
-                'TrainerTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\Trainer());
-                    return new TableGateway('trainer', $dbAdapter, null, $resultSetPrototype);
-                },
+                
                 'Certification\Model\TrainingOrganizationTable' => function($sm) {
                     $tableGateway = $sm->get('TrainingOrganizationTableGateway');
                     $table = new \Certification\Model\TrainingOrganizationTable($tableGateway);
@@ -77,17 +67,6 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\PracticalExam());
                     return new TableGateway('practical_exam', $dbAdapter, null, $resultSetPrototype);
-                },
-                'Certification\Model\ExamAdminTable' => function($sm) {
-                    $tableGateway = $sm->get('ExamAdminTableGateway');
-                    $table = new \Certification\Model\ExamAdminTable($tableGateway);
-                    return $table;
-                },
-                'ExamAdminTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\ExamAdmin());
-                    return new TableGateway('exam_admin_by', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Certification\Model\CertificationTable' => function($sm) {
                     $tableGateway = $sm->get('CertificationTableGateway');

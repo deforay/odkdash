@@ -22,15 +22,12 @@ class TrainingOrganizationController extends AbstractActionController {
     public function indexAction() {
 
         $paginator = $this->getTrainingOrganizationTable()->fetchAll(true);
-     // set the current page to what has been passed in query string, or to 1 if none set
-     $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-     // set the number of items per page to 10
-     $paginator->setItemCountPerPage(10);
+        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+        $paginator->setItemCountPerPage(10);
 
-     return new ViewModel(array(
-         'paginator' => $paginator
-     ));
-       
+        return new ViewModel(array(
+            'paginator' => $paginator
+        ));
     }
 
     public function addAction() {
@@ -88,15 +85,25 @@ class TrainingOrganizationController extends AbstractActionController {
             'form' => $form,
         );
     }
-    
-     public function searchAction() {
-         $request = $this->getRequest();
+
+    public function searchAction() {
+        $request = $this->getRequest();
         if ($request->isPost()) {
-            $motCle = $request->getPost('motCle',null);
+            $motCle = $request->getPost('motCle', null);
         }
-//        die($motCle);
+////        die($motCle);
+//        return new ViewModel(array(
+//            'organizations' => $this->getTrainingOrganizationTable()->search($motCle),
+//        ));
+//   
+//        
+        $paginator = $this->getTrainingOrganizationTable()->search($motCle,true);
+        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+        $paginator->setItemCountPerPage(10);
+
         return new ViewModel(array(
-             'organizations' => $this->getTrainingOrganizationTable()->search($motCle),
-         ));
-     }
+            'paginator' => $paginator
+        ));
+        }
+
 }

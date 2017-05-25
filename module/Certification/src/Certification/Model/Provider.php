@@ -57,6 +57,11 @@ class Provider {
         $this->facility_id = (!empty($data['facility_id'])) ? $data['facility_id'] : null;
         $this->facility_name = (!empty($data['facility_name'])) ? $data['facility_name'] : null;
         $this->facility_address = (!empty($data['facility_address'])) ? $data['facility_address'] : null;
+    
+        $this->region_name = (!empty($data['region_name'])) ? $data['region_name'] : null;
+        $this->district_name = (!empty($data['district_name'])) ? $data['district_name'] : null;
+        
+        
     }
 
     public function getArrayCopy() {

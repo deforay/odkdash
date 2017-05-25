@@ -35,7 +35,7 @@ $sessionLogin = new Container('credo');
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
             <div class="col-sm-12">          
                 <form class="navbar-form navbar-right" action="<?php echo $this->url('written-exam', array('action' => 'search')); ?>" method="POST">
-                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..." autocomplete="off"/></div>
                     <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
 
                     </button>
@@ -47,7 +47,7 @@ $sessionLogin = new Container('credo');
                     <tr>
 
                         <th style="width: 8%">Number of Attempts </th>
-                        <th>Provider </th>
+                        <th>Tester </th>
                         <th style="width: 10%" >Exam administered by </th>
                         <th style="width: 8%">Date </th>
                         <th style="width: 5%">1.<br> QA (points)<br><br> </th>
@@ -58,6 +58,7 @@ $sessionLogin = new Container('credo');
                         <th style="width: 5%">6.<br> Record keeping (points)</th>
                         <th style="width: 5%">7.<br> EQA/PT (points)<br><br></th>
                         <th style="width: 5%">8.<br> Ethics (points)<br><br> </th>
+                        <th style="width: 5%">9.<br> Inventory (points)<br><br> </th>
                         <th style="width: 5%">Total Points (=25)</th>
                         <th style="width: 5%"> Final Score (≥80%)</th>
 
@@ -71,7 +72,7 @@ $sessionLogin = new Container('credo');
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="16" class="dataTables_empty">Loading data from server</td>
+                        <td colspan="17" class="dataTables_empty">Loading data from server</td>
                     </tr>
                     <?php foreach ($this->paginator as $written) : ?>
                         <tr>
@@ -88,6 +89,7 @@ $sessionLogin = new Container('credo');
                             <td><?php echo $this->escapeHtml($written->report_keeping_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->EQA_PT_points); ?></td>
                             <td><?php echo $this->escapeHtml($written->ethics_point); ?></td>
+                            <td><?php echo $this->escapeHtml($written->inventory_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->total_points); ?></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($written->final_score . ' %'); ?></div></td>
                             <td>

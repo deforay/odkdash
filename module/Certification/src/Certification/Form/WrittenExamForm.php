@@ -30,7 +30,6 @@ class WrittenExamForm extends Form {
                     '1st attempt' => '1st attempt',
                     '2nd attempt' => '2nd attempt',
                     '3rd attempt' => '3rd attempt'
-                    
                 )
             ),
         ));
@@ -38,19 +37,17 @@ class WrittenExamForm extends Form {
             'name' => 'provider_id',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Provider',
-                'empty_option' => 'Please choose a Provider',
+                'label' => 'Tester',
+                'empty_option' => 'Please choose a Tester',
                 'value_options' => $this->getListProvider(),
             ),
         ));
 
         $this->add(array(
-            'name' => 'exam_admin_by_id',
-            'type' => 'Zend\Form\Element\Select',
+            'name' => 'exam_admin',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Exam administered by',
-                'empty_option' => 'Please choose an exam administrator',
-                'value_options' => $this->getListExamAdmin()
             ),
         ));
         $this->add(array(
@@ -70,20 +67,14 @@ class WrittenExamForm extends Form {
             'type' => 'text',
             'options' => array(
                 'label' => '1.QA (points)',
-            ),
-            'attributes' => array(
-             'min' => '0',
-                )
+            )
         ));
         $this->add(array(
             'name' => 'rt_point',
             'type' => 'text',
             'options' => array(
                 'label' => '2.RT (points)',
-            ),
-            'attributes' => array(
-             'min' => '0',
-                )
+            )
         ));
         $this->add(array(
             'name' => 'safety_point',
@@ -91,9 +82,6 @@ class WrittenExamForm extends Form {
             'options' => array(
                 'label' => '3.Safety (points)',
             ),
-            'attributes' => array(
-             'min' => '0',
-                )
         ));
 
         $this->add(array(
@@ -102,9 +90,6 @@ class WrittenExamForm extends Form {
             'options' => array(
                 'label' => '4.Specimen collection (points)',
             ),
-            'attributes' => array(
-             'min' => '0',
-                )
         ));
 
         $this->add(array(
@@ -112,20 +97,13 @@ class WrittenExamForm extends Form {
             'type' => 'text',
             'options' => array(
                 'label' => '5.Testing algorithm (points)',
-            ),
-            'attributes' => array(
-             'min' => '0',
-                )
-        ));
+            ),));
         $this->add(array(
             'name' => 'report_keeping_point',
             'type' => 'text',
             'options' => array(
                 'label' => '6.Record keeping (points)',
             ),
-            'attributes' => array(
-             'min' => '0',
-                )
         ));
         $this->add(array(
             'name' => 'EQA_PT_points',
@@ -133,9 +111,6 @@ class WrittenExamForm extends Form {
             'options' => array(
                 'label' => '7. EQA/PT (points)',
             ),
-            'attributes' => array(
-             'min' => '0',
-                )
         ));
 
         $this->add(array(
@@ -144,9 +119,14 @@ class WrittenExamForm extends Form {
             'options' => array(
                 'label' => '8.Ethics (points)',
             ),
-            'attributes' => array(
-             'min' => '0',
-                )
+        ));
+
+        $this->add(array(
+            'name' => 'inventory_point',
+            'type' => 'text',
+            'options' => array(
+                'label' => '9.Inventory (points)',
+            ),
         ));
 
 
@@ -158,13 +138,12 @@ class WrittenExamForm extends Form {
                 'id' => 'submitbutton',
             ),
         ));
-        
+
         $this->add(array(
             'name' => 'practical',
             'type' => 'hidden',
-            ));
+        ));
     }
-    
 
     public function getListProvider() {
         $dbAdapter = $this->adapter;
@@ -175,25 +154,11 @@ class WrittenExamForm extends Form {
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name']. ' ' . $res['middle_name'];
-        }
-        return $selectData;
-    }
-    
-     public function getListExamAdmin() {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT exam_admin_by_id, admin_last_name, admin_first_name, admin_middle_name, district, region, email, phone, prefered_contact_method, current_job, job_address FROM exam_admin_by order by admin_last_name asc ';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-
-        $selectData = array();
-
-        foreach ($result as $res) {
-            $selectData[$res['exam_admin_by_id']] = $res['admin_last_name'] . ' ' . $res['admin_first_name']. ' ' . $res['admin_middle_name'];
+            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
         }
         return $selectData;
     }
 
+   
 
-    
-        }
+}

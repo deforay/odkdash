@@ -67,14 +67,16 @@ $sessionLogin = new Container('credo');
                                     'placeholder' => 'Region',
                                     'autocomplete' => 'off',
                                     'id' => 'Region',
-                                    'onclick' => 'emptyInput(this)']);
+                                    'onclick' => 'emptyInput(this)',
+                                    'onchange' => 'showFacilities(this.value)']);
                                 
                                 $form->get('district')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'District',
                                     'id' => 'District',
                                     'autocomplete' => 'off',
-                                    'onclick' => 'emptyInput(this)']);
+                                    'onclick' => 'emptyInput(this)',
+                                     'onchange' => 'showRegion(this.value)']);
                                 
                                 $form->get('type_vih_test')->setAttributes([
                                     'class' => 'form-control',
@@ -199,14 +201,15 @@ $sessionLogin = new Container('credo');
                                         <?= $this->formElementErrors($form->get('middle_name')); ?>
                                     </div>
                                     <div class="form-group col-lg-4">
+                                        <?= $this->formLabel($form->get('district')); ?><span class="mandatory">*</span>
+                                        <?= $this->formElement($form->get('district')); ?>
+                                        <?= $this->formElementErrors($form->get('district')); ?></div>
+                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('region')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('region')); ?>
                                         <?= $this->formElementErrors($form->get('region')); ?>
                                     </div>
-                                    <div class="form-group col-lg-4">
-                                        <?= $this->formLabel($form->get('district')); ?><span class="mandatory">*</span>
-                                        <?= $this->formElement($form->get('district')); ?>
-                                        <?= $this->formElementErrors($form->get('district')); ?></div>
+                                    
                                     <div class="form-group col-lg-4">  
                                         <?= $this->formLabel($form->get('type_vih_test')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('type_vih_test')); ?>
@@ -335,4 +338,51 @@ $sessionLogin = new Container('credo');
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/provider.js'); ?>"></script>
 
+<script>
+                                function showRegion(str) {
+                                    
+                                    if (str == "") {
+                                        document.getElementById("Region").innerHTML = "";
+                                        return;
+                                    } else {
+                                        if (window.XMLHttpRequest) {
+                                            // code for IE7+, Firefox, Chrome, Opera, Safari
+                                            xmlhttp = new XMLHttpRequest();
+                                        } else {
+                                            // code for IE6, IE5
+                                            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                        }
+                                        xmlhttp.onreadystatechange = function () {
+                                            if (this.readyState == 4 && this.status == 200) {
+                                                document.getElementById("Region").innerHTML = this.responseText;
+                                            }
+                                        };
+                                        xmlhttp.open("GET", "<?php echo $this->basePath('assets/getregion.php'); ?>?q=" + str, true);
+                                        xmlhttp.send();
+                                    }
+                                }
+
+                                function showFacilities(str) {
+                                
+                                    if (str == "") {
+                                        document.getElementById("Facility Name").innerHTML = "";
+                                        return;
+                                    } else {
+                                        if (window.XMLHttpRequest) {
+                                            // code for IE7+, Firefox, Chrome, Opera, Safari
+                                            xmlhttp = new XMLHttpRequest();
+                                        } else {
+                                            // code for IE6, IE5
+                                            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                        }
+                                        xmlhttp.onreadystatechange = function () {
+                                            if (this.readyState == 4 && this.status == 200) {
+                                                document.getElementById("Facility Name").innerHTML = this.responseText;
+                                            }
+                                        };
+                                        xmlhttp.open("GET", "<?php echo $this->basePath('assets/getfacilities.php'); ?>?q=" + str, true);
+                                        xmlhttp.send();
+                                    }
+                                }
+</script>
 

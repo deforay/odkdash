@@ -35,7 +35,7 @@ $sessionLogin = new Container('credo');
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
             <div class="col-sm-12">          
                 <form class="navbar-form navbar-right" action="<?php echo $this->url('practical-exam', array('action' => 'search')); ?>" method="POST">
-                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..." autocomplete="off"/></div>
                     <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
 
                     </button>
@@ -48,10 +48,7 @@ $sessionLogin = new Container('credo');
                         <th style="width: 10%;">Date</th>
                         <th style="width: 10%;">Type of Exam</th>
                         <th style="width: 10%;">Exam Administrator</th>
-                        <th style="width: 10%;">Provider </th>
-                        <th style="width: 10%;">Pre-analytic </th>
-                        <th style="width: 10%;">Analytic </th>
-                        <th style="width: 10%;">Post-analytic </th>
+                        <th style="width: 10%;">Tester </th>
                         <th style="width: 10%;">Direct observation score (≥90%) </th>
                         <th style="width: 10%;">Sample testing Score (=100%)</th>
                         <th style="width: 10%;">Practical Total Score</th>
@@ -71,16 +68,13 @@ $sessionLogin = new Container('credo');
                     </tr>
                     <?php foreach ($this->paginator as $exam) : ?>
                         <tr>
-                            <td><div style="width:100px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->date); ?></div></td>
-                            <td><div style="width:100px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_type); ?></div></td>
-                            <td><div style="width:180px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->admin_last_name . ' ' . $exam->admin_first_name . ' ' . $exam->admin_middle_name); ?></div></td>
-                            <td><div style="width:180px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->pre_analytic . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->analytic . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->post_analytic . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->direct_observation_score . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:30px;overflow:auto; color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->date); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_type); ?></div></td>
+                            <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_admin) ; ?></div></td>
+                            <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->direct_observation_score . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
                             <td>
                                 <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('practical-exam', array('action' => 'edit', 'practice_exam_id' => $exam->practice_exam_id)); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
                             </td>

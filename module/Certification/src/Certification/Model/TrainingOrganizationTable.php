@@ -20,18 +20,12 @@ class TrainingOrganizationTable extends AbstractTableGateway {
     public function fetchAll($paginated = false) {
 
         if ($paginated) {
-           $select = new Select('training_organization');
-           $select->order('training_organization_name asc');
+            $select = new Select('training_organization');
+            $select->order('training_organization_name asc');
             $resultSetPrototype = new ResultSet();
             $resultSetPrototype->setArrayObjectPrototype(new TrainingOrganization());
-            // create a new pagination adapter object
             $paginatorAdapter = new DbSelect(
-                    // our configured select object
-                    $select,
-                    // the adapter to run it against
-                    $this->tableGateway->getAdapter(),
-                    // the result set to hydrate
-                    $resultSetPrototype
+                    $select, $this->tableGateway->getAdapter(), $resultSetPrototype
             );
             $paginator = new Paginator($paginatorAdapter);
             return $paginator;
@@ -68,18 +62,23 @@ class TrainingOrganizationTable extends AbstractTableGateway {
         }
     }
 
-    public function search($motCle) {
-        $sqlSelect = $this->tableGateway->getSql()->select();
+    public function search($motCle, $paginated = false) {
+        if ($paginated) {
+            $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('training_organization_id', 'training_organization_name', 'type_organization'));
-         
-          $sqlSelect->where->like('training_organization_name', '%'. $motCle .'%');
-          $sqlSelect->where->OR->like('type_organization', '%'. $motCle .'%');
-          
-         
-        $sqlSelect->order('training_organization_name');
-        ?> 
-        <pre><?php // print_r($sqlSelect) ; ?></pre> <?php
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+            $sqlSelect->where->like('training_organization_name', '%' . $motCle . '%');
+            $sqlSelect->where->OR->like('type_organization', '%' . $motCle . '%');
+            $sqlSelect->order('training_organization_name');
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype(new TrainingOrganization());
+            $paginatorAdapter = new DbSelect(
+                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return $paginator;
+        }
+        $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
+
 }

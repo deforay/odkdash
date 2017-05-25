@@ -21,10 +21,9 @@ class TrainingTable extends AbstractTableGateway {
     public function fetchAll($paginated = false) {
         if ($paginated) {
             $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('training_id', 'Start_date', 'end_date', 'type_of_training', 'training_organization_id', 'trainer_id', 'score', 'Pass_fail', 'training_certificate', 'Comments'));
+            $sqlSelect->columns(array('training_id', 'Provider_id', 'type_of_competency', 'last_training_date', 'type_of_training', 'length_of_training', 'training_organization_id', 'facilitator', 'training_certificate', 'date_certificate_issued', 'Comments'));
             $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id','certification_reg_no'), 'left')
-                    ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left')
-                    ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name', 'trainer_first_name'), 'left');
+                    ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left');
             $sqlSelect->order('training_id desc');
 
             $resultSetPrototype = new ResultSet();
@@ -51,15 +50,16 @@ class TrainingTable extends AbstractTableGateway {
 
     public function saveTraining(Training $Training) {
         $data = array(
+                
             'Provider_id' => $Training->Provider_id,
-            'Start_date' => $Training->Start_date,
-            'end_date' => $Training->end_date,
+            'type_of_competency' => $Training->type_of_competency,
+            'last_training_date' => $Training->last_training_date,
             'type_of_training' => $Training->type_of_training,
+            'length_of_training' => $Training->length_of_training,
             'training_organization_id' => $Training->training_organization_id,
-            'trainer_id' => $Training->trainer_id,
-            'score' => $Training->score,
-            'Pass_fail' => $Training->Pass_fail,
+            'facilitator' => $Training->facilitator,
             'training_certificate' => $Training->training_certificate,
+            'date_certificate_issued' => $Training->date_certificate_issued,
             'Comments' => $Training->Comments,
         );
         print_r($data);
@@ -76,26 +76,34 @@ class TrainingTable extends AbstractTableGateway {
         }
     }
 
-    public function search($motCle) {
-        $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('training_id', 'Start_date', 'end_date', 'type_of_training', 'training_organization_id', 'trainer_id', 'score', 'Pass_fail', 'training_certificate', 'Comments'));
-        $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'provider_id', 'certification_id'), 'left')
-                ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left')
-                ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name', 'trainer_first_name'), 'left');
+    public function search($motCle,$paginated=false) {
+        
+       if ($paginated) {
+            $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array('training_id', 'Provider_id', 'type_of_competency', 'last_training_date', 'type_of_training', 'length_of_training', 'training_organization_id', 'facilitator', 'training_certificate', 'date_certificate_issued', 'Comments'));
+        $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id','certification_reg_no'), 'left')
+                ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left');
 
         $sqlSelect->where->like('last_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('training_organization_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('trainer_last_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('trainer_middle_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('trainer_first_name', '%' . $motCle . '%');
         $sqlSelect->where->OR->like('certification_id', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('professional_reg_no', '%' . $motCle . '%');
+        $sqlSelect->where->OR->like('certification_reg_no', '%' . $motCle . '%');
         $sqlSelect->order('last_name ASC');
-        ?> 
-        <pre><?php // print_r($sqlSelect) ; ?></pre> <?php
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype(new Training());
+            $paginatorAdapter = new DbSelect(
+                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return $paginator;
+        }
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
+        
+        
     }
 
 }

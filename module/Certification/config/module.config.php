@@ -27,7 +27,7 @@ return array(
                     ),
                 ),
             ),
-             'certification-issuer' => array(
+            'certification-issuer' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/certification-issuer[/:action][/:certification_issuer_id]',
@@ -41,7 +41,7 @@ return array(
                     ),
                 ),
             ),
-             'recertification' => array(
+            'recertification' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/recertification[/:action][/:recertification_id]',
@@ -55,23 +55,7 @@ return array(
                     ),
                 ),
             ),
-             
-            'exam-admin' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/exam-admin[/:action][/:exam_admin_by_id]',
-                    'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'exam_admin_by_id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'Certification\Controller\ExamAdmin',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             
-             
             'written-exam' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -117,27 +101,13 @@ return array(
             'provider' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/provider[/][:action][/:id]',
+                    'route' => '/provider[/][:action][/:id][/:motCle]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
                         'controller' => 'Certification\Controller\Provider',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-           'trainer' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/trainer[/:action][/:trainer_id]',
-                    'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'trainer_id' => '[0-9]+',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'Certification\Controller\Trainer',
                         'action' => 'index',
                     ),
                 ),
@@ -157,7 +127,7 @@ return array(
                 ),
             ),
 //            
-              'training-organization' => array(
+            'training-organization' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/training-organization[/:action][/:training_organization_id]',
@@ -171,7 +141,7 @@ return array(
                     ),
                 ),
             ),
-              'certification-mail' => array(
+            'certification-mail' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/certification-mail[/:action][/:id]',
@@ -180,26 +150,21 @@ return array(
                         'id' => '[0-9]+',
                     ),
                     'defaults' => array(
-                            'controller' => 'Certification\Controller\CertificationMail',
+                        'controller' => 'Certification\Controller\CertificationMail',
                         'action' => 'index',
                     ),
                 ),
-            ), 
+            ),
 //              
-      ),
-        
-        
-       
-   ),
+        ),
+    ),
     'controllers' => array(
         'invokables' => array(
             'Certification\Controller\Certification' => "Certification\Controller\CertificationController",
             'Certification\Controller\CertificationIssuer' => "Certification\Controller\CertificationIssuerController",
-            'Certification\Controller\ExamAdmin' => "Certification\Controller\ExamAdminController",
             'Certification\Controller\PracticalExam' => "Certification\Controller\PracticalExamController",
             'Certification\Controller\Provider' => "Certification\Controller\ProviderController",
             'Certification\Controller\Recertification' => "Certification\Controller\RecertificationController",
-            'Certification\Controller\Trainer' => "Certification\Controller\TrainerController",
             'Certification\Controller\TrainingCertificate' => "Certification\Controller\TrainingCertificateController",
             'Certification\Controller\Training' => "Certification\Controller\TrainingController",
             'Certification\Controller\TrainingOrganization' => "Certification\Controller\TrainingOrganizationController",
@@ -209,16 +174,11 @@ return array(
             'Certification\Controller\WrittenExam' => "Certification\Controller\WrittenExamController",
             'Certification\Controller\CertificationMail' => "Certification\Controller\CertificationMailController",
             'Certification\Controller\Examination' => "Certification\Controller\ExaminationController",
-            
-            
         ),
-        
-       
     ),
     'view_manager' => array(
-                   
         'template_path_stack' => array(
-           __DIR__ . '/../view',
+            __DIR__ . '/../view',
         ),
     ),
         // Placeholder for console routes

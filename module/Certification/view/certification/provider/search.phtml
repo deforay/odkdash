@@ -29,7 +29,7 @@ $sessionLogin = new Container('credo');
     <div class="main-content">
         
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
-       
+            
               <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
@@ -66,14 +66,14 @@ $sessionLogin = new Container('credo');
                         <td colspan="13" class="dataTables_empty">Loading data from server</td>
                     </tr>
                     <?PHP // print_r($providers) ?> </pre>
-                    <?php foreach ($this->providers as $provider) : ?>
+                    <?php foreach ($this->paginator as $provider) : ?>
                         <tr>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_reg_no); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->professional_reg_no); ?></div></td>
                             <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region_name); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district_name); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->phone); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
@@ -98,8 +98,20 @@ $sessionLogin = new Container('credo');
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
-
+           
+        
+            <?php // add at the end of the file after the table
+ echo $this->paginationControl(
+     // the paginator object
+     $this->paginator,
+     // the scrolling style
+     'sliding',
+     // the partial to use to render the control
+     'partial/paginator.phtml',
+     // the route to link to when a user clicks a control link
+     array(
+         'route' => 'provider'
+     )); ?>
           
             
         </div>

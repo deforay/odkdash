@@ -35,7 +35,7 @@ class WrittenExamController extends AbstractActionController {
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $practical = (int) $this->params()->fromQuery('practice_exam_id', 0);
-        $provider=$this->getWrittenExamTable()->getProviderName($practical);
+        $provider = $this->getWrittenExamTable()->getProviderName($practical);
         $form = new WrittenExamForm($dbAdapter);
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
@@ -53,23 +53,23 @@ class WrittenExamController extends AbstractActionController {
                 $last_id = $this->getWrittenExamTable()->last_id();
                 $this->getWrittenExamTable()->insertToExamination($last_id);
                 return $this->redirect()->toRoute('written-exam');
-            } else {
+            } else if ($form->isValid() && !empty($practical)) {
                 $writtenExam->exchangeArray($form->getData());
                 ?> <pre> <?php // print_r($writtenExam);?>    </pre>
                 <?php
                 $this->getWrittenExamTable()->saveWrittenExam($writtenExam);
                 $last_id = $this->getWrittenExamTable()->last_id();
-               $this->getWrittenExamTable()->examination($last_id, $practical);
+                $this->getWrittenExamTable()->examination($last_id, $practical);
                 return $this->redirect()->toRoute('written-exam');
             }
         }
-        $nombre= $this->getWrittenExamTable()->countPractical($practical);
-       
+        $nombre = $this->getWrittenExamTable()->countPractical($practical);
+
 
         return array('form' => $form,
             'practical' => $practical,
-            'nombre'=>$nombre,
-            'provider'=>$provider,
+            'nombre' => $nombre,
+            'provider' => $provider,
         );
     }
 
@@ -118,10 +118,18 @@ class WrittenExamController extends AbstractActionController {
         if ($request->isPost()) {
             $motCle = $request->getPost('motCle', null);
         }
-//        die($motCle);
+        $paginator = $this->getWrittenExamTable()->search($motCle,true);
+        // set the current page to what has been passed in query string, or to 1 if none set
+        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
+        // set the number of items per page to 10
+        $paginator->setItemCountPerPage(10);
+
         return new ViewModel(array(
-            'writtens' => $this->getWrittenExamTable()->search($motCle),
+            'paginator' => $paginator,
+            
+            
         ));
+
     }
 
 }

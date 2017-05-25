@@ -43,7 +43,7 @@ if ($acl->isAllowed($role, 'Certification\Controller\Trainer', 'edit')) {
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
             <div class="col-sm-12">          
                 <form class="navbar-form navbar-right" action="<?php echo $this->url('certification-issuer', array('action' => 'search')); ?>" method="POST">
-                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..."/></div>
+                    <div style="display: inline"><input class="form-control" type="text" name="motCle" placeholder="Search..." autocomplete="off"/></div>
                     <button style="display: inline;height: 40px;" type="submit" class="btn-space btn-default" ><span class="glyphicon glyphicon-eye-open">Search</span>
 
                     </button>

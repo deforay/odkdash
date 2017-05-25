@@ -21,9 +21,7 @@ class ProviderController extends AbstractActionController {
 
     public function indexAction() {
         $paginator = $this->getProviderTable()->fetchAll(true);
-        // set the current page to what has been passed in query string, or to 1 if none set
         $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-        // set the number of items per page to 10
         $paginator->setItemCountPerPage(10);
 
         return new ViewModel(array(
@@ -47,7 +45,7 @@ class ProviderController extends AbstractActionController {
             if ($form->isValid()) {
                 $provider->exchangeArray($form->getData());
                 ?>
-                <pre> <?php // print_r($provider)         ?></pre>
+                <pre> <?php // print_r($provider)           ?></pre>
 
                 <?php
                 $this->getProviderTable()->saveProvider($provider);
@@ -100,20 +98,24 @@ class ProviderController extends AbstractActionController {
         );
     }
 
-   
     public function searchAction() {
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $motCle = $request->getPost('motCle',null);
+            $motCle = $request->getPost('motCle', null);
         }
-//        die($motCle);
+ 
+        $page = (int) $this->params()->fromQuery('page', 1);
+// set the current page to what has been passed in query string, or to 1 if none set
+        $paginator = $this->getProviderTable()->search($motCle, true);
+        $paginator->setCurrentPageNumber($page);
+        // set the number of items per page to 10
+        $paginator->setItemCountPerPage(10);
+
         return new ViewModel(array(
-             'providers' => $this->getProviderTable()->search($motCle),
-         ));
+            'paginator' => $paginator,
             
-        
-       
+        ));
     }
 
 }

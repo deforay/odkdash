@@ -71,16 +71,20 @@ class ProviderForm extends Form {
 
         $this->add(array(
             'name' => 'region',
-            'type' => 'Text',
+            'type' => 'select',
             'options' => array(
                 'label' => 'Region',
+                'empty_option' => 'Please choose a ReGION',
+                'value_options' => $this->getRegions(),
             ),
         ));
         $this->add(array(
             'name' => 'district',
-            'type' => 'Text',
+            'type' => 'Select',
             'options' => array(
                 'label' => 'District',
+                'empty_option' => 'Please choose a District',
+                'value_options' => $this->getDistricts(),
             ),
         ));
 
@@ -236,6 +240,30 @@ class ProviderForm extends Form {
         
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['facility_name'];
+        }
+        return $selectData;
+    }
+    
+     public function getDistricts() {
+        $dbAdapter = $this->adapter;
+        $sql = 'SELECT id,district_name FROM certification_districts  ORDER by district_name asc';
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        
+        foreach ($result as $res) {
+            $selectData[$res['id']] = $res['district_name'];
+        }
+        return $selectData;
+    }
+    
+     public function getRegions(){
+        $dbAdapter = $this->adapter;
+        $sql = 'SELECT id, region_name, district FROM certification_regions  ORDER by region_name asc ';
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        
+        foreach ($result as $res) {
+            $selectData[$res['id']] = $res['region_name'];
         }
         return $selectData;
     }

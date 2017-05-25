@@ -22,7 +22,9 @@ class ProviderTable extends AbstractTableGateway {
             // create a new Select object for the table provider
             $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
-            $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left');
+            $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left')
+                    ->join('certification_regions', 'certification_regions.id =certification_facilities.region', array('region_name'), 'left')
+                    ->join('certification_districts', 'certification_districts.id =certification_regions.district', array('district_name'), 'left');
             $sqlSelect->order('id desc');
             // create a new result set based on the provider entity
             $resultSetPrototype = new ResultSet();
@@ -120,20 +122,39 @@ class ProviderTable extends AbstractTableGateway {
         }
     }
 
-    public function search($motCle) {
-        $sqlSelect = $this->tableGateway->getSql()->select();
-        $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
-        $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left');
+    public function search($motCle, $paginated = false) {
+       if ($paginated) {
+            // create a new Select object for the table provider
+            $sqlSelect = $this->tableGateway->getSql()->select();
+            $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
+            $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left')
+                    ->join('certification_regions', 'certification_regions.id =certification_facilities.region', array('region_name'), 'left')
+                    ->join('certification_districts', 'certification_districts.id =certification_regions.district', array('district_name'), 'left');
 
-        $sqlSelect->where->like('last_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('certification_id', '%' . $motCle . '%');
-        $sqlSelect->order('last_name ASC');
-        ?> 
-        <pre><?php // print_r($sqlSelect) ;       ?></pre> <?php
+            $sqlSelect->where->like('last_name', '%' . $motCle . '%');
+            $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
+            $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
+            $sqlSelect->where->OR->like('certification_reg_no', '%' . $motCle . '%');
+            $sqlSelect->order('last_name ASC');
+            
+            // create a new result set based on the provider entity
+            $resultSetPrototype = new ResultSet();
+            $resultSetPrototype->setArrayObjectPrototype(new Provider());
+            // create a new pagination adapter object
+            $paginatorAdapter = new DbSelect(
+                    // our configured select object
+                    $sqlSelect,
+                    // the adapter to run it against
+                    $this->tableGateway->getAdapter(),
+                    // the result set to hydrate
+                    $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return  $paginator;
+        }
+        
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return $resultSet;
+        return  $resultSet;
     }
 
 }

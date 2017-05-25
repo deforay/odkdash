@@ -14,21 +14,11 @@ $sessionLogin = new Container('credo');
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
 
-<!--<style>
-
-    input:focus{
-        
-        border: 1px solid red;
-     box-shadow: 2px 2px 10px  blue;
-    outline: none;
-
-    }
-</style>-->
-
-
 <div class="am-content">
     <div class="page-head">
         <h2>Add Training organization</h2>
+        <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+        
     </div>
 
     <div class="main-content">
@@ -69,13 +59,13 @@ $sessionLogin = new Container('credo');
                                 ?>
                                 <?php echo $this->formHidden($form->get('training_organization_id')->setAttribute('class', 'form-control')) ?>
                                 <div class="form-group col-lg-6"> 
-                                    <?= $this->formLabel($form->get('training_organization_name')); ?>
+                                    <?= $this->formLabel($form->get('training_organization_name')); ?><span class="mandatory">*</span>
                                     <?= $this->formElement($form->get('training_organization_name')); ?>
                                     <?= $this->formElementErrors($form->get('training_organization_name')); ?>
                                 </div>
 
                                 <div class="form-group col-lg-6"> 
-                                    <?= $this->formLabel($form->get('type_organization')); ?>
+                                    <?= $this->formLabel($form->get('type_organization')); ?><span class="mandatory">*</span>
                                     <?= $this->formElement($form->get('type_organization')); ?>
                                     <?= $this->formElementErrors($form->get('type_organization')); ?>
                                 </div>
@@ -116,44 +106,7 @@ $sessionLogin = new Container('credo');
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
-
-<script type="text/javascript">
-                                function validateForm()
-                                {
-                                    var a = document.forms["form"]["training_organization_name"].value;
-                                    var b = document.forms["form"]["type_organization"].value;
-
-                                    var elmt = document.getElementById("Training Organization Name");
-                                    var elmt2 = document.getElementById("Type of Organization");
-
-
-                                    if (a == null || a == "")
-                                    {
-
-                                        elmt.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)"
-                                        alert("Please enter the ''" + elmt.id + "''");
-                                        
-                                        return false;
-                                    } else if (b == null || b == "") {
-
-
-                                        elmt2.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)"
-                                        alert("Please enter the ''" + elmt2.id + "''");
-                                        return false;
-                                    }
-
-                                }
-                                
-                                
-                                function inputOrgaName(){
-                                  var input= document.getElementById("Training Organization Name");
-                                  input.style.boxShadow = 'none';
-                                }
-                                 function inputOrgaType(){
-                                  var input= document.getElementById("Type of Organization");
-                                  input.style.boxShadow = 'none';
-                                }
-</script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/organisation.js'); ?>"></script>
 
 
 

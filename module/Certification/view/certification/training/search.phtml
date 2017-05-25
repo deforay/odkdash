@@ -26,21 +26,23 @@ $sessionLogin = new Container('credo');
     </div>
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-           <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-                        <th>Provider ID (If Available)</th>
+                        <th>Certification Registration No</th>
+                        <th>professional registration no</th>
                         <th>Certification ID</th>
-                        <th>Provider</th>
-                        <th>Start date</th>
-                        <th>End date</th>
-                        <th  style="width: 10%;">type of training</th>
-                        <th  style="width: 10%;">Training organization</th> 
+                        <th>Tester</th>
+                        <th>Type of Competency</th>
+                        <th>Type of Activity/Training</th>
+                        <th>Date of last Training/Activity</th>
+                         <th>Length of Training/Activity</th>
+                         <th  style="width: 10%;">Training organization</th> 
                         <th  style="width: 10%;">Type of Training organization</th> 
-                        <th style="width: 10%;">Trainer</th>
-                        <th>Score</th>
-                        <th>Performance</th>
-                        <th  style="width: 6%;" >Training certificate</th>
+                        <th style="width: 10%;">Name of Facilitator(s)</th>
+                        <th  style="width: 6%;" >Training certificate(if available)</th>
+                        <th  >Date certificate issued (if available)</th>
+                        
                         <!--<th style="width: 10%;" >Comments</th>-->
                         <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
                         <th >Action</th>
@@ -53,27 +55,29 @@ $sessionLogin = new Container('credo');
                         <td colspan="13" class="dataTables_empty">Loading data from server</td>
                     </tr>
 
-                    <?php foreach ($trainings as $training) : ?>
+                    <?php foreach ($this->paginator as $training) : ?>
                         <tr>
-                            <td><div style="width:90px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->provider_id); ?></div></td>
-                            <td><div style="width:110px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_reg_no); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->professional_reg_no); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->Start_date); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->end_date); ?></div></td>
-                            <td><div style="width:180px;height:45px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_competency); ?></div></td>
+                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
+                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_training_date); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->length_of_training); ?></div></td>
                             <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
                             <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->trainer_last_name . ' ' . $training->trainer_first_name); ?></div></td>
-                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->score . ' ' . '%'); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->Pass_fail); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->facilitator); ?></div></td>
                             <?php
                             if (strcasecmp($training->training_certificate, 'yes') == 0) {
                                 echo "<td><span style='color: green; ' class='glyphicon glyphicon glyphicon-ok' ></span></td>";
-                            } else {
+                            } else if (strcasecmp($training->training_certificate, 'no') == 0) {
                                 echo "<td><span style='color: red' class='glyphicon glyphicon glyphicon-remove'></span></td>";
+                            } else {
+                                echo "<td></td>";
                             }
                             ?>
-                            <!--<td><div style="width:60px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->training_certificate);  ?></div></td>-->
+                            <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->date_certificate_issued); ?></div></td>
                             <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);   ?></div></td>-->
                             <td>
                                 <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => $training->training_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
@@ -84,6 +88,16 @@ $sessionLogin = new Container('credo');
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            <?php
+ echo $this->paginationControl(
+    $this->paginator,
+     'sliding',
+    'partial/paginator.phtml',
+     array(
+                'route' => 'training'
+     )
+ );
+ ?>
         </div>
     </div>
 </div>
