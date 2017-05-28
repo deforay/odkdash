@@ -19,28 +19,15 @@ class WrittenExamTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated = false) {
-        if ($paginated) {
+    public function fetchAll() {
+       
             $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('id_written_exam', 'exam_type', 'provider_id', 'exam_admin', 'date', 'qa_point', 'rt_point',
                 'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'inventory_point', 'total_points', 'final_score'));
             $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
                     ->where(array('display' => 'yes'));
             $sqlSelect->order('id_written_exam desc');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new WrittenExam());
-            // create a new pagination adapter object
-            $paginatorAdapter = new DbSelect(
-                    // our configured select object
-                    $sqlSelect,
-                    // the adapter to run it against
-                    $this->tableGateway->getAdapter(),
-                    // the result set to hydrate
-                    $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
+            
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -59,7 +46,7 @@ class WrittenExamTable extends AbstractTableGateway {
         $data = array(
             'exam_type' => $written_exam->exam_type,
             'provider_id' => $written_exam->provider_id,
-            'exam_admin' => $written_exam->exam_admin,
+            'exam_admin' => strtoupper($written_exam->exam_admin),
             'date' => $written_exam->date,
             'qa_point' => $written_exam->qa_point,
             'rt_point' => $written_exam->rt_point,
@@ -88,32 +75,7 @@ class WrittenExamTable extends AbstractTableGateway {
         }
     }
 
-    public function search($motCle, $paginated = false) {
-        if ($paginated) {
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('id_written_exam', 'exam_type', 'provider_id', 'exam_admin', 'date', 'qa_point', 'rt_point',
-                'safety_point', 'specimen_point', 'testing_algo_point', 'report_keeping_point', 'EQA_PT_points', 'ethics_point', 'inventory_point', 'total_points', 'final_score'));
-            $sqlSelect->join('provider', ' provider.id= written_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left');
-
-            $sqlSelect->where->like('last_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('exam_admin', '%' . $motCle . '%');
-
-            $sqlSelect->order('id_written_exam desc');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new WrittenExam());
-            $paginatorAdapter = new DbSelect(
-                   $sqlSelect,
-                    $this->tableGateway->getAdapter(),
-                   $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return $resultSet;
-    }
+   
 
     public function last_id() {
         $last_id = $this->tableGateway->lastInsertValue;
@@ -187,6 +149,18 @@ class WrittenExamTable extends AbstractTableGateway {
 //        die($nombre);
         return $nombre;
     }
+    public function counWritten($provider) {
+        $db = $this->tableGateway->getAdapter();
+        $sql3 = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam is not null and practical_exam_id is null and  provider=' . $provider;
+//        die($sql3);
+        $statement3 = $db->query($sql3);
+        $result3 = $statement3->execute();
+        foreach ($result3 as $res3) {
+            $nombre = $res3['nombre'];
+        }
+//        die($nombre);
+        return $nombre;
+    }
 
     public function getProviderName($practical) {
         $db = $this->tableGateway->getAdapter();
@@ -196,7 +170,7 @@ class WrittenExamTable extends AbstractTableGateway {
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
+            $selectData[$res['id']]= $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
         }
         return $selectData;
     }

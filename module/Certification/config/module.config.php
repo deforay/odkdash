@@ -16,7 +16,7 @@ return array(
             'certification' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/certification[/:action][/:id][/:written][/:practical][/:last][/:first][/:middle]',
+                    'route' => '/certification[/:action][/:id][/:written][/:practical][/:direct][/:sample][/:last][/:first][/:middle]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',

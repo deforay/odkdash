@@ -17,24 +17,14 @@ class PracticalExamTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated = false) {
-        if ($paginated) {
-
+    public function fetchAll() {
+       
             $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin', 'provider_id', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
             $sqlSelect->join('provider', ' provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
                     ->where(array('display' => 'yes'));
             $sqlSelect->order('practice_exam_id desc');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new PracticalExam());
-            $paginatorAdapter = new DbSelect(
-                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-
-
+            
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -50,25 +40,16 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     public function savePracticalExam(PracticalExam $practicalExam) {
-        $sample = $practicalExam->Sample_testing_score;
-        $direct = $practicalExam->direct_observation_score;
-        if ($sample == 100) {
-
-            $result = ($direct / $sample) * 100;
-        } elseif ($direct == 100) {
-
-            $result = ($sample / $direct) * 100;
-        } else {
-            $result = ($sample / 100) * $direct;
-        }
+        
+       
 
         $data = array(
             'exam_type' => $practicalExam->exam_type,
-            'exam_admin' => $practicalExam->exam_admin,
+            'exam_admin' => strtoupper($practicalExam->exam_admin),
             'provider_id' => $practicalExam->provider_id,
-            'Sample_testing_score' => $sample,
-            'direct_observation_score' => $direct,
-            'practical_total_score' => $result,
+            'Sample_testing_score' => $practicalExam->Sample_testing_score,
+            'direct_observation_score' => $practicalExam->direct_observation_score,
+            'practical_total_score' => ($practicalExam->direct_observation_score+$practicalExam->Sample_testing_score)/2,
             'date' => $practicalExam->date
         );
 //        print_r($data);
@@ -84,29 +65,7 @@ class PracticalExamTable extends AbstractTableGateway {
         }
     }
 
-    public function search($motCle, $paginated = false) {
-        if ($paginated) {
-
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin', 'provider_id', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
-            $sqlSelect->join('provider', 'provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left');
-            $sqlSelect->where->like('last_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
-            $sqlSelect->order('practice_exam_id desc');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new PracticalExam());
-            $paginatorAdapter = new DbSelect(
-                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-
-
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return $resultSet;
-    }
+   
 
     /**
      * get the last practical exam last id insert
@@ -198,5 +157,16 @@ class PracticalExamTable extends AbstractTableGateway {
         }
         return $selectData;
     }
-
+ public function counPractical($provider) {
+        $db = $this->tableGateway->getAdapter();
+        $sql3 = 'SELECT count(*) as nombre FROM examination WHERE practical_exam_id is not null and id_written_exam is null and  provider=' . $provider;
+//        die($sql3);
+        $statement3 = $db->query($sql3);
+        $result3 = $statement3->execute();
+        foreach ($result3 as $res3) {
+            $nombre = $res3['nombre'];
+        }
+//        die($nombre);
+        return $nombre;
+    }
 }

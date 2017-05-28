@@ -21,12 +21,9 @@ class TrainingOrganizationController extends AbstractActionController {
 
     public function indexAction() {
 
-        $paginator = $this->getTrainingOrganizationTable()->fetchAll(true);
-        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-        $paginator->setItemCountPerPage(10);
-
+         $paginator=$this->getTrainingOrganizationTable()->fetchAll();
         return new ViewModel(array(
-            'paginator' => $paginator
+            'paginator' => $paginator,
         ));
     }
 
@@ -86,24 +83,5 @@ class TrainingOrganizationController extends AbstractActionController {
         );
     }
 
-    public function searchAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $motCle = $request->getPost('motCle', null);
-        }
-////        die($motCle);
-//        return new ViewModel(array(
-//            'organizations' => $this->getTrainingOrganizationTable()->search($motCle),
-//        ));
-//   
-//        
-        $paginator = $this->getTrainingOrganizationTable()->search($motCle,true);
-        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-        $paginator->setItemCountPerPage(10);
-
-        return new ViewModel(array(
-            'paginator' => $paginator
-        ));
-        }
-
+   
 }

@@ -26,6 +26,7 @@ class WrittenExamForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Number of Attempts',
+                'empty_option' => 'Please choose a Number of Attempts',
                 'value_options' => array(
                     '1st attempt' => '1st attempt',
                     '2nd attempt' => '2nd attempt',

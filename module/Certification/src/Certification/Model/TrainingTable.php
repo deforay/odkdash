@@ -18,22 +18,14 @@ class TrainingTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated = false) {
-        if ($paginated) {
+    public function fetchAll() {
+       
             $sqlSelect = $this->tableGateway->getSql()->select();
             $sqlSelect->columns(array('training_id', 'Provider_id', 'type_of_competency', 'last_training_date', 'type_of_training', 'length_of_training', 'training_organization_id', 'facilitator', 'training_certificate', 'date_certificate_issued', 'Comments'));
-            $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id','certification_reg_no'), 'left')
+            $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id', 'certification_reg_no'), 'left')
                     ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left');
             $sqlSelect->order('training_id desc');
 
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Training());
-            $paginatorAdapter = new DbSelect(
-                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -50,14 +42,13 @@ class TrainingTable extends AbstractTableGateway {
 
     public function saveTraining(Training $Training) {
         $data = array(
-                
             'Provider_id' => $Training->Provider_id,
             'type_of_competency' => $Training->type_of_competency,
             'last_training_date' => $Training->last_training_date,
             'type_of_training' => $Training->type_of_training,
             'length_of_training' => $Training->length_of_training,
             'training_organization_id' => $Training->training_organization_id,
-            'facilitator' => $Training->facilitator,
+            'facilitator' => strtoupper($Training->facilitator),
             'training_certificate' => $Training->training_certificate,
             'date_certificate_issued' => $Training->date_certificate_issued,
             'Comments' => $Training->Comments,
@@ -74,36 +65,6 @@ class TrainingTable extends AbstractTableGateway {
                 throw new \Exception('Training  id does not exist');
             }
         }
-    }
-
-    public function search($motCle,$paginated=false) {
-        
-       if ($paginated) {
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('training_id', 'Provider_id', 'type_of_competency', 'last_training_date', 'type_of_training', 'length_of_training', 'training_organization_id', 'facilitator', 'training_certificate', 'date_certificate_issued', 'Comments'));
-        $sqlSelect->join('provider', 'provider.id = training.Provider_id', array('last_name', 'first_name', 'middle_name', 'professional_reg_no', 'certification_id','certification_reg_no'), 'left')
-                ->join('training_organization', 'training_organization.training_organization_id = training.training_organization_id ', array('training_organization_name', 'type_organization'), 'left');
-
-        $sqlSelect->where->like('last_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('training_organization_name', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('certification_id', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('professional_reg_no', '%' . $motCle . '%');
-        $sqlSelect->where->OR->like('certification_reg_no', '%' . $motCle . '%');
-        $sqlSelect->order('last_name ASC');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Training());
-            $paginatorAdapter = new DbSelect(
-                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return $resultSet;
-        
-        
     }
 
 }

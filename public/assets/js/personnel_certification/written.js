@@ -1,23 +1,4 @@
-function setAttempt() {
-    var nombre = '<?PHP echo $nombre; ?>';
-    var myAnchor = document.getElementById("exam_type");
-    var mySelect = document.createElement("select");
-    if (nombre == 1) {
-        mySelect.innerHTML = "<option>2nd attempt</option>";
-        mySelect.className = "form-control"
-        myAnchor.parentNode.replaceChild(mySelect, myAnchor);
 
-    } else if (nombre == 2) {
-        mySelect.innerHTML = "<option>3rd attempt</option>";
-        mySelect.className = "form-control"
-        myAnchor.parentNode.replaceChild(mySelect, myAnchor);
-
-    } else if (nombre >= 3) {
-        alert('Ce provider a deja fais trois tentative, il doit reprendre l examen ecrit');
-        window.location = "/practical-exam";
-    }
-}
-setAttempt();
 //  -------------------------------------------------------  
 
 function validateForm() {
@@ -55,7 +36,7 @@ function validateForm() {
     if (a == null || a == "")
     {
         elmt.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt.id + "''");
+        alert("Please enter the \"Number of Attempts\"");
         return false;
     }
     if (b == null || b == "") {
@@ -77,123 +58,119 @@ function validateForm() {
 
      if (d == null || d == "") {
         elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt5.id + " (point)");
+        alert('Please enter the "' + elmt5.id +'  (point)"');
         return false;
     }
     else if (d<0 || d>3 || numbers.test(d) == false)
     {
         elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt5.id + " (point) Must be a valid nunber between 0 and 3");
+        alert('"'+elmt5.id + ' (point) " Must be a valid nunber between 0 and 3');
         return false;
     } 
     
      if (e == null || e == "") {
         elmt6.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt6.id + " (point)");
+        alert('Please enter the "' + elmt6.id + ' (point)"');
         return false;
     }
     else if (e<0 || e>3 || numbers.test(e) == false)
     {
         elmt6.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt6.id + " (point) Must be a valid nunber between 0 and 3");
+        alert('"'+elmt6.id + ' (point) " Must be a valid nunber between 0 and 3');
         return false;
     } 
     
      if (f == null || f == "") {
         elmt7.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt7.id + " (point)");
+        alert('Please enter the "' + elmt7.id + ' (point)"');
         return false;
     }
     else if (f<0 || f>3 || numbers.test(f) == false)
     {
         elmt7.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt7.id + " (point) Must be a valid nunber between 0 and 3");
+        alert('"'+elmt7.id + ' (point) " Must be a valid nunber between 0 and 3');
         return false;
     } 
     
      if (g == null || g == "") {
         elmt8.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt8.id + " (point)");
+        alert('Please enter the "' + elmt8.id + '(point)"');
         return false;
     }
     else if (g<0 || g>2 || numbers.test(g) == false)
     {
         elmt8.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt8.id + " (point) Must be a valid nunber between 0 and 2");
+        alert('"'+elmt8.id + ' (point) " Must be a valid nunber between 0 and 2');
         return false;
     } 
     
      if (h == null || h == "") {
         elmt9.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt9.id + " (point)");
+        alert('Please enter the "' + elmt9.id + '(point)"');
         return false;
     }
     else if (h<0 || h>3 || numbers.test(h) == false)
     {
         elmt9.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt9.id + " (point) Must be a valid nunber between 0 and 3");
+        alert('"'+elmt9.id + ' (point) " Must be a valid nunber between 0 and 3');
         return false;
     } 
     
      if (i == null || i == "") {
         elmt10.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt10.id + " (point)");
+        alert('Please enter the "' + elmt10.id +'(point)"');
         return false;
     }
     else if (i<0 || i>3 || numbers.test(i) == false)
     {
         elmt10.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt10.id + " (point) Must be a valid nunber between 0 and 3");
+        alert('"'+elmt10.id + ' (point) " Must be a valid nunber between 0 and 3');
         return false;
     } 
     
      if (j == null || j == "") {
         elmt11.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt11.id + " (point)");
+        alert('Please enter the "' + elmt11.id + '(point)"');
         return false;
     }
     else if (j<0 || j>4 || numbers.test(j) == false)
     {
         elmt11.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt11.id + " (point) Must be a valid nunber between 0 and 4");
+        alert('"'+elmt11.id + ' (point) " Must be a valid nunber between 0 and 4');
         return false;
     } 
     
      if (k == null || k == "") {
         elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt12.id + " (point)");
+        alert('Please enter the "' + elmt12.id + '(point)"');
         return false;
     }
     else if (k<0 || k>2 || numbers.test(k) == false)
     {
         elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt12.id + " (point) Must be a valid nunber between 0 and 2");
+        alert('"'+elmt12.id + ' (point) " Must be a valid nunber between 0 and 2');
         return false;
     } 
     
      if (l == null || l == "") {
         elmt13.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the " + elmt13.id + " (point)");
+        alert('Please enter the "' + elmt13.id + '(point)"');
         return false;
     }
     else if (l<0 || l>2 || numbers.test(l) == false)
     {
         elmt13.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert(elmt13.id + " (point) Must be a valid nunber between 0 and 2");
+        alert('"'+elmt13.id + ' (point)" Must be a valid nunber between 0 and 2');
         return false;
     } 
 
 }
-
-
 
 
 function emptyInput(input) {
 
     input.style.boxShadow = 'none';
 }
-
-
 
 $(document).ready(function () {
 

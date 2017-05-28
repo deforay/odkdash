@@ -19,10 +19,7 @@ class CertificationTable {
                 ->join('examination', 'examination.id = certification.examination ', array('provider'), 'left')
                 ->join('provider', 'provider.id = examination.provider ', array('last_name', 'first_name', 'middle_name', 'certification_id'), 'left');
         $sqlSelect->order('id desc');
-//                   
-//                  ->join('trainer', 'trainer.trainer_id = training.trainer_id ', array('trainer_last_name','trainer_first_name'), 'left')
-
-
+                
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }

@@ -28,6 +28,14 @@ $sessionLogin = new Container('credo');
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <?php
+            if (isset($this->message)) {
+
+                echo '<div class="alert alert-default" style="background-color:#FF6347; color: white;  font-size: 130%;">
+    <strong>' . $this->message . '</strong> .
+  </div>';
+            };
+            ?>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="panel panel-default">
@@ -38,7 +46,7 @@ $sessionLogin = new Container('credo');
                                 $form->get('exam_type')->setAttributes([
                                     'class' => 'form-control',
                                     'id' => 'Type of Exam',
-                                    'options' => ['1st attempt' => '1st attempt'],
+//                                    'options' => ['1st attempt' => '1st attempt'],
                                     'autocomplete' => 'off',
                                     'onclick' => 'emptyInput(this)',
                                 ]);
@@ -58,7 +66,7 @@ $sessionLogin = new Container('credo');
                                 } else {
                                     $form->get('provider_id')->setAttributes([
                                         'class' => 'form-control ',
-                                        'options' => $this->provider,
+                                        'options' => $this->provider ,
                                         'type' => 'select',
                                         'id' => 'Tester',
                                        'onclick' => 'emptyInput(this)',
@@ -168,7 +176,32 @@ $sessionLogin = new Container('credo');
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/personnel_certification/practical.js'); ?>" type="text/javascript"></script>
 
-
+<script type="text/javascript">
+    function main() {
+    var nombre = '<?PHP echo $nombre; ?>';
+    var myAnchor = document.getElementById("Type of Exam");
+    
+    if (nombre == 1) {
+        myAnchor.innerHTML = "<option>2nd attempt</option>";
+           } else if (nombre == 2) {
+        myAnchor.innerHTML = "<option>3rd attempt</option>";
+        
+    } else if (nombre >= 3) {
+        alert('Ce provider a deja fais trois tentative, il doit reprendre l examen ecrit');
+        window.location = "/written-exam";
+    }
+}
+main();
+    
+//                function message() {
+//                    var message = '<?php // echo $this->message; ?>'
+//                    if (message) {
+//                        alert(message);
+//                    }
+//                }
+//                message();
+                
+</script>
 
 
 

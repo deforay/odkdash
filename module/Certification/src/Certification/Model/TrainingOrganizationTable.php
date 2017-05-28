@@ -17,20 +17,12 @@ class TrainingOrganizationTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated = false) {
+    public function fetchAll() {
 
-        if ($paginated) {
+       
             $select = new Select('training_organization');
             $select->order('training_organization_name asc');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new TrainingOrganization());
-            $paginatorAdapter = new DbSelect(
-                    $select, $this->tableGateway->getAdapter(), $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-        $resultSet = $this->tableGateway->select();
+            $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
 
@@ -46,7 +38,7 @@ class TrainingOrganizationTable extends AbstractTableGateway {
 
     public function saveTraining_Organization(TrainingOrganization $training_organization) {
         $data = array(
-            'training_organization_name' => $training_organization->training_organization_name,
+            'training_organization_name' => strtoupper($training_organization->training_organization_name),
             'type_organization' => $training_organization->type_organization
         );
 //        var_dump($training_organization);
@@ -62,23 +54,6 @@ class TrainingOrganizationTable extends AbstractTableGateway {
         }
     }
 
-    public function search($motCle, $paginated = false) {
-        if ($paginated) {
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('training_organization_id', 'training_organization_name', 'type_organization'));
-            $sqlSelect->where->like('training_organization_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('type_organization', '%' . $motCle . '%');
-            $sqlSelect->order('training_organization_name');
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new TrainingOrganization());
-            $paginatorAdapter = new DbSelect(
-                    $sqlSelect, $this->tableGateway->getAdapter(), $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-        $resultSet = $this->tableGateway->select();
-        return $resultSet;
-    }
+    
 
 }

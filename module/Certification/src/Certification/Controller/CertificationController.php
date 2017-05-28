@@ -31,6 +31,8 @@ class CertificationController extends AbstractActionController {
         $id = (int) $this->params()->fromRoute('id', 0);
         $written = $this->params()->fromQuery('written');
         $practical = $this->params()->fromQuery('practical');
+        $sample = $this->params()->fromQuery('sample');
+        $direct = $this->params()->fromQuery('direct');
 
 
         $form = new CertificationForm($dbAdapter);
@@ -55,6 +57,8 @@ class CertificationController extends AbstractActionController {
         return array('id' => $id,
             'written' => $written,
             'practical' => $practical,
+            'sample' => $sample,
+            'direct' => $direct,
             'form' => $form);
     }
 

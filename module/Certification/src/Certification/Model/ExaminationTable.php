@@ -5,7 +5,7 @@ namespace Certification\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Select;
- use Zend\Paginator\Adapter\DbSelect;
+use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
 class ExaminationTable {
@@ -16,33 +16,17 @@ class ExaminationTable {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated = false) {
+    public function fetchAll() {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('id', 'provider', 'id_written_exam', 'practical_exam_id'));
+        $sqlSelect->join('written_exam', 'written_exam.id_written_exam = examination.id_written_exam', array('final_score'), 'left')
+                ->join('practical_exam', 'practical_exam.practice_exam_id = examination.practical_exam_id', array('practical_total_score', 'Sample_testing_score', 'direct_observation_score'), 'left')
+                ->join('provider', 'provider.id=examination.provider', array('certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name'), 'left')
+                ->where(array('add_to_certification' => 'no'));
+        $sqlSelect->order('id desc');
 
-        if ($paginated) {
-            
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('id', 'provider', 'id_written_exam', 'practical_exam_id'));
-            $sqlSelect->join('written_exam', 'written_exam.id_written_exam = examination.id_written_exam', array('final_score'), 'left')
-                    ->join('practical_exam', 'practical_exam.practice_exam_id = examination.practical_exam_id', array('practical_total_score'), 'left')
-                    ->join('provider', 'provider.id=examination.provider', array('certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name'), 'left')
-                    ->where (array('add_to_certification'=>'no'));
-                    $sqlSelect->order('id desc');
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
 
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Examination());
-            // create a new pagination adapter object
-            $paginatorAdapter = new DbSelect(
-                    // our configured select object
-                    $sqlSelect,
-                    // the adapter to run it against
-                    $this->tableGateway->getAdapter(),
-                    // the result set to hydrate
-                    $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
-        $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
 
@@ -55,7 +39,5 @@ class ExaminationTable {
         }
         return $row;
     }
-
-    
 
 }

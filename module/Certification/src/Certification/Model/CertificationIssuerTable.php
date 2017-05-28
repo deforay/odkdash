@@ -16,25 +16,25 @@ class CertificationIssuerTable {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated=false) {
+    public function fetchAll($paginated = false) {
         if ($paginated) {
-             $select = new Select('certification_issuer');
-              $select->order('issuer_last_name asc');
+            $select = new Select('certification_issuer');
+            $select->order('issuer_last_name asc');
             $resultSetPrototype = new ResultSet();
-             $resultSetPrototype->setArrayObjectPrototype(new CertificationIssuer());
-             // create a new pagination adapter object
-             $paginatorAdapter = new DbSelect(
-                 // our configured select object
-                 $select,
-                 // the adapter to run it against
-                 $this->tableGateway->getAdapter(),
-                 // the result set to hydrate
-                 $resultSetPrototype
-             );
-             $paginator = new Paginator($paginatorAdapter);
-             return $paginator;
-         }
-        
+            $resultSetPrototype->setArrayObjectPrototype(new CertificationIssuer());
+            // create a new pagination adapter object
+            $paginatorAdapter = new DbSelect(
+                    // our configured select object
+                    $select,
+                    // the adapter to run it against
+                    $this->tableGateway->getAdapter(),
+                    // the result set to hydrate
+                    $resultSetPrototype
+            );
+            $paginator = new Paginator($paginatorAdapter);
+            return $paginator;
+        }
+
         $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
@@ -50,14 +50,14 @@ class CertificationIssuerTable {
     }
 
     public function saveCertificationIssuer(CertificationIssuer $certification_issuer) {
-        
+
         $last_name = strtoupper($certification_issuer->issuer_last_name);
         $first_name = ucfirst($certification_issuer->issuer_first_name);
         $middle_name = ucfirst($certification_issuer->issuer_middle_name);
         $region = ucfirst($certification_issuer->region);
         $district = ucfirst($certification_issuer->district);
         $current_job = ucfirst($certification_issuer->current_job);
-        
+
         $data = array(
             'issuer_last_name' => $last_name,
             'issuer_first_name' => $first_name,
@@ -80,21 +80,6 @@ class CertificationIssuerTable {
                 throw new \Exception('certification Issuer id does not exist');
             }
         }
-    }
-    
-     public function search($motCle) {
-        $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array( 'certification_issuer_id', 'issuer_last_name', 'issuer_first_name', 'issuer_middle_name', 'region', 'district', 'phone', 'email', 'prefered_contact_method', 'current_job'));
-         
-          $sqlSelect->where->like('issuer_last_name', '%'. $motCle .'%');
-          $sqlSelect->where->OR->like('issuer_middle_name', '%'. $motCle .'%');
-          $sqlSelect->where->OR->like('issuer_first_name', '%'. $motCle .'%');
-         
-        $sqlSelect->order('issuer_last_name ASC');
-        ?> 
-        <pre><?php // print_r($sqlSelect) ; ?></pre> <?php
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return $resultSet;
     }
 
 }

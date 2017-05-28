@@ -27,9 +27,11 @@ class Examination {
         $this->middle_name = (!empty($data['middle_name'])) ? $data['middle_name'] : null;
 
         $this->exam_type = (!empty($data['exam_type'])) ? $data['exam_type'] : null;
-        $this->final_score = (!empty($data['final_score'])) ? $data['final_score'] : null;
+        $this->final_score = (!empty($data['final_score'])) ? $data['final_score'] : 0;
 
-        $this->practical_total_score = (!empty($data['practical_total_score'])) ? $data['practical_total_score'] : null;
+        $this->practical_total_score = (!empty($data['practical_total_score'])) ? $data['practical_total_score'] : 0;
+         $this->Sample_testing_score = (!empty($data['Sample_testing_score'])) ? $data['Sample_testing_score'] : 0;
+          $this->direct_observation_score = (!empty($data['direct_observation_score'])) ? $data['direct_observation_score'] : 0;
     }
 
     public function setInputFilter(InputFilterInterface $inputFilter) {

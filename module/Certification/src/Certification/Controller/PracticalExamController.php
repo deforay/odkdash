@@ -19,19 +19,17 @@ class PracticalExamController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $paginator = $this->getPracticalExamTable()->fetchAll(true);
-        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-        $paginator->setItemCountPerPage(10);
+
 
         return new ViewModel(array(
-            'paginator' => $paginator
+            'practicals' => $this->getPracticalExamTable()->fetchAll(),
         ));
     }
 
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $id_written = (int) $this->params()->fromQuery('id_written_exam', 0);
- $provider=$this->getPracticalExamTable()->getProviderName($id_written);
+        $provider = $this->getPracticalExamTable()->getProviderName($id_written);
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
@@ -42,28 +40,34 @@ class PracticalExamController extends AbstractActionController {
             $form->setData($request->getPost());
             $written = $request->getPost('written', null);
 //            $written=$_POST['written'];
-            if ($form->isValid() && empty($written)) {
-                $practicalExam->exchangeArray($form->getData());
+            $provider = $this->getRequest()->getPost('provider_id');
+            $practical_nb = $this->getPracticalExamTable()->counPractical($provider);
+            if ($practical_nb == 0) {
+                if ($form->isValid() && empty($written)) {
+                    $practicalExam->exchangeArray($form->getData());
 
-                $this->getPracticalExamTable()->savePracticalExam($practicalExam);
-                $last_id = $this->getPracticalExamTable()->last_id();
-                $this->getPracticalExamTable()->insertToExamination($last_id);
+                    $this->getPracticalExamTable()->savePracticalExam($practicalExam);
+                    $last_id = $this->getPracticalExamTable()->last_id();
+                    $this->getPracticalExamTable()->insertToExamination($last_id);
 
-                return $this->redirect()->toRoute('practical-exam');
-            } else if ($form->isValid() && !empty($written)){
-                $practicalExam->exchangeArray($form->getData());
-                $this->getPracticalExamTable()->savePracticalExam($practicalExam);
-                $last_id = $this->getPracticalExamTable()->last_id();
-                $this->getPracticalExamTable()->examination($written, $last_id);
-                return $this->redirect()->toRoute('practical-exam');
+                    return $this->redirect()->toRoute('practical-exam');
+                } else if ($form->isValid() && !empty($written)) {
+                    $practicalExam->exchangeArray($form->getData());
+                    $this->getPracticalExamTable()->savePracticalExam($practicalExam);
+                    $last_id = $this->getPracticalExamTable()->last_id();
+                    $this->getPracticalExamTable()->examination($written, $last_id);
+                    return $this->redirect()->toRoute('practical-exam');
+                }
+            } else {
+                return array('form' => $form,
+                    'message' => 'Impossible to add !!!! Because this tester has already passed a practical exam, he is waiting to add the written exam',);
             }
         }
         $nombre = $this->getPracticalExamTable()->countWritten($id_written);
         return array('form' => $form,
             'written' => $id_written,
             'nombre' => $nombre,
-             'provider' => $provider,
-            
+            'provider' => $provider,
         );
     }
 
@@ -104,22 +108,6 @@ class PracticalExamController extends AbstractActionController {
             'practice_exam_id' => $practice_exam_id,
             'form' => $form,
         );
-    }
-
-    public function searchAction() {
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $motCle = $request->getPost('motCle', null);
-        }
-     
-        $paginator = $this->getPracticalExamTable()->search($motCle,true);
-        $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-        $paginator->setItemCountPerPage(10);
-
-        return new ViewModel(array(
-            'paginator' => $paginator
-        ));
     }
 
 }

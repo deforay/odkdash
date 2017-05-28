@@ -17,30 +17,15 @@ class ProviderTable extends AbstractTableGateway {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated = false) {
-        if ($paginated) {
-            // create a new Select object for the table provider
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
-            $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left')
-                    ->join('certification_regions', 'certification_regions.id =certification_facilities.region', array('region_name'), 'left')
-                    ->join('certification_districts', 'certification_districts.id =certification_regions.district', array('district_name'), 'left');
-            $sqlSelect->order('id desc');
-            // create a new result set based on the provider entity
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Provider());
-            // create a new pagination adapter object
-            $paginatorAdapter = new DbSelect(
-                    // our configured select object
-                    $sqlSelect,
-                    // the adapter to run it against
-                    $this->tableGateway->getAdapter(),
-                    // the result set to hydrate
-                    $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return $paginator;
-        }
+    public function fetchAll() {
+
+        $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
+        $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left')
+                ->join('certification_regions', 'certification_regions.id =certification_facilities.region', array('region_name'), 'left')
+                ->join('certification_districts', 'certification_districts.id =certification_regions.district', array('district_name'), 'left');
+        $sqlSelect->order('certification_reg_no desc');
+
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -58,10 +43,12 @@ class ProviderTable extends AbstractTableGateway {
     public function saveProvider(\Certification\Model\Provider $provider) {
 
         $last_name = strtoupper($provider->last_name);
-        $first_name = ucfirst($provider->first_name);
-        $middle_name = ucfirst($provider->middle_name);
+        $first_name = strtoupper($provider->first_name);
+        $middle_name = strtoupper($provider->middle_name);
         $region = ucfirst($provider->region);
         $district = ucfirst($provider->district);
+        $test_site_in_charge_name = strtoupper($provider->test_site_in_charge_name);
+        $facility_in_charge_name = strtoupper($provider->facility_in_charge_name);
 
         $db = $this->tableGateway->getAdapter();
         $sql = 'SELECT MAX(certification_reg_no) as max FROM provider';
@@ -96,10 +83,10 @@ class ProviderTable extends AbstractTableGateway {
             'prefered_contact_method' => $provider->prefered_contact_method,
             'current_jod' => $provider->current_jod,
             'time_worked' => $provider->time_worked,
-            'test_site_in_charge_name' => $provider->test_site_in_charge_name,
+            'test_site_in_charge_name' => $test_site_in_charge_name,
             'test_site_in_charge_phone' => $provider->test_site_in_charge_phone,
             'test_site_in_charge_email' => $provider->test_site_in_charge_email,
-            'facility_in_charge_name' => $provider->facility_in_charge_name,
+            'facility_in_charge_name' => $facility_in_charge_name,
             'facility_in_charge_phone' => $provider->facility_in_charge_phone,
             'facility_in_charge_email' => $provider->facility_in_charge_email,
             'facility_id' => $provider->facility_id,
@@ -120,41 +107,6 @@ class ProviderTable extends AbstractTableGateway {
                 throw new \Exception('Provider id does not exist');
             }
         }
-    }
-
-    public function search($motCle, $paginated = false) {
-       if ($paginated) {
-            // create a new Select object for the table provider
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('id', 'certification_reg_no', 'certification_id', 'professional_reg_no', 'last_name', 'first_name', 'middle_name', 'region', 'district', 'type_vih_test', 'phone', 'email', 'prefered_contact_method', 'current_jod', 'time_worked', 'test_site_in_charge_name', 'test_site_in_charge_phone', 'test_site_in_charge_email', 'facility_in_charge_name', 'facility_in_charge_phone', 'facility_in_charge_email', 'facility_id'));
-            $sqlSelect->join('certification_facilities', ' certification_facilities.id = provider.facility_id ', array('facility_name', 'facility_address'), 'left')
-                    ->join('certification_regions', 'certification_regions.id =certification_facilities.region', array('region_name'), 'left')
-                    ->join('certification_districts', 'certification_districts.id =certification_regions.district', array('district_name'), 'left');
-
-            $sqlSelect->where->like('last_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('first_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('middle_name', '%' . $motCle . '%');
-            $sqlSelect->where->OR->like('certification_reg_no', '%' . $motCle . '%');
-            $sqlSelect->order('last_name ASC');
-            
-            // create a new result set based on the provider entity
-            $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Provider());
-            // create a new pagination adapter object
-            $paginatorAdapter = new DbSelect(
-                    // our configured select object
-                    $sqlSelect,
-                    // the adapter to run it against
-                    $this->tableGateway->getAdapter(),
-                    // the result set to hydrate
-                    $resultSetPrototype
-            );
-            $paginator = new Paginator($paginatorAdapter);
-            return  $paginator;
-        }
-        
-        $resultSet = $this->tableGateway->selectWith($sqlSelect);
-        return  $resultSet;
     }
 
 }

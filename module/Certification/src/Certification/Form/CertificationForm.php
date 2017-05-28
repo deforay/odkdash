@@ -22,7 +22,7 @@ class CertificationForm extends Form {
         $this->add(array(
             'name' => 'examination',
             'type' => 'hidden',
-             ));
+        ));
         $this->add(array(
             'name' => 'final_decision',
             'type' => 'text',
@@ -33,11 +33,9 @@ class CertificationForm extends Form {
 
         $this->add(array(
             'name' => 'certification_issuer_id',
-            'type' => 'Zend\Form\Element\Select',
+            'type' => 'text',
             'options' => array(
                 'label' => 'Certificate Issued By',
-                'empty_option' => 'Please choose an Type',
-                'value_options' => $this->getOptionsForSelect(),
             ),
         ));
 
