@@ -1,5 +1,5 @@
 function validateForm() {
-    var a = document.forms["form"]["certification_issuer_id"].value;
+    var a = document.forms["form"]["certification_issuer"].value;
     var elmt = document.getElementById("Certification Issued By");
 
     if (a == null || a == "")
@@ -8,4 +8,9 @@ function validateForm() {
         alert("Please enter the ''" + elmt.id + "''");
         return false;
     }
+}
+
+function emptyInput(input) {
+
+    input.style.boxShadow = 'none';
 }

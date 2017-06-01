@@ -1,8 +1,6 @@
 <?php
 
 use Zend\Session\Container;
-
-
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -34,7 +32,8 @@ use Zend\Session\Container;
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                 <thead>
                     <tr>
-                        <th  style="width:10%;"> professional registration no </th>
+                        <th  style="width:10%;"> Professional Registration No(if available </th>
+                        <th  style="width:10%;"> Certification Registration no </th>
                         <th  style="width:10%;">Certification ID  </th>
                         <th  style="width:10%;">Provider</th>
                         <th  style="width:10%;"> Final Score (≥80%)</th>
@@ -42,7 +41,7 @@ use Zend\Session\Container;
 
 
 
-                        <?php // if ($acl->isAllowed($role, 'Certification\Controller\Examination', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
+                        <?php // if ($acl->isAllowed($role, 'Certification\Controller\Examination', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
                         <th style="width:6%;">Action</th>
                         <?php // } ?>
                     </tr>
@@ -50,16 +49,27 @@ use Zend\Session\Container;
                 </thead>
                 <tbody>
                     <?php foreach ($this->examinations as $exam) : ?>
-                    <tr> <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->professional_reg_no); ?></div></td>
+                        <tr>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->professional_reg_no); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->certification_reg_no); ?></div></td>
                             <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></div></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
                             <td>
-                                <div style="width:100px;height:40px;overflow:auto;">  <a href="<?php
-                                    echo $this->url('certification', array('action' => 'add', 'id' => $exam->id), array('query' =>
-                                        array('written' => $exam->final_score, 'practical' => $exam->practical_total_score,'direct' =>$exam->direct_observation_score, 'sample' => $exam->Sample_testing_score )));
-                                    ?>"> <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>
+                                <?php if(empty($exam->final_score) || empty($exam->practical_total_score)) { 
+                              echo   '<div style="width:100px;height:40px;overflow:auto;">  
+                                        
+                                    <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>';
+                                }else {
+                                    echo   '<div style="width:100px;height:40px;overflow:auto;">  
+                                        
+                                    <a href='.$this->url("certification", array("action" => "add", "id" => $exam->id), array("query" =>
+                                        array("written" => $exam->final_score, "practical" => $exam->practical_total_score, "direct" => $exam->direct_observation_score, "sample" => $exam->Sample_testing_score, "provider" => $exam->provider)))
+                                    .'> <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>';
+                                 
+                                    
+                                }; ?>
                             </td></tr>
                     <?php endforeach; ?>
                 </tbody> 

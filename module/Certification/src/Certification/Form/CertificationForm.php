@@ -32,7 +32,7 @@ class CertificationForm extends Form {
         ));
 
         $this->add(array(
-            'name' => 'certification_issuer_id',
+            'name' => 'certification_issuer',
             'type' => 'text',
             'options' => array(
                 'label' => 'Certificate Issued By',
@@ -71,14 +71,7 @@ class CertificationForm extends Form {
             ),
         ));
 
-        $this->add(array(
-            'name' => 'issued',
-            'type' => 'Text',
-            'options' => array(
-                'label' => 'Approved',
-            ),
-        ));
-
+        
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',

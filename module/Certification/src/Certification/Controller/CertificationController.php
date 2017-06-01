@@ -22,6 +22,7 @@ class CertificationController extends AbstractActionController {
     public function indexAction() {
         return new ViewModel(array(
             'certifications' => $this->getCertificationTable()->fetchAll(),
+            'certifications2' => $this->getCertificationTable()->fetchAll2(),
         ));
     }
 
@@ -33,8 +34,9 @@ class CertificationController extends AbstractActionController {
         $practical = $this->params()->fromQuery('practical');
         $sample = $this->params()->fromQuery('sample');
         $direct = $this->params()->fromQuery('direct');
-
-
+        $provider = $this->params()->fromQuery('provider');
+        $certification_id= $this->getCertificationTable()->certificationType($provider);
+        
         $form = new CertificationForm($dbAdapter);
         $form->get('submit')->setValue('Add');
 
@@ -50,7 +52,10 @@ class CertificationController extends AbstractActionController {
                 $last_id = $this->getCertificationTable()->last_id();
                 $this->getCertificationTable()->updateExamination($last_id);
                 $this->getCertificationTable()->setToActive($last_id);
-
+                if(empty($certification_id) && $written >= 80 && $direct >= 90 && $sample = 100){
+                    $this->getCertificationTable()->certificationId($provider);
+                }
+                
                 return $this->redirect()->toRoute('certification');
             }
         }
@@ -59,6 +64,7 @@ class CertificationController extends AbstractActionController {
             'practical' => $practical,
             'sample' => $sample,
             'direct' => $direct,
+            'certification_id' => $certification_id,
             'form' => $form);
     }
 
@@ -105,10 +111,17 @@ class CertificationController extends AbstractActionController {
         $last = $this->params()->fromQuery('last');
         $first = $this->params()->fromQuery('first');
         $middle = $this->params()->fromQuery('middle');
+        $certification_id = $this->params()->fromQuery('certification_id');
+        $professional_reg_no= $this->params()->fromQuery('professional_reg_no');
+        $date_issued= $this->params()->fromQuery('date_issued');
         return array(
             'last' => $last,
             'first' => $first,
-            'middle' => $middle);
+            'middle' => $middle,
+            'professional_reg_no'=>$professional_reg_no,
+            'certification_id'=>$certification_id,
+            'date_issued'=>$date_issued
+            );
     }
 
 }

@@ -27,62 +27,56 @@ $sessionLogin = new Container('credo');
                     <div class="panel panel-default">
                         <div class="panel-body" >
 
-
-
                             <?php
-                            $form->setAttribute('action', $this->url('certification', array('action' => 'edit','id'=>$this->id)));
+                            $form->setAttribute('action', $this->url('certification', array('action' => 'edit', 'id' => $this->id)));
                             $form->prepare();
-                            
+
                             $form->get('examination')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Certification ID',
-                                'readonly'=>true,
+                                'readonly' => true,
                                 'autocomplete' => 'off',
                             ]);
                             $form->get('final_decision')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Final Decision',
+                                'readonly' => TRUE,
                                 'autocomplete' => 'off',
                             ]);
 
-                            $form->get('certification_issuer_id')->setAttributes([
+                            $form->get('certification_issuer')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Certification Issued By',
                                 'autocomplete' => 'off',]);
-                            
+
                             $form->get('date_certificate_issued')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Date Certificate Issued',
-                                'autocomplete' => 'off',]);
+                                'autocomplete' => 'off',
+                                'readonly' => true,]);
 
                             $form->get('date_certificate_sent')->setAttributes([
                                 'class' => 'form-control',
                                 'placeholder' => 'Date Certificate Sent',
-                                'autocomplete' => 'off',]);
+                                'autocomplete' => 'off',
+                            ]);
                             $form->get('certification_type')->setAttributes([
                                 'class' => 'form-control',
-                                'placeholder' => 'Type of Certition']);
-                            $form->get('issued')->setAttributes([
-                                'class' => 'form-control',
-                                'value' => 'yes',
-                                 'readonly' => true,
-                                'autocomplete' => 'off',]);
-                            
+                                'placeholder' => 'Type of Certition',
+                                'readonly' => true,]);
+
+
                             echo $this->form()->openTag($form);
                             ?>
                             <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
                             <?php echo $this->formHidden($form->get('examination')->setAttribute('class', 'form-control')) ?>
-                             
+
                             <div class="form-group col-lg-6"> 
                                 <?= $this->formLabel($form->get('final_decision')); ?>
                                 <?= $this->formElement($form->get('final_decision')); ?>
                                 <?= $this->formElementErrors($form->get('final_decision')); ?>
                             </div>
-                            <div class="form-group col-lg-6">
-                                <?= $this->formLabel($form->get('certification_issuer_id')); ?>
-                                <?= $this->formElement($form->get('certification_issuer_id')); ?>
-                                <?= $this->formElementErrors($form->get('certification_issuer_id')); ?>
-                            </div>
+
                             <div class="form-group col-lg-6">
                                 <?= $this->formLabel($form->get('date_certificate_issued')); ?>
                                 <?= $this->formElement($form->get('date_certificate_issued')); ?>
@@ -97,14 +91,14 @@ $sessionLogin = new Container('credo');
                                 <?= $this->formLabel($form->get('certification_type')); ?>
                                 <?= $this->formElement($form->get('certification_type')); ?>
                                 <?= $this->formElementErrors($form->get('certification_type')); ?></div>
-                            <div class="form-group col-lg-6">  
-                                <?= $this->formLabel($form->get('issued')); ?>
-                                <?= $this->formElement($form->get('issued')); ?>
-                                <?= $this->formElementErrors($form->get('issued')); ?>
+
+                            <div class="form-group col-lg-6">
+                                <?= $this->formLabel($form->get('certification_issuer')); ?>
+                                <?= $this->formElement($form->get('certification_issuer')); ?>
+                                <?= $this->formElementErrors($form->get('certification_issuer')); ?>
                             </div>
-                           
                             <div class="form-group col-lg-6" style="margin-top: 30px"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
-                                 <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('certification', array('action' => 'index')); ?>" >CANCEL</a> </div>
+                                <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('certification', array('action' => 'index')); ?>" >CANCEL</a> </div>
                                 <?php echo $this->form()->closeTag();
                                 ?>
                         </div>

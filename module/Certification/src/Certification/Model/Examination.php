@@ -25,6 +25,7 @@ class Examination {
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;
         $this->middle_name = (!empty($data['middle_name'])) ? $data['middle_name'] : null;
+        $this->certification_reg_no = (!empty($data['certification_reg_no'])) ? $data['certification_reg_no'] : null;
 
         $this->exam_type = (!empty($data['exam_type'])) ? $data['exam_type'] : null;
         $this->final_score = (!empty($data['final_score'])) ? $data['final_score'] : 0;

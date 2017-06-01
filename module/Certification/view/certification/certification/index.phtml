@@ -29,10 +29,14 @@ $sessionLogin = new Container('credo');
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;" >
+
+            <h1 style="text-align: center;color: #FF7F50;margin-bottom: 50px;">List of certified testers</h1>
             <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
                 <thead>
                     <tr>
-                        <th  style="width:10%;">Certification ID</th>
+                        <th  style="width:10%;">Professional Registration No(if available </th>
+                        <th  style="width:10%;">Certification Registration no </th>
+                        <th  style="width:10%;">Certification ID  </th>
                         <th  style="width:10%;">Provider</th>
                         <th  style="width:10%;">Final Decision</th>
                         <th  style="width:10%;">Certificate Issuer</th>
@@ -47,27 +51,28 @@ $sessionLogin = new Container('credo');
 
                 </thead>
                 <tbody>
-                           
+
                     <?php foreach ($certifications as $certification) : ?>
-                                <tr>
-                                    <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
-                                    <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
-                                    <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
-                                    <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->issuer_last_name . ' ' . $certification->issuer_first_name . ' ' . $certification->issuer_middle_name); ?></div></td>
-                                    <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_issued); ?></div></td>
-                                    <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_sent); ?></div></td>
-                                    <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
-                                    <td>
-                                        <div style="width:80px;height:40px;overflow:auto;">
-                                            <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => $certification->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
-                                        </div>
-                                    </td>
+                        <tr><td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->professional_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->last_name . ' ' . $certification->first_name . ' ' . $certification->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification->final_decision); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_issuer); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_issued); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->date_certificate_sent); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification->certification_type); ?></div></td>
+                            <td>
+                                <div style="width:80px;height:40px;overflow:auto;">
+                                    <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => $certification->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                </div>
+                            </td>
 
                             <?php
                             if (strcasecmp($certification->final_decision, 'Certified') == 0) {
 
                                 echo "<td><div style='width:80px;height:40px;overflow:auto;'>
-                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array('last' => $certification->last_name, 'first' => $certification->first_name, 'middle' => $certification->middle_name)
+                                        <a href=" . $this->url('certification', array('action' => 'pdf'), array('query' => array('last' => $certification->last_name, 'first' => $certification->first_name, 'middle' => $certification->middle_name,'professional_reg_no'=>$certification->professional_reg_no,'certification_id'=>$certification->certification_id,'date_issued'=>$certification->date_certificate_issued)
                                 )) .
                                 " target='_blank'><span class='glyphicon glyphicon-download-alt'>PDF</span></a> 
                                     </div>
@@ -80,17 +85,67 @@ $sessionLogin = new Container('credo');
                                 </td> ";
                             }
                             ?>
-                                   
-                                </tr>
-                    <?php
+
+                        </tr>
+                        <?php
+                    endforeach;
+                    ;
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <div class="widget widget-fullwidth widget-small" style="padding:5px; margin-top:100px;" >
+            <h1 style="text-align: center; color: #FF7F50;margin-bottom: 50px;">List of pending or failed testers</h1>
+            <table id="example2" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" >
+                <thead>
+                    <tr>
+                        <th  style="width:10%;">Professional Registration No(if available </th>
+                        <th  style="width:10%;">Certification Registration no </th>
+                        <th  style="width:10%;">Certification ID  </th>
+                        <th  style="width:10%;">Provider</th>
+                        <th  style="width:10%;">Final Decision</th>
+                        <th  style="width:10%;">Certificate Issuer</th>
+                        <th  style="width:10%;">Date Certificate Issued</th>
+                        <th style="width:10%;">Date Certificate Sent</th>
+                        <th style="width:10%;">Type of Certification</th> 
+                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <th style="width:5%;">Edit</th>
+                        <?php // }  ?>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <?php foreach ($certifications2 as $certification2) : ?>
+                        <tr><td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->professional_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_reg_no); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_id); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->last_name . ' ' . $certification2->first_name . ' ' . $certification2->middle_name); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification2->final_decision); ?></div></td>
+                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_issuer); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->date_certificate_issued); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->date_certificate_sent); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification2->certification_type); ?></div></td>
+                            <td>
+                                <div style="width:80px;height:40px;overflow:auto;">
+                                    <a href="<?php echo $this->url('certification', array('action' => 'edit', 'id' => $certification2->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                </div>
+                            </td>
+
+                        </tr>
+                        <?php
                     endforeach;
                     ;
                     ?>
                 </tbody>
             </table>
 
-        </div>
+        </div> 
     </div>
+</div>
 </div>
 </div>
 
@@ -111,6 +166,14 @@ $sessionLogin = new Container('credo');
     $(document).ready(function () {
 
         $('#example').dataTable({
+            "aProcessing": true,
+            "aServerSide": true,
+        })
+    });
+
+    $(document).ready(function () {
+
+        $('#example2').dataTable({
             "aProcessing": true,
             "aServerSide": true,
         })
