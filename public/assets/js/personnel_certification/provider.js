@@ -74,16 +74,16 @@ function validateForm() {
         return false;
     }
 
+    if (f == null || f == "") {
+        elmt7.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+        alert("Please enter the ''" + elmt7.id + "''");
+        return false;
+    }
+
 
     if (g == null || g == "") {
         elmt8.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt8.id + "''");
-        return false;
-    }
-    
-    if (f == null || f == "") {
-        elmt7.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt7.id + "''");
         return false;
     }
 

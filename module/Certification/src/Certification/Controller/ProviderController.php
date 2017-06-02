@@ -20,13 +20,13 @@ class ProviderController extends AbstractActionController {
     }
 
     public function indexAction() {
-        
-     
 
-     return new ViewModel(array(
-         'providers' => $this->getProviderTable()->fetchAll(),
-     ));
- }
+
+
+        return new ViewModel(array(
+            'providers' => $this->getProviderTable()->fetchAll(),
+        ));
+    }
 
     public function addAction() {
 
@@ -44,7 +44,7 @@ class ProviderController extends AbstractActionController {
             if ($form->isValid()) {
                 $provider->exchangeArray($form->getData());
                 ?>
-                <pre> <?php // print_r($provider)           ?></pre>
+                <pre> <?php // print_r($provider)             ?></pre>
 
                 <?php
                 $this->getProviderTable()->saveProvider($provider);
@@ -97,5 +97,23 @@ class ProviderController extends AbstractActionController {
         );
     }
 
+    public function districtAction() {
+
+        $q = (int) $_GET['q'];
+
+        $result = $this->getProviderTable()->getDistrict($q);
+        return array(
+            'result' => $result,
+        );
+    }
+
+    public function facilityAction() {
+
+        $q = (int) $_GET['q'];
+        $result = $this->getProviderTable()->getFacility($q);
+        return array(
+            'result' => $result,
+        );
+    }
 
 }

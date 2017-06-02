@@ -214,6 +214,7 @@ class Provider {
                     array(
                         'name' => 'StringLength',
                         'options' => array(
+                            
                             'encoding' => 'UTF-8',
                         ),
                     ),

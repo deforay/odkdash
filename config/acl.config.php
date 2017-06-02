@@ -298,7 +298,9 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'certification' => 'allow',
-            'search' => 'allow',
+            'district' => 'allow',
+            'facility' => 'allow'
+            
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',

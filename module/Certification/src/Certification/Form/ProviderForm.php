@@ -258,7 +258,7 @@ class ProviderForm extends Form {
     
      public function getRegions(){
         $dbAdapter = $this->adapter;
-        $sql = 'SELECT id, region_name, district FROM certification_regions  ORDER by region_name asc ';
+        $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
         
