@@ -184,4 +184,9 @@ class FacilityService {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->mapProvince($params);
     }
+    
+    public function getFacilityDetails($params){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchFacilityDetails($params);
+    }
 }

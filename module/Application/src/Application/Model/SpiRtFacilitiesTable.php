@@ -251,26 +251,43 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	return array("result" => $echoResult);
     }
     
-    public function updateFacilityName($id,$facilityName){
-	if($id!="" && $facilityName!=""){
+    public function updateFacilityInfo($id,$params){
+	if($id > 0){
 	    $data = array(
-		    'facility_name' => trim($facilityName)
+		'facility_id'=>$params['testingFacilityId'],
+		'facility_name'=>$params['testingFacilityName'],
+		'email'=>$params['email'],
+		'contact_person'=>$params['contactPerson'],
+		'district'=>$params['district'],
+		'province'=>$params['province'],
+		'latitude'=>$params['latitude'],
+		'longitude'=>$params['longitude']
 	    );
-	    $this->update($data,array('facility_id'=>$id));
+	    $this->update($data,array('id'=>$id));
 	}
     }
     
-    public function addFacilityName($facilityName){
+    public function addFacilityInfo($params){
 	$dbAdapter = $this->adapter;
 	$sql = new Sql($dbAdapter);
-	$fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$facilityName));
+	$fQuery = $sql->select()->from('spi_rt_3_facilities')->where('facility_id = "'.$params['testingFacilityId'].'" OR facility_name = "'.$params['testingFacilityName'].'"');
 	$fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
 	$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-	if($fResult==""){
-		$data = array(
-			'facility_name' => $facilityName
-		);
-		$this->insert($data);
+	if($fResult){
+	    return $fResult->id;
+	}else{
+	    $data = array(
+		'facility_id'=>$params['testingFacilityId'],
+		'facility_name'=>$params['testingFacilityName'],
+		'email'=>$params['email'],
+		'contact_person'=>$params['contactPerson'],
+		'district'=>$params['district'],
+		'province'=>$params['province'],
+		'latitude'=>$params['latitude'],
+		'longitude'=>$params['longitude']
+	    );
+	    $this->insert($data);
+	    return $this->lastInsertValue;
 	}
     }
     
@@ -334,5 +351,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	    }
 	}
       return $result;
+    }
+    
+    public function fetchFacilityDetails($params){
+	return $this->select(array('id' => (int) base64_decode($params['id'])))->current();
     }
 }

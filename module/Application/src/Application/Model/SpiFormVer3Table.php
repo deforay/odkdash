@@ -1121,8 +1121,13 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
 
     public function getFormData($id) {
-        $row = $this->select(array('id' => (int) $id))->current();
-        return $row;
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+                                ->join(array('spirt3'=>'spi_rt_3_facilities'),'spirt3.id=spiv3.facility',array('fId'=>'id','ffId'=>'facility_id','fName'=>'facility_name','fEmail'=>'email','fCPerson'=>'contact_person','fDistrict'=>'district','fProvince'=>'province','fLatitude'=>'latitude','fLongitude'=>'longitude'),'left')
+                                ->where(array('spiv3.id'=>$id));
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+       return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
     }
 
     public function getAuditRoundWiseData($params) {
@@ -1748,7 +1753,6 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function updateSpiFormDetails($params){
-		
         if (trim($params['formId']) != "") {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
@@ -1772,20 +1776,21 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 $summationData=json_encode($summationData,true);
             }
             
-            
-            if($params['testingFacilityName']!=$params['oldFacilityName']){
-                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
-                if(isset($params['selectedFacilityId']) && trim($params['selectedFacilityId'])!="" && trim($params['testingFacilityName'])!=""){
-                    $facilityDb->updateFacilityName($params['selectedFacilityId'],$params['testingFacilityName']);
-                }else{
-                    $facilityDb->addFacilityName(trim($params['testingFacilityName']));
-                }
+            //update facility tbl
+            $id = 0;
+            $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+            if(trim($params['testingFacility'])!= ''){
+                $id = base64_decode($params['testingFacility']);
+                $facilityDb->updateFacilityInfo($id,$params);
+            }else if(trim($params['testingFacilityId'])!= '' || trim($params['testingFacilityName'])!= ''){
+                $id = $facilityDb->addFacilityInfo($params); 
             }
             
             $data = array(
                 //'assesmentofaudit' => $this->dateFormat($params['auditDate']),
                 'auditroundno' => $params['auditRound'],
                 'facilityname' => $params['testingFacilityName'],
+                'facility' => ($id > 0)?$id:null,
                 'facilityid' => $params['testingFacilityId'],
                 'testingpointname' => $params['testingPointName'],
                 'testingpointtype' => $params['testingPointType'],

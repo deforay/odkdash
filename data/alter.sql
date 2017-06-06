@@ -500,3 +500,6 @@ ALTER TABLE `spi_form_v_3_duplicate`
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'download-files', 'Download Zipped Files');
 
 ALTER TABLE `r_spi_form_v_3_download` DROP `file_name`;
+
+--Pal 06-Jun-2017
+ALTER TABLE `spi_form_v_3` ADD `facility` INT(11) NULL DEFAULT NULL AFTER `auditroundno`;

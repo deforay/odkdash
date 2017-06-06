@@ -103,8 +103,7 @@ class SpiV3Controller extends AbstractActionController
         return $viewModel;
     }
 
-    public function editAction()
-    {
+    public function editAction(){
         $request = $this->getRequest();
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if ($request->isPost()) {
@@ -113,11 +112,12 @@ class SpiV3Controller extends AbstractActionController
             return $this->redirect()->toRoute("spi-v3-form");
         } else {
             $id = $this->params()->fromRoute('id');
+            $facilitiesResult = $odkFormService->getAllFacilityNames();
             $result = $odkFormService->getFormData($id);
-            
-                return new ViewModel(array(
-                    'formData' => $result,
-                ));
+            return new ViewModel(array(
+                'formData' => $result,
+                'facilities' => $facilitiesResult
+            ));
         }
     }
 
