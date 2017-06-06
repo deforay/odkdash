@@ -152,6 +152,7 @@ return array(
             'Certification\Controller\Recertification' => "Certification\Controller\RecertificationController",
             'Certification\Controller\TrainingCertificate' => "Certification\Controller\TrainingCertificateController",
             'Certification\Controller\Training' => "Certification\Controller\TrainingController",
+            'Certification\Controller\TrainingOrganization' => "Certification\Controller\TrainingOrganizationController",
             'Certification\Controller\WrittenExam' => "Certification\Controller\WrittenExamController",
             'Certification\Controller\CertificationMail' => "Certification\Controller\CertificationMailController",
             'Certification\Controller\Examination' => "Certification\Controller\ExaminationController",

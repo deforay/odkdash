@@ -6,8 +6,6 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 
 class ProviderTable extends AbstractTableGateway {
 
@@ -43,7 +41,7 @@ class ProviderTable extends AbstractTableGateway {
     }
 
     public function saveProvider(\Certification\Model\Provider $provider) {
-        
+
         $last_name = strtoupper($provider->last_name);
         $first_name = strtoupper($provider->first_name);
         $middle_name = strtoupper($provider->middle_name);
@@ -116,19 +114,16 @@ class ProviderTable extends AbstractTableGateway {
         $sql = "SELECT id,district_name,region FROM certification_districts WHERE region = '" . $q . "'";
         $statement = $db->query($sql);
         $result = $statement->execute();
-        
-              return $result;       
-        }
-        
-        public function getFacility($q) {
+//        print_r($result);
+        return $result;
+    }
+
+    public function getFacility($q) {
         $db = $this->tableGateway->getAdapter();
         $sql = "SELECT id, facility_name, district FROM certification_facilities where district='" . $q . "'";
         $statement = $db->query($sql);
         $result = $statement->execute();
-        
-              return $result;       
-        }
-       
+        return $result;
     }
 
-
+}

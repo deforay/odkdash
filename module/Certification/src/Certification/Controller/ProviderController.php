@@ -100,7 +100,6 @@ class ProviderController extends AbstractActionController {
     public function districtAction() {
 
         $q = (int) $_GET['q'];
-
         $result = $this->getProviderTable()->getDistrict($q);
         return array(
             'result' => $result,

@@ -1,8 +1,8 @@
 <?php
-echo '<select><option value="">please choose an option</option>';
+echo '<select ><option value="">please choose an option</option>';
 
 foreach ($result as $res) {
-   
+     
     echo "<option  value=".$res['id'].">" . $res['district_name'] . " </option> ";
 }
 

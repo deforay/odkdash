@@ -27,7 +27,7 @@ class ProviderForm extends Form {
             'name' => 'certification_reg_no',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Certification ID',
+                'label' => 'Certification Registration ID',
             ),
         ));
         
@@ -81,10 +81,12 @@ class ProviderForm extends Form {
         $this->add(array(
             'name' => 'district',
             'type' => 'Select',
+            
             'options' => array(
                 'label' => 'District',
-                'empty_option' => 'Please choose a District',
-                'value_options' => $this->getDistricts(),
+                 'disable_inarray_validator' => true,
+//                'empty_option' => 'Please choose a District',
+//                'value_options' => $this->getDistricts(),
             ),
         ));
 
@@ -216,8 +218,9 @@ class ProviderForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'facility Name',
-                'empty_option' => 'Please choose a facility',
-                'value_options' => $this->getOptionsForSelect(),
+                'disable_inarray_validator' => true,
+//                'empty_option' => 'Please choose a facility',
+//               
             ),
         ));
        
@@ -232,29 +235,29 @@ class ProviderForm extends Form {
         ));
     }
 
-    public function getOptionsForSelect() {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT id,facility_name FROM certification_facilities ORDER by facility_name asc ';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-        
-        foreach ($result as $res) {
-            $selectData[$res['id']] = $res['facility_name'];
-        }
-        return $selectData;
-    }
-    
-     public function getDistricts() {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT id,district_name FROM certification_districts  ORDER by district_name asc';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-        
-        foreach ($result as $res) {
-            $selectData[$res['id']] = $res['district_name'];
-        }
-        return $selectData;
-    }
+//    public function getOptionsForSelect() {
+//        $dbAdapter = $this->adapter;
+//        $sql = 'SELECT id,facility_name FROM certification_facilities ORDER by facility_name asc ';
+//        $statement = $dbAdapter->query($sql);
+//        $result = $statement->execute();
+//        
+//        foreach ($result as $res) {
+//            $selectData[$res['id']] = $res['facility_name'];
+//        }
+//        return $selectData;
+//    }
+//   
+//     public function getDistricts() {
+//        $dbAdapter = $this->adapter;
+//        $sql = 'SELECT id,district_name FROM certification_districts  ORDER by district_name asc';
+//        $statement = $dbAdapter->query($sql);
+//        $result = $statement->execute();
+//        
+//        foreach ($result as $res) {
+//            $selectData[$res['id']] = $res['district_name'];
+//        }
+//        return $selectData;
+//    }
     
      public function getRegions(){
         $dbAdapter = $this->adapter;

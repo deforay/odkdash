@@ -68,22 +68,25 @@ $sessionLogin = new Container('credo');
                                     'autocomplete' => 'off',
                                     'id' => 'Region',
                                     'onclick' => 'emptyInput(this)',
-                                    'onchange' => 'showFacilities(this.value)']);
-                                
+                                    'onchange' => 'showDistrict(this.value)'
+                                    
+                                ]);
+
                                 $form->get('district')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'District',
                                     'id' => 'District',
                                     'autocomplete' => 'off',
                                     'onclick' => 'emptyInput(this)',
-                                     'onchange' => 'showRegion(this.value)']);
-                                
+                                    'onchange' => 'showFacilities(this.value)',
+                                    ]);
+
                                 $form->get('type_vih_test')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Type of VIH Test',
                                     'id' => 'Type of VIH Test Modality/Point',
                                     'onclick' => 'emptyInput(this)']);
-                                
+
                                 $form->get('phone')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Phone',
@@ -103,55 +106,55 @@ $sessionLogin = new Container('credo');
                                     'placeholder' => 'Prefered Contact Method',
                                     'id' => 'Prefered Contact Method',
                                     'onclick' => 'emptyInput(this)']);
-                               
+
                                 $form->get('current_jod')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Current Job',
-                                     'id' => 'Current Job Title',
+                                    'id' => 'Current Job Title',
                                     'onclick' => 'emptyInput(this)']);
 
                                 $form->get('time_worked')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Time worked as tester',
                                     'autocomplete' => 'off',
-                                     'id' => 'Time worked as tester',
+                                    'id' => 'Time worked as tester',
                                     'onclick' => 'emptyInput(this)']);
-                                
+
                                 $form->get('test_site_in_charge_name')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Name',
                                     'autocomplete' => 'off',
                                     'id' => 'Testing site in charge Name',
                                     'onclick' => 'emptyInput(this)']);
-                                
+
                                 $form->get('test_site_in_charge_phone')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Phone',
                                     'id' => 'Testing site in charge Phone',
                                     'autocomplete' => 'off',
                                     'onclick' => 'emptyInput(this)']);
-                               
+
                                 $form->get('test_site_in_charge_email')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Email',
                                     'autocomplete' => 'off',
                                     'id' => 'Testing site in charge Email',
                                     'onclick' => 'emptyInput(this)']);
-                                
+
                                 $form->get('facility_in_charge_name')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Name',
                                     'autocomplete' => 'off',
                                     'id' => 'Facility in charge Name',
                                     'onclick' => 'emptyInput(this)']);
-                                
+
                                 $form->get('facility_in_charge_phone')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Phone',
                                     'autocomplete' => 'off',
                                     'id' => 'Facility in charge Phone',
                                     'onclick' => 'emptyInput(this)']);
-                                
+
                                 $form->get('facility_in_charge_email')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Email',
@@ -163,7 +166,8 @@ $sessionLogin = new Container('credo');
                                     'class' => 'form-control',
                                     'placeholder' => 'Facility Name',
                                     'id' => 'Facility Name',
-                                    'onclick' => 'emptyInput(this)']);
+                                    'onclick' => 'emptyInput(this)',
+                                ]);
 
 
                                 $form->get('submit')->setAttributes([
@@ -173,7 +177,7 @@ $sessionLogin = new Container('credo');
                                 echo $this->form()->openTag($form);
                                 ?>
                                 <?php echo $this->formHidden($form->get('id')->setAttribute('class', 'form-control')) ?>
-                                
+
                                 <fieldset>
 
 
@@ -201,14 +205,15 @@ $sessionLogin = new Container('credo');
                                         <?= $this->formElementErrors($form->get('middle_name')); ?>
                                     </div>
                                     <div class="form-group col-lg-4">
-                                        <?= $this->formLabel($form->get('district')); ?><span class="mandatory">*</span>
-                                        <?= $this->formElement($form->get('district')); ?>
-                                        <?= $this->formElementErrors($form->get('district')); ?></div>
-                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('region')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('region')); ?>
                                         <?= $this->formElementErrors($form->get('region')); ?>
                                     </div>
+
+                                    <div class="form-group col-lg-4">
+                                        <?= $this->formLabel($form->get('district')); ?><span class="mandatory">*</span>
+                                        <?= $this->formElement($form->get('district')); ?>
+                                        <?= $this->formElementErrors($form->get('district')); ?></div>
                                     
                                     <div class="form-group col-lg-4">  
                                         <?= $this->formLabel($form->get('type_vih_test')); ?><span class="mandatory">*</span>
@@ -339,10 +344,10 @@ $sessionLogin = new Container('credo');
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/provider.js'); ?>"></script>
 
 <script>
-                                function showRegion(str) {
+                                function showDistrict(str) {
                                     
                                     if (str == "") {
-                                        document.getElementById("Region").innerHTML = "";
+                                        document.getElementById("District").innerHTML = "";
                                         return;
                                     } else {
                                         if (window.XMLHttpRequest) {
@@ -354,14 +359,14 @@ $sessionLogin = new Container('credo');
                                         }
                                         xmlhttp.onreadystatechange = function () {
                                             if (this.readyState == 4 && this.status == 200) {
-                                                document.getElementById("Region").innerHTML = this.responseText;
+                                                document.getElementById("District").innerHTML = this.responseText;
                                             }
                                         };
-                                        xmlhttp.open("GET", "<?php echo $this->basePath('assets/getregion.php'); ?>?q=" + str, true);
+                                        xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
                                         xmlhttp.send();
                                     }
                                 }
-
+                                    
                                 function showFacilities(str) {
                                 
                                     if (str == "") {
@@ -380,9 +385,8 @@ $sessionLogin = new Container('credo');
                                                 document.getElementById("Facility Name").innerHTML = this.responseText;
                                             }
                                         };
-                                        xmlhttp.open("GET", "<?php echo $this->basePath('assets/getfacilities.php'); ?>?q=" + str, true);
+                                        xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
                                         xmlhttp.send();
                                     }
                                 }
-</script>
-
+</script>                              

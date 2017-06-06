@@ -89,13 +89,13 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
-             'search' => 'allow',
+//             'search' => 'allow',
         ),
         'Certification\\Controller\\CertificationIssuer' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         
         'Certification\\Controller\\Provider' => array(
@@ -103,38 +103,39 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'certification' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
+            'district' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
@@ -145,7 +146,7 @@ return array(
         'Certification\\Controller\\Examination'=> array(
             'index' => 'allow',
             'add' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         
     ),
@@ -284,13 +285,13 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
-             'search' => 'allow',
+//             'search' => 'allow',
         ),
         'Certification\\Controller\\CertificationIssuer' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
                 
         'Certification\\Controller\\Provider' => array(
@@ -306,32 +307,32 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
@@ -342,7 +343,7 @@ return array(
         'Certification\\Controller\\Examination'=> array(
             'index' => 'allow',
             'add' => 'allow',
-            'search' => 'allow',
+//            'search' => 'allow',
         ),
     ),
 );
