@@ -148,6 +148,7 @@ class FacilityController extends AbstractActionController {
             return $viewModel;
         }
     }
+    
     public function searchProvinceListAction()
     {
         $facilityService= $this->getServiceLocator()->get('FacilityService');

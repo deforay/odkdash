@@ -354,20 +354,24 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
       return $result;
     }
     
-	public function fecthDistrictData($searchStr){
-		if(trim($searchStr)!=""){
-			$adapter = $this->adapter;
-			$sql = new Sql($adapter);
-			$sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
-								->where('spirt3.district like "%'.$searchStr.'%"')
-								->group('spirt3.district');
-			$sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
-			$rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
-			$echoResult = array();
-			foreach ($rResult as $row) {
-			    $echoResult[] = array("id" => $row['district'],"text" => ucwords($row['district']));
-			}
-public function fetchFacilityDetails($params){
+    public function fecthDistrictData($searchStr){
+	if(trim($searchStr)!=""){
+		$adapter = $this->adapter;
+		$sql = new Sql($adapter);
+		$sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+							->where('spirt3.district like "%'.$searchStr.'%"')
+							->group('spirt3.district');
+		$sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+		$rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+		$echoResult = array();
+		foreach ($rResult as $row) {
+		    $echoResult[] = array("id" => $row['district'],"text" => ucwords($row['district']));
+		}
+	}
+      return $echoResult;
+    }
+    
+    public function fetchFacilityDetails($params){
 	return $this->select(array('id' => (int) base64_decode($params['id'])))->current();
     }
 }

@@ -204,6 +204,7 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    
     public function spirtv3DatewiseAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -276,6 +277,7 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    
     public function downloadSpiderChartAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $commonService = $this->getServiceLocator()->get('CommonService');
@@ -289,6 +291,7 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    
     public function exportAsPdfAction()
     {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
@@ -345,6 +348,7 @@ class SpiV3Controller extends AbstractActionController
         $result = $odkFormService->getDownloadFilesRow();
        return new ViewModel(array('result' => $result));
     }
+    
     public function getDistrictByProvinceAction(){
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
