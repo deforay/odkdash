@@ -38,11 +38,11 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 $pdf->setSchemeName(ucwords($configData['header']),$configData['logo']);
 // set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('Nicola Asuni');
-$pdf->SetTitle('SPI-RT Checklist');
-$pdf->SetSubject('TCPDF Tutorial');
-$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+$pdf->SetCreator('ODK DASHBOARD');
+$pdf->SetAuthor('ODK DASHBOARD');
+$pdf->SetTitle('SPI-RT V3 Checklist');
+$pdf->SetSubject('SPI-RT V3 Checklist');
+$pdf->SetKeywords('SPI-RT V3 Checklist');
 
 
 // set default header data

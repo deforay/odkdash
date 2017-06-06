@@ -92,7 +92,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
-	
+		$queryContainer = new Container('query');
         $aColumns = array('facility_id','facility_name','email','contact_person');
         $orderColumns = array('facility_id','facility_name','email','contact_person');
 
@@ -185,6 +185,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
 
+		$queryContainer->exportAllFacilityQuery = $sQuery;
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -353,7 +354,20 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
       return $result;
     }
     
-    public function fetchFacilityDetails($params){
+	public function fecthDistrictData($searchStr){
+		if(trim($searchStr)!=""){
+			$adapter = $this->adapter;
+			$sql = new Sql($adapter);
+			$sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+								->where('spirt3.district like "%'.$searchStr.'%"')
+								->group('spirt3.district');
+			$sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+			$rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+			$echoResult = array();
+			foreach ($rResult as $row) {
+			    $echoResult[] = array("id" => $row['district'],"text" => ucwords($row['district']));
+			}
+public function fetchFacilityDetails($params){
 	return $this->select(array('id' => (int) base64_decode($params['id'])))->current();
     }
 }

@@ -83,21 +83,34 @@ tr.shown td.details-control {
                       </div>
                     </div>
                     <div class="form-group">
-                       <label for="province" class="col-sm-2 control-label">Province/District</label>
+                       <label for="province" class="col-sm-2 control-label">Province</label>
                       <div class=" col-lg-4">
-                      <select class="" id="province" multiple="multiple">
+                      <select class="" id="province" multiple="multiple" onchange="getAllDistrict();">
                         <?php
                         foreach($levelNamesResult as $levelName){
-                            if(trim($levelName['level_name'])!= ''){
                         ?>
-                        <option value="<?php echo $levelName['level_name']; ?>"><?php echo ucwords($levelName['level_name']); ?></option>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
                         <?php
                             }
+                        ?>
+                      </select>
+                      </div>
+                       <label for="district" class="col-sm-2 control-label">District</label>
+                      <div class=" col-lg-4 districtFilter">
+                      <select class="form-control" id="district">
+                        <?php
+                        foreach($levelNamesResult as $levelName){
+                        ?>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <?php
                         }
                         ?>
                       </select>
                       </div>
-                      <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+                      
+                    </div>
+                    <div class="form-group">
+                        <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
                         <div class=" col-lg-4">
                           <select class="form-control" id="scoreLevel">
                             <option value="">All</option>
@@ -108,8 +121,6 @@ tr.shown td.details-control {
                             <option value="4">4</option>
                           </select>
                         </div>
-                    </div>
-                    <div class="form-group">
                       <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
@@ -123,7 +134,9 @@ tr.shown td.details-control {
                         ?>
                       </select>
                       </div>
-                      <div class="testPointNameSection"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="testPointNameSection"></div>  
                     </div>
                     <div class="form-group" style="text-align:center;">
                       <button type="button" onclick="search();" class="btn btn-space btn-primary">Search</button>&nbsp;
@@ -132,7 +145,7 @@ tr.shown td.details-control {
                   </form>
                 </div>
                 <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'duplicate')) { ?>
-                <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm" style="visibility:hidden;"></a>&nbsp;&nbsp;
+                <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm" >Duplicates (0)</a>&nbsp;&nbsp;
                 <?php } ?>
                 <a href="/spi-v3/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Audits in Bulk </a>
               </div>
@@ -272,6 +285,7 @@ tr.shown td.details-control {
           aoData.push( { "name":"level","value": $("#level").val()} );
           aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
           aoData.push( { "name":"province","value": $("#province").val()} );
+          aoData.push( { "name":"district","value": $("#district").val()} );
           aoData.push( { "name":"scoreLevel","value": $("#scoreLevel").val()} );
                 $.ajax({
                     "dataType": 'json',
@@ -287,10 +301,7 @@ tr.shown td.details-control {
                       $("#level2").html(json.levelTwoCount);
                       $("#level3").html(json.levelThreeCount);
                       $("#level4").html(json.levelFourCount+"&nbsp;");
-                      if(json.duplicate >0){
-                        $("#duplicate").css('visibility','visible');
-                        $("#duplicate").html(json.duplicate+"&nbsp;Possible Duplicate Audit(s)");
-                      }
+                        $("#duplicate").html("Duplicates ("+json.duplicate+")");
                       fnCallback(json);
                      }
                 });
@@ -380,9 +391,10 @@ tr.shown td.details-control {
      var level = $('#level').val();
      var affiliation = $('#affiliation').val();
      var province = $('#province').val();
+     var district = $('#district').val();
      var scoreLevel = $('#scoreLevel').val();
      var testPoint = $('#testPoint').val();
-     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'export-as-pdf')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,scoreLevel:scoreLevel,testPoint:testPoint},
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'export-as-pdf')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,district:district,scoreLevel:scoreLevel,testPoint:testPoint},
        function(data) {
 	    if(data == "" || data == null || data == undefined){
 		$.unblockUI();
@@ -401,10 +413,11 @@ tr.shown td.details-control {
      var level = $('#level').val();
      var affiliation = $('#affiliation').val();
      var province = ($('#province').val() == null)?'':$('#province').val();
+     var district = ($('#district').val() == null)?'':$('#district').val();
      var scoreLevel = $('#scoreLevel').val();
      var testPoint = $('#testPoint').val();
      var testPointName = ($('#testPointName').length >0)?$('#testPointName').val():'';
-     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'save-download-data')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,scoreLevel:scoreLevel,testPoint:testPoint,testPointName:testPointName},
+     $.post("<?php echo $this->url('spi-v3-form',array('action'=>'save-download-data')); ?>",{dateRange:dateRange,auditRndNo:auditRndNo,level:level,affiliation:affiliation,province:province,district:district,scoreLevel:scoreLevel,testPoint:testPoint,testPointName:testPointName},
        function(data) {
 	    if(data == "" || data == null || data == undefined){
 		$.unblockUI();
@@ -414,5 +427,16 @@ tr.shown td.details-control {
 		alert('Your download is processing..');
 	    }
       });
+  }
+  function getAllDistrict() {
+    var province = $('#province').val();
+    if (province!='' && province!=null) {
+        $.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-district-by-province')); ?>",{province: province},
+           function(data) {
+            $('.districtFilter').html(data);
+        });
+    }else{
+        $('#district').html('');
+    }
   }
 </script>

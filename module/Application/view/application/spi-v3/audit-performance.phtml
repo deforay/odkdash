@@ -2,7 +2,7 @@
     .highcharts-legend{display: none;}
     .highcharts-title{display: none;}
 </style>
-<div id="container" style=" width: 100%; height: 600px; margin: 0 auto"></div>
+<div id="container" style=" width: 100%; height: 465px; margin: 0 auto"></div>
             <div class="row chart-info">
               <div class="col-xs-4" style="text-align:center;"><span class="title">From Date</span><span class="number"><?php if(isset($perf1[0]['oldestDate']) && trim($perf1[0]['oldestDate'])!= ''){ echo $this->humanDateFormat($perf1[0]['oldestDate']); } else { echo "-"; } ?></span></div>
               <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title">To Date</span><span class="number"><?php if(isset($perf1[0]['newestDate']) && trim($perf1[0]['newestDate'])!= ''){ echo $this->humanDateFormat($perf1[0]['newestDate']); } else { echo "-"; } ?></span></div>
@@ -23,7 +23,7 @@
 
         title: {
             text: 'Audit Performance',
-            x: -80
+            //x: -80
         },
 
         pane: {
@@ -39,8 +39,7 @@
 	
         yAxis: {
             gridLineInterpolation: 'polygon',
-            lineWidth: 0,
-            min: 0
+            
         },
 
         tooltip: {

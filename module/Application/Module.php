@@ -104,7 +104,11 @@ class Module
 				
 				$role = $session->roleCode;
 		
-					//\Zend\Debug\Debug::dump($resource);die;
+					//\Zend\Debug\Debug::dump($role);
+					//\Zend\Debug\Debug::dump($resource);
+					//\Zend\Debug\Debug::dump($acl->isAllowed($role, $resource, $privilege));
+					//\Zend\Debug\Debug::dump($privilege);
+					//die;
 				 //if($e->getRequest()->isXmlHttpRequest() || $role == 'SA') {
 				 if($e->getRequest()->isXmlHttpRequest()) {
 				   return;

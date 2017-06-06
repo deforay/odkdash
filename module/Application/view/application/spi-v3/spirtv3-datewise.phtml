@@ -18,7 +18,7 @@ if($perflast30[0]['totalDataPoints']>0){
 		var color3 = "yellow";
 		var color4 = "#8DD63E";
 		var color5 = "#528A16";
-
+var chart;
 		//Get the template css colors into js vars
 		function getColor( c ){
 		  var tmp = $("<div>", { class: c }).appendTo("body");
@@ -86,11 +86,8 @@ if($perflast30[0]['totalDataPoints']>0){
 		  url:'/view-data?source=ap&level=level4&drange='+$("#spiRTv3").val()
 	  },
 	  
-	  
 	  ];
-	  
-
-	  
+	  <?php $total = $perflast30[0]['level0'] + $perflast30[0]['level1'] + $perflast30[0]['level2'] + $perflast30[0]['level3'] + $perflast30[0]['level4'];?>
 	  $('#widget-top-2').highcharts({
             chart: {
                 plotBackgroundColor: null,
@@ -99,7 +96,14 @@ if($perflast30[0]['totalDataPoints']>0){
                 type: 'pie'
             },title: {
                 text: ''
-            },			
+            },
+			exporting:{
+            chartOptions:{
+                subtitle: {
+                    text:'Total Audits:- <?php echo $total;?>',
+                }
+            }
+        },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
             },

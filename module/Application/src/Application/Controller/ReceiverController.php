@@ -12,9 +12,15 @@ class ReceiverController extends AbstractActionController
     {        
         $viewModel = new ViewModel();
         
+        //$this->var_error_log(file_get_contents('php://input'));
+        
         $jsonData = utf8_encode(file_get_contents('php://input'));
         
+        //$this->var_error_log($jsonData);
+        
         $params = json_decode($jsonData,true);
+        
+        //$this->var_error_log($params);
         
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $result = $odkFormService->saveSpiFormVer3($params);

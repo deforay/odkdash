@@ -67,21 +67,33 @@
                       </div>
                     </div>
                     <div class="form-group">
-		      <label for="province" class="col-sm-2 control-label">Province/District</label>
-		      <div class=" col-lg-4">
-		      <select class="" id="province" multiple="multiple">
-			<?php
-			foreach($levelNamesResult as $levelName){
-			    if(trim($levelName['level_name'])!= ''){
-			?>
-			<option value="<?php echo $levelName['level_name']; ?>"><?php echo ucwords($levelName['level_name']); ?></option>
-			<?php
-			    }
-			}
-			?>
-		      </select>
-		      </div>
-		      <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
+					<label for="province" class="col-sm-2 control-label">Province</label>
+                      <div class=" col-lg-4">
+                      <select class="" id="province" multiple="multiple" onchange="getAllDistrict();">
+                        <?php
+                        foreach($levelNamesResult as $levelName){
+                        ?>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <?php
+                            }
+                        ?>
+                      </select>
+					</div>
+					<label for="district" class="col-sm-2 control-label">District</label>
+                      <div class=" col-lg-4 districtFilter">
+                      <select class="form-control" id="district">
+                        <?php
+                        foreach($levelNamesResult as $levelName){
+                        ?>
+                        <option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <?php
+                        }
+                        ?>
+                      </select>
+                      </div>
+                    </div>
+		    <div class="form-group ">
+			  <label for="scoreLevel" class="col-sm-2 control-label">Score Level</label>
 		      <div class=" col-lg-4">
 		      <select class="form-control" id="scoreLevel">
 			<option value="">All</option>
@@ -92,8 +104,6 @@
 			<option value="4">4</option>
 			</select>
 		      </div>
-                    </div>
-		    <div class="form-group ">
 		      <label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
                       <div class=" col-lg-4">
                       <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
@@ -107,10 +117,11 @@
                         <option value="other">Other</option>
                         </select>
                      </div>
-		      <div class="testPointNameSection">
-		       
-		      </div>
 		    </div>
+			<div class="form-group ">
+			  <div class="testPointNameSection">
+		      </div>
+			</div>
                     <div class="form-group" style="text-align:center;">
                       <button type="button" onclick="getReport()" class="btn btn-sm btn-success">Get Report</button>
                      &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -216,6 +227,7 @@
 	      aoData.push( { "name":"testPointName","value": $("#testPointName").val()} );
 	      aoData.push( { "name":"level","value": $("#level").val()} );
 	      aoData.push( { "name":"province","value": $("#province").val()} );
+          aoData.push( { "name":"district","value": $("#district").val()} );
 	      aoData.push( { "name":"affiliation","value": $("#affiliation").val()} );
 	      aoData.push( { "name":"scoreLevel","value": $("#scoreLevel").val()} );
                 $.ajax({
@@ -280,4 +292,15 @@
 	   $.unblockUI();
 	 });
       }
+	function getAllDistrict() {
+    var province = $('#province').val();
+    if (province!='' && province!=null) {
+        $.post("<?php echo $this->url('spi-v3-form',array('action'=>'get-district-by-province')); ?>",{province: province},
+           function(data) {
+            $('.districtFilter').html(data);
+        });
+    }else{
+        $('#district').html('');
+    }
+  }
     </script>

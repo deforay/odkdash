@@ -237,13 +237,13 @@ CREATE TABLE `r_spi_form_v_3_download` (
   `AUDIT_SCORE_PERCANTAGE` varchar(255) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
   `download_status` int(11) NOT NULL DEFAULT '0'
-)
+);
 
 ALTER TABLE `r_spi_form_v_3_download`
   ADD PRIMARY KEY (`r_download_id`);
   
 ALTER TABLE `r_spi_form_v_3_download`
-  MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT
+  MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT;
   
 ALTER TABLE `r_spi_form_v_3_download` ADD `user` INT(11) NOT NULL AFTER `r_download_id`;
 
@@ -501,5 +501,9 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 
 ALTER TABLE `r_spi_form_v_3_download` DROP `file_name`;
 
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'view-data', 'Dashboard - View Details');
+
+--saravnana 24-may-2017
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Facility', 'export-facility', 'Export Facilities');
 --Pal 06-Jun-2017
 ALTER TABLE `spi_form_v_3` ADD `facility` INT(11) NULL DEFAULT NULL AFTER `auditroundno`;

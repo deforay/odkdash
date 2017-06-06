@@ -85,7 +85,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
       
       .mandatory {
         color: red;
-      }    
+      }
+      a.mobLogin:hover{background-color:#194F74}
     </style>
     
     <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/style.css?v=0.2'); ?>" type="text/css"/>
@@ -99,6 +100,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
         <div class="container-fluid">
           <div class="navbar-header">
             <div class="page-title"><span>Dashboard</span></div>
+            <?php if(isset($sessionLogin->userId)){ ?>
+                  <a class="mobLogin page-title btn btn-primary" style="font-size: 14px;float: right;margin-right: 3%; cursor: pointer; cursor: hand;" href="<?php echo $this->url('login', array('action' => 'logout')); ?>"> <span class="icon s7-power"></span>Sign Out</a>
+                  <?php } else { ?>
+                  <a class="mobLogin page-title btn btn-primary" style="font-size: 14px;float: right;margin-right: 3%; cursor: pointer; cursor: hand;" style="color: #fff;" class="mobLogin" href="<?php echo $this->url('login', array('action' => 'index')); ?>"> Login</a>
+                  <?php } ?>
             <a href="#" class="am-toggle-left-sidebar navbar-toggle collapsed">
                 <span class="icon-bar"><span></span><span></span><span></span></span>
             </a>
@@ -124,10 +130,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
           
           <div id="am-navbar-collapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right am-user-nav">
-            <?php
-              if(isset($sessionLogin->userId)){
-            ?>
-            
+            <?php if(isset($sessionLogin->userId)){ ?>
               <li class="dropdown">
                 <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><img src="/assets/img/nobody.jpg">
                 <span class="user-name">John Doe</span><span class="angle-down s7-angle-down"></span></a>
@@ -143,13 +146,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                   }?>
                 </ul>
               </li>
-            
-            <?php }else{
-              ?>
-              
+            <?php } else { ?>
                 <li class=""><a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>" class="btn btn-primary">Login</a></li>
-                
-              
               <?php
             }?>
             </ul>
