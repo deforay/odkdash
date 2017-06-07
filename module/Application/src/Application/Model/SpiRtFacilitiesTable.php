@@ -354,21 +354,44 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
       return $result;
     }
     
+    public function fecthProvinceData($searchStr){
+	if(trim($searchStr)!=""){
+	    $adapter = $this->adapter;
+	    $sql = new Sql($adapter);
+	    $sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+						    ->where('spirt3.province like "%'.$searchStr.'%"')
+						    ->group('spirt3.province');
+	    $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+	    $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+	    $echoResult = array();
+	    foreach ($rResult as $row) {
+	       $echoResult[] = array("id" => $row['province'],"text" => ucwords($row['province']));
+	    }
+	    if (count($echoResult) == 0) {
+	       $echoResult[] = array("id" => $searchStr, "text" => $searchStr);
+	    }
+	  return array("result" => $echoResult);
+	}
+    }
+	
     public function fecthDistrictData($searchStr){
 	if(trim($searchStr)!=""){
-		$adapter = $this->adapter;
-		$sql = new Sql($adapter);
-		$sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
-							->where('spirt3.district like "%'.$searchStr.'%"')
-							->group('spirt3.district');
-		$sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
-		$rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
-		$echoResult = array();
-		foreach ($rResult as $row) {
-		    $echoResult[] = array("id" => $row['district'],"text" => ucwords($row['district']));
-		}
+	    $adapter = $this->adapter;
+	    $sql = new Sql($adapter);
+	    $sQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+						    ->where('spirt3.district like "%'.$searchStr.'%"')
+						    ->group('spirt3.district');
+	    $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+	    $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+	    $echoResult = array();
+	    foreach ($rResult as $row) {
+	       $echoResult[] = array("id" => $row['district'],"text" => ucwords($row['district']));
+	    }
+	    if (count($echoResult) == 0) {
+	       $echoResult[] = array("id" => $searchStr, "text" => $searchStr);
+	    }
+	  return array("result" => $echoResult);
 	}
-      return $echoResult;
     }
     
     public function fetchFacilityDetails($params){

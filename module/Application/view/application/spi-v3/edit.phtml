@@ -48,7 +48,7 @@ tr.shown th.details-control {
                       </div>
                       <label for="testingFacilityName" class="col-sm-2 control-label">Testing Facility Name</label>
                       <div class=" col-lg-4">
-                        <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo(isset($formData->fName))?$formData->fName:''; ?>">
+                        <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo(isset($formData->fName))?$formData->fName:''; ?>" onblur="copyFacilityName(this.value)">
                       </div>
                     </div>
                     
@@ -1675,36 +1675,6 @@ $(function() {
         //    dateFormat: 'dd-M-yy',
         //    yearRange: <?php echo ( date('Y') - 50); ?> + ":" + "<?php echo (date('Y')) ?>"
         //});
-        
-        
-$("#testingFacilityName").typeahead({
-    onSelect: function(item) {
-        $("#selectedFacilityId").val(item.value);
-        //console.log(item.value);
-    },
-    ajax: {
-        url: '<?php echo $this->url('spi-facility',array('action' => 'facility-list')); ?>',
-        timeout: 500,
-        displayField: "name",
-        triggerLength: 1,
-        method: "get",
-        loadingClass: "loading-circle",
-        preDispatch: function (query) {
-            return {
-                search: query
-            }
-        },
-        preProcess: function (data) {
-            if (data.success === false) {
-                // Hide the list, there was some error
-                return false;
-            }
-            // We good!
-            return data.result;
-        }
-    }
-});
-
 });
 
 function copyFacilityName(objVal) {
@@ -1778,6 +1748,7 @@ function copyNoOfTest(objVal) {
                 $('#province').val(splitData[5]);
                 $('#latitude').val(splitData[6]);
                 $('#longitude').val(splitData[7]);
+                copyFacilityName(splitData[1]);
              }else{
                 $('#testingFacilityName').val('');
                 $('#testingFacilityId').val('');
@@ -1787,6 +1758,7 @@ function copyNoOfTest(objVal) {
                 $('#province').val('');
                 $('#latitude').val('');
                 $('#longitude').val('');
+                copyFacilityName('');
              }
              $.unblockUI();
            });
@@ -1798,7 +1770,8 @@ function copyNoOfTest(objVal) {
              $('#district').val('');
              $('#province').val('');
              $('#latitude').val('');
-             $('#longitude').val('');   
+             $('#longitude').val('');
+             copyFacilityName('');
         }
      }
 </script>
