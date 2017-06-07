@@ -42,53 +42,53 @@ tr.shown th.details-control {
                                 if(isset($facilities['allName']) && count($facilities['allName']) > 0){
                                         foreach($facilities['allName'] as $facilities){
                                 ?>
-                                  <option value="<?php echo base64_encode($facilities['id']); ?>" <?php echo(isset($formData->fId) && $formData->fId == $facilities['id'])?'selected="selected"':''; ?>><?php echo ucwords($facilities['facility_name']); ?></option>
+                                  <option value="<?php echo base64_encode($facilities['id']); ?>" <?php echo(isset($formData['facilityInfo']->fId) && $formData['facilityInfo']->fId == $facilities['id'])?'selected="selected"':''; ?>><?php echo ucwords($facilities['facility_name']); ?></option>
                                 <?php } } ?>
                         </select>
                       </div>
                       <label for="testingFacilityName" class="col-sm-2 control-label">Testing Facility Name</label>
                       <div class=" col-lg-4">
-                        <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo(isset($formData->fName))?$formData->fName:''; ?>" onblur="copyFacilityName(this.value)">
+                        <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo(isset($formData['facilityInfo']->fName))?$formData['facilityInfo']->fName:''; ?>" onblur="copyFacilityName(this.value)">
                       </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="testingFacilityId" class="col-sm-2 control-label">Testing Facility ID</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="Testing Facility ID" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo(isset($formData->ffId))?$formData->ffId:''; ?>">
+                          <input type="text" placeholder="Testing Facility ID" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo(isset($formData['facilityInfo']->ffId))?$formData['facilityInfo']->ffId:''; ?>">
                         </div>
                         <label for="email" class="col-sm-2 control-label">Email</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="Email" name="email" id="email" class="form-control isEmail" value="<?php echo(isset($formData->fEmail))?$formData->fEmail:''; ?>">
+                          <input type="text" placeholder="Email" name="email" id="email" class="form-control isEmail" value="<?php echo(isset($formData['facilityInfo']->fEmail))?$formData['facilityInfo']->fEmail:''; ?>">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="contactPerson" class="col-sm-2 control-label">Name of the Contact Person</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="Name of the Contact Person" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo(isset($formData->fCPerson))?$formData->fCPerson:''; ?>">
+                          <input type="text" placeholder="Name of the Contact Person" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo(isset($formData['facilityInfo']->fCPerson))?$formData['facilityInfo']->fCPerson:''; ?>">
                         </div>
                         <label for="district" class="col-sm-2 control-label">District</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="District" name="district" id="district" class="form-control" value="<?php echo(isset($formData->fDistrict))?$formData->fDistrict:''; ?>">
+                          <input type="text" placeholder="District" name="district" id="district" class="form-control" value="<?php echo(isset($formData['facilityInfo']->fDistrict))?$formData['facilityInfo']->fDistrict:''; ?>">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="province" class="col-sm-2 control-label">Province</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="Province" name="province" id="province" class="form-control" value="<?php echo(isset($formData->fProvince))?$formData->fProvince:''; ?>">
+                          <input type="text" placeholder="Province" name="province" id="province" class="form-control" value="<?php echo(isset($formData['facilityInfo']->fProvince))?$formData['facilityInfo']->fProvince:''; ?>">
                         </div>
                         <label for="latitude" class="col-sm-2 control-label">Latitude</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="Latitude" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo(isset($formData->fLatitude))?$formData->fLatitude:''; ?>">
+                          <input type="text" placeholder="Latitude" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo(isset($formData['facilityInfo']->fLatitude))?$formData['facilityInfo']->fLatitude:''; ?>">
                         </div>
                     </div>
                     
                     <div class="form-group ">
                        <label for="longitude" class="col-sm-2 control-label">Longitude</label>
                         <div class=" col-lg-4">
-                          <input type="text" placeholder="Longitude" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo(isset($formData->fLongitude))?$formData->fLongitude:''; ?>">
+                          <input type="text" placeholder="Longitude" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo(isset($formData['facilityInfo']->fLongitude))?$formData['facilityInfo']->fLongitude:''; ?>">
                         </div> 
                       <label for="testingPointName" class="col-sm-2 control-label">Testing Point Name</label>
                         <div class="col-lg-4">
@@ -1492,7 +1492,7 @@ tr.shown th.details-control {
                     
                     <div class="form-group col-lg-6">
                       <label>Facility Name</label>
-                      <p class="form-control" id="facilityName"><?php echo $formData['facilityname']; ?></p>
+                      <p class="form-control" id="facilityName"><?php echo $formData['facilityInfo']->fName; ?></p>
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Site Type</label>

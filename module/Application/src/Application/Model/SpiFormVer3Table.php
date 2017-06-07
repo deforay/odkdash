@@ -1216,10 +1216,25 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->join(array('spirt3'=>'spi_rt_3_facilities'),'spirt3.id=spiv3.facility',array('fId'=>'id','ffId'=>'facility_id','fName'=>'facility_name','fEmail'=>'email','fCPerson'=>'contact_person','fDistrict'=>'district','fProvince'=>'province','fLatitude'=>'latitude','fLongitude'=>'longitude'),'left')
                                 ->where(array('spiv3.id'=>$id));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-       return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        if($sResult){
+            if(trim($sResult->facility)!= '' || trim($sResult->facilityid)!= '' || trim($sResult->facilityname)!= ''){
+                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                                        ->columns(array('fId'=>'id','ffId'=>'facility_id','fName'=>'facility_name','fEmail'=>'email','fCPerson'=>'contact_person','fDistrict'=>'district','fProvince'=>'province','fLatitude'=>'latitude','fLongitude'=>'longitude'));
+                if(isset($sResult->facility) && $sResult->facility >0){
+                   $fQuery = $fQuery->where("spirt3.id='".$sResult->facility."'");
+                }else if(isset($sResult->facilityid) && $sResult->facilityid!= ''){
+                   $fQuery = $fQuery->where("spirt3.facility_id='".$sResult->facilityid."'");
+                }else if(isset($sResult->facilityname) && $sResult->facilityname!= ''){
+                   $fQuery = $fQuery->where("spirt3.facility_name='".$sResult->facilityname."'");
+                }
+                $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+                $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            }
+        }
+      return $sResult;
     }
 
     public function getAuditRoundWiseData($params) {
