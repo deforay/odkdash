@@ -1980,16 +1980,26 @@ class SpiFormVer3Table extends AbstractTableGateway {
             if(trim($params['testingFacility'])!= ''){
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id,$params);
-            }else if(trim($params['testingFacilityId'])!= '' || trim($params['testingFacilityName'])!= ''){
-                $id = $facilityDb->addFacilityInfo($params); 
+            }else if(trim($params['testingFacilityName'])!= ''){
+                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                                        ->columns(array('id'))
+                                        ->where("spirt3.facility_name='".$params['testingFacilityName']."'");
+                $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                if($fResult){
+                   $id = $fResult->id;
+                   $facilityDb->updateFacilityInfo($id,$params);
+                }else{
+                   $id = $facilityDb->addFacilityInfo($params); 
+                }
             }
             
             $data = array(
                 //'assesmentofaudit' => $this->dateFormat($params['auditDate']),
                 'auditroundno' => $params['auditRound'],
-                'facilityname' => $params['testingFacilityName'],
                 'facility' => ($id > 0)?$id:null,
-                'facilityid' => $params['testingFacilityId'],
+                //'facilityname' => $params['testingFacilityName'],
+                //'facilityid' => $params['testingFacilityId'],
                 'testingpointname' => $params['testingPointName'],
                 'testingpointtype' => $params['testingPointType'],
                 'testingpointtype_other' => $params['testingPointTypeOther'],
