@@ -10,6 +10,7 @@ use Zend\Filter\Compress;
 use Zend\Filter\Exception;
 use ZipArchive;
 use PHPExcel;
+use PHPExcel_Cell;
 use pData;
 use pDraw;
 use pRadar;
@@ -1518,5 +1519,89 @@ class OdkFormService {
     public function getDownloadFilesRow(){
         $db = $this->sm->get('SpiFormVer3DownloadTable');
         return $db->fetchDownloadFilesRow();
+    }
+    
+    public function validateSPIV3File($params)
+    {
+        $db = $this->sm->get('SpiFormVer3TempTable');
+        $dbMain = $this->sm->get('SpiFormVer3Table');
+        $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
+        $sql = new Sql($dbAdapter);
+        $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['fileName']['name']);
+        $fileName = str_replace(" ", "-", $fileName);
+        $ranNumber = str_pad(rand(0, pow(10, 6)-1), 6, '0', STR_PAD_LEFT);
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileName =$ranNumber.".".$extension;
+        if (!file_exists(UPLOAD_PATH) && !is_dir(UPLOAD_PATH)) {
+            mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads");
+        }
+        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-file")) {
+            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files");
+        }
+        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR ."import-files" . DIRECTORY_SEPARATOR . $fileName)) {
+            if (move_uploaded_file($_FILES['fileName']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR ."import-files" . DIRECTORY_SEPARATOR . $fileName)) {
+                $db->delete('1');
+                $objPHPExcel = \PHPExcel_IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR ."import-files" . DIRECTORY_SEPARATOR . $fileName);
+                $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+                $highestColumm = $objPHPExcel->setActiveSheetIndex(0)->getHighestColumn();
+                $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumm);
+                $rownumber = 1;
+                $row = $objPHPExcel->getActiveSheet()->getRowIterator($rownumber)->current();
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(false);
+                foreach ($cellIterator as $cell) {
+                    $header = explode(":",$cell->getValue());
+                    $headerName[] = end($header);
+                }
+                $count = count($sheetData);
+                for ($i = 2; $i <= $count; $i++) {
+                    $row = $objPHPExcel->getActiveSheet()->getRowIterator($i)->current();
+                    $cellIterator = $row->getCellIterator();
+                    $cellIterator->setIterateOnlyExistingCells(false);
+                    $inc = 0;
+                    foreach ($cellIterator as $cell) {
+                        $value = $cell->getValue();
+                        if($inc==0 || $inc==1 && trim($cell->getValue())!=''){
+                            $dValue = explode(" ",trim($cell->getValue()));
+                            $originalDate = $dValue[5]."-".$dValue[1]."-".$dValue[2];
+                            $newDate = date("Y-m-d", strtotime($originalDate));
+                            $value = $newDate."T".$dValue[3].".000+02";
+                        }
+                        if($inc==8 && trim($cell->getValue())!=''){
+                            $dValue = explode(" ",trim($cell->getValue()));
+                            $originalDate = $dValue[5]."-".$dValue[1]."-".$dValue[2];
+                            $newDate = date("Y-m-d", strtotime($originalDate));
+                            $value = $newDate;
+                        }else if($inc==220 && trim($cell->getValue()!='')){
+                            $auditorSign = array('url'=>$cell->getValue());
+                            $value = json_encode($auditorSign);
+                        }
+                        if($inc == 221){
+                            $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID'=>trim($cell->getValue())));
+                            $validateQueryStr = $sql->getSqlStringForSqlObject($validateQuery);
+                            $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                            if($validateResult){
+                                $validateData = 1;//exist meta instance id
+                            }else{
+                                $validateData = 0;//new meta instance id
+                            }
+                        }
+                        $spiv3FormData[$headerName[$inc]] = $value;
+                        $inc++;
+                    }
+                    $spiv3FormData['spi_data_status'] = $validateData;                    
+                    $db->insert($spiv3FormData);
+                }
+            }
+        }
+    }
+    public function getAllValidateSpiv3Details($params) {
+        $db = $this->sm->get('SpiFormVer3TempTable');
+        return $db->fetchAllValidateSpiv3Details($params);
+    }
+    public function addValidateSpiv3Data($params)
+    {
+        $db = $this->sm->get('SpiFormVer3Table');
+        return $db->addValidateSpiv3Data($params);
     }
 }

@@ -13,7 +13,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'get-facility-name' => 'allow',
-            
         ),
         'Application\\Controller\\Roles' => array(
             'index' => 'allow',
@@ -46,7 +45,7 @@ return array(
         ),
         'Application\\Controller\\Dashboard' => array(
             'index' => 'allow',
-            'audit-details' => 'deny',
+            'audi-details' => 'deny',
         ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
@@ -55,9 +54,10 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'export-facility' => 'allow',
+            'map-province' => 'deny',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
-            'export-facility' => 'allow',
         ),
         'Application\\Controller\\Roles' => array(
             'index' => 'allow',
@@ -70,11 +70,10 @@ return array(
             'corrective-action-pdf' => 'allow',
             'view-data' => 'allow',
             'delete' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
+            'validate-spiv3-data' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',

@@ -361,5 +361,39 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    
+    public function validateSpiv3DataAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $param = $request->getPost();
+            $result = $odkFormService->validateSPIV3File($param);
+            return $this->redirect()->toUrl("/spi-v3/validate-spiv3-data");
+        }
+    }
+    public function validateSpiv3DetailsAction()
+    {
+        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $param = $request->getPost();
+            $result = $odkFormService->getAllValidateSpiv3Details($param);
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+    }
+    public function addSpiv3ValidateDataAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()){
+            $params = $request->getPost();
+            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result=$odkFormService->addValidateSpiv3Data($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' =>$result));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }
 

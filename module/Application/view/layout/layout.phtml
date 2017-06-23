@@ -22,6 +22,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "manag
   $adminMenu.="<li><a href=".$this->url('spi-v3-form',array('action' => 'manage-facility')).">Manage SPI RT Form</a></li>";
 }
 
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "validate-spiv3-data")) {
+  $adminMenu.="<li><a href=".$this->url('spi-v3-form',array('action' => 'validate-spiv3-data')).">Validate SPI V3 Data</a></li>";
+}
+
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
   //$auditMenu.='<li><a href="javascript:alert(\'Under Construction\')">Logbook Data Analysis</a></li>';
 }
@@ -37,6 +41,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
   $auditMenu.="<li><a href=".$this->url('spi-v3-form',array('action' => 'index')).">SPI RT V3</a></li>";
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

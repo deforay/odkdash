@@ -23,6 +23,7 @@ use Application\Model\TempMailTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\AuditMailTable;
 use Application\Model\SpiFormVer3DownloadTable;
+use Application\Model\SpiFormVer3TempTable;
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -209,6 +210,10 @@ class Module
                 },'SpiFormVer3DuplicateTable' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new SpiFormVer3DuplicateTable($dbAdapter);
+                    return $table;
+                },'SpiFormVer3TempTable' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new SpiFormVer3TempTable($dbAdapter);
                     return $table;
                 },
 		
