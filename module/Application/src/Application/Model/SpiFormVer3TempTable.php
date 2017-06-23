@@ -187,7 +187,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
         $totalQueryStr = $sql->getSqlStringForSqlObject($totalQuery); // Get the string of the Sql, instead of the Select-instance
         $totalResult = $dbAdapter->query($totalQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get count of new data
-        $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Zend\Db\Sql\Expression("COUNT(id)"),))->where('spiv3.spi_data_status=0');
+        $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Zend\Db\Sql\Expression("COUNT(id)")));
         $newQueryStr = $sql->getSqlStringForSqlObject($newQuery); // Get the string of the Sql, instead of the Select-instance
         $newResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         
