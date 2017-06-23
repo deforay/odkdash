@@ -99,22 +99,24 @@ if($language=='Portuguese'){
 else{
 	$langDateFormat='(dd/mm/yyyy)';
 }
-$testingTab='<table border="1" cellspacing="0" cellpadding="5">';
 
+$fId = (isset($formData['facilityInfo']['ffId']))?ucwords($formData['facilityInfo']['ffId']):'';
+$fName = (isset($formData['facilityInfo']['fName']))?ucwords($formData['facilityInfo']['fName']):'';
+$testingTab='<table border="1" cellspacing="0" cellpadding="5">';
 $testingTab.='<tr>';
 $testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'].'</b>'.$langDateFormat.': '.$this->humanDateFormat($formData['assesmentofaudit']).'</td>';
 $testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'].'</b> '.$formData['auditroundno'].'</td>';
 $testingTab.='</tr>';
 
 $testingTab.='<tr>';
-$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'].'</b> '.$formData['facilityname'].'</td>';
+$testingTab.='<td><b>'.$decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'].'</b> '.$fName.'</td>';
 if($language=='Portuguese'){
-$testingTab.='<td><b>Identificacao do local de testagem </b>(se aplicavel): '.$formData['facilityid'].'</td>';
+$testingTab.='<td><b>Identificacao do local de testagem </b>(se aplicavel): '.$fId.'</td>';
 }else if($language=='Spanish'){
-$testingTab.='<td><b>Tipo de sitio de pruebas </b>(seleccione uno): '.$formData['facilityid'].'</td>';
+$testingTab.='<td><b>Tipo de sitio de pruebas </b>(seleccione uno): '.$fId.'</td>';
 }
 else{
-$testingTab.='<td><b>Testing Facility ID</b>(if applicable) : '.$formData['facilityid'].'</td>';	
+$testingTab.='<td><b>Testing Facility ID</b>(if applicable) : '.$fId.'</td>';	
 }
 $testingTab.='</tr>';
 
@@ -626,7 +628,7 @@ $partDTitle='<p style="font-weight:bold;line-height:30px;">'.$heading.'</p>';
 $pdf->writeHTML($partDTitle,true,0,true,0);
 
 $partDtableBox1='<table cellspacing="0" cellpadding="2">';
-$partDtableBox1.="<tr><td>".$facilityName.$formData['facilityname']."</td></tr>";
+$partDtableBox1.="<tr><td>".$facilityName.$fName."</td></tr>";
 
 $partDtableBox1.="<tr><td>";
 if($language=='Portuguese'){
