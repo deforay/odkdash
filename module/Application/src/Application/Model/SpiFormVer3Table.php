@@ -1998,8 +1998,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 //'assesmentofaudit' => $this->dateFormat($params['auditDate']),
                 'auditroundno' => $params['auditRound'],
                 'facility' => ($id > 0)?$id:null,
-                //'facilityname' => $params['testingFacilityName'],
-                //'facilityid' => $params['testingFacilityId'],
+                'facilityid' => $params['testingFacilityId'],
+                'facilityname' => $params['testingFacilityName'],
                 'testingpointname' => $params['testingPointName'],
                 'testingpointtype' => $params['testingPointType'],
                 'testingpointtype_other' => $params['testingPointTypeOther'],
@@ -3277,5 +3277,16 @@ class SpiFormVer3Table extends AbstractTableGateway {
                     }
             }
         }
+    }
+    
+    public function updateSpiv3FacilityInfo($id,$params){
+        if($id > 0){
+	    $data = array(
+		'facilityid'=>$params['facilityId'],
+		'facilityname'=>$params['facilityName']
+	    );
+	  $this->update($data,array('facility'=>$id));
+	}
+      return $id;
     }
 }
