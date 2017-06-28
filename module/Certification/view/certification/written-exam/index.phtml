@@ -1,8 +1,8 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -24,9 +24,9 @@ $sessionLogin = new Container('credo');
                 <h2>written Exam </h2>
             </div>
             <div class="col-sm-4">
-                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'add')) {  ?>
                 <a href="<?php echo $this->url('written-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add written exam</a>
-                <?php // }  ?>
+                <?php }  ?>
 
             </div>
         </div>
@@ -56,10 +56,10 @@ $sessionLogin = new Container('credo');
                         <th style="width: 5%"> Final Score (≥80%)</th>
 
 
-                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
                         <th>Edit</th>
                         <th>Another Attempt</th>
-                        <?php // }  ?>
+                        <?php }  ?>
 
                     </tr>
 
@@ -83,17 +83,21 @@ $sessionLogin = new Container('credo');
                             <td><?php echo $this->escapeHtml($written->inventory_point); ?></td>
                             <td><?php echo $this->escapeHtml($written->total_points); ?></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($written->final_score . ' %'); ?></div></td>
-                            <td>
-                                <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('written-exam', array('action' => 'edit', 'id_written_exam' => $written->id_written_exam)); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
+                           <?php if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'edit')) {  ?>
+                        <td>
+                                <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('written-exam', array('action' => 'edit', 'id_written_exam' => base64_encode($written->id_written_exam))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
                             </td>
 
                             <?php
                             if ($written->final_score < 80 || strcasecmp($written->exam_type, '3rd attempt') == 0) {
-                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Another attempt </div></td>";
+                                echo "<td><div style='width:135px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Add practical exam </div></td>";
                             } else {
-                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array('id_written_exam' => $written->id_written_exam))) . "><span class='glyphicon glyphicon-repeat'></span> Another attempt</a> </div></td>";
+                                echo "<td><div style='width:135px;height:40px;overflow:auto;'><p><a href=" . $this->url('practical-exam', array('action' => 'add'), array('query' => array(base64_encode('id_written_exam') => base64_encode($written->id_written_exam)))) . "><span class='glyphicon glyphicon-repeat'></span> Add practical exam</a> </div></td>";
                             }
                             ?>
+                        <?php }  ?>
+                            
+                            
 </tr>
 
 

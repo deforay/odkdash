@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\Certification;
 use Certification\Form\CertificationForm;
+use Zend\Session\Container;
 
 class CertificationController extends AbstractActionController {
 
@@ -20,25 +21,32 @@ class CertificationController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $this->layout()->setVariable('nb', 'overflow');
         return new ViewModel(array(
             'certifications' => $this->getCertificationTable()->fetchAll(),
             'certifications2' => $this->getCertificationTable()->fetchAll2(),
+            'certifications3' => $this->getCertificationTable()->fetchAll3(),
         ));
     }
 
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 
-        $id = (int) $this->params()->fromRoute('id', 0);
-        $written = $this->params()->fromQuery('written');
-        $practical = $this->params()->fromQuery('practical');
-        $sample = $this->params()->fromQuery('sample');
-        $direct = $this->params()->fromQuery('direct');
-        $provider = $this->params()->fromQuery('provider');
-        $certification_id= $this->getCertificationTable()->certificationType($provider);
-        
+        $id = (int) base64_decode($this->params()->fromRoute('id', 0));
+//        die($id);
+        $written = (int) base64_decode($this->params()->fromQuery(base64_encode('written')));
+        $practical = (int) base64_decode($this->params()->fromQuery(base64_encode('practical')));
+        $sample = (int) base64_decode($this->params()->fromQuery(base64_encode('sample')));
+        $direct = (int) base64_decode($this->params()->fromQuery(base64_encode('direct')));
+        if (!$id || !$written || !$practical || !$sample || !$direct) {
+
+            return $this->redirect()->toRoute('examination');
+        }
+        $provider = (int) base64_decode($this->params()->fromQuery(base64_encode('provider')));
+        $certification_id = $this->getCertificationTable()->certificationType($provider);
+
         $form = new CertificationForm($dbAdapter);
-        $form->get('submit')->setValue('Add');
+        $form->get('submit')->setValue('Submit');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -52,11 +60,12 @@ class CertificationController extends AbstractActionController {
                 $last_id = $this->getCertificationTable()->last_id();
                 $this->getCertificationTable()->updateExamination($last_id);
                 $this->getCertificationTable()->setToActive($last_id);
-                if(empty($certification_id) && $written >= 80 && $direct >= 90 && $sample = 100){
+                if (empty($certification_id) && $written >= 80 && $direct >= 90 && $sample = 100) {
                     $this->getCertificationTable()->certificationId($provider);
                 }
-                
-                return $this->redirect()->toRoute('certification');
+                $container = new Container('alert');
+                $container->alertMsg = 'Added successfully';
+                return $this->redirect()->toRoute('examination');
             }
         }
         return array('id' => $id,
@@ -70,11 +79,10 @@ class CertificationController extends AbstractActionController {
 
     public function editAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) base64_decode($this->params()->fromRoute('id', 0));
         if (!$id) {
             return $this->redirect()->toRoute('certification', array(
-                        'action' => 'add'
-            ));
+                        'action' => 'index'));
         }
 
         try {
@@ -86,16 +94,18 @@ class CertificationController extends AbstractActionController {
         }
         $form = new CertificationForm($dbAdapter);
         $form->bind($certification);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setInputFilter($certification->getInputFilter());
             $form->setData($request->getPost());
 
+
             if ($form->isValid()) {
                 $this->getCertificationTable()->saveCertification($certification);
-
+                $container = new Container('alert');
+                $container->alertMsg = 'updated successfully';
                 return $this->redirect()->toRoute('certification');
             }
         }
@@ -108,20 +118,20 @@ class CertificationController extends AbstractActionController {
 
     public function pdfAction() {
 
-        $last = $this->params()->fromQuery('last');
-        $first = $this->params()->fromQuery('first');
-        $middle = $this->params()->fromQuery('middle');
-        $certification_id = $this->params()->fromQuery('certification_id');
-        $professional_reg_no= $this->params()->fromQuery('professional_reg_no');
-        $date_issued= $this->params()->fromQuery('date_issued');
+        $last = base64_decode($this->params()->fromQuery(base64_encode('last')));
+        $first = base64_decode($this->params()->fromQuery(base64_encode('first')));
+        $middle = base64_decode($this->params()->fromQuery(base64_encode('middle')));
+        $certification_id = base64_decode($this->params()->fromQuery(base64_encode('certification_id')));
+        $professional_reg_no = base64_decode($this->params()->fromQuery(base64_encode('professional_reg_no')));
+        $date_issued = base64_decode($this->params()->fromQuery(base64_encode('date_issued')));
         return array(
             'last' => $last,
             'first' => $first,
             'middle' => $middle,
-            'professional_reg_no'=>$professional_reg_no,
-            'certification_id'=>$certification_id,
-            'date_issued'=>$date_issued
-            );
+            'professional_reg_no' => $professional_reg_no,
+            'certification_id' => $certification_id,
+            'date_issued' => $date_issued
+        );
     }
 
 }

@@ -40,7 +40,7 @@ if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
 
 // set font
 $pdf->SetFont('times', '', 20);
-
+$pdf->setFontSubsetting(false);
 // remove default header
 $pdf->setPrintHeader(false);
 //$pdf->SetMargins(10, 20, 10, true);
@@ -95,7 +95,7 @@ $pdf->Image($img_file2,225, 35, 50, 35, '', '', '', false, 300, '', false, false
 
 //Close and output PDF document
 $pdf->Output(ucfirst($last).' '.ucfirst($first).' '.ucfirst($middle).'_rtqii Certification.pdf', 'I');
-
+exit;
 //============================================================+
 // END OF FILE
 //============================================================+

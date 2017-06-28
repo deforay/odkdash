@@ -13,18 +13,15 @@ namespace Certification\Form;
              'name' => 'mail_id',
              'type' => 'Hidden',
          ));
-         $this->add(array(
-             'name' => 'from_full_name',
-             'type' => 'Text',
+          $this->add(array(
+             'name' => 'type',
+             'type' => 'select',
              'options' => array(
-                 'label' => 'From full Name',
-             ),
-         ));
-         $this->add(array(
-             'name' => 'from_mail',
-             'type' => 'Zend\Form\Element\Email',
-             'options' => array(
-                 'label' => 'From',
+                'label' => 'Type Of Email',
+//                'empty_option' => 'Please Choose An Option',
+                'value_options' => array(
+                    '1'=>'Send Certificate',
+                    '2'=>'Send Reminder')
              ),
          ));
          
@@ -32,7 +29,7 @@ namespace Certification\Form;
              'name' => 'to_email',
              'type' => 'Zend\Form\Element\Email',
              'options' => array(
-                 'label' => 'To',
+                 'label' => 'To ',
              ),
          ));
          $this->add(array(
@@ -51,7 +48,7 @@ namespace Certification\Form;
          ));
          $this->add(array(
              'name' => 'subject',
-             'type' => 'Text',
+             'type' => 'textarea',
              'options' => array(
                  'label' => 'Subject'
                  ),
@@ -65,15 +62,7 @@ namespace Certification\Form;
              ),
         
          ));
-         
-         $this->add(array(
-             'name' => 'status',
-             'type' => 'Text',
-             'options' => array(
-                 'label' => 'Status',
-             ),
-         ));
-         
+        
         $this->add(array(
              'name' => 'submit',
              'type' => 'Submit',

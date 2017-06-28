@@ -1,8 +1,8 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -25,9 +25,9 @@ $sessionLogin = new Container('credo');
                 <h2>list of trainings</h2>
             </div>
             <div class="col-sm-4">
-                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
-                <a href="<?php echo $this->url('training', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training</a>
-                <?php // }  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'add')) { ?>
+                    <a href="<?php echo $this->url('training', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training</a>
+                <?php } ?>
 
             </div>
         </div>
@@ -52,9 +52,9 @@ $sessionLogin = new Container('credo');
                         <th  >Date certificate issued (if available)</th>
 
 <!--<th style="width: 10%;" >Comments</th>-->
-                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
-                        <th >Action</th>
-                        <?php // }  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
+                            <th >Edit</th>
+                        <?php } ?>
                     </tr>
 
                 </thead>
@@ -62,32 +62,35 @@ $sessionLogin = new Container('credo');
 
                     <?php foreach ($this->trainings as $training) : ?>
                         <tr>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_reg_no); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->professional_reg_no); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_competency); ?></div></td>
-                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->last_training_date); ?></div></td>
-                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->length_of_training); ?></div></td>
-                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
-                            <td><div style="width:130px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($training->facilitator); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_reg_no); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->professional_reg_no); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_id); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
+                            <td><div style="width:100px;;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_competency); ?></div></td>
+                            <td><div style="width:160px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
+                            <td><div style="width:80px; overflow:auto;"><?php echo $this->escapeHtml($training->last_training_date); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($training->length_of_training); ?></div></td>
+                            <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
+                            <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($training->facilitator); ?></div></td>
                             <?php
                             if (strcasecmp($training->training_certificate, 'yes') == 0) {
-                                echo "<td><span style='color: green; ' class='glyphicon glyphicon glyphicon-ok' ></span></td>";
+                                echo "<td><span style='color: green;' class='glyphicon glyphicon glyphicon-ok' >Yes</span></td>";
                             } else if (strcasecmp($training->training_certificate, 'no') == 0) {
-                                echo "<td><span style='color: red' class='glyphicon glyphicon glyphicon-remove'></span></td>";
+                                echo "<td><span style='color: red' class='glyphicon glyphicon glyphicon-remove'>No</span></td>";
                             } else {
                                 echo "<td></td>";
                             }
                             ?>
                             <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->date_certificate_issued); ?></div></td>
-                            <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);    ?></div></td>-->
-                            <td>
-                                <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => $training->training_id)); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
+                            <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);      ?></div></td>-->
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
+                                <td><div style="width:60px;height:40px;overflow:auto;">
+                                        <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => base64_encode($training->training_id))); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
+                                    </div>
+                                </td>
+                            <?php } ?>
 
-                            </td>
                         </tr>
 
                     <?php endforeach; ?>

@@ -143,7 +143,6 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                         ?>
                                     </ul>
                                 </li>
-
                             <?php } else {
                                 ?>
 
@@ -156,7 +155,16 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                         <ul class="nav navbar-nav am-nav-right">
                             <li><a href="/" style="font-size:1.8em;">Dashboard for Quality Improvement of HIV Rapid Testing</a></li>
                         </ul>
-                        <!--                                     <ul class="nav navbar-nav am-nav-right">
+                        
+                        <?php
+                        if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Provider", "index")) {
+                            ?>
+                        <ul class="nav navbar-nav am-nav-right">
+                            <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold;"><span class="glyphicon glyphicon-alert"></span>&nbsp;&nbsp;Notifications <?php // echo $this->nb;?></div></button></a></li>
+                        </ul>
+                            <?php } ?>
+                        
+<!--                                                             <ul class="nav navbar-nav am-nav-right">
                                                               <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
                                                               <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
                                                               <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>
@@ -262,12 +270,23 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                             <ul>
                                                 <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certification</a></li>
                                                 <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Re-Certification</a></li>
-                                                <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>">E-mail</a></li>
-
+                                               
                                             </ul>
                                         </li>
                                     </ul>
-
+                                     <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
+                            ?>
+                                    <ul  id="menu-accordeon">
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<span class="caret"></span></a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
+                                                <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
+                                               <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+                                               
+                                            </ul>
+                                        </li>
+                                    </ul>
+ <?php } ?>
 
                                 </ul> </li>
                         <?php } ?>
@@ -314,6 +333,21 @@ if (isset($container->alertMsg) && $container->alertMsg != "") {
 }
 ?>
                 });
+                
+                
+                
+                
+                var clignotement = function(){ 
+   if (document.getElementById('DivClignotante').style.visibility=='visible'){ 
+      document.getElementById('DivClignotante').style.visibility='hidden'; 
+   } 
+   else{ 
+   document.getElementById('DivClignotante').style.visibility='visible'; 
+   } 
+}; 
+// mise en place de l appel de la fonction toutes les 0.8 secondes 
+// Pour arrêter le clignotement : clearInterval(periode); 
+periode = setInterval(clignotement, 800); 
         </script>
 
     </body>

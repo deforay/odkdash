@@ -21,7 +21,20 @@ $sessionLogin = new Container('credo');
 
     <div class="am-content">
         <div class="page-head">
-            <h2>Add Training</h2>
+            
+            
+            <div class="row">
+            <div class="col-sm-8">
+                <h2>Add A new Training</h2>
+            </div>
+                
+        <div class="col-sm-4 ">
+                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
+                <a href="<?php echo $this->url('training', array('action' => 'index')); ?>" class="btn btn-success pull-right" style="margin-left: 5px;"><i class="fa fa-list"></i>&nbsp;List of Trainings</a>
+                <?php // }  ?>
+
+            </div>
+        </div>
             <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
         </div>
 

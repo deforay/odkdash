@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\Training;
 use Certification\Form\TrainingForm;
+use Zend\Session\container;
 
 class TrainingController extends AbstractActionController {
 
@@ -20,8 +21,8 @@ class TrainingController extends AbstractActionController {
     }
 
     public function indexAction() {
-        
-        
+
+
         return new ViewModel(array(
             'trainings' => $this->getTrainingTable()->fetchAll(),
         ));
@@ -30,7 +31,7 @@ class TrainingController extends AbstractActionController {
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $form = new TrainingForm($dbAdapter);
-        $form->get('submit')->setValue('Add');
+        $form->get('submit')->setValue('SUBMIT');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -41,7 +42,10 @@ class TrainingController extends AbstractActionController {
             if ($form->isValid()) {
                 $training->exchangeArray($form->getData());
                 $this->getTrainingTable()->saveTraining($training);
-                return $this->redirect()->toRoute('training');
+                $container = new Container('alert');
+                $container->alertMsg = 'New training added successfully';
+
+                return $this->redirect()->toRoute('training', array('action' => 'add'));
             }
         }
 
@@ -52,7 +56,7 @@ class TrainingController extends AbstractActionController {
     public function editAction() {
 
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $training_id = (int) $this->params()->fromRoute('training_id', 0);
+        $training_id = (int) base64_decode($this->params()->fromRoute('training_id', 0));
         if (!$training_id) {
             return $this->redirect()->toRoute('training', array(
                         'action' => 'add'
@@ -69,7 +73,7 @@ class TrainingController extends AbstractActionController {
 
         $form = new TrainingForm($dbAdapter);
         $form->bind($training);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -78,8 +82,8 @@ class TrainingController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $this->getTrainingTable()->saveTraining($training);
-
-
+                $container = new Container('alert');
+                $container->alertMsg = 'Training updated successfully';
                 return $this->redirect()->toRoute('training');
             }
         }
@@ -89,6 +93,5 @@ class TrainingController extends AbstractActionController {
             'form' => $form,
         );
     }
-
 
 }

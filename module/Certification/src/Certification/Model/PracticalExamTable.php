@@ -18,13 +18,13 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     public function fetchAll() {
-       
-            $sqlSelect = $this->tableGateway->getSql()->select();
-            $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin', 'provider_id', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
-            $sqlSelect->join('provider', ' provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
-                    ->where(array('display' => 'yes'));
-            $sqlSelect->order('practice_exam_id desc');
-            
+
+        $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('practice_exam_id', 'exam_type', 'exam_admin', 'provider_id', 'Sample_testing_score', 'direct_observation_score', 'practical_total_score', 'date'));
+        $sqlSelect->join('provider', ' provider.id = practical_exam.provider_id ', array('last_name', 'first_name', 'middle_name'), 'left')
+                ->where(array('display' => 'yes'));
+        $sqlSelect->order('practice_exam_id desc');
+
         $resultSet = $this->tableGateway->selectWith($sqlSelect);
         return $resultSet;
     }
@@ -40,8 +40,8 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     public function savePracticalExam(PracticalExam $practicalExam) {
-        
-       
+
+
 
         $data = array(
             'exam_type' => $practicalExam->exam_type,
@@ -49,7 +49,7 @@ class PracticalExamTable extends AbstractTableGateway {
             'provider_id' => $practicalExam->provider_id,
             'Sample_testing_score' => $practicalExam->Sample_testing_score,
             'direct_observation_score' => $practicalExam->direct_observation_score,
-            'practical_total_score' => ($practicalExam->direct_observation_score+$practicalExam->Sample_testing_score)/2,
+            'practical_total_score' => ($practicalExam->direct_observation_score + $practicalExam->Sample_testing_score) / 2,
             'date' => $practicalExam->date
         );
 //        print_r($data);
@@ -64,8 +64,6 @@ class PracticalExamTable extends AbstractTableGateway {
             }
         }
     }
-
-   
 
     /**
      * get the last practical exam last id insert
@@ -128,18 +126,18 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     /**
-     * count the number of written exam with tha same id ad set the number of attempt for another attempt
+     * count the number of written exam with the same id and set the number of attempt for another attempt
      * @param type $written
      * @return type integer
      */
-    public function countWritten($written) {
+    public function countWritten($written,$provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql3 = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam=' . $written;
-//        die($sql3);
-        $statement3 = $db->query($sql3);
-        $result3 = $statement3->execute();
-        foreach ($result3 as $res3) {
-            $nombre = $res3['nombre'];
+        $sql = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam=' . $written.' and provider='.$provider.' and add_to_certification="no"';
+//        die($sql);
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
         }
 //        die($nombre);
         return $nombre;
@@ -153,20 +151,54 @@ class PracticalExamTable extends AbstractTableGateway {
         $selectData = array();
 
         foreach ($result as $res) {
-            $selectData[$res['id']] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
+            $selectData['name'] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
+            $selectData['id'] = $res['id'];
         }
         return $selectData;
     }
- public function counPractical($provider) {
+
+    public function counPractical($provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql3 = 'SELECT count(*) as nombre FROM examination WHERE practical_exam_id is not null and id_written_exam is null and  provider=' . $provider;
-//        die($sql3);
-        $statement3 = $db->query($sql3);
-        $result3 = $statement3->execute();
-        foreach ($result3 as $res3) {
-            $nombre = $res3['nombre'];
+        $sql = 'SELECT count(*) as nombre FROM examination WHERE practical_exam_id is not null and id_written_exam is null and  provider=' . $provider.' and add_to_certification="no"';
+      $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+return $nombre;
+    }
+    /**
+     * 
+     * @param type $written
+     * @return type
+     */
+    public function countWritten2($written) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam is not null and practical_exam_id is  null and id_written_exam=' . $written.' and add_to_certification="no"';
+//        die($sql);
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
         }
 //        die($nombre);
         return $nombre;
     }
+    
+    /**
+ * find number of date before another attempt
+ * @param type $provider
+ * @return type
+ */
+    public function numberOfDays($provider) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT DATEDIFF(now(),MAX(date_certificate_issued)) as nb_days from (SELECT provider, final_decision, date_certificate_issued, written_exam.id_written_exam , practical_exam.practice_exam_id ,last_name, first_name, middle_name, provider.id from examination, certification, written_exam,practical_exam, provider WHERE examination.id= certification.examination and examination.id_written_exam=written_exam.id_written_exam and practical_exam.practice_exam_id=examination.practical_exam_id and practical_exam.provider_id=provider.id and final_decision in ("pending","failed") and provider.id='.$provider.') as tab';
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nb_days = $res['nb_days'];
+        }
+       return $nb_days;
+    }
+
 }

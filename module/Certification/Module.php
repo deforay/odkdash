@@ -23,7 +23,6 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Provider());
                     return new TableGateway('provider', $dbAdapter, null, $resultSetPrototype);
                 },
-                
                 'Certification\Model\TrainingOrganizationTable' => function($sm) {
                     $tableGateway = $sm->get('TrainingOrganizationTableGateway');
                     $table = new \Certification\Model\TrainingOrganizationTable($tableGateway);
@@ -79,7 +78,6 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Certification());
                     return new TableGateway('certification', $dbAdapter, null, $resultSetPrototype);
                 },
-                
                 'Certification\Model\RecertificationTable' => function($sm) {
                     $tableGateway = $sm->get('RecertificationTableGateway');
                     $table = new \Certification\Model\RecertificationTable($tableGateway);
@@ -102,7 +100,7 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype->setArrayObjectPrototype(new Model\Examination());
                     return new TableGateway('examination', $dbAdapter, null, $resultSetPrototype);
                 },
-                'Certification\Model\CertificationMail\Table' => function($sm) {
+                'Certification\Model\CertificationMailTable' => function($sm) {
                     $tableGateway = $sm->get('CertificationMailTableGateway');
                     $table = new \Certification\Model\CertificationMailTable($tableGateway);
                     return $table;
@@ -112,6 +110,39 @@ class Module implements ConfigProviderInterface {
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Model\CertificationMail());
                     return new TableGateway('certification_mail', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Certification\Model\RegionTable' => function($sm) {
+                    $tableGateway = $sm->get('RegionTableGateway');
+                    $table = new \Certification\Model\RegionTable($tableGateway);
+                    return $table;
+                },
+                'RegionTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Region());
+                    return new TableGateway('certification_regions', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Certification\Model\DistrictTable' => function($sm) {
+                    $tableGateway = $sm->get('DistrictTableGateway');
+                    $table = new \Certification\Model\DistrictTable($tableGateway);
+                    return $table;
+                },
+                'DistrictTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\District());
+                    return new TableGateway('certification_districts', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Certification\Model\FacilityTable' => function($sm) {
+                    $tableGateway = $sm->get('FacilityTableGateway');
+                    $table = new \Certification\Model\FacilityTable($tableGateway);
+                    return $table;
+                },
+                'FacilityTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Model\Facility());
+                    return new TableGateway('certification_facilities', $dbAdapter, null, $resultSetPrototype);
                 },
             ),
         );

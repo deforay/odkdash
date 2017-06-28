@@ -4,7 +4,6 @@ namespace Certification\Form;
 
 use Zend\Form\Form;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Adapter\Adapter;
 
 class ProviderForm extends Form {
 
@@ -74,19 +73,17 @@ class ProviderForm extends Form {
             'type' => 'select',
             'options' => array(
                 'label' => 'Region',
-                'empty_option' => 'Please choose a ReGION',
+                'empty_option' => 'Please Choose A Region',
                 'value_options' => $this->getRegions(),
             ),
         ));
         $this->add(array(
             'name' => 'district',
             'type' => 'Select',
-            
             'options' => array(
                 'label' => 'District',
                  'disable_inarray_validator' => true,
-//                'empty_option' => 'Please choose a District',
-//                'value_options' => $this->getDistricts(),
+              
             ),
         ));
 
@@ -94,8 +91,8 @@ class ProviderForm extends Form {
             'name' => 'type_vih_test',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Type VIH Test Modality/Point',
-                'empty_option' => 'Please choose an Type',
+                'label' => 'Type HIV Test Modality/Point',
+                'empty_option' => 'Please Choose An Type',
                 'value_options' => array(
                     'ART clinic' => 'ART clinic',
                     'Community' => 'Community',
@@ -130,7 +127,7 @@ class ProviderForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Prefered Contact Method',
-                'empty_option' => 'Please choose a methode',
+                'empty_option' => 'Please Choose A Method',
                 'value_options' => array(
                     'Phone' => 'Phone',
                     'Email' => 'Email'
@@ -142,7 +139,7 @@ class ProviderForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Current Job Title',
-                'empty_option' => 'Please choose a Job Title',
+                'empty_option' => 'Please Choose A Job Title',
                 'value_options' => array(
                     'Assistant Medical Officer'=>'Assistant Medical Officer',
                     'Counselor' => 'Counselor',
@@ -164,7 +161,7 @@ class ProviderForm extends Form {
             'name' => 'time_worked',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Time worked as tester',
+                'label' => 'Time Worked As Tester',
             ),
         ));
         
@@ -217,10 +214,8 @@ class ProviderForm extends Form {
             'name' => 'facility_id',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'facility Name',
-                'disable_inarray_validator' => true,
-//                'empty_option' => 'Please choose a facility',
-//               
+                'label' => 'Facility Name',
+                'disable_inarray_validator' => true,           
             ),
         ));
        
@@ -235,29 +230,6 @@ class ProviderForm extends Form {
         ));
     }
 
-//    public function getOptionsForSelect() {
-//        $dbAdapter = $this->adapter;
-//        $sql = 'SELECT id,facility_name FROM certification_facilities ORDER by facility_name asc ';
-//        $statement = $dbAdapter->query($sql);
-//        $result = $statement->execute();
-//        
-//        foreach ($result as $res) {
-//            $selectData[$res['id']] = $res['facility_name'];
-//        }
-//        return $selectData;
-//    }
-//   
-//     public function getDistricts() {
-//        $dbAdapter = $this->adapter;
-//        $sql = 'SELECT id,district_name FROM certification_districts  ORDER by district_name asc';
-//        $statement = $dbAdapter->query($sql);
-//        $result = $statement->execute();
-//        
-//        foreach ($result as $res) {
-//            $selectData[$res['id']] = $res['district_name'];
-//        }
-//        return $selectData;
-//    }
     
      public function getRegions(){
         $dbAdapter = $this->adapter;

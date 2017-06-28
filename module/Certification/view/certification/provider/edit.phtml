@@ -33,7 +33,7 @@ $sessionLogin = new Container('credo');
                                 <?php
                                 $form->prepare();
 
-                                 $form->get('professional_reg_no')->setAttributes([
+                                $form->get('professional_reg_no')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Professional Registration No ',
                                     'autocomplete' => 'off',
@@ -68,10 +68,9 @@ $sessionLogin = new Container('credo');
                                     'autocomplete' => 'off',
                                     'id' => 'Region',
                                     'onclick' => 'emptyInput(this)',
-                                    'onchange' => 'showDistrict(this.value)'
-                                    
+                                    'onchange' => 'showDistrict(this.value)',
                                 ]);
-
+                                $distict_id = (int) $this->district_id;
                                 $form->get('district')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'District',
@@ -79,7 +78,8 @@ $sessionLogin = new Container('credo');
                                     'autocomplete' => 'off',
                                     'onclick' => 'emptyInput(this)',
                                     'onchange' => 'showFacilities(this.value)',
-                                    ]);
+                                    'options' => [$distict_id => $this->district_name]
+                                ]);
 
                                 $form->get('type_vih_test')->setAttributes([
                                     'class' => 'form-control',
@@ -167,6 +167,7 @@ $sessionLogin = new Container('credo');
                                     'placeholder' => 'Facility Name',
                                     'id' => 'Facility Name',
                                     'onclick' => 'emptyInput(this)',
+                                    'options' => [$this->facility_id => $this->facility_name]
                                 ]);
 
 
@@ -214,7 +215,7 @@ $sessionLogin = new Container('credo');
                                         <?= $this->formLabel($form->get('district')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('district')); ?>
                                         <?= $this->formElementErrors($form->get('district')); ?></div>
-                                    
+
                                     <div class="form-group col-lg-4">  
                                         <?= $this->formLabel($form->get('type_vih_test')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('type_vih_test')); ?>
@@ -300,7 +301,7 @@ $sessionLogin = new Container('credo');
                                 </fieldset>
 
                                 <fieldset>
-                                    <legend style="color: #00b3ee">BUTTONS</legend>
+                                    <legend style="color: #00b3ee"></legend>
 
 
 
@@ -344,8 +345,9 @@ $sessionLogin = new Container('credo');
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/provider.js'); ?>"></script>
 
 <script>
+//    document.getElementById("Region").addEventListener("load", showDistrict(document.getElementById("Region").value));
                                 function showDistrict(str) {
-                                    
+
                                     if (str == "") {
                                         document.getElementById("District").innerHTML = "";
                                         return;
@@ -366,9 +368,9 @@ $sessionLogin = new Container('credo');
                                         xmlhttp.send();
                                     }
                                 }
-                                    
+
                                 function showFacilities(str) {
-                                
+
                                     if (str == "") {
                                         document.getElementById("Facility Name").innerHTML = "";
                                         return;

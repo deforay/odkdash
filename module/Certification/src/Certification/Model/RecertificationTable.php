@@ -5,8 +5,6 @@ namespace Certification\Model;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Select;
-use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 
 class RecertificationTable {
 
@@ -16,25 +14,14 @@ class RecertificationTable {
         $this->tableGateway = $tableGateway;
     }
 
-    public function fetchAll($paginated=false) {
-        if ($paginated) {
-             $select = new Select('recertification');
-             $select->order('recertification_id desc');
-           $resultSetPrototype = new ResultSet();
-             $resultSetPrototype->setArrayObjectPrototype(new Recertification());
-             // create a new pagination adapter object
-             $paginatorAdapter = new DbSelect(
-                 // our configured select object
-                 $select,
-                 // the adapter to run it against
-                 $this->tableGateway->getAdapter(),
-                 // the result set to hydrate
-                 $resultSetPrototype
-             );
-             $paginator = new Paginator($paginatorAdapter);
-             return $paginator;
-         }
-        $resultSet = $this->tableGateway->select();
+    public function fetchAll() {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('recertification_id', 'due_date', 'reminder_type', 'reminder_sent_to', 'name_of_recipient', 'date_reminder_sent','provider_id'))
+                  ->join('provider', 'provider.id=recertification.provider_id', array('certification_id','last_name','first_name','middle_name'), 'left');
+
+        $sqlSelect->order('recertification_id desc');
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+//        die(print_r($resultSet));
         return $resultSet;
     }
 
@@ -51,12 +38,13 @@ class RecertificationTable {
     public function saveRecertification(Recertification $recertification) {
         $data = array(
             'due_date' => $recertification->due_date,
-            'certification_id' => $recertification->certification_id,
+            'provider_id' => $recertification->provider_id,
             'reminder_type' => $recertification->reminder_type,
             'reminder_sent_to' => $recertification->reminder_sent_to,
-            'name_of_recipient' => $recertification->name_of_recipient,
+            'name_of_recipient' => strtoupper($recertification->name_of_recipient),
+            'date_reminder_sent' => $recertification->date_reminder_sent,
         );
-
+//die((print_r($data)));
         $recertification_id = (int) $recertification->recertification_id;
         if ($recertification_id == 0) {
             $this->tableGateway->insert($data);
@@ -67,6 +55,22 @@ class RecertificationTable {
                 throw new \Exception('Recertification id does not exist');
             }
         }
+    }
+    /**
+     * select reminder witch must be  send
+     * @return type
+     */
+     public function fetchAll2() {
+        $db = $this->tableGateway->getAdapter();
+        $sqlSelect="select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, "
+                . "date_certificate_sent, certification_type, provider,last_name, first_name, middle_name, certification_id,"
+                . " certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where "
+                . "examination.id = certification.examination and provider.id = examination.provider and final_decision='certified' and certificate_sent = 'yes' and reminder_sent='no' and"
+                . " datediff(now(),date_end_validity) >=-60 order by certification.id asc";
+        $statement = $db->query($sqlSelect);
+        $resultSet = $statement->execute();
+        
+        return $resultSet;
     }
 
 }

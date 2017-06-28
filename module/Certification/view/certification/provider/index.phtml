@@ -1,8 +1,8 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl=$this->layout()->acl;
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -26,9 +26,9 @@ $sessionLogin = new Container('credo');
                 <h2>list of  Testers</h2>
             </div>
             <div class="col-sm-4">
-                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\Provider', 'add')) {  ?>
                 <a href="<?php echo $this->url('provider', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Tester</a>
-                <?php // }  ?>
+                <?php }  ?>
 
             </div>
         </div>
@@ -62,9 +62,9 @@ $sessionLogin = new Container('credo');
                         <th>Facility In charge Phone</th>
                         <th>Facility In charge Email</th>
 
-                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Provider', 'edit')) {  ?>
                         <th style="width:5%;">Edit</th>
-                        <?php // }  ?>
+                        <?php }  ?>
                     </tr>
 
 
@@ -73,38 +73,39 @@ $sessionLogin = new Container('credo');
 
                     <?php foreach ($this->providers as $provider) : ?>
                         <tr>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_reg_no); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->professional_reg_no); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->region_name); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->district_name); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->phone); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
-                            <td><div style="width:80px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->prefered_contact_method); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->current_jod); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->time_worked); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_name); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_address); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge_name); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge_phone); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge_email); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_in_charge_name); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_in_charge_phone); ?></div></td>
-                            <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_in_charge_email); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_reg_no); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($provider->professional_reg_no); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($provider->certification_id); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->last_name . ' ' . $provider->first_name . ' ' . $provider->middle_name); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->region_name); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->district_name); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($provider->type_vih_test); ?></div></td>
+                            <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($provider->phone); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->email); ?></div></td>
+                            <td><div style="width:80px;overflow:auto;"><?php echo $this->escapeHtml($provider->prefered_contact_method); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($provider->current_jod); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($provider->time_worked); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_name); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_address); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge_name); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge_phone); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->test_site_in_charge_email); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_in_charge_name); ?></div></td>
+                            <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_in_charge_phone); ?></div></td>
+                            <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($provider->facility_in_charge_email); ?></div></td>
 
-                            <td>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Provider', 'edit')) {  ?>
+                        <td>
                                 <div style="width:70px;height:40px;overflow:auto;">
-                                    <a href="<?php echo $this->url('provider', array('action' => 'edit', 'id' => $provider->id)); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                    <a href="<?php echo $this->url('provider', array('action' => 'edit', 'id' => base64_encode($provider->id))); ?>"><span class="glyphicon glyphicon-pencil">Edit</span></a> 
                                 </div>
                             </td>
+                        <?php }  ?>
+                            
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
-
-
 
         </div>
     </div>
@@ -133,6 +134,8 @@ $sessionLogin = new Container('credo');
             "aServerSide": true,
         })
     });
+    
+    
 </script>
 
 

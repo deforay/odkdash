@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\Provider;
 use Certification\Form\ProviderForm;
+use Zend\Session\Container;
 
 class ProviderController extends AbstractActionController {
 
@@ -31,9 +32,8 @@ class ProviderController extends AbstractActionController {
     public function addAction() {
 
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-
         $form = new ProviderForm($dbAdapter);
-        $form->get('submit')->setValue('Add');
+        $form->get('submit')->setValue('SUBMIT');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -44,22 +44,25 @@ class ProviderController extends AbstractActionController {
             if ($form->isValid()) {
                 $provider->exchangeArray($form->getData());
                 ?>
-                <pre> <?php // print_r($provider)             ?></pre>
+                <pre> <?php // print_r($provider)                 ?></pre>
 
                 <?php
                 $this->getProviderTable()->saveProvider($provider);
-
-                return $this->redirect()->toRoute('provider');
+                $container = new Container('alert');
+                $container->alertMsg = 'New tester added successfully';
+                return $this->redirect()->toRoute('provider', array('action' => 'add'));
             }
         }
-        return array('form' => $form);
+        return array('form' => $form,
+            'providers' => $this->getProviderTable()->fetchAll(),
+        );
     }
 
     public function editAction() {
 
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) base64_decode($this->params()->fromRoute('id', 0));
 
         if (!$id) {
             return $this->redirect()->toRoute('provider', array(
@@ -69,6 +72,7 @@ class ProviderController extends AbstractActionController {
 
         try {
             $provider = $this->getProviderTable()->getProvider($id);
+//            die(print_r($provider));
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('provider', array(
                         'action' => 'index'
@@ -76,8 +80,9 @@ class ProviderController extends AbstractActionController {
         }
 
         $form = new ProviderForm($dbAdapter);
+
         $form->bind($provider);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -86,14 +91,21 @@ class ProviderController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $this->getProviderTable()->saveProvider($provider);
-
+                $container = new Container('alert');
+                $container->alertMsg = 'Tester updated successfully';
                 return $this->redirect()->toRoute('provider');
             }
         }
+        $district = $this->providerTable->DistrictName($provider->district);
+        $facility = $this->providerTable->FacilityName($provider->facility_id);
 
         return array(
             'id' => $id,
             'form' => $form,
+            'district_id' => $district['district_id'],
+            'district_name' => $district['district_name'],
+            'facility_id' => $facility['facility_id'],
+            'facility_name' => $facility['facility_name'],
         );
     }
 

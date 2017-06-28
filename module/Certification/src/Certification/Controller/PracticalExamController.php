@@ -5,6 +5,7 @@ namespace Certification\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\PracticalExam;
+use Zend\Session\Container;
 
 class PracticalExamController extends AbstractActionController {
 
@@ -20,7 +21,6 @@ class PracticalExamController extends AbstractActionController {
 
     public function indexAction() {
 
-
         return new ViewModel(array(
             'practicals' => $this->getPracticalExamTable()->fetchAll(),
         ));
@@ -28,10 +28,11 @@ class PracticalExamController extends AbstractActionController {
 
     public function addAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $id_written = (int) $this->params()->fromQuery('id_written_exam', 0);
+        $id_written = (int) base64_decode($this->params()->fromQuery(base64_encode('id_written_exam'), 0));
         $provider = $this->getPracticalExamTable()->getProviderName($id_written);
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
-        $form->get('submit')->setValue('Add');
+        $form->get('submit')->setValue('SUBMIT');
+        $container = new Container('alert');
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -40,30 +41,45 @@ class PracticalExamController extends AbstractActionController {
             $form->setData($request->getPost());
             $written = $request->getPost('written', null);
 //            $written=$_POST['written'];
-            $provider = $this->getRequest()->getPost('provider_id');
-            $practical_nb = $this->getPracticalExamTable()->counPractical($provider);
-            if ($practical_nb == 0) {
-                if ($form->isValid() && empty($written)) {
-                    $practicalExam->exchangeArray($form->getData());
-
-                    $this->getPracticalExamTable()->savePracticalExam($practicalExam);
-                    $last_id = $this->getPracticalExamTable()->last_id();
-                    $this->getPracticalExamTable()->insertToExamination($last_id);
-
-                    return $this->redirect()->toRoute('practical-exam');
-                } else if ($form->isValid() && !empty($written)) {
-                    $practicalExam->exchangeArray($form->getData());
-                    $this->getPracticalExamTable()->savePracticalExam($practicalExam);
-                    $last_id = $this->getPracticalExamTable()->last_id();
-                    $this->getPracticalExamTable()->examination($written, $last_id);
-                    return $this->redirect()->toRoute('practical-exam');
-                }
+            $provider_id = $this->getRequest()->getPost('provider_id');
+            $practical_nb = $this->getPracticalExamTable()->counPractical($provider_id);
+            $nb_days = $this->getPracticalExamTable()->numberOfDays($provider_id);
+            if (isset($nb_days) && $nb_days <= 30) {
+                $container->alertMsg = 'la derniere tentative de ce provider remonte a ' . $nb_days . ' jours. vous devez attendre au moin 30 jours pour une autre tentative.';
+                return array(
+                    'form' => $form);
             } else {
-                return array('form' => $form,
-                    'message' => 'Impossible to add !!!! Because this tester has already passed a practical exam, he is waiting to add the written exam',);
+                if ($practical_nb == 0) {
+                    if ($form->isValid() && empty($written)) {
+                        $practicalExam->exchangeArray($form->getData());
+                        $this->getPracticalExamTable()->savePracticalExam($practicalExam);
+                        $last_id = $this->getPracticalExamTable()->last_id();
+                        $this->getPracticalExamTable()->insertToExamination($last_id);
+                        $container->alertMsg = 'Practical exam added successfully';
+                        return $this->redirect()->toRoute('practical-exam', array('action'=>'add'));
+                    } else if ($form->isValid() && !empty($written)) {
+                        $practicalExam->exchangeArray($form->getData());
+                        $this->getPracticalExamTable()->savePracticalExam($practicalExam);
+                        $last_id = $this->getPracticalExamTable()->last_id();
+                        $nombre2 = $this->getPracticalExamTable()->countWritten2($id_written);
+                        if ($nombre2 == 0) {
+                            $this->getPracticalExamTable()->examination($written, $last_id);
+                        } else {
+                            $this->getPracticalExamTable()->insertToExamination($last_id);
+                        }
+                        $container->alertMsg = 'Practical exam added successfully';
+                        return $this->redirect()->toRoute('practical-exam', array('action'=>'add'));
+                    }
+                } else {
+                    $container->alertMsg = 'Impossible to add !!!! Because this tester has already passed a practical exam, he is waiting to add the written exam';
+                    return array('form' => $form);
+                }
             }
         }
-        $nombre = $this->getPracticalExamTable()->countWritten($id_written);
+        $nombre = null;
+        if (isset($provider['id'])) {
+            $nombre = $this->getPracticalExamTable()->countWritten($id_written, $provider['id']);
+        }
         return array('form' => $form,
             'written' => $id_written,
             'nombre' => $nombre,
@@ -71,9 +87,10 @@ class PracticalExamController extends AbstractActionController {
         );
     }
 
-    public function editAction() {
+    public
+            function editAction() {
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-        $practice_exam_id = (int) $this->params()->fromRoute('practice_exam_id', 0);
+        $practice_exam_id = (int) base64_decode($this->params()->fromRoute('practice_exam_id', 0));
         if (!$practice_exam_id) {
             return $this->redirect()->toRoute('practical-exam', array(
                         'action' => 'add'
@@ -90,7 +107,7 @@ class PracticalExamController extends AbstractActionController {
 
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
         $form->bind($practicalExam);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -98,7 +115,8 @@ class PracticalExamController extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $this->getPracticalExamTable()->savePracticalExam($practicalExam);
-
+$container = new Container('alert');
+$container->alertMsg = 'Practical exam updated successfully';
 
                 return $this->redirect()->toRoute('practical-exam');
             }

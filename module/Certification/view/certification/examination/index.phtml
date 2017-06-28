@@ -1,6 +1,8 @@
 <?php
-
 use Zend\Session\Container;
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -38,12 +40,9 @@ use Zend\Session\Container;
                         <th  style="width:10%;">Provider</th>
                         <th  style="width:10%;"> Final Score (≥80%)</th>
                         <th  style="width:10%;">Practical Exam</th>
-
-
-
-                        <?php // if ($acl->isAllowed($role, 'Certification\Controller\Examination', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'add')) {  ?>
                         <th style="width:6%;">Action</th>
-                        <?php // } ?>
+                        <?php } ?>
                     </tr>
 
                 </thead>
@@ -56,21 +55,24 @@ use Zend\Session\Container;
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></div></td>
                             <td><div style="color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
-                            <td>
-                                <?php if(empty($exam->final_score) || empty($exam->practical_total_score)) { 
-                              echo   '<div style="width:100px;height:40px;overflow:auto;">  
+                           <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'add')) {  ?>
+                       <td>
+                                <?php
+                                if (empty($exam->final_score) || empty($exam->practical_total_score)) {
+                                    echo '<div style="width:100px;height:40px;overflow:auto;">  
                                         
                                     <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>';
-                                }else {
-                                    echo   '<div style="width:100px;height:40px;overflow:auto;">  
+                                } else {
+                                    echo '<div style="width:100px;height:40px;overflow:auto;">  
                                         
-                                    <a href='.$this->url("certification", array("action" => "add", "id" => $exam->id), array("query" =>
-                                        array("written" => $exam->final_score, "practical" => $exam->practical_total_score, "direct" => $exam->direct_observation_score, "sample" => $exam->Sample_testing_score, "provider" => $exam->provider)))
+                                    <a href=' . $this->url("certification", array("action" => "add", "id" => base64_encode($exam->id)), array("query" =>
+                                        array(base64_encode("written") =>  base64_encode($exam->final_score), base64_encode("practical") =>  base64_encode($exam->practical_total_score), base64_encode("direct") =>  base64_encode($exam->direct_observation_score), base64_encode("sample") =>  base64_encode($exam->Sample_testing_score), base64_encode("provider") =>  base64_encode($exam->provider))))
                                     .'> <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>';
-                                 
-                                    
-                                }; ?>
-                            </td></tr>
+                                };
+                                ?>
+                            </td>
+                        <?php } ?>
+                            </tr>
                     <?php endforeach; ?>
                 </tbody> 
             </table>

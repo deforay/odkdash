@@ -12,11 +12,15 @@ class CertificationTable {
         $this->tableGateway = $tableGateway;
     }
 
+    /**
+     * select all certified tester
+     * @return type
+     */
     public function fetchAll() {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('id', 'examination', 'final_decision', 'certification_issuer', 'date_certificate_issued', 'date_certificate_sent', 'certification_type'));
         $sqlSelect->join('examination', 'examination.id = certification.examination ', array('provider'), 'left')
-                ->join('provider', 'provider.id = examination.provider ', array('last_name', 'first_name', 'middle_name', 'certification_id', 'certification_reg_no', 'professional_reg_no'), 'left')
+                ->join('provider', 'provider.id = examination.provider ', array('last_name', 'first_name', 'middle_name', 'certification_id', 'certification_reg_no', 'professional_reg_no', 'email'), 'left')
                 ->where(array('final_decision' => 'certified'));
         $sqlSelect->order('id desc');
 
@@ -24,6 +28,10 @@ class CertificationTable {
         return $resultSet;
     }
 
+    /**
+     * select tester who are pending or failed to certification
+     * @return type
+     */
     public function fetchAll2() {
         $sqlSelect = $this->tableGateway->getSql()->select();
         $sqlSelect->columns(array('id', 'examination', 'final_decision', 'certification_issuer', 'date_certificate_issued', 'date_certificate_sent', 'certification_type'));
@@ -48,16 +56,19 @@ class CertificationTable {
     }
 
     public function saveCertification(Certification $certification) {
-                
+        $date_issued = $certification->date_certificate_issued;
+        $date_end = date("Y-m-d", strtotime($date_issued . "  + 2 year"));
+
         $data = array(
             'examination' => $certification->examination,
             'final_decision' => $certification->final_decision,
             'certification_issuer' => strtoupper($certification->certification_issuer),
-            'date_certificate_issued' => $certification->date_certificate_issued,
+            'date_certificate_issued' => $date_issued,
             'date_certificate_sent' => $certification->date_certificate_sent,
             'certification_type' => $certification->certification_type,
+            'date_end_validity' => $date_end
         );
-
+//        die(print_r($data));
         $id = (int) $certification->id;
         if ($id == 0) {
             $this->tableGateway->insert($data);
@@ -118,6 +129,7 @@ class CertificationTable {
     public function certificationType($provider) {
         $db = $this->tableGateway->getAdapter();
         $sql1 = 'SELECT certification_id FROM provider WHERE id =' . $provider;
+//        die($sql1);
         $statement = $db->query($sql1);
         $result = $statement->execute();
         foreach ($result as $res) {
@@ -127,8 +139,7 @@ class CertificationTable {
         return $certification_id;
     }
 
-    public function certificationId($provider)
-    {
+    public function certificationId($provider) {
         $db = $this->tableGateway->getAdapter();
         $sql = 'SELECT MAX(certification_id) as max FROM provider';
         $statement = $db->query($sql);
@@ -146,9 +157,27 @@ class CertificationTable {
 
             $certification_id = $array2[0] . '-C' . substr_replace("0000", ($array[1] + 1), -strlen(($array[1] + 1)));
         }
-        
-        $sql2 = "UPDATE provider SET certification_id='".$certification_id."' WHERE id=" . $provider;
-       
+
+        $sql2 = "UPDATE provider SET certification_id='" . $certification_id . "' WHERE id=" . $provider;
+
         $db->getDriver()->getConnection()->execute($sql2);
     }
+
+    /**
+     * select certified testers who certificate are not yet sent
+     * @return type
+     */
+    public function fetchAll3() {
+        $sqlSelect = $this->tableGateway->getSql()->select();
+        $sqlSelect->columns(array('id', 'examination', 'final_decision', 'certification_issuer', 'date_certificate_issued', 'date_certificate_sent', 'certification_type', 'date_end_validity'));
+        $sqlSelect->join('examination', 'examination.id = certification.examination ', array('provider'), 'left')
+                ->join('provider', 'provider.id = examination.provider ', array('last_name', 'first_name', 'middle_name', 'certification_id', 'certification_reg_no', 'professional_reg_no', 'email','facility_in_charge_email'), 'left')
+                ->where(array('final_decision' => 'certified'))
+                ->where(array('certificate_sent' => 'no'));
+        $sqlSelect->order('id desc');
+
+        $resultSet = $this->tableGateway->selectWith($sqlSelect);
+        return $resultSet;
+    }
+
 }

@@ -91,6 +91,28 @@ class ProviderTable extends AbstractTableGateway {
             'facility_in_charge_email' => $provider->facility_in_charge_email,
             'facility_id' => $provider->facility_id,
         );
+        $data2 = array(
+//            'certification_reg_no' => $certification_reg_no,
+            'professional_reg_no' => $provider->professional_reg_no,
+            'last_name' => $last_name,
+            'first_name' => $first_name,
+            'middle_name' => $middle_name,
+            'region' => $region,
+            'district' => $district,
+            'type_vih_test' => $provider->type_vih_test,
+            'phone' => $provider->phone,
+            'email' => $provider->email,
+            'prefered_contact_method' => $provider->prefered_contact_method,
+            'current_jod' => $provider->current_jod,
+            'time_worked' => $provider->time_worked,
+            'test_site_in_charge_name' => $test_site_in_charge_name,
+            'test_site_in_charge_phone' => $provider->test_site_in_charge_phone,
+            'test_site_in_charge_email' => $provider->test_site_in_charge_email,
+            'facility_in_charge_name' => $facility_in_charge_name,
+            'facility_in_charge_phone' => $provider->facility_in_charge_phone,
+            'facility_in_charge_email' => $provider->facility_in_charge_email,
+            'facility_id' => $provider->facility_id,
+        );
 
 //        print_r($data);
         $id = (int) $provider->id;
@@ -102,13 +124,18 @@ class ProviderTable extends AbstractTableGateway {
         } else {
             if ($this->getProvider($id)) {
                 $data['certification_id'] = $provider->certification_id;
-                $this->tableGateway->update($data, array('id' => $id));
+                $this->tableGateway->update($data2, array('id' => $id));
             } else {
                 throw new \Exception('Provider id does not exist');
             }
         }
     }
 
+    /**
+     * to get districts list
+     * @param type $q (region id)
+     * @return type array
+     */
     public function getDistrict($q) {
         $db = $this->tableGateway->getAdapter();
         $sql = "SELECT id,district_name,region FROM certification_districts WHERE region = '" . $q . "'";
@@ -118,12 +145,44 @@ class ProviderTable extends AbstractTableGateway {
         return $result;
     }
 
+    /**
+     * to get facilities list
+     * @param type $q (district id)
+     * @return type array
+     */
     public function getFacility($q) {
         $db = $this->tableGateway->getAdapter();
         $sql = "SELECT id, facility_name, district FROM certification_facilities where district='" . $q . "'";
         $statement = $db->query($sql);
         $result = $statement->execute();
         return $result;
+    }
+
+    public function DistrictName($district) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = "SELECT id, district_name FROM certification_districts WHERE id = '" . $district . "'";
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+
+        foreach ($result as $res) {
+            $district_name = $res['district_name'];
+            $id = $res['id'];
+        }
+//       die(print_r($id));
+        return array('district_id' => $id, 'district_name' => $district_name);
+    }
+
+    public function FacilityName($facility) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = "SELECT id, facility_name FROM certification_facilities where id='" . $facility . "'";
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $facility_name = $res['facility_name'];
+            $id = $res['id'];
+        }
+//        print_r($result);
+        return array('facility_id' => $id, 'facility_name' => $facility_name);
     }
 
 }

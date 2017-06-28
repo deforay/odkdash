@@ -1,10 +1,9 @@
 <?php
-
 use Zend\Session\Container;
-
 $sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
 ?>
-
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
@@ -24,9 +23,9 @@ $sessionLogin = new Container('credo');
                 <h2>list of Training organizations</h2>
             </div>
             <div class="col-sm-4">
-                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
-                <a href="<?php echo $this->url('training-organization', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training Organization</a>
-                <?php // }  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\TrainingOrganization', 'add')) { ?>
+                    <a href="<?php echo $this->url('training-organization', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training Organization</a>
+                <?php } ?>
 
             </div>
         </div>
@@ -35,29 +34,36 @@ $sessionLogin = new Container('credo');
 
     <div class="main-content">
         <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 50%;margin: auto;">
+            <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="margin: auto;">
                 <thead>
                     <tr>
 
-                        <th style="width:50%;">Training Organization </th>
-                        <th style="width:50%;">Type of Training Organization </th>
+                        <th>Training Organization </th>
+                        <th>Type of Training Organization </th>
 
-                        <?php // if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {  ?>
-                        <th style="width:30%;">Edit</th>
-                        <?php // }  ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\TrainingOrganization', 'edit')) { ?>
+                            <th>Edit</th>
+                        <?php } ?>
                     </tr>
 
                 </thead>
                 <tbody>
                     <?php foreach ($paginator as $organization) : ?>
                         <tr>
-                            <td><?php echo $this->escapeHtml($organization->training_organization_name); ?></td>
-                            <td><?php echo $this->escapeHtml($organization->type_organization); ?></td>
+                            <td><div style="width:150px;overflow:auto;"><?php echo $this->escapeHtml($organization->training_organization_name); ?></div>
 
-                            <td>
-                                <a href="<?php echo $this->url('training-organization', array('action' => 'edit', 'training_organization_id' => $organization->training_organization_id)); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> 
                             </td>
-                        </tr>
+                            <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($organization->type_organization); ?></div>
+
+                            </td>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\TrainingOrganization', 'edit')) { ?>
+                                <td><div style="width:60px;overflow:auto;">
+                                        <a href="<?php echo $this->url('training-organization', array('action' => 'edit', 'training_organization_id' => base64_encode($organization->training_organization_id))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> 
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+
                     <?php endforeach; ?>               
                 </tbody>
             </table>

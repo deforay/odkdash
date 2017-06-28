@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\Recertification;
 use Certification\Form\RecertificationForm;
+use Zend\Session\Container;
 
 class RecertificationController extends AbstractActionController {
 
@@ -20,21 +21,19 @@ class RecertificationController extends AbstractActionController {
     }
 
     public function indexAction() {
-        
-     $paginator = $this->getRecertificationTable()->fetchAll(true);
-     // set the current page to what has been passed in query string, or to 1 if none set
-     $paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
-     // set the number of items per page to 10
-     $paginator->setItemCountPerPage(10);
 
-     return new ViewModel(array(
-         'paginator' => $paginator
-     ));
+        $reminder = $this->getRecertificationTable()->fetchAll2();
+        return new ViewModel(array(
+            'recertifications' => $this->getRecertificationTable()->fetchAll(),
+            'reminders' => $this->getRecertificationTable()->fetchAll2()
+        ));
     }
 
     public function addAction() {
-        $form = new RecertificationForm();
-        $form->get('submit')->setValue('Add');
+        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $provider = (int) base64_decode($this->params()->fromQuery(base64_encode('provider')));
+        $form = new RecertificationForm($dbAdapter);
+        $form->get('submit')->setValue('SUBMIT');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -45,15 +44,18 @@ class RecertificationController extends AbstractActionController {
             if ($form->isValid()) {
                 $recertification->exchangeArray($form->getData());
                 $this->getRecertificationTable()->saveRecertification($recertification);
-
+                $container = new Container('alert');
+                $container->alertMsg = 'Re-certification added successfully';
                 return $this->redirect()->toRoute('recertification');
             }
         }
-        return array('form' => $form);
+        return array('form' => $form,
+            'provider'=>$provider);
     }
 
     public function editAction() {
-        $recertification_id = (int) $this->params()->fromRoute('recertification_id', 0);
+        $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+        $recertification_id = (int) base64_decode($this->params()->fromRoute('recertification_id', 0));
         if (!$recertification_id) {
             return $this->redirect()->toRoute('recertification', array(
                         'action' => 'add'
@@ -68,9 +70,9 @@ class RecertificationController extends AbstractActionController {
             ));
         }
 
-        $form = new RecertificationForm();
+        $form = new RecertificationForm($dbAdapter);
         $form->bind($recertification);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -79,7 +81,8 @@ class RecertificationController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $this->getRecertificationTable()->saveRecertification($recertification);
-
+                $container = new Container('alert');
+                $container->alertMsg = 'Re-certification updated successfully';
                 return $this->redirect()->toRoute('recertification');
             }
         }
@@ -87,6 +90,7 @@ class RecertificationController extends AbstractActionController {
         return array(
             'recertification_id' => $recertification_id,
             'form' => $form,
+            
         );
     }
 

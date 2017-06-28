@@ -25,17 +25,14 @@ class Certification {
         $this->date_certificate_issued = (!empty($data['date_certificate_issued'])) ? $data['date_certificate_issued'] : null;
         $this->date_certificate_sent = (!empty($data['date_certificate_sent'])) ? $data['date_certificate_sent'] : null;
         $this->certification_type = (!empty($data['certification_type'])) ? $data['certification_type'] : null;
-        $this->issuer_last_name = (!empty($data['issuer_last_name'])) ? $data['issuer_last_name'] : null;
-        $this->issuer_first_name = (!empty($data['issuer_first_name'])) ? $data['issuer_first_name'] : null;
-        $this->issuer_middle_name = (!empty($data['issuer_middle_name'])) ? $data['issuer_middle_name'] : null;
-
-
         $this->certification_reg_no = (!empty($data['certification_reg_no'])) ? $data['certification_reg_no'] : null;
         $this->last_name = (!empty($data['last_name'])) ? $data['last_name'] : null;
         $this->first_name = (!empty($data['first_name'])) ? $data['first_name'] : null;
         $this->middle_name = (!empty($data['middle_name'])) ? $data['middle_name'] : null;
         $this->professional_reg_no = (!empty($data['professional_reg_no'])) ? $data['professional_reg_no'] : null;
         $this->certification_id = (!empty($data['certification_id'])) ? $data['certification_id'] : null;
+        $this->email = (!empty($data['email'])) ? $data['email'] : null;
+        $this->facility_in_charge_email = (!empty($data['facility_in_charge_email'])) ? $data['facility_in_charge_email'] : null;
     }
 
     public function getArrayCopy() {

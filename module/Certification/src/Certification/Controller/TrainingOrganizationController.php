@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Certification\Model\TrainingOrganization;
 use Certification\Form\TrainingOrganizationForm;
+use Zend\Session\Container;
 
 class TrainingOrganizationController extends AbstractActionController {
 
@@ -21,7 +22,7 @@ class TrainingOrganizationController extends AbstractActionController {
 
     public function indexAction() {
 
-         $paginator=$this->getTrainingOrganizationTable()->fetchAll();
+        $paginator = $this->getTrainingOrganizationTable()->fetchAll();
         return new ViewModel(array(
             'paginator' => $paginator,
         ));
@@ -29,7 +30,7 @@ class TrainingOrganizationController extends AbstractActionController {
 
     public function addAction() {
         $form = new TrainingOrganizationForm();
-        $form->get('submit')->setValue('Add');
+        $form->get('submit')->setValue('SUBMIT');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -40,7 +41,8 @@ class TrainingOrganizationController extends AbstractActionController {
             if ($form->isValid()) {
                 $training_organization->exchangeArray($form->getData());
                 $this->getTrainingOrganizationTable()->saveTraining_Organization($training_organization);
-
+                $container = new Container('alert');
+                $container->alertMsg = 'Training Organization added successfully';
 
                 return $this->redirect()->toRoute('training-organization');
             }
@@ -49,7 +51,7 @@ class TrainingOrganizationController extends AbstractActionController {
     }
 
     public function editAction() {
-        $training_organization_id = (int) $this->params()->fromRoute('training_organization_id', 0);
+        $training_organization_id = (int) base64_decode($this->params()->fromRoute('training_organization_id', 0));
 
         if (!$training_organization_id) {
             return $this->redirect()->toRoute('training-organization', array('action' => 'add'));
@@ -63,7 +65,7 @@ class TrainingOrganizationController extends AbstractActionController {
 
         $form = new TrainingOrganizationForm();
         $form->bind($training_organization);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->get('submit')->setAttribute('value', 'UPDATE');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -72,7 +74,8 @@ class TrainingOrganizationController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $this->getTrainingOrganizationTable()->saveTraining_Organization($training_organization);
-
+                $container = new Container('alert');
+                $container->alertMsg = 'Training Organization updated successfully';
                 return $this->redirect()->toRoute('training-organization');
             }
         }
@@ -83,5 +86,4 @@ class TrainingOrganizationController extends AbstractActionController {
         );
     }
 
-   
 }

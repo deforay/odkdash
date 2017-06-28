@@ -24,10 +24,7 @@ class ExaminationController extends AbstractActionController {
      ));
      }
      
-     public function addAction() {
          
-     }
-    
     
 }
 

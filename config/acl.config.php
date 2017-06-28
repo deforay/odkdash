@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'AD' => array(
         'Application\\Controller\\Index' => array(
@@ -34,7 +35,7 @@ return array(
         'Application\\Controller\\Dashboard' => array(
             'index' => 'allow',
             'audi-details' => 'allow',
-            ),
+        ),
     ),
     'SA' => array(
         'Application\\Controller\\Common' => array(
@@ -83,73 +84,80 @@ return array(
             'facility-report' => 'allow',
         ),
 //        acl for SA
-        
-         'Certification\\Controller\\Certification' => array(
+        'Certification\\Controller\\Certification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
-//             'search' => 'allow',
+//             
         ),
         'Certification\\Controller\\CertificationIssuer' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
-        
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'certification' => 'allow',
-//            'search' => 'allow',
             'district' => 'allow',
+            'facility' => 'allow'
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
-        
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'sendmail'=>'allow'
+            'sendmail' => 'allow'
         ),
-        'Certification\\Controller\\Examination'=> array(
+        'Certification\\Controller\\Examination' => array(
             'index' => 'allow',
             'add' => 'allow',
-//            'search' => 'allow',
+//           
         ),
-        
-    ),
+        'Certification\\Controller\\Region' => array(
+            'index' => 'allow',
+            'edit' => 'allow'
+        ),
+        'Certification\\Controller\\District' => array(
+            'index' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\Facility' => array(
+            'index' => 'allow',
+            'edit' => 'allow',
+        ),
+        ),
     'US' => array(
         'Application\\Controller\\Index' => array(
             'index' => 'deny',
@@ -273,77 +281,84 @@ return array(
             'facility-report' => 'allow',
         ),
     ),
-    
 //   acl for personnel certitication viewer PCV
     'PCV' => array(
         'Application\\Controller\\Dashboard' => array(
             'index' => 'allow',
         ),
-        
-         'Certification\\Controller\\Certification' => array(
+        'Certification\\Controller\\Certification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
-//             'search' => 'allow',
+//             
         ),
         'Certification\\Controller\\CertificationIssuer' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
-                
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'certification' => 'allow',
             'district' => 'allow',
             'facility' => 'allow'
-            
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
-        
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            'search' => 'allow',
+//            
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'sendmail'=>'allow'
+            'sendmail' => 'allow'
         ),
-        'Certification\\Controller\\Examination'=> array(
+        'Certification\\Controller\\Examination' => array(
             'index' => 'allow',
             'add' => 'allow',
-//            'search' => 'allow',
+//            
+        ),
+        'Certification\\Controller\\Region' => array(
+            'index' => 'allow',
+            'edit' => 'allow'
+//            
+        ),
+         'Certification\\Controller\\District' => array(
+            'index' => 'allow',
+            'edit' => 'allow'
+        ),
+        'Certification\\Controller\\Facility' => array(
+            'index' => 'allow',
+            'edit' => 'allow'
         ),
     ),
 );
