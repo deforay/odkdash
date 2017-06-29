@@ -172,7 +172,7 @@ return array(
             'facility' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/facility[/:action][/:id]',
+                    'route' => '/certification-facility[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
 //                        'id' => '[0-9]+',
