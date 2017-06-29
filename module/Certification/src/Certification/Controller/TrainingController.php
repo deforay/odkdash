@@ -22,13 +22,14 @@ class TrainingController extends AbstractActionController {
 
     public function indexAction() {
 
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         return new ViewModel(array(
             'trainings' => $this->getTrainingTable()->fetchAll(),
         ));
     }
 
     public function addAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $form = new TrainingForm($dbAdapter);
         $form->get('submit')->setValue('SUBMIT');
@@ -54,6 +55,7 @@ class TrainingController extends AbstractActionController {
 
 //
     public function editAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
 
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $training_id = (int) base64_decode($this->params()->fromRoute('training_id', 0));

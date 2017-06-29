@@ -21,7 +21,10 @@ class CertificationController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $this->layout()->setVariable('nb', 'overflow');
+        $nb = $this->getCertificationTable()->countCertificate();
+        $nb2 = $this->getCertificationTable()->countReminder();
+        $this->layout()->setVariable('nb', $nb);
+        $this->layout()->setVariable('nb2', $nb2);
         return new ViewModel(array(
             'certifications' => $this->getCertificationTable()->fetchAll(),
             'certifications2' => $this->getCertificationTable()->fetchAll2(),
@@ -30,6 +33,7 @@ class CertificationController extends AbstractActionController {
     }
 
     public function addAction() {
+        $this->indexAction();
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));
@@ -78,6 +82,7 @@ class CertificationController extends AbstractActionController {
     }
 
     public function editAction() {
+        $this->indexAction();
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));
         if (!$id) {
@@ -117,7 +122,6 @@ class CertificationController extends AbstractActionController {
     }
 
     public function pdfAction() {
-
         $last = base64_decode($this->params()->fromQuery(base64_encode('last')));
         $first = base64_decode($this->params()->fromQuery(base64_encode('first')));
         $middle = base64_decode($this->params()->fromQuery(base64_encode('middle')));

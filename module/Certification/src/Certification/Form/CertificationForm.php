@@ -82,18 +82,4 @@ class CertificationForm extends Form {
         ));
     }
 
-    public function getOptionsForSelect() {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT certification_issuer_id, issuer_last_name, issuer_first_name, issuer_middle_name FROM certification_issuer ORDER by issuer_last_name';
-        $statement = $dbAdapter->query($sql);
-        $result = $statement->execute();
-
-        $selectData = array();
-
-        foreach ($result as $res) {
-            $selectData[$res['certification_issuer_id']] = $res['issuer_last_name'] . ' ' . $res['issuer_first_name'] . ' ' . $res['issuer_middle_name'];
-        }
-        return $selectData;
-    }
-
-}
+   }

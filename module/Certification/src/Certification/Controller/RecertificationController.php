@@ -21,7 +21,7 @@ class RecertificationController extends AbstractActionController {
     }
 
     public function indexAction() {
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $reminder = $this->getRecertificationTable()->fetchAll2();
         return new ViewModel(array(
             'recertifications' => $this->getRecertificationTable()->fetchAll(),
@@ -30,6 +30,7 @@ class RecertificationController extends AbstractActionController {
     }
 
     public function addAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $provider = (int) base64_decode($this->params()->fromQuery(base64_encode('provider')));
         $form = new RecertificationForm($dbAdapter);
@@ -54,6 +55,7 @@ class RecertificationController extends AbstractActionController {
     }
 
     public function editAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $recertification_id = (int) base64_decode($this->params()->fromRoute('recertification_id', 0));
         if (!$recertification_id) {

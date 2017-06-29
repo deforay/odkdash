@@ -99,7 +99,7 @@ class RecertificationForm extends Form {
         $sql='select id, last_name, first_name, middle_name from provider where certification_id is not null';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
-        
+        $selectData=[];
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['last_name'].' '.$res['first_name'].' '.$res['middle_name'];
         }

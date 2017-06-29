@@ -20,13 +20,14 @@ class WrittenExamController extends AbstractActionController {
     }
 
     public function indexAction() {
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         return new ViewModel(array(
             'writtens' => $this->getWrittenExamTable()->fetchAll()
         ));
     }
 
     public function addAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 
         $practical = (int) base64_decode($this->params()->fromQuery(base64_encode('practice_exam_id'), 0));
@@ -92,6 +93,7 @@ class WrittenExamController extends AbstractActionController {
     }
 
     public function editAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
 
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $id_written_exam = (int) base64_decode($this->params()->fromRoute('id_written_exam', 0));

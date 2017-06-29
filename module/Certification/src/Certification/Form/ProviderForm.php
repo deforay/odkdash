@@ -236,7 +236,7 @@ class ProviderForm extends Form {
         $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
-        
+        $selectData=[];
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['region_name'];
         }

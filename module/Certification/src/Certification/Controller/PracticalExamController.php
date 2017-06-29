@@ -20,6 +20,7 @@ class PracticalExamController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
 
         return new ViewModel(array(
             'practicals' => $this->getPracticalExamTable()->fetchAll(),
@@ -27,6 +28,7 @@ class PracticalExamController extends AbstractActionController {
     }
 
     public function addAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $id_written = (int) base64_decode($this->params()->fromQuery(base64_encode('id_written_exam'), 0));
         $provider = $this->getPracticalExamTable()->getProviderName($id_written);
@@ -87,8 +89,8 @@ class PracticalExamController extends AbstractActionController {
         );
     }
 
-    public
-            function editAction() {
+    public function editAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $practice_exam_id = (int) base64_decode($this->params()->fromRoute('practice_exam_id', 0));
         if (!$practice_exam_id) {

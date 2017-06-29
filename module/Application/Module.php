@@ -32,7 +32,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
-use Certification\Model\Certification;
+
 
 class Module {
 
@@ -46,6 +46,7 @@ class Module {
             //$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatchError'), -999);
         }
     }
+    
 
     public function preSetter(MvcEvent $e) {
 

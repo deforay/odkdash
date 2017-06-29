@@ -21,6 +21,7 @@ class RegionController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $form = new RegionForm();
         $form->get('submit')->setValue('Submit');
 
@@ -47,6 +48,7 @@ class RegionController extends AbstractActionController {
     }
 
     public function editAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));
              
         if (!$id) {

@@ -5,7 +5,6 @@ namespace Certification\Form;
 use Zend\Form\Form;
 use Zend\Db\Adapter\AdapterInterface;
 
-
 class DistrictForm extends Form {
 
     public function __construct(AdapterInterface $dbAdapter) {
@@ -42,13 +41,13 @@ class DistrictForm extends Form {
             ),
         ));
     }
-    
+
     public function getRegion() {
         $dbAdapter = $this->adapter;
         $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
-
+        $selectData = [];
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['region_name'];
         }

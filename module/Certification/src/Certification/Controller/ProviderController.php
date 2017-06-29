@@ -21,16 +21,14 @@ class ProviderController extends AbstractActionController {
     }
 
     public function indexAction() {
-
-
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         return new ViewModel(array(
             'providers' => $this->getProviderTable()->fetchAll(),
         ));
     }
 
     public function addAction() {
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $form = new ProviderForm($dbAdapter);
         $form->get('submit')->setValue('SUBMIT');
@@ -59,7 +57,7 @@ class ProviderController extends AbstractActionController {
     }
 
     public function editAction() {
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));

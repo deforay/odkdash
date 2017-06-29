@@ -31,14 +31,13 @@ class FacilityForm extends Form {
             ),
         ));
         $this->add(array(
-        'name' => 'district',
-        'type' => 'select',
-        'options' => array(
-        'label' => 'District',
-        'empty_option' => 'Please Choose A District',
-        'value_options' => $this->getDistrict(),
-        
-        ),
+            'name' => 'district',
+            'type' => 'select',
+            'options' => array(
+                'label' => 'District',
+                'empty_option' => 'Please Choose A District',
+                'value_options' => $this->getDistrict(),
+            ),
         ));
         $this->add(array(
             'name' => 'submit',
@@ -55,7 +54,7 @@ class FacilityForm extends Form {
         $sql = 'SELECT id, district_name FROM certification_districts  ORDER by district_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
-
+        $selectData = [];
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['district_name'];
         }

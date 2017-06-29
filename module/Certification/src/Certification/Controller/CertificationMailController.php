@@ -20,6 +20,7 @@ class CertificationMailController extends AbstractActionController {
     }
 
     public function indexAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $email = base64_decode($this->params()->fromQuery(base64_encode('email'),null));
         $facility_in_charge_email= base64_decode($this->params()->fromQuery(base64_encode('facility_in_charge_email')),null);
         $certification_id = base64_decode($this->params()->fromQuery(base64_encode('certification_id')));
@@ -93,7 +94,6 @@ class CertificationMailController extends AbstractActionController {
             }
         }
 
-//        die(print_r($list));
         return array('form' => $form,
             'email' => $email,
             'list' => $list,

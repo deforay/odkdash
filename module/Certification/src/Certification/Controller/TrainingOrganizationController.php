@@ -21,7 +21,7 @@ class TrainingOrganizationController extends AbstractActionController {
     }
 
     public function indexAction() {
-
+$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $paginator = $this->getTrainingOrganizationTable()->fetchAll();
         return new ViewModel(array(
             'paginator' => $paginator,
@@ -29,6 +29,7 @@ class TrainingOrganizationController extends AbstractActionController {
     }
 
     public function addAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $form = new TrainingOrganizationForm();
         $form->get('submit')->setValue('SUBMIT');
 
@@ -51,6 +52,7 @@ class TrainingOrganizationController extends AbstractActionController {
     }
 
     public function editAction() {
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $training_organization_id = (int) base64_decode($this->params()->fromRoute('training_organization_id', 0));
 
         if (!$training_organization_id) {

@@ -1,5 +1,4 @@
 <?php
-
 return array(
     'AD' => array(
         'Application\\Controller\\Index' => array(
@@ -83,71 +82,58 @@ return array(
         'Application\\Controller\\SpiV3Reports' => array(
             'facility-report' => 'allow',
         ),
-//        acl for SA
         'Certification\\Controller\\Certification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
-//             
         ),
-        'Certification\\Controller\\CertificationIssuer' => array(
-            'index' => 'allow',
-            'add' => 'allow',
-            'edit' => 'allow',
-//            
-        ),
+        
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'district' => 'allow',
-            'facility' => 'allow'
+            'facility' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'sendmail' => 'allow'
+            'sendmail' => 'allow',
         ),
         'Certification\\Controller\\Examination' => array(
             'index' => 'allow',
             'add' => 'allow',
-//           
         ),
         'Certification\\Controller\\Region' => array(
             'index' => 'allow',
-            'edit' => 'allow'
+            'edit' => 'allow',
         ),
         'Certification\\Controller\\District' => array(
             'index' => 'allow',
@@ -157,7 +143,7 @@ return array(
             'index' => 'allow',
             'edit' => 'allow',
         ),
-        ),
+    ),
     'US' => array(
         'Application\\Controller\\Index' => array(
             'index' => 'deny',
@@ -281,7 +267,72 @@ return array(
             'facility-report' => 'allow',
         ),
     ),
-//   acl for personnel certitication viewer PCV
+    'PCA' => array(
+        'Application\\Controller\\Dashboard' => array(
+            'index' => 'allow',
+        ),
+        'Certification\\Controller\\Certification' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+            'pdf' => 'allow',
+        ),
+        
+        'Certification\\Controller\\Provider' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+            'district' => 'allow',
+            'facility' => 'allow',
+        ),
+        'Certification\\Controller\\PracticalExam' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\Recertification' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\Training' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\TrainingOrganization' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\WrittenExam' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\CertificationMail' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+            'sendmail' => 'allow',
+        ),
+        'Certification\\Controller\\Examination' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+        ),
+        'Certification\\Controller\\Region' => array(
+            'index' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\District' => array(
+            'index' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Certification\\Controller\\Facility' => array(
+            'index' => 'allow',
+            'edit' => 'allow',
+        ),
+    ),
     'PCV' => array(
         'Application\\Controller\\Dashboard' => array(
             'index' => 'allow',
@@ -291,74 +342,61 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
-//             
         ),
-        'Certification\\Controller\\CertificationIssuer' => array(
-            'index' => 'allow',
-            'add' => 'allow',
-            'edit' => 'allow',
-//            
-        ),
+       
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'district' => 'allow',
-            'facility' => 'allow'
+            'facility' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-//            
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'sendmail' => 'allow'
+            'sendmail' => 'allow',
         ),
         'Certification\\Controller\\Examination' => array(
             'index' => 'allow',
             'add' => 'allow',
-//            
         ),
         'Certification\\Controller\\Region' => array(
-            'index' => 'allow',
-            'edit' => 'allow'
-//            
+            'index' => 'deny',
+            'edit' => 'deny',
         ),
-         'Certification\\Controller\\District' => array(
-            'index' => 'allow',
-            'edit' => 'allow'
+        'Certification\\Controller\\District' => array(
+            'index' => 'deny',
+            'edit' => 'deny',
         ),
         'Certification\\Controller\\Facility' => array(
-            'index' => 'allow',
-            'edit' => 'allow'
+            'index' => 'deny',
+            'edit' => 'deny',
         ),
     ),
 );

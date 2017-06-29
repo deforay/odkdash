@@ -8,8 +8,8 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
 class Module implements ConfigProviderInterface {
-
-    public function getServiceConfig() {
+    
+      public function getServiceConfig() {
         return array(
             'factories' => array(
                 'Certification\Model\ProviderTable' => function($sm) {
