@@ -1554,29 +1554,48 @@ class OdkFormService {
                     $headerName[] = end($header);
                 }
                 $count = count($sheetData);
+                $findInstancePosition = array_search('instanceID', $headerName);
+                $findStartPosition = array_search('start', $headerName);
+                $findEndPosition = array_search('end', $headerName);
+                $findAuditSignPosition = array_search('auditorSignature', $headerName);
+                $findAssesmentOfAuditPosition = array_search('assesmentofaudit', $headerName);
+                
                 for ($i = 2; $i <= $count; $i++) {
                     $row = $objPHPExcel->getActiveSheet()->getRowIterator($i)->current();
                     $cellIterator = $row->getCellIterator();
                     $cellIterator->setIterateOnlyExistingCells(false);
                     $inc = 0;
+                    $validateData = 0;
                     foreach ($cellIterator as $cell) {
                         $value = $cell->getValue();
-                        if($inc==0 || $inc==1 && trim($cell->getValue())!=''){
+                        if($inc==$findStartPosition || $inc==$findEndPosition && trim($cell->getValue())!=''){
                             $dValue = explode(" ",trim($cell->getValue()));
+                            if(count($dValue)==2){
+                            $value = trim($cell->getValue());    
+                            }else{
                             $originalDate = $dValue[5]."-".$dValue[1]."-".$dValue[2];
                             $newDate = date("Y-m-d", strtotime($originalDate));
                             $value = $newDate."T".$dValue[3].".000+02";
+                            }
                         }
-                        if($inc==8 && trim($cell->getValue())!=''){
-                            $dValue = explode(" ",trim($cell->getValue()));
-                            $originalDate = $dValue[5]."-".$dValue[1]."-".$dValue[2];
-                            $newDate = date("Y-m-d", strtotime($originalDate));
-                            $value = $newDate;
-                        }else if($inc==220 && trim($cell->getValue()!='')){
+                        if($inc==$findAssesmentOfAuditPosition){
+                            if(trim($cell->getValue())!=''){
+                                $dValue = explode(" ",trim($cell->getValue()));
+                                if(count($dValue)==2){
+                                    $value = trim($cell->getValue());
+                                }else{
+                                $originalDate = $dValue[5]."-".$dValue[1]."-".$dValue[2];
+                                $newDate = date("Y-m-d", strtotime($originalDate));
+                                $value = $newDate;
+                                }
+                            }else{
+                                $value = '0000:00:00';
+                            }
+                        }else if($inc==$findAuditSignPosition && trim($cell->getValue()!='')){
                             $auditorSign = array('url'=>$cell->getValue());
                             $value = json_encode($auditorSign);
                         }
-                        if($inc == 221){
+                        if($inc == $findInstancePosition){
                             $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID'=>trim($cell->getValue())));
                             $validateQueryStr = $sql->getSqlStringForSqlObject($validateQuery);
                             $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();

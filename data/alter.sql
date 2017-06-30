@@ -508,4 +508,4 @@ INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_na
 --Pal 06-Jun-2017
 ALTER TABLE `spi_form_v_3` ADD `facility` INT(11) NULL DEFAULT NULL AFTER `auditroundno`;
 --saravanna 21-jun-2017
-INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'spiv3-import-csv-file', 'SPIV3 Import CSV');
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'validate-spiv3-data', 'SPI RT V3-Data Validation');
