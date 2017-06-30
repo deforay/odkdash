@@ -63,13 +63,15 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );
-			$this->insert($data);
+	    $this->insert($data);
             return $lastInsertedId = $this->lastInsertValue;
         }
     }
 	
     public function updateFacilityDetails($params){
         if(isset($params['rowId']) && trim($params['rowId'])!=""){
+	    $dbAdapter = $this->adapter;
+	    $spiv3Db = new SpiFormVer3Table($dbAdapter);
             $rowId=base64_decode($params['rowId']);
             $data = array(
                 'facility_id' => $params['facilityId'],
@@ -81,7 +83,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );
-			$this->update($data,array('id'=>$rowId));
+	    $this->update($data,array('id'=>$rowId));
+	    //update spiv3 table facility info
+	    $spiv3Db->updateSpiv3FacilityInfo($rowId,$params);
             return $rowId;
         }
     }

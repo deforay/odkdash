@@ -7,7 +7,7 @@ ALTER TABLE  `spi_form_v_3` ADD  `status` VARCHAR( 100 ) NULL DEFAULT  'pending'
 CREATE TABLE IF NOT EXISTS `spi_rt_3_facilities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `facility_id` varchar(255) DEFAULT NULL,
-  `facility_name` varchar(255) DEFAULT NULL,
+  `` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `contact_person` varchar(255) DEFAULT NULL,
   `district` varchar(255) DEFAULT NULL,
@@ -508,4 +508,17 @@ INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_na
 --Pal 06-Jun-2017
 ALTER TABLE `spi_form_v_3` ADD `facility` INT(11) NULL DEFAULT NULL AFTER `auditroundno`;
 --saravanna 21-jun-2017
-INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'validate-spiv3-data', 'SPI RT V3-Data Validation');
+INSERT INTO `odkdash`.`privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'spiv3-import-csv-file', 'SPIV3 Import CSV');
+
+--Pal 27-Jun-2017
+ALTER TABLE `spi_form_v_3_duplicate` DROP `facilityname`;
+
+ALTER TABLE `spi_form_v_3` DROP `facilityname`;
+
+ALTER TABLE `spi_form_v_3` DROP `facilityid`;
+
+ALTER TABLE `spi_form_v_3_duplicate` CHANGE `facilityid` `facility` INT(11) NULL DEFAULT NULL;
+
+ALTER TABLE `spi_form_v_3` ADD `facilityid` INT(11) NULL DEFAULT NULL AFTER `facility`, ADD `facilityname` VARCHAR(500) NULL DEFAULT NULL AFTER `facilityid`;
+
+ALTER TABLE `spi_form_v_3_duplicate` ADD `facilityid` INT(11) NULL DEFAULT NULL AFTER `facility`, ADD `facilityname` VARCHAR(500) NULL DEFAULT NULL AFTER `facilityid`;
