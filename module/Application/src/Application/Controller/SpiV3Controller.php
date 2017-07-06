@@ -370,6 +370,9 @@ class SpiV3Controller extends AbstractActionController
             $param = $request->getPost();
             $result = $odkFormService->validateSPIV3File($param);
             return $this->redirect()->toUrl("/spi-v3/validate-spiv3-data");
+        }else{
+            $tokenResults = $odkFormService->getSpiV3FormUniqueTokens();
+            return new ViewModel(array('tokenResults' => $tokenResults));
         }
     }
     public function validateSpiv3DetailsAction()

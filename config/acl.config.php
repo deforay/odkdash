@@ -74,6 +74,7 @@ return array(
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
             'validate-spiv3-data' => 'allow',
+            'download-files'=>'allow',
         ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
