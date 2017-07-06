@@ -21,7 +21,7 @@ return array(
     ),
     'module_layouts' => array(
         'Application' => 'layout/layout',
-        'Application' => 'layout/modal',
+        'Application' => 'layout/modal'
     ),
     'service_manager' => array(
         'factories' => array(

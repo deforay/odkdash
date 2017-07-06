@@ -1521,8 +1521,7 @@ class OdkFormService {
         return $db->fetchDownloadFilesRow();
     }
     
-    public function validateSPIV3File($params)
-    {
+    public function validateSPIV3File($params){
         $db = $this->sm->get('SpiFormVer3TempTable');
         $dbMain = $this->sm->get('SpiFormVer3Table');
         $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');

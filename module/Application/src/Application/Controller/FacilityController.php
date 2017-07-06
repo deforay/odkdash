@@ -67,7 +67,7 @@ class FacilityController extends AbstractActionController {
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $result = $odkFormService->getAllFacilityNames();
         return new ViewModel(array(
-            'facilityName' => $result,
+            'facilityName' => $result
         ));
     }
     

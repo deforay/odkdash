@@ -109,7 +109,7 @@ class SpiV3Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $odkFormService->updateSpiForm($params);
-            return $this->redirect()->toRoute("spi-v3-form");
+            return $this->redirect()->toUrl("/spi-v3/manage-facility");
         } else {
             $id = $this->params()->fromRoute('id');
             $facilitiesResult = $odkFormService->getAllFacilityNames();
