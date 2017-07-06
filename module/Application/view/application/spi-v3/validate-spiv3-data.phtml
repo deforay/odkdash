@@ -31,9 +31,34 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
         <br>
         <br>
 		<div class="widget widget-fullwidth widget-small" style="padding:15px;">
+				
 				<div class="col-sm-12">
 						<div class="col-sm-3" id="totalDataCount"></div>
 						<div class="col-sm-3" id="newDataCount"></div>
+				</div>
+				<div class="col-sm-12" style="padding-top:15px;">
+						<div class="col-sm-3">&nbsp;</div>
+						<div class="col-sm-6">
+								<div class="col-sm-1">
+								<label>Token:</label>
+								</div>
+								<div class="col-sm-5">
+								<select class="form-control" name="token" id="token" title="Please choose token">
+										<option value="">-- Select --</option>
+										<?php
+										$selected = '';
+										if(count($tokenResults)==1){
+												$selected = "selected";
+										}
+										foreach($tokenResults as $token){
+												?>
+												<option value="<?php echo $token['token'];?>" <?php echo $selected;?>><?php echo $token['token'];?></option>
+												<?php
+										}
+										?>
+								</select>
+								</div>
+						</div>
 				</div>
 				<div>
 				<a class="btn btn-space btn-primary" id="addValidateData" href="javascript:void(0)" style="visibility:hidden;" onclick="insertValidateData()">Import Selected Audit(s)</a>
@@ -167,16 +192,18 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
     }
 	function insertValidateData() {
         validateId = $("#checkedValidateSpiv3Data").val();
-		if (validateId!='') {
+        token = $("#token").val();
+		if (validateId!='' && token!='') {
 				conf = confirm("Are you sure want to import these audit(s)?");
 				if (conf) {
 						$.blockUI();
-						$.post("<?php echo $this->url('spi-v3-form',array('action'=>'add-spiv3-validate-data')); ?>",{validateId:validateId},
+						$.post("<?php echo $this->url('spi-v3-form',array('action'=>'add-spiv3-validate-data')); ?>",{validateId:validateId,token:token},
 						function(data){
 							alert("Added successfully");
 							selectedData = [];
 							selectedDataId = [];
 							$("#checkedValidateSpiv3Data").val('');
+							$("#token").val('');
 							$("#checkAllValidateData").attr('checked',false);
 							table.draw();
 							$("#addValidateData").css("visibility","hidden");
@@ -184,7 +211,7 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
 						});
 				}
         }else{
-			alert("Please choose atleat one row!");
+			alert("Please choose atleat one row and token!");
 		}
     }
 </script>

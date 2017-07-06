@@ -3032,7 +3032,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 $newResult['instanceName'] = isset($newResult['instanceName']) ? $newResult['instanceName'] :"";
         
                 $par = array(
-                        'token' => $newResult['token'],
+                        'token' => $params['token'],
                         'content' => $newResult['content'],
                         'formId' => $newResult['formId'],
                         'formVersion' => $newResult['formVersion'],
