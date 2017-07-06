@@ -344,6 +344,15 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	$provinceQueryStr = $sql->getSqlStringForSqlObject($provinceQuery);
 	return $dbAdapter->query($provinceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
+	
+    public function getSpiV3FormUniqueDistrict(){
+	$dbAdapter = $this->adapter;
+	$sql = new Sql($dbAdapter);
+	$districtQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+	                               ->columns(array('name'=>new Expression("DISTINCT district")));
+	$districtQueryStr = $sql->getSqlStringForSqlObject($districtQuery);
+	return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
     
     public function mapProvince($params){
 	$result = 0;

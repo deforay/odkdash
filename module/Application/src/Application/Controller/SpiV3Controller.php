@@ -114,9 +114,13 @@ class SpiV3Controller extends AbstractActionController
             $id = $this->params()->fromRoute('id');
             $facilitiesResult = $odkFormService->getAllFacilityNames();
             $result = $odkFormService->getFormData($id);
+            $provinceList=$odkFormService->getSpiV3FormUniqueLevelNames();
+            $districtList=$odkFormService->getSpiV3FormUniqueDistrict();
             return new ViewModel(array(
                 'formData' => $result,
-                'facilities' => $facilitiesResult
+                'facilities' => $facilitiesResult,
+                'provinceList' => $provinceList,
+                'districtList' => $districtList
             ));
         }
     }
@@ -356,7 +360,7 @@ class SpiV3Controller extends AbstractActionController
             $params = $request->getPost();
             $result = $odkFormService->getDistrictData($params);
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result))
+            $viewModel->setVariables(array('result' => $result,'params'=>$params))
                       ->setTerminal(true);
             return $viewModel;
         }

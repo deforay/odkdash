@@ -742,6 +742,10 @@ class OdkFormService {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchSpiV3FormUniqueLevelNames();
     }
+    public function getSpiV3FormUniqueDistrict(){
+        $db = $this->sm->get('SpiRtFacilitiesTable');
+        return $db->getSpiV3FormUniqueDistrict();
+    }
     public function getDistrictData($params){
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchDistrictData($params);

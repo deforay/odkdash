@@ -1951,6 +1951,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function updateSpiFormDetails($params){
+        //\Zend\Debug\Debug::dump($params);die;
         if (trim($params['formId']) != "") {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
@@ -1972,6 +1973,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
 					}
                 }
                 $summationData=json_encode($summationData,true);
+            }
+            if($params['province']=='other' && trim($params['provinceTextBox'])!='')
+            {
+               $params['province'] =  $params['provinceTextBox'];
+            }
+            if($params['district']=='other' && trim($params['districtTextBox'])!='')
+            {
+               $params['district'] =  $params['districtTextBox'];
             }
             
             //update facility tbl
@@ -3007,8 +3016,12 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from(array('f' => 'spi_rt_3_facilities'))
-                                ->where('f.province IN ("' . implode('", "', $params['province']) . '") AND f.district!=""')
                                 ->group('district');
+        if (is_array($params['province'])){
+            $query = $query->where('f.province IN ("' . implode('", "', $params['province']) . '") AND f.district!=""');
+        }else{
+            $query = $query->where('f.province="'.$params['province'].'" AND f.district!=""');
+        }
         $queryStr = $sql->getSqlStringForSqlObject($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
