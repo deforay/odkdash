@@ -54,6 +54,9 @@ $acl = $this->layout()->acl;
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
                             <th style="width:5%;">E-Mail</th>
                         <?php } ?>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
+                            <th style="width:5%;">Status</th>
+                        <?php } ?>
                     </tr>
 
                 </thead>
@@ -91,6 +94,9 @@ $acl = $this->layout()->acl;
                             <?php } ?>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\CertificationMail', 'index')) { ?>
                                 <td> <div style='width:120px;height:40px;overflow:auto;'><a href="<?php echo $this->url('certification-mail', array('action' => 'index'), array('query' => array(base64_encode('email') => base64_encode($certification['email']), base64_encode('certification_id') => base64_encode($certification['id']), base64_encode('date_end_validity') => base64_encode($certification['date_end_validity']), base64_encode('provider') => base64_encode($certification['last_name'] . ' ' . $certification['first_name'] . ' ' . $certification['middle_name']), base64_encode('provider_id') => base64_encode($certification['provider']), base64_encode('facility_in_charge_email') => base64_encode($certification['facility_in_charge_email'])))); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;Send reminder</a></div> </td>
+                            <?php } ?>    
+                                <?php if ($acl->isAllowed($role, 'Certification\Controller\Recertification', 'index')) { ?>
+                                <td> <div style='width:120px;height:40px;overflow:auto;' onclick="if(!confirm('Do you really want to mark this Reminider as sent?')){return false;}" ><a href="<?php echo $this->url('recertification', array('action' => 'index'), array('query' => array(base64_encode('certification_id') => base64_encode($certification['id']),base64_encode('key') => base64_encode('key')))); ?>"><span class="glyphicon glyphicon-send"></span>&nbsp;send via mail</a></div> </td>
                             <?php } ?>    
                         </tr>
                         <?php

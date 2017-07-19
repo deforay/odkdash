@@ -12,7 +12,7 @@ function validateForm()
     var elmt2 = document.getElementById("Provider");
     var elmt3 = document.getElementById("Type Of Reminder");
     var elmt4 = document.getElementById("Reminder Send To");
-    var elmt5= document.getElementById("Name Of Recipient");
+    var elmt5 = document.getElementById("Name Of Recipient");
     var elmt6 = document.getElementById("date2");
 
 
@@ -23,8 +23,8 @@ function validateForm()
         alert("Please enter the \"Due Date\"");
 
         return false;
-    } 
-    
+    }
+
     if (b == null || b == "") {
 
 
@@ -32,7 +32,7 @@ function validateForm()
         alert("Please enter the ''" + elmt2.id + "''");
         return false;
     }
-    
+
     if (c == null || c == "") {
 
 
@@ -54,7 +54,7 @@ function validateForm()
         alert("Please enter the ''" + elmt5.id + "''");
         return false;
     }
-    
+
     if (f == null || f == "")
     {
 
@@ -62,7 +62,7 @@ function validateForm()
         alert("Please enter the \"Date Reminder Sent\"");
 
         return false;
-    } 
+    }
 
 }
 
@@ -70,6 +70,22 @@ function emptyInput(input) {
 
     input.style.boxShadow = 'none';
 }
+function setProvider() {
+    var myAnchor = document.getElementById("Provider");
+
+    if (id && name) {
+        myAnchor.innerHTML = "<option value=" + id + ">" + name + "</option>";
+    }
+
+    if (due_date) {
+        var myAnchor2 = document.getElementById('date');
+        var myDate = document.createElement('text');
+        myDate.innerHTML = due_date;
+        myDate.className = "form-control";
+        myAnchor2.parentNode.replaceChild(myDate, myAnchor2);
+    }
+}
+setProvider();
 
 $(document).ready(function () {
 
@@ -89,21 +105,21 @@ $(document).ready(function () {
 
 }); //EOf:: DOM isReady
 
- $(document).ready(function () {
+$(document).ready(function () {
 
-        $("#date2").datepicker(
-                {
-                    showButtonPanel: true
-                    , dateFormat: 'yy/mm/dd'
-                    , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
-                    , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
-                    , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                    , monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
-                    , prevText: 'Previous'
-                    , nextText: 'Next'
-                    , closeText: 'OK'
-                    , currentText: "Today"
-                });
+    $("#date2").datepicker(
+            {
+                showButtonPanel: true
+                , dateFormat: 'yy/mm/dd'
+                , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+                , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
+                , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                , monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
+                , prevText: 'Previous'
+                , nextText: 'Next'
+                , closeText: 'OK'
+                , currentText: "Today"
+            });
 
-    }); //EOf:: DOM isReady
+}); //EOf:: DOM isReady
 

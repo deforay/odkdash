@@ -20,7 +20,7 @@ class WrittenExamController extends AbstractActionController {
     }
 
     public function indexAction() {
-$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         return new ViewModel(array(
             'writtens' => $this->getWrittenExamTable()->fetchAll()
         ));
@@ -60,7 +60,7 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
                         $last_id = $this->getWrittenExamTable()->last_id();
                         $this->getWrittenExamTable()->insertToExamination($last_id);
                         $container->alertMsg = 'Written exam added successfully';
-                        return $this->redirect()->toRoute('written-exam', array('action'=> 'add'));
+                        return $this->redirect()->toRoute('written-exam', array('action' => 'add'));
                     } else if ($form->isValid() && !empty($practical)) {
                         $writtenExam->exchangeArray($form->getData());
                         $this->getWrittenExamTable()->saveWrittenExam($writtenExam);
@@ -82,7 +82,7 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
         }
         $nombre = null;
         if (isset($provider['id'])) {
-            $nombre = $this->getWrittenExamTable()->countPractical($practical, $provider['id']);
+            $nombre = $this->getWrittenExamTable()->attemptNumber($provider['id']);
         }
 
         return array('form' => $form,
@@ -128,10 +128,19 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
                 return $this->redirect()->toRoute('written-exam');
             }
         }
-
+        $attemptNumber = $this->getWrittenExamTable()->getExamType($id_written_exam);
         return array(
             'id_written_exam' => $id_written_exam,
             'form' => $form,
+            'attemptNumber' => $attemptNumber
+        );
+    }
+
+    public function attemptAction() {
+        $q = (int) $_GET['q'];
+        $result = $this->getWrittenExamTable()->attemptNumber($q);
+        return array(
+            'result' => $result,
         );
     }
 

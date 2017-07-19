@@ -58,7 +58,7 @@ class PracticalExamController extends AbstractActionController {
                         $last_id = $this->getPracticalExamTable()->last_id();
                         $this->getPracticalExamTable()->insertToExamination($last_id);
                         $container->alertMsg = 'Practical exam added successfully';
-                        return $this->redirect()->toRoute('practical-exam', array('action'=>'add'));
+                        return $this->redirect()->toRoute('practical-exam', array('action' => 'add'));
                     } else if ($form->isValid() && !empty($written)) {
                         $practicalExam->exchangeArray($form->getData());
                         $this->getPracticalExamTable()->savePracticalExam($practicalExam);
@@ -70,7 +70,7 @@ class PracticalExamController extends AbstractActionController {
                             $this->getPracticalExamTable()->insertToExamination($last_id);
                         }
                         $container->alertMsg = 'Practical exam added successfully';
-                        return $this->redirect()->toRoute('practical-exam', array('action'=>'add'));
+                        return $this->redirect()->toRoute('practical-exam', array('action' => 'add'));
                     }
                 } else {
                     $container->alertMsg = 'Impossible to add !!!! Because this tester has already passed a practical exam, he is waiting to add the written exam';
@@ -80,7 +80,7 @@ class PracticalExamController extends AbstractActionController {
         }
         $nombre = null;
         if (isset($provider['id'])) {
-            $nombre = $this->getPracticalExamTable()->countWritten($id_written, $provider['id']);
+            $nombre = $this->getPracticalExamTable()->attemptNumber($provider['id']);
         }
         return array('form' => $form,
             'written' => $id_written,
@@ -117,16 +117,26 @@ class PracticalExamController extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $this->getPracticalExamTable()->savePracticalExam($practicalExam);
-$container = new Container('alert');
-$container->alertMsg = 'Practical exam updated successfully';
+                $container = new Container('alert');
+                $container->alertMsg = 'Practical exam updated successfully';
 
                 return $this->redirect()->toRoute('practical-exam');
             }
         }
+$attemptNumber= $this->getPracticalExamTable()->getExamType($practice_exam_id);
 
         return array(
             'practice_exam_id' => $practice_exam_id,
             'form' => $form,
+            'attemptNumber'=> $attemptNumber,
+        );
+    }
+
+    public function attemptAction() {
+        $q = (int) $_GET['q'];
+        $result = $this->getPracticalExamTable()->attemptNumber($q);
+        return array(
+            'result' => $result,
         );
     }
 

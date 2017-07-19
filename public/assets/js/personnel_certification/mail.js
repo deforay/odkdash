@@ -63,20 +63,20 @@ To print this certificate ensure that the paper size selected by the printer is 
 setChoice();
 
 function setMsg() {
-
+    var recipient = document.getElementById("to");
+    var recipient2 = document.getElementById("cc");
     var choice = document.getElementById("Choice").value;
     var message = document.getElementById("Message");
     var subject = document.getElementById("Subject");
     var type_recipient = document.getElementById("type_recipient").value;
-    
+
     if (choice == 2 && type_recipient == '') {
         subject.innerHTML = '';
         message.innerHTML = '';
     } else if (choice == 2 && type_recipient == 'Provider') {
         message.innerHTML = "This is a reminder that your HIV tester certificate will expire " + due_date + ". Please contact your national certification organization to schedule both the written and practical examinations. Any delay in completing these assessments will automatically result in the withdrawal your certificate.";
         subject.innerHTML = 'HIV Tester Certificate Reminder';
-
-    } else if (choice == 2 && type_recipient != 'Provider') {
+           } else if (choice == 2 && type_recipient != 'Provider') {
 
         subject.innerHTML = 'HIV Tester Certificate Reminder';
         message.innerHTML = ' This is a reminder that the HIV tester certificate of the following provider ' + provider + ' will expire ' + due_date + '. Please contact your national certification organization to schedule both the written and practical examinations. Any delay in completing these assessments will automatically result in the withdrawal the certificate.';

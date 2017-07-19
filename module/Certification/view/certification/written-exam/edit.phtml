@@ -25,7 +25,12 @@ $sessionLogin = new Container('credo');
         <div class="row">
             <div class="col-sm-8">
                 <h2>Edit Written Exam</h2>
-                <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+                <div class="row">
+                    <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+                </div>
+                <div class="row">
+                    <span class="muted pull-right" style="font-size:15px; "><span class="mandatory" style="color: green;">*</span> indicates read only field</span>
+                </div>
             </div>
         </div>
     </div>
@@ -38,7 +43,7 @@ $sessionLogin = new Container('credo');
                 $form->get('exam_type')->setAttributes([
                     'class' => 'form-control',
                     'placeholder' => 'Type of Exam',
-//                    'options' => ['1st attempt' => '1st attempt'],
+                    'options' => [$attemptNumber => $attemptNumber],
                     'id' => 'Type of Exam',
                     'onclick' => 'emptyInput(this)'
                 ]);
@@ -138,16 +143,18 @@ $sessionLogin = new Container('credo');
                 echo $this->form()->openTag($form);
                 ?>
                 <?php echo $this->formHidden($form->get('id_written_exam')->setAttribute('class', 'form-control')) ?>
-                <div class="form-group col-lg-6"> 
-                    <?= $this->formLabel($form->get('exam_type')); ?><span class="mandatory">*</span>
-                    <?= $this->formElement($form->get('exam_type')); ?>
-                    <?= $this->formElementErrors($form->get('exam_type')); ?>
-                </div>
+                
                 <div class="form-group col-lg-6">
                     <?= $this->formLabel($form->get('provider_id')); ?><span class="mandatory">*</span>
                     <?= $this->formElement($form->get('provider_id')); ?>
                     <?= $this->formElementErrors($form->get('provider_id')); ?>
                 </div>
+                <div class="form-group col-lg-6"> 
+                    <?= $this->formLabel($form->get('exam_type')); ?><span class="mandatory" style="color: green;">*</span>
+                    <?= $this->formElement($form->get('exam_type')); ?>
+                    <?= $this->formElementErrors($form->get('exam_type')); ?>
+                </div>
+                
                 <div class="form-group col-lg-6">
                     <?= $this->formLabel($form->get('exam_admin')); ?><span class="mandatory">*</span>
                     <?= $this->formElement($form->get('exam_admin')); ?>

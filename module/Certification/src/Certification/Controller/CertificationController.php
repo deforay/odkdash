@@ -25,11 +25,23 @@ class CertificationController extends AbstractActionController {
         $nb2 = $this->getCertificationTable()->countReminder();
         $this->layout()->setVariable('nb', $nb);
         $this->layout()->setVariable('nb2', $nb2);
-        return new ViewModel(array(
-            'certifications' => $this->getCertificationTable()->fetchAll(),
-            'certifications2' => $this->getCertificationTable()->fetchAll2(),
-            'certifications3' => $this->getCertificationTable()->fetchAll3(),
-        ));
+        $certification_id = (int) base64_decode($this->params()->fromQuery(base64_encode('certification_id'), null));
+        $key = base64_decode($this->params()->fromQuery(base64_encode('key'), null));
+        if (!empty($certification_id) && !empty($key)) {
+            $this->getCertificationTable()->CertificateSent($certification_id);
+            $container = new Container('alert');
+            $container->alertMsg = 'Perform successfully';
+            return $this->redirect()->toRoute('certification', array(
+                        'action' => 'edit',
+                        'certification_id' => base64_encode($certification_id)));
+        } else {
+
+            return new ViewModel(array(
+                'certifications' => $this->getCertificationTable()->fetchAll(),
+                'certifications2' => $this->getCertificationTable()->fetchAll2(),
+                'certifications3' => $this->getCertificationTable()->fetchAll3(),
+            ));
+        }
     }
 
     public function addAction() {

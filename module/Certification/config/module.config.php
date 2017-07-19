@@ -16,7 +16,7 @@ return array(
             'certification' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/certification[/:action][/:id][/:written][/:practical][/:direct][/:sample][/:last][/:first][/:middle][/:provider][/:certification_id][/:professional_reg_no][/:date_issued]',
+                    'route' => '/certification[/:action][/:id][/:written][/:practical][/:direct][/:sample][/:last][/:first][/:middle][/:provider][/:certification_id][/:professional_reg_no][/:date_issued][/:key]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
 //                        'id' => '[0-9]+',
@@ -30,7 +30,7 @@ return array(
             'recertification' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/recertification[/:action][/:recertification_id]',
+                    'route' => '/recertification[/:action][/:recertification_id][/:certification_id][/:key]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
 //                        'recertification_id' => '[0-9]+',

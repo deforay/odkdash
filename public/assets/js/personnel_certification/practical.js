@@ -16,8 +16,8 @@ function validateForm() {
     var elmt4 = document.getElementById("Sample Testing Score");
     var elmt5 = document.getElementById("date");
     var elmt6 = document.getElementById("Type of Exam");
-    
-    
+
+
     if (f == null || f == "")
     {
 
@@ -25,7 +25,7 @@ function validateForm() {
         alert("Please enter the \"Number of Attempts\"");
         return false;
     }
-    
+
     if (a == null || a == "")
     {
 
@@ -43,29 +43,29 @@ function validateForm() {
 
     if (c == null || c == "") {
         elmt3.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('Please enter the "' + elmt3.id+'"');
+        alert('Please enter the "' + elmt3.id + '"');
         return false;
     } else if (c < 0 || c > 100 || numbers.test(c) == false)
     {
         elmt3.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt3.id + '"  Must be a valid nunber between 0 and 100');
+        alert('"' + elmt3.id + '"  Must be a valid nunber between 0 and 100');
         return false;
     }
 
     if (d == null || d == "") {
         elmt4.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('Please enter the "' + elmt4.id+'"');
+        alert('Please enter the "' + elmt4.id + '"');
         return false;
     } else if (d < 0 || d > 100 || numbers.test(d) == false)
     {
         elmt4.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('"'+elmt4.id + '"  Must be a valid nunber between 0 and 100');
+        alert('"' + elmt4.id + '"  Must be a valid nunber between 0 and 100');
         return false;
     }
 
     if (e == null || e == "") {
         elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert('Please enter the "' + elmt5.id+'"');
+        alert('Please enter the "' + elmt5.id + '"');
         return false;
     }
 
@@ -76,8 +76,6 @@ function emptyInput(input) {
 
     input.style.boxShadow = 'none';
 }
-
-
 
 $(document).ready(function () {
 
@@ -98,6 +96,30 @@ $(document).ready(function () {
 }); //EOf:: DOM isReady
 
 
+function attempt() {
+    var myAnchor = document.getElementById("Type of Exam");
+    if (nombre) {
+        if (nombre == 0) {
+            myAnchor.innerHTML = "<option value='1st attempt'>1st attempt</option>";
+        } else if (nombre == 1) {
+            myAnchor.innerHTML = "<option value='2nd attempt'>2nd attempt</option>";
+        } else if (nombre == 2) {
+            myAnchor.innerHTML = "<option value='3rd attempt'>3rd attempt</option>";
+        } else if (nombre >= 3) {
+            alert('This tester has already made three unsuccessful attempts');
+            window.location = "/written-exam";
+        }
+    }
+}
+attempt();
 
+function tester() {
+
+    var myAnchor = document.getElementById("Tester");
+    if (id && name) {
+        myAnchor.innerHTML = "<option value=" + id + ">" + name + "</option>";
+    }
+}
+tester();
 
       

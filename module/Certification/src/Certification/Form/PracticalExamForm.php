@@ -26,13 +26,9 @@ class PracticalExamForm extends Form {
             'name' => 'exam_type',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Type of Exam',
-                'empty_option' => 'Please choose a Number of Attempts',
-                'value_options' => array(
-                    '1st attempt' => '1st attempt',
-                    '2nd attempt' => '2nd attempt',
-                    '3rd attempt' => '3rd attempt'
-                )
+                'label' => 'Number of Attempts',
+                 'disable_inarray_validator' => true, 
+//                
             ),
         ));
 

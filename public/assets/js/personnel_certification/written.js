@@ -191,5 +191,40 @@ $(document).ready(function () {
 }); //EOf:: DOM isReady
 
 
+function setAttempt() {
+                        var myAnchor = document.getElementById("Type of Exam");
+
+                        if (nombre) {
+
+                            if (nombre == 0) {
+                                myAnchor.innerHTML = "<option value='1st attempt'>1st attempt</option>";
+                            } else if (nombre == 1) {
+
+                                myAnchor.innerHTML = "<option value='2nd attempt'>2nd attempt</option>";
+
+
+                            } else if (nombre == 2) {
+                                myAnchor.innerHTML = "<option value='3rd attempt'>3rd attempt</option>";
+
+                            } else if (nombre >= 3) {
+                                alert('This tester has already made three unsuccessful attempts');
+                                window.location = "/practical-exam";
+                            }
+                        }
+                    }
+                    setAttempt();
+
+                    function tester() {
+
+                        var myAnchor = document.getElementById("Tester");
+                        if (id && name) {
+
+                            myAnchor.innerHTML = "<option value=" + id + ">" + name + "</option>";
+
+                        }
+                    }
+
+                    tester();
+
 
 

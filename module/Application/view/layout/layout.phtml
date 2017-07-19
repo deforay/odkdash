@@ -155,31 +155,33 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                         <ul class="nav navbar-nav am-nav-right">
                             <li><a href="/" style="font-size:1.8em;">Dashboard for Quality Improvement of HIV Rapid Testing</a></li>
                         </ul>
-                        
+
                         <?php
-                        if(!empty($nb) &&$nb>0){
-                        if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Certification", "index")) {
-                            ?>
-                        <ul class="nav navbar-nav am-nav-right">
-                            <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold; margin-top: -5px;"><?php echo $this->nb;?>&nbsp;Certificate(s)</div></button></a></li>
-                        </ul>
-                        <?php } }?>
-                        
+                        if (!empty($nb) && $nb > 0) {
+                            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Certification", "index")) {
+                                ?>
+                                <ul class="nav navbar-nav am-nav-right">
+                                    <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold; margin-top: -5px;"><?php echo $this->nb; ?>&nbsp;Certificate(s)</div></button></a></li>
+                                </ul>
+                            <?php }
+                        } ?>
+
                         <?php
-                        if(!empty($nb2) &&$nb2>0){
-                        if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Recertification", "index")) {
-                            ?>
-                        <ul class="nav navbar-nav am-nav-right">
-                            <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante2" style="visibility:visible; font-size: 15px; font-weight: bold;margin-top: -5px;"><?php echo $this->nb2;?>&nbsp;Reminder(s)</div></button></a></li>
-                        </ul>
-                        <?php } }?>
-                        
-<!--                                                             <ul class="nav navbar-nav am-nav-right">
-                                                              <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
-                                                              <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
-                                                              <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>
-                                                              <li><a href="/">SPI RT 3.0</a></li>
-                                                             </ul>-->
+                        if (!empty($nb2) && $nb2 > 0) {
+                            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Recertification", "index")) {
+                                ?>
+                                <ul class="nav navbar-nav am-nav-right">
+                                    <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante2" style="visibility:visible; font-size: 15px; font-weight: bold;margin-top: -5px;"><?php echo $this->nb2; ?>&nbsp;Reminder(s)</div></button></a></li>
+                                </ul>
+    <?php }
+} ?>
+
+                        <!--                                                             <ul class="nav navbar-nav am-nav-right">
+                                                                                      <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
+                                                                                      <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
+                                                                                      <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>
+                                                                                      <li><a href="/">SPI RT 3.0</a></li>
+                                                                                     </ul>-->
 
                     </div>
                 </div>
@@ -192,11 +194,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                         if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
                             ?>
                             <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span>Dashboard</span></a></li>
-                        <?php } ?>
-                        <?php if (trim($auditMenu) != "") { ?>
+<?php } ?>
+                                <?php if (trim($auditMenu) != "") { ?>
                             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span>Audit</span></a>
                                 <ul class="sub-menu">
-                                    <?php echo $auditMenu; ?>
+                            <?php echo $auditMenu; ?>
                                 </ul>
                             </li>
                         <?php } ?>
@@ -206,7 +208,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                             <li class="parent"><a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span>Facility List</span></a></li>
                         <?php } ?>
 
-                        <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report")) { ?>
+<?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report")) { ?>
                             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span>Reports</span></a>
                                 <ul class="sub-menu">
                                     <li><a href="<?php echo $this->url('spi-v3-reports', array('action' => 'facility-report')); ?>">SPI V3 Facility Report</a></li>
@@ -229,11 +231,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                             ?>
                             <li class="parent"><a href="#"><i class="icon s7-config"></i><span>Configure</span></a>
                                 <ul class="sub-menu">
-                                    <?php echo $adminMenu; ?>
+    <?php echo $adminMenu; ?>
                                 </ul>
                             </li>
 
-                        <?php } ?>
+<?php } ?>
 
 
                         <!--menu personnel certification--> 
@@ -249,8 +251,6 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
 
 
                                     <ul  id="menu-accordeon">
-
-
                                         <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Training<span class="caret"></span></a>
                                             <ul>
                                                 <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Training</a></li>
@@ -260,8 +260,6 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                     </ul>
 
                                     <ul  id="menu-accordeon">
-
-
                                         <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Examination<span class="caret"></span></a>
                                             <ul>
                                                 <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
@@ -271,42 +269,43 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                         </li>
                                     </ul>
 
-
                                     <ul  id="menu-accordeon">
-
-
-
                                         <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Certification<span class="caret"></span></a>
                                             <ul>
                                                 <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certification</a></li>
                                                 <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Re-Certification</a></li>
-                                               
+
                                             </ul>
                                         </li>
                                     </ul>
-                                     <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
-                            ?>
-                                    <ul  id="menu-accordeon">
-                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<span class="caret"></span></a>
-                                            <ul>
-                                                <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
-                                                <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
-                                               <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
-                                               
-                                            </ul>
-                                        </li>
+
+                                   <ul  id="menu-accordeon">
+
+                                        <!--<li><a href="<?php // echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>-->
                                     </ul>
- <?php } ?>
+    <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
+        ?>
+                                        <ul  id="menu-accordeon">
+                                            <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<span class="caret"></span></a>
+                                                <ul>
+                                                    <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
+                                                    <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
+                                                    <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+
+                                                </ul>
+                                            </li>
+                                        </ul>
+                            <?php } ?>
 
                                 </ul> </li>
-                        <?php } ?>
+<?php } ?>
 
                     </ul>
                     <!--Sidebar bottom content-->
                 </div>
             </div>
 
-            <?php echo $this->content; ?>
+<?php echo $this->content; ?>
 
         </div>
         <div id="dDiv" class="dialog"> 
@@ -343,33 +342,35 @@ if (isset($container->alertMsg) && $container->alertMsg != "") {
 }
 ?>
                 });
-                
-                
-                
-                
-                var clignotement = function(){ 
-   if (document.getElementById('DivClignotante').style.visibility=='visible'){ 
-      document.getElementById('DivClignotante').style.visibility='hidden'; 
-   } 
-   else{ 
-   document.getElementById('DivClignotante').style.visibility='visible'; 
-   } 
-}; 
-// mise en place de l appel de la fonction toutes les 0.8 secondes 
-// Pour arrêter le clignotement : clearInterval(periode); 
-periode = setInterval(clignotement, 800); 
 
-var clignotement2 = function(){ 
-   if (document.getElementById('DivClignotante2').style.visibility=='visible'){ 
-      document.getElementById('DivClignotante2').style.visibility='hidden'; 
-   } 
-   else{ 
-   document.getElementById('DivClignotante2').style.visibility='visible'; 
-   } 
-}; 
+
+
+
+                var clignotement = function () {
+                    if (document.getElementById('DivClignotante')) {
+                        if (document.getElementById('DivClignotante').style.visibility == 'visible') {
+                            document.getElementById('DivClignotante').style.visibility = 'hidden';
+                        } else {
+                            document.getElementById('DivClignotante').style.visibility = 'visible';
+                        }
+                    }
+                };
 // mise en place de l appel de la fonction toutes les 0.8 secondes 
 // Pour arrêter le clignotement : clearInterval(periode); 
-periode2 = setInterval(clignotement2, 800); 
+                periode = setInterval(clignotement, 800);
+
+                var clignotement2 = function () {
+                    if (document.getElementById('DivClignotante2')) {
+                        if (document.getElementById('DivClignotante2').style.visibility == 'visible') {
+                            document.getElementById('DivClignotante2').style.visibility = 'hidden';
+                        } else {
+                            document.getElementById('DivClignotante2').style.visibility = 'visible';
+                        }
+                    }
+                };
+// mise en place de l appel de la fonction toutes les 0.8 secondes 
+// Pour arrêter le clignotement : clearInterval(periode); 
+                periode2 = setInterval(clignotement2, 800);
         </script>
 
     </body>

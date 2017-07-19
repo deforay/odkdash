@@ -21,13 +21,14 @@ class CertificationMailController extends AbstractActionController {
 
     public function indexAction() {
         $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
-        $email = base64_decode($this->params()->fromQuery(base64_encode('email'),null));
-        $facility_in_charge_email= base64_decode($this->params()->fromQuery(base64_encode('facility_in_charge_email')),null);
+        $email = base64_decode($this->params()->fromQuery(base64_encode('email'), null));
+        $facility_in_charge_email = base64_decode($this->params()->fromQuery(base64_encode('facility_in_charge_email')), null);
         $certification_id = base64_decode($this->params()->fromQuery(base64_encode('certification_id')));
-       /*provider name*/ 
-        $provider = base64_decode($this->params()->fromQuery(base64_encode('provider'),null));
-        $due_date = base64_decode($this->params()->fromQuery(base64_encode('date_end_validity'),null));
-        $provider_id= (int) base64_decode($this->params()->fromQuery(base64_encode('provider_id'),NULL));
+        $key = base64_decode($this->params()->fromQuery(base64_encode('key2'),null));
+        /* provider name */
+        $provider = base64_decode($this->params()->fromQuery(base64_encode('provider'), null));
+        $due_date = base64_decode($this->params()->fromQuery(base64_encode('date_end_validity'), null));
+        $provider_id = (int) base64_decode($this->params()->fromQuery(base64_encode('provider_id'), NULL));
 //        die($provider_id);
         $form = new CertificationMailForm();
         $form->get('submit')->setValue('SEND EMAIL');
@@ -89,7 +90,6 @@ class CertificationMailController extends AbstractActionController {
                     $this->getCertificationMailTable()->saveCertificationMail($save_mail);
                     $container->alertMsg = 'Mail sent successfully';
                     return $this->redirect()->toRoute('certification-mail');
-                    
                 }
             }
         }
@@ -98,8 +98,9 @@ class CertificationMailController extends AbstractActionController {
             'email' => $email,
             'list' => $list,
             'due_date' => $due_date,
-            'provider'=>$provider,
-            'facility_in_charge_email'=>$facility_in_charge_email);
+            'provider' => $provider,
+            'facility_in_charge_email' => $facility_in_charge_email,
+            'key' => $key);
     }
 
 }

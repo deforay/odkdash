@@ -126,20 +126,31 @@ class PracticalExamTable extends AbstractTableGateway {
     }
 
     /**
-     * count the number of written exam with the same id and set the number of attempt for another attempt
-     * @param type $written
-     * @return type integer
+     * count the number of  attempt 
+     * @return type $nombre integer
      */
-    public function countWritten($written,$provider) {
+    public function attemptNumber($provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam=' . $written.' and provider='.$provider.' and add_to_certification="no"';
-//        die($sql);
+
+        $sql1 = 'select max(date_certificate_issued) as max_date  from certification, examination WHERE certification.examination=examination.id and final_decision="certified" and provider=' . $provider;
+        $statement1 = $db->query($sql1);
+        $result1 = $statement1->execute();
+        foreach ($result1 as $res1) {
+            $max_date = $res1['max_date'];
+        }
+
+        if ($max_date == null) {
+            $max_date = '0000-00-00';
+        }
+
+        $sql = 'SELECT COUNT(*) as nombre from (select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, 
+                date_certificate_sent, certification_type, provider,last_name, first_name, middle_name, certification_id,
+                certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where examination.id = certification.examination and provider.id = examination.provider and final_decision in ("failed","pending") and date_certificate_issued >' . $max_date . ' and provider=' . $provider . ') as tab';
         $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
             $nombre = $res['nombre'];
         }
-//        die($nombre);
         return $nombre;
     }
 
@@ -159,14 +170,15 @@ class PracticalExamTable extends AbstractTableGateway {
 
     public function counPractical($provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT count(*) as nombre FROM examination WHERE practical_exam_id is not null and id_written_exam is null and  provider=' . $provider.' and add_to_certification="no"';
-      $statement = $db->query($sql);
+        $sql = 'SELECT count(*) as nombre FROM examination WHERE practical_exam_id is not null and id_written_exam is null and  provider=' . $provider . ' and add_to_certification="no"';
+        $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
             $nombre = $res['nombre'];
         }
-return $nombre;
+        return $nombre;
     }
+
     /**
      * 
      * @param type $written
@@ -174,7 +186,7 @@ return $nombre;
      */
     public function countWritten2($written) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam is not null and practical_exam_id is  null and id_written_exam=' . $written.' and add_to_certification="no"';
+        $sql = 'SELECT count(*) as nombre FROM examination WHERE id_written_exam is not null and practical_exam_id is  null and id_written_exam=' . $written . ' and add_to_certification="no"';
 //        die($sql);
         $statement = $db->query($sql);
         $result = $statement->execute();
@@ -184,21 +196,32 @@ return $nombre;
 //        die($nombre);
         return $nombre;
     }
-    
+
     /**
- * find number of date before another attempt
- * @param type $provider
- * @return type
- */
+     * find number of date before another attempt
+     * @param type $provider
+     * @return type
+     */
     public function numberOfDays($provider) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT DATEDIFF(now(),MAX(date_certificate_issued)) as nb_days from (SELECT provider, final_decision, date_certificate_issued, written_exam.id_written_exam , practical_exam.practice_exam_id ,last_name, first_name, middle_name, provider.id from examination, certification, written_exam,practical_exam, provider WHERE examination.id= certification.examination and examination.id_written_exam=written_exam.id_written_exam and practical_exam.practice_exam_id=examination.practical_exam_id and practical_exam.provider_id=provider.id and final_decision in ("pending","failed") and provider.id='.$provider.') as tab';
+        $sql = 'SELECT DATEDIFF(now(),MAX(date_certificate_issued)) as nb_days from (SELECT provider, final_decision, date_certificate_issued, written_exam.id_written_exam , practical_exam.practice_exam_id ,last_name, first_name, middle_name, provider.id from examination, certification, written_exam,practical_exam, provider WHERE examination.id= certification.examination and examination.id_written_exam=written_exam.id_written_exam and practical_exam.practice_exam_id=examination.practical_exam_id and practical_exam.provider_id=provider.id and final_decision in ("pending","failed") and provider.id=' . $provider . ') as tab';
         $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
             $nb_days = $res['nb_days'];
         }
-       return $nb_days;
+        return $nb_days;
     }
 
+    public function getExamType($practical) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT exam_type  from practical_exam WHERE practice_exam_id='.$practical;
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $exam_type = $res['exam_type'];
+        }
+        return $exam_type;
+    }
+    
 }

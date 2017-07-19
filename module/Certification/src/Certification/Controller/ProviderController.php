@@ -21,14 +21,14 @@ class ProviderController extends AbstractActionController {
     }
 
     public function indexAction() {
-$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         return new ViewModel(array(
             'providers' => $this->getProviderTable()->fetchAll(),
         ));
     }
 
     public function addAction() {
-$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
         $form = new ProviderForm($dbAdapter);
         $form->get('submit')->setValue('SUBMIT');
@@ -42,7 +42,7 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
             if ($form->isValid()) {
                 $provider->exchangeArray($form->getData());
                 ?>
-                <pre> <?php // print_r($provider)                 ?></pre>
+                <pre> <?php // print_r($provider)                  ?></pre>
 
                 <?php
                 $this->getProviderTable()->saveProvider($provider);
@@ -57,7 +57,7 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
     }
 
     public function editAction() {
-$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
 
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));
@@ -94,8 +94,8 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
                 return $this->redirect()->toRoute('provider');
             }
         }
-        $district = $this->providerTable->DistrictName($provider->district);
-        $facility = $this->providerTable->FacilityName($provider->facility_id);
+        $district = $this->getProviderTable()->DistrictName($provider->district);
+        $facility = $this->getProviderTable()->FacilityName($provider->facility_id);
 
         return array(
             'id' => $id,
