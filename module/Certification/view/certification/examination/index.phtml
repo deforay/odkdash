@@ -21,7 +21,7 @@ $acl = $this->layout()->acl;
 
         <div class="row">
             <div class="col-sm-8">
-                <h2>list of Candidate for certification</h2>
+                <h2>List of candidates for certification</h2>
             </div>
 
 
@@ -38,8 +38,8 @@ $acl = $this->layout()->acl;
                         <th  style="width:10%;"> Certification Registration no </th>
                         <th  style="width:10%;">Certification ID  </th>
                         <th  style="width:10%;">Provider</th>
-                        <th  style="width:10%;"> Final Score (≥80%)</th>
-                        <th  style="width:10%;">Practical Exam</th>
+                        <th  style="width:10%;"> Written Exam Score</th>
+                        <th  style="width:10%;">Practical Exam Exam</th>
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'add')) {  ?>
                         <th style="width:6%;">Action</th>
                         <?php } ?>
@@ -53,21 +53,21 @@ $acl = $this->layout()->acl;
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->certification_reg_no); ?></div></td>
                             <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->certification_id); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
-                            <td><div style="color: red"><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></div></td>
-                            <td><div style="color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
+                            <td><div style="font-weight: bold"><?php echo $this->escapeHtml($exam->final_score . ' %'); ?></div></td>
+                            <td><div style="font-weight: bold"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'add')) {  ?>
                        <td>
                                 <?php
                                 if (empty($exam->final_score) || empty($exam->practical_total_score)) {
-                                    echo '<div style="width:100px;height:40px;overflow:auto;">  
+                                    echo '<div style="width:120px;height:40px;overflow:auto;">  
                                         
-                                    <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>';
+                                    <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Validate score</a> </div>';
                                 } else {
-                                    echo '<div style="width:100px;height:40px;overflow:auto;">  
+                                    echo '<div style="width:120px;height:40px;overflow:auto;">  
                                         
                                     <a href=' . $this->url("certification", array("action" => "add", "id" => base64_encode($exam->id)), array("query" =>
                                         array(base64_encode("written") =>  base64_encode($exam->final_score), base64_encode("practical") =>  base64_encode($exam->practical_total_score), base64_encode("direct") =>  base64_encode($exam->direct_observation_score), base64_encode("sample") =>  base64_encode($exam->Sample_testing_score), base64_encode("provider") =>  base64_encode($exam->provider))))
-                                    .'> <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Approve</a> </div>';
+                                    .'> <span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Validate score</a> </div>';
                                 };
                                 ?>
                             </td>

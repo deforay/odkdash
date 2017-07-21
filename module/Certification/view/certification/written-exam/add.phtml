@@ -34,12 +34,12 @@ $sessionLogin = new Container('credo');
 
                 </div>
             </div>
-           <div class="row">
-                    <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
-                </div>
-                <div class="row">
-                    <span class="muted pull-right" style="font-size:15px; "><span class="mandatory" style="color: green;">*</span> indicates read only field</span>
-                </div>
+            <div class="row">
+                <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+            </div>
+            <div class="row">
+                <span class="muted pull-right" style="font-size:15px; "><span class="mandatory" style="color: green;">*</span> indicates read only field</span>
+            </div>
         </div>
 
         <div class="main-content">
@@ -139,7 +139,7 @@ $sessionLogin = new Container('credo');
                     echo $this->form()->openTag($form);
                     ?>
                     <?php echo $this->formHidden($form->get('id_written_exam')->setAttribute('class', 'form-control')) ?>
-                   <div class="form-group col-lg-6">
+                    <div class="form-group col-lg-6">
                         <?= $this->formLabel($form->get('provider_id')); ?><span class="mandatory">*</span>
                         <?= $this->formElement($form->get('provider_id')); ?>
                         <?= $this->formElementErrors($form->get('provider_id')); ?>
@@ -149,7 +149,7 @@ $sessionLogin = new Container('credo');
                         <?= $this->formElement($form->get('exam_type')); ?>
                         <?= $this->formElementErrors($form->get('exam_type')); ?>
                     </div>
-                    
+
                     <div class="form-group col-lg-6">
                         <?= $this->formLabel($form->get('exam_admin')); ?><span class="mandatory">*</span>
                         <?= $this->formElement($form->get('exam_admin')); ?>
@@ -214,7 +214,6 @@ $sessionLogin = new Container('credo');
                         <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>" >CANCEL</a> </div>
                         <?php
                         echo $this->form()->closeTag();
-                        echo $nombre
                         ?>
                 </form>
 
@@ -267,11 +266,11 @@ $sessionLogin = new Container('credo');
                                 if (this.readyState == 4 && this.status == 200) {
                                     document.getElementById("Type of Exam").innerHTML = this.responseText;
                                 }
-                                
-                                if(document.getElementById("Type of Exam").value>=4){
-                                                alert('This tester has already made three unsuccessful attempts');
-                                                window.location='<?php echo $this->url('practical-exam', array('action' => 'index')); ?>';
-                                            }
+
+                                if (document.getElementById("Type of Exam").value >= 4) {
+                                    alert('This tester has already made three unsuccessful attempts');
+                                    window.location = '<?php echo $this->url('practical-exam', array('action' => 'index')); ?>';
+                                }
 
                             };
 //                            alert(str);

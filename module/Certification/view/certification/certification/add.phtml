@@ -65,7 +65,7 @@ $sessionLogin = new Container('credo');
 
                                 $form->get('date_certificate_issued')->setAttributes([
                                     'class' => 'form-control',
-                                    'value' => date('Y-m-d'),
+                                    'value' => date('Y/m/d'),
                                     'onFocus' => "this.blur()"]);
 
                                 if (empty($this->certification_id)) {

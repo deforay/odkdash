@@ -47,7 +47,7 @@ class PracticalExamController extends AbstractActionController {
             $practical_nb = $this->getPracticalExamTable()->counPractical($provider_id);
             $nb_days = $this->getPracticalExamTable()->numberOfDays($provider_id);
             if (isset($nb_days) && $nb_days <= 30) {
-                $container->alertMsg = 'la derniere tentative de ce provider remonte a ' . $nb_days . ' jours. vous devez attendre au moin 30 jours pour une autre tentative.';
+                $container->alertMsg = 'The last attempt of this tester was ' . $nb_days . ' day(s) ago. Please wait at lease '.date("d-m-Y", strtotime(date("Y-m-d")."  + ". (31 - $nb_days)." day"));
                 return array(
                     'form' => $form);
             } else {
@@ -73,7 +73,7 @@ class PracticalExamController extends AbstractActionController {
                         return $this->redirect()->toRoute('practical-exam', array('action' => 'add'));
                     }
                 } else {
-                    $container->alertMsg = 'Impossible to add !!!! Because this tester has already passed a practical exam, he is waiting to add the written exam';
+                    $container->alertMsg = 'Impossible to add !!!! Because this tester has already taken a practical exam, he is waiting to add the written exam';
                     return array('form' => $form);
                 }
             }

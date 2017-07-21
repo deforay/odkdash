@@ -61,7 +61,7 @@ $acl = $this->layout()->acl;
                             <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>
                             <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->direct_observation_score . ' %'); ?></div></td>
                             <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score . ' %'); ?></div></td>
-                            <td><div style="width:70px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto; font-weight: bold"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'edit')) {   ?>
                        <td>
                                 <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('practical-exam', array('action' => 'edit', 'practice_exam_id' => base64_encode($exam->practice_exam_id))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>

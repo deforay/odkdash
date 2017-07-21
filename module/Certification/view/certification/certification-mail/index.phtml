@@ -31,7 +31,7 @@
                     <div class="col-sm-12">
                         <div class="panel panel-default">
                             <div class="panel-body" >
-
+                                <div id="form">
                                 <form action="<?php $this->url('certification-mail', array('action' => 'index')); ?>" name="form" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">  
                                     <?php
                                     $form->prepare();
@@ -49,8 +49,10 @@
                                         $form->get('type')->setAttributes([
                                             'id' => 'Choice',
                                             'onclick' => "emptyInput(this)",
-                                            'options' => ['' => '',
-                                            ],
+                                            'options' => [
+                                                '' => 'Make a choice',1 => 'Send Certificate',
+                                                2 => 'Send Reminder'],
+                                            'onclick' => "setChoice()"
                                         ]);
                                     }
 
@@ -150,7 +152,7 @@
                                     <?php
                                     echo $this->form()->closeTag();
                                     ?>
-                                </form>
+                                </form></div>
                                 <div style="margin-top: 50px">
                                     <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                                         <thead>

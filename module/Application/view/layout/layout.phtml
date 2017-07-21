@@ -164,7 +164,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                     <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold; margin-top: -5px;"><?php echo $this->nb; ?>&nbsp;Certificate(s)</div></button></a></li>
                                 </ul>
                             <?php }
-                        } ?>
+                        }
+                        ?>
 
                         <?php
                         if (!empty($nb2) && $nb2 > 0) {
@@ -173,8 +174,9 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                 <ul class="nav navbar-nav am-nav-right">
                                     <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante2" style="visibility:visible; font-size: 15px; font-weight: bold;margin-top: -5px;"><?php echo $this->nb2; ?>&nbsp;Reminder(s)</div></button></a></li>
                                 </ul>
-    <?php }
-} ?>
+                            <?php }
+                        }
+                        ?>
 
                         <!--                                                             <ul class="nav navbar-nav am-nav-right">
                                                                                       <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
@@ -254,7 +256,6 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                         <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Training<span class="caret"></span></a>
                                             <ul>
                                                 <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Training</a></li>
-                                                <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -279,9 +280,9 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                         </li>
                                     </ul>
 
-                                   <ul  id="menu-accordeon">
+                                    <ul  id="menu-accordeon">
 
-                                        <!--<li><a href="<?php // echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>-->
+                                            <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
                                     </ul>
     <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
         ?>
@@ -291,6 +292,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                                     <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
                                                     <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
                                                     <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+                                                    <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
 
                                                 </ul>
                                             </li>

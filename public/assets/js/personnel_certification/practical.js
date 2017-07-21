@@ -106,7 +106,7 @@ function attempt() {
         } else if (nombre == 2) {
             myAnchor.innerHTML = "<option value='3rd attempt'>3rd attempt</option>";
         } else if (nombre >= 3) {
-            alert('This tester has already made three unsuccessful attempts');
+            alert('This tester has already made three unsuccessful attempts. Please contact the national certication office.');
             window.location = "/written-exam";
         }
     }

@@ -34,6 +34,8 @@ function setChoice() {
 
         message.innerHTML = 'Congratulations ' + provider + '! You have successfully fulfilled the requirements of the national HIV tester certification program and are deemed competent to perform HIV  Rapid Testing.  This certificate of competency is delivered to you for a two year period from the date of issuance.\n\
 \n\Important Note!!! \n\
+\n\This certificate is only issued for HIV Rapid Testing and does not allow to perform any other test.\n\
+\n\Note for printing the certificate!!!\n\
 To print this certificate ensure that the paper size selected by the printer is A4 and that the orientation is landscape';
         subject.innerHTML = 'HIV Tester Certificate of Competency';
         myAnchor.innerHTML = "";
@@ -54,6 +56,7 @@ To print this certificate ensure that the paper size selected by the printer is 
         myAnchor2.innerHTML = "<div class='form-group col-lg-6'><label>Name Of Recipient</label><input name='name_recipient' id='name_recipient' class='form-control' type='text'/></div>";
         div_file.innerHTML = '';
     } else if (choice == "") {
+        document.getElementById('form').innerHTML='';
         message.innerHTML = "";
         subject.innerHTML = '';
 
@@ -74,12 +77,12 @@ function setMsg() {
         subject.innerHTML = '';
         message.innerHTML = '';
     } else if (choice == 2 && type_recipient == 'Provider') {
-        message.innerHTML = "This is a reminder that your HIV tester certificate will expire " + due_date + ". Please contact your national certification organization to schedule both the written and practical examinations. Any delay in completing these assessments will automatically result in the withdrawal your certificate.";
+        message.innerHTML = "This is a reminder that your HIV tester certificate will expire on " + due_date + ". Please contact your national certification organization to schedule both the written and practical examinations. Any delay in completing these assessments will automatically result in the withdrawal of your certificate.";
         subject.innerHTML = 'HIV Tester Certificate Reminder';
            } else if (choice == 2 && type_recipient != 'Provider') {
 
         subject.innerHTML = 'HIV Tester Certificate Reminder';
-        message.innerHTML = ' This is a reminder that the HIV tester certificate of the following provider ' + provider + ' will expire ' + due_date + '. Please contact your national certification organization to schedule both the written and practical examinations. Any delay in completing these assessments will automatically result in the withdrawal the certificate.';
+        message.innerHTML = ' This is a reminder that the HIV tester certificate of ' + provider + ' will expire on ' + due_date + '. Please contact your national certification organization to schedule both the written and practical examinations. Any delay in completing these assessments will automatically result in the withdrawal of the certificate.';
 
     }
 
