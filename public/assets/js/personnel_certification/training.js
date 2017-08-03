@@ -6,7 +6,7 @@ function validateForm() {
     var e = document.forms["form"]["length_of_training"].value;
     var f = document.forms["form"]["training_organization_id"].value;
     var g = document.forms["form"]["facilitator"].value;
-    
+
     var elmt = document.getElementById("Tester  Name");
     var elmt2 = document.getElementById("Type of Competency");
     var elmt3 = document.getElementById("date");
@@ -14,9 +14,9 @@ function validateForm() {
     var elmt5 = document.getElementById("Length of Activity/Training");
     var elmt6 = document.getElementById("Training Organization");
     var elmt7 = document.getElementById("Name of Facilitator(s)");
-    
-    
-     if (a == null || a == "")
+
+
+    if (a == null || a == "")
     {
         elmt.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt.id + "''");
@@ -34,42 +34,55 @@ function validateForm() {
         alert('Please enter the  "Date of Last Training/Activity"');
         return false;
     }
-    
-    if (d == null || d == "" )
+
+    if (d == null || d == "")
     {
         elmt4.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt4.id + "''");;
+        alert("Please enter the ''" + elmt4.id + "''");
+        ;
         return false;
     }
 
     if (e == null || e == "")
     {
         elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("Please enter the ''" + elmt5.id + "''");;
+        alert("Please enter the ''" + elmt5.id + "''");
+        ;
         return false;
     }
 
-   
+
     if (f == null || f == "") {
         elmt6.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt6.id + "''");
         return false;
     }
-    
-     if (g == null || g == "") {
+
+    if (g == null || g == "") {
         elmt7.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt7.id + "''");
         return false;
     }
 
-    
-    
+
+
 }
 
 function emptyInput(input) {
 
     input.style.boxShadow = 'none';
 }
+
+//function certificate() {
+//    var certificate = document.getElementById("Training certificate").value;
+//    var date = document.getElementById("date_issued");
+//    if (certificate == 'Yes') {
+//        date.innerHTML = '<label>Date certificate issued (if available)</label><input type="text" id="date2" name="date_certificate_issued" autocomplete = "off", onclick="date_issued()" class="form-control">';
+//
+//    }
+//
+//
+//}
 
 
 
@@ -78,7 +91,7 @@ $(document).ready(function () {
     $("#date").datepicker(
             {
                 showButtonPanel: true
-                , dateFormat: 'yy/mm/dd'
+                , dateFormat: 'dd-mm-yy'
                 , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
                 , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
                 , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -96,16 +109,34 @@ $(document).ready(function () {
     $("#date2").datepicker(
             {
                 showButtonPanel: true
-                , dateFormat: 'yy/mm/dd'
+                , dateFormat: 'dd-mm-yy'
                 , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
                 , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
                 , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
                 , monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
                 , prevText: 'Previous'
-                , nextText: 'Next',
-                closeText: 'OK'
+                , nextText: 'Next'
+                , closeText: 'OK'
                 , currentText: "Today"
             });
 
 }); //EOf:: DOM isReady
+
+//function date_issued() {
+//
+//    $("#date2").datepicker(
+//            {
+//                showButtonPanel: true
+//                , dateFormat: 'dd-mm-yy'
+//                , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+//                , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
+//                , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+//                , monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ]
+//                , prevText: 'Previous'
+//                , nextText: 'Next',
+//                closeText: 'OK'
+//                , currentText: "Today"
+//            });
+//
+//}
 

@@ -1,5 +1,7 @@
 <?php
+
 use Zend\Session\Container;
+
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
@@ -27,7 +29,7 @@ $acl = $this->layout()->acl;
             <div class="col-sm-4">
                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'add')) { ?>
                     <a href="<?php echo $this->url('training', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add Training</a>
-                <?php } ?>
+<?php } ?>
 
             </div>
         </div>
@@ -54,13 +56,13 @@ $acl = $this->layout()->acl;
 <!--<th style="width: 10%;" >Comments</th>-->
                         <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
                             <th >Edit</th>
-                        <?php } ?>
+<?php } ?>
                     </tr>
 
                 </thead>
                 <tbody>
 
-                    <?php foreach ($this->trainings as $training) : ?>
+<?php foreach ($this->trainings as $training) : ?>
                         <tr>
                             <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->certification_reg_no); ?></div></td>
                             <td><div style="width:100px;overflow:auto;"><?php echo $this->escapeHtml($training->professional_reg_no); ?></div></td>
@@ -68,7 +70,7 @@ $acl = $this->layout()->acl;
                             <td><div style="width:180px;overflow:auto;"><?php echo $this->escapeHtml($training->last_name . ' ' . $training->first_name . ' ' . $training->middle_name); ?></div></td>
                             <td><div style="width:100px;;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_competency); ?></div></td>
                             <td><div style="width:160px;overflow:auto;"><?php echo $this->escapeHtml($training->type_of_training); ?></div></td>
-                            <td><div style="width:80px; overflow:auto;"><?php echo $this->escapeHtml($training->last_training_date); ?></div></td>
+                            <td><div style="width:80px; overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($training->last_training_date))); ?></div></td>
                             <td><div style="width:120px;overflow:auto;"><?php echo $this->escapeHtml($training->length_of_training); ?></div></td>
                             <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($training->training_organization_name); ?></div></td>
                             <td><div style="width:130px;overflow:auto;"><?php echo $this->escapeHtml($training->type_organization); ?></div></td>
@@ -82,18 +84,25 @@ $acl = $this->layout()->acl;
                                 echo "<td></td>";
                             }
                             ?>
-                            <td><div style="width:100px;height:40px;overflow:auto;" ><?php echo $this->escapeHtml($training->date_certificate_issued); ?></div></td>
-                            <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);      ?></div></td>-->
-                            <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
+                            <?php
+                            if (isset($training->date_certificate_issued)) {
+                                echo '<td><div style="width:100px;height:40px;overflow:auto;" >' . date("d-m-Y", strtotime($this->escapeHtml($training->date_certificate_issued))) . '</div></td>';
+                            } else {
+                                echo '<td><div style="width:100px;height:40px;overflow:auto;" >' .$this->escapeHtml($training->date_certificate_issued) . '</div></td>';
+                            };
+                            ?>
+
+     <!--<td><div style="width:100px;height:40px;overflow:auto;"><?php // echo $this->escapeHtml($training->Comments);       ?></div></td>-->
+    <?php if ($acl->isAllowed($role, 'Certification\Controller\Training', 'edit')) { ?>
                                 <td><div style="width:60px;height:40px;overflow:auto;">
                                         <a href="<?php echo $this->url('training', array('action' => 'edit', 'training_id' => base64_encode($training->training_id))); ?>"><span class="glyphicon glyphicon-pencil"></span>Edit</a> 
                                     </div>
                                 </td>
-                            <?php } ?>
+                        <?php } ?>
 
                         </tr>
 
-                    <?php endforeach; ?>
+<?php endforeach; ?>
                 </tbody>
             </table>
 

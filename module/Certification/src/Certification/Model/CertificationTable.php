@@ -1,4 +1,5 @@
 <?php
+
 namespace Certification\Model;
 
 use Zend\Db\TableGateway\TableGateway;
@@ -56,13 +57,16 @@ class CertificationTable {
 
     public function saveCertification(Certification $certification) {
         $date_issued = $certification->date_certificate_issued;
+        $date_explode = explode("-", $date_issued);
+        $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+
         $date_end = date("Y-m-d", strtotime($date_issued . "  + 2 year"));
 
         $data = array(
             'examination' => $certification->examination,
             'final_decision' => $certification->final_decision,
             'certification_issuer' => strtoupper($certification->certification_issuer),
-            'date_certificate_issued' => $date_issued,
+            'date_certificate_issued' => $newsdate,
             'date_certificate_sent' => $certification->date_certificate_sent,
             'certification_type' => $certification->certification_type,
             'date_end_validity' => $date_end
@@ -210,5 +214,5 @@ class CertificationTable {
         $sql = "UPDATE certification set certificate_sent='yes' where id=" . $provider;
         $db->getDriver()->getConnection()->execute($sql);
     }
-    
-}   
+
+}

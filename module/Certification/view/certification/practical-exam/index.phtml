@@ -55,7 +55,7 @@ $acl = $this->layout()->acl;
                 <tbody>
                     <?php foreach ($practicals as $exam) : ?>
                         <tr>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->date); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($exam->date))); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_type); ?></div></td>
                             <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->exam_admin); ?></div></td>
                             <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->last_name . ' ' . $exam->first_name . ' ' . $exam->middle_name); ?></div></td>

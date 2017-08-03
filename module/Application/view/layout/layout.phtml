@@ -163,7 +163,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                 <ul class="nav navbar-nav am-nav-right">
                                     <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold; margin-top: -5px;"><?php echo $this->nb; ?>&nbsp;Certificate(s)</div></button></a></li>
                                 </ul>
-                            <?php }
+                            <?php
+                            }
                         }
                         ?>
 
@@ -174,7 +175,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                 <ul class="nav navbar-nav am-nav-right">
                                     <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante2" style="visibility:visible; font-size: 15px; font-weight: bold;margin-top: -5px;"><?php echo $this->nb2; ?>&nbsp;Reminder(s)</div></button></a></li>
                                 </ul>
-                            <?php }
+                            <?php
+                            }
                         }
                         ?>
 
@@ -248,7 +250,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                 <ul>
                                     <ul  id="menu-accordeon">
 
-                                        <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>"> Tester</a></li>
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Tester </a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Tester </a></li>
+                                            </ul>
+                                        </li>
                                     </ul>
 
 
@@ -282,7 +288,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
 
                                     <ul  id="menu-accordeon">
 
-                                            <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
+                                        <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
                                     </ul>
     <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
         ?>

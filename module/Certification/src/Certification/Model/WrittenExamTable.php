@@ -43,11 +43,17 @@ class WrittenExamTable extends AbstractTableGateway {
     }
 
     public function saveWrittenExam(WrittenExam $written_exam) {
+        
+         $date = $written_exam->date;
+        $date_explode = explode("-", $date);
+        $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+
+        
         $data = array(
             'exam_type' => $written_exam->exam_type,
             'provider_id' => $written_exam->provider_id,
             'exam_admin' => strtoupper($written_exam->exam_admin),
-            'date' => $written_exam->date,
+            'date' => $newsdate,
             'qa_point' => $written_exam->qa_point,
             'rt_point' => $written_exam->rt_point,
             'safety_point' => $written_exam->safety_point,

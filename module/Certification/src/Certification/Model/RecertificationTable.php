@@ -36,13 +36,22 @@ class RecertificationTable {
     }
 
     public function saveRecertification(Recertification $recertification) {
+        
+        $due_date = $recertification->due_date;
+        $date_explode = explode("-", $due_date);
+        $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
+
+        $date_reminder_sent = $recertification->date_reminder_sent;
+        $date_explode2 = explode("-", $date_reminder_sent);
+        $newsdate2 = $date_explode2[2] . '-' . $date_explode2[1] . '-' . $date_explode2[0];
+
         $data = array(
-            'due_date' => $recertification->due_date,
+            'due_date' => $newsdate,
             'provider_id' => $recertification->provider_id,
             'reminder_type' => $recertification->reminder_type,
             'reminder_sent_to' => $recertification->reminder_sent_to,
             'name_of_recipient' => strtoupper($recertification->name_of_recipient),
-            'date_reminder_sent' => $recertification->date_reminder_sent,
+            'date_reminder_sent' => $newsdate2,
         );
 //die((print_r($data)));
         $recertification_id = (int) $recertification->recertification_id;

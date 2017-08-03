@@ -4,12 +4,15 @@ use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
 ?>
-
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>"/>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css"/>
 
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
@@ -51,6 +54,7 @@ $sessionLogin = new Container('credo');
                                 $form->get('final_decision')->setAttributes([
                                     'class' => 'form-control',
                                     'placeholder' => 'Final Decision',
+                                    'id'=>'decision',
                                     'autocomplete' => 'off',
                                     'onFocus' => "this.blur()"
                                 ]);
@@ -102,13 +106,13 @@ $sessionLogin = new Container('credo');
                                     <?= $this->formElement($form->get('certification_type')); ?>
                                     <?= $this->formElementErrors($form->get('certification_type')); ?></div>
 
-                                <div class="form-group col-lg-6">
+                                <div class="form-group col-lg-6" id="issued">
                                     <?= $this->formLabel($form->get('certification_issuer')); ?><span class="mandatory">*</span>
                                     <?= $this->formElement($form->get('certification_issuer')); ?>
                                     <?= $this->formElementErrors($form->get('certification_issuer')); ?>
                                 </div>
-
-                                <div class="form-group col-lg-6">
+ 
+                                <div class="form-group col-lg-6" >
                                     <?= $this->formLabel($form->get('date_certificate_sent')); ?>
                                     <?= $this->formElement($form->get('date_certificate_sent')); ?>
                                     <?= $this->formElementErrors($form->get('date_certificate_sent')); ?>
@@ -132,7 +136,6 @@ $sessionLogin = new Container('credo');
 
 </div>
 
-</script>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
 

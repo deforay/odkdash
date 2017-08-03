@@ -22,7 +22,7 @@ class TrainingController extends AbstractActionController {
 
     public function indexAction() {
 
-$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         return new ViewModel(array(
             'trainings' => $this->getTrainingTable()->fetchAll(),
         ));
@@ -72,7 +72,9 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
                         'action' => 'index'
             ));
         }
-
+        $training->last_training_date = date("d-m-Y", strtotime($training->last_training_date));
+       if(isset($training->date_certificate_issued)) {$training->date_certificate_issued = date("d-m-Y", strtotime($training->date_certificate_issued));}
+        
         $form = new TrainingForm($dbAdapter);
         $form->bind($training);
         $form->get('submit')->setAttribute('value', 'UPDATE');

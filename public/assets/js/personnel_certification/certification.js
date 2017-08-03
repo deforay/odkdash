@@ -14,13 +14,22 @@ function emptyInput(input) {
 
     input.style.boxShadow = 'none';
 }
+function issued(){
+        var decision= document.getElementById("decision").value;   
+        var issued= document.getElementById("issued");
+                
+                if(decision != 'Certified'){
+                    issued.innerHTML='';
+                }
+}
+issued();
 
 $(document).ready(function () {
 
     $("#date").datepicker(
             {
                 showButtonPanel: true
-                , dateFormat: 'yy/mm/dd'
+                , dateFormat: 'dd-mm-yy'
                 , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
                 , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
                 , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

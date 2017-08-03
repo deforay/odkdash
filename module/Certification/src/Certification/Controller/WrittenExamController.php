@@ -110,7 +110,8 @@ class WrittenExamController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-
+        
+        $writtenExam->date=date("d-m-Y", strtotime( $writtenExam->date));
         $form = new WrittenExamForm($dbAdapter);
         $form->bind($writtenExam);
         $form->get('submit')->setAttribute('value', 'UPDATE');

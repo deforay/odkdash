@@ -89,8 +89,11 @@ class RecertificationController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-
-        $form = new RecertificationForm($dbAdapter);
+       $recertification->due_date=date("d-m-Y", strtotime($recertification->due_date));
+       if(isset($recertification->date_reminder_sent)){
+        $recertification->date_reminder_sent=date("d-m-Y", strtotime($recertification->date_reminder_sent));
+       }
+       $form = new RecertificationForm($dbAdapter);
         $form->bind($recertification);
         $form->get('submit')->setAttribute('value', 'UPDATE');
 

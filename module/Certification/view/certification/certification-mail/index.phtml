@@ -181,7 +181,7 @@
                                                         };
                                                         ?>
                                                     </td>
-                                                    <td><div style="width:180px;height:40px;overflow:auto;color:red"><?php echo $this->escapeHtml($list->mail_date); ?></div></td>
+                                                    <td><div style="width:180px;height:40px;overflow:auto;color:red"><?php echo date("d-m-Y", strtotime($this->escapeHtml($list->mail_date))); ?></div></td>
                                                 </tr>
                                             <?php endforeach; ?>  
                                         </tbody> 

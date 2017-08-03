@@ -41,6 +41,9 @@ class PracticalExamTable extends AbstractTableGateway {
 
     public function savePracticalExam(PracticalExam $practicalExam) {
 
+        $date = $practicalExam->date;
+        $date_explode = explode("-", $date);
+        $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
 
 
         $data = array(
@@ -50,7 +53,7 @@ class PracticalExamTable extends AbstractTableGateway {
             'Sample_testing_score' => $practicalExam->Sample_testing_score,
             'direct_observation_score' => $practicalExam->direct_observation_score,
             'practical_total_score' => ($practicalExam->direct_observation_score + $practicalExam->Sample_testing_score) / 2,
-            'date' => $practicalExam->date
+            'date' => $newsdate
         );
 //        print_r($data);
         $practice_exam_id = (int) $practicalExam->practice_exam_id;
@@ -215,7 +218,7 @@ class PracticalExamTable extends AbstractTableGateway {
 
     public function getExamType($practical) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT exam_type  from practical_exam WHERE practice_exam_id='.$practical;
+        $sql = 'SELECT exam_type  from practical_exam WHERE practice_exam_id=' . $practical;
         $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
@@ -223,5 +226,5 @@ class PracticalExamTable extends AbstractTableGateway {
         }
         return $exam_type;
     }
-    
+
 }

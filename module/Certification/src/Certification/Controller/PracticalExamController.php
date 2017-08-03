@@ -106,7 +106,7 @@ class PracticalExamController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-
+$practicalExam->date= date("d-m-Y", strtotime($practicalExam->date));
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
         $form->bind($practicalExam);
         $form->get('submit')->setAttribute('value', 'UPDATE');

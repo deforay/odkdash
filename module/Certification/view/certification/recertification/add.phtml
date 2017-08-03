@@ -161,7 +161,7 @@ $sessionLogin = new Container('credo');
 <script>
     var id = '<?PHP echo $provider['id']; ?>';
     var name = '<?PHP echo $provider['name']; ?>';
-    var due_date = '<?PHP echo $provider['due_date']; ?>';
+    var due_date = '<?PHP echo date("d-m-Y", strtotime($provider['due_date'])); ?>';
     
     
 </script>

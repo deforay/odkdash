@@ -70,29 +70,14 @@ function emptyInput(input) {
 
     input.style.boxShadow = 'none';
 }
-function setProvider() {
-    var myAnchor = document.getElementById("Provider");
 
-    if (id && name) {
-        myAnchor.innerHTML = "<option value=" + id + ">" + name + "</option>";
-    }
-
-    if (due_date) {
-        var myAnchor2 = document.getElementById('date');
-        var myDate = document.createElement('text');
-        myDate.innerHTML = due_date;
-        myDate.className = "form-control";
-        myAnchor2.parentNode.replaceChild(myDate, myAnchor2);
-    }
-}
-setProvider();
 
 $(document).ready(function () {
 
     $("#date").datepicker(
             {
                 showButtonPanel: true
-                , dateFormat: 'yy/mm/dd'
+                , dateFormat: 'dd-mm-yy'
                 , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
                 , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
                 , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -110,7 +95,7 @@ $(document).ready(function () {
     $("#date2").datepicker(
             {
                 showButtonPanel: true
-                , dateFormat: 'yy/mm/dd'
+                , dateFormat: 'dd-mm-yy'
                 , dayNamesMin: ['Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
                 , dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', ' Thursday ', 'Friday', 'Saturday']
                 , monthNamesShort: ['Jan', 'Fed', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -123,3 +108,18 @@ $(document).ready(function () {
 
 }); //EOf:: DOM isReady
 
+function setProvider() {
+
+
+    if (id && name) {
+        var myAnchor = document.getElementById("Provider");
+        myAnchor.innerHTML = "<option value=" + id + ">" + name + "</option>";
+    }
+
+    if (due_date) {
+        var myAnchor2 = document.getElementById('date');
+
+        myAnchor2.setAttribute('value', due_date);
+    }
+}
+setProvider();

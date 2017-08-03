@@ -69,8 +69,15 @@ $acl = $this->layout()->acl;
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification['last_name'] . ' ' . $certification['first_name'] . ' ' . $certification['middle_name']); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto; color: red"><?php echo $this->escapeHtml($certification['final_decision']); ?></div></td>
                             <td><div style="width:180px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification['certification_issuer']); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification['date_certificate_issued']); ?></div></td>
-                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification['date_certificate_sent']); ?></div></td>
+                            <td><div style="width:100px;height:40px;overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($certification['date_certificate_issued']))); ?></div></td>
+                            <?php
+if (isset($certification['date_certificate_sent'])) {
+                                echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . date("d-m-Y", strtotime($this->escapeHtml($certification['date_certificate_sent']))) . '</div></td>';
+    } else {
+        echo ' <td><div style="width:100px;height:40px;overflow:auto;">' . $this->escapeHtml($certification['date_certificate_sent']) . '</div></td>';
+    };
+    ?>
+                            
                             <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($certification['certification_type']); ?></div></td>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\Certification', 'pdf')) { ?>
                                 <?php
@@ -131,13 +138,13 @@ $acl = $this->layout()->acl;
                 <tbody>
                     <?php foreach ($this->recertifications as $recertification) : ?>
                         <tr>
-                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->due_date); ?></div></td>
+                            <td><div style="width:70px;height:40px;overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($recertification->due_date))); ?></div></td>
                             <td><div style="width:200px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->last_name . ' ' . $recertification->first_name . ' ' . $recertification->middle_name); ?></div></td>
                             <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->certification_id); ?></div></td>
                             <td><div style="width:100px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->reminder_type); ?></div></td>
                             <td><div style="width:150px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->reminder_sent_to); ?></div></td>
                             <td><div style="width:160px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->name_of_recipient); ?></div></td>
-                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($recertification->date_reminder_sent); ?></div></td>
+                            <td><div style="width:120px;height:40px;overflow:auto;"><?php echo date("d-m-Y", strtotime($this->escapeHtml($recertification->date_reminder_sent))); ?></div></td>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\Recertification', 'edit')) { ?>
                                 <td>
                                     <div style="width:80px;height:40px;overflow:auto;">

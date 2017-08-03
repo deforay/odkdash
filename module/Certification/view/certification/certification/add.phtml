@@ -48,11 +48,11 @@ $sessionLogin = new Container('credo');
                                 $direct_observation = $this->direct;
 
                                 if ($written_score >= 80 && $direct_observation >= 90 && $sample_testing = 100) {
-                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Certified', 'onFocus' => "this.blur()"]);
+                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Certified', 'id'=>'decision','onFocus' => "this.blur()"]);
                                 } elseif ($written_score < 80 && ($direct_observation < 90 || $sample_testing < 100)) {
-                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'failed', 'onFocus' => "this.blur()"]);
+                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'failed','id'=>'decision','onFocus' => "this.blur()"]);
                                 } else {
-                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'pending', 'onFocus' => "this.blur()"]);
+                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'pending', 'id'=>'decision','onFocus' => "this.blur()"]);
                                 }
 
 
@@ -65,7 +65,7 @@ $sessionLogin = new Container('credo');
 
                                 $form->get('date_certificate_issued')->setAttributes([
                                     'class' => 'form-control',
-                                    'value' => date('Y/m/d'),
+                                    'value' => date('d-m-Y'),
                                     'onFocus' => "this.blur()"]);
 
                                 if (empty($this->certification_id)) {
@@ -110,15 +110,11 @@ $sessionLogin = new Container('credo');
                                     <?= $this->formElement($form->get('date_certificate_issued')); ?>
                                     <?= $this->formElementErrors($form->get('date_certificate_issued')); ?>
                                 </div>
-                                <div class="form-group col-lg-6">
+                                <div class="form-group col-lg-6" id="issued">
                                     <?= $this->formLabel($form->get('certification_issuer')); ?><span class="mandatory">*</span>
                                     <?= $this->formElement($form->get('certification_issuer')); ?>
                                     <?= $this->formElementErrors($form->get('certification_issuer')); ?>
                                 </div>
-
-
-
-
                                 <div class="form-group col-lg-6" style="margin-top: 30px"><?php echo $this->formSubmit($form->get('submit')->setAttribute('class', 'btn  btn-space btn-primary')); ?>
                                     <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('certification', array('action' => 'index')); ?>" >CANCEL</a> </div>
                                     <?php echo $this->form()->closeTag();

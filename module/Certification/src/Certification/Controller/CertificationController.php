@@ -109,6 +109,11 @@ class CertificationController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
+        $certification->date_certificate_issued=date("d-m-Y", strtotime($certification->date_certificate_issued));
+        if(isset( $certification->date_certificate_sent)){
+        $certification->date_certificate_sent=date("d-m-Y", strtotime($certification->date_certificate_sent));
+        
+        }
         $form = new CertificationForm($dbAdapter);
         $form->bind($certification);
         $form->get('submit')->setAttribute('value', 'UPDATE');
