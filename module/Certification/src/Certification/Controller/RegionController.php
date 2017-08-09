@@ -50,13 +50,13 @@ class RegionController extends AbstractActionController {
     public function editAction() {
         $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $id = (int) base64_decode($this->params()->fromRoute('id', 0));
-             
+
         if (!$id) {
             return $this->redirect()->toRoute('region', array(
                         'action' => 'index'
             ));
         }
-        
+
         try {
             $region = $this->getRegionTable()->getRegion($id);
 //            die(print_r($region));
@@ -66,7 +66,7 @@ class RegionController extends AbstractActionController {
             ));
         }
         $form = new RegionForm();
-         $form->bind($region);
+        $form->bind($region);
         $form->get('submit')->setAttribute('value', 'Update');
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -86,6 +86,26 @@ class RegionController extends AbstractActionController {
             'form' => $form,
             'regions' => $this->getRegionTable()->fetchAll(),
         );
+    }
+
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        if (!$id) {
+            return $this->redirect()->toRoute('region');
+        } else {
+            $forein_key = $this->getRegionTable()->foreigne_key($id);
+            if ($forein_key == 0) {
+                $this->getRegionTable()->deleteRegion($id);
+                $container = new Container('alert');
+                $container->alertMsg = 'Deleted successfully';
+                return $this->redirect()->toRoute('region');
+            } else {
+                $container = new Container('alert');
+                $container->alertMsg = 'Unable to delete this region because it is used for one or more district(s).';
+                return $this->redirect()->toRoute('region');
+            }
+        }
     }
 
 }

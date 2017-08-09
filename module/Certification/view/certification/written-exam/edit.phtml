@@ -48,22 +48,15 @@ $sessionLogin = new Container('credo');
                     'onclick' => 'emptyInput(this)'
                 ]);
 
-                if (empty($this->provider)) {
+               
 
                     $form->get('provider_id')->setAttributes([
                         'class' => 'form-control',
                         'id' => 'Tester',
-                        'onclick' => 'emptyInput(this)'
+                        'onclick' => 'emptyInput(this)',
+                        'options'=>[$this->provider_id => $this->provider_name],
                     ]);
-                } else {
-
-                    $form->get('provider_id')->setAttributes([
-                        'class' => 'form-control',
-                        'options' => $this->provider,
-                        'id' => 'Tester',
-                        'onclick' => 'emptyInput(this)'
-                    ]);
-                }
+                
 
 
                 $form->get('exam_admin')->setAttributes([
@@ -145,7 +138,7 @@ $sessionLogin = new Container('credo');
                 <?php echo $this->formHidden($form->get('id_written_exam')->setAttribute('class', 'form-control')) ?>
                 
                 <div class="form-group col-lg-6">
-                    <?= $this->formLabel($form->get('provider_id')); ?><span class="mandatory">*</span>
+                    <?= $this->formLabel($form->get('provider_id')); ?><span class="mandatory" style="color: green;">*</span>
                     <?= $this->formElement($form->get('provider_id')); ?>
                     <?= $this->formElementErrors($form->get('provider_id')); ?>
                 </div>

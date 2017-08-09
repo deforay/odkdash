@@ -87,5 +87,24 @@ class DistrictController extends AbstractActionController {
             'form' => $form,
         );
     }
+    
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
 
+        if (!$id) {
+            return $this->redirect()->toRoute('district');
+        } else {
+            $forein_key = $this->getDistrictTable()->foreigne_key($id);
+            if ($forein_key == 0) {
+                $this->getDistrictTable()->deleteDistrict($id);
+                $container = new Container('alert');
+                $container->alertMsg = 'Deleted successfully';
+                return $this->redirect()->toRoute('district');
+            } else {
+                $container = new Container('alert');
+                $container->alertMsg = 'Unable to delete this district because it is used for one or more facility(ies).';
+                return $this->redirect()->toRoute('district');
+            }
+        }
+    }
 }

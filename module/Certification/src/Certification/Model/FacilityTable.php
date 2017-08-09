@@ -54,6 +54,23 @@
              }
          }
      }
+     
+     public function deleteFacility($id)
+     {
+         $this->tableGateway->delete(array('id' => (int) $id));
+     }
+     
+     public function foreigne_key($facility){
+         $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT COUNT(facility_id) as nombre from provider  WHERE facility_id='.$facility;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+        return $nombre;
+
+     }
 
     
  }

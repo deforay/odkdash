@@ -87,5 +87,25 @@ class FacilityController extends AbstractActionController {
             'form' => $form,
         );
     }
+    
+     public function deleteAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        if (!$id) {
+            return $this->redirect()->toRoute('facility');
+        } else {
+            $forein_key = $this->getFacilityTable()->foreigne_key($id);
+            if ($forein_key == 0) {
+                $this->getFacilityTable()->deleteFacility($id);
+                $container = new Container('alert');
+                $container->alertMsg = 'Deleted successfully';
+                return $this->redirect()->toRoute('facility');
+            } else {
+                $container = new Container('alert');
+                $container->alertMsg = 'Unable to delete this facility because it is used for one or more provider(s).';
+                return $this->redirect()->toRoute('facility');
+            }
+        }
+    }
 
 }

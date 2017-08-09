@@ -74,14 +74,17 @@ $acl = $this->layout()->acl;
 
 
             <div style="margin-top:120px;">
-                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 30%;">
+                <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 50%;">
                     <thead>
                         <tr>
 
-                            <th style="width:50%">Region Name </th>
+                            <th style="width:60%">Region Name </th>
                             <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'edit')) { ?>
                             <th style="width:30%;">Edit</th>
                             <?php }   ?>
+                             <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'delete')) { ?>
+                            <th style="width:30%;">Delete</th>
+                        <?php } ?>
                         </tr>
 
                     </thead>
@@ -98,6 +101,15 @@ $acl = $this->layout()->acl;
                                         </a> 
                                     </td>
                                 <?php } ?>
+                                    <?php if ($acl->isAllowed($role, 'Certification\Controller\Region', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($region->region_name); ?> '+'?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('region', array('action' => 'delete', 'id' => $region->id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                  </div>
+                                </td>
+                            <?php } ?>
+                            
 
                             </tr>
                         <?php endforeach; ?>               

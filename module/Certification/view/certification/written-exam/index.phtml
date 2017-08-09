@@ -60,6 +60,9 @@ $acl = $this->layout()->acl;
                         <th>Edit</th>
                         <th>Another Attempt</th>
                         <?php }  ?>
+                        <?php // if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                            <!--<th>Delete</th>-->
+                        <?php // } ?>
 
                     </tr>
 
@@ -96,6 +99,15 @@ $acl = $this->layout()->acl;
                             }
                             ?>
                         <?php }  ?>
+<!--                            
+                            <?php // if ($acl->isAllowed($role, 'Certification\Controller\WrittenExam', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove this written exam?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php // echo $this->url('written-exam', array('action' => 'delete', 'id_written_exam' => $written->id_written_exam)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                   </div>
+                                </td>-->
+                            <?php // } ?>
                             
                             
 </tr>

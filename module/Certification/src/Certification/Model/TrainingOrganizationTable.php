@@ -54,6 +54,21 @@ class TrainingOrganizationTable extends AbstractTableGateway {
         }
     }
 
-    
+    public function deleteOrganization($training_organization_id)
+     {
+         $this->tableGateway->delete(array('training_organization_id' => (int) $training_organization_id));
+     }
+     
+     public function foreigne_key($training_organization_id){
+         $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT COUNT(training_organization_id) as nombre from training  WHERE training_organization_id='.$training_organization_id;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+        return $nombre;
+
+     }
 
 }

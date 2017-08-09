@@ -88,5 +88,10 @@ class TrainingTable extends AbstractTableGateway {
             }
         }
     }
+    
+     public function deleteTraining($training_id)
+     {
+         $this->tableGateway->delete(array('training_id' => (int) $training_id));
+     }
 
 }

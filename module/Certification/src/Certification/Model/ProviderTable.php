@@ -184,5 +184,35 @@ class ProviderTable extends AbstractTableGateway {
 //        print_r($result);
         return array('facility_id' => $id, 'facility_name' => $facility_name);
     }
+    
+     public function deleteProvider($id)
+     {
+         $this->tableGateway->delete(array('id' => (int) $id));
+     }
+     
+     public function foreigne_key1($provider_id){
+         $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT COUNT(provider_id) as nombre from written_exam  WHERE provider_id='.$provider_id;
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+        return $nombre;
+
+     }
+     
+     public function foreigne_key2($provider_id){
+         $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT COUNT(provider_id) as nombre from practical_exam  WHERE provider_id='.$provider_id;
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+        return $nombre;
+
+     }
+
 
 }

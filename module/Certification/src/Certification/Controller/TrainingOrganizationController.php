@@ -21,7 +21,7 @@ class TrainingOrganizationController extends AbstractActionController {
     }
 
     public function indexAction() {
-$this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
+        $this->forward()->dispatch('Certification\Controller\Certification', array('action' => 'index'));
         $paginator = $this->getTrainingOrganizationTable()->fetchAll();
         return new ViewModel(array(
             'paginator' => $paginator,
@@ -86,6 +86,26 @@ $this->forward()->dispatch('Certification\Controller\Certification', array('acti
             'training_organization_id' => $training_organization_id,
             'form' => $form,
         );
+    }
+
+    public function deleteAction() {
+        $training_organization_id = (int) $this->params()->fromRoute('training_organization_id', 0);
+
+        if (!$training_organization_id) {
+            return $this->redirect()->toRoute('training-organization');
+        } else {
+            $forein_key= $this->getTrainingOrganizationTable()->foreigne_key($training_organization_id);
+            if($forein_key==0){
+            $this->getTrainingOrganizationTable()->deleteOrganization($training_organization_id);
+            $container = new Container('alert');
+            $container->alertMsg = 'Deleted successfully';
+             return $this->redirect()->toRoute('training-organization');
+        } else {
+            $container = new Container('alert');
+            $container->alertMsg = 'Unable to delete this organization because it is used for one or more training (s).';
+             return $this->redirect()->toRoute('training-organization');
+        }
+        }
     }
 
 }

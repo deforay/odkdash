@@ -73,8 +73,10 @@ class TrainingController extends AbstractActionController {
             ));
         }
         $training->last_training_date = date("d-m-Y", strtotime($training->last_training_date));
-       if(isset($training->date_certificate_issued)) {$training->date_certificate_issued = date("d-m-Y", strtotime($training->date_certificate_issued));}
-        
+        if (isset($training->date_certificate_issued)) {
+            $training->date_certificate_issued = date("d-m-Y", strtotime($training->date_certificate_issued));
+        }
+
         $form = new TrainingForm($dbAdapter);
         $form->bind($training);
         $form->get('submit')->setAttribute('value', 'UPDATE');
@@ -96,6 +98,20 @@ class TrainingController extends AbstractActionController {
             'training_id' => $training_id,
             'form' => $form,
         );
+    }
+
+    public function deleteAction() {
+        $training_id = (int) $this->params()->fromRoute('training_id', 0);
+
+        if (!$training_id) {
+            return $this->redirect()->toRoute('training');
+        } else {
+
+            $this->getTrainingTable()->deleteTraining($training_id);
+            $container = new Container('alert');
+            $container->alertMsg = 'Deleted successfully';
+            return $this->redirect()->toRoute('training');
+        }
     }
 
 }

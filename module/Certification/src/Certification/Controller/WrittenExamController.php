@@ -110,7 +110,9 @@ class WrittenExamController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-        
+        $provider= $this->getWrittenExamTable()->getProviderName2($id_written_exam);
+//        die(print_r($provider));
+              
         $writtenExam->date=date("d-m-Y", strtotime( $writtenExam->date));
         $form = new WrittenExamForm($dbAdapter);
         $form->bind($writtenExam);
@@ -133,7 +135,9 @@ class WrittenExamController extends AbstractActionController {
         return array(
             'id_written_exam' => $id_written_exam,
             'form' => $form,
-            'attemptNumber' => $attemptNumber
+            'attemptNumber' => $attemptNumber,
+            'provider_id'=>$provider['id'],
+            'provider_name'=>$provider['name'],
         );
     }
 
@@ -144,5 +148,19 @@ class WrittenExamController extends AbstractActionController {
             'result' => $result,
         );
     }
+    
+//    public function deleteAction() {
+//        $id_written_exam = (int) $this->params()->fromRoute('id_written_exam', 0);
+//
+//        if (!$id_written_exam) {
+//            return $this->redirect()->toRoute('written-exam');
+//        } else {
+//
+//            $this->getWrittenExamTable()->deleteWritten($id_written_exam);
+//            $container = new Container('alert');
+//            $container->alertMsg = 'Deleted successfully';
+//            return $this->redirect()->toRoute('written-exam');
+//        }
+//    }
 
 }

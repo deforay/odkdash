@@ -47,7 +47,7 @@ class PracticalExamController extends AbstractActionController {
             $practical_nb = $this->getPracticalExamTable()->counPractical($provider_id);
             $nb_days = $this->getPracticalExamTable()->numberOfDays($provider_id);
             if (isset($nb_days) && $nb_days <= 30) {
-                $container->alertMsg = 'The last attempt of this tester was ' . $nb_days . ' day(s) ago. Please wait at lease '.date("d-m-Y", strtotime(date("Y-m-d")."  + ". (31 - $nb_days)." day"));
+                $container->alertMsg = 'The last attempt of this tester was ' . $nb_days . ' day(s) ago. Please wait at lease ' . date("d-m-Y", strtotime(date("Y-m-d") . "  + " . (31 - $nb_days) . " day"));
                 return array(
                     'form' => $form);
             } else {
@@ -106,7 +106,8 @@ class PracticalExamController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-$practicalExam->date= date("d-m-Y", strtotime($practicalExam->date));
+        $provider = $this->getPracticalExamTable()->getProviderName2($practice_exam_id);
+        $practicalExam->date = date("d-m-Y", strtotime($practicalExam->date));
         $form = new \Certification\Form\PracticalExamForm($dbAdapter);
         $form->bind($practicalExam);
         $form->get('submit')->setAttribute('value', 'UPDATE');
@@ -123,12 +124,14 @@ $practicalExam->date= date("d-m-Y", strtotime($practicalExam->date));
                 return $this->redirect()->toRoute('practical-exam');
             }
         }
-$attemptNumber= $this->getPracticalExamTable()->getExamType($practice_exam_id);
+        $attemptNumber = $this->getPracticalExamTable()->getExamType($practice_exam_id);
 
         return array(
             'practice_exam_id' => $practice_exam_id,
             'form' => $form,
-            'attemptNumber'=> $attemptNumber,
+            'attemptNumber' => $attemptNumber,
+            'provider_id'=>$provider['id'],
+            'provider_name'=>$provider['name'],
         );
     }
 

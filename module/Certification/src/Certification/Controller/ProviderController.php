@@ -124,5 +124,26 @@ class ProviderController extends AbstractActionController {
             'result' => $result,
         );
     }
+    
+    public function  deleteAction(){
+        $id = (int) $this->params()->fromRoute('id', 0);
+
+        if (!$id) {
+            return $this->redirect()->toRoute('provider');
+        } else {
+            $forein_key1= $this->getProviderTable()->foreigne_key1($id);
+            $forein_key2= $this->getProviderTable()->foreigne_key2($id);
+            if($forein_key1==0 || $forein_key2==0){
+            $this->getProviderTable()->deleteProvider($id);
+            $container = new Container('alert');
+            $container->alertMsg = 'Deleted successfully';
+             return $this->redirect()->toRoute('provider');
+        } else {
+            $container = new Container('alert');
+            $container->alertMsg = 'Unable to remove this provider because he has already completed an exam.';
+             return $this->redirect()->toRoute('provider');
+        }
+        }
+    }
 
 }

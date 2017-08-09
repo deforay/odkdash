@@ -94,12 +94,14 @@ return array(
             'edit' => 'allow',
             'district' => 'allow',
             'facility' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'attempt' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
@@ -110,17 +112,20 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'attempt' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
@@ -135,14 +140,17 @@ return array(
         'Certification\\Controller\\Region' => array(
             'index' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\District' => array(
             'index' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\Facility' => array(
             'index' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
     ),
     'US' => array(
@@ -284,12 +292,15 @@ return array(
             'edit' => 'allow',
             'district' => 'allow',
             'facility' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'attempt' => 'allow',
+            'delete' => 'allow',
+            
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
@@ -300,17 +311,20 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\WrittenExam' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'attempt' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\CertificationMail' => array(
             'index' => 'allow',
@@ -325,14 +339,17 @@ return array(
         'Certification\\Controller\\Region' => array(
             'index' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\District' => array(
             'index' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
         'Certification\\Controller\\Facility' => array(
             'index' => 'allow',
             'edit' => 'allow',
+            'delete' => 'allow',
         ),
     ),
       

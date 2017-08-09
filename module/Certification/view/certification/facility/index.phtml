@@ -107,7 +107,7 @@ $acl = $this->layout()->acl;
                 </div>
 
                 <div style="margin-top:120px;">
-                    <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="width: 70%;margin: auto;">
+                    <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget" style="margin: auto;">
                         <thead>
                             <tr>
 
@@ -118,6 +118,9 @@ $acl = $this->layout()->acl;
                                 <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'edit')) { ?>
                                     <th style="width:30%;">Edit</th>
                                 <?php } ?>
+                                     <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'delete')) { ?>
+                                        <th>Delete</th>
+                                    <?php } ?>
                             </tr>
 
                         </thead>
@@ -132,6 +135,15 @@ $acl = $this->layout()->acl;
                                             <a href="<?php echo $this->url('facility', array('action' => 'edit', 'id' => base64_encode($facility->id))); ?>"> <span class="glyphicon glyphicon-pencil">Edit</span></a> 
                                         </td>
                                     <?php } ?>
+                                        <?php if ($acl->isAllowed($role, 'Certification\Controller\Facility', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove '+'<?php echo $this->escapeHtml($facility->facility_name); ?> '+'?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('facility', array('action' => 'delete', 'id' => $facility->id)); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                  </div>
+                                </td>
+                            <?php } ?>
+                                   
 
                                 </tr>
                             <?php endforeach; ?>               

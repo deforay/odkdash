@@ -43,12 +43,12 @@ class WrittenExamTable extends AbstractTableGateway {
     }
 
     public function saveWrittenExam(WrittenExam $written_exam) {
-        
-         $date = $written_exam->date;
+
+        $date = $written_exam->date;
         $date_explode = explode("-", $date);
         $newsdate = $date_explode[2] . '-' . $date_explode[1] . '-' . $date_explode[0];
 
-        
+
         $data = array(
             'exam_type' => $written_exam->exam_type,
             'provider_id' => $written_exam->provider_id,
@@ -141,22 +141,22 @@ class WrittenExamTable extends AbstractTableGateway {
      */
     public function attemptNumber($provider) {
         $db = $this->tableGateway->getAdapter();
-        
-        $sql1='select max(date_certificate_issued) as max_date  from certification, examination WHERE certification.examination=examination.id and final_decision="certified" and provider='.$provider;
-         $statement1 = $db->query($sql1);
+
+        $sql1 = 'select max(date_certificate_issued) as max_date  from certification, examination WHERE certification.examination=examination.id and final_decision="certified" and provider=' . $provider;
+        $statement1 = $db->query($sql1);
         $result1 = $statement1->execute();
         foreach ($result1 as $res1) {
             $max_date = $res1['max_date'];
         }
-        
-        if ($max_date ==null){
-            $max_date='0000-00-00';
-        }  
+
+        if ($max_date == null) {
+            $max_date = '0000-00-00';
+        }
 //        die($max_date);
-        
+
         $sql = 'SELECT COUNT(*) as nombre from (select  certification.id ,examination, final_decision, certification_issuer, date_certificate_issued, 
                 date_certificate_sent, certification_type, provider,last_name, first_name, middle_name, certification_id,
-                certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where examination.id = certification.examination and provider.id = examination.provider and final_decision in ("failed","pending") and date_certificate_issued >'.$max_date.' and provider='.$provider.') as tab';
+                certification_reg_no, professional_reg_no,email,date_end_validity,facility_in_charge_email from certification, examination, provider where examination.id = certification.examination and provider.id = examination.provider and final_decision in ("failed","pending") and date_certificate_issued >' . $max_date . ' and provider=' . $provider . ') as tab';
 //        die($sql);
         $statement = $db->query($sql);
         $result = $statement->execute();
@@ -220,10 +220,10 @@ class WrittenExamTable extends AbstractTableGateway {
         }
         return $nb_days;
     }
-    
+
     public function getExamType($written) {
         $db = $this->tableGateway->getAdapter();
-        $sql = 'SELECT exam_type from written_exam WHERE id_written_exam='.$written;
+        $sql = 'SELECT exam_type from written_exam WHERE id_written_exam=' . $written;
         $statement = $db->query($sql);
         $result = $statement->execute();
         foreach ($result as $res) {
@@ -231,6 +231,34 @@ class WrittenExamTable extends AbstractTableGateway {
         }
         return $exam_type;
     }
-    
+
+    public function getProviderName2($written) {
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'select id, last_name, first_name, middle_name from provider , written_exam where provider.id=written_exam.provider_id and id_written_exam=' . $written;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        $selectData = array();
+
+        foreach ($result as $res) {
+            $selectData['name'] = $res['last_name'] . ' ' . $res['first_name'] . ' ' . $res['middle_name'];
+            $selectData['id'] = $res['id'];
+        }
+        return $selectData;
+    }
+
+//    public function deleteWritten($id_written_exam) {
+//        $db = $this->tableGateway->getAdapter();
+//        $sql1 = 'SELECT max(id) as examination FROM  examination where id_written_exam=' . $id_written_exam;
+//        $statement = $db->query($sql1);
+//        $result = $statement->execute();
+//        foreach ($result as $res) {
+//            $examination = $res['examination'];
+//        }
+//
+//        $sql2 = 'UPDATE examination SET id_written_exam=null WHERE id='.$examination;
+//        $db->getDriver()->getConnection()->execute($sql2);
+//        $sql3 = 'Delete from written_exam where id_written_exam='.$id_written_exam;
+//        $db->getDriver()->getConnection()->execute($sql3);
+//    }
 
 }
