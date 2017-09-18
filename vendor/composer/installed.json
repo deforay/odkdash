@@ -24,7 +24,7 @@
             "dflydev/markdown": "~1.0",
             "erusev/parsedown": "~1.0"
         },
-        "time": "2015-02-03 12:10:50",
+        "time": "2015-02-03T12:10:50+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -72,7 +72,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.2"
         },
-        "time": "2015-04-08 04:46:07",
+        "time": "2015-04-08T04:46:07+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -122,7 +122,7 @@
         "require-dev": {
             "symfony/phpunit-bridge": "~2.7"
         },
-        "time": "2015-05-02 15:21:08",
+        "time": "2015-05-02T15:21:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -167,7 +167,7 @@
             "reference": "ab931d46cd0d3204a91e1b9a40c4bc13032b58e4",
             "shasum": ""
         },
-        "time": "2015-02-24 06:35:25",
+        "time": "2015-02-24T06:35:25+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -213,7 +213,7 @@
         "suggest": {
             "ext-uopz": "*"
         },
-        "time": "2014-10-06 09:23:50",
+        "time": "2014-10-06T09:23:50+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -263,7 +263,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2015-01-24 09:48:32",
+        "time": "2015-01-24T09:48:32+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -319,7 +319,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2015-01-27 07:23:06",
+        "time": "2015-01-27T07:23:06+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -386,7 +386,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2015-01-01 10:01:08",
+        "time": "2015-01-01T10:01:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -438,7 +438,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.2"
         },
-        "time": "2015-02-22 15:13:53",
+        "time": "2015-02-22T15:13:53+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -494,7 +494,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2015-01-29 16:28:08",
+        "time": "2015-01-29T16:28:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -555,7 +555,7 @@
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2014-01-30 17:20:04",
+        "time": "2014-01-30T17:20:04+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -608,7 +608,7 @@
             "phpunit/phpunit": "~4.0",
             "squizlabs/php_codesniffer": "2.0.*@ALPHA"
         },
-        "time": "2014-10-13 12:58:55",
+        "time": "2014-10-13T12:58:55+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -665,7 +665,7 @@
         "suggest": {
             "ext-soap": "*"
         },
-        "time": "2015-05-29 05:19:18",
+        "time": "2015-05-29T05:19:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -714,7 +714,7 @@
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2013-08-02 07:42:54",
+        "time": "2013-08-02T07:42:54+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -760,7 +760,7 @@
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2015-04-02 05:19:05",
+        "time": "2015-04-02T05:19:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -823,7 +823,7 @@
             "ext-xdebug": ">=2.2.1",
             "ext-xmlwriter": "*"
         },
-        "time": "2015-06-09 13:05:42",
+        "time": "2015-06-09T13:05:42+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -878,7 +878,7 @@
         "require-dev": {
             "phpspec/phpspec": "~2.0"
         },
-        "time": "2015-04-27 22:15:08",
+        "time": "2015-04-27T22:15:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -956,7 +956,7 @@
         "suggest": {
             "phpunit/php-invoker": "~1.1"
         },
-        "time": "2015-06-06 08:36:08",
+        "time": "2015-06-06T08:36:08+00:00",
         "bin": [
             "phpunit"
         ],
@@ -1013,7 +1013,7 @@
             "fabpot/php-cs-fixer": "*@dev",
             "phpunit/phpunit": "~3.7"
         },
-        "time": "2014-03-05 22:25:44",
+        "time": "2014-03-05T22:25:44+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1072,7 +1072,7 @@
             "zendframework/zend-serializer": "Zend\\Serializer component",
             "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1119,7 +1119,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1173,7 +1173,7 @@
             "doctrine/common": "Doctrine\\Common >=2.1 for annotation features",
             "zendframework/zend-stdlib": "Zend\\Stdlib component"
         },
-        "time": "2015-06-03 15:31:59",
+        "time": "2015-06-03T15:31:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1222,7 +1222,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1276,7 +1276,7 @@
             "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
             "zendframework/zend-servicemanager": ">= current version, if using the BigInteger::factory functionality"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1343,7 +1343,7 @@
             "zendframework/zend-session": "Zend\\Session component",
             "zendframework/zend-uri": "Zend\\Uri component, required by the Uri and Sitemap\\Loc validators"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1390,7 +1390,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 14:05:37",
+        "time": "2015-06-03T14:05:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1438,7 +1438,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1485,7 +1485,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 14:05:47",
+        "time": "2015-06-03T14:05:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1536,7 +1536,7 @@
             "phpunit/phpunit": "~4.0",
             "zendframework/zend-config": "~2.5"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1592,7 +1592,7 @@
         "suggest": {
             "zendframework/zend-cache": "To support Zend\\XmlRpc\\Server\\Cache usage"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1676,7 +1676,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
             "zendframework/zend-uri": "Zend\\Uri component"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1732,7 +1732,7 @@
             "zendframework/zend-server": "Zend\\Server component",
             "zendframework/zendxml": "To support Zend\\Json\\Json::fromXml() usage"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1785,7 +1785,7 @@
             "zendframework/zend-http": "Allows use of Zend\\Http\\Client to check version information",
             "zendframework/zend-json": "To check latest version hosted in GitHub"
         },
-        "time": "2015-06-04 15:41:05",
+        "time": "2015-06-04T15:41:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1837,7 +1837,7 @@
             "ocramius/proxy-manager": "ProxyManager 0.5.* to handle lazy initialization of services",
             "zendframework/zend-di": "Zend\\Di component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1886,7 +1886,7 @@
             "phpunit/phpunit": "~4.0",
             "zendframework/zend-config": "~2.5"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1945,7 +1945,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
             "zendframework/zend-uri": "Zend\\Uri component for UriNormalize filter"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2000,7 +2000,7 @@
         "suggest": {
             "zendframework/zend-servicemanager": "To support plugin manager support"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2074,7 +2074,7 @@
             "zendframework/zend-view": "Zend\\View component",
             "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha component"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2163,7 +2163,7 @@
             "zendframework/zend-version": "Zend\\Version component",
             "zendframework/zend-view": "Zend\\View component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2209,7 +2209,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 14:05:36",
+        "time": "2015-06-03T14:05:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2264,7 +2264,7 @@
             "zendframework/zend-filter": "To support DefaultRouteMatcher usage",
             "zendframework/zend-validator": "To support DefaultRouteMatcher usage"
         },
-        "time": "2015-06-03 15:32:00",
+        "time": "2015-06-03T15:32:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2328,7 +2328,7 @@
         "suggest": {
             "zendframework/zend-console": "Zend\\Console component"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2381,7 +2381,7 @@
         "suggest": {
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2436,7 +2436,7 @@
         "suggest": {
             "zendframework/zend-http": "Zend\\Http component"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2497,7 +2497,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
             "zendframework/zend-validator": "Zend\\Validator component"
         },
-        "time": "2015-06-03 15:32:03",
+        "time": "2015-06-03T15:32:03+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2551,7 +2551,7 @@
         "suggest": {
             "zendframework/zend-servicemanager": "To support plugin manager support"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2605,7 +2605,7 @@
             "zendframework/zend-json": "Zend\\Json component",
             "zendframework/zend-session": "To support progressbar persistent"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2652,7 +2652,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2015-06-03 14:05:54",
+        "time": "2015-06-03T14:05:54+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2704,7 +2704,7 @@
         "suggest": {
             "zendframework/zend-servicemanager": "To support Zend\\Permissions\\Acl\\Assertion\\AssertionManager plugin manager usage"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2768,7 +2768,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
             "zendframework/zend-view": "Zend\\View component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2834,7 +2834,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
             "zendframework/zend-view": "Zend\\View component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2896,7 +2896,7 @@
             "zendframework/zend-mvc": "Zend\\Mvc component",
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2947,7 +2947,7 @@
         "suggest": {
             "zendframework/zend-mail": "Zend\\Mail component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2997,7 +2997,7 @@
         "suggest": {
             "zendframework/zend-cache": "To support swap the memory objects"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3050,7 +3050,7 @@
         "suggest": {
             "ext-mcrypt": "Required for most features of Zend\\Crypt"
         },
-        "time": "2015-06-03 15:32:00",
+        "time": "2015-06-03T15:32:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3106,7 +3106,7 @@
         "suggest": {
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3170,7 +3170,7 @@
             "zendframework/zend-mail": "Zend\\Mail component",
             "zendframework/zend-validator": "Zend\\Validator component"
         },
-        "time": "2015-06-03 15:32:02",
+        "time": "2015-06-03T15:32:02+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3214,7 +3214,7 @@
         "require": {
             "php": ">=5.3.23"
         },
-        "time": "2015-05-07 14:52:27",
+        "time": "2015-05-07T14:52:27+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -3274,7 +3274,7 @@
             "zendframework/zend-validator": "You should install this package to use the provided validators",
             "zendframework/zend-view": "You should install this package to use the provided view helpers"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3330,7 +3330,7 @@
             "zendframework/zend-i18n": "Zend\\I18n component",
             "zendframework/zend-validator": "Zend\\Validator component"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3390,7 +3390,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component, for default/recommended ExtensionManager implementations",
             "zendframework/zend-validator": "Zend\\Validator component"
         },
-        "time": "2015-06-03 15:32:01",
+        "time": "2015-06-03T15:32:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3450,7 +3450,7 @@
         "suggest": {
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2015-06-03 15:32:00",
+        "time": "2015-06-03T15:32:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3501,7 +3501,7 @@
             "ext/xdebug": "XDebug, for better backtrace output",
             "zendframework/zend-escaper": "To support escaped output"
         },
-        "time": "2015-06-03 14:05:35",
+        "time": "2015-06-03T14:05:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3555,7 +3555,7 @@
             "zendframework/zend-eventmanager": "Zend\\EventManager component",
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component"
         },
-        "time": "2015-06-03 15:32:00",
+        "time": "2015-06-03T15:32:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3613,7 +3613,7 @@
             "zendframework/zend-json": "Zend\\Json to use the Json reader or writer classes",
             "zendframework/zend-servicemanager": "Zend\\ServiceManager for use with the Config Factory to retrieve reader and writer instances"
         },
-        "time": "2015-06-03 15:32:00",
+        "time": "2015-06-03T15:32:00+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3673,7 +3673,7 @@
             "zendframework/zend-validator": "Zend\\Validator component",
             "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha component"
         },
-        "time": "2015-06-03 15:31:59",
+        "time": "2015-06-03T15:31:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3734,7 +3734,7 @@
             "zendframework/zend-serializer": "Zend\\Serializer component",
             "zendframework/zend-session": "Zend\\Session component"
         },
-        "time": "2015-06-03 15:31:59",
+        "time": "2015-06-03T15:31:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3790,7 +3790,7 @@
             "zendframework/zend-servicemanager": "Zend\\ServiceManager component, required when using the factory methods of Zend\\Barcode.",
             "zendframework/zendpdf": "ZendPdf component"
         },
-        "time": "2015-06-03 15:31:59",
+        "time": "2015-06-03T15:31:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3854,7 +3854,7 @@
             "zendframework/zend-uri": "Zend\\Uri component",
             "zendframework/zend-validator": "Zend\\Validator component"
         },
-        "time": "2015-06-03 15:31:59",
+        "time": "2015-06-03T15:31:59+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3951,7 +3951,7 @@
         "suggest": {
             "zendframework/zend-ldap": "zend-ldap component ~2.5.0, if you need LDAP features"
         },
-        "time": "2015-06-04 15:35:39",
+        "time": "2015-06-04T15:35:39+00:00",
         "bin": [
             "bin/classmap_generator.php",
             "bin/pluginmap_generator.php",
@@ -4014,7 +4014,7 @@
             "symfony/yaml": "Required by Check\\YamlFile",
             "videlalvaro/php-amqplib": "Required by Check\\RabbitMQ"
         },
-        "time": "2015-10-01 15:37:41",
+        "time": "2015-10-01T15:37:41+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -4080,7 +4080,7 @@
             "fabpot/php-cs-fixer": "1.7.*",
             "phpunit/phpunit": "4.*"
         },
-        "time": "2015-10-21 07:40:59",
+        "time": "2015-10-21T07:40:59+00:00",
         "bin": [
             "zf.php"
         ],
@@ -4143,7 +4143,7 @@
         "suggest": {
             "league/oauth2-google": "Needed for Google XOAUTH2 authentication"
         },
-        "time": "2017-03-15 19:32:56",
+        "time": "2017-03-15T19:32:56+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -4213,7 +4213,7 @@
             "phpunit/phpunit": "^4|^5|^6",
             "simpletest/simpletest": "^1"
         },
-        "time": "2017-04-22 10:50:55",
+        "time": "2017-04-22T10:50:55+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -4276,7 +4276,7 @@
         "suggest": {
             "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
         },
-        "time": "2017-03-13 16:27:32",
+        "time": "2017-03-13T16:27:32+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -4323,7 +4323,7 @@
         "require-dev": {
             "phpunit/phpunit": "^4.0"
         },
-        "time": "2016-12-20 10:07:11",
+        "time": "2016-12-20T10:07:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -4373,7 +4373,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-08-06 14:39:51",
+        "time": "2016-08-06T14:39:51+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -4432,7 +4432,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2017-03-20 17:10:46",
+        "time": "2017-03-20T17:10:46+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -4499,7 +4499,7 @@
             "phpunit/phpunit": "^4.0",
             "psr/log": "^1.0"
         },
-        "time": "2017-02-28 22:50:30",
+        "time": "2017-02-28T22:50:30+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -4565,7 +4565,7 @@
             "phpunit/phpunit": "^5.0",
             "squizlabs/php_codesniffer": "^2.0"
         },
-        "time": "2017-04-25 14:43:14",
+        "time": "2017-04-25T14:43:14+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -4630,7 +4630,7 @@
             "phpunit/phpunit": "^5.0",
             "squizlabs/php_codesniffer": "^2.0"
         },
-        "time": "2017-01-24 15:15:42",
+        "time": "2017-01-24T15:15:42+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -4677,7 +4677,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2015-09-12 10:08:34",
+        "time": "2015-09-12T10:08:34+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -4722,6 +4722,65 @@
             "pdf",
             "pdf417",
             "qrcode"
+        ]
+    },
+    {
+        "name": "phpoffice/phpexcel",
+        "version": "1.8.1",
+        "version_normalized": "1.8.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/PHPOffice/PHPExcel.git",
+            "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/PHPOffice/PHPExcel/zipball/372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+            "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+            "shasum": ""
+        },
+        "require": {
+            "ext-xml": "*",
+            "ext-xmlwriter": "*",
+            "php": ">=5.2.0"
+        },
+        "time": "2015-05-01T07:00:55+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "PHPExcel": "Classes/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL"
+        ],
+        "authors": [
+            {
+                "name": "Maarten Balliauw",
+                "homepage": "http://blog.maartenballiauw.be"
+            },
+            {
+                "name": "Mark Baker"
+            },
+            {
+                "name": "Franck Lefevre",
+                "homepage": "http://blog.rootslabs.net"
+            },
+            {
+                "name": "Erik Tilt"
+            }
+        ],
+        "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+        "homepage": "http://phpexcel.codeplex.com",
+        "keywords": [
+            "OpenXML",
+            "excel",
+            "php",
+            "spreadsheet",
+            "xls",
+            "xlsx"
         ]
     }
 ]

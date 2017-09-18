@@ -2,8 +2,8 @@
 
 namespace Certification\Form;
 
-use Zend\Form\Form;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Form;
 
 class ProviderForm extends Form {
 

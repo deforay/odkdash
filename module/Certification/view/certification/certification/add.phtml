@@ -50,9 +50,9 @@ $sessionLogin = new Container('credo');
                                 if ($written_score >= 80 && $direct_observation >= 90 && $sample_testing = 100) {
                                     $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Certified', 'id'=>'decision','onFocus' => "this.blur()"]);
                                 } elseif ($written_score < 80 && ($direct_observation < 90 || $sample_testing < 100)) {
-                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'failed','id'=>'decision','onFocus' => "this.blur()"]);
+                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Failed','id'=>'decision','onFocus' => "this.blur()"]);
                                 } else {
-                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'pending', 'id'=>'decision','onFocus' => "this.blur()"]);
+                                    $form->get('final_decision')->setAttributes(['class' => 'form-control', 'value' => 'Pending', 'id'=>'decision','onFocus' => "this.blur()"]);
                                 }
 
 

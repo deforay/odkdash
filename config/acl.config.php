@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'AD' => array(
         'Application\\Controller\\Index' => array(
@@ -87,6 +88,7 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
@@ -95,6 +97,7 @@ return array(
             'district' => 'allow',
             'facility' => 'allow',
             'delete' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
@@ -285,6 +288,7 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
@@ -293,6 +297,7 @@ return array(
             'district' => 'allow',
             'facility' => 'allow',
             'delete' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
@@ -300,7 +305,6 @@ return array(
             'edit' => 'allow',
             'attempt' => 'allow',
             'delete' => 'allow',
-            
         ),
         'Certification\\Controller\\Recertification' => array(
             'index' => 'allow',
@@ -352,7 +356,6 @@ return array(
             'delete' => 'allow',
         ),
     ),
-      
     'PCV' => array(
         'Application\\Controller\\Dashboard' => array(
             'index' => 'allow',
@@ -362,6 +365,7 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
             'pdf' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
@@ -369,6 +373,7 @@ return array(
             'edit' => 'allow',
             'district' => 'allow',
             'facility' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\PracticalExam' => array(
             'index' => 'allow',
@@ -419,5 +424,5 @@ return array(
             'index' => 'deny',
             'edit' => 'deny',
         ),
-        )
+    )
 );
