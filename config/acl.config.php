@@ -110,12 +110,14 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+             'xls' => 'allow',
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'delete' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
@@ -310,12 +312,14 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+             'xls' => 'allow',
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'delete' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',
@@ -385,11 +389,13 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+             'xls' => 'allow',
         ),
         'Certification\\Controller\\Training' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'xls' => 'allow',
         ),
         'Certification\\Controller\\TrainingOrganization' => array(
             'index' => 'allow',

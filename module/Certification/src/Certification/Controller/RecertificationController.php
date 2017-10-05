@@ -116,4 +116,7 @@ class RecertificationController extends AbstractActionController {
         );
     }
 
+     public function xlsAction() {
+        
+    }
 }

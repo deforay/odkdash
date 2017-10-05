@@ -231,12 +231,12 @@ $sessionLogin = new Container('credo');
                                         <?= $this->formElement($form->get('email')); ?>
                                         <?= $this->formElementErrors($form->get('email')); ?>
                                     </div>
-                                    <div class="form-group col-lg-3">
+                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('prefered_contact_method')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('prefered_contact_method')); ?>
                                         <?= $this->formElementErrors($form->get('prefered_contact_method')); ?>       
                                     </div>
-                                    <div class="form-group col-lg-3">
+                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('current_jod')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('current_jod')); ?>
                                         <?= $this->formElementErrors($form->get('current_jod')); ?>
@@ -247,10 +247,22 @@ $sessionLogin = new Container('credo');
                                         <?= $this->formElementErrors($form->get('facility_id')); ?>
                                     </div>
 
-                                    <div class="form-group col-lg-3">
-                                        <?= $this->formLabel($form->get('time_worked')); ?><span class="mandatory">*</span>
-                                        <?= $this->formElement($form->get('time_worked')); ?>
-                                        <?= $this->formElementErrors($form->get('time_worked')); ?>
+
+                                    <div class = " form-group col-lg-4">
+                                        <div class = "input-group">
+                                            <?= $this->formLabel($form->get('time_worked')); ?><span class="mandatory">*</span>
+                                            <?= $this->formElement($form->get('time_worked')); ?>
+                                            <?= $this->formElementErrors($form->get('time_worked')); ?>
+                                            <div class = "input-group-btn">
+                                                <select class="form-control" style="margin-bottom: -28px; width: 100px;" name="select_time" id="Time" onclick = 'emptyInput(this)'> 
+                                                    <option value="">--Select--</option>
+                                                    <option id="Years" value="Years">Year(s)</option>
+                                                    <option id="Months" value="Months">Month(s)</option>
+                                                    <option id="Weeks"value="Weeks">Week(s)</option>
+                                                    <option id="Days" value="Days">Day(s)</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </fieldset>
 
@@ -342,53 +354,60 @@ $sessionLogin = new Container('credo');
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+<script>
+                                                var time = "<?php echo $time2; ?>";
+</script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/provider.js'); ?>"></script>
 
 <script>
 //    document.getElementById("Region").addEventListener("load", showDistrict(document.getElementById("Region").value));
-                                function showDistrict(str) {
+                                                    function showDistrict(str) {
 
-                                    if (str == "") {
-                                        document.getElementById("District").innerHTML = "";
-                                        return;
-                                    } else {
-                                        if (window.XMLHttpRequest) {
-                                            // code for IE7+, Firefox, Chrome, Opera, Safari
-                                            xmlhttp = new XMLHttpRequest();
-                                        } else {
-                                            // code for IE6, IE5
-                                            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                                        }
-                                        xmlhttp.onreadystatechange = function () {
-                                            if (this.readyState == 4 && this.status == 200) {
-                                                document.getElementById("District").innerHTML = this.responseText;
-                                            }
-                                        };
-                                        xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
-                                        xmlhttp.send();
-                                    }
-                                }
+                                                        if (str == "") {
+                                                            document.getElementById("District").innerHTML = "";
+                                                            return;
+                                                        } else {
+                                                            if (window.XMLHttpRequest) {
+                                                                // code for IE7+, Firefox, Chrome, Opera, Safari
+                                                                xmlhttp = new XMLHttpRequest();
+                                                            } else {
+                                                                // code for IE6, IE5
+                                                                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                                            }
+                                                            xmlhttp.onreadystatechange = function () {
+                                                                if (this.readyState == 4 && this.status == 200) {
+                                                                    document.getElementById("District").innerHTML = this.responseText;
+                                                                }
+                                                            };
+                                                            xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'district')); ?>?q=" + str, true);
+                                                            xmlhttp.send();
+                                                        }
+                                                    }
 
-                                function showFacilities(str) {
+                                                    function showFacilities(str) {
 
-                                    if (str == "") {
-                                        document.getElementById("Facility Name").innerHTML = "";
-                                        return;
-                                    } else {
-                                        if (window.XMLHttpRequest) {
-                                            // code for IE7+, Firefox, Chrome, Opera, Safari
-                                            xmlhttp = new XMLHttpRequest();
-                                        } else {
-                                            // code for IE6, IE5
-                                            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                                        }
-                                        xmlhttp.onreadystatechange = function () {
-                                            if (this.readyState == 4 && this.status == 200) {
-                                                document.getElementById("Facility Name").innerHTML = this.responseText;
-                                            }
-                                        };
-                                        xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
-                                        xmlhttp.send();
-                                    }
-                                }
+                                                        if (str == "") {
+                                                            document.getElementById("Facility Name").innerHTML = "";
+                                                            return;
+                                                        } else {
+                                                            if (window.XMLHttpRequest) {
+                                                                // code for IE7+, Firefox, Chrome, Opera, Safari
+                                                                xmlhttp = new XMLHttpRequest();
+                                                            } else {
+                                                                // code for IE6, IE5
+                                                                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                                                            }
+                                                            xmlhttp.onreadystatechange = function () {
+                                                                if (this.readyState == 4 && this.status == 200) {
+                                                                    document.getElementById("Facility Name").innerHTML = this.responseText;
+                                                                }
+                                                            };
+                                                            xmlhttp.open("GET", "<?php echo $this->url('provider', array('action' => 'facility')); ?>?q=" + str, true);
+                                                            xmlhttp.send();
+                                                        }
+                                                    }
+
+
+                                                   
+
 </script>                              

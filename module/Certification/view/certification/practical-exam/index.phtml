@@ -1,5 +1,7 @@
 <?php
+
 use Zend\Session\Container;
+
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
@@ -24,9 +26,9 @@ $acl = $this->layout()->acl;
                 <h2>Practical Exams</h2>
             </div>
             <div class="col-sm-4">
-                <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'add')) {   ?>
-                <a href="<?php echo $this->url('practical-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add a practical exam</a>
-                <?php }   ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'add')) { ?>
+                    <a href="<?php echo $this->url('practical-exam', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Add a practical exam</a>
+                <?php } ?>
 
             </div>
         </div>
@@ -45,10 +47,13 @@ $acl = $this->layout()->acl;
                         <th style="width: 10%;">Direct observation score (≥90%) </th>
                         <th style="width: 10%;">Sample testing Score (=100%)</th>
                         <th style="width: 10%;">Practical Total Score</th>
-                        <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'edit')) {   ?>
-                        <th>Edit</th>
-                        <th>Another Attempt</th>
-                        <?php }   ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'edit')) { ?>
+                            <th>Edit</th>
+                            <th>Another Attempt</th>
+                        <?php } ?>
+                        <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'delete')) { ?>
+                            <th>Delete</th>
+                        <?php } ?>
                     </tr>
 
                 </thead>
@@ -62,20 +67,28 @@ $acl = $this->layout()->acl;
                             <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->direct_observation_score . ' %'); ?></div></td>
                             <td><div style="width:70px;height:40px;overflow:auto;"><?php echo $this->escapeHtml($exam->Sample_testing_score . ' %'); ?></div></td>
                             <td><div style="width:70px;height:40px;overflow:auto; font-weight: bold"><?php echo $this->escapeHtml($exam->practical_total_score . ' %'); ?></div></td>
-                            <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'edit')) {   ?>
-                       <td>
-                                <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('practical-exam', array('action' => 'edit', 'practice_exam_id' => base64_encode($exam->practice_exam_id))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
-                            </td>
+                            <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'edit')) { ?>
+                                <td>
+                                    <div style="width:80px;height:40px;overflow:auto;"><a href="<?php echo $this->url('practical-exam', array('action' => 'edit', 'practice_exam_id' => base64_encode($exam->practice_exam_id))); ?>"><span class="glyphicon glyphicon-pencil"></span> Edit</a> </div>
+                                </td>
 
-                            <?php
-                            if ($exam->direct_observation_score < 90 || $exam->Sample_testing_score < 100 || strcasecmp($exam->exam_type, '3rd attempt') == 0) {
-                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Add written exam </div></td>";
-                            } else {
-                                echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><a href=" . $this->url('written-exam', array('action' => 'add'), array('query' => array(base64_encode('practice_exam_id') => base64_encode($exam->practice_exam_id)))) . "><span class='glyphicon glyphicon-repeat'></span> Add written exam</a> </div></td>";
-                            }
-                            ?>
-                        <?php }   ?>
-                           
+                                <?php
+                                if ($exam->direct_observation_score < 90 || $exam->Sample_testing_score < 100 || strcasecmp($exam->exam_type, '3rd attempt') == 0) {
+                                    echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><span class='glyphicon glyphicon-repeat'></span> Add written exam </div></td>";
+                                } else {
+                                    echo "<td><div style='width:120px;height:40px;overflow:auto;'><p><a href=" . $this->url('written-exam', array('action' => 'add'), array('query' => array(base64_encode('practice_exam_id') => base64_encode($exam->practice_exam_id)))) . "><span class='glyphicon glyphicon-repeat'></span> Add written exam</a> </div></td>";
+                                }
+                                ?>
+                            <?php } ?>
+                                <?php if ($acl->isAllowed($role, 'Certification\Controller\PracticalExam', 'delete')) { ?>
+                                <td><div style="overflow:auto;">
+                                         <a onclick="if (!confirm('Do you really want to remove this practical exam?')) {
+                                                    alert('Canceled!');
+                                                    return false;};"  href="<?php echo $this->url('practical-exam', array('action' => 'delete', 'practice_exam_id' => base64_encode($exam->practice_exam_id))); ?>"> <span class="glyphicon glyphicon-trash">&nbsp;Delete</span></a> 
+                                   </div>
+                                </td>
+                            <?php } ?>
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

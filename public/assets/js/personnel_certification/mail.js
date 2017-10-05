@@ -55,12 +55,13 @@ To print this certificate ensure that the paper size selected by the printer is 
         subject.innerHTML = '';
         myAnchor2.innerHTML = "<div class='form-group col-lg-6'><label>Name Of Recipient</label><input name='name_recipient' id='name_recipient' class='form-control' type='text'/></div>";
         div_file.innerHTML = '';
-    } else if (choice == "") {
-        document.getElementById('form').innerHTML='';
-        message.innerHTML = "";
-        subject.innerHTML = '';
-
-    }
+    } 
+//    else if (choice == "") {
+//        document.getElementById('form').innerHTML='';
+//        message.innerHTML = "";
+//        subject.innerHTML = '';
+//
+//    }
 
 }
 setChoice();

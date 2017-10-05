@@ -281,7 +281,17 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                             <ul>
                                                 <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certification</a></li>
                                                 <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Re-Certification</a></li>
-
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'xls')); ?>"> Certification Reports</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul  id="menu-accordeon">
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('provider', array('action' => 'xls')); ?>">Provider Reports</a></li>
+                                                <li><a href="<?php echo $this->url('training', array('action' => 'xls')); ?>">Training Reports</a></li>
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'xls')); ?>"> Certification Reports</a></li>
+                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'xls')); ?>"> Recertification Reports</a></li>
                                             </ul>
                                         </li>
                                     </ul>
@@ -295,14 +305,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                         </li>
                                     </ul>
 
-                                    <ul  id="menu-accordeon">
 
-                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports</a>
-                                            <ul>
-                                                <li><a href="<?php echo $this->url('certification', array('action' => 'xls')); ?>">Reports</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
                                     <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
                                         ?>
                                         <ul  id="menu-accordeon">

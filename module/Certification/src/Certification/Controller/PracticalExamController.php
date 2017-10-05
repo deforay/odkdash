@@ -143,4 +143,23 @@ class PracticalExamController extends AbstractActionController {
         );
     }
 
+    public function deleteAction() {
+        $practical_exam_id = (int) base64_decode($this->params()->fromRoute('practice_exam_id', 0));
+
+        if (!$practical_exam_id) {
+            return $this->redirect()->toRoute('practical-exam');
+        } else {
+            $nb_practical = $this->getPracticalExamTable()->CountPractical($practical_exam_id);
+            if ($nb_practical == 1) {
+                $this->getPracticalExamTable()->deletePractical($practical_exam_id);
+                $container = new Container('alert');
+                $container->alertMsg = 'Deleted successfully';
+                return $this->redirect()->toRoute('practical-exam');
+            } else {
+                $container = new Container('alert');
+                $container->alertMsg = 'This practical exam can not be deleted because it is already used for another examination!';
+                return $this->redirect()->toRoute('practical-exam');
+            }
+        }
+    }
 }

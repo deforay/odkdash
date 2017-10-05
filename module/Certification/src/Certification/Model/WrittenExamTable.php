@@ -246,19 +246,31 @@ class WrittenExamTable extends AbstractTableGateway {
         return $selectData;
     }
 
-//    public function deleteWritten($id_written_exam) {
-//        $db = $this->tableGateway->getAdapter();
-//        $sql1 = 'SELECT max(id) as examination FROM  examination where id_written_exam=' . $id_written_exam;
-//        $statement = $db->query($sql1);
-//        $result = $statement->execute();
-//        foreach ($result as $res) {
-//            $examination = $res['examination'];
-//        }
-//
-//        $sql2 = 'UPDATE examination SET id_written_exam=null WHERE id='.$examination;
-//        $db->getDriver()->getConnection()->execute($sql2);
-//        $sql3 = 'Delete from written_exam where id_written_exam='.$id_written_exam;
-//        $db->getDriver()->getConnection()->execute($sql3);
-//    }
+     public function CountWritten($id_written_exam) {
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT count(id_written_exam) as nombre FROM examination WHERE  id_written_exam=' . $id_written_exam;
+//        die($sql1);
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+        return $nombre;
+    }
+    
+    public function deleteWritten($id_written_exam) {
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT max(id) as examination FROM  examination where id_written_exam=' . $id_written_exam;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $examination = $res['examination'];
+        }
+
+        $sql2 = 'UPDATE examination SET id_written_exam=null WHERE id='.$examination;
+        $db->getDriver()->getConnection()->execute($sql2);
+        $sql3 = 'Delete from written_exam where id_written_exam='.$id_written_exam;
+        $db->getDriver()->getConnection()->execute($sql3);
+    }
 
 }

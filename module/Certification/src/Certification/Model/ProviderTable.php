@@ -214,5 +214,38 @@ class ProviderTable extends AbstractTableGateway {
 
      }
 
+public function report($typeHiv, $jobTitle, $region, $district, $facility,$contact_method) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = 'select provider.certification_reg_no, provider.certification_id, provider.professional_reg_no, provider.first_name, provider.last_name, provider.middle_name,certification_regions.region_name,certification_districts.district_name, provider.type_vih_test, provider.phone,provider.email, provider.prefered_contact_method,provider.current_jod, provider.time_worked,provider.test_site_in_charge_name, provider.test_site_in_charge_phone,provider.test_site_in_charge_email, provider.facility_in_charge_name, provider.facility_in_charge_phone, provider.facility_in_charge_email,certification_facilities.facility_name from provider,certification_districts, certification_facilities, certification_regions WHERE provider.facility_id=certification_facilities.id and provider.region= certification_regions.id  and provider.district=certification_districts.id';
+   
+        if (!empty($typeHiv)) {
+            $sql = $sql . ' and provider.type_vih_test="' . $typeHiv . '"';
+        }
+        if (!empty($jobTitle)) {
+            $sql = $sql . ' and provider.current_jod="' . $jobTitle . '"';
+        }
+
+        if (!empty($region)) {
+            $sql = $sql . ' and certification_regions.id=' . $region;
+        }
+
+        if (!empty($district)) {
+            $sql = $sql . ' and certification_districts.id=' . $district;
+        }
+
+        if (!empty($facility)) {
+            $sql = $sql . ' and certification_facilities.id=' . $facility;
+        }
+        
+        if (!empty($contact_method)) {
+            $sql = $sql . ' and prefered_contact_method="' . $contact_method.'"';
+        }
+        
+         
+//die($sql);
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        return $result;
+    }
 
 }

@@ -240,5 +240,33 @@ class PracticalExamTable extends AbstractTableGateway {
         }
         return $selectData;
     }
+    
+    public function CountPractical($practical_exam_id) {
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT count(practical_exam_id) as nombre FROM examination WHERE  practical_exam_id=' . $practical_exam_id;
+//        die($sql1);
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+        return $nombre;
+    }
+    
+    public function deletePractical($practical_exam_id) {
+        $db = $this->tableGateway->getAdapter();
+        $sql1 = 'SELECT max(id) as examination FROM  examination where practical_exam_id=' . $practical_exam_id;
+        $statement = $db->query($sql1);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $examination = $res['examination'];
+        }
+
+        $sql2 = 'UPDATE examination SET practical_exam_id=null WHERE id='.$examination;
+        $db->getDriver()->getConnection()->execute($sql2);
+        $sql3 = 'Delete from practical_exam where practice_exam_id='.$practical_exam_id;
+        $db->getDriver()->getConnection()->execute($sql3);
+    }
+
 
 }

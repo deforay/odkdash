@@ -80,11 +80,16 @@ class TrainingForm extends Form {
         ));
 
         $this->add(array(
-            'type' => 'text',
+            'type' => 'Number',
             'name' => 'length_of_training',
             'options' => array(
                 'label' => 'Length of Activity/Training',
             ),
+            'attributes' => [
+                'min' => '0',
+                'max' => '10',
+                'step' => '1', // default step interval is 1
+            ],
         ));
         $this->add(array(
             'type' => 'Zend\Form\Element\Select',

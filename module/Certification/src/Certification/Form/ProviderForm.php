@@ -14,14 +14,14 @@ class ProviderForm extends Form {
         $this->adapter = $dbAdapter;
 
         parent::__construct("provider");
-        $this->setAttributes(array('method'=> 'post',
-            ));
+        $this->setAttributes(array('method' => 'post',
+        ));
 
         $this->add(array(
             'name' => 'id',
             'type' => 'Hidden',
         ));
-        
+
         $this->add(array(
             'name' => 'certification_reg_no',
             'type' => 'Text',
@@ -29,7 +29,7 @@ class ProviderForm extends Form {
                 'label' => 'Certification Registration ID',
             ),
         ));
-        
+
         $this->add(array(
             'name' => 'certification_id',
             'type' => 'Text',
@@ -37,7 +37,7 @@ class ProviderForm extends Form {
                 'label' => 'Certification ID',
             ),
         ));
-        
+
         $this->add(array(
             'name' => 'professional_reg_no',
             'type' => 'Text',
@@ -82,8 +82,7 @@ class ProviderForm extends Form {
             'type' => 'Select',
             'options' => array(
                 'label' => 'District',
-                 'disable_inarray_validator' => true,
-              
+                'disable_inarray_validator' => true,
             ),
         ));
 
@@ -113,7 +112,6 @@ class ProviderForm extends Form {
             'options' => array(
                 'label' => 'Phone',
             ),
-            
         ));
         $this->add(array(
             'name' => 'email',
@@ -141,7 +139,7 @@ class ProviderForm extends Form {
                 'label' => 'Current Job Title',
                 'empty_option' => 'Please Choose A Job Title',
                 'value_options' => array(
-                    'Assistant Medical Officer'=>'Assistant Medical Officer',
+                    'Assistant Medical Officer' => 'Assistant Medical Officer',
                     'Counselor' => 'Counselor',
                     'Health assistant' => 'Health assistant',
                     'Health attendant' => 'Health attendant',
@@ -156,15 +154,20 @@ class ProviderForm extends Form {
                 ),
             ),
         ));
-           
+
         $this->add(array(
             'name' => 'time_worked',
-            'type' => 'Text',
+            'type' => 'Number',
             'options' => array(
                 'label' => 'Time Worked As Tester',
             ),
+            'attributes' => [
+                'min' => '0',
+                'max' => '10',
+                'step' => '1', // default step interval is 1
+            ],
         ));
-        
+
         $this->add(array(
             'name' => 'test_site_in_charge_name',
             'type' => 'Text',
@@ -207,36 +210,34 @@ class ProviderForm extends Form {
                 'label' => 'Email',
             ),
         ));
-        
-        
-        
+
+
+
         $this->add(array(
             'name' => 'facility_id',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Facility Name',
-                'disable_inarray_validator' => true,           
+                'disable_inarray_validator' => true,
             ),
         ));
-       
+
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
             'attributes' => array(
                 'value' => 'Go',
                 'id' => 'submitbutton',
-                
             ),
         ));
     }
 
-    
-     public function getRegions(){
+    public function getRegions() {
         $dbAdapter = $this->adapter;
         $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
         $statement = $dbAdapter->query($sql);
         $result = $statement->execute();
-        $selectData=[];
+        $selectData = [];
         foreach ($result as $res) {
             $selectData[$res['id']] = $res['region_name'];
         }

@@ -48,7 +48,7 @@ class WrittenExamController extends AbstractActionController {
             $nb_days = $this->getWrittenExamTable()->numberOfDays($provider_id);
             if (isset($nb_days) && $nb_days <= 30) {
 
-                $container->alertMsg = 'The last attempt of this tester was ' . $nb_days . ' day(s) ago. Please wait at lease '.date("d-m-Y", strtotime(date("Y-m-d")."  + ". (31 - $nb_days)." day"));
+                $container->alertMsg = 'The last attempt of this tester was ' . $nb_days . ' day(s) ago. Please wait at lease ' . date("d-m-Y", strtotime(date("Y-m-d") . "  + " . (31 - $nb_days) . " day"));
                 return array(
                     'form' => $form,);
             } else {
@@ -110,10 +110,10 @@ class WrittenExamController extends AbstractActionController {
                         'action' => 'index'
             ));
         }
-        $provider= $this->getWrittenExamTable()->getProviderName2($id_written_exam);
+        $provider = $this->getWrittenExamTable()->getProviderName2($id_written_exam);
 //        die(print_r($provider));
-              
-        $writtenExam->date=date("d-m-Y", strtotime( $writtenExam->date));
+
+        $writtenExam->date = date("d-m-Y", strtotime($writtenExam->date));
         $form = new WrittenExamForm($dbAdapter);
         $form->bind($writtenExam);
         $form->get('submit')->setAttribute('value', 'UPDATE');
@@ -136,8 +136,8 @@ class WrittenExamController extends AbstractActionController {
             'id_written_exam' => $id_written_exam,
             'form' => $form,
             'attemptNumber' => $attemptNumber,
-            'provider_id'=>$provider['id'],
-            'provider_name'=>$provider['name'],
+            'provider_id' => $provider['id'],
+            'provider_name' => $provider['name'],
         );
     }
 
@@ -148,19 +148,25 @@ class WrittenExamController extends AbstractActionController {
             'result' => $result,
         );
     }
-    
-//    public function deleteAction() {
-//        $id_written_exam = (int) $this->params()->fromRoute('id_written_exam', 0);
-//
-//        if (!$id_written_exam) {
-//            return $this->redirect()->toRoute('written-exam');
-//        } else {
-//
-//            $this->getWrittenExamTable()->deleteWritten($id_written_exam);
-//            $container = new Container('alert');
-//            $container->alertMsg = 'Deleted successfully';
-//            return $this->redirect()->toRoute('written-exam');
-//        }
-//    }
+
+    public function deleteAction() {
+        $id_written_exam = (int) base64_decode($this->params()->fromRoute('id_written_exam', 0));
+
+        if (!$id_written_exam) {
+            return $this->redirect()->toRoute('written-exam');
+        } else {
+            $nb_written = $this->getWrittenExamTable()->CountWritten($id_written_exam);
+            if ($nb_written == 1) {
+                $this->getWrittenExamTable()->deleteWritten($id_written_exam);
+                $container = new Container('alert');
+                $container->alertMsg = 'Deleted successfully';
+                return $this->redirect()->toRoute('written-exam');
+            } else {
+                $container = new Container('alert');
+                $container->alertMsg = 'This written exam can not be deleted because it is already used for another examination!';
+                return $this->redirect()->toRoute('written-exam');
+            }
+        }
+    }
 
 }

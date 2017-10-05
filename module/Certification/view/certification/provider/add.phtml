@@ -20,8 +20,8 @@ $sessionLogin = new Container('credo');
             <div class="col-sm-8">
                 <h2>Add a new Tester</h2>
             </div>
-                
-        <div class="col-sm-4 ">
+
+            <div class="col-sm-4 ">
                 <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
                 <a href="<?php echo $this->url('provider', array('action' => 'index')); ?>" class="btn btn-success pull-right" style="margin-left: 5px;"><i class="fa fa-list"></i>&nbsp;List of Testers</a>
                 <?php // }  ?>
@@ -241,26 +241,38 @@ $sessionLogin = new Container('credo');
                                         <?= $this->formElement($form->get('email')); ?>
                                         <?= $this->formElementErrors($form->get('email')); ?>
                                     </div>
-                                    <div class="form-group col-lg-3">
+                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('prefered_contact_method')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('prefered_contact_method')); ?>
                                         <?= $this->formElementErrors($form->get('prefered_contact_method')); ?>       
                                     </div>
-                                    <div class="form-group col-lg-3">
+                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('current_jod')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('current_jod')); ?>
                                         <?= $this->formElementErrors($form->get('current_jod')); ?>
                                     </div>
-                                    <div class="form-group col-lg-3">
+                                    <div class="form-group col-lg-4">
                                         <?= $this->formLabel($form->get('facility_id')); ?><span class="mandatory">*</span>
                                         <?= $this->formElement($form->get('facility_id')); ?>
                                         <?= $this->formElementErrors($form->get('facility_id')); ?>
                                     </div>
 
-                                    <div class="form-group col-lg-3">
-                                        <?= $this->formLabel($form->get('time_worked')); ?><span class="mandatory">*</span>
-                                        <?= $this->formElement($form->get('time_worked')); ?>
-                                        <?= $this->formElementErrors($form->get('time_worked')); ?>
+
+                                    <div class = " form-group col-lg-4">
+                                        <div class = "input-group">
+                                            <?= $this->formLabel($form->get('time_worked')); ?><span class="mandatory">*</span>
+                                            <?= $this->formElement($form->get('time_worked')); ?>
+                                            <?= $this->formElementErrors($form->get('time_worked')); ?>
+                                            <div class = "input-group-btn">
+                                                <select class="form-control" style="margin-bottom: -28px; width: 100px;" name="select_time" id="Time" onclick = 'emptyInput(this)'> 
+                                                    <option value="">--Select--</option>
+                                                    <option value="Years">Year(s)</option>
+                                                    <option value="Months">Month(s)</option>
+                                                    <option value="Weeks">Week(s)</option>
+                                                    <option value="Days">Day(s)</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </fieldset>
 
@@ -505,7 +517,7 @@ $sessionLogin = new Container('credo');
                                     }
                                 }
 
-                               
+
 
 </script>
 

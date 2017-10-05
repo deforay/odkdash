@@ -21,6 +21,8 @@ function validateForm() {
     var p = document.forms["form"]["facility_in_charge_phone"].value;
     var q = document.forms["form"]["facility_id"].value;
 
+    var s = document.forms["form"]["select_time"].value;
+
     var elmt = document.getElementById("Last Name");
     var elmt2 = document.getElementById("First Name");
     var elmt6 = document.getElementById("Middle Name");
@@ -36,10 +38,10 @@ function validateForm() {
     var elmt12 = document.getElementById("Time worked as tester");
     var elmt13 = document.getElementById("Testing site in charge Name");
     var elmt14 = document.getElementById("Testing site in charge Phone");
-    var elmt15 = document.getElementById("Facility in charge Name")
-    var elmt16 = document.getElementById("Facility in charge Phone")
-    var elmt17 = document.getElementById("Facility Name")
-
+    var elmt15 = document.getElementById("Facility in charge Name");
+    var elmt16 = document.getElementById("Facility in charge Phone");
+    var elmt17 = document.getElementById("Facility Name");
+    var elmt19 = document.getElementById("Time");
 
     if (a == null || a == "")
     {
@@ -124,6 +126,19 @@ function validateForm() {
         return false;
     }
 
+    if (s == null || s == "") {
+        elmt19.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+        alert("Please complete the ''" + elmt19.id + "''");
+        return false;
+    }
+    else if (isNaN(Number(s))) {
+        elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+        alert("Please enter a valid number");
+        return false;
+    }
+
+
+
     if (m == null || m == "") {
         elmt13.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt13.id + "''");
@@ -149,7 +164,6 @@ function validateForm() {
     }
 
 
-
 }
 
 
@@ -158,8 +172,14 @@ function emptyInput(input) {
     input.style.boxShadow = 'none';
 }
 
+function setTime() {
 
+    if (time) {
+        document.getElementById(time).selected = "true";
+    }
 
+}
+setTime();
 
 
 

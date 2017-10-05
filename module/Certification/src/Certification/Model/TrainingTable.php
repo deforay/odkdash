@@ -94,4 +94,61 @@ class TrainingTable extends AbstractTableGateway {
          $this->tableGateway->delete(array('training_id' => (int) $training_id));
      }
 
+     public function report($type_of_competency,$type_of_training,$training_organization_id,$training_certificate,$typeHiv,$jobTitle,$region,$district,$facility) {
+        $db = $this->tableGateway->getAdapter();
+        $sql = 'SELECT provider.certification_reg_no, provider.certification_id, provider.professional_reg_no, provider.first_name, provider.last_name, provider.middle_name,certification_regions.region_name,certification_districts.district_name, provider.type_vih_test, provider.phone,provider.email, provider.prefered_contact_method,provider.current_jod, provider.time_worked,provider.test_site_in_charge_name, provider.test_site_in_charge_phone,provider.test_site_in_charge_email, provider.facility_in_charge_name, provider.facility_in_charge_phone, provider.facility_in_charge_email,certification_facilities.facility_name, type_of_competency, last_training_date, type_of_training, length_of_training, facilitator, training_certificate, date_certificate_issued, Comments, training_organization_name, type_organization FROM provider,training, certification_regions,certification_districts,certification_facilities, training_organization where provider.id=training.Provider_id and provider.region=certification_regions.id and provider.district=certification_districts.id and provider.facility_id=certification_facilities.id and training.training_organization_id=training_organization.training_organization_id';
+       
+        if (!empty($type_of_competency)) {
+            $sql = $sql . ' and type_of_competency="' . $type_of_competency . '"';
+        }
+        
+         if (!empty($type_of_training)) {
+            $sql = $sql . ' and type_of_training="' . $type_of_training . '"';
+        }
+        
+         if (!empty($training_organization_id)) {
+            $sql = $sql . ' and training_organization.training_organization_id=' . $training_organization_id;
+        }
+        
+         if (!empty($training_certificate)) {
+            $sql = $sql . ' and training_certificate="' . $training_certificate.'"';
+        }
+
+        if (!empty($typeHiv)) {
+            $sql = $sql . ' and provider.type_vih_test="' . $typeHiv . '"';
+        }
+        if (!empty($jobTitle)) {
+            $sql = $sql . ' and provider.current_jod="' . $jobTitle . '"';
+        }
+
+        if (!empty($region)) {
+            $sql = $sql . ' and certification_regions.id=' . $region;
+        }
+
+        if (!empty($district)) {
+            $sql = $sql . ' and certification_districts.id=' . $district;
+        }
+
+        if (!empty($facility)) {
+            $sql = $sql . ' and certification_facilities.id=' . $facility;
+        }
+//        die($sql);
+
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        return $result;
+    }
+    
+    public function getRegions() {
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        $selectData = [];
+        foreach ($result as $res) {
+            $selectData[$res['id']] = $res['region_name'];
+        }
+//        die(print_r($selectData));
+        return $selectData;
+    }
 }

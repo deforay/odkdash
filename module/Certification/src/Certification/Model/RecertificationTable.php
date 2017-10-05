@@ -106,5 +106,23 @@ class RecertificationTable {
         return $selectData;
        
     }
+    
+    public function report() {
+        
+    }
+
+    public function getRegions() {
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = 'SELECT id, region_name FROM certification_regions  ORDER by region_name asc ';
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        $selectData = [];
+        foreach ($result as $res) {
+            $selectData[$res['id']] = $res['region_name'];
+        }
+//        die(print_r($selectData));
+        return $selectData;
+    }
+
 
 }
