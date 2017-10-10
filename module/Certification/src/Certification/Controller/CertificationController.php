@@ -169,7 +169,7 @@ class CertificationController extends AbstractActionController {
                 $startDate = date("Y-m-d", strtotime($array[0]));
                 $endDate = date("Y-m-d", strtotime($array[2]));
             } else {
-//                die('nnnnnnnnnnnnn');
+              
                 $startDate = "";
                 $endDate = "";
             }

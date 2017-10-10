@@ -86,8 +86,7 @@ class TrainingForm extends Form {
                 'label' => 'Length of Activity/Training',
             ),
             'attributes' => [
-                'min' => '0',
-                'max' => '10',
+                'min' => '1',
                 'step' => '1', // default step interval is 1
             ],
         ));

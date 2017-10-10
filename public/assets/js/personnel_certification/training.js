@@ -40,7 +40,6 @@ function validateForm() {
     {
         elmt4.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt4.id + "''");
-        ;
         return false;
     }
 
@@ -55,6 +54,33 @@ function validateForm() {
         elmt8.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please complete the ''" + elmt8.id + "''");
         return false;
+    }
+
+     if (h=='Days'){
+         if ( e<=0 || e>366 ) {
+            elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+        alert("The number of days must be between 1 and 365");
+        return false;  
+        }
+       
+    }
+    
+     if (h=='Weeks'){
+         if ( e<=0 || e>52 ) {
+            elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+        alert("The number of weeks must be between 1 and 12");
+        return false; 
+        }
+       
+    }
+    
+    if (h=='Months'){
+         if ( e<=0 || e>12 ) {
+             elmt5.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+        alert("The number of months must be between 1 and 12");
+        return false;  
+        }
+       
     }
 
 

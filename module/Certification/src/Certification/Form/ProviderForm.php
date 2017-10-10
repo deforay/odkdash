@@ -162,8 +162,7 @@ class ProviderForm extends Form {
                 'label' => 'Time Worked As Tester',
             ),
             'attributes' => [
-                'min' => '0',
-                'max' => '10',
+                'min' => '1',
                 'step' => '1', // default step interval is 1
             ],
         ));
