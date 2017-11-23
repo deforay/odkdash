@@ -89,6 +89,7 @@ return array(
             'edit' => 'allow',
             'pdf' => 'allow',
             'xls' => 'allow',
+            'pdf-setting'=> 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',

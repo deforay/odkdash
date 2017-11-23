@@ -3,6 +3,8 @@
 use Zend\Session\Container;
 
 $sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -22,9 +24,9 @@ $sessionLogin = new Container('credo');
             </div>
 
             <div class="col-sm-4 ">
-                <?php // if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) {  ?>
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\Provider', 'index')) {  ?>
                 <a href="<?php echo $this->url('provider', array('action' => 'index')); ?>" class="btn btn-success pull-right" style="margin-left: 5px;"><i class="fa fa-list"></i>&nbsp;List of Testers</a>
-                <?php // }  ?>
+                <?php }  ?>
 
             </div>
         </div>

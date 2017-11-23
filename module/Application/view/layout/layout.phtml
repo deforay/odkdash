@@ -314,10 +314,14 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
                                                     <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
                                                     <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
                                                     <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
-                                                    <!--<li><a href="<?php // echo $this->url('certification', array('action' => 'setting')); ?>"> PDF Setting</a></li>-->
+                                                    <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>"> PDF Setting</a></li>
+
                                                 </ul>
+
                                             </li>
                                         </ul>
+
+
                                     <?php } ?>
 
                                 </ul> </li>

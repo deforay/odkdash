@@ -1,0 +1,124 @@
+<?php
+
+use Zend\Session\Container;
+
+$sessionLogin = new Container('credo');
+$role = $sessionLogin->roleCode;
+$acl = $this->layout()->acl;
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/jasny-bootstrap.min.css'); ?>"/>
+
+<style>
+    label{
+        font-weight: bold;
+        font-size: 20px;
+    }
+</style>
+
+
+<div class="am-content">
+    <div class="page-head">
+        <div class="row">
+            <div class="col-sm-8">
+                <h2>PDF Settings</h2>
+            </div>
+            <div class="col-sm-4">
+                <?php if ($acl->isAllowed($role, 'Certification\Controller\Provider', 'add')) { ?>
+                    <a href="<?php echo $this->url('certification', array('action' => 'pdf')); ?>" class="btn btn-success pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;Edit a PDF</a>
+                <?php } ?>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form role="form" class="form-horizontal" name="pdf-setting" id="pdf-setting" method="post" action="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>" enctype="multipart/form-data" autocomplete="off" >
+                                <div class="form-group">
+
+                                    <div class="col-lg-3">
+                                        <label for="" class=" control-label">Logo Left</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
+
+                                                <img src="" alt="Logo image"/>
+
+                                                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image"/>
+
+                                            </div>
+                                            <div>
+
+                                                <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+                                                    <input type="file" id="logo_left" name="logo_left" title="Please select logo image" >
+                                                </span>
+
+                                            </div>
+                                            <div class="box-body">
+                                                Make sure the image is in <code>PNG format</code> and has a maximum size of: <code>425x352 pixels</code>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <label for="" class=" control-label">text relating to the ministry of supervision</label>
+                                        <textarea rows="5" cols="60"></textarea></div>
+
+
+
+
+
+
+
+                                    <div class="col-lg-3">
+                                        <label for="" class="control-label">Logo Right</label>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
+
+                                                <img src="" alt="Logo image"/>
+
+                                                <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image"/>
+
+                                            </div>
+                                            <div>
+                                                <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+                                                    <input type="file" id="logo_right" name="logo_right" title="Please select logo image" >
+                                                </span>
+
+                                            </div>
+                                            <div class="box-body">
+                                                Make sure the image is in <code>PNG format</code> and has maximum a size of: <code>425x352 pixels</code> 
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-sm-offset-5">
+                                        <button type="submit" class="btn  btn-space btn-primary">VALIDATE</button>
+
+                                        <a class="btn  btn-space btn-default" role="button" href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>" >CANCEL</a> 
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var msg = '<?php echo $this->msg; ?>';
+    var msg2 = '<?php echo $this->msg2; ?>';
+    </script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/pdfSetting.js'); ?>"></script>
+
+
+
+

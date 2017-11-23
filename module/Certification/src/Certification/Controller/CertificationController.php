@@ -169,7 +169,7 @@ class CertificationController extends AbstractActionController {
                 $startDate = date("Y-m-d", strtotime($array[0]));
                 $endDate = date("Y-m-d", strtotime($array[2]));
             } else {
-              
+
                 $startDate = "";
                 $endDate = "";
             }
@@ -340,6 +340,69 @@ class CertificationController extends AbstractActionController {
         return array(
             'regions' => $regions,
         );
+    }
+
+    function pdfSettingAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $image_left = $request->getPost('logo_left', null);
+            //Stores the filename as it was on the client computer.
+            $imagename_left = $_FILES['logo_left']['name'];
+            //Stores the filetype e.g image/jpeg
+            $imagetype_left = $_FILES['logo_left']['type'];
+            //Stores any error codes from the upload.
+            $imageerror_left = $_FILES['logo_left']['error'];
+            //Stores the tempname as it is given by the host when uploaded.
+            $imagetemp_left = $_FILES['logo_left']['tmp_name'];
+
+            $image_right = $request->getPost('logo_right', null);
+            $imagename_right = $_FILES['logo_right']['name'];
+            $imagetype_right = $_FILES['logo_right']['type'];
+            $imageerror_right = $_FILES['logo_right']['error'];
+            $imagetemp_right = $_FILES['logo_right']['tmp_name'];
+
+            $msg_logo_left='';
+            $msg_logo_right='';
+
+            //The path you wish to upload the image to
+            $imagePath = $_SERVER["DOCUMENT_ROOT"] . '/assets/img/';
+
+            if (is_uploaded_file($imagetemp_left)) {
+                $array_type = explode('/', $imagetype_left);
+                list($width, $height, $type, $attr) = getimagesize($imagetemp_left);
+
+                if (strcasecmp($array_type[1], 'png') != 0) {
+                    $msg_logo_left = 'You must load an image in PNG format for LOGO LEFT.';
+                } elseif ($width > 425 || $height > 352) {
+                    $msg_logo_left = 'the size of your image LOGO LEFT should not exceed: 425x352.';
+                } elseif (move_uploaded_file($imagetemp_left, $imagePath . 'logo_cert1.png')) {
+                    $msg_logo_left = 'image LOGO LEFT loaded successfully';
+//                    
+                } else {
+                    $msg_logo_left = "Failure to save the image: LOGO LEFT. Try Again";
+                }
+            }
+
+
+            if (is_uploaded_file($imagetemp_right)) {
+                $array_type = explode('/', $imagetype_right);
+                list($width, $height, $type, $attr) = getimagesize($imagetemp_right);
+
+                if (strcasecmp($array_type[1], 'png') != 0) {
+                    $msg_logo_right = 'You must load an image in PNG format for LOGO RIGHT.';
+                } elseif ($width > 425 || $height > 352) {
+                    $msg_logo_right= 'the size of your image LOGO RIGHT should not exceed: 425x352.';
+                } elseif (move_uploaded_file($imagetemp_right, $imagePath . 'logo_cert2.png')) {
+                    $msg_logo_right = 'image LOGO RIGHT loaded successfully';
+//                    
+                } else {
+                    $msg_logo_right = "Failure to save the image : LOGO RIGHT. Try Again";
+                }
+            }
+            return array('msg' => $msg_logo_left,
+                'msg2' => $msg_logo_right
+            );
+        }
     }
 
 }

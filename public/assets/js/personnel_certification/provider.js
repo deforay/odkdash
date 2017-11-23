@@ -144,7 +144,7 @@ function validateForm() {
      if (s=='Weeks'){
          if ( l<=0 || l>52 ) {
             elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("The number of weeks must be between 1 and 12");
+        alert("The number of weeks must be between 1 and 52");
         return false; 
         }
        
