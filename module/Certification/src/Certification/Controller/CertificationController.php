@@ -138,6 +138,7 @@ class CertificationController extends AbstractActionController {
     }
 
     public function pdfAction() {
+        $header_text= $this->getCertificationTable()->SelectTexteHeader();
         $last = base64_decode($this->params()->fromQuery(base64_encode('last')));
         $first = base64_decode($this->params()->fromQuery(base64_encode('first')));
         $middle = base64_decode($this->params()->fromQuery(base64_encode('middle')));
@@ -150,7 +151,8 @@ class CertificationController extends AbstractActionController {
             'middle' => $middle,
             'professional_reg_no' => $professional_reg_no,
             'certification_id' => $certification_id,
-            'date_issued' => $date_issued
+            'date_issued' => $date_issued,
+            'header_text'=>$header_text
         );
     }
 
@@ -363,6 +365,7 @@ class CertificationController extends AbstractActionController {
 
             $msg_logo_left='';
             $msg_logo_right='';
+            $msg_header_text='';
 
             //The path you wish to upload the image to
             $imagePath = $_SERVER["DOCUMENT_ROOT"] . '/assets/img/';
@@ -399,10 +402,26 @@ class CertificationController extends AbstractActionController {
                     $msg_logo_right = "Failure to save the image : LOGO RIGHT. Try Again";
                 }
             }
-            return array('msg' => $msg_logo_left,
-                'msg2' => $msg_logo_right
+            
+            $header_text = $request->getPost('header_text', null);
+            if (trim($header_text)!=''){
+                $header_text= addslashes(trim($header_text));
+                $stringWithoutBR = str_replace("\r\n","<br />",$header_text);
+            $this->getCertificationTable()->insertTextHeader($stringWithoutBR);
+            $msg_header_text = "Header text save successfully.";
+            }
+            return array('msg_logo_left' => $msg_logo_left,
+                'msg_logo_right' => $msg_logo_right,
+                'msg_header_text' => $msg_header_text
+                
             );
+            
         }
+    }
+    
+    function  headerTextAction(){
+       $header_text= $this->getCertificationTable()->SelectTexteHeader();
+       return array('header_text'=>$header_text);
     }
 
 }

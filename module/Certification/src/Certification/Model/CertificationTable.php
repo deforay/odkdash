@@ -218,7 +218,7 @@ class CertificationTable {
     public function report($startDate, $endDate, $decision, $typeHiv, $jobTitle, $region, $district, $facility) {
         $db = $this->tableGateway->getAdapter();
         $sql = 'select certification.certification_issuer,certification.certification_type, certification.date_certificate_issued,certification.date_end_validity, certification.final_decision,provider.certification_reg_no, provider.certification_id, provider.professional_reg_no, provider.first_name, provider.last_name, provider.middle_name,certification_regions.region_name,certification_districts.district_name, provider.type_vih_test, provider.phone,provider.email, provider.prefered_contact_method,provider.current_jod, provider.time_worked,provider.test_site_in_charge_name, provider.test_site_in_charge_phone,provider.test_site_in_charge_email, provider.facility_in_charge_name, provider.facility_in_charge_phone, provider.facility_in_charge_email,certification_facilities.facility_name, written_exam.exam_type as written_exam_type,written_exam.exam_admin as written_exam_admin,written_exam.date as written_exam_date,written_exam.qa_point,written_exam.rt_point,written_exam.safety_point,written_exam.specimen_point, written_exam.testing_algo_point, written_exam.report_keeping_point,written_exam.EQA_PT_points, written_exam.ethics_point, written_exam.inventory_point, written_exam.total_points,written_exam.final_score, practical_exam.exam_type as practical_exam_type , practical_exam.exam_admin as practical_exam_admin , practical_exam.Sample_testing_score, practical_exam.direct_observation_score,practical_exam.practical_total_score,practical_exam.date as practical_exam_date from certification,examination,written_exam,practical_exam,provider,certification_districts, certification_facilities, certification_regions WHERE certification.examination= examination.id and examination.id_written_exam= written_exam.id_written_exam and examination.practical_exam_id= practical_exam.practice_exam_id and provider.id=examination.provider and provider.facility_id=certification_facilities.id and provider.region= certification_regions.id  and provider.district=certification_districts.id';
-        
+
         if (!empty($startDate) && !empty($endDate)) {
             $sql = $sql . ' and  certification.date_certificate_issued >="' . $startDate . '" and certification.date_certificate_issued <="' . $endDate . '"';
         }
@@ -263,6 +263,44 @@ class CertificationTable {
         }
 //        die(print_r($selectData));
         return $selectData;
+    }
+
+    public function SelectTexteHeader() {
+        $dbAdapter = $this->tableGateway->getAdapter();
+        $sql = 'SELECT id, header_texte FROM pdf_header_texte';
+        $statement = $dbAdapter->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $header_text = $res['header_texte'];
+        }
+//        die($header_texte);
+        return $header_text;
+    }
+
+    public function insertTextHeader($text) {
+        $db = $this->tableGateway->getAdapter();
+
+        $sql = 'SELECT count(*) as nombre FROM pdf_header_texte';
+        $statement = $db->query($sql);
+        $result = $statement->execute();
+        foreach ($result as $res) {
+            $nombre = $res['nombre'];
+        }
+       
+        if ($nombre == 0) {
+
+            $sql2 = 'insert into pdf_header_texte (header_texte) values ("' . $text . '")';
+            $statement2 = $db->query($sql2);
+            $result2 = $statement2->execute();
+        } else {
+            $sql3 = 'TRUNCATE pdf_header_texte';
+            $statement3 = $db->query($sql3);
+            $result3 = $statement3->execute();
+
+            $sql2 = 'insert into pdf_header_texte (header_texte) values ("' . $text . '")';
+            $statement2 = $db->query($sql2);
+            $result2 = $statement2->execute();
+        }
     }
 
 }

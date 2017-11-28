@@ -90,6 +90,7 @@ return array(
             'pdf' => 'allow',
             'xls' => 'allow',
             'pdf-setting'=> 'allow',
+            'header-text'=> 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
@@ -292,6 +293,8 @@ return array(
             'edit' => 'allow',
             'pdf' => 'allow',
             'xls' => 'allow',
+            'pdf-setting'=> 'allow',
+            'header-text'=> 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
@@ -371,6 +374,8 @@ return array(
             'edit' => 'allow',
             'pdf' => 'allow',
             'xls' => 'allow',
+            'pdf-setting'=> 'allow',
+            'header-text'=> 'allow',
         ),
         'Certification\\Controller\\Provider' => array(
             'index' => 'allow',
