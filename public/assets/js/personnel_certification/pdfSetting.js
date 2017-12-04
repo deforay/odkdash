@@ -1,5 +1,5 @@
 function validateForm() {
-//    var reg = /[^ 0-9#{}\[\]|"@()=+*~^%£¤$;<>§°€?!\/]/;
+    var reg=/[0-9#{}~"\[\]/\\()|@$?;§!<>*+=$£µ_°¤%:<>]/;
     var header_text = document.getElementById("header_text").value;
     var text_lengh = header_text.length;
 
@@ -7,11 +7,13 @@ function validateForm() {
         alert("Warning ! the number of characters is limited to 163. ");
         return false;
     }
-//
-//    if (reg.test(header_text)) {
-//        alert('les chiffres et les caracteres speciaux suivants: 0-9#{}\[\]|"@()=+*&~ ne peuvent pas faire partie du texte');
-//        return false;
-//    }
+    
+    if(reg.test(header_text)){
+        alert("Warning ! numbers and following specials characters  # {} ~ \" \ [\] / \\ () | @ $ ?; §! <> * + = $ £ μ_ ° ¤%: <> can not make text of heading ");
+        return false;
+    }
+
+
 }
 validateForm();
 

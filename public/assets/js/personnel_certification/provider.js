@@ -131,35 +131,60 @@ function validateForm() {
         alert("Please complete the ''" + elmt19.id + "''");
         return false;
     }
-    
-     if (s=='Days'){
-         if ( l<=0 || l>366 ) {
+
+    if (s == 'Days') {
+
+        if (isNaN(l)) {
             elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("The number of days must be between 1 and 365");
-        return false;  
+            alert("The number of days must be a number between 1 and 366.");
+            return false;
+        } else {
+            if (l <= 0 || l > 366) {
+                elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+                alert("The number of days must be between 1 and 366.");
+                return false;
+            }
         }
-       
     }
-    
-     if (s=='Weeks'){
-         if ( l<=0 || l>52 ) {
+
+    if (s == 'Weeks') {
+        if (isNaN(l)) {
             elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("The number of weeks must be between 1 and 52");
-        return false; 
+            alert("The number of weeks must be a number between 1 and 52.");
+            return false;
+        } else {
+            if (l <= 0 || l > 52) {
+                elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+                alert("The number of weeks must be between 1 and 52.");
+                return false;
+            }
         }
-       
+    }
+
+    if (s == 'Months') {
+        if (isNaN(l)) {
+            elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+            alert("The number of months must be a number between 1 and 12.");
+            return false;
+        } else {
+            if (l <= 0 || l > 12) {
+                elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+                alert("The number of months must be between 1 and 12.");
+                return false;
+            }
+
+        }
     }
     
-    if (s=='Months'){
-         if ( l<=0 || l>12 ) {
-             elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
-        alert("The number of months must be between 1 and 12");
-        return false;  
-        }
-       
+     if (s == 'Years') {
+        if (isNaN(l)) {
+            elmt12.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
+            alert("The number of Years must be a number.");
+            return false;
+        } 
     }
-    
-       
+
+
     if (m == null || m == "") {
         elmt13.style.boxShadow = "2px 2px 10px rgba(200, 0, 0, 0.85)";
         alert("Please enter the ''" + elmt13.id + "''");

@@ -157,7 +157,7 @@ class ProviderForm extends Form {
 
         $this->add(array(
             'name' => 'time_worked',
-            'type' => 'Number',
+//            'type' => 'Number',
             'options' => array(
                 'label' => 'Time Worked As Tester',
             ),

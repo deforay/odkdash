@@ -62,7 +62,7 @@ $acl = $this->layout()->acl;
                                         <textarea rows="5" cols="60" id="header_text" name="header_text" maxlength="163"></textarea>
                                         <div class="box-body"> <code>Warning !</code> the number of characters is limited to <code>163.</code>  </div>
 
-                                        <p class="btn btn-success" style="margin-top: 10px;" id="edit_header_text"  name ="edit_header_text" onclick="ajaxEdit();">Edit header text</p> 
+                                        <p class="btn btn-success" style="margin-top: 10px;" id="edit_header_text"  name ="edit_header_text" onclick="Edit();">Edit header text</p> 
                                         <span class="pull-right" id="characters" style="margin-top: 10px;" ></span> 
                                     </div>
 
@@ -107,7 +107,7 @@ $acl = $this->layout()->acl;
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/personnel_certification/pdfSetting.js'); ?>"></script>
 
 <script>
-                                            function ajaxEdit() {
+                                            function Edit() {
                                                 if (window.XMLHttpRequest) {
                                                     // code for IE7+, Firefox, Chrome, Opera, Safari
                                                     xmlhttp = new XMLHttpRequest();
@@ -123,8 +123,9 @@ $acl = $this->layout()->acl;
                                                             htmlDoc = parser.parseFromString(this.responseText, "text/html");
                                                         } else {
                                                             // code for old IE browsers
-                                                            htmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+                                                            htmlDoc = new ActiveXObject("Microsoft.HTMLDOM");
                                                             htmlDoc.async = false;
+                                                            htmlDoc.load(text); 
                                                         }
 //                                                       
                                                         var data = htmlDoc.getElementById("header_text").value;
