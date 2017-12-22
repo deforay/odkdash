@@ -11,6 +11,8 @@ return array(
     'ZendDiagnostics\\' => array($vendorDir . '/zendframework/zenddiagnostics/src'),
     'ZendDiagnosticsTest\\' => array($vendorDir . '/zendframework/zenddiagnostics/tests'),
     'ZFTool\\' => array($vendorDir . '/zendframework/zftool/src'),
+    'TCPDFModule' => array($vendorDir . '/vladmeh/zf2-tcpdf/src'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
+    'PHPExcel' => array($vendorDir . '/phpoffice/phpexcel/Classes'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src'),
 );

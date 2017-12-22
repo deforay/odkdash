@@ -19369,3 +19369,69 @@ div.dataTables_wrapper div.dataTables_length label select {
     margin-bottom: 0px;
   }
 }
+
+/*submenu  acordeon style*/
+
+#menu-accordeon {
+    padding:0;
+    margin:0;
+    list-style:none;
+    text-align: left;
+}
+#menu-accordeon ul {
+    padding:0;
+    margin:0;
+    list-style:none;
+    text-align: left;
+}
+#menu-accordeon   li {
+    margin-left: 10px;
+    font-size: 11px;
+
+}
+#menu-accordeon li li {
+    max-height:0;
+    overflow: hidden;
+    transition: all ;
+    border-radius:0;
+    background: white;
+    box-shadow: none;
+    border:none;
+    margin-left: 0;
+    font-size: 13px;
+    width: 200px;
+}
+#menu-accordeon a {
+    display:block;
+    text-decoration: none;
+    color: #FFF;
+    padding: 8px 0;
+    font-family: verdana;
+    font-size:1.2em;
+
+}
+#menu-accordeon ul li a, #menu-accordeon li:hover li a {
+    font-size:1em
+}
+#menu-accordeon li:hover {
+    background: #729EBF;
+    width: 200px;
+}
+#menu-accordeon li li:hover {
+    background:#BBD2E1;
+}
+#menu-accordeon ul li:last-child {
+    border-radius: 0 0 6px 6px;
+    border:none;
+}
+#menu-accordeon li:hover li {
+    max-height: 15em;
+}
+#menu-accordeon li ul li a {
+    color: #463F32;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+}
