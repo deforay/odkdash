@@ -4,9 +4,9 @@ $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl=$this->layout()->acl;
 if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
-    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 }else{
-    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+    $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
 }
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -157,6 +157,8 @@ tr.shown td.details-control {
                 <tr>
                   <th></th>
                   <th>Facility Name</th>
+                  <th>Facility Province</th>
+                  <th>Facility District</th>
                   <th style="width:8%;">Audit Round No.</th>
                   <th style="width:10%;">Audit Date</th>
                   <th style="width:10%;">Testing Point Name</th>
@@ -172,7 +174,7 @@ tr.shown td.details-control {
               </thead>
               <tbody>
               <tr>
-                   <td colspan="10" class="dataTables_empty">Loading data from server</td>
+                   <td colspan="12" class="dataTables_empty">Loading data from server</td>
                </tr>
               </tbody>
             </table>
@@ -275,7 +277,7 @@ tr.shown td.details-control {
             ],
          "iDisplayLength": 50,
          "pageLength": 50,
-         "aaSorting": [[ 3, "desc" ]],
+         "aaSorting": [[ 5, "desc" ]],
          "sAjaxSource": "<?php echo $this->url('spi-v3-form',array('action' => 'index')); ?>",
          "fnServerData": function ( sSource, aoData, fnCallback ) {
           aoData.push( { "name":"auditRndNo","value": $("#auditRndNo").val()} );

@@ -64,7 +64,7 @@ class OdkFormService {
             $queryContainer = new Container('query');
             $excel = new PHPExcel();
             $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
-            $cacheSettings = array('memoryCacheSize' => '80MB');
+            $cacheSettings = array('memoryCacheSize' => '1024MB');
             \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             $output = array();
             $outputScore = array();

@@ -766,8 +766,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
                 $end_date = $this->dateFormat($dateField[2]);
             }
         }
+        
+        
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->where('spiv3.status != "deleted"');
+                                ->where('spiv3.status != "deleted"')
+                                ->join(array('f'=>'spi_rt_3_facilities'),
+                                                'f.facility_name=spiv3.facilityname',
+                                                        array('province','district'));
+
         if($parameters['auditRndNo']!=''){
          $sQuery = $sQuery->where("spiv3.auditroundno='".$parameters['auditRndNo']."'");
         }
@@ -791,16 +797,15 @@ class SpiFormVer3Table extends AbstractTableGateway {
          $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
         }
         if(is_array($parameters['province']) && count($parameters['province'])>0 ){
-            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.facility_name=spiv3.facilityname',array('province','district'))
-                            ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+            
+            $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
             if(is_array($parameters['district']) && count($parameters['district'])>0 ){
                 $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
             }
         }else{
             if($parameters['province']!=''){
                 $provinces = explode(",",$parameters['province']);
-                $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.facility_name=spiv3.facilityname',array('province','district'))
-                                ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+                $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $provinces) . '")');
             }
         }
         if($parameters['province']!=''){
@@ -971,6 +976,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
          }
          $row[] = '';
          $row[] = $aRow['facilityname'];
+         $row[] = $aRow['province'];
+         $row[] = $aRow['district'];
          $row[] = $aRow['auditroundno'];
          $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
          $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
