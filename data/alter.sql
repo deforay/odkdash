@@ -522,3 +522,7 @@ ALTER TABLE `spi_form_v_3_duplicate` CHANGE `facilityid` `facility` INT(11) NULL
 ALTER TABLE `spi_form_v_3` ADD `facilityid` INT(11) NULL DEFAULT NULL AFTER `facility`, ADD `facilityname` VARCHAR(500) NULL DEFAULT NULL AFTER `facilityid`;
 
 ALTER TABLE `spi_form_v_3_duplicate` ADD `facilityid` INT(11) NULL DEFAULT NULL AFTER `facility`, ADD `facilityname` VARCHAR(500) NULL DEFAULT NULL AFTER `facilityid`;
+
+-- Amit 06 Feb 2018
+
+UPDATE spi_form_v_3 t1, spi_rt_3_facilities t2 SET t1.facility = t2.id, t1.facilityid=t2.facility_id where t1.facilityname = t2.facility_name;
