@@ -123,6 +123,7 @@ class OdkFormService {
                         if($key!='id' && $key!='content' && $key!='token'){
                             
                             if($key=='AUDIT_SCORE_PERCANTAGE'){
+                                if(!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
                                 $auditScore+=$sResult[$l][$key];
                                 if($sResult[$l][$key] < 40){
                                     $levelZero[] = $sResult[$l][$key];
