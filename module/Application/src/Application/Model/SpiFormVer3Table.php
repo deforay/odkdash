@@ -680,8 +680,8 @@ class SpiFormVer3Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	$queryContainer = new Container('query');
-        $aColumns = array('id','facilityname','auditroundno',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
-        $orderColumns = array('id','facilityname','auditroundno','assesmentofaudit','testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $aColumns = array('spiv3.id','facilityname','auditroundno',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','spiv3.status');
+        $orderColumns = array('spiv3.id','facilityname','auditroundno','assesmentofaudit','testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','spiv3.status');
 
         /*
         * Paging
@@ -841,14 +841,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
         }
-
+        $queryContainer->exportAllDataQuery = $sQuery;
         if (isset($sLimit) && isset($sOffset)) {
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
         
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
-        $queryContainer->exportAllDataQuery = $sQuery;
+
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
@@ -1015,7 +1015,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $eQueryStr = $sql->getSqlStringForSqlObject($eQuery); // Get the string of the Sql, instead of the Select-instance
         $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get duplicate value
-        $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();;
+        $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore/count($rResult),2) : 0;
         $output['levelZeroCount'] = count($levelZero);

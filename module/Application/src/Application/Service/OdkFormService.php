@@ -2,8 +2,8 @@
 
 namespace Application\Service;
 
-use Application\Service\CommonService;
 use Zend\Session\Container;
+use Application\Service\CommonService;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Sql;
 use Zend\Filter\Compress;
@@ -57,8 +57,7 @@ class OdkFormService {
         return $db->getAllSubmissions($sortOrder);
     }
     //export all submissions
-    public function exportAllSubmissions($params)
-    {
+    public function exportAllSubmissions($params){
         try{
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
@@ -71,6 +70,7 @@ class OdkFormService {
             $sheet = $excel->getActiveSheet();
             $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
+            $displayDate="";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
@@ -80,12 +80,10 @@ class OdkFormService {
                     $toDate = $dateRangeDate[1];
                 }
                 if($fromDate == $toDate){
-                $displayDate="Date Range : ".$fromDate;
+                    $displayDate="Date Range : ".$fromDate;
                 }else{
                     $displayDate="Date Range : ".$fromDate." to ".$toDate;
                 }
-            }else{
-                $displayDate="";
             }
             $auditRndNo = '';$levelData = '';$affiliation = '';$province = '';$scoreLevel = '';$testPoint = '';
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
