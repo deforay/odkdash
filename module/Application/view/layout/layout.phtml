@@ -166,6 +166,30 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
               <li><a href="/">SPI RT 3.0</a></li>
              </ul>-->
             
+                                <!--the flashing buttons-->
+                        <?php
+                        if (!empty($nb) && $nb > 0) {
+                            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Certification", "index")) {
+                                ?>
+                                <ul class="nav navbar-nav am-nav-right">
+                                    <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante" style="visibility:visible; font-size: 15px; font-weight: bold; margin-top: -5px;"><?php echo $this->nb; ?>&nbsp;Certificate(s)</div></button></a></li>
+                                </ul>
+                                <?php
+                            }
+                        }
+                        ?>
+
+                        <?php
+                        if (!empty($nb2) && $nb2 > 0) {
+                            if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Recertification", "index")) {
+                                ?>
+                                <ul class="nav navbar-nav am-nav-right">
+                                    <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>" style="font-size:1.8em; color: red;"><button class="btn btn-danger" style="height: 25px;"><div id="DivClignotante2" style="visibility:visible; font-size: 15px; font-weight: bold;margin-top: -5px;"><?php echo $this->nb2; ?>&nbsp;Reminder(s)</div></button></a></li>
+                                </ul>
+                                <?php
+                            }
+                        }
+                        ?>
           </div>
         </div>
       </nav>
@@ -218,6 +242,93 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
               </ul>
             </li>
             <?php } ?>
+            
+            
+                        <!--menu personnel certification--> 
+                        <?php
+                        if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Provider", "index")) {
+                            ?>
+                            <li class="parent"><a href="#"><i class="icon s7-file"></i><span> Personnel Certification</span></a>
+                                <ul>
+                                    <ul  id="menu-accordeon">
+
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Tester </a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('provider', array('action' => 'index')); ?>">Tester </a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+
+                                    <ul  id="menu-accordeon">
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Training<span class="caret"></span></a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('training', array('action' => 'index')); ?>">Training</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                    <ul  id="menu-accordeon">
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Examination<span class="caret"></span></a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('written-exam', array('action' => 'index')); ?>">Written Exam</a></li>
+                                                <li><a href="<?php echo $this->url('practical-exam', array('action' => 'index')); ?>">Practical Exam</a></li>
+                                                <li><a href="<?php echo $this->url('examination', array('action' => 'index')); ?>">Examination</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                    <ul  id="menu-accordeon">
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Certification<span class="caret"></span></a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'index')); ?>">Certification</a></li>
+                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'index')); ?>">Re-Certification</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <ul  id="menu-accordeon">
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports<span class="caret"></span></a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('provider', array('action' => 'xls')); ?>">Provider Reports</a></li>
+                                                <li><a href="<?php echo $this->url('training', array('action' => 'xls')); ?>">Training Reports</a></li>
+                                                <li><a href="<?php echo $this->url('certification', array('action' => 'xls')); ?>"> Certification Reports</a></li>
+                                                <li><a href="<?php echo $this->url('recertification', array('action' => 'xls')); ?>"> Recertification Reports</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+                                    <ul  id="menu-accordeon">
+
+                                        <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">E-mail </a>
+                                            <ul>
+                                                <li><a href="<?php echo $this->url('certification-mail', array('action' => 'index')); ?>"> E-mail</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+
+                                    <?php if (isset($acl) && $acl->isAllowed($role, "Certification\Controller\Facility", "index")) {
+                                        ?>
+                                        <ul  id="menu-accordeon">
+                                            <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">Config<span class="caret"></span></a>
+                                                <ul>
+                                                    <li><a href="<?php echo $this->url('region', array('action' => 'index')); ?>">Regions</a></li>
+                                                    <li><a href="<?php echo $this->url('district', array('action' => 'index')); ?>">Districts</a></li>
+                                                    <li><a href="<?php echo $this->url('facility', array('action' => 'index')); ?>">Facilities</a></li>
+                                                    <li><a href="<?php echo $this->url('training-organization', array('action' => 'index')); ?>">Training Organization</a></li>
+                                                    <li><a href="<?php echo $this->url('certification', array('action' => 'pdf-setting')); ?>"> PDF Setting</a></li>
+
+                                                </ul>
+
+                                            </li>
+                                        </ul>
+
+
+                                    <?php } ?>
+
+                                </ul> </li>
+                        <?php } ?>
+
           </ul>
           <!--Sidebar bottom content-->
         </div>
