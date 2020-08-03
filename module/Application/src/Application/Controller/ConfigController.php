@@ -2,36 +2,42 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Json\Json;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
+use Laminas\Json\Json;
 
 class ConfigController extends AbstractActionController
 {
+
+
+    private $commonService = null;
+    public function __construct($commonService)
+    {
+        $this->commonService = $commonService;
+    }
     public function indexAction()
     {
-       $request = $this->getRequest();
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $commonService = $this->getServiceLocator()->get('CommonService');
-            $result = $commonService->getAllConfig($params);
+            $result = $this->commonService->getAllConfig($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
-    
-    public function editGlobalAction(){
-        $commonService = $this->getServiceLocator()->get('CommonService');
-       $request = $this->getRequest();
+
+    public function editGlobalAction()
+    {
+
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $commonService->updateConfig($params);
+            $this->commonService->updateConfig($params);
             return $this->redirect()->toRoute('config');
-        }else{
-            $configResult=$commonService->getGlobalConfigDetails();
-             return new ViewModel(array(
-                    'config' => $configResult,
-                ));
+        } else {
+            $configResult = $this->commonService->getGlobalConfigDetails();
+            return new ViewModel(array(
+                'config' => $configResult,
+            ));
         }
     }
-
 }

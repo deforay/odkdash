@@ -2,7 +2,7 @@
 
 namespace Application\Service;
 
-use Zend\Session\Container;
+use Laminas\Session\Container;
 
 class RoleService {
 
@@ -17,7 +17,7 @@ class RoleService {
     }
 
     public function addRoles($params) {
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             
@@ -44,7 +44,7 @@ class RoleService {
     }
 
     public function updateRoles($params) {
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $rolesDb = $this->sm->get('RolesTable');

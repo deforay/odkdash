@@ -2,43 +2,56 @@
 
 namespace Application\Controller;
 
-use Zend\Config\Config;
-use Zend\Json\Json;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Laminas\Config\Config;
+use Laminas\Json\Json;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 
-class FacilityController extends AbstractActionController {
+class FacilityController extends AbstractActionController
+{
 
-    public function indexAction() {
+    private $facilityService = null;
+    private $odkFormService = null;
+
+    public function __construct($facilityService, $odkFormService)
+    {
+        $this->facilityService = $facilityService;
+        $this->odkFormService = $odkFormService;
+    }
+
+    public function indexAction()
+    {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->getAllFacilities($params);
+            
+            $result = $this->facilityService->getAllFacilities($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
-    
-    public function addAction() {
+
+    public function addAction()
+    {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->addFacility($params);
+            
+            $result = $this->facilityService->addFacility($params);
             return $this->redirect()->toRoute("spi-facility");
         }
     }
-    
-    public function editAction() {
+
+    public function editAction()
+    {
         $request = $this->getRequest();
-        $facilityService= $this->getServiceLocator()->get('FacilityService');
+        
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $facilityService->updateFacility($params);
+            $result = $this->facilityService->updateFacility($params);
             return $this->redirect()->toRoute("spi-facility");
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
-            $result = $facilityService->getFacility($id);
+            $result = $this->facilityService->getFacility($id);
             //\Zend\Debug\Debug::dump($result);
             //die;
             return new ViewModel(array(
@@ -46,126 +59,133 @@ class FacilityController extends AbstractActionController {
             ));
         }
     }
-    
-    public function facilityListAction(){
+
+    public function facilityListAction()
+    {
         $request = $this->getRequest();
-        
+
         if ($request->isGet()) {
             $val = $request->getQuery('search');
             //\Zend\Debug\Debug::dump($val);
-        //die;
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->getFacilityList($val);
+            //die;
+            
+            $result = $this->facilityService->getFacilityList($val);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
-    
+
     public function getFacilityNameAction()
     {
         $layout = $this->layout();
         $layout->setTemplate('layout/modal');
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $result = $odkFormService->getAllFacilityNames();
+        
+        $result = $this->odkFormService->getAllFacilityNames();
         return new ViewModel(array(
             'facilityName' => $result
         ));
     }
-    
-    public function getTestingPointAction() {
+
+    public function getTestingPointAction()
+    {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->getAllTestingPoints($params);
+            
+            $result = $this->facilityService->getAllTestingPoints($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
-    
-    public function getFacilityAuditRoundAction(){
-        $request = $this->getRequest();                
+
+    public function getFacilityAuditRoundAction()
+    {
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getSpiV3FormFacilityAuditNo($params);
+            
+            $result = $this->odkFormService->getSpiV3FormFacilityAuditNo($params);
             $viewModel = new ViewModel(array(
-                'spiV3auditRoundNo'=>$result
-                ));
+                'spiV3auditRoundNo' => $result
+            ));
             $viewModel->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function getProvinceListAction(){
+
+    public function getProvinceListAction()
+    {
         $layout = $this->layout();
         $layout->setTemplate('layout/modal');
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $facilityService= $this->getServiceLocator()->get('FacilityService');
-        $result = $odkFormService->getAllFacilityNames();
-        $provinceResult = $facilityService->getProvinceList();
+        
+        
+        $result = $this->odkFormService->getAllFacilityNames();
+        $provinceResult = $this->facilityService->getProvinceList();
         return new ViewModel(array(
             'facilityName' => $result,
             'provinces' => $provinceResult
         ));
     }
-    
-    public function mapProvinceAction(){
-        $request = $this->getRequest();                
+
+    public function mapProvinceAction()
+    {
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->mapProvince($params);
+            
+            $result = $this->facilityService->mapProvince($params);
             $viewModel = new ViewModel(array(
-                'result'=>$result
-                ));
+                'result' => $result
+            ));
             $viewModel->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function getFacilityDetailsAction(){
-        $request = $this->getRequest();                
+
+    public function getFacilityDetailsAction()
+    {
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->getFacilityDetails($params);
+            
+            $result = $this->facilityService->getFacilityDetails($params);
             $viewModel = new ViewModel(array(
-                'result'=>$result
-                ));
+                'result' => $result
+            ));
             $viewModel->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function exportFacilityAction(){
-        $request = $this->getRequest();                
+
+    public function exportFacilityAction()
+    {
+        $request = $this->getRequest();
         if ($request->isPost()) {
-            $facilityService= $this->getServiceLocator()->get('FacilityService');
-            $result = $facilityService->exportFacility();
+            
+            $result = $this->facilityService->exportFacility();
             $viewModel = new ViewModel(array(
-                'result'=>$result
-                ));
+                'result' => $result
+            ));
             $viewModel->setTerminal(true);
             return $viewModel;
         }
     }
-    
+
     public function searchProvinceListAction()
     {
-        $facilityService= $this->getServiceLocator()->get('FacilityService');
+        
         $request = $this->getRequest();
         if ($request->isGet()) {
             $val = $request->getQuery('q');
-            $result=$facilityService->getProvinceData($val);
+            $result = $this->facilityService->getProvinceData($val);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
     public function searchDistrictListAction()
     {
-        $facilityService= $this->getServiceLocator()->get('FacilityService');
+        
         $request = $this->getRequest();
         if ($request->isGet()) {
             $val = $request->getQuery('q');
-            $result=$facilityService->getDistrictData($val);
+            $result = $this->facilityService->getDistrictData($val);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }

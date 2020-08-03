@@ -2,12 +2,12 @@
 
 namespace Application\Model;
 
-use Zend\Session\Container;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
-use Zend\Db\TableGateway\AbstractTableGateway;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Zend\Debug\Debug;
-use Zend\Config\Writer\PhpArray;
+use Laminas\Config\Writer\PhpArray;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -225,7 +225,7 @@ class RolesTable extends AbstractTableGateway  {
         try {
                 $roleCode=$params['roleCode'];
                 $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
-                $config = new \Zend\Config\Config(include($configFile), true);
+                $config = new \Laminas\Config\Config(include($configFile), true);
                 $config->$roleCode = array();
                 
                 foreach ($params['resource'] as $resourceName => $privilege) {

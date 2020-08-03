@@ -8,17 +8,17 @@
 
 namespace Application\Model;
 
-use Zend\Config\Factory;
-use Zend\Permissions\Acl\Acl as ZendAcl;
-use Zend\Permissions\Acl\Resource\GenericResource;
-use Zend\Permissions\Acl\Role\GenericRole;
+use Laminas\Config\Factory;
+use Laminas\Permissions\Acl\Acl as LaminasAcl;
+use Laminas\Permissions\Acl\Resource\GenericResource;
+use Laminas\Permissions\Acl\Role\GenericRole;
 
 /**
  * Description of Acl
  *
  * @author amit
  */
-class Acl extends ZendAcl {
+class Acl extends LaminasAcl {
 
     public function __construct($resourceList,$rolesList) {
         foreach ($resourceList as $res) {

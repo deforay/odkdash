@@ -2,22 +2,33 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Json\Json;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
+use Laminas\Json\Json;
 
 class SpiV3Controller extends AbstractActionController
 {
 
-    public function indexAction(){
+
+    private $commonService = null;
+    private $odkFormService = null;
+
+    public function __construct($odkFormService, $commonService)
+    {
+        $this->odkFormService = $odkFormService;
+        $this->commonService = $commonService;
+    }
+
+    public function indexAction()
+    {
         $request = $this->getRequest();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $testingPointResult=$odkFormService->getAllTestingPointType();
-        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
-        
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $testingPointResult = $this->odkFormService->getAllTestingPointType();
+        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $odkFormService->getAllSubmissionsDetails($param);
+            $result = $this->odkFormService->getAllSubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         return new ViewModel(array(
@@ -29,8 +40,8 @@ class SpiV3Controller extends AbstractActionController
     public function printAction()
     {
         $id = ($this->params()->fromRoute('id'));
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $formData = $odkFormService->getFormData($id);
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $formData = $this->odkFormService->getFormData($id);
 
         $viewModel = new ViewModel(array('formData' => $formData));
 
@@ -42,80 +53,84 @@ class SpiV3Controller extends AbstractActionController
     {
         $request = $this->getRequest();
         if ($request->isPost()) {
-        $params = $request->getPost();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->exportAllSubmissions($params);
+            $params = $request->getPost();
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $allSubmissions = $this->odkFormService->exportAllSubmissions($params);
 
-        $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
+            $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
-        $viewModel->setTerminal(true);
-        return $viewModel;
+            $viewModel->setTerminal(true);
+            return $viewModel;
         }
     }
 
-    public function approveStatusAction(){
-        $request = $this->getRequest();                
-                 if ($request->isPost()) {
-                    $params = $request->getPost();
-                    $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-                    $result= $odkFormService->approveFormStatus($params);
-                    $viewModel = new ViewModel(array(
-        'result' => $result
-                            ));
-                    $viewModel->setTerminal(true);
-                    return $viewModel;
-                }
-    }
-
-    public function downloadPdfAction(){
-        $commonService = $this->getServiceLocator()->get('CommonService');
-        $configData = $commonService->getGlobalConfigDetails();
-        $request = $this->getRequest();                
+    public function approveStatusAction()
+    {
+        $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getFormData($params['auditId']);
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->approveFormStatus($params);
+            $viewModel = new ViewModel(array(
+                'result' => $result
+            ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
+
+    public function downloadPdfAction()
+    {
+        $commonService = $this->getServiceLocator()->get('CommonService');
+        $configData = $commonService->getGlobalConfigDetails();
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->getFormData($params['auditId']);
             $viewModel = new ViewModel(array(
                 'formData' => $result,
-                'configData'=>$configData,
+                'configData' => $configData,
                 'tempId' => $params['tempId']
-                ));
+            ));
             $viewModel->setTerminal(true);
             return $viewModel;
-        }else{
+        } else {
             $id = ($this->params()->fromRoute('id'));
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $formData = $odkFormService->getFormData($id);
-            $viewModel = new ViewModel(array('formData' => $formData,'configData'=>$configData));
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $formData = $this->odkFormService->getFormData($id);
+            $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
             $viewModel->setTerminal(true);
             return $viewModel;
         }
     }
 
-    public function correctiveActionPdfAction(){
+    public function correctiveActionPdfAction()
+    {
         $id = ($this->params()->fromRoute('id'));
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $commonService = $this->getServiceLocator()->get('CommonService');
-        $formData = $odkFormService->getFormData($id);
+        $formData = $this->odkFormService->getFormData($id);
         $configData = $commonService->getGlobalConfigDetails();
-        $viewModel = new ViewModel(array('formData' => $formData,'configData'=>$configData));
+        $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
         $viewModel->setTerminal(true);
         return $viewModel;
     }
 
-    public function editAction(){
+    public function editAction()
+    {
         $request = $this->getRequest();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService->updateSpiForm($params);
+            $this->odkFormService->updateSpiForm($params);
             return $this->redirect()->toUrl("/spi-v3/manage-facility");
         } else {
             $id = $this->params()->fromRoute('id');
-            $facilitiesResult = $odkFormService->getAllFacilityNames();
-            $result = $odkFormService->getFormData($id);
-            $provinceList=$odkFormService->getSpiV3FormUniqueLevelNames();
-            $districtList=$odkFormService->getSpiV3FormUniqueDistrict();
+            $facilitiesResult = $this->odkFormService->getAllFacilityNames();
+            $result = $this->odkFormService->getFormData($id);
+            $provinceList = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+            $districtList = $this->odkFormService->getSpiV3FormUniqueDistrict();
             return new ViewModel(array(
                 'formData' => $result,
                 'facilities' => $facilitiesResult,
@@ -127,280 +142,293 @@ class SpiV3Controller extends AbstractActionController
 
     public function auditPerformanceAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
-            $perf1 = $odkFormService->getPerformance($params);
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData($params);
+            $perf1 = $this->odkFormService->getPerformance($params);
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
-                      ->setTerminal(true);
+            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData, 'perf1' => $perf1))
+                ->setTerminal(true);
             return $viewModel;
         }
     }
 
-    public function worstPerformanceAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $zeroCounts = $odkFormService->getZeroQuestionCounts($params);
-            $spiV3Labels = $odkFormService->getSpiV3FormLabels();
+    public function worstPerformanceAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $zeroCounts = $this->odkFormService->getZeroQuestionCounts($params);
+            $spiV3Labels = $this->odkFormService->getSpiV3FormLabels();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('zeroCounts' => $zeroCounts,'spiV3Labels' => $spiV3Labels,'limitBar'=>$params['limitBar']))
-                        ->setTerminal(true);
+            $viewModel->setVariables(array('zeroCounts' => $zeroCounts, 'spiV3Labels' => $spiV3Labels, 'limitBar' => $params['limitBar']))
+                ->setTerminal(true);
             return $viewModel;
         }
     }
 
     public function auditLocationsAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $allSubmissions = $odkFormService->getAllApprovedSubmissionLocation($params);
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocation($params);
             $viewModel = new ViewModel();
-                $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
-                        ->setTerminal(true);
-                return $viewModel;
+            $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
+                ->setTerminal(true);
+            return $viewModel;
         }
     }
 
-    public function manageFacilityAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+    public function manageFacilityAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $odkFormService->getAllSubmissionsDatas($param);
+            $result = $this->odkFormService->getAllSubmissionsDatas($param);
             return $this->getResponse()->setContent(Json::encode($result));
-        }else{
-            $result = $odkFormService->getPendingFacilityNames();
-            
-                return new ViewModel(array(
-                    'pendingFacilityName' => $result,
-                ));
+        } else {
+            $result = $this->odkFormService->getPendingFacilityNames();
+
+            return new ViewModel(array(
+                'pendingFacilityName' => $result,
+            ));
         }
     }
 
-    public function mergeFacilityNameAction(){
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->mergeFacilityName($params);
+    public function mergeFacilityNameAction()
+    {
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->mergeFacilityName($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
-                        ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
 
-    public function mapAction(){
+    public function mapAction()
+    {
         return new ViewModel();
     }
 
-    public function deleteAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $result=$odkFormService->deleteAuditData($params);
+    public function deleteAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $result = $this->odkFormService->deleteAuditData($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
-                      ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
+
     public function spirtv3DatewiseAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $perflast30 = $odkFormService->getPerformanceLast30Days($params);
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $perflast30 = $this->odkFormService->getPerformanceLast30Days($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('perflast30' => $perflast30))
-                        ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function testingVolumeDatewiseAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $testingVolume = $odkFormService->getAllApprovedTestingVolume($params);
+
+    public function testingVolumeDatewiseAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $testingVolume = $this->odkFormService->getAllApprovedTestingVolume($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('testingVolume' => $testingVolume))
-                        ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function viewDataAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+
+    public function viewDataAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $odkFormService->getViewDataDetails($params);
+            $result = $this->odkFormService->getViewDataDetails($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         $source = '';
         $roundno = '';
         $drange = '';
         $level = '';
-        if($this->params()->fromQuery('source')){
-          $source = $this->params()->fromQuery('source');
+        if ($this->params()->fromQuery('source')) {
+            $source = $this->params()->fromQuery('source');
         }
-        if($this->params()->fromQuery('level')){
-          $level = $this->params()->fromQuery('level');
+        if ($this->params()->fromQuery('level')) {
+            $level = $this->params()->fromQuery('level');
         }
-        if($this->params()->fromQuery('roundno')){
-          $roundno = $this->params()->fromQuery('roundno');
+        if ($this->params()->fromQuery('roundno')) {
+            $roundno = $this->params()->fromQuery('roundno');
         }
-        if($this->params()->fromQuery('drange')){
-          $drange = $this->params()->fromQuery('drange');
+        if ($this->params()->fromQuery('drange')) {
+            $drange = $this->params()->fromQuery('drange');
         }
-        $testingPointResult=$odkFormService->getAllTestingPointType();
-        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
+        $testingPointResult = $this->odkFormService->getAllTestingPointType();
+        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
         return new ViewModel(array(
             'source' => $source,
             'roundno' => $roundno,
             'drange' => $drange,
-            'level'=>$level,
+            'level' => $level,
             'testingPointResult' => $testingPointResult,
-            'levelNamesResult'=>$levelNamesResult
+            'levelNamesResult' => $levelNamesResult
         ));
     }
-    
-    public function getTestingPointTypeNamesAction(){
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getTestingPointTypeNamesByType($params);
+
+    public function getTestingPointTypeNamesAction()
+    {
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->getTestingPointTypeNamesByType($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
-                        ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function downloadSpiderChartAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+
+    public function downloadSpiderChartAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $commonService = $this->getServiceLocator()->get('CommonService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $result=$odkFormService->getAuditRoundWiseDataChart($params);
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $result = $this->odkFormService->getAuditRoundWiseDataChart($params);
             $configData = $commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result,'configData'=>$configData))
-                      ->setTerminal(true);
+            $viewModel->setVariables(array('result' => $result, 'configData' => $configData))
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
+
     public function exportAsPdfAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $commonService = $this->getServiceLocator()->get('CommonService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $odkFormService->getAllSubmissionsDetails($param);
-            $spiderResult = $odkFormService->getAuditRoundWiseDataChart($param);
-            $pieResult = $odkFormService->getPerformancePieChart($param);
+            $result = $this->odkFormService->getAllSubmissionsDetails($param);
+            $spiderResult = $this->odkFormService->getAuditRoundWiseDataChart($param);
+            $pieResult = $this->odkFormService->getPerformancePieChart($param);
             $configData = $commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result,'configData'=>$configData,'argument'=>$param,'spiderResult'=>$spiderResult,'pieResult'=>$pieResult))
-                      ->setTerminal(true);
+            $viewModel->setVariables(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult))
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function duplicateAction(){
+
+    public function duplicateAction()
+    {
         $request = $this->getRequest();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $result = $odkFormService->getAllDuplicateSubmissionsDetails();
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $result = $this->odkFormService->getAllDuplicateSubmissionsDetails();
         return new ViewModel(array('result' => $result));
     }
-    
-    public function removeAuditAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $result=$odkFormService->removeAudit($params);
+
+    public function removeAuditAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $result = $this->odkFormService->removeAudit($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
-                      ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function saveDownloadDataAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+
+    public function saveDownloadDataAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $odkFormService->addDownloadData($params);
+            $result = $this->odkFormService->addDownloadData($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
-                      ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
-    public function downloadFilesAction(){
+
+    public function downloadFilesAction()
+    {
         $request = $this->getRequest();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $result = $odkFormService->getDownloadFilesRow();
-       return new ViewModel(array('result' => $result));
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $result = $this->odkFormService->getDownloadFilesRow();
+        return new ViewModel(array('result' => $result));
     }
-    
-    public function getDistrictByProvinceAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+
+    public function getDistrictByProvinceAction()
+    {
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $odkFormService->getDistrictData($params);
+            $result = $this->odkFormService->getDistrictData($params);
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result,'params'=>$params))
-                      ->setTerminal(true);
+            $viewModel->setVariables(array('result' => $result, 'params' => $params))
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
+
     public function validateSpiv3DataAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $odkFormService->validateSPIV3File($param);
+            $result = $this->odkFormService->validateSPIV3File($param);
             return $this->redirect()->toUrl("/spi-v3/validate-spiv3-data");
-        }else{
-            $tokenResults = $odkFormService->getSpiV3FormUniqueTokens();
+        } else {
+            $tokenResults = $this->odkFormService->getSpiV3FormUniqueTokens();
             return new ViewModel(array('tokenResults' => $tokenResults));
         }
     }
     public function validateSpiv3DetailsAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $odkFormService->getAllValidateSpiv3Details($param);
+            $result = $this->odkFormService->getAllValidateSpiv3Details($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
     public function addSpiv3ValidateDataAction()
     {
         $request = $this->getRequest();
-        if ($request->isPost()){
+        if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result=$odkFormService->addValidateSpiv3Data($params);
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->addValidateSpiv3Data($params);
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' =>$result));
+            $viewModel->setVariables(array('result' => $result));
             $viewModel->setTerminal(true);
             return $viewModel;
         }
     }
 }
-

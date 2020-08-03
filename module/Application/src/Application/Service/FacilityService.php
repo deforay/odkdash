@@ -2,10 +2,10 @@
 
 namespace Application\Service;
 
-use Zend\Session\Container;
+use Laminas\Session\Container;
 use Application\Service\CommonService;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 use PHPExcel;
 
 class FacilityService {
@@ -21,7 +21,7 @@ class FacilityService {
     }
     
     public function addFacility($params){
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
@@ -48,7 +48,7 @@ class FacilityService {
     }
     
     public function updateFacility($params){
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
@@ -97,9 +97,9 @@ class FacilityService {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer3Table');
         $commonService = new \Application\Service\CommonService();
-        $config = new \Zend\Config\Reader\Ini();
+        $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $fromName = $configResult['admin']['name'];
@@ -200,7 +200,7 @@ class FacilityService {
             $output = array();
             $outputScore = array();
             $sheet = $excel->getActiveSheet();
-            $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllFacilityQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

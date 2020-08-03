@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -25,7 +26,7 @@ return array(
                         'action'        => 'index',
                     ),
                 ),
-                
+
             ),
             'homeAuditPerformance' => array(
                 'type'    => 'Literal',
@@ -56,7 +57,7 @@ return array(
                         'action' => 'index',
                     ),
                 ),
-            ),            
+            ),
             'login' => array(
                 'type'    => 'segment',
                 'options' => array(
@@ -66,7 +67,7 @@ return array(
                         'action' => 'index',
                     ),
                 ),
-            ),     
+            ),
             'spi-v3-form' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -171,11 +172,11 @@ return array(
     ),
     'service_manager' => array(
         'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
+            'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Laminas\Log\LoggerAbstractServiceFactory',
         ),
         'factories' => array(
-            'translator' => 'Zend\Mvc\Service\TranslatorServiceFactory',
+            'translator' => 'Laminas\Mvc\Service\TranslatorServiceFactory',
         ),
     ),
     'translator' => array(
@@ -186,23 +187,6 @@ return array(
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'Application\Controller\Index' => "Application\Controller\IndexController",
-            'Application\Controller\Receiver' => "Application\Controller\ReceiverController",
-            'Application\Controller\SpiV3' => "Application\Controller\SpiV3Controller",
-            'Application\Controller\Login' => "Application\Controller\LoginController",
-            'Application\Controller\Facility' => "Application\Controller\FacilityController",
-            'Application\Controller\Roles' => "Application\Controller\RolesController",
-            'Application\Controller\Common' => "Application\Controller\CommonController",
-            'Application\Controller\Users' => "Application\Controller\UsersController",
-            'Application\Controller\Config' => "Application\Controller\ConfigController",
-            'Application\Controller\Email' => "Application\Controller\EmailController",
-            'Application\Controller\Cron' => "Application\Controller\CronController",
-            'Application\Controller\SpiV3Reports' => "Application\Controller\SpiV3ReportsController",
-            'Application\Controller\Dashboard' => "Application\Controller\DashboardController",
         ),
     ),
     'view_manager' => array(
@@ -241,7 +225,7 @@ return array(
                         'route'    => 'db-backup',
                         'defaults' => array(
                             'controller' => 'Application\Controller\Cron',
-                             'action' => 'db-backup'
+                            'action' => 'db-backup'
                         ),
                     ),
                 ),
@@ -251,7 +235,7 @@ return array(
                         'route'    => 'send-audit-mail',
                         'defaults' => array(
                             'controller' => 'Application\Controller\Cron',
-                             'action' => 'send-audit-mail'
+                            'action' => 'send-audit-mail'
                         ),
                     ),
                 ),
@@ -261,7 +245,7 @@ return array(
                         'route'    => 'generate-bulk-pdf',
                         'defaults' => array(
                             'controller' => 'Application\Controller\Cron',
-                             'action' => 'generate-bulk-pdf'
+                            'action' => 'generate-bulk-pdf'
                         ),
                     ),
                 ),

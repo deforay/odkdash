@@ -2,11 +2,11 @@
 
 namespace Application\Model;
 
-use Zend\Session\Container;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
-use Zend\Db\TableGateway\AbstractTableGateway;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\GlobalTable;
 
@@ -37,7 +37,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
         
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params) , 'received_on' => new \Zend\Db\Sql\Expression("NOW()"));
+        $d = array('data_dump' => json_encode($params) , 'received_on' => new \Laminas\Db\Sql\Expression("NOW()"));
         $dbAdapter = $this->adapter;
         $insert->values($d);
         $selectString = $sql->getSqlStringForSqlObject($insert);
@@ -345,14 +345,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
-                                                'oldestDate' => new \Zend\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
-                                                'newestDate' => new \Zend\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
-                                                'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
-                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
-                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
-                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
-                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
-                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
+                                                'oldestDate' => new \Laminas\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
+                                                'newestDate' => new \Laminas\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
+                                                'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),
+                                                'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
+                                                'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
+                                                'level2' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
+                                                'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
+                                                'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where(array('spiv3.status'=>'approved'));
         if(isset($params['fieldName']) && trim($params['fieldName'])!= ''){
@@ -468,14 +468,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
         
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
-                                                'newestDate' => new \Zend\Db\Sql\Expression("'$start_date'"),
-                                                'oldestDate' => new \Zend\Db\Sql\Expression("'$end_date'"),
-                                                'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),                                    
-                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
-                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
-                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
-                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
-                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
+                                                'newestDate' => new \Laminas\Db\Sql\Expression("'$start_date'"),
+                                                'oldestDate' => new \Laminas\Db\Sql\Expression("'$end_date'"),
+                                                'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),                                    
+                                                'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
+                                                'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
+                                                'level2' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
+                                                'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
+                                                'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where("spiv3.status='approved'")
                                 ->where("(`assesmentofaudit` BETWEEN '" . $start_date ."' - INTERVAL DATEDIFF('".$start_date."','".$end_date."') DAY AND '".$start_date."')");
@@ -553,14 +553,14 @@ class SpiFormVer3Table extends AbstractTableGateway {
         $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));        
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                                 ->columns(array(
-                                                'newestDate' => new \Zend\Db\Sql\Expression("'$today'"),
-                                                'oldestDate' => new \Zend\Db\Sql\Expression("'$last180Date'"),
-                                                'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)"),
-                                                'level0' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
-                                                'level1' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
-                                                'level2' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
-                                                'level3' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
-                                                'level4' => new \Zend\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
+                                                'newestDate' => new \Laminas\Db\Sql\Expression("'$today'"),
+                                                'oldestDate' => new \Laminas\Db\Sql\Expression("'$last180Date'"),
+                                                'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),
+                                                'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
+                                                'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
+                                                'level2' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
+                                                'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
+                                                'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
                                                 ))
                                 ->where(array('status'=>'approved'))
                                 ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -2723,11 +2723,11 @@ class SpiFormVer3Table extends AbstractTableGateway {
         if($parameters['source'] == 'ad'){
             //For Audit Dates
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                    ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'),'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)")))
+                                    ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'),'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
                                     ->where(array('spiv3.status'=>'approved'))
                                     ->group('spiv3.assesmentofaudit');
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                    ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'),'totalDataPoints' => new \Zend\Db\Sql\Expression("COUNT(*)")))
+                                    ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'),'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
                                     ->where(array('spiv3.status'=>'approved'))
                                     ->group('spiv3.assesmentofaudit');
         }else if($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap'){

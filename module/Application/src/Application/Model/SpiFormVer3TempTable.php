@@ -2,11 +2,11 @@
 
 namespace Application\Model;
 
-use Zend\Session\Container;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
-use Zend\Db\TableGateway\AbstractTableGateway;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\GlobalTable;
 
@@ -183,11 +183,11 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
          $output['aaData'][] = $row;
         }
         //get count of exist data
-        $totalQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('totalData' => new \Zend\Db\Sql\Expression("COUNT(*)")))->where('spiv3.status != "deleted"');
+        $totalQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('totalData' => new \Laminas\Db\Sql\Expression("COUNT(*)")))->where('spiv3.status != "deleted"');
         $totalQueryStr = $sql->getSqlStringForSqlObject($totalQuery); // Get the string of the Sql, instead of the Select-instance
         $totalResult = $dbAdapter->query($totalQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get count of new data
-        $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Zend\Db\Sql\Expression("COUNT(id)")));
+        $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Laminas\Db\Sql\Expression("COUNT(id)")));
         $newQueryStr = $sql->getSqlStringForSqlObject($newQuery); // Get the string of the Sql, instead of the Select-instance
         $newResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         

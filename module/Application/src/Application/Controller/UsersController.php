@@ -2,52 +2,66 @@
 
 namespace Application\Controller;
 
-use Zend\Config\Config;
-use Zend\Json\Json;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Laminas\Config\Config;
+use Laminas\Json\Json;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 
-class UsersController extends AbstractActionController {
+class UsersController extends AbstractActionController
+{
 
-    public function indexAction() {
+    private $odkFormService = null;
+    private $userService = null;
+    private $roleService = null;
+
+    public function __construct($userService, $roleService, $odkFormService)
+    {
+        $this->userService = $userService;
+        $this->roleService = $roleService;
+        $this->odkFormService = $odkFormService;
+    }    
+
+    public function indexAction()
+    {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $userSerive = $this->getServiceLocator()->get('UserService');
-            $result = $userSerive->getAllUsers($params);
+            $result = $this->userService->getAllUsers($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
 
-    public function addAction() {
+    public function addAction()
+    {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $userSerive = $this->getServiceLocator()->get('UserService');
-            $userSerive->addUser($params);
+            
+            $this->userService->addUser($params);
             return $this->redirect()->toRoute("users");
         }
-        $roleSerive = $this->getServiceLocator()->get('RoleService');
-        $odkFormSerive = $this->getServiceLocator()->get('OdkFormService');
-        $roleResult = $roleSerive->getAllActiveRoles();
-        $tokenResult = $odkFormSerive->getSpiV3FormUniqueTokens();
-        return new ViewModel(array('roleResults' => $roleResult,'tokenResults' => $tokenResult));
+        
+        
+        $roleResult = $this->roleService->getAllActiveRoles();
+        $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
+        return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult));
     }
 
-    public function editAction() {
+    public function editAction()
+    {
         $request = $this->getRequest();
-        $userSerive = $this->getServiceLocator()->get('UserService');
+        
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $userSerive->updateUser($params);
+            $result = $this->userService->updateUser($params);
             return $this->redirect()->toRoute("users");
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
-            $result = $userSerive->getUser($id);
-            $roleSerive = $this->getServiceLocator()->get('RoleService');
-            $odkFormSerive = $this->getServiceLocator()->get('OdkFormService');
-            $roleResult = $roleSerive->getAllActiveRoles();
-            $tokenResult = $odkFormSerive->getSpiV3FormUniqueTokens();
+            $result = $this->userService->getUser($id);
+            
+            
+            $roleResult = $this->roleService->getAllActiveRoles();
+            $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
             return new ViewModel(array(
                 'result' => $result,
                 'roleResults' => $roleResult,
@@ -55,5 +69,4 @@ class UsersController extends AbstractActionController {
             ));
         }
     }
-
 }

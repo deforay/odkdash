@@ -1,5 +1,5 @@
 <?php
-use Zend\Session\Container;
+use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>
@@ -453,7 +453,7 @@ $sessionLogin = new Container('credo');
 			</div>		
 		  </div>
 		  <?php
-			  $loginContainer = new \Zend\Session\Container('credo');
+			  $loginContainer = new \Laminas\Session\Container('credo');
 			  $role = $loginContainer->roleCode;
 			  $acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;		  
 					  if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {

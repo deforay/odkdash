@@ -2,12 +2,12 @@
 
 namespace Application\Service;
 
-use Zend\Session\Container;
+use Laminas\Session\Container;
 use Application\Service\CommonService;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
-use Zend\Filter\Compress;
-use Zend\Filter\Exception;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
+use Laminas\Filter\Compress;
+use Laminas\Filter\Exception;
 use ZipArchive;
 use PHPExcel;
 use PHPExcel_Cell;
@@ -68,7 +68,7 @@ class OdkFormService {
             $output = array();
             $outputScore = array();
             $sheet = $excel->getActiveSheet();
-            $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             $displayDate="";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -450,7 +450,7 @@ class OdkFormService {
     
     public function approveFormStatus($params){
         //\Zend\Debug\Debug::dump(count($params['idList']));die;
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
@@ -498,7 +498,7 @@ class OdkFormService {
             \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             $output = array();
             $sheet = $excel->getActiveSheet();
-            $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -672,7 +672,7 @@ class OdkFormService {
     }
     
     public function updateSpiForm($params){
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $db = $this->sm->get('SpiFormVer3Table');
@@ -1527,7 +1527,7 @@ class OdkFormService {
     public function validateSPIV3File($params){
         $db = $this->sm->get('SpiFormVer3TempTable');
         $dbMain = $this->sm->get('SpiFormVer3Table');
-        $dbAdapter = $this->sm->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
         $sql = new Sql($dbAdapter);
         $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['fileName']['name']);
         $fileName = str_replace(" ", "-", $fileName);

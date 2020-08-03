@@ -2,32 +2,47 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 
-class CronController extends AbstractActionController {
+class CronController extends AbstractActionController
+{
 
-    public function indexAction() {
-        
+
+    private $commonService = null;
+    private $odkFormService = null;
+
+    public function __construct($commonService, $odkFormService)
+    {
+        $this->commonService = $commonService;
+        $this->odkFormService = $odkFormService;
     }
-    
-    public function sendMailAction(){
-       $commonService = $this->getServiceLocator()->get('CommonService');
-       $commonService->sendTempMail();
+
+    public function indexAction()
+    {
     }
-    
-    public function sendAuditMailAction(){
-       $commonService = $this->getServiceLocator()->get('CommonService');
-       $commonService->sendAuditMail();
+
+    public function sendMailAction()
+    {
+
+        $this->commonService->sendTempMail();
     }
-    
-    public function dbBackupAction(){
-        $commonService = $this->getServiceLocator()->get('CommonService');
-        $commonService->dbBackup();
+
+    public function sendAuditMailAction()
+    {
+
+        $this->commonService->sendAuditMail();
     }
-    
-    public function generateBulkPdfAction(){
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $odkFormService->getDownloadDataList();
+
+    public function dbBackupAction()
+    {
+
+        $this->commonService->dbBackup();
+    }
+
+    public function generateBulkPdfAction()
+    {
+
+        $this->odkFormService->getDownloadDataList();
     }
 }

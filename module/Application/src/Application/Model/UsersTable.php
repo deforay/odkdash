@@ -2,11 +2,11 @@
 
 namespace Application\Model;
 
-use Zend\Session\Container;
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
-use Zend\Db\TableGateway\AbstractTableGateway;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Expression;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
@@ -35,7 +35,7 @@ class UsersTable extends AbstractTableGateway {
         $container = new Container('alert');
         $logincontainer = new Container('credo');
         $username = $params['username'];
-        $config = new \Zend\Config\Reader\Ini();
+        $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);        
         //echo $password;die;
@@ -75,7 +75,7 @@ class UsersTable extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
-        $config = new \Zend\Config\Reader\Ini();
+        $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);
         $lastInsertId = 0;
@@ -113,7 +113,7 @@ class UsersTable extends AbstractTableGateway {
         $userTokenMap = new UserTokenMapTable($dbAdapter);
         $userId=base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
-            $config = new \Zend\Config\Reader\Ini();
+            $config = new \Laminas\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $password = sha1($params['password'] . $configResult["password"]["salt"]);
             $data = array('password' => $password);

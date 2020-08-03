@@ -2,12 +2,20 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Session\Container;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
+use Laminas\Session\Container;
 
 class LoginController extends AbstractActionController
 {
+
+
+    private $userService = null;
+
+    public function __construct($userService)
+    {
+        $this->userService = $userService;
+    }    
 
     public function indexAction()
     {
@@ -15,8 +23,7 @@ class LoginController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $userService = $this->getServiceLocator()->get('UserService');
-            $route = $userService->login($params);
+            $route = $this->userService->login($params);
             return $this->redirect()->toRoute($route);
         }
         if (isset($logincontainer->userId) && $logincontainer->userId != "") {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -9,53 +10,56 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Json\Json;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
+use Laminas\Json\Json;
 
 class IndexController extends AbstractActionController
 {
+
+    private $odkFormService = null;
+
+    public function __construct($odkFormService)
+    {
+        $this->odkFormService = $odkFormService;
+    }
+
     public function indexAction()
     {
         $params = array();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $allSubmissions = $odkFormService->getAllApprovedSubmissions();        
-        $testingVolume = $odkFormService->getAllApprovedTestingVolume('');        
-  
-        
-        //$viewModel = new ViewModel();
-        //$viewModel->setVariables(array('allSubmissions' => $allSubmissions,'testingVolume' => $testingVolume))
-        //              ->setTerminal(true);
-        //return $viewModel;
+
+        $allSubmissions = $this->odkFormService->getAllApprovedSubmissions();
+        $testingVolume = $this->odkFormService->getAllApprovedTestingVolume('');
+
         return new ViewModel(array(
-                                   'allSubmissions' => $allSubmissions,
-                                   'testingVolume' => $testingVolume,
-                                ));
+            'allSubmissions' => $allSubmissions,
+            'testingVolume' => $testingVolume,
+        ));
     }
-    
+
     public function auditLocationsAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $allSubmissions = $odkFormService->getAllApprovedSubmissionLocation($params);
+
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocation($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
-                        ->setTerminal(true);
+                ->setTerminal(true);
             return $viewModel;
         }
     }
-    
+
     public function auditPerformanceAction()
     {
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        if($this->getRequest()->isPost()){
-            $params=$this->getRequest()->getPost();
-            $auditRoundWiseData=$odkFormService->getAuditRoundWiseData($params);
-            $perf1 = $odkFormService->getPerformance($params);
+
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData($params);
+            $perf1 = $this->odkFormService->getPerformance($params);
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData,'perf1' => $perf1))
-                      ->setTerminal(true);
+            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData, 'perf1' => $perf1))
+                ->setTerminal(true);
             return $viewModel;
         }
     }

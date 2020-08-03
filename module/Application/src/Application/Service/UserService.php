@@ -2,7 +2,7 @@
 
 namespace Application\Service;
 
-use Zend\Session\Container;
+use Laminas\Session\Container;
 
 class UserService {
 
@@ -22,7 +22,7 @@ class UserService {
     }
     
     public function addUser($params) {
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $userDb = $this->sm->get('UsersTable');
@@ -47,7 +47,7 @@ class UserService {
     }
     
     public function updateUser($params) {
-        $adapter = $this->sm->get('Zend\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
             $userDb = $this->sm->get('UsersTable');

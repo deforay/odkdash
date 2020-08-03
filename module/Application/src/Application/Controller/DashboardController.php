@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -9,49 +10,61 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\Json\Json;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
+use Laminas\Json\Json;
 
 class DashboardController extends AbstractActionController
 {
-    public function indexAction(){
-        $params = array();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $perf1 = $odkFormService->getPerformance($params);
-        $perflast30 = $odkFormService->getPerformanceLast30Days('');        
-        $perflast180 = $odkFormService->getPerformanceLast180Days();        
-        $allSubmissions = $odkFormService->getAllApprovedSubmissions();
-        $testingVolume = $odkFormService->getAllApprovedTestingVolume('');      
-        $rawSubmissions = $odkFormService->getAllSubmissions();        
-        //$auditRoundWiseData = $odkFormService->getAuditRoundWiseData('');
-        //$zeroCounts = $odkFormService->getZeroQuestionCounts();
-        //$spiV3Labels = $odkFormService->getSpiV3FormLabels();
-        $spiV3auditRoundNo = $odkFormService->getSpiV3FormAuditNo();
-        $levelNamesResult=$odkFormService->getSpiV3FormUniqueLevelNames();
-        $testingPointResult=$odkFormService->getAllTestingPointType();
-        
-        return new ViewModel(array('perf1' => $perf1,
-                                   'perflast30' => $perflast30,
-                                   'perflast180' => $perflast180,
-                                   'allSubmissions' => $allSubmissions,
-                                   'testingVolume' => $testingVolume,
-                                   'rawSubmissions' => $rawSubmissions,
-                                   //'auditRoundWiseData' => $auditRoundWiseData,
-                                   //'spiV3Labels' => $spiV3Labels,
-                                   //'zeroCounts' => $zeroCounts,
-                                   'spiV3auditRoundNo'=>$spiV3auditRoundNo,
-                                   'testingPointResult' => $testingPointResult,
-                                    'levelNamesResult' => $levelNamesResult));
+
+    private $odkFormService = null;
+
+    public function __construct($odkFormService)
+    {
+        $this->odkFormService = $odkFormService;
     }
-    
-    public function auditDetailsAction(){
+
+    public function indexAction()
+    {
+        $params = array();
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        $perf1 = $this->odkFormService->getPerformance($params);
+        $perflast30 = $this->odkFormService->getPerformanceLast30Days('');
+        $perflast180 = $this->odkFormService->getPerformanceLast180Days();
+        $allSubmissions = $this->odkFormService->getAllApprovedSubmissions();
+        $testingVolume = $this->odkFormService->getAllApprovedTestingVolume('');
+        $rawSubmissions = $this->odkFormService->getAllSubmissions();
+        //$auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData('');
+        //$zeroCounts = $this->odkFormService->getZeroQuestionCounts();
+        //$spiV3Labels = $this->odkFormService->getSpiV3FormLabels();
+        $spiV3auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
+        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+        $testingPointResult = $this->odkFormService->getAllTestingPointType();
+
+        return new ViewModel(array(
+            'perf1' => $perf1,
+            'perflast30' => $perflast30,
+            'perflast180' => $perflast180,
+            'allSubmissions' => $allSubmissions,
+            'testingVolume' => $testingVolume,
+            'rawSubmissions' => $rawSubmissions,
+            //'auditRoundWiseData' => $auditRoundWiseData,
+            //'spiV3Labels' => $spiV3Labels,
+            //'zeroCounts' => $zeroCounts,
+            'spiV3auditRoundNo' => $spiV3auditRoundNo,
+            'testingPointResult' => $testingPointResult,
+            'levelNamesResult' => $levelNamesResult
+        ));
+    }
+
+    public function auditDetailsAction()
+    {
         $request = $this->getRequest();
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getAllApprovedSubmissionsDetailsBasedOnAuditDate($params);
+            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->getAllApprovedSubmissionsDetailsBasedOnAuditDate($params);
             return $this->getResponse()->setContent(Json::encode($result));
         } else {
             $assesmentOfAuditDate = base64_decode($this->params()->fromRoute('id'));
