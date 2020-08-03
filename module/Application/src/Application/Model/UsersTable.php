@@ -38,6 +38,7 @@ class UsersTable extends AbstractTableGateway {
         $config = new \Zend\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);        
+        //echo $password;die;
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
