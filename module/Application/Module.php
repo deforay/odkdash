@@ -147,7 +147,7 @@ class Module
                 },
                 'Application\Controller\Login' => function ($sm) {
                     $userService = $sm->getServiceLocator()->get('UserService');
-                    return new \Application\Controller\ReceiverController($userService);
+                    return new \Application\Controller\LoginController($userService);
                 },
                 'Application\Controller\SpiV3Reports' => function ($sm) {
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
