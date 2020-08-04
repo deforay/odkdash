@@ -1,6 +1,6 @@
 <?php
 return array(
     'settings' => array(
-        'locale' => 'pt_BR'
+        'locale' => 'en_US'
     ),
 );
