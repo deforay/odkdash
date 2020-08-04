@@ -47,11 +47,15 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        $languagecontainer = new Container('language');
 
         if (php_sapi_name() != 'cli') {
             $eventManager->attach('dispatch', array($this, 'preSetter'), 100);
             //$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatchError'), -999);
         }
+        
+        $this->initTranslator($e);
+        
     }
 
 
@@ -131,6 +135,16 @@ class Module
                 $session->acl = serialize($acl);
             }
         }
+    }
+
+    protected function initTranslator(MvcEvent $event)
+    {
+        
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $translator = $serviceManager->get('translator');
+        $config = ($serviceManager->get('Config'));
+        $translator->setLocale($config['settings']['locale'])
+            ->setFallbackLocale('en_US');
     }
 
     public function getControllerConfig()

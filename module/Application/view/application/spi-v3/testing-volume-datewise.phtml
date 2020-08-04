@@ -63,7 +63,7 @@ $('#volumeChart').highcharts({
                 }
             },
             title: {
-                text: 'No. of Testers',
+                text: '<?= $this->translate('No. of Testers');?>',
                 style: {
                     color: 'black'
                 }
@@ -91,7 +91,7 @@ $('#volumeChart').highcharts({
         }, { // Tertiary yAxis
             gridLineWidth: 0,
             title: {
-                text: 'Testing Volume',
+                text: '<?= $this->translate('Testing Volume'); ?>',
                 style: {
                     color: Highcharts.getOptions().colors[1]
                 }
@@ -116,7 +116,7 @@ $('#volumeChart').highcharts({
             enabled: true
         },
         series: [ {
-            name: 'Testing Volume',
+            name: '<?= $this->translate('Testing Volume'); ?>',
             type: 'column',
             yAxis: 2,
             data: [<?php echo implode(",",$volumeData); ?>],
@@ -126,20 +126,20 @@ $('#volumeChart').highcharts({
 			  height: 6
 			},	
             tooltip: {
-                valueSuffix: ' Tests'
+                valueSuffix: ' <?= $this->translate('Tests');?>'
             }
 
         }, {
-            name: 'Testers',
+            name: '<?= $this->translate('Testers');?>',
             type: 'column',
             data: [<?php echo implode(",",$testerData); ?>],
             tooltip: {
-                valueSuffix: ' Tests'
+                valueSuffix: ' <?= $this->translate('Tests');?>'
             },
 			color: '#3598DC',
 
         },{
-            name: 'Level',
+            name: '<?= $this->translate('Level');?>',
             type: 'column',
             yAxis: 1,
             data: [<?php echo implode(",",$levelData); ?>],
