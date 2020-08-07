@@ -827,10 +827,10 @@ class OdkFormService
                 $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
                 // set document information
                 $pdf->SetCreator(PDF_CREATOR);
-                $pdf->SetAuthor('Nicola Asuni');
+                $pdf->SetAuthor('ODK DASHBOARD');
                 $pdf->SetTitle('SPI-RT Checklist');
-                $pdf->SetSubject('TCPDF Tutorial');
-                $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+                $pdf->SetSubject('ODK DASHBOARD');
+                $pdf->SetKeywords('odk', 'odk dashboard');
 
                 // set default header data
                 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);

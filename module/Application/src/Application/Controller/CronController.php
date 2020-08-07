@@ -24,25 +24,21 @@ class CronController extends AbstractActionController
 
     public function sendMailAction()
     {
-
         $this->commonService->sendTempMail();
     }
 
     public function sendAuditMailAction()
     {
-
         $this->commonService->sendAuditMail();
     }
 
     public function dbBackupAction()
     {
-
         $this->commonService->dbBackup();
     }
 
     public function generateBulkPdfAction()
     {
-
         $this->odkFormService->getDownloadDataList();
     }
 }
