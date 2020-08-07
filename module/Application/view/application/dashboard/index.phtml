@@ -272,7 +272,7 @@ $sessionLogin = new Container('credo');
 								<div id="widget-top-2" style="width: 100%;">
 									<?php
 									if (isset($perflast30[0]['totalDataPoints']) && trim($perflast30[0]['totalDataPoints']) == 0) {
-										echo "<div style='height:380px;text-align:center;'><h3>No data available</h3></div>";
+										echo "<div style='height:380px;text-align:center;'><h3>" . $this->translate('No data available') . "</h3></div>";
 									}
 									?>
 								</div>
@@ -1066,7 +1066,7 @@ $sessionLogin = new Container('credo');
 				},
 				yAxis: 1,
 				tooltip: {
-					valueSuffix: ' <?= $this->translate('Tests');?>'
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
 				}
 			}]
 		});
@@ -1536,7 +1536,7 @@ $sessionLogin = new Container('credo');
 					}
 				},
 				title: {
-					text: '<?= $this->translate('No. of Testers');?>',
+					text: '<?= $this->translate('No. of Testers'); ?>',
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}
@@ -1599,19 +1599,19 @@ $sessionLogin = new Container('credo');
 					height: 6
 				},
 				tooltip: {
-					valueSuffix: ' <?= $this->translate('Tests');?>'
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
 				}
 
 			}, {
-				name: '<?= $this->translate('Testers');?>',
+				name: '<?= $this->translate('Testers'); ?>',
 				type: 'column',
 				data: [<?php echo implode(",", $testerData); ?>],
 				tooltip: {
-					valueSuffix: ' <?= $this->translate('Tests');?>'
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
 				}
 
 			}, {
-				name: '<?= $this->translate('Level');?>',
+				name: '<?= $this->translate('Level'); ?>',
 				type: 'column',
 				yAxis: 1,
 				data: [<?php echo implode(",", $levelData); ?>],

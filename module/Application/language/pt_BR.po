@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-04 23:10+0530\n"
-"PO-Revision-Date: 2020-08-04 23:11+0530\n"
+"POT-Creation-Date: 2020-08-07 11:06+0530\n"
+"PO-Revision-Date: 2020-08-07 11:07+0530\n"
 "Last-Translator: Diogo Melo <dmelo87@gmail.com>\n"
 "Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
 "Language: pt\n"
@@ -55,7 +55,7 @@ msgstr "Nível 0 (Abaixo de 40)"
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:80
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:87
 msgid "No. of Audits"
-msgstr "Não. de Auditorias"
+msgstr "Número de Auditorias"
 
 #: ../src/Application/Service/OdkFormService.php:380
 #: ../view/application/dashboard/index.phtml:632
@@ -89,6 +89,46 @@ msgstr "Nível 3 (80-89)"
 msgid "Level 4 (90 and above)"
 msgstr "Nível 4 (90 ou mais)"
 
+#: ../view/application/common/audit-locations.phtml:24
+#: ../view/application/dashboard/index.phtml:416
+#: ../view/application/index/index.phtml:178
+msgid "Audit Locations"
+msgstr "Local de auditoria"
+
+#: ../view/application/common/audit-locations.phtml:26
+#: ../view/application/facility/index.phtml:105
+msgid "Audit Round"
+msgstr "Ronda de auditoria"
+
+#: ../view/application/common/audit-locations.phtml:36
+#: ../view/application/spi-v3-reports/facility-report.phtml:23
+#: ../view/application/spi-v3/index.phtml:45
+#: ../view/application/spi-v3/view-data.phtml:47
+msgid "Date Range"
+msgstr "Intervalo de datas"
+
+#: ../view/application/common/audit-locations.phtml:37
+#: ../view/application/dashboard/index.phtml:267
+#: ../view/application/dashboard/index.phtml:301
+#: ../view/application/dashboard/index.phtml:362
+#: ../view/application/dashboard/index.phtml:401
+#: ../view/application/dashboard/index.phtml:434
+msgid "Enter Date"
+msgstr "Digite a data"
+
+#: ../view/application/common/audit-locations.phtml:38
+#: ../view/application/dashboard/index.phtml:268
+#: ../view/application/dashboard/index.phtml:302
+#: ../view/application/dashboard/index.phtml:363
+#: ../view/application/dashboard/index.phtml:402
+#: ../view/application/dashboard/index.phtml:435
+msgid "OK"
+msgstr "OK"
+
+#: ../view/application/common/audit-locations.phtml:73
+msgid "Please select audit round no."
+msgstr "Seleccione o número da ronda da auditoria."
+
 #: ../view/application/config/index.phtml:33
 #: ../view/application/dashboard/audit-details.phtml:43
 #: ../view/application/facility/index.phtml:85
@@ -101,15 +141,16 @@ msgstr "Nível 4 (90 ou mais)"
 #: ../view/application/spi-v3/view-data.phtml:232
 #: ../view/application/users/index.phtml:46
 msgid "Loading data from server"
-msgstr "Carregamento de dados do servidor"
+msgstr "Carregando dados do servidor"
 
 #: ../view/application/dashboard/index.phtml:85
 msgid "Show Advanced Options"
 msgstr "Mostrar opções avançadas"
 
 #: ../view/application/dashboard/index.phtml:98
+#: ../view/application/spi-v3-reports/facility-report.phtml:25
 msgid "Select Date Range"
-msgstr "Selecionar Data"
+msgstr "Seleccionar intervalo de datas"
 
 #: ../view/application/dashboard/index.phtml:100
 #: ../view/application/spi-v3-reports/facility-report.phtml:27
@@ -118,13 +159,14 @@ msgstr "Selecionar Data"
 #: ../view/application/spi-v3/view-data.phtml:51
 #: ../view/application/spi-v3/view-data.phtml:204
 msgid "Audit Round No."
-msgstr "Auditoria Rodada Nº."
+msgstr "Ronda de auditoria Nº."
 
 #: ../view/application/dashboard/index.phtml:103
 #: ../view/application/spi-v3-reports/facility-report.phtml:30
 #: ../view/application/spi-v3-reports/facility-report.phtml:46
 #: ../view/application/spi-v3-reports/facility-report.phtml:59
 #: ../view/application/spi-v3-reports/facility-report.phtml:98
+#: ../view/application/spi-v3-reports/facility-report.phtml:109
 #: ../view/application/spi-v3/index.phtml:52
 #: ../view/application/spi-v3/index.phtml:66
 #: ../view/application/spi-v3/index.phtml:79
@@ -167,7 +209,7 @@ msgstr "Visualizar Dados"
 #: ../view/application/spi-v3/audit-performance.phtml:12
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:11
 msgid "From Date"
-msgstr "Início"
+msgstr "De (data)"
 
 #: ../view/application/dashboard/index.phtml:224
 #: ../view/application/dashboard/index.phtml:248
@@ -176,7 +218,7 @@ msgstr "Início"
 #: ../view/application/spi-v3/audit-performance.phtml:17
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:12
 msgid "To Date"
-msgstr "Até Data"
+msgstr "Até (data)"
 
 #: ../view/application/dashboard/index.phtml:234
 #: ../view/application/spi-v3/view-data.phtml:34
@@ -191,29 +233,18 @@ msgstr "Desempenho - Últimos 180 dias"
 #: ../view/application/spi-v3/audit-performance.phtml:39
 #: ../view/application/spi-v3/view-data.phtml:30
 msgid "Audit Performance"
-msgstr "Desempenho da auditoria"
+msgstr "Desempenho na auditoria"
 
-#: ../view/application/dashboard/index.phtml:267
-#: ../view/application/dashboard/index.phtml:301
-#: ../view/application/dashboard/index.phtml:362
-#: ../view/application/dashboard/index.phtml:401
-#: ../view/application/dashboard/index.phtml:434
-msgid "Enter Date"
-msgstr "Digite a data"
-
-#: ../view/application/dashboard/index.phtml:268
-#: ../view/application/dashboard/index.phtml:302
-#: ../view/application/dashboard/index.phtml:363
-#: ../view/application/dashboard/index.phtml:402
-#: ../view/application/dashboard/index.phtml:435
-msgid "OK"
-msgstr "OK"
+#: ../view/application/dashboard/index.phtml:275
+#: ../view/application/spi-v3/spirtv3-datewise.phtml:162
+msgid "No data available"
+msgstr "Nenhum dado disponível"
 
 #: ../view/application/dashboard/index.phtml:296
 #: ../view/application/index/index.phtml:106
 #: ../view/application/spi-v3/view-data.phtml:24
 msgid "Performance of High Volume Sites"
-msgstr "Desempenho de sites de alto volume"
+msgstr "Desempenho de locais de volume elevado"
 
 #: ../view/application/dashboard/index.phtml:321
 #: ../view/application/dashboard/index.phtml:494
@@ -242,25 +273,20 @@ msgstr "Perguntas de pior desempenho"
 msgid "Limit"
 msgstr "Limite"
 
-#: ../view/application/dashboard/index.phtml:416
-#: ../view/application/index/index.phtml:178
-msgid "Audit Locations"
-msgstr "Locais de auditoria"
-
 #: ../view/application/dashboard/index.phtml:454
 #: ../view/application/index/index.phtml:205
 msgid "Audit Dates"
-msgstr "Datas de auditoria"
+msgstr "Datas da auditoria"
 
 #: ../view/application/dashboard/index.phtml:501
 #: ../view/application/facility/index.phtml:74
 msgid "Facility ID"
-msgstr "ID de instalação"
+msgstr "ID da Unidade Sanitária"
 
 #: ../view/application/dashboard/index.phtml:502
 #: ../view/application/spi-v3-reports/facility-report.phtml:164
 msgid "Facility name"
-msgstr "Nome da instalação"
+msgstr "Nome da Unidade Sanitária"
 
 #: ../view/application/dashboard/index.phtml:503
 #: ../view/application/spi-v3-reports/facility-report.phtml:165
@@ -274,12 +300,12 @@ msgstr "Data da auditoria"
 
 #: ../view/application/dashboard/index.phtml:504
 msgid "Received Date"
-msgstr "Data recebida"
+msgstr "Data de recepção"
 
 #: ../view/application/dashboard/index.phtml:505
 #: ../view/application/spi-v3-reports/facility-report.phtml:166
 msgid "Testing Point"
-msgstr "Ponto de teste"
+msgstr "Local de testagem"
 
 #: ../view/application/dashboard/index.phtml:506
 #: ../view/application/spi-v3/index.phtml:172
@@ -288,7 +314,7 @@ msgstr "Estado"
 
 #: ../view/application/dashboard/index.phtml:508
 msgid "Actions"
-msgstr "Ações"
+msgstr "Acções"
 
 #: ../view/application/dashboard/index.phtml:1012
 #: ../view/application/index/index.phtml:325
@@ -308,7 +334,7 @@ msgstr "Pontuação da auditoria em %"
 #: ../view/application/spi-v3/view-data.phtml:171
 #: ../view/application/spi-v3/view-data.phtml:185
 msgid "Testing Volume"
-msgstr "Volume de teste"
+msgstr "Volume de testes"
 
 #: ../view/application/dashboard/index.phtml:1050
 #: ../view/application/index/index.phtml:363
@@ -337,7 +363,7 @@ msgstr "Rodada de auditoria(s)"
 #: ../view/application/facility/index.phtml:275
 #: ../view/application/index/index.phtml:659
 msgid "Select Audit round(s)"
-msgstr "Selecione Rodada de auditoria(s)"
+msgstr "Seleccione Ronda de auditoria(s)"
 
 #: ../view/application/dashboard/index.phtml:1473
 #: ../view/application/facility/index.phtml:300
@@ -352,14 +378,14 @@ msgstr "Incapaz de gerar download"
 #: ../view/application/index/index.phtml:746
 #: ../view/application/spi-v3/testing-volume-datewise.phtml:66
 msgid "No. of Testers"
-msgstr "Não. de Testers"
+msgstr "Número de Provedores"
 
 #: ../view/application/dashboard/index.phtml:1606
 #: ../view/application/index/index.phtml:813
 #: ../view/application/spi-v3/testing-volume-datewise.phtml:133
 #: ../view/application/spi-v3/view-data.phtml:172
 msgid "Testers"
-msgstr "Testadores"
+msgstr "Provedores"
 
 #: ../view/application/dashboard/index.phtml:1614
 #: ../view/application/index/index.phtml:821
@@ -380,6 +406,64 @@ msgstr "Nível"
 msgid "Audit Counts"
 msgstr "Contagem de auditoria"
 
+#: ../view/application/email/index.phtml:8
+#: ../view/application/facility/index.phtml:76 ../view/layout/layout.phtml:211
+msgid "Email"
+msgstr "Email"
+
+#: ../view/application/email/index.phtml:21
+msgid "Facility"
+msgstr "Unidade Sanitária"
+
+#: ../view/application/email/index.phtml:23
+msgid "Select Facility"
+msgstr "Seleccione a Unidade Sanitária"
+
+#: ../view/application/email/index.phtml:36
+msgid "Facility Email Address"
+msgstr "Endereço de e-mail da Unidade Sanitária"
+
+#: ../view/application/email/index.phtml:38
+msgid "Enter Email Address"
+msgstr "Insira o endereço de e-mail"
+
+#: ../view/application/email/index.phtml:38
+msgid "Please enter facility email address"
+msgstr "Por favor, digite o endereço de e-mail da Unidade Sanitária"
+
+#: ../view/application/email/index.phtml:43
+msgid "Choose Audits"
+msgstr "Escolha as auditorias"
+
+#: ../view/application/email/index.phtml:58 ../view/error/404.phtml:60
+#: ../view/error/404.phtml:85
+msgid "Message"
+msgstr "Mensagem"
+
+#: ../view/application/email/index.phtml:59
+msgid "Enter Your Message"
+msgstr "Digite a sua mensagem"
+
+#: ../view/application/email/index.phtml:59
+msgid "Please type your message"
+msgstr "Por favor, digite a sua mensagem"
+
+#: ../view/application/email/index.phtml:64
+msgid "Attachments"
+msgstr "Anexos"
+
+#: ../view/application/email/index.phtml:65
+msgid "Please choose file"
+msgstr "Por favor, escolha arquivo"
+
+#: ../view/application/email/index.phtml:69
+msgid "Send"
+msgstr "Enviar"
+
+#: ../view/application/email/index.phtml:70
+msgid "Cancel"
+msgstr "Cancelar"
+
 #: ../view/application/facility/get-facility-name.phtml:51
 #: ../view/application/facility/get-facility-name.phtml:81
 #: ../view/application/facility/index.phtml:75
@@ -389,21 +473,21 @@ msgstr "Contagem de auditoria"
 #: ../view/application/spi-v3/view-data.phtml:182
 #: ../view/application/spi-v3/view-data.phtml:203
 msgid "Facility Name"
-msgstr "Nome do local"
+msgstr "Nome da Unidade Sanitária"
 
 #: ../view/application/facility/get-facility-name.phtml:91
 #: ../view/application/facility/get-province-list.phtml:71
 #: ../view/layout/layout.phtml:198
 msgid "Facility List"
-msgstr "Lista de Instalações"
+msgstr "Lista de Unidades Sanitárias"
 
 #: ../view/application/facility/get-facility-name.phtml:117
 msgid "Merge Facility Name"
-msgstr "Mesclar nome da instalação"
+msgstr "Fundir nome da Unidade Sanitária"
 
 #: ../view/application/facility/get-facility-name.phtml:133
 msgid "Please select facility name"
-msgstr "Selecione o nome da instalação"
+msgstr "Seleccione o nome da Unidade Sanitária"
 
 #: ../view/application/facility/get-province-list.phtml:47
 #: ../view/application/spi-v3-reports/facility-report.phtml:69
@@ -425,11 +509,11 @@ msgstr "Outro"
 #: ../view/application/facility/get-province-list.phtml:97
 #: ../view/application/facility/index.phtml:60
 msgid "Map Province to Facility"
-msgstr ""
+msgstr "Mapear a Província à Unidade Sanitária"
 
 #: ../view/application/facility/get-province-list.phtml:114
 msgid "Please select Facility"
-msgstr "Selecione Facilidade"
+msgstr "Seleccione a Unidade Sanitária"
 
 #: ../view/application/facility/get-province-list.phtml:145
 msgid "This province name already exists. Please enter a different name"
@@ -437,7 +521,8 @@ msgstr "Este nome da província já existe. Por favor, digite um nome diferente"
 
 #: ../view/application/facility/get-province-list.phtml:157
 msgid "Do you wish to merge the selected province with the selected facility?"
-msgstr "Deseja fundir a província selecionada com a instalação selecionada?"
+msgstr ""
+"Deseja fundir a província seleccionada com a Unidade Sanitária seleccionada?"
 
 #: ../view/application/facility/get-province-list.phtml:167
 msgid "Province mapped successfully"
@@ -449,7 +534,7 @@ msgstr "Nós tivemos algum problema. Por favor, tente novamente mais tarde."
 
 #: ../view/application/facility/get-province-list.phtml:179
 msgid "Please choose atleast one facility to continue"
-msgstr "Por favor, escolha pelo menos uma instalação para continuar"
+msgstr "Por favor, escolha pelo menos uma Unidade Sanitária para continuar"
 
 #: ../view/application/facility/get-province-list.phtml:183
 msgid "Province can not be empty"
@@ -457,23 +542,21 @@ msgstr "Província não pode estar vazia"
 
 #: ../view/application/facility/index.phtml:47
 msgid "SPI RT Facilities"
-msgstr "Instalações SPI RT"
+msgstr ""
+"Unidades Sanitárias inscritas no programa de melhoria de qualidade de "
+"testagem rápida de HIV"
 
 #: ../view/application/facility/index.phtml:51
 msgid "Export All Facilities to Excel"
-msgstr "Exporte todas as instalações para excel"
+msgstr "Exporte todas as Unidades Sanitárias para Excel"
 
 #: ../view/application/facility/index.phtml:54
 msgid "Add Facility"
-msgstr "Adicionar o local"
+msgstr "Adicionar Unidade Sanitária"
 
 #: ../view/application/facility/index.phtml:57
 msgid "Merge Facilities"
 msgstr "Instalações de mesclagem"
-
-#: ../view/application/facility/index.phtml:76 ../view/layout/layout.phtml:211
-msgid "Email"
-msgstr "Email"
 
 #: ../view/application/facility/index.phtml:77
 msgid "Contact Person"
@@ -484,20 +567,16 @@ msgstr "Pessoa de contacto"
 msgid "Action"
 msgstr "Acção"
 
-#: ../view/application/facility/index.phtml:105
-msgid "Audit Round"
-msgstr "Rodada de Auditoria"
-
 #: ../view/application/facility/index.phtml:123
 #: ../view/application/spi-v3/view-data.phtml:202
 msgid "Facility Id"
-msgstr "ID de instalação"
+msgstr "ID da Unidade Sanitária"
 
 #: ../view/application/facility/index.phtml:125
 #: ../view/application/spi-v3/index.phtml:168
 #: ../view/application/spi-v3/view-data.phtml:206
 msgid "Testing Point Type"
-msgstr "Tipo de ponto de teste"
+msgstr "Tipo de Local de testagem"
 
 #: ../view/application/facility/index.phtml:126
 msgid "Date of Audit"
@@ -505,7 +584,7 @@ msgstr "Data de Auditoria"
 
 #: ../view/application/facility/index.phtml:127
 msgid "Score(%)"
-msgstr "Pontuação(%)"
+msgstr "Pontuação (%)"
 
 #: ../view/application/facility/index.phtml:128
 msgid "Report"
@@ -513,7 +592,7 @@ msgstr "Relatório"
 
 #: ../view/application/index/audit-performance.phtml:85
 msgid "Total Audit"
-msgstr "Auditoria Total"
+msgstr "Total da Auditoria"
 
 #: ../view/application/index/index.phtml:91
 #: ../view/application/spi-v3/print.phtml:9
@@ -521,18 +600,33 @@ msgid ""
 "Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) "
 "Checklist"
 msgstr ""
-"Processo stepwise para melhorar a qualidade da lista de verificação de "
-"testes rápidos do HIV (SPI-RT)"
+"Lista de verificação de Melhoria de Qualidade de Testagem Rápida de HIV"
+
+#: ../view/application/login/index.phtml:46 ../view/layout/layout.phtml:57
+#: ../view/layout/layout.phtml:167
+msgid "Dashboard for Quality Improvement of HIV Rapid Testing"
+msgstr "Portal para Melhoria de Qualidade de Testagem Rápida de HIV"
+
+#: ../view/application/login/index.phtml:53
+msgid "Username"
+msgstr "Usuário"
+
+#: ../view/application/login/index.phtml:58
+msgid "Password"
+msgstr "Senha"
+
+#: ../view/application/login/index.phtml:62 ../view/layout/layout.phtml:120
+#: ../view/layout/layout.phtml:156 ../view/layout/layout.phtml:162
+msgid "Login"
+msgstr "Entrar"
+
+#: ../view/application/login/index.phtml:66
+msgid "Forgot Password?"
+msgstr "Esqueceu a senha?"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:9
 msgid "SPI-RT 3.0 Facility Report"
-msgstr "Relatório de instalações SPI-RT 3.0"
-
-#: ../view/application/spi-v3-reports/facility-report.phtml:23
-#: ../view/application/spi-v3/index.phtml:45
-#: ../view/application/spi-v3/view-data.phtml:47
-msgid "Date Range"
-msgstr "Intervalo de datas"
+msgstr "Relatório da Unidade Sanitária SPI-RT 3.0"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:47
 #: ../view/application/spi-v3/index.phtml:67
@@ -558,7 +652,7 @@ msgstr "Centro de referência"
 #: ../view/application/spi-v3/index.phtml:70
 #: ../view/application/spi-v3/view-data.phtml:72
 msgid "Health center"
-msgstr "Centro de saúde"
+msgstr "Centro de Saúde"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:51
 #: ../view/application/spi-v3/index.phtml:71
@@ -596,7 +690,7 @@ msgstr "Privado"
 #: ../view/application/spi-v3/index.phtml:82
 #: ../view/application/spi-v3/view-data.phtml:84
 msgid "Faith-based Organization"
-msgstr "Organização baseada na fé"
+msgstr "Organização religiosa"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:63
 #: ../view/application/spi-v3/index.phtml:83
@@ -608,11 +702,11 @@ msgstr "Organização não governamental"
 #: ../view/application/spi-v3/index.phtml:127
 #: ../view/application/spi-v3/view-data.phtml:133
 msgid "Type of Testing Point"
-msgstr "Tipo de ponto de teste"
+msgstr "Tipo de porta de testagem"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:113
 msgid "TB Clinic"
-msgstr "Clínica de TB"
+msgstr "Serviço de TB"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:114
 msgid "Laboratory"
@@ -628,7 +722,7 @@ msgstr "Obter Relatório"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:153
 msgid "Pending Audits (Audits not yet Accepted)"
-msgstr "Auditorias pendentes (Auditorias ainda não aceitas)"
+msgstr "Auditorias pendentes (Auditorias ainda não aceites)"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:156
 msgid "Export to Excel"
@@ -636,7 +730,7 @@ msgstr "Exportar para Excel"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:167
 msgid "Personnel Training & Certification"
-msgstr "Treinamento e Certificação de Pessoal"
+msgstr "Treino e Certificação de Pessoal"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:168
 #: ../view/application/spi-v3/view-data.phtml:221
@@ -645,25 +739,25 @@ msgstr "Físico"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:169
 msgid "Safety"
-msgstr "Seguro"
+msgstr "Segurança"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:170
 #: ../view/application/spi-v3/view-data.phtml:223
 msgid "Pre-Testing"
-msgstr "Pré-teste"
+msgstr "Pré-testagem"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:171
 #: ../view/application/spi-v3/view-data.phtml:224
 msgid "Testing"
-msgstr "Testando"
+msgstr "Testagem"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:172
 msgid "Post-Testing"
-msgstr "Pós-teste"
+msgstr "Pós-testagem"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:173
 msgid "External QA"
-msgstr "QA externo"
+msgstr "AEQ"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:174
 msgid "Total"
@@ -671,11 +765,17 @@ msgstr "Total"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:175
 msgid "% Scores"
-msgstr "% Escores"
+msgstr "% Pontuação"
+
+#: ../view/application/spi-v3/download-files.phtml:43
+#: ../view/application/spi-v3/duplicate.phtml:73
+msgid "No Data Available"
+msgstr "Sem Dados Disponíveis"
 
 #: ../view/application/spi-v3/index.phtml:34
 msgid "SPI-RT 3.0 Checklist"
 msgstr ""
+"Lista de verificação de Melhoria de Qualidade de Testagem Rápida de HIV"
 
 #: ../view/application/spi-v3/index.phtml:145
 #: ../view/application/spi-v3/view-data.phtml:151
@@ -689,22 +789,22 @@ msgstr "Exportar como PDF"
 
 #: ../view/application/spi-v3/index.phtml:151
 msgid "Duplicates"
-msgstr "Duplicatas"
+msgstr "Duplicados"
 
 #: ../view/application/spi-v3/index.phtml:163
 msgid "Facility Province"
-msgstr "Província"
+msgstr "Província da Unidade Sanitária"
 
 #: ../view/application/spi-v3/index.phtml:164
 msgid "Facility District"
-msgstr "Distrito de Instalação"
+msgstr "Distrito da Unidade Sanitária"
 
 #: ../view/application/spi-v3/index.phtml:167
 #: ../view/application/spi-v3/view-data.phtml:170
 #: ../view/application/spi-v3/view-data.phtml:183
 #: ../view/application/spi-v3/view-data.phtml:207
 msgid "Testing Point Name"
-msgstr "Nome do ponto de teste"
+msgstr "Nome do ponto de testagem"
 
 #: ../view/application/spi-v3/index.phtml:171
 msgid "Audit Score %"
@@ -713,12 +813,12 @@ msgstr "Pontuação da auditoria %"
 #: ../view/application/spi-v3/index.phtml:188
 #: ../view/application/spi-v3/view-data.phtml:254
 msgid "No.of Audit(s)"
-msgstr "Rodada de auditoria(s)"
+msgstr "Número de auditoria(s)"
 
 #: ../view/application/spi-v3/index.phtml:191
 #: ../view/application/spi-v3/view-data.phtml:257
 msgid "Avg. Audit Score"
-msgstr "Avg. Pontuação de auditoria"
+msgstr "Pontuação média de auditoria"
 
 #: ../view/application/spi-v3/index.phtml:196
 #: ../view/application/spi-v3/view-data.phtml:262
@@ -751,23 +851,23 @@ msgstr "Exportar todos os dados"
 
 #: ../view/application/spi-v3/index.phtml:248
 msgid "Print Full Survey"
-msgstr "Imprimir pesquisa completa"
+msgstr "Imprimir avaliação completa"
 
 #: ../view/application/spi-v3/index.phtml:250
 msgid "Print Corrective Actions"
-msgstr "Imprimir Ações Corretivas"
+msgstr "Imprimir acções correctivas"
 
 #: ../view/application/spi-v3/index.phtml:256
 msgid "Select Province/District(s)"
-msgstr "Selecione Província/Distrito(s)"
+msgstr "Seleccione Província/Distrito(s)"
 
 #: ../view/application/spi-v3/index.phtml:367
 msgid "Are you sure you want to approve this audit ?"
-msgstr "Tem certeza que quer aprovar essa auditoria?"
+msgstr "Tem certeza que quer aprovar esta auditoria?"
 
 #: ../view/application/spi-v3/index.phtml:374
 msgid "Audit updated successfully"
-msgstr "Auditoria atualizada com sucesso"
+msgstr "Auditoria actualizada com sucesso"
 
 #: ../view/application/spi-v3/index.phtml:393
 msgid "Loading..."
@@ -775,21 +875,20 @@ msgstr "Carregando..."
 
 #: ../view/application/spi-v3/index.phtml:498
 msgid "Your download is processing"
-msgstr "Seu download está processando"
+msgstr "O seu download está em processamento"
 
 #: ../view/application/spi-v3/print.phtml:49
 msgid ""
 "Stepwise Process for Improving the Quality of HIV Rapid Testing\n"
 "  (SPI-RT) Checklist"
-msgstr ""
-"Processo stepwise para melhorar a qualidade do teste rápido do HIV\n"
-"  (SPI-RT) Lista"
+msgstr "Melhoria de Qualidade de Testagem Rápida de HIV"
 
 #: ../view/application/spi-v3/print.phtml:56
 msgid ""
 "SPI-RT\n"
 "  Checklist"
 msgstr ""
+"Lista de verificação de Melhoria de Qualidade de Testagem Rápida de HIV"
 
 #: ../view/application/spi-v3/view-data.phtml:32
 msgid "Overall Audit Performance"
@@ -814,19 +913,19 @@ msgstr "Percentagem"
 
 #: ../view/application/spi-v3/view-data.phtml:220
 msgid "Personal Training and Certifications"
-msgstr "Treinamento pessoal e certificações"
+msgstr "Treino e certificação do pessoal"
 
 #: ../view/application/spi-v3/view-data.phtml:222
 msgid "Saftey"
-msgstr "Saftey"
+msgstr "Segurança"
 
 #: ../view/application/spi-v3/view-data.phtml:225
 msgid "Post Testing Phase"
-msgstr "Fase pós-teste"
+msgstr "Fase pós-testagem"
 
 #: ../view/application/spi-v3/view-data.phtml:226
 msgid "External Quality Audit"
-msgstr "Auditoria de Qualidade Externa"
+msgstr "AEQ"
 
 #: ../view/error/404.phtml:1
 msgid "A 404 error occurred"
@@ -840,7 +939,7 @@ msgstr "O controlador requisitado não foi capaz de despachar a requisição."
 msgid ""
 "The requested controller could not be mapped to an existing controller class."
 msgstr ""
-"O controlador requisitados não pode ser mapeado a uma classe de controlador "
+"O controlador requisitado não pode ser mapeado a uma classe de controlador "
 "existente."
 
 #: ../view/error/404.phtml:16
@@ -872,21 +971,17 @@ msgstr "Informação adicional"
 msgid "File"
 msgstr "Arquivo"
 
-#: ../view/error/404.phtml:60 ../view/error/404.phtml:85
-msgid "Message"
-msgstr "Mensagem"
-
 #: ../view/error/404.phtml:64 ../view/error/404.phtml:89
 msgid "Stack trace"
 msgstr "Pilha de execução"
 
 #: ../view/error/404.phtml:75
 msgid "Previous exceptions"
-msgstr "Exceções anteriores"
+msgstr "Excepções anteriores"
 
 #: ../view/error/404.phtml:109
 msgid "No Exception available"
-msgstr "Nenhuma exceção disponível"
+msgstr "Nenhuma excepção disponível"
 
 #: ../view/error/index.phtml:27
 msgid "An error occurred"
@@ -898,7 +993,7 @@ msgstr "Funções"
 
 #: ../view/layout/layout.phtml:16
 msgid "Users"
-msgstr "Utilizadores"
+msgstr "Usuários"
 
 #: ../view/layout/layout.phtml:20
 msgid "Global Config"
@@ -906,28 +1001,19 @@ msgstr "Configuração Geral"
 
 #: ../view/layout/layout.phtml:24
 msgid "Manage SPI RT Form"
-msgstr "Gerenciar o formulário RT SPI"
+msgstr "Gerir o formulário RT SPI"
 
 #: ../view/layout/layout.phtml:28
 msgid "Validate SPI V3 Data"
 msgstr "Validar dados SPI V3"
 
-#: ../view/layout/layout.phtml:57 ../view/layout/layout.phtml:167
-msgid "Dashboard for Quality Improvement of HIV Rapid Testing"
-msgstr "Painel para melhoria da qualidade do teste rápido do HIV"
-
 #: ../view/layout/layout.phtml:118 ../view/layout/layout.phtml:153
 msgid "Sign Out"
 msgstr "Sair"
 
-#: ../view/layout/layout.phtml:120 ../view/layout/layout.phtml:156
-#: ../view/layout/layout.phtml:162
-msgid "Login"
-msgstr "Aceder"
-
 #: ../view/layout/layout.phtml:186
 msgid "Dashboard"
-msgstr "Dashboard"
+msgstr "Portal"
 
 #: ../view/layout/layout.phtml:189
 msgid "Audit"
@@ -939,7 +1025,7 @@ msgstr "Relatórios"
 
 #: ../view/layout/layout.phtml:204
 msgid "SPI V3 Facility Report"
-msgstr "Relatório de instalações SPI V3"
+msgstr "Relatório da Unidade Sanitária SPI V3"
 
 #: ../view/layout/layout.phtml:217
 msgid "Map"
