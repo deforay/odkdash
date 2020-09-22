@@ -11,9 +11,11 @@
 namespace Application;
 
 use Application\Model\SpiFormVer3Table;
+use Application\Model\SpiFormVer5Table;
 use Application\Model\SpiFormVer3DuplicateTable;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
+use Application\Model\SpiForm5LabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
@@ -159,6 +161,10 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\ReceiverController($odkFormService);
                 },
+                'Application\Controller\ReceiverSpiV5' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\ReceiverSpiV5Controller($odkFormService);
+                },
                 'Application\Controller\Login' => function ($sm) {
                     $userService = $sm->getServiceLocator()->get('UserService');
                     return new \Application\Controller\LoginController($userService);
@@ -236,6 +242,11 @@ class Module
                     $table = new SpiFormVer3Table($dbAdapter);
                     return $table;
                 },
+                'SpiFormVer5Table' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiFormVer5Table($dbAdapter);
+                    return $table;
+                },
                 'UsersTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new UsersTable($dbAdapter);
@@ -244,6 +255,11 @@ class Module
                 'SpiFormLabelsTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormLabelsTable($dbAdapter);
+                    return $table;
+                },
+                'SpiForm5LabelsTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiForm5LabelsTable($dbAdapter);
                     return $table;
                 },
                 'SpiRtFacilitiesTable' => function ($sm) {
