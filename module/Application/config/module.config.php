@@ -58,6 +58,16 @@ return array(
                     ),
                 ),
             ),
+            'odk-receiver-v5' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/receiver[/]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\ReceiverSpiV5',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'login' => array(
                 'type'    => 'segment',
                 'options' => array(

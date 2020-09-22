@@ -5,7 +5,7 @@ namespace Application\Controller;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
-class ReceiverController extends AbstractActionController
+class ReceiverSpiV5Controller extends AbstractActionController
 {
 
 
