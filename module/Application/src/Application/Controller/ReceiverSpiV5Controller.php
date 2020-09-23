@@ -24,12 +24,12 @@ class ReceiverSpiV5Controller extends AbstractActionController
 
         $jsonData = utf8_encode(file_get_contents('php://input'));
 
-        //$this->var_error_log($jsonData);
+        $this->var_error_log($jsonData);
 
         $params = json_decode($jsonData, true);
 
-        //$this->var_error_log($params);die;
-        $result = $this->odkFormService->saveSpiFormVer3($params);
+        $this->var_error_log($params);die;
+        $result = $this->odkFormService->saveSpiFormVer5($params);
 
         $viewModel->setTerminal(true);
         return $viewModel;
