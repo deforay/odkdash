@@ -13,6 +13,7 @@ namespace Application;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer5Table;
 use Application\Model\SpiFormVer3DuplicateTable;
+use Application\Model\SpiRt5FacilitiesTable;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
 use Application\Model\SpiForm5LabelsTable;
@@ -78,6 +79,7 @@ class Module
             $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5'
         ) {
 
             if (!isset($session->userId) || $session->userId == "") {
@@ -267,6 +269,11 @@ class Module
                     $table = new SpiRtFacilitiesTable($dbAdapter);
                     return $table;
                 },
+                'SpiRt5FacilitiesTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiRt5FacilitiesTable($dbAdapter);
+                    return $table;
+                },                
                 'RolesTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new RolesTable($dbAdapter);

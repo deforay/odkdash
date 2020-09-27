@@ -18,6 +18,7 @@ class ReceiverSpiV5Controller extends AbstractActionController
 
     public function indexAction()
     {
+        //echo "ss";die;
         $viewModel = new ViewModel();
 
         //$this->var_error_log(file_get_contents('php://input'));

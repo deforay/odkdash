@@ -7,7 +7,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
-use Application\Model\SpiRtFacilitiesTable;
+use Application\Model\SpiRt5FacilitiesTable;
 use Application\Model\GlobalTable;
 
 /*
@@ -359,7 +359,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
             if($approveStatus=='approved'){
-                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+                $facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
                 $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue());
             }
             
