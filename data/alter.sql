@@ -808,3 +808,36 @@ CREATE TABLE `spi_form_v_5` (
  `status` varchar(100) DEFAULT 'pending',
  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC
+
+-- Selvam 29 September 2020
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\\\Controller\\\\SpiV5', 'Manage SPI V5 Form');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES
+
+('Application\\Controller\\SpiV5', 'approve-status', 'Approved Status'),
+('Application\\Controller\\SpiV5', 'download-pdf', 'Download pdf'),
+('Application\\Controller\\SpiV5', 'edit', 'Edit'),
+('Application\\Controller\\SpiV5', 'index', 'Access'),
+('Application\\Controller\\SpiV5', 'manage-facility', 'Access to edit SPI Form');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'corrective-action-pdf', 'Corrective Action PDF');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'delete', 'Delete');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'download-files', 'Download Zipped Files')
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'export', 'Export All PDF');
+
+CREATE TABLE `r_spi_form_v_5_download` (
+ `r_download_id` int(11) NOT NULL AUTO_INCREMENT,
+ `user` int(11) NOT NULL,
+ `auditroundno` varchar(255) DEFAULT NULL,
+ `assesmentofaudit` varchar(255) DEFAULT NULL,
+ `testingpointtype` varchar(255) DEFAULT NULL,
+ `level` varchar(255) DEFAULT NULL,
+ `affiliation` varchar(255) DEFAULT NULL,
+ `level_name` varchar(255) DEFAULT NULL,
+ `AUDIT_SCORE_PERCENTAGE` varchar(255) DEFAULT NULL,
+ `download_status` int(11) NOT NULL DEFAULT '0',
+ PRIMARY KEY (`r_download_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1

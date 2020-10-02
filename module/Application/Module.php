@@ -27,6 +27,8 @@ use Application\Model\TempMailTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\AuditMailTable;
 use Application\Model\SpiFormVer3DownloadTable;
+use Application\Model\SpiFormVer5DownloadTable;
+
 use Application\Model\SpiFormVer3TempTable;
 
 use Application\Service\OdkFormService;
@@ -180,6 +182,11 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\SpiV3Controller($odkFormService, $commonService);
                 },
+                'Application\Controller\SpiV5' => function ($sm) {
+                    $commonService = $sm->getServiceLocator()->get('CommonService');
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\SpiV5Controller($odkFormService, $commonService);
+                },
                 'Application\Controller\Common' => function ($sm) {
                     $commonService = $sm->getServiceLocator()->get('CommonService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
@@ -315,7 +322,13 @@ class Module
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormVer3DownloadTable($dbAdapter);
                     return $table;
-                }, 'SpiFormVer3DuplicateTable' => function ($sm) {
+                },
+                'SpiFormVer5DownloadTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiFormVer5DownloadTable($dbAdapter);
+                    return $table;
+                },           
+                'SpiFormVer3DuplicateTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormVer3DuplicateTable($dbAdapter);
                     return $table;

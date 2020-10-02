@@ -88,6 +88,16 @@ return array(
                     ),
                 ),
             ),
+            'spi-v5-form' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v5[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV5',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'spi-facility' => array(
                 'type' => 'segment',
                 'options' => array(

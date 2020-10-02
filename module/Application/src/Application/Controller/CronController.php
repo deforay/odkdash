@@ -40,5 +40,7 @@ class CronController extends AbstractActionController
     public function generateBulkPdfAction()
     {
         $this->odkFormService->getDownloadDataList();
+        $this->odkFormService->getV5DownloadDataList();
+        
     }
 }
