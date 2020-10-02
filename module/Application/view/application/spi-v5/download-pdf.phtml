@@ -7,8 +7,8 @@ $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "label-spi-v5.php";
 $fileContents = file_get_contents($configFile);
 //Convert the JSON string back into an array.
 $decoded = json_decode($fileContents, true);
-echo $language = $configData['language'];
-var_dump($decoded[$language]);die;
+$language = $configData['language'];
+//var_dump($decoded[$language]);die;
 class MYPDF extends TCPDF
 {
 
