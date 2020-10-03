@@ -53,8 +53,9 @@ class SpiV5Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
+            
             $allSubmissions = $this->odkFormService->exportAllV5Submissions($params);
-
+echo $allSubmissions;die;
             $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
             $viewModel->setTerminal(true);

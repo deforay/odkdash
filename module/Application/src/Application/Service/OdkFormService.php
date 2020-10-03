@@ -9,8 +9,10 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Filter\Compress;
 use Laminas\Filter\Exception;
 use ZipArchive;
-use PHPExcel;
-use PHPExcel_Cell;
+//use PHPExcel;
+//use PHPExcel_Cell;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use pData;
 use pDraw;
 use pRadar;
@@ -317,243 +319,251 @@ class OdkFormService
 
     public function exportAllV5Submissions($params)
     {
+        //var_dump($params);die;
         try {
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
-            $excel = new PHPExcel();
-            $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
-            $cacheSettings = array('memoryCacheSize' => '1024MB');
-            \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
-            $output = array();
-            $outputScore = array();
-            $sheet = $excel->getActiveSheet();
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
-            $displayDate = "";
-            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-                $dateRangeDate = explode(" - ", $params['dateRange']);
-                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
-                    $fromDate = $dateRangeDate[0];
-                }
-                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
-                    $toDate = $dateRangeDate[1];
-                }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date Range : " . $fromDate;
-                } else {
-                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
-                }
-            }
-            $auditRndNo = '';
-            $levelData = '';
-            $affiliation = '';
-            $province = '';
-            $scoreLevel = '';
-            $testPoint = '';
-            if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
-                $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
-            }
-            if (isset($params['level']) && ($params['level'] != "")) {
-                $levelData = "Level : " . $params['level'];
-            }
-            if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
-                $affiliation = "Affiliation : " . $params['affiliation'];
-            }
-           
-            if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
-                $scoreLevel = "Score Level : " . $params['scoreLevel'];
-            }
-            if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
-                $testPoint = "Type of Testing Point : " . $params['testPoint'];
-            }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
-
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            var_dump($sResult);die;
-            if (count($sResult) > 0) {
-                $auditScore = 0;
-                $levelZero = array();
-                $levelOne = array();
-                $levelTwo = array();
-                $levelThree = array();
-                $levelFour = array();
-                for ($l = 0; $l < count($sResult); $l++) {
-                    $row = array();
-                    foreach ($sResult[$l] as $key => $aRow) {
-                        if ($key != 'id' && $key != 'content' && $key != 'token') {
-
-                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
-                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
-                                $auditScore += $sResult[$l][$key];
-                                if ($sResult[$l][$key] < 40) {
-                                    $levelZero[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
-                                    $levelOne[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
-                                    $levelTwo[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
-                                    $levelThree[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 90) {
-                                    $levelFour[] = $sResult[$l][$key];
-                                }
-                            }
-                            if ($key == 'level_other') {
-                                $level = " - " . $sResult[$l][$key];
-                            } else {
-                                $level = '';
-                            }
-                            if ($key == 'today') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
-                            } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
-                            }
-                            $row[] = $sResult[$l][$key] . $level;
-                        }
-                    }
-                    $output[] = $row;
-                }
-
-                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
-                $outputScore['levelZeroCount'] = count($levelZero);
-                $outputScore['levelOneCount'] = count($levelOne);
-                $outputScore['levelTwoCount'] = count($levelTwo);
-                $outputScore['levelThreeCount'] = count($levelThree);
-                $outputScore['levelFourCount'] = count($levelFour);
-            }
-            $styleArray = array(
-                'font' => array(
-                    'bold' => true,
-                    'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'style' => \PHPExcel_Style_Border::BORDER_THICK,
-                    ),
-                )
-            );
-            $borderStyle = array(
-                'alignment' => array(
-                    'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'style' => \PHPExcel_Style_Border::BORDER_MEDIUM,
-                    ),
-                )
-            );
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('C2:D2');
-            $sheet->mergeCells('E2:F2');
-            $sheet->mergeCells('G2:H2');
-            //$sheet->mergeCells('I2:J2');
-            $sheet->mergeCells('K2:L2');
-            $sheet->mergeCells('M2:N2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-            $sheet->mergeCells('I4:I5');
-
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            //$sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-
-            $colmnNo = 0;
-            $rowmnNo = 4;
-            $rowmnNo1 = 5;
-            foreach ($sResult[0] as $key => $aRow) {
-                if ($key != 'id' && $key != 'content' && $key != 'token') {
-                    $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
-                    $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
-                    $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-                    $sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
-                    $colmnNo++;
-                }
-            }
-            $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
-            $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('C2:D2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('E2:F2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('G2:H2')->getFont()->setBold(TRUE)->setSize(13);
-           // $sheet->getStyle('I2:J2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('K2:L2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('M2:N2')->getFont()->setBold(TRUE)->setSize(13);
-
-            $start = 0;
-            foreach ($output as $rowNo => $rowData) {
-                $colNo = 0;
-                foreach ($rowData as $field => $value) {
-                    if (!isset($value)) {
-                        $value = "";
-                    }
-                    if (is_numeric($value)) {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_NUMERIC);
-                    } else {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-                    }
-                    $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
-                    $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                    $sheet->getDefaultRowDimension()->setRowHeight(18);
-                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
-                    $colNo++;
-                }
-            }
-            $rCount = $rRowCount + 3;
-
-            $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
-            $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
-            $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
-            $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
-            $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
-            $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-
-            $writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-            $filename = 'SPI-RT--CHECKLIST-version-5-' . time() . '.csv';
+            // Just trying to test with a demo file
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            //$writer->save("05featuredemo.xlsx");
+            $filename = "featuredemo.xlsx";
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+        //     $excel = new PHPExcel();
+        //     $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
+        //     $cacheSettings = array('memoryCacheSize' => '1024MB');
+        //     \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+        //     $output = array();
+        //     $outputScore = array();
+        //     $sheet = $excel->getActiveSheet();
+        //     $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+        //     $sql = new Sql($dbAdapter);
+        //     $displayDate = "";
+        //     if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+        //         $dateRangeDate = explode(" - ", $params['dateRange']);
+        //         if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+        //             $fromDate = $dateRangeDate[0];
+        //         }
+        //         if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+        //             $toDate = $dateRangeDate[1];
+        //         }
+        //         if ($fromDate == $toDate) {
+        //             $displayDate = "Date Range : " . $fromDate;
+        //         } else {
+        //             $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
+        //         }
+        //     }
+        //     $auditRndNo = '';
+        //     $levelData = '';
+        //     $affiliation = '';
+        //     $province = '';
+        //     $scoreLevel = '';
+        //     $testPoint = '';
+        //     if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
+        //         $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
+        //     }
+        //     if (isset($params['level']) && ($params['level'] != "")) {
+        //         $levelData = "Level : " . $params['level'];
+        //     }
+        //     if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
+        //         $affiliation = "Affiliation : " . $params['affiliation'];
+        //     }
+           
+        //     if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
+        //         $scoreLevel = "Score Level : " . $params['scoreLevel'];
+        //     }
+        //     if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
+        //         $testPoint = "Type of Testing Point : " . $params['testPoint'];
+        //     }
+
+        //     $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+        //     echo $sQueryStr;die;
+        //     $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            
+        //     if (count($sResult) > 0) {
+        //         $auditScore = 0;
+        //         $levelZero = array();
+        //         $levelOne = array();
+        //         $levelTwo = array();
+        //         $levelThree = array();
+        //         $levelFour = array();
+        //         for ($l = 0; $l < count($sResult); $l++) {
+        //             $row = array();
+        //             foreach ($sResult[$l] as $key => $aRow) {
+        //                 if ($key != 'id' && $key != 'content' && $key != 'token') {
+
+        //                     if ($key == 'AUDIT_SCORE_PERCENTAGE') {
+        //                         if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
+        //                         $auditScore += $sResult[$l][$key];
+        //                         if ($sResult[$l][$key] < 40) {
+        //                             $levelZero[] = $sResult[$l][$key];
+        //                         } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+        //                             $levelOne[] = $sResult[$l][$key];
+        //                         } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+        //                             $levelTwo[] = $sResult[$l][$key];
+        //                         } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+        //                             $levelThree[] = $sResult[$l][$key];
+        //                         } else if ($sResult[$l][$key] >= 90) {
+        //                             $levelFour[] = $sResult[$l][$key];
+        //                         }
+        //                     }
+        //                     if ($key == 'level_other') {
+        //                         $level = " - " . $sResult[$l][$key];
+        //                     } else {
+        //                         $level = '';
+        //                     }
+        //                     if ($key == 'today') {
+        //                         $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+        //                     } else if ($key == 'assesmentofaudit') {
+        //                         $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+        //                     }
+        //                     $row[] = $sResult[$l][$key] . $level;
+        //                 }
+        //             }
+        //             $output[] = $row;
+        //         }
+
+        //         $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
+        //         $outputScore['levelZeroCount'] = count($levelZero);
+        //         $outputScore['levelOneCount'] = count($levelOne);
+        //         $outputScore['levelTwoCount'] = count($levelTwo);
+        //         $outputScore['levelThreeCount'] = count($levelThree);
+        //         $outputScore['levelFourCount'] = count($levelFour);
+        //     }
+        //     $styleArray = array(
+        //         'font' => array(
+        //             'bold' => true,
+        //             'size' => 12,
+        //         ),
+        //         'alignment' => array(
+        //             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+        //             'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+        //         ),
+        //         'borders' => array(
+        //             'outline' => array(
+        //                 'style' => \PHPExcel_Style_Border::BORDER_THICK,
+        //             ),
+        //         )
+        //     );
+        //     $borderStyle = array(
+        //         'alignment' => array(
+        //             'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+        //         ),
+        //         'borders' => array(
+        //             'outline' => array(
+        //                 'style' => \PHPExcel_Style_Border::BORDER_MEDIUM,
+        //             ),
+        //         )
+        //     );
+
+        //     $sheet->mergeCells('A1:B1');
+        //     $sheet->mergeCells('A2:B2');
+        //     $sheet->mergeCells('C2:D2');
+        //     $sheet->mergeCells('E2:F2');
+        //     $sheet->mergeCells('G2:H2');
+        //     //$sheet->mergeCells('I2:J2');
+        //     $sheet->mergeCells('K2:L2');
+        //     $sheet->mergeCells('M2:N2');
+        //     $sheet->mergeCells('A4:A5');
+        //     $sheet->mergeCells('B4:B5');
+        //     $sheet->mergeCells('C4:C5');
+        //     $sheet->mergeCells('D4:D5');
+        //     $sheet->mergeCells('E4:E5');
+        //     $sheet->mergeCells('F4:F5');
+        //     $sheet->mergeCells('G4:G5');
+        //     $sheet->mergeCells('H4:H5');
+        //     $sheet->mergeCells('I4:I5');
+
+        //     $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     //$sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+
+        //     $colmnNo = 0;
+        //     $rowmnNo = 4;
+        //     $rowmnNo1 = 5;
+        //     foreach ($sResult[0] as $key => $aRow) {
+        //         if ($key != 'id' && $key != 'content' && $key != 'token') {
+        //             $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
+        //             $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
+        //             $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //             $sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
+        //             $colmnNo++;
+        //         }
+        //     }
+        //     $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
+        //     $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('C2:D2')->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('E2:F2')->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('G2:H2')->getFont()->setBold(TRUE)->setSize(13);
+        //    // $sheet->getStyle('I2:J2')->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('K2:L2')->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('M2:N2')->getFont()->setBold(TRUE)->setSize(13);
+
+        //     $start = 0;
+        //     foreach ($output as $rowNo => $rowData) {
+        //         $colNo = 0;
+        //         foreach ($rowData as $field => $value) {
+        //             if (!isset($value)) {
+        //                 $value = "";
+        //             }
+        //             if (is_numeric($value)) {
+        //                 $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_NUMERIC);
+        //             } else {
+        //                 $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //             }
+        //             $rRowCount = $rowNo + 6;
+        //             $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
+        //             $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
+        //             $sheet->getDefaultRowDimension()->setRowHeight(18);
+        //             $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+        //             $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+        //             $colNo++;
+        //         }
+        //     }
+        //     $rCount = $rRowCount + 3;
+
+        //     $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
+        //     $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
+        //     $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
+        //     $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
+        //     $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+        //     $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
+        //     $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+        //     $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+
+        //     $writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        //     $filename = 'SPI-RT--CHECKLIST-version-5-' . time() . '.csv';
+        //     $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
         } catch (Exception $exc) {
-            
+            //echo "error log";die;
             error_log("SPI-RT--CHECKLIST-version-3-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
-            return "";
+            //return "";
         }
     }
 

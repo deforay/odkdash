@@ -558,6 +558,7 @@ CREATE TABLE `spi_form_v_5` (
  `info1` varchar(255) DEFAULT NULL,
  `info2` varchar(255) DEFAULT NULL,
  `assesmentofaudit` date NOT NULL,
+ `auditStartTime` varchar(255) DEFAULT NULL,
  `auditroundno` varchar(255) DEFAULT NULL,
  `facility` int(11) DEFAULT NULL,
  `facilityname` varchar(255) DEFAULT NULL,
@@ -773,6 +774,7 @@ CREATE TABLE `spi_form_v_5` (
  `durationaudit` varchar(255) DEFAULT NULL,
  `personincharge` varchar(255) DEFAULT NULL,
  `sitecode` varchar(255) DEFAULT NULL,
+ `auditEndTime` varchar(255) DEFAULT NULL,
  `endofsurvey` varchar(255) DEFAULT NULL,
  `info5` varchar(255) DEFAULT NULL,
  `info6` varchar(255) DEFAULT NULL,
@@ -807,7 +809,8 @@ CREATE TABLE `spi_form_v_5` (
  `instanceName` varchar(255) DEFAULT NULL,
  `status` varchar(100) DEFAULT 'pending',
  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC
+
 
 -- Selvam 29 September 2020
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\\\Controller\\\\SpiV5', 'Manage SPI V5 Form');
