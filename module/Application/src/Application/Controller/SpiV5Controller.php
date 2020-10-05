@@ -140,7 +140,7 @@ echo $allSubmissions;die;
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData($params);
+            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseDataV5($params);
             $perf1 = $this->odkFormService->getPerformance($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData, 'perf1' => $perf1))
@@ -154,8 +154,8 @@ echo $allSubmissions;die;
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $zeroCounts = $this->odkFormService->getZeroQuestionCounts($params);
-            $spiV3Labels = $this->odkFormService->getSpiV3FormLabels();
+            $zeroCounts = $this->odkFormService->getZeroQuestionCountsV5($params);
+            $spiV3Labels = $this->odkFormService->getSpiV5FormLabels();
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('zeroCounts' => $zeroCounts, 'spiV3Labels' => $spiV3Labels, 'limitBar' => $params['limitBar']))
                 ->setTerminal(true);
@@ -168,7 +168,7 @@ echo $allSubmissions;die;
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocation($params);
+            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocationV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
                 ->setTerminal(true);
@@ -224,12 +224,12 @@ echo $allSubmissions;die;
         }
     }
 
-    public function spirtv3DatewiseAction()
+    public function spirtv5DatewiseAction()
     {
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $perflast30 = $this->odkFormService->getPerformanceLast30Days($params);
+            $perflast30 = $this->odkFormService->getPerformanceLast30DaysV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('perflast30' => $perflast30))
                 ->setTerminal(true);
@@ -242,7 +242,7 @@ echo $allSubmissions;die;
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $testingVolume = $this->odkFormService->getAllApprovedTestingVolume($params);
+            $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('testingVolume' => $testingVolume))
                 ->setTerminal(true);
@@ -292,7 +292,7 @@ echo $allSubmissions;die;
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             
-            $result = $this->odkFormService->getTestingPointTypeNamesByType($params);
+            $result = $this->odkFormService->getTestingPointTypeNamesByTypeV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
@@ -306,7 +306,7 @@ echo $allSubmissions;die;
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->getAuditRoundWiseDataChart($params);
+            $result = $this->odkFormService->getAuditRoundWiseDataChartV5($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result, 'configData' => $configData))

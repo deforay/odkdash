@@ -226,6 +226,10 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\DashboardController($odkFormService);
                 },
+                'Application\Controller\DashboardV5' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\DashboardV5Controller($odkFormService);
+                },
             ),
         );
     }

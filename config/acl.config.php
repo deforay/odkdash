@@ -54,6 +54,9 @@ return array(
             'index' => 'allow',
             'audit-details' => 'allow',
         ),
+        'Application\\Controller\\DashboardV5' => array(
+            'index' => 'allow',
+        ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
         ),

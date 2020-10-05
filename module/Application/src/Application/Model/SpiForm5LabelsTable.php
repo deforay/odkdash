@@ -31,7 +31,7 @@ class SpiForm5LabelsTable extends AbstractTableGateway {
     public function getAllLabels(){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_v3_form_labels'));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_v5_form_labels'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;//die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

@@ -178,6 +178,16 @@ return array(
                     ),
                 ),
             ),
+            'dashboard-v5' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/dashboard-v5[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\DashboardV5',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'view-data' => array(
                 'type' => 'literal',
                 'options' => array(

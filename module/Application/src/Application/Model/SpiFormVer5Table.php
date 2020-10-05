@@ -372,7 +372,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
     }
     
     
-    public function getPerformance($params){
+    public function getPerformanceV5($params){
         //echo "ss";die;
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
@@ -451,7 +451,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
     }
     
     
-    public function getPerformanceLast30Days($params){
+    public function getPerformanceLast30DaysV5($params){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
@@ -469,7 +469,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             }
         }
         
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
                                 ->columns(array(
                                                 'newestDate' => new \Laminas\Db\Sql\Expression("'$start_date'"),
                                                 'oldestDate' => new \Laminas\Db\Sql\Expression("'$end_date'"),
@@ -480,81 +480,79 @@ class SpiFormVer5Table extends AbstractTableGateway {
                                                 'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
                                                 'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
                                                 ))
-                                ->where("spiv3.status='approved'")
+                                ->where("spiv5.status='approved'")
                                 ->where("(`assesmentofaudit` BETWEEN '" . $start_date ."' - INTERVAL DATEDIFF('".$start_date."','".$end_date."') DAY AND '".$start_date."')");
         //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         if(isset($params['auditRndNo']) && $params['auditRndNo']!=''){
-            $sQuery = $sQuery->where("spiv3.auditroundno='".$params['auditRndNo']."'");
+            $sQuery = $sQuery->where("spiv5.auditroundno='".$params['auditRndNo']."'");
         }
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
-            $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
-            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
-                 if(trim($params['testPoint'])!= 'other'){
-                    $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
-                 }else{
-                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
-                 }
+            $sQuery = $sQuery->where("spiv5.testingpointtype='".$params['testPoint']."'");
+            if(trim($params['testPoint'])!= 'other'){
+            $sQuery = $sQuery->where("spiv5.testingpointname='".$params['testPointName']."'");
+            }else{
+            $sQuery = $sQuery->where("spiv5.testingpointtype_other='".$params['testPointName']."'");
             }
             } if(isset($params['level']) && $params['level']!=''){
-               $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
+               $sQuery = $sQuery->where("spiv5.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
-               $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
+               $sQuery = $sQuery->where("spiv5.affiliation='".$params['affiliation']."'");
             }
-            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
-            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                            ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            if(is_array($params['district']) && count($params['district'])>0 ){
-                $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            }
-            }else{
-                if(isset($params['province']) && $params['province']!=''){
-                    $provinces = explode(",",$params['province']);
-                    $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                                    ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-                }
-            }
-            if(isset($params['province']) && $params['province']!=''){
-                if(is_array($params['district']) && count($params['district'])>0 ){
-                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
-                }else{
-                    if($params['district']!=''){
-                        $provinces = explode(",",$params['district']);
-                        $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                    }
-                }
-            }
+            // if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv5.facility',array('province','district'))
+            //                 ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // if(is_array($params['district']) && count($params['district'])>0 ){
+            //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // }
+            // }else{
+            //     if(isset($params['province']) && $params['province']!=''){
+            //         $provinces = explode(",",$params['province']);
+            //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv5.facility',array('province','district'))
+            //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+            //     }
+            // }
+            // if(isset($params['province']) && $params['province']!=''){
+            //     if(is_array($params['district']) && count($params['district'])>0 ){
+            //         $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            //     }else{
+            //         if($params['district']!=''){
+            //             $provinces = explode(",",$params['district']);
+            //             $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+            //         }
+            //     }
+            // }
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
             if($params['scoreLevel'] == 0){
-              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
             }else if($params['scoreLevel'] == 1){
-              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
             }else if($params['scoreLevel'] == 2){
-              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
             }else if($params['scoreLevel'] == 3){
-              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
             }else if($params['scoreLevel'] == 4){
-              $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
         
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        //die($sQueryStr);
+        // die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
     }
     
-    public function getPerformanceLast180Days(){
+    public function getPerformanceLast180DaysV5(){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $today = date('Y-m-d');
         $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));        
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                 ->columns(array(
                                                 'newestDate' => new \Laminas\Db\Sql\Expression("'$today'"),
                                                 'oldestDate' => new \Laminas\Db\Sql\Expression("'$last180Date'"),
@@ -571,34 +569,34 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return $rResult;
     }
     
-    public function getAllSubmissions($sortOrder = 'DESC'){
+    public function getAllSubmissionsV5($sortOrder = 'DESC'){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                 ->where('spiv3.status != "deleted"')
                                 ->order(array("status DESC","id $sortOrder"));
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
     }
     
-    public function getAllApprovedTestingVolume($params){
+    public function getAllApprovedTestingVolumeV5($params){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->order(array("avgMonthTesting DESC"));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'));
+                                // ->order(array("avgMonthTesting DESC"));
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
@@ -622,42 +620,42 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
             $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
-            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+            // if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
                  if(trim($params['testPoint'])!= 'other'){
                     $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
                  }else{
                     $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
                  }
-            }
+            // }
             } if(isset($params['level']) && $params['level']!=''){
                $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
                $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
             }
-            if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
-            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                            ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            if(is_array($params['district']) && count($params['district'])>0 ){
-                $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            }
-            }else{
-                if(isset($params['province']) && $params['province']!=''){
-                    $provinces = explode(",",$params['province']);
-                    $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                                    ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-                }
-            }
-            if(isset($params['province']) && $params['province']!=''){
-                if(is_array($params['district']) && count($params['district'])>0 ){
-                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
-                }else{
-                    if($params['district']!=''){
-                        $provinces = explode(",",$params['district']);
-                        $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                    }
-                }
-            }
+            // if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+            //                 ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // if(is_array($params['district']) && count($params['district'])>0 ){
+            //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // }
+            // }else{
+            //     if(isset($params['province']) && $params['province']!=''){
+            //         $provinces = explode(",",$params['province']);
+            //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+            //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+            //     }
+            // }
+            // if(isset($params['province']) && $params['province']!=''){
+            //     if(is_array($params['district']) && count($params['district'])>0 ){
+            //         $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            //     }else{
+            //         if($params['district']!=''){
+            //             $provinces = explode(",",$params['district']);
+            //             $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+            //         }
+            //     }
+            // }
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
             if($params['scoreLevel'] == 0){
               $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
@@ -672,7 +670,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             }
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
     }
@@ -1210,7 +1208,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
       return $sResult;
     }
 
-    public function getAuditRoundWiseData($params) {
+    public function getAuditRoundWiseDataV5($params) {
         $logincontainer = new Container('credo');
         //$rResult = $this->getAllSubmissions();
         $dbAdapter = $this->adapter;
@@ -1311,12 +1309,12 @@ class SpiFormVer5Table extends AbstractTableGateway {
     }
     
 
-    public function getZeroQuestionCounts($params) {
+    public function getZeroQuestionCountsV5($params) {
         $logincontainer = new Container('credo');
         //$rResult = $this->fetchAllApprovedSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                 ->where(array('spiv3.status'=>'approved'))
                                 ->order(array("assesmentofaudit DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
@@ -1347,42 +1345,42 @@ class SpiFormVer5Table extends AbstractTableGateway {
         
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
             $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
-            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+            // if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
                  if(trim($params['testPoint'])!= 'other'){
                     $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
                  }else{
                     $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
                  }
-            }
+            // }
             } if(isset($params['level']) && $params['level']!=''){
                $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
                $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
             }
-            if(is_array($params['province']) && count($params['province'])>0 ){
-            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                            ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            if(is_array($params['district']) && count($params['district'])>0 ){
-                $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            }
-            }else{
-                if($params['province']!=''){
-                    $provinces = explode(",",$params['province']);
-                    $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                                    ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-                }
-            }
-            if($params['province']!=''){
-                if(is_array($params['district']) && count($params['district'])>0 ){
-                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
-                }else{
-                    if($params['district']!=''){
-                        $provinces = explode(",",$params['district']);
-                        $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                    }
-                }
-            }
+            // if(is_array($params['province']) && count($params['province'])>0 ){
+            // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+            //                 ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // if(is_array($params['district']) && count($params['district'])>0 ){
+            //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // }
+            // }else{
+            //     if($params['province']!=''){
+            //         $provinces = explode(",",$params['province']);
+            //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+            //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+            //     }
+            // }
+            // if($params['province']!=''){
+            //     if(is_array($params['district']) && count($params['district'])>0 ){
+            //         $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            //     }else{
+            //         if($params['district']!=''){
+            //             $provinces = explode(",",$params['district']);
+            //             $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+            //         }
+            //     }
+            // }
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
                 if($params['scoreLevel'] == 0){
                   $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
@@ -1504,11 +1502,11 @@ class SpiFormVer5Table extends AbstractTableGateway {
         return $id;
     }
     
-    public function fetchAllApprovedSubmissions($sortOrder = 'DESC'){
+    public function fetchAllApprovedSubmissionsV5($sortOrder = 'DESC'){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                 ->where(array('status'=>'approved'))
                                 ->order(array("assesmentofaudit $sortOrder"));
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
@@ -1619,39 +1617,37 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
         }if(isset($parameters['testPoint']) && trim($parameters['testPoint'])!=''){
             $sQuery = $sQuery->where("spiv3.testingpointtype='".$parameters['testPoint']."'");
-            if(isset($parameters['testPointName']) && trim($parameters['testPointName'])!= ''){
-                 if(trim($parameters['testPoint'])!= 'other'){
-                    $sQuery = $sQuery->where("spiv3.testingpointname='".$parameters['testPointName']."'");
-                 }else{
-                    $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$parameters['testPointName']."'");
-                 }
+            if(trim($parameters['testPoint'])!= 'other'){
+            $sQuery = $sQuery->where("spiv3.testingpointname='".$parameters['testPointName']."'");
+            }else{
+            $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$parameters['testPointName']."'");
             }
         }if($parameters['level']!=''){
          $sQuery = $sQuery->where("spiv3.level='".$parameters['level']."'");
         }
-        if(is_array($parameters['province']) && count($parameters['province'])>0 ){
-        $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                        ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-        if(is_array($parameters['district']) && count($parameters['district'])>0 ){
-            $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-        }
-        }else{
-            if($parameters['province']!=''){
-                $provinces = explode(",",$parameters['province']);
-                $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                                ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-            }
-        }
-        if($parameters['province']!=''){
-            if(is_array($parameters['district']) && count($parameters['district'])>0 ){
-                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
-            }else{
-                if($parameters['district']!=''){
-                    $provinces = explode(",",$parameters['district']);
-                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                }
-            }
-        }
+        // if(is_array($parameters['province']) && count($parameters['province'])>0 ){
+        // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+        //                 ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+        // if(is_array($parameters['district']) && count($parameters['district'])>0 ){
+        //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+        // }
+        // }else{
+        //     if($parameters['province']!=''){
+        //         $provinces = explode(",",$parameters['province']);
+        //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+        //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+        //     }
+        // }
+        // if($parameters['province']!=''){
+        //     if(is_array($parameters['district']) && count($parameters['district'])>0 ){
+        //         $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
+        //     }else{
+        //         if($parameters['district']!=''){
+        //             $provinces = explode(",",$parameters['district']);
+        //             $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+        //         }
+        //     }
+        // }
         if($parameters['affiliation']!=''){
          $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
         }if(isset($logincontainer->token) && count($logincontainer->token) > 0){
@@ -1702,38 +1698,40 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $start_date ."'", "spiv3.assesmentofaudit <='" . $end_date."'"));
         }if(isset($parameters['testPoint']) && trim($parameters['testPoint'])!=''){
             $tQuery = $tQuery->where("spiv3.testingpointtype='".$parameters['testPoint']."'");
-            if(isset($parameters['testPointName']) && trim($parameters['testPointName'])!= ''){
+            // if(isset($parameters['testPointName']) && trim($parameters['testPointName'])!= ''){
                  if(trim($parameters['testPoint'])!= 'other'){
                     $tQuery = $tQuery->where("spiv3.testingpointname='".$parameters['testPointName']."'");
                  }else{
                     $tQuery = $tQuery->where("spiv3.testingpointtype_other='".$parameters['testPointName']."'");
                  }
-            }
+            // }
         }if($parameters['level']!=''){
          $tQuery = $tQuery->where("spiv3.level='".$parameters['level']."'");
-        }if(is_array($parameters['province']) && count($parameters['province'])>0 ){
-        $tQuery = $tQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                        ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-        if(is_array($parameters['district']) && count($parameters['district'])>0 ){
-            $tQuery = $tQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
         }
-        }else{
-            if($parameters['province']!=''){
-                $provinces = explode(",",$parameters['province']);
-                $tQuery = $tQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                                ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-            }
-        }
-        if($parameters['province']!=''){
-            if(is_array($parameters['district']) && count($parameters['district'])>0 ){
-                $tQuery = $tQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
-            }else{
-                if($parameters['district']!=''){
-                    $provinces = explode(",",$parameters['district']);
-                    $tQuery = $tQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                }
-            }
-        }if($parameters['affiliation']!=''){
+        // if(is_array($parameters['province']) && count($parameters['province'])>0 ){
+        // $tQuery = $tQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+        //                 ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+        // if(is_array($parameters['district']) && count($parameters['district'])>0 ){
+        //     $tQuery = $tQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+        // }
+        // }else{
+        //     if($parameters['province']!=''){
+        //         $provinces = explode(",",$parameters['province']);
+        //         $tQuery = $tQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+        //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+        //     }
+        // }
+        // if($parameters['province']!=''){
+        //     if(is_array($parameters['district']) && count($parameters['district'])>0 ){
+        //         $tQuery = $tQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
+        //     }else{
+        //         if($parameters['district']!=''){
+        //             $provinces = explode(",",$parameters['district']);
+        //             $tQuery = $tQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+        //         }
+        //     }
+        // }
+        if($parameters['affiliation']!=''){
          $tQuery = $tQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
         }if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
@@ -1780,11 +1778,11 @@ class SpiFormVer5Table extends AbstractTableGateway {
        return $output;
     }
     
-    public function fetchAllApprovedSubmissionLocation($params){
+    public function fetchAllApprovedSubmissionLocationV5($params){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                 ->where(array('spiv3.status'=>'approved'))
                                 ->order(array("assesmentofaudit DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
@@ -1813,42 +1811,42 @@ class SpiFormVer5Table extends AbstractTableGateway {
         
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
             $sQuery = $sQuery->where("spiv3.testingpointtype='".$params['testPoint']."'");
-            if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
+            // if(isset($params['testPointName']) && trim($params['testPointName'])!= ''){
                  if(trim($params['testPoint'])!= 'other'){
                     $sQuery = $sQuery->where("spiv3.testingpointname='".$params['testPointName']."'");
                  }else{
                     $sQuery = $sQuery->where("spiv3.testingpointtype_other='".$params['testPointName']."'");
                  }
-            }
+            // }
             } if(isset($params['level']) && $params['level']!=''){
                $sQuery = $sQuery->where("spiv3.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
                $sQuery = $sQuery->where("spiv3.affiliation='".$params['affiliation']."'");
             }
-            if(is_array($params['province']) && count($params['province'])>0 ){
-            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                            ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            if(is_array($params['district']) && count($params['district'])>0 ){
-                $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-            }
-            }else{
-                if($params['province']!=''){
-                    $provinces = explode(",",$params['province']);
-                    $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                                    ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-                }
-            }
-            if($params['province']!=''){
-                if(is_array($params['district']) && count($params['district'])>0 ){
-                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
-                }else{
-                    if($params['district']!=''){
-                        $provinces = explode(",",$params['district']);
-                        $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                    }
-                }
-            }
+            // if(is_array($params['province']) && count($params['province'])>0 ){
+            // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+            //                 ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // if(is_array($params['district']) && count($params['district'])>0 ){
+            //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            // }
+            // }else{
+            //     if($params['province']!=''){
+            //         $provinces = explode(",",$params['province']);
+            //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+            //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+            //     }
+            // }
+            // if($params['province']!=''){
+            //     if(is_array($params['district']) && count($params['district'])>0 ){
+            //         $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            //     }else{
+            //         if($params['district']!=''){
+            //             $provinces = explode(",",$params['district']);
+            //             $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+            //         }
+            //     }
+            // }
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
                 if($params['scoreLevel'] == 0){
                   $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
@@ -2048,11 +2046,11 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
         
     }
-    public function fetchSpiV3FormAuditNo(){
+    public function fetchSpiV5FormAuditNo(){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'),'rowCount' => new Expression("COUNT('auditroundno')")))
                                ->group('auditroundno')
                                ->order("auditroundno ASC");
@@ -2906,7 +2904,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         return $output;
     }
     
-    public function fetchAllTestingPointType(){
+    public function fetchAllTestingPointTypeV5(){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
@@ -2918,38 +2916,40 @@ class SpiFormVer5Table extends AbstractTableGateway {
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     
-    public function fetchTestingPointTypeNamesByType($params){
+    public function fetchTestingPointTypeNamesByTypeV5($params){
         $typeResult = array();
         if(isset($params['testingPointType']) && trim($params['testingPointType'])!= ''){
             if($params['testingPointType'] == 'other'){
                 $column = 'DISTINCT(testingpointtype_other) as testingpointName';
-            }else{
+            }
+            else{
                $column = 'DISTINCT(testingpointname) as testingpointName'; 
             }
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
-            $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                        ->columns(array(new Expression($column)))
+            $query = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+                                        // ->columns(array(new Expression($column)))
                                         ->where(array('testingpointtype'=>$params['testingPointType']));
             $queryStr = $sql->getSqlStringForSqlObject($query);
+            // print_r($queryStr);die;
             $typeResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         }
       return $typeResult;
     }
     
-    public function fetchSpiV3FormUniqueLevelNames(){
+    public function fetchSpiV5FormUniqueLevelNames(){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
-                               ->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                               ->group("province")
-                               ->order("province ASC");
+        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))->columns(array('facilityname'))
+                               ->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility');
+                            //    ->group("province")
+                            //    ->order("province ASC");
         $queryStr = $sql->getSqlStringForSqlObject($query);
         //$query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
         //                       ->columns(array(new Expression('DISTINCT(level_name) as level_name')))
         //                       ->order("level_name ASC");
         //$queryStr = $sql->getSqlStringForSqlObject($query);
-      return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     public function fetchDistrictData($params)
     {
