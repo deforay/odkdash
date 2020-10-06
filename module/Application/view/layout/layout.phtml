@@ -188,6 +188,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
           ?>
             <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard'); ?></span></a></li>
+            <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span>Dashboard V5</span></a></li>
           <?php } ?>
           <?php if (trim($auditMenu) != "") { ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Audit'); ?></span></a>
