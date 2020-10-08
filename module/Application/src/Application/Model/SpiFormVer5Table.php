@@ -1079,10 +1079,10 @@ class SpiFormVer5Table extends AbstractTableGateway {
         */
        $dbAdapter = $this->adapter;
        $sql = new Sql($dbAdapter);
-       $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                               ->where('spiv3.status != "deleted"');
+       $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+                               ->where('spiv5.status != "deleted"');
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
        if (isset($sWhere) && $sWhere != "") {
            $sQuery->where($sWhere);
@@ -1109,10 +1109,10 @@ class SpiFormVer5Table extends AbstractTableGateway {
        $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                 ->where('spiv3.status != "deleted"');
+        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+                                 ->where('spiv5.status != "deleted"');
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
-            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -1124,19 +1124,19 @@ class SpiFormVer5Table extends AbstractTableGateway {
                "aaData" => array()
         );
         $role = $logincontainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV5', 'edit')) {
             $update = true;
         } else {
             $update = false;
         }
         
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV5', 'delete')) {
             $delete = true;
         } else {
             $delete = false;
         }
         
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV5', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
             $downloadPdfAction = false;
@@ -1161,7 +1161,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             //$downloadPdf = '<a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
         }
         if($update){
-            $edit = '&nbsp;<a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+            $edit = '&nbsp;<a href="/spi-v5/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
         }
         if($delete){
             $remove = '&nbsp;<a href="javascript:void(0);" onclick="deleteAudit('.$aRow['id'].');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
@@ -1176,8 +1176,8 @@ class SpiFormVer5Table extends AbstractTableGateway {
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->where(array('spiv3.status'=>'pending'));
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+                                ->where(array('spiv5.status'=>'pending'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -1888,18 +1888,19 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
     }
     
-    public function updateSpiFormDetails($params){
-        //\Zend\Debug\Debug::dump($params);die;
+    public function updateSpiV5FormDetails($params){
+        // \Zend\Debug\Debug::dump($params);
         if (trim($params['formId']) != "") {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
             $formId=base64_decode($params['formId']);
-            $summationData="";
+            $summationData=array();
             if(isset($params['sectionNo'])){
                 $n=count($params['sectionNo']);
                 for ($i = 0; $i < $n; $i++) {
 					$rowId=$params['rowId'][$i];
 					if(isset($params['sectionNo'][$i]) && trim($params['sectionNo'][$i])!="" && trim($params['deficiency'][$i])!="" && trim($params['correction'.$rowId])!=""){
+                        // \Zend\Debug\Debug::dump($summationData);die;
 						$summationData[] = array(
 						'sectionno' => $params['sectionNo'][$i],
 						'deficiency' => $params['deficiency'][$i],
@@ -1907,30 +1908,24 @@ class SpiFormVer5Table extends AbstractTableGateway {
 						'auditorcomment' => $params['auditorComment'][$i],
 						'action' => $params['action'][$i],
 						'timeline' => $params['timeline'][$i],
-						);
+                        );
 					}
                 }
                 $summationData=json_encode($summationData,true);
+                // \Zend\Debug\Debug::dump($summationData);die;
             }
-            if($params['province']=='other' && trim($params['provinceTextBox'])!='')
-            {
-               $params['province'] =  $params['provinceTextBox'];
-            }
-            if($params['district']=='other' && trim($params['districtTextBox'])!='')
-            {
-               $params['district'] =  $params['districtTextBox'];
-            }
+
             
-            //update facility tbl
+            // update facility tbl
             $id = 0;
-            $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+            $facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
             if(trim($params['testingFacility'])!= ''){
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id,$params);
             }else if(trim($params['testingFacilityName'])!= ''){
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                $fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
                                         ->columns(array('id'))
-                                        ->where("spirt3.facility_name='".$params['testingFacilityName']."'");
+                                        ->where("spirt5.facility_name='".$params['testingFacilityName']."'");
                 $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
                 $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 if($fResult){
@@ -1947,89 +1942,93 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 'facility' => ($id > 0)?$id:null,
                 'facilityid' => $params['testingFacilityId'],
                 'facilityname' => $params['testingFacilityName'],
-                'testingpointname' => $params['testingPointName'],
+                // 'testingpointname' => $params['testingPointName'],
                 'testingpointtype' => $params['testingPointType'],
                 'testingpointtype_other' => $params['testingPointTypeOther'],
-                'locationaddress' => $params['location'],
+                'physicaladdress' => $params['location'],
                 'level' => $params['level'],
                 'level_other' => $params['levelOther'],
-                'level_name' => $params['levelName'],
+                // 'level_name' => $params['levelName'],
                 'affiliation' => $params['affiliation'],
                 'affiliation_other' => $params['affiliationOther'],
                 'NumberofTester' => (isset($params['NumberofTester']) && $params['NumberofTester'] > 0 ? $params['NumberofTester'] : 0),
-                'avgMonthTesting' => (isset($params['avgMonthTesting']) && $params['avgMonthTesting'] > 0 ? $params['avgMonthTesting'] : 0),
+                // 'avgMonthTesting' => (isset($params['avgMonthTesting']) && $params['avgMonthTesting'] > 0 ? $params['avgMonthTesting'] : 0),
                 'name_auditor_lead' => $params['name_auditor_lead'],
                 'name_auditor2' => $params['name_auditor2'],
-                'PERSONAL_C_1_1' => $params['personal_c_1_1'],
-                'PERSONAL_C_1_2' => $params['personal_c_1_2'],
-                'PERSONAL_C_1_3' => $params['personal_c_1_3'],
-                'PERSONAL_C_1_4' => $params['personal_c_1_4'],
-                'PERSONAL_C_1_5' => $params['personal_c_1_5'],
-                'PERSONAL_C_1_6' => $params['personal_c_1_6'],
-                'PERSONAL_C_1_7' => $params['personal_c_1_7'],
-                'PERSONAL_C_1_8' => $params['personal_c_1_8'],
-                'PERSONAL_C_1_9' => $params['personal_c_1_9'],
-                'PERSONAL_C_1_10' => $params['personal_c_1_10'],
-                'PHYSICAL_C_2_1' => $params['physical_c_2_1'],
-                'PHYSICAL_C_2_2' => $params['physical_c_2_2'],
-                'PHYSICAL_C_2_3' => $params['physical_c_2_3'],
-                'PHYSICAL_C_2_4' => $params['physical_c_2_4'],
-                'PHYSICAL_C_2_5' => $params['physical_c_2_5'],
-                'SAFETY_C_3_1' => $params['safety_c_3_1'],
-                'SAFETY_C_3_2' => $params['safety_c_3_2'],
-                'SAFETY_C_3_3' => $params['safety_c_3_3'],
-                'SAFETY_C_3_4' => $params['safety_c_3_4'],
-                'SAFETY_C_3_5' => $params['safety_c_3_5'],
-                'SAFETY_C_3_6' => $params['safety_c_3_6'],
-                'SAFETY_C_3_7' => $params['safety_c_3_7'],
-                'SAFETY_C_3_8' => $params['safety_c_3_8'],
-                'SAFETY_C_3_9' => $params['safety_c_3_9'],
-                'SAFETY_C_3_10' => $params['safety_c_3_10'],
-                'SAFETY_C_3_11' => $params['safety_c_3_11'],
-                'PRE_C_4_1' => $params['pre_c_4_1'],
-                'PRE_C_4_2' => $params['pre_c_4_2'],
-                'PRE_C_4_3' => $params['pre_c_4_3'],
-                'PRE_C_4_4' => $params['pre_c_4_4'],
-                'PRE_C_4_5' => $params['pre_c_4_5'],
-                'PRE_C_4_6' => $params['pre_c_4_6'],
-                'PRE_C_4_7' => $params['pre_c_4_7'],
-                'PRE_C_4_8' => $params['pre_c_4_8'],
-                'PRE_C_4_9' => $params['pre_c_4_9'],
-                'PRE_C_4_10' => $params['pre_c_4_10'],
-                'PRE_C_4_11' => $params['pre_c_4_11'],
-                'PRE_C_4_12' => $params['pre_c_4_12'],
-                'TEST_C_5_1' => $params['test_c_5_1'],
-                'TEST_C_5_2' => $params['test_c_5_2'],
-                'TEST_C_5_3' => $params['test_c_5_3'],
-                'TEST_C_5_4' => $params['test_c_5_4'],
-                'TEST_C_5_5' => $params['test_c_5_5'],
-                'TEST_C_5_6' => $params['test_c_5_6'],
-                'TEST_C_5_7' => $params['test_c_5_7'],
-                'TEST_C_5_8' => $params['test_c_5_8'],
-                'TEST_C_5_9' => $params['test_c_5_9'],
-                'POST_C_6_1' => $params['post_C_6_1'],
-                'POST_C_6_2' => $params['post_C_6_2'],
-                'POST_C_6_3' => $params['post_C_6_3'],
-                'POST_C_6_4' => $params['post_C_6_4'],
-                'POST_C_6_5' => $params['post_C_6_5'],
-                'POST_C_6_6' => $params['post_C_6_6'],
-                'POST_C_6_7' => $params['post_C_6_7'],
-                'POST_C_6_8' => $params['post_C_6_8'],
-                'POST_C_6_9' => $params['post_C_6_9'],
-                'EQA_C_7_1' => $params['eqa_c_7_1'],
-                'EQA_C_7_2' => $params['eqa_c_7_2'],
-                'EQA_C_7_3' => $params['eqa_c_7_3'],
-                'EQA_C_7_4' => $params['eqa_c_7_4'],
-                'EQA_C_7_5' => $params['eqa_c_7_5'],
-                'EQA_C_7_6' => $params['eqa_c_7_6'],
-                'EQA_C_7_7' => $params['eqa_c_7_7'],
-                'EQA_C_7_8' => $params['eqa_c_7_8'],
-                'EQA_C_7_9' => $params['eqa_c_7_9'],
-                'EQA_C_7_10' => $params['eqa_c_7_10'],
-                'EQA_C_7_11' => $params['eqa_c_7_11'],
-                'EQA_C_7_12' => $params['eqa_c_7_12'],
-                'EQA_C_7_13' => $params['eqa_c_7_13'],
-                'EQA_C_7_14' => $params['eqa_c_7_14'],
+                'PERSONAL_C_1_1_HIV_TRAINING' => $params['personal_c_1_1'],
+                'PERSONAL_C_1_2_HIV_TESTING_REGISTER' => $params['personal_c_1_2'],
+                'PERSONAL_C_1_3_EQA_PT' => $params['personal_c_1_3'],
+                'PERSONAL_C_1_4_QC_PROCESS' => $params['personal_c_1_4'],
+                'PERSONAL_C_1_5_SAFETY_MANAGEMENT' => $params['personal_c_1_5'],
+                'PERSONAL_C_1_6_REFRESHER_TRAINING' => $params['personal_c_1_6'],
+                'PERSONAL_C_1_7_HIV_COMPETENCY_TESTING' => $params['personal_c_1_7'],
+                'PERSONAL_C_1_8_NATIONAL_CERTIFICATION' => $params['personal_c_1_8'],
+                'PERSONAL_C_1_9_CERTIFIED_TESTERS' => $params['personal_c_1_9'],
+                'PERSONAL_C_1_10_RECERTIFIED' => $params['personal_c_1_10'],
+                'PHYSICAL_C_2_1_DESIGNATED_HIV_AREA' => $params['physical_c_2_1'],
+                'PHYSICAL_C_2_2_CLEAN_TESTING_AREA' => $params['physical_c_2_2'],
+                'PHYSICAL_C_2_3_SUFFICIENT_LIGHT_AVAILABILITY' => $params['physical_c_2_3'],
+                'PHYSICAL_C_2_4_TEST_KIT_STORAGE' => $params['physical_c_2_4'],
+                'PHYSICAL_C_2_5_SUFFICIENT_SECURE_STORAGE' => $params['physical_c_2_5'],
+                'SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES' => $params['safety_c_3_1'],
+                'SAFETY_C_3_2_ACCIDENTAL_EXPOSURE' => $params['safety_c_3_2'],
+                'SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES' => $params['safety_c_3_3'],
+                'SAFETY_C_3_4_PPE_AVAILABILITY' => $params['safety_c_3_4'],
+                'SAFETY_C_3_5_PPE_USED_PROPERLY' => $params['safety_c_3_5'],
+                'SAFETY_C_3_6_WATER_SOAP_AVAILABILITY' => $params['safety_c_3_6'],
+                'SAFETY_C_3_7_DISINFECTANT_AVAILABLE' => $params['safety_c_3_7'],
+                'SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY' => $params['safety_c_3_8'],
+                'SAFETY_C_3_9_SEGREGATION_OF_WASTE' => $params['safety_c_3_9'],
+                'SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED' => $params['safety_c_3_10'],
+                'PRE_C_4_1_NATIONAL_GUIDELINES' => $params['pre_c_4_1'],
+                'PRE_C_4_2_HIV_TESTING_ALGORITHM' => $params['pre_c_4_2'],
+                'PRE_C_4_3_TEST_PROCEDURES_ACCESSIBLE' => $params['pre_c_4_3'],
+                'PRE_C_4_4_TEST_PROCEDURES_ACCURATE' => $params['pre_c_4_4'],
+                'PRE_C_4_5_APPROVED_KITS_AVAILABLE' => $params['pre_c_4_5'],
+                'PRE_C_4_6_HIV_KITS_EXPIRATION' => $params['pre_c_4_6'],
+                'PRE_C_4_7_KIT_SUPPLIES_AVAILABILITY' => $params['pre_c_4_7'],
+                'PRE_C_4_8_STOCK_MANAGEMENT' => $params['pre_c_4_8'],
+                'PRE_C_4_9_DOCUMENTED_INVENTORY' => $params['pre_c_4_9'],
+                'PRE_C_4_10_SOPS_BLOOD_COLLECTION' => $params['pre_c_4_10'],
+                'PRE_C_4_11_BLOOD_COLLECTION_SUPPLIES' => $params['pre_c_4_11'],
+                'PRE_C_4_12_CLIENT_IDENTIFICATION' => $params['pre_c_4_12'],
+                'TEST_C_5_1_PROCEDURES_TESTING_ALGORITHM' => $params['test_c_5_1'],
+                'TEST_C_5_2_TIMERS_AVAILABILITY' => $params['test_c_5_2'],
+                'TEST_C_5_3_SAMPLE_DEVICE_ACCURACY' => $params['test_c_5_3'],
+                'TEST_C_5_4_TESTING_PROCEDURE_FOLLOWED' => $params['test_c_5_4'],
+                'TEST_C_5_5_QUALITY_CONTROL' => $params['test_c_5_5'],
+                'TEST_C_5_6_QC_RESULTS_RECORDED' => $params['test_c_5_6'],
+                'TEST_C_5_7_INCORRECT_QC_RESULTS' => $params['test_c_5_7'],
+                'TEST_C_5_8_APPROPRIATE_STEPS_TAKEN' => $params['test_c_5_8'],
+                'TEST_C_5_9_REVIEW_QC_RECORDS' => $params['test_c_5_9'],
+                'POST_C_6_1_STANDARDIZED_HIV_REGISTER' => $params['post_C_6_1'],
+                'POST_C_6_2_ELEMENTS_CAPTURED_CORRECTLY' => $params['post_C_6_2'],
+                'POST_C_6_3_PAGE_TOTAL_SUMMARY' => $params['post_C_6_3'],
+                'POST_C_6_4_INVALID_TEST_RESULT_RECORDED' => $params['post_C_6_4'],
+                'POST_C_6_5_APPROPRIATE_STEPS_TAKEN' => $params['post_C_6_5'],
+                'POST_C_6_6_REGISTERS_REVIEWED' => $params['post_C_6_6'],
+                'POST_C_6_7_DOCUMENTS_SECURELY_KEPT' => $params['post_C_6_7'],
+                'POST_C_6_8_REGISTER_SECURE_LOCATION' => $params['post_C_6_8'],
+                'POST_C_6_9_REGISTERS_PROPERLY_LABELED' => $params['post_C_6_9'],
+                'EQA_C_7_1_PT_ENROLLMENT' => $params['eqa_c_7_1'],
+                'EQA_C_7_2_TESTING_EQAPT_SAMPLES' => $params['eqa_c_7_2'],
+                'EQA_C_7_3_REVIEW_BEFORE_SUBMISSION' => $params['eqa_c_7_3'],
+                'EQA_C_7_4_FEEDBACK_RECEIVED_REVIEWED' => $params['eqa_c_7_4'],
+                'EQA_C_7_5_IMPLEMENT_CORRECTIVE_ACTION' => $params['eqa_c_7_5'],
+                'EQA_C_7_6_RECEIVE_PERIODIC_VISITS' => $params['eqa_c_7_6'],
+                'EQA_C_7_7_FEEDBACK_PROVIDED_DOCUMENTED' => $params['eqa_c_7_7'],
+                'EQA_C_7_8_TESTERS_RETRAINED_IN_VISITS' => $params['eqa_c_7_8'],
+                'RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING' => $params['rtri_C_8_1'],
+                'RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY' => $params['rtri_C_8_2'],
+                'RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE' => $params['rtri_C_8_3'],
+                'RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE' => $params['rtri_C_8_4'],
+                'RTRI_C_8_5_RTRI_KIT_STORAGE' => $params['rtri_C_8_5'],
+                'RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED' => $params['rtri_C_8_6'],
+                'RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED' => $params['rtri_C_8_7'],
+                'RTRI_C_8_8_QC_ROUTINELY_USED' => $params['rtri_C_8_8'],
+                'RTRI_C_8_9_QC_RESULTS_RECORDED' => $params['rtri_C_8_9'],
+                'RTRI_C_8_10_INCORRECT_QC_DOCUMENTED' => $params['rtri_C_8_10'],
+                'RTRI_C_8_11_INVALID_RTRI_RESULTS' => $params['rtri_C_8_11'],
                 'Latitude' => $params['latitude'],
                 'Longitude' => $params['longitude'],
                 
@@ -2040,6 +2039,8 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 //'AUDIT_SCORE_PERCENTAGE' => $params['auditScorePercentage'],
                 'correctiveaction' => $summationData
             );
+            // \Zend\Debug\Debug::dump($data);die;
+
             $result = $this->update($data, array('id' =>$formId));
             
             return $formId;
@@ -2140,12 +2141,12 @@ class SpiFormVer5Table extends AbstractTableGateway {
     public function fetchAllFacilityNames(){
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'=>new Expression("DISTINCT facilityname")));
+        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname'=>new Expression("DISTINCT facilityname")));
         $uQueryStr = $sql->getSqlStringForSqlObject($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
-        $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                                ->where('spirt3.status != "deleted"');
+        $aQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
+                                ->where('spirt5.status != "deleted"');
         $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         

@@ -3564,4 +3564,50 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer5Table');
         return $db->fetchAllApprovedSubmissionLocationV5($params);
     }
+
+    public function updateSpiV5Form($params)
+    {
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $db = $this->sm->get('SpiFormVer5Table');
+            $result = $db->updateSpiV5FormDetails($params);
+            if ($result > 0) {
+                $adapter->commit();
+                $container = new Container('alert');
+                $container->alertMsg = 'Form details updated successfully';
+                return $result;
+            }
+        } catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    //get pending facility names v5
+    public function getPendingFacilityNamesV5()
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->fetchPendingFacilityNames();
+    }
+    //get all facility names v5
+    public function getAllFacilityNamesV5()
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->fetchAllFacilityNames();
+    }
+
+    public function getAllSubmissionsDatasV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllSubmissionsDatas($params, $acl);
+    }
+
+    public function deleteAuditDataV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->deleteAuditRowData($params);
+    }
 }

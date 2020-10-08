@@ -118,13 +118,13 @@ echo $allSubmissions;die;
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $this->odkFormService->updateSpiForm($params);
-            return $this->redirect()->toUrl("/spi-v3/manage-facility");
+            $this->odkFormService->updateSpiV5Form($params);
+            return $this->redirect()->toUrl("/spi-v5/manage-facility");
         } else {
             $id = $this->params()->fromRoute('id');
-            $facilitiesResult = $this->odkFormService->getAllFacilityNames();
-            $result = $this->odkFormService->getFormData($id);
-            $provinceList = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+            $facilitiesResult = $this->odkFormService->getAllFacilityNamesV5();
+            $result = $this->odkFormService->getSpiV5FormData($id);
+            $provinceList = $this->odkFormService->getSpiV5FormUniqueLevelNames();
             $districtList = $this->odkFormService->getSpiV3FormUniqueDistrict();
             return new ViewModel(array(
                 'formData' => $result,
@@ -182,10 +182,10 @@ echo $allSubmissions;die;
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $this->odkFormService->getAllSubmissionsDatas($param);
+            $result = $this->odkFormService->getAllSubmissionsDatasV5($param);
             return $this->getResponse()->setContent(Json::encode($result));
         } else {
-            $result = $this->odkFormService->getPendingFacilityNames();
+            $result = $this->odkFormService->getPendingFacilityNamesV5();
 
             return new ViewModel(array(
                 'pendingFacilityName' => $result,
@@ -216,7 +216,7 @@ echo $allSubmissions;die;
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->deleteAuditData($params);
+            $result = $this->odkFormService->deleteAuditDataV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
