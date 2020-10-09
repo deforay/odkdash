@@ -2316,15 +2316,15 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($params['facilityName']) && trim($params['facilityName'])!= '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
-            $query = $sql->select()->from(array('spiv3'=>'spi_form_v_3'))
-                                   ->columns(array('id','testingpointname','assesmentofaudit'))
-                                   ->where(array('spiv3.facilityname'=>$params['facilityName'],'spiv3.status'=>'approved'));
+            $query = $sql->select()->from(array('spiv5'=>'spi_form_v_5'))
+                                   ->columns(array('id','assesmentofaudit'))
+                                   ->where(array('spiv5.facilityname'=>$params['facilityName'],'spiv5.status'=>'approved'));
             $queryStr = $sql->getSqlStringForSqlObject($query);
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
-            $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
+            $aQuery = $sql->select()->from(array('spiv5_fclt' => 'spi_rt_5_facilities'))
                                     ->columns(array('facility_name','email'))
-                                    ->where(array('spiv3_fclt.facility_name'=>$params['facilityName']));
+                                    ->where(array('spiv5_fclt.facility_name'=>$params['facilityName']));
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         }

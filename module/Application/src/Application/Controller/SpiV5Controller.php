@@ -84,7 +84,7 @@ echo $allSubmissions;die;
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getFormData($params['auditId']);
+            $result = $this->odkFormService->getSpiV5FormData($params['auditId']);
             $viewModel = new ViewModel(array(
                 'formData' => $result,
                 'configData' => $configData,
