@@ -813,7 +813,7 @@ CREATE TABLE `spi_form_v_5` (
 
 
 -- Selvam 29 September 2020
-INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\\\Controller\\\\SpiV5', 'Manage SPI V5 Form');
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'Manage SPI V5 Form');
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES
 

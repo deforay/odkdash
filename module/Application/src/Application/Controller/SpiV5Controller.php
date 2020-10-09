@@ -23,6 +23,7 @@ class SpiV5Controller extends AbstractActionController
     {
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllSpiV5TestingPointType();
+        //echo "ww";die;
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
 
         if ($request->isPost()) {
@@ -55,7 +56,7 @@ class SpiV5Controller extends AbstractActionController
             $params = $request->getPost();
             
             $allSubmissions = $this->odkFormService->exportAllV5Submissions($params);
-echo $allSubmissions;die;
+//echo $allSubmissions;die;
             $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
             $viewModel->setTerminal(true);

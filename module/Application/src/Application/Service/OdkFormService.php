@@ -1208,7 +1208,7 @@ class OdkFormService
     public function getAllSpiV5TestingPointType()
     {
         $db = $this->sm->get('SpiFormVer5Table');
-        return $db->fetchAllTestingPointType();
+        return $db->fetchAllTestingPointTypeV5();
     }
 
     public function getTestingPointTypeNamesByType($params)
