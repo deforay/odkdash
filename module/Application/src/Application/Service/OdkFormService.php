@@ -3610,4 +3610,10 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer5Table');
         return $db->deleteAuditRowData($params);
     }
+
+    public function getFacilitiesAuditsV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->fetchFacilitiesAudits($params);
+    }
 }

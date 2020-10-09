@@ -294,19 +294,21 @@ class CommonService {
                     
                     $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id;
                     if(is_dir($dirPath)) {
-                        $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id);
-                        while (($filename = readdir($dh)) !== false) {
-                            if ($filename != "." && $filename != "..") {
-                                $fileContent = fopen($dirPath. DIRECTORY_SEPARATOR. $filename, 'r');
-                                $attachment = new MimePart($fileContent);
-                                $attachment->filename    = $filename;
-                                $attachment->type        = Mime::TYPE_OCTETSTREAM;
-                                $attachment->encoding    = Mime::ENCODING_BASE64;
-                                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
-                                $body->addPart($attachment);
+                        $dh  = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id);
+                        // while (($filename = readdir($dh)) !== false) {
+                            foreach ($dh as $filename => $value){
+                                if (!in_array($value,array(".",".."))){
+                                    $fileContent = fopen($dirPath. DIRECTORY_SEPARATOR. $value, 'r');
+                                    $attachment = new MimePart($fileContent);
+                                    $attachment->filename    = $value;
+                                    $attachment->type        = Mime::TYPE_OCTETSTREAM;
+                                    $attachment->encoding    = Mime::ENCODING_BASE64;
+                                    $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
+                                    $body->addPart($attachment);
+                                }
                             }
-                        }
-                        closedir($dh);
+                        // }
+                        // closedir($dh);
                         $this->removeDirectory($dirPath);
                     }
                     

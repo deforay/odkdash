@@ -320,7 +320,7 @@ class SpiRt5FacilitiesTable extends AbstractTableGateway {
 	    $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
 	    if($auditResult){
 		$auditsQuery = $sql->select()->from(array('spiv5'=>'spi_form_v_5'))
-	                                     ->columns(array('id','testingpointname','assesmentofaudit'))
+	                                     ->columns(array('id','assesmentofaudit'))
 					     ->where(array('spiv5.facilityname'=>$auditResult->facilityname,'spiv5.status'=>'approved'));
 	        $auditsQueryStr = $sql->getSqlStringForSqlObject($auditsQuery);
 	        $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
