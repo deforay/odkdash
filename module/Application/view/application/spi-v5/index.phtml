@@ -394,7 +394,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
         } else {
           console.log(data);
           $.unblockUI();
-          // document.location.href = '/temporary/' + data;
+          document.location.href = '/temporary/' + data;
         }
       });
   }
