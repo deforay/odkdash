@@ -1,7 +1,6 @@
 <?php
 
 namespace PhpOffice\PhpSpreadsheet\Shared;
-namespace PhpOffice\PhpSpreadsheet\Shared\XMLWriter;
 
 class XMLWriter extends \XMLWriter
 {
@@ -23,7 +22,7 @@ class XMLWriter extends \XMLWriter
      *
      * @param int $pTemporaryStorage Temporary storage location
      * @param string $pTemporaryStorageFolder Temporary storage folder
-    */
+     */
     public function __construct($pTemporaryStorage = self::STORAGE_MEMORY, $pTemporaryStorageFolder = null)
     {
         // Open temporary storage

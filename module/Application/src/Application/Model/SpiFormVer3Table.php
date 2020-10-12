@@ -3006,18 +3006,19 @@ class SpiFormVer3Table extends AbstractTableGateway {
     }
     
     public function fetchSpiV3FormUniqueLevelNames(){
+        
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
-                               ->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-                               ->group("province")
-                               ->order("province ASC");
+        ->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+        ->group("province")
+        ->order("province ASC");
         $queryStr = $sql->getSqlStringForSqlObject($query);
         //$query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
         //                       ->columns(array(new Expression('DISTINCT(level_name) as level_name')))
         //                       ->order("level_name ASC");
         //$queryStr = $sql->getSqlStringForSqlObject($query);
-      return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     public function fetchDistrictData($params)
     {

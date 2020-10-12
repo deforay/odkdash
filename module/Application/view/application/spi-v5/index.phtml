@@ -370,7 +370,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
   // }
 
   function exportData() {
-    $.blockUI();
+    // $.blockUI();
     var dateRange = $('#date').val();
     var auditRndNo = $('#auditRndNo').val();
     var level = $('#level').val();
@@ -392,8 +392,9 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
           $.unblockUI();
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
+          console.log(data);
           $.unblockUI();
-          document.location.href = '/temporary/' + data;
+          // document.location.href = '/temporary/' + data;
         }
       });
   }
