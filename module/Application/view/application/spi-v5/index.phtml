@@ -370,7 +370,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
   // }
 
   function exportData() {
-    // $.blockUI();
+    $.blockUI();
     var dateRange = $('#date').val();
     var auditRndNo = $('#auditRndNo').val();
     var level = $('#level').val();
@@ -400,7 +400,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
   }
 
   function exportPDFData() {
-    $.blockUI();
+    // $.blockUI();
     var dateRange = $('#date').val();
     var auditRndNo = $('#auditRndNo').val();
     var level = $('#level').val();
@@ -420,12 +420,13 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
         testPoint: testPoint
       },
       function(data) {
+        console.log(data);
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
           $.unblockUI();
-          window.open('/temporary/' + data, '_blank');
+          // window.open('/temporary/' + data, '_blank');
         }
       });
   }

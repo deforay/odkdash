@@ -319,14 +319,14 @@ class SpiV5Controller extends AbstractActionController
     public function exportAsPdfAction()
     {
         
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV5SubmissionsDetails($param);
             
             $spiderResult = $this->odkFormService->getSpiV5AuditRoundWiseDataChart($param);
-            //var_dump($result);die;
+            // print_r("Prasath");die;
+            // var_dump($result);die;
             $pieResult = $this->odkFormService->getSpiV5PerformancePieChart($param);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();

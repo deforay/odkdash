@@ -1214,7 +1214,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
-                                ->order(array("id DESC"));
+        ->order(array("id DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
             $sQuery = $sQuery->where('spiv5.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
@@ -1247,21 +1247,21 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 $sQuery = $sQuery->where("spiv5.testingpointtype='".$params['testPoint']."'");
             }
 
-            } if(isset($params['level']) && $params['level']!=''){
-               $sQuery = $sQuery->where("spiv5.level='".$params['level']."'");
+        } if(isset($params['level']) && $params['level']!=''){
+            $sQuery = $sQuery->where("spiv5.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
-               $sQuery = $sQuery->where("spiv5.affiliation='".$params['affiliation']."'");
+                $sQuery = $sQuery->where("spiv5.affiliation='".$params['affiliation']."'");
             }
             
             
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
                 if($params['scoreLevel'] == 0){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
+                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
                 }else if($params['scoreLevel'] == 1){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
                 }else if($params['scoreLevel'] == 2){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
                 }else if($params['scoreLevel'] == 3){
                   $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
                 }else if($params['scoreLevel'] == 4){
@@ -1303,9 +1303,10 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $auditRoundWiseData[$auditNo]['RTRI_SCORE'] = array_sum($auditScores['RTRI_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             
         }
+        // print_r("Prasath");die;
         $response = array('');
         return $auditRoundWiseData;
-     
+        
     }
     
 
