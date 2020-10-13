@@ -436,31 +436,31 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            // $styleArray = array(
-            //     'font' => array(
-            //         'bold' => true,
-            //         'size' => 12,
-            //     ),
-            //     'alignment' => array(
-            //         'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-            //         'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
-            //     ),
-            //     'borders' => array(
-            //         'outline' => array(
-            //             'style' => \PHPExcel_Style_Border::BORDER_THICK,
-            //         ),
-            //         )
-            //     );
-            // $borderStyle = array(
-                //     'alignment' => array(
-                    //         'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    //     ),
-            //     'borders' => array(
-                //         'outline' => array(
-            //             'style' => \PHPExcel_Style_Border::BORDER_MEDIUM,
-            //         ),
-            //     )
-            // );
+            $styleArray = array(
+                'font' => array(
+                    'bold' => true,
+                    'size' => 12,
+                ),
+                'alignment' => array(
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ),
+                'borders' => array(
+                    'outline' => array(
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                    ),
+                    )
+                );
+            $borderStyle = array(
+                    'alignment' => array(
+                            'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        ),
+                'borders' => array(
+                        'outline' => array(
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                    ),
+                )
+            );
 
             $sheet->mergeCells('A1:B1');
             $sheet->mergeCells('A2:B2');
@@ -480,34 +480,35 @@ class OdkFormService
             $sheet->mergeCells('H4:H5');
             $sheet->mergeCells('I4:I5');
 
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'));
-            // $colmnNo = 0;
-            // $rowmnNo = 4;
-            // $rowmnNo1 = 5;
-            // foreach ($sResult[0] as $key => $aRow) {
-            //         if ($key != 'id' && $key != 'content' && $key != 'token') {
-            //                 $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
-            //                 $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
-            //                 $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $colmnNo = 0;
+            $rowmnNo = 4;
+            $rowmnNo1 = 5;
+            foreach ($sResult[0] as $key => $aRow) {
+                    if ($key != 'id' && $key != 'content' && $key != 'token') {
+                            $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
+                            $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
+                            $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'));
             //                 //$sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
-            //                 $colmnNo++;
-            //     }
-            // }
-            // $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
-            // $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('C2:D2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('E2:F2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('G2:H2')->getFont()->setBold(TRUE)->setSize(13);
-            // // $sheet->getStyle('I2:J2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('K2:L2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('M2:N2')->getFont()->setBold(TRUE)->setSize(13);
+                            // $colmnNo++;
+                }
+            }
+            // $sheet->getStyle()->getFont()->setBold(true);
+            $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
+            $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('C2:D2')->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('E2:F2')->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('G2:H2')->getFont()->setBold(TRUE)->setSize(13);
+            // $sheet->getStyle('I2:J2')->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('K2:L2')->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('M2:N2')->getFont()->setBold(TRUE)->setSize(13);
             
             $start = 0;
             foreach ($output as $rowNo => $rowData) {
@@ -516,48 +517,48 @@ class OdkFormService
                             if (!isset($value)) {
                                     $value = "";
                     }
-                    // if (is_numeric($value)) {
-                    //     $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                    // } else {
-                            //     $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                        // }
+                    if (is_numeric($value)) {
+                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                    } else {
+                                $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                        }
                         $rRowCount = $rowNo + 6;
-                        // $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
-                        //$sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                        //$sheet->getDefaultRowDimension()->setRowHeight(18);
-                        // $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                        // $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
-                        $colNo++;
+                        $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
+                        $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
+                        $sheet->getDefaultRowDimension()->setRowHeight(18);
+                        $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+                        $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+                        // $colNo++;
                     }
                 }
                 $rCount = $rRowCount + 3;
                 
-                $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'));
-                $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'));
-                //$sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'));
-            //$sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            //$sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
-            $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'));
-            //$sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            //$sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
-            $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'));
-            //$sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            //$sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
-            $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'));
-            //$sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            //$sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
-            $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'));
-            //$sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            //$sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
-            $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'));
-            //$sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+            $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
+            $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+            $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
+            $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+            $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
+            $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+            $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
+            $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+            $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+            $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
+            $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+            $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
             
             // print_r(($sResult));die;
            
