@@ -309,7 +309,7 @@ class OdkFormService
             $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
 
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.csv';
+            $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.xls';
             // print_r(($filename));die;
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
