@@ -119,27 +119,27 @@ $filter .= "<tr><td><b>Date Range </b>: " . $argument['dateRange'] . "</td><td><
 //$filter .= "<tr><td><b>Affiliation </b>: " . $argument['affiliation'] . "</td><td><b>Province </b>: " . $argument['province'] . "</td><td><b>District </b>: " . $argument['district'] . "</td></tr>";
 $filter .= "<tr><td><b>Score Level </b>: " . $argument['scoreLevel'] . "</td><td><b>Type Of Testing Point </b>: " . $argument['testPoint'] . "</td></tr>";
 $partA = '';
-$partA .= '<table border="1" cellspacing="0" cellpadding="5" style="width:97%;" >' . $filter . '</table>';
+$partA .= '<table border="1" cellspacing="0" cellpadding="5" style="width:97%;" >' . $filter . '</table><br><br>';
 $pdf->writeHTML($partA, true, 0, true, 0);
 $h = $pdf->getY();
 
 if ($h < 52) {
-    $style1 = "height:470px;width:500px;";
-    $style2 = "height:460px;width:450px;";
+    $style1 = "height:380px;width:400px;";
+    $style2 = "height:390px;width:400px;";
 } else {
     $diff = $h - 52;
-    $h1 = 450 - ($diff * 3.5);
-    $h2 = 440 - ($diff * 3.5);
-    $style1 = "height:" . $h1 . "px;width:500px;";
-    $style2 = "height:" . $h2 . "px;width:450px;";
+    $h1 = 400 - ($diff * 3.5);
+    $h2 = 400 - ($diff * 3.5);
+    $style1 = "height:" . $h1 . "px;width:400px;";
+    $style2 = "height:" . $h2 . "px;width:400px;";
 }
-$pdfContent = '';
+$pdfContent = '<br><br><br><br>';
 $pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
 $pdfContent .= '<tr>';
 $pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('temporary/radar-spiv5.png') . '" alt="PDF" /></td>';
 $pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/piechart-spiv5.png') . '" alt="PDF" /></td>';
 $pdfContent .= '</tr>';
-$pdfContent .= '</table>';
+$pdfContent .= '</table><br><br><br><br>';
 
 $pdf->writeHTML($pdfContent, true, 0, true, 0);
 
@@ -180,6 +180,7 @@ $testingResultAvg .= '<td style="width:1%;background-color:#528A16;"></td>';
 $testingResultAvg .= '<td style="padding-left:0%;width:25%;"><strong>Level 4 (90 and above):&nbsp;</strong>' . $result['levelFourCount'] . '</td>';
 $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
+// print_r($pdfContent);die;
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
 $fileName = "SPI-V5.pdf";
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
