@@ -848,3 +848,7 @@ CREATE TABLE `r_spi_form_v_5_download` (
 --Sudarmathi 05 Oct 2020
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\DashboardV5', 'Manage DashboardV5');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DashboardV5', 'index', 'Access');
+
+
+-- Prasath M 14-Pct-2020
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Version', 'web_version', 'v3');

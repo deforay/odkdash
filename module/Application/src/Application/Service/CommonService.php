@@ -368,7 +368,8 @@ class CommonService {
     }
     public function getGlobalConfigDetails(){
         $globalDb = $this->sm->get('GlobalTable');
-        return $globalDb->getGlobalConfig();        
+        $result = $globalDb->getGlobalConfig();
+        return $result;        
     }
     
     public function updateConfig($params) {

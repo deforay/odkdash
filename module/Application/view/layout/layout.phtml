@@ -8,6 +8,13 @@ $role = $sessionLogin->roleCode;
 $adminMenu = "";
 $auditMenu = "";
 
+$config = $this->GlobalConfigHelper();
+// \Zend\Debug\Debug::dump($commonVal->getGlobalConfigDetails());
+// echo $commonVal->getGlobalConfigDetails();
+// $config = $commonVal->getGlobalConfigDetails();
+$web_version = $config['web_version'];
+
+
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Roles", "index")) {
   $adminMenu .= "<li><a href=" . $this->url('roles', array('action' => 'index')) . ">" . $this->translate('Roles') . "</a></li>";
 }
@@ -40,11 +47,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
   //$auditMenu.='<li><a href="javascript:alert(\'Under Construction\')">SPI RT 2.x</a></li>';
 }
 
-if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")) {
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")  && $web_version == "v3") {
   $auditMenu .= "<li><a href=" . $this->url('spi-v3-form', array('action' => 'index')) . ">SPI RT V3</a></li>";
 }
 
-if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index")) {
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index") && $web_version == "v5") {
   $auditMenu .= "<li><a href=" . $this->url('spi-v5-form', array('action' => 'index')) . ">SPI RT V5</a></li>";
 }
 
@@ -128,7 +135,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
           </a>
           <a href="/" class="navbar-brand">
             <?php
-            $config = $this->GlobalConfigHelper();
+            // $config = $this->GlobalConfigHelper();
             if (isset($config) && count($config) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
             ?>
               <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
@@ -186,10 +193,12 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
         <ul class="sidebar-elements">
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
+          if($web_version == "v3"){
           ?>
             <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard'); ?></span></a></li>
-            <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span>Dashboard V5</span></a></li>
-          <?php } ?>
+          <?php }else if($web_version == "v5") {?>
+            <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard'); ?></span></a></li>
+          <?php } }?>
           <?php if (trim($auditMenu) != "") { ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Audit'); ?></span></a>
               <ul class="sub-menu">
