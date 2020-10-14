@@ -181,7 +181,6 @@ $testingResultAvg .= '<td style="padding-left:0%;width:25%;"><strong>Level 4 (90
 $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
-
 $fileName = "SPI-V3.pdf";
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
 $pdf->Output($filePath, "F");

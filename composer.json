@@ -63,6 +63,7 @@
         "zendframework/zendxml": "^1.0.1",
         "zendframework/zftool": "dev-master",
         "tecnickcom/tcpdf": "^6.3",
-        "phpoffice/phpspreadsheet": "^1.14"
+        "phpoffice/phpspreadsheet": "^1.14",
+        "szymach/c-pchart": "^3.0"
     }
 }

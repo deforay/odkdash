@@ -83,5 +83,6 @@ return array(
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
+    'CpChart\\' => array($vendorDir . '/szymach/c-pchart/src'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
 );

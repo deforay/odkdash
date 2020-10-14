@@ -13,12 +13,17 @@ use ZipArchive;
 // use PHPExcel_Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use pData;
-use pDraw;
-use pRadar;
-use pImage;
-use pPie;
+// use pData;
+// use pDraw;
+// use pRadar;
+// use pImage;
+// use pPie;
 use TCPDF;
+
+use CpChart\Chart\Pie;
+use CpChart\Chart\Radar;
+use CpChart\Data;
+use CpChart\Image;
 
 class OdkFormService
 {
@@ -634,7 +639,7 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer3Table');
         $result = $db->getPerformance($params);
-        $MyData = new pData();
+        $MyData = new Data();
         if (count($result) > 0) {
             foreach ($result as $key => $data) {
                 $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
@@ -665,7 +670,7 @@ class OdkFormService
         $MyData->setAbscissa("Labels");
 
         /* Create the pChart object */
-        $myPicture = new pImage(400, 510, $MyData);
+        $myPicture = new Image(400, 510, $MyData);
         $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
         $path = font_path . DIRECTORY_SEPARATOR;
 
@@ -675,7 +680,7 @@ class OdkFormService
         /* Enable shadow computing */
         $myPicture->setShadow(TRUE, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
 
-        $PieChart = new pPie($myPicture, $MyData);
+        $PieChart = new Pie($myPicture, $MyData);
         $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => TRUE));
         $PieChart->drawPieLegend(5, 390);
         $fileName =  'piechart.png';
@@ -686,12 +691,11 @@ class OdkFormService
 
     public function getSpiV5PerformancePieChart($params)
     {
-        echo "ss";die;
         $db = $this->sm->get('SpiFormVer5Table');
-        //echo "ss";die;
-        $result = $db->getPerformance($params);
+        $result = $db->getPerformanceV5($params);
         //var_dump($result);die;
-        $MyData = new pData();
+        // echo "Prasath";die;
+        $MyData = new Data();
         if (count($result) > 0) {
             foreach ($result as $key => $data) {
                 $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
@@ -722,7 +726,7 @@ class OdkFormService
         $MyData->setAbscissa("Labels");
 
         /* Create the pChart object */
-        $myPicture = new pImage(400, 510, $MyData);
+        $myPicture = new Image(400, 510, $MyData);
         $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
         $path = font_path . DIRECTORY_SEPARATOR;
 
@@ -732,7 +736,7 @@ class OdkFormService
         /* Enable shadow computing */
         $myPicture->setShadow(TRUE, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
 
-        $PieChart = new pPie($myPicture, $MyData);
+        $PieChart = new Pie($myPicture, $MyData);
         $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => TRUE));
         $PieChart->drawPieLegend(5, 390);
         $fileName =  'piechart-spiv5.png';
@@ -746,7 +750,7 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer3Table');
         $result = $db->getAuditRoundWiseData($params);
-        $MyData = new pData();
+        $MyData = new Data();
         /* Create and populate the pData object */
         $filename = '';
         if (count($result) > 0) {
@@ -768,7 +772,7 @@ class OdkFormService
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
-        $myPicture = new pImage(600, 690, $MyData);
+        $myPicture = new Image(600, 690, $MyData);
         //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
         //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
         //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
@@ -789,7 +793,7 @@ class OdkFormService
         $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
 
         /* Create the pRadar object */
-        $SplitChart = new pRadar();
+        $SplitChart = new Radar();
         /* Draw a radar chart */
         $myPicture->setGraphArea(15, 15, 590, 590);
         $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
@@ -810,12 +814,8 @@ class OdkFormService
         
         $db = $this->sm->get('SpiFormVer5Table');
         $result = $db->getAuditRoundWiseDataV5($params);
-        // var_dump($result);die;
-        print_r($result);die;
-        $MyData = new pData();
-        /* Create and populate the pData object */
+        $MyData = new Data();
         $filename = '';
-        //echo count($result);die;
         if (count($result) > 0) {
             foreach ($result as $auditNo => $adata) {
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
@@ -830,13 +830,12 @@ class OdkFormService
                 $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
             }
         }
-        //echo "ss";die;
         /* Define the absissa serie */
         $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit","RTRT Surveillance"), "Label");
         $MyData->setAbscissa("Label");
-
+        
         /* Create the pChart object */
-        $myPicture = new pImage(600, 690, $MyData);
+        $myPicture = new Image(600, 690, $MyData);
         //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
         //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
         //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
@@ -844,36 +843,37 @@ class OdkFormService
 
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
-
+        
         $path = font_path . DIRECTORY_SEPARATOR;
         /* Write the picture title */
         //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
         //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
-
+        
         /* Set the default font properties */
         $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
-
         /* Enable shadow computing */
         $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-
+        
         /* Create the pRadar object */
-        $SplitChart = new pRadar();
+        $SplitChart = new Radar();
         /* Draw a radar chart */
         $myPicture->setGraphArea(15, 15, 590, 590);
         $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
         $SplitChart->drawRadar($myPicture, $MyData, $Options);
-
+        
         /* Write the chart legend */
         $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
         $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
-
+        
         /* Render the picture (choose the best way) */
         $fileName =  'radar-spiv5.png';
         $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar-spiv5.png");
+        // print_r($fileName);die;
         return $fileName;
     }
-
+    
     public function getFormData($id)
+    
     {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getFormData($id);
@@ -3507,7 +3507,7 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer5Table');
         $result = $db->getAuditRoundWiseData($params);
-        $MyData = new pData();
+        $MyData = new Data();
         /* Create and populate the pData object */
         $filename = '';
         if (count($result) > 0) {
@@ -3529,7 +3529,7 @@ class OdkFormService
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
-        $myPicture = new pImage(600, 690, $MyData);
+        $myPicture = new Image(600, 690, $MyData);
         //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
         //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
         //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
@@ -3550,7 +3550,7 @@ class OdkFormService
         $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
 
         /* Create the pRadar object */
-        $SplitChart = new pRadar();
+        $SplitChart = new Radar();
         /* Draw a radar chart */
         $myPicture->setGraphArea(15, 15, 590, 590);
         $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);

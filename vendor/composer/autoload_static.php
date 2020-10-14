@@ -89,6 +89,7 @@ class ComposerStaticInit4ace141908d8b51ad1338ddc685a8991
         '6ab8ad87a734f276a6bcd5a0fe1289be' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/operations/divideinto.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'fe6aee0c0ec174a325f8335f6c481d7d' => __DIR__ . '/..' . '/laminas/laminas-diagnostics/src/autoload.php',
+        '7bb4f001eb5212bde073bf47a4bbedad' => __DIR__ . '/..' . '/szymach/c-pchart/constants.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -201,6 +202,7 @@ class ComposerStaticInit4ace141908d8b51ad1338ddc685a8991
         ),
         'C' => 
         array (
+            'CpChart\\' => 8,
             'Complex\\' => 8,
         ),
     );
@@ -516,6 +518,10 @@ class ComposerStaticInit4ace141908d8b51ad1338ddc685a8991
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'CpChart\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/szymach/c-pchart/src',
         ),
         'Complex\\' => 
         array (
