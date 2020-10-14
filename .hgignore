@@ -6,6 +6,7 @@ makkacm.komodoproject
 ^public/temporary/(?!index.php)
 ^public/.htaccess
 ^library/Zend/
+^vendor/(?!autoload.php)
 error_log
 Thumbs.db
 Thumbs.db.orig
