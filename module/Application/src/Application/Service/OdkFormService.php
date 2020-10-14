@@ -693,7 +693,6 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer5Table');
         $result = $db->getPerformanceV5($params);
-        //var_dump($result);die;
         // echo "Prasath";die;
         $MyData = new Data();
         if (count($result) > 0) {
@@ -709,9 +708,9 @@ class OdkFormService
                 $MyData->setPalette("Level" . $key, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
             }
         }
-
+        
         $percentage = $result[0]['level0'] + $result[0]['level1'] + $result[0]['level2'] + $result[0]['level3'] + $result[0]['level4'];
-
+        
         /* Define the absissa serie */
         $MyData->addPoints(
             array(
@@ -724,23 +723,30 @@ class OdkFormService
             "Labels"
         );
         $MyData->setAbscissa("Labels");
-
+        
         /* Create the pChart object */
         $myPicture = new Image(400, 510, $MyData);
         $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
         $path = font_path . DIRECTORY_SEPARATOR;
-
+        
+        
         /* Set the default font properties */
         $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
 
         /* Enable shadow computing */
         $myPicture->setShadow(TRUE, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
-
+       
         $PieChart = new Pie($myPicture, $MyData);
         $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => TRUE));
         $PieChart->drawPieLegend(5, 390);
         $fileName =  'piechart-spiv5.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart-spiv5.png");
+        $myPicture->drawText(540, 200, "Extended AA pass / Splitted", ["R" => 0, "G" => 0, "B" => 0, "Align" => TEXT_ALIGN_TOPMIDDLE]);
+        $fileName = 'piechart-spiv5.png';
+        $PieChart->pChartObject->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        
+        //header('Content-Type: text/plain');
+        //var_dump($path);die;
+        //$result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart-spiv5.png");
         return $fileName;
     }
 
@@ -867,8 +873,8 @@ class OdkFormService
         
         /* Render the picture (choose the best way) */
         $fileName =  'radar-spiv5.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar-spiv5.png");
-        // print_r($fileName);die;
+        //print_r($fileName);die;
+        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
         return $fileName;
     }
     

@@ -179,10 +179,13 @@ class Image extends Draw
      */
     public function autoOutput($FileName = "output.png")
     {
-        if (php_sapi_name() == "cli") {
+        //if (php_sapi_name() == "cli") {
+        if (true) {
             $this->Render($FileName);
+            //return $FileName;
         } else {
-            $this->Stroke();
+            return $FileName;
+            //$this->Stroke();
         }
     }
 

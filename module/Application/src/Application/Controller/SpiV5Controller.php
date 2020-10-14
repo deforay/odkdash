@@ -324,10 +324,15 @@ class SpiV5Controller extends AbstractActionController
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV5SubmissionsDetails($param);
             
-            // var_dump($result);die;
+           
             $configData = $this->commonService->getGlobalConfigDetails();
+            
             $pieResult = $this->odkFormService->getSpiV5PerformancePieChart($param);
             $spiderResult = $this->odkFormService->getSpiV5AuditRoundWiseDataChart($param);
+           // var_dump($spiderResult);die;
+            //echo "<pre>";
+            //print_r(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult));
+            //die;
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult))
                 ->setTerminal(true);
