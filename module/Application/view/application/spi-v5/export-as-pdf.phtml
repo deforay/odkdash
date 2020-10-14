@@ -49,7 +49,7 @@ $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('ODK DASHBOARD');
 $pdf->SetTitle('SPI-RT Checklist');
-$pdf->SetSubject('SPI-RT 3.0 Checklist');
+$pdf->SetSubject('SPI-RT 5.0 Checklist');
 
 // set default header data
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -181,7 +181,7 @@ $testingResultAvg .= '<td style="padding-left:0%;width:25%;"><strong>Level 4 (90
 $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
-$fileName = "SPI-V3.pdf";
+$fileName = "SPI-V5.pdf";
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
 $pdf->Output($filePath, "F");
 echo $fileName;
