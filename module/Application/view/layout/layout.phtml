@@ -13,7 +13,7 @@ $config = $this->GlobalConfigHelper();
 // echo $commonVal->getGlobalConfigDetails();
 // $config = $commonVal->getGlobalConfigDetails();
 $web_version = $config['web_version'];
-
+//print_r($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report"));die;
 
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Roles", "index")) {
   $adminMenu .= "<li><a href=" . $this->url('roles', array('action' => 'index')) . ">" . $this->translate('Roles') . "</a></li>";
@@ -211,23 +211,22 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
           ?>
             <li class="parent"><a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span><?php echo $this->translate('Facility List'); ?></span></a></li>
           <?php } ?>
-          <?php if($web_version == "v3"){ ?>
-          <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report")) { ?>
+          
+          <?php if (isset($acl) && ($acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report") || ($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report")))) { ?>
+
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a>
               <ul class="sub-menu">
+              <?php if(preg_match("/v3/i", $config['web_version']) && ($acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report"))){ ?>
                 <li><a href="<?php echo $this->url('spi-v3-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI V3 Facility Report'); ?></a></li>
+                <?php } ?>
+                <?php if(preg_match("/v5/i", $config['web_version']) && ($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report"))){ ?>
+                  <li><a href="<?php echo $this->url('spi-v5-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI V5 Facility Report'); ?></a></li>
+                  <?php } ?> 
               </ul>
             </li>
-          <?php } ?>
-          <?php }else{ ?>
-            <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report")) { ?>
-            <li class="parent"><a href="#"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a>
-              <ul class="sub-menu">
-                <li><a href="<?php echo $this->url('spi-v5-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI V5 Facility Report'); ?></a></li>
-              </ul>
-            </li>
-          <?php } ?>
-          <?php } ?>
+         
+          <?php } ?> 
+     
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index")) {
           ?>
