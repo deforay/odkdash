@@ -47,11 +47,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
   //$auditMenu.='<li><a href="javascript:alert(\'Under Construction\')">SPI RT 2.x</a></li>';
 }
 
-if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")  && $web_version == "v3") {
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index")  && preg_match("/v3/i", $config['web_version'])) {
   $auditMenu .= "<li><a href=" . $this->url('spi-v3-form', array('action' => 'index')) . ">SPI RT V3</a></li>";
 }
 
-if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index") && $web_version == "v5") {
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index") && preg_match("/v5/i", $config['web_version'])) {
   $auditMenu .= "<li><a href=" . $this->url('spi-v5-form', array('action' => 'index')) . ">SPI RT V5</a></li>";
 }
 
@@ -193,10 +193,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
         <ul class="sidebar-elements">
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
-          if($web_version == "v3"){
+          if(preg_match("/v3/i", $config['web_version'])){
           ?>
             <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard'); ?></span></a></li>
-          <?php }else if($web_version == "v5") {?>
+          <?php } if(preg_match("/v5/i", $config['web_version'])) {?>
             <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard'); ?></span></a></li>
           <?php } }?>
           <?php if (trim($auditMenu) != "") { ?>

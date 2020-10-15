@@ -182,10 +182,19 @@ class GlobalTable extends AbstractTableGateway {
                 $this->update(array('global_value'=>$imageName),array('global_name'=>'logo'));
             }
         }
-        
+        $out = '';
         foreach ($params as $fieldName => $fieldValue) {
-            if($fieldName!= 'removedLogoImage'){
-               $result = $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
+            if($fieldName!= 'removedLogoImage' && $fieldName!= 'web_version'){
+                $result = $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
+            }
+            else if($fieldName == 'web_version')
+            {
+                foreach($fieldValue as $ver)
+                {
+                    $out = $ver.','.$out;
+                }
+                $verVal = substr($out, 0, -1);
+                $this->update(array('global_value'=>$verVal),array('global_name'=>'web_version'));
             }
         }
       return $result;
