@@ -177,6 +177,10 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\SpiV3ReportsController($odkFormService);
                 },
+                'Application\Controller\SpiV5Reports' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\SpiV5ReportsController($odkFormService);
+                },
                 'Application\Controller\SpiV3' => function ($sm) {
                     $commonService = $sm->getServiceLocator()->get('CommonService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');

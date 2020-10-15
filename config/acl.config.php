@@ -59,7 +59,6 @@ return array(
         ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
-            'email-v5' => 'allow',
         ),
         'Application\\Controller\\Facility' => array(
             'index' => 'allow',
@@ -102,6 +101,9 @@ return array(
             'edit' => 'allow',
         ),
         'Application\\Controller\\SpiV3Reports' => array(
+            'facility-report' => 'allow',
+        ),
+        'Application\\Controller\\SpiV5Reports' => array(
             'facility-report' => 'allow',
         ),
     ),

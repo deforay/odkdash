@@ -118,6 +118,17 @@ return array(
                     ),
                 ),
             ),
+
+            'spi-v5-reports' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v5-reports[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV5Reports',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'common' => array(
                 'type' => 'segment',
                 'options' => array(

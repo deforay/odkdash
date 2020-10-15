@@ -1628,29 +1628,29 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }if($parameters['level']!=''){
          $sQuery = $sQuery->where("spiv3.level='".$parameters['level']."'");
         }
-        // if(is_array($parameters['province']) && count($parameters['province'])>0 ){
-        // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-        //                 ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-        // if(is_array($parameters['district']) && count($parameters['district'])>0 ){
-        //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-        // }
-        // }else{
-        //     if($parameters['province']!=''){
-        //         $provinces = explode(",",$parameters['province']);
-        //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
-        //                         ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-        //     }
-        // }
-        // if($parameters['province']!=''){
-        //     if(is_array($parameters['district']) && count($parameters['district'])>0 ){
-        //         $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
-        //     }else{
-        //         if($parameters['district']!=''){
-        //             $provinces = explode(",",$parameters['district']);
-        //             $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-        //         }
-        //     }
-        // }
+        if(is_array($parameters['province']) && count($parameters['province'])>0 ){
+        $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+                        ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+        if(is_array($parameters['district']) && count($parameters['district'])>0 ){
+            $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+        }
+        }else{
+            if($parameters['province']!=''){
+                $provinces = explode(",",$parameters['province']);
+                $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility',array('province','district'))
+                                ->where('f.province IN ("' . implode('", "', $provinces) . '")');
+            }
+        }
+        if($parameters['province']!=''){
+            if(is_array($parameters['district']) && count($parameters['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
+            }else{
+                if($parameters['district']!=''){
+                    $provinces = explode(",",$parameters['district']);
+                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
+                }
+            }
+        }
         if($parameters['affiliation']!=''){
          $sQuery = $sQuery->where("spiv3.affiliation='".$parameters['affiliation']."'");
         }if(isset($logincontainer->token) && count($logincontainer->token) > 0){
@@ -1774,6 +1774,226 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $row[] = $aRow['TEST_SCORE'];
         $row[] = $aRow['POST_SCORE'];
         $row[] = $aRow['EQA_SCORE'];
+        $row[] = $aRow['FINAL_AUDIT_SCORE'];
+        $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'],2);
+        $output['aaData'][] = $row;
+       }
+       return $output;
+    }
+
+
+    public function fetchAllApprovedV5FormSubmissionsTable($parameters){
+        /* Array of database columns which should be read and sent back to DataTables. Use a space where
+        * you want to insert a non-database field (for example a counter or static image)
+        */
+
+	    $queryContainer = new Container('query');
+        $logincontainer = new Container('credo');
+        $aColumns = array('facilityname','assesmentofaudit' ,'testingpointtype','PERSONAL_SCORE','PHYSICAL_SCORE','SAFETY_SCORE','PRETEST_SCORE','TEST_SCORE','POST_SCORE','EQA_SCORE','RTRI_SCORE','FINAL_AUDIT_SCORE','AUDIT_SCORE_PERCENTAGE');
+        $orderColumns = array('facilityname','assesmentofaudit' ,'testingpointtype','PERSONAL_SCORE','PHYSICAL_SCORE','SAFETY_SCORE','PRETEST_SCORE','TEST_SCORE','POST_SCORE','EQA_SCORE','RTRI_SCORE','FINAL_AUDIT_SCORE','AUDIT_SCORE_PERCENTAGE');
+
+        /*
+        * Paging
+        */
+       $sLimit = "";
+       if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
+           $sOffset = $parameters['iDisplayStart'];
+           $sLimit = $parameters['iDisplayLength'];
+       }
+
+        /*
+        * Ordering
+        */
+
+       $sOrder = "";
+       if (isset($parameters['iSortCol_0'])) {
+           for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
+               if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
+                   $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ( $parameters['sSortDir_' . $i] ) . ",";
+               }
+           }
+           $sOrder = substr_replace($sOrder, "", -1);
+       }
+
+       /*
+        * Filtering
+        * NOTE this does not match the built-in DataTables filtering which does it
+        * word by word on any field. It's possible to do here, but concerned about efficiency
+        * on very large tables, and MySQL's regex functionality is very limited
+        */
+
+       $sWhere = "";
+       if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
+           $searchArray = explode(" ", $parameters['sSearch']);
+           $sWhereSub = "";
+           foreach ($searchArray as $search) {
+               if ($sWhereSub == "") {
+                   $sWhereSub .= "(";
+               } else {
+                   $sWhereSub .= " AND (";
+               }
+               $colSize = count($aColumns);
+
+               for ($i = 0; $i < $colSize; $i++) {
+                   if ($i < $colSize - 1) {
+                       $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' OR ";
+                   } else {
+                       $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' ";
+                   }
+               }
+               $sWhereSub .= ")";
+           }
+           $sWhere .= $sWhereSub;
+       }
+
+       /* Individual column filtering */
+       for ($i = 0; $i < count($aColumns); $i++) {
+           if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
+               if ($sWhere == "") {
+                   $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
+               } else {
+                   $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
+               }
+           }
+       }
+
+       /*
+        * SQL queries
+        * Get data to display
+        */
+       $dbAdapter = $this->adapter;
+       $sql = new Sql($dbAdapter);
+        $start_date = '';
+        $end_date = '';
+        if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
+            $dateField = explode(" ", $parameters['dateRange']);
+            if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                $start_date = $this->dateFormat($dateField[0]);                
+            }
+            if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                $end_date = $this->dateFormat($dateField[2]);
+            }
+        }
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+                                ->where(array('spiv5.status'=>'approved'));
+        if($parameters['auditRndNo']!=''){
+         $sQuery = $sQuery->where("spiv5.auditroundno='".$parameters['auditRndNo']."'");
+        }if (trim($start_date) != "" && trim($end_date) != "") {
+            $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $start_date ."'", "spiv5.assesmentofaudit <='" . $end_date."'"));
+        }
+        if(isset($parameters['testPoint']) && trim($parameters['testPoint'])!=''){
+            
+            if(trim($parameters['testPoint'])!= 'other'){
+                $sQuery = $sQuery->where("spiv5.testingpointtype='".$parameters['testPoint']."'");
+            }else{
+            $sQuery = $sQuery->where("spiv5.testingpointtype_other='".$parameters['testPointName']."'");
+            }
+        }if($parameters['level']!=''){
+         $sQuery = $sQuery->where("spiv5.level='".$parameters['level']."'");
+        }
+        
+        if($parameters['affiliation']!=''){
+         $sQuery = $sQuery->where("spiv5.affiliation='".$parameters['affiliation']."'");
+        }if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }if(isset($parameters['scoreLevel']) && $parameters['scoreLevel']!=''){
+            if($parameters['scoreLevel'] == 0){
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
+            }else if($parameters['scoreLevel'] == 1){
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+            }else if($parameters['scoreLevel'] == 2){
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+            }else if($parameters['scoreLevel'] == 3){
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+            }else if($parameters['scoreLevel'] == 4){
+              $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+            }
+        }
+       if (isset($sWhere) && $sWhere != "") {
+           $sQuery->where($sWhere);
+       }
+
+       if (isset($sOrder) && $sOrder != "") {
+           $sQuery->order($sOrder);
+       }
+
+       if (isset($sLimit) && isset($sOffset)) {
+           $sQuery->limit($sLimit);
+           $sQuery->offset($sOffset);
+       }
+       $queryContainer->exportQuery = $sQuery;
+       $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+       //echo $sQueryStr;die;
+       $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+
+       /* Data set length after filtering */
+       $sQuery->reset('limit');
+       $sQuery->reset('offset');
+       $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+       $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
+       $iFilteredTotal = count($aResultFilterTotal);
+
+        /* Total data set length */
+        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_3'))
+                                ->where(array('spiv5.status'=>'approved'));
+        if($parameters['auditRndNo']!=''){
+           $tQuery = $tQuery->where("spiv5.auditroundno='".$parameters['auditRndNo']."'");
+        }if (trim($start_date) != "" && trim($end_date) != "") {
+            $tQuery = $tQuery->where(array("spiv5.assesmentofaudit >='" . $start_date ."'", "spiv5.assesmentofaudit <='" . $end_date."'"));
+        }if(isset($parameters['testPoint']) && trim($parameters['testPoint'])!=''){
+            $tQuery = $tQuery->where("spiv5.testingpointtype='".$parameters['testPoint']."'");
+             if(isset($parameters['testPointName']) && trim($parameters['testPointName'])!= ''){
+                 if(trim($parameters['testPoint'])== 'other' && trim($parameters['testPointName'])!=''){
+                   
+                    $tQuery = $tQuery->where("spiv5.testingpointtype_other='".$parameters['testPointName']."'");
+                 }
+             }
+        }
+        if($parameters['level']!=''){
+         $tQuery = $tQuery->where("spiv5.level='".$parameters['level']."'");
+        }
+        
+        if($parameters['affiliation']!=''){
+         $tQuery = $tQuery->where("spiv5.affiliation='".$parameters['affiliation']."'");
+        }if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }if(isset($parameters['scoreLevel']) && $parameters['scoreLevel']!=''){
+            if($parameters['scoreLevel'] == 0){
+              $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
+            }else if($parameters['scoreLevel'] == 1){
+              $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+            }else if($parameters['scoreLevel'] == 2){
+              $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+            }else if($parameters['scoreLevel'] == 3){
+              $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+            }else if($parameters['scoreLevel'] == 4){
+              $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+            }
+        }
+        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $iTotal = count($tResult);
+        $output = array(
+               "sEcho" => intval($parameters['sEcho']),
+               "iTotalRecords" => $iTotal,
+               "iTotalDisplayRecords" => $iFilteredTotal,
+               "aaData" => array()
+        );
+        
+        $commonService = new \Application\Service\CommonService();
+       foreach ($rResult as $aRow) {
+        $row = array();
+        $row[] = $aRow['facilityname'];
+        $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+        $row[] = $aRow['testingpointname']. " - " .$aRow['testingpointtype'];
+        $row[] = $aRow['PERSONAL_SCORE'];
+        $row[] = $aRow['PHYSICAL_SCORE'];
+        $row[] = $aRow['SAFETY_SCORE'];
+        $row[] = $aRow['PRETEST_SCORE'];
+        $row[] = $aRow['TEST_SCORE'];
+        $row[] = $aRow['POST_SCORE'];
+        $row[] = $aRow['EQA_SCORE'];
+        $row[] = $aRow['RTRI_SCORE'];
         $row[] = $aRow['FINAL_AUDIT_SCORE'];
         $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'],2);
         $output['aaData'][] = $row;
@@ -2927,15 +3147,19 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 $column = 'DISTINCT(testingpointtype_other) as testingpointName';
             }
             else{
-               $column = 'DISTINCT(testingpointname) as testingpointName'; 
+               $column = 'DISTINCT(testingpointtype) as testingpointName'; 
             }
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
-            $query = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
-                                        // ->columns(array(new Expression($column)))
-                                        ->where(array('testingpointtype'=>$params['testingPointType']));
+            $query = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+                                         ->columns(array(new Expression($column)));
+            if(isset($params['testingPointType']) && trim($params['testingPointType'])!= '' && $params['testingPointType'] == 'other'){
+                $query = $query->where('testingpointtype_other IS NOT NULL');
+            }else{
+                $query = $query->where(array('testingpointtype'=>$params['testingPointType']));
+            }
             $queryStr = $sql->getSqlStringForSqlObject($query);
-            // print_r($queryStr);die;
+            //print_r($queryStr);
             $typeResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         }
       return $typeResult;

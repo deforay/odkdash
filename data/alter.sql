@@ -852,3 +852,10 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 
 -- Prasath M 14-Pct-2020
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Version', 'web_version', 'v3');
+
+--Selvam 15 Oct 2020
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES
+('Application\\Controller\\SpiV5Reports', 'SPI V5 Reports');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`)
+ VALUES ('Application\\Controller\\SpiV5Reports', 'facility-report', 'Facility Report');
