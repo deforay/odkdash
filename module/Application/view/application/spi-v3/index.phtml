@@ -458,13 +458,13 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
         testPoint: testPoint
       },
       function(data) {
-        console.log(data)
+        //console.log(data)
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
           $.unblockUI();
-          // window.open('/temporary/' + data, '_blank');
+           window.open('/temporary/' + data, '_blank');
         }
       });
   }
