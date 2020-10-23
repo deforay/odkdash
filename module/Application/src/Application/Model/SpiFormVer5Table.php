@@ -447,7 +447,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
         
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
-
+        //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
     }

@@ -957,7 +957,7 @@ class SpiFormVer3Table extends AbstractTableGateway {
          $row = array();
          $approve = '';
          $downloadPdf="";
-         $auditScore+=$aRow['AUDIT_SCORE_PERCANTAGE'];
+         $auditScore+=(int)$aRow['AUDIT_SCORE_PERCANTAGE'];
          if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40){
             $levelZero[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
          }else if(isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCANTAGE'] <60){
