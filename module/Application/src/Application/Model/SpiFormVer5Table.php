@@ -7,7 +7,8 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
-use Application\Model\SpiRt5FacilitiesTable;
+//use Application\Model\SpiRt5FacilitiesTable;
+use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\GlobalTable;
 
 /*
@@ -361,7 +362,8 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
             if($approveStatus=='approved'){
-                $facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
+                //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
+                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                 $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue());
             }
             
@@ -1194,14 +1196,15 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if($sResult){
             if(trim($sResult->facility)!= '' || trim($sResult->facilityid)!= '' || trim($sResult->facilityname)!= ''){
-                $fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
+                //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
+                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                                         ->columns(array('fId'=>'id','ffId'=>'facility_id','fName'=>'facility_name','fEmail'=>'email','fCPerson'=>'contact_person','fLatitude'=>'latitude','fLongitude'=>'longitude'));
                 if(isset($sResult->facility) && $sResult->facility >0){
-                   $fQuery = $fQuery->where("spirt5.id='".$sResult->facility."'");
+                   $fQuery = $fQuery->where("spirt3.id='".$sResult->facility."'");
                 }else if(isset($sResult->facilityid) && $sResult->facilityid!= ''){
-                   $fQuery = $fQuery->where("spirt5.facility_id='".$sResult->facilityid."'");
+                   $fQuery = $fQuery->where("spirt3.facility_id='".$sResult->facilityid."'");
                 }else if(isset($sResult->facilityname) && $sResult->facilityname!= ''){
-                   $fQuery = $fQuery->where("spirt5.facility_name='".$sResult->facilityname."'");
+                   $fQuery = $fQuery->where("spirt3.facility_name='".$sResult->facilityname."'");
                 }
                 $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
                 $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -2141,14 +2144,16 @@ class SpiFormVer5Table extends AbstractTableGateway {
             
             // update facility tbl
             $id = 0;
-            $facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
+            //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
+            $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
             if(trim($params['testingFacility'])!= ''){
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id,$params);
             }else if(trim($params['testingFacilityName'])!= ''){
-                $fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
+                //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
+                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                                         ->columns(array('id'))
-                                        ->where("spirt5.facility_name='".$params['testingFacilityName']."'");
+                                        ->where("spirt3.facility_name='".$params['testingFacilityName']."'");
                 $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
                 $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 if($fResult){
@@ -2368,8 +2373,9 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $uQueryStr = $sql->getSqlStringForSqlObject($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
-        $aQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
-                                ->where('spirt5.status != "deleted"');
+        //$aQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
+        $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                                ->where('spirt3.status != "deleted"');
         $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
@@ -2545,9 +2551,10 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $queryStr = $sql->getSqlStringForSqlObject($query);
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
-            $aQuery = $sql->select()->from(array('spiv5_fclt' => 'spi_rt_5_facilities'))
+            //$aQuery = $sql->select()->from(array('spiv5_fclt' => 'spi_rt_5_facilities'))
+            $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
                                     ->columns(array('facility_name','email'))
-                                    ->where(array('spiv5_fclt.facility_name'=>$params['facilityName']));
+                                    ->where(array('spiv3_fclt.facility_name'=>$params['facilityName']));
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         }
@@ -3460,7 +3467,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
     }
     
-    public function updateSpiv3FacilityInfo($id,$params){
+    public function updateSpiv5FacilityInfo($id,$params){
         if($id > 0){
 	    $data = array(
 		'facilityid'=>$params['facilityId'],

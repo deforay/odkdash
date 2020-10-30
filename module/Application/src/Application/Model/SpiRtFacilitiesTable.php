@@ -53,13 +53,15 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
     
     public function addFacilityDetails($params){
         if(isset($params['facilityId']) && trim($params['facilityId'])!=""){
+            $province = (isset($params['province']) && trim($params['province']) !='') ? $params['province']:'';
+            $district = (isset($params['district']) && trim($params['district']) !='') ? $params['district']:'';
             $data = array(
                 'facility_id' => $params['facilityId'],
                 'facility_name' => $params['facilityName'],
                 'email' => $params['email'],
                 'contact_person' => $params['contactPerson'],
-                'district' => $params['district'],
-                'province' => $params['province'],
+                'district' => $district,
+                'province' => $province,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );
@@ -70,22 +72,26 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	
     public function updateFacilityDetails($params){
         if(isset($params['rowId']) && trim($params['rowId'])!=""){
-	    $dbAdapter = $this->adapter;
-	    $spiv3Db = new SpiFormVer3Table($dbAdapter);
-            $rowId=base64_decode($params['rowId']);
-            $data = array(
-                'facility_id' => $params['facilityId'],
-                'facility_name' => $params['facilityName'],
-                'email' => $params['email'],
-                'contact_person' => $params['contactPerson'],
-                'district' => $params['district'],
-                'province' => $params['province'],
-                'latitude' => $params['latitude'],
-                'longitude' => $params['longitude']
-            );
-	    $this->update($data,array('id'=>$rowId));
-	    //update spiv3 table facility info
-	    $spiv3Db->updateSpiv3FacilityInfo($rowId,$params);
+            $dbAdapter = $this->adapter;
+            $spiv3Db = new SpiFormVer3Table($dbAdapter);
+            $spiv5Db = new SpiFormVer5Table($dbAdapter);
+                $rowId=base64_decode($params['rowId']);
+                $province = (isset($params['province']) && trim($params['province']) !='') ? $params['province']:'';
+                $district = (isset($params['district']) && trim($params['district']) !='') ? $params['district']:'';
+                $data = array(
+                    'facility_id' => $params['facilityId'],
+                    'facility_name' => $params['facilityName'],
+                    'email' => $params['email'],
+                    'contact_person' => $params['contactPerson'],
+                    'district' => $district,
+                    'province' => $province,
+                    'latitude' => $params['latitude'],
+                    'longitude' => $params['longitude']
+                );
+            $this->update($data,array('id'=>$rowId));
+            //update spiv3 & spiv5 table facility info
+            $spiv3Db->updateSpiv3FacilityInfo($rowId,$params);
+            $spiv5Db->updateSpiv5FacilityInfo($rowId,$params);
             return $rowId;
         }
     }
@@ -258,13 +264,15 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
     
     public function updateFacilityInfo($id,$params){
 	if($id > 0){
+        $province = (isset($params['province']) && trim($params['province']) !='') ? $params['province']:'';
+        $district = (isset($params['district']) && trim($params['district']) !='') ? $params['district']:'';
 	    $data = array(
 		'facility_id'=>$params['testingFacilityId'],
 		'facility_name'=>$params['testingFacilityName'],
 		'email'=>$params['email'],
 		'contact_person'=>$params['contactPerson'],
-		'district'=>$params['district'],
-		'province'=>$params['province'],
+		'district'=>$district,
+		'province'=>$province,
 		'latitude'=>$params['latitude'],
 		'longitude'=>$params['longitude']
 	    );
@@ -281,13 +289,15 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	if($fResult){
 	    return $fResult->id;
 	}else{
+        $province = (isset($params['province']) && trim($params['province']) !='') ? $params['province']:'';
+        $district = (isset($params['district']) && trim($params['district']) !='') ? $params['district']:'';
 	    $data = array(
 		'facility_id'=>$params['testingFacilityId'],
 		'facility_name'=>$params['testingFacilityName'],
 		'email'=>$params['email'],
 		'contact_person'=>$params['contactPerson'],
-		'district'=>$params['district'],
-		'province'=>$params['province'],
+		'district'=>$district,
+		'province'=>$province,
 		'latitude'=>$params['latitude'],
 		'longitude'=>$params['longitude']
 	    );

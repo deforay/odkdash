@@ -927,7 +927,8 @@ class OdkFormService
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
-            $facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
+            //$facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
+            $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer5Table');
             if (isset($params['idList']) && $params['idList'] != '') {
                 for ($i = 0; $i < count($params['idList']); $i++) {
