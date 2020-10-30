@@ -123,7 +123,7 @@ class SpiV5Controller extends AbstractActionController
             return $this->redirect()->toUrl("/spi-v5/manage-facility");
         } else {
             $id = $this->params()->fromRoute('id');
-            $facilitiesResult = $this->odkFormService->getAllFacilityNamesV5();
+            $facilitiesResult = $this->odkFormService->getAllFacilityNames();
             $result = $this->odkFormService->getSpiV5FormData($id);
             $provinceList = $this->odkFormService->getSpiV5FormUniqueLevelNames();
             $districtList = $this->odkFormService->getSpiV3FormUniqueDistrict();

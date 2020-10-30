@@ -1,10 +1,16 @@
 <?php
 if ($id['id'] != '') {
 	$nos = str_replace("'", " ", base64_decode($id['id']));
-	$round = explode(",", trim($nos));
+	//$round = explode(",", trim($nos));
 } else {
-	$round = array();
+	//$round = array();
+	$nos = '';
 }
+
+$config = $this->GlobalConfigHelper();
+$web_version = $config['web_version'];
+$isV3 = preg_match("/v3/i", $web_version);
+$isV5 = preg_match("/v5/i", $web_version);
 ?>
 <style>
 	/*multiselect*/
@@ -21,17 +27,29 @@ if ($id['id'] != '') {
 		<div class="row">
 			<div class="col-md-12" id="righter">
 				<div class="widget widget-map">
-					<div class="widget-head"><span class="title"><b><?= $this->translate('Audit Locations'); ?></b></span>
-						<span style="margin-left: 34%;">
+					<div class="widget-head">
+					<input type="hidden" name="inpId" id="inpId" value="<?php echo $nos;?>"/>
+						
+						<span class="title"><b><?= $this->translate('Audit Locations'); ?></b></span>
+
+						<span style="margin-left: 8%;">
+							<label><?= $this->translate('Form Version'); ?></label>
+							<select class="" name="chooseFormVersion" id="chooseFormVersion" onchange="getAuditLocationsByForm(this.value)">
+								<?php if($isV3 && $isV5){ ?>
+								<option value="v3">SPI-RT Version 3</option>
+								<option value="v5" selected>SPI-RRT Version 5</option>
+								<?php }elseif($isV3){ ?>
+								<option value="v3">SPI-RT Version 3</option>
+								<?php }elseif($isV5){ ?>
+								<option value="v5">SPI-RRT Version 5</option>
+								<?php } ?>
+							</select>
+							
+						</span>
+						<span style="margin-left: 0%;">
 							<label><?= $this->translate('Audit Round'); ?></label>
 							<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
-								<?php
-								foreach ($spiV3auditRoundNo as $auditRoundNo) {
-								?>
-									<option value="<?php echo $auditRoundNo['auditroundno']; ?>" <?php echo in_array($auditRoundNo['auditroundno'], $round) ? "selected=selected" : ""; ?>><?php echo $auditRoundNo['auditroundno']; ?></option>
-								<?php
-								}
-								?>
+								
 							</select>
 							<label><?= $this->translate('Date Range'); ?></label>
 							<input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="datepicker" id="locationDateRange">
@@ -55,18 +73,51 @@ if ($id['id'] != '') {
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script type="text/javascript">
 	function getAuditLocationDetails() {
+		var formVersionId = $("#chooseFormVersion").val();
 		value = $("#auditRndNoLocations").val();
 		dateRange = $("#locationDateRange").val();
-		$.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {
+		if(formVersionId == 'v3'){
+			$.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {
 				roundno: value,
 				dateRange: dateRange
 			},
 			function(data) {
 				$("#auditLocations").html(data);
 			});
-	}
+		}
 
+		if(formVersionId == 'v5'){
+			$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-locations')); ?>", {
+				roundno: value,
+				dateRange: dateRange
+			},
+			function(data) {
+				$("#auditLocations").html(data);
+			});
+		}
+
+		
+	}
+	
+	function getAuditLocationsByForm(formType){
+		let inpId =  $("#inpId").val();
+		$.post("<?php echo $this->url('common', array('action' => 'get-audit-location-based-on-form')); ?>", {
+				formVersion: formType,
+				inpId:inpId
+			},
+			function(data) {
+				$("#auditRndNoLocations").html(data);
+				$("#auditRndNoLocations").multipleSelect({
+					placeholder: '<?= $this->translate('Please select audit round no.'); ?>',
+					width: '20%',
+					minimumCountSelected: '2'
+				});
+				//console.log(data);
+			});
+	}
 	$(document).ready(function() {
+		let formVersionId = $("#chooseFormVersion").val();
+		getAuditLocationsByForm(formVersionId);
 		getAuditLocationDetails();
 
 		$("#auditRndNoLocations").multipleSelect({

@@ -1,0 +1,17 @@
+<?php
+if (trim($id) != '') {
+	$round = explode(",", trim($nos));
+} else {
+	$round = array();
+	
+}
+$options = '';
+if(count($result) > 0){
+foreach ($result as $auditRoundNo) {
+    $selected = in_array($auditRoundNo['auditroundno'], $round) ? "selected=selected" : ""; 
+    $options.='<option value="'.$auditRoundNo['auditroundno'].'" '.$selected.'>'.$auditRoundNo['auditroundno'].'</option>';
+
+}
+}
+echo $options;
+?>

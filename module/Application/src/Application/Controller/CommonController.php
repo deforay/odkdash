@@ -51,12 +51,36 @@ class CommonController extends AbstractActionController
     {
         $request = $this->getRequest();
         if ($request->isGet()) {
-            $val = $request->getQuery();
+            $val = $request->getQuery();            
             $spiV3auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
             return new ViewModel(array(
                 'id' => $val,
                 'spiV3auditRoundNo' => $spiV3auditRoundNo
             ));
         }
+    }
+
+    public function getAuditLocationBasedOnFormAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $auditRoundNo = array();
+            $id = $params['inpId'];
+            if(trim($params["formVersion"]) == 'v3'){
+                $auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
+            }
+            if(trim($params["formVersion"]) == 'v5'){
+                $auditRoundNo = $this->odkFormService->getSpiV5FormAuditNo();
+            }
+            //\Zend\Debug\Debug::dump($auditRoundNo);die;
+        }
+        $viewModel = new ViewModel();
+        $viewModel->setVariables(array(
+            'result' => $auditRoundNo,
+            'id'=>$id
+            ))
+            ->setTerminal(true);
+
+        return $viewModel;
     }
 }

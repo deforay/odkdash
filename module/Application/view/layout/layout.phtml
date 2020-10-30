@@ -13,6 +13,7 @@ $config = $this->GlobalConfigHelper();
 // echo $commonVal->getGlobalConfigDetails();
 // $config = $commonVal->getGlobalConfigDetails();
 $web_version = $config['web_version'];
+//echo $web_version;
 //print_r($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report"));die;
 
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Roles", "index")) {
