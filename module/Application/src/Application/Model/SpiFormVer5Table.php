@@ -364,7 +364,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             if($approveStatus=='approved'){
                 //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
                 $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
-                $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue());
+                $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(),5);
             }
             
             }catch(Exception $e){
