@@ -2325,8 +2325,8 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 $facilityDb->update($data,array('facility_name'=>$params['dafaultFacilityName']));
             }
             
-            $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
-                                    ->where(array('spiv3.facilityname'=>$params['dafaultFacilityName']));
+            $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname'))
+                                    ->where(array('spiv5.facilityname'=>$params['dafaultFacilityName']));
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($aResult){
@@ -2339,8 +2339,8 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
         $c = count($params['upFaciltyName']);
         for($i=0;$i<$c;$i++){
-            $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname','id'))
-                                    ->where(array('spiv3.facilityname'=>$params['upFaciltyName'][$i]));
+            $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname','id'))
+                                    ->where(array('spiv5.facilityname'=>$params['upFaciltyName'][$i]));
             $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             

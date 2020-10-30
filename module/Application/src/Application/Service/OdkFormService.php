@@ -623,6 +623,12 @@ class OdkFormService
         return $db->mergeFacilityName($params);
     }
 
+    public function mergeFacilityNameV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->mergeFacilityName($params);
+    }
+
     public function getAuditRoundWiseData($params)
     {
         $db = $this->sm->get('SpiFormVer3Table');

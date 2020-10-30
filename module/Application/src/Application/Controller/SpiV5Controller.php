@@ -25,7 +25,7 @@ class SpiV5Controller extends AbstractActionController
         $testingPointResult = $this->odkFormService->getAllSpiV5TestingPointType();
         //echo "ww";die;
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
-
+        //var_dump($levelNamesResult);die;
         if ($request->isPost()) {
             
             $param = $request->getPost();
