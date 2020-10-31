@@ -1,5 +1,3 @@
---ilahir 13-APR-2016
-ALTER TABLE  `spi_form_v_3` ADD  `status` VARCHAR( 100 ) NULL DEFAULT  'pending';
 
 
 --ilahir 23-Apr-2016
@@ -859,3 +857,6 @@ INSERT INTO `resources` (`resource_id`, `display_name`) VALUES
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`)
  VALUES ('Application\\Controller\\SpiV5Reports', 'facility-report', 'Facility Report');
+
+--Selvam 31 Oct 2020
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Email', 'email-v5', 'Access V5');
