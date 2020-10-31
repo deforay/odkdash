@@ -355,6 +355,37 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 	}
       return $result;
     }
+
+    public function fetchFacilityProfileByAuditV5($ids){
+        $result = array();
+        $fResult = array();
+        $auditsResult = array();
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        if(isset($ids) && trim($ids)!= ''){
+            $auditId = base64_decode($ids);
+            $auditQuery = $sql->select()->from(array('spiv5'=>'spi_form_v_5'))
+                                        ->columns(array('facilityname'))
+                                        ->where(array('spiv5.id'=>$auditId));
+            $auditQueryStr = $sql->getSqlStringForSqlObject($auditQuery);
+            $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if($auditResult){
+            $auditsQuery = $sql->select()->from(array('spiv5'=>'spi_form_v_5'))
+                                             ->columns(array('id','assesmentofaudit'))
+                             ->where(array('spiv5.facilityname'=>$auditResult->facilityname,'spiv5.status'=>'approved'));
+                $auditsQueryStr = $sql->getSqlStringForSqlObject($auditsQuery);
+                $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            
+            $fQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
+                                        ->columns(array('facility_name','email'))
+                                        ->where(array('spirt3.facility_name'=>$auditResult->facilityname));
+                $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            }
+           $result = array('fResult'=>$fResult,'auditsResult'=>$auditsResult);
+        }
+          return $result;
+        }
     
     public function fetchProvinceList(){
 	$dbAdapter = $this->adapter;

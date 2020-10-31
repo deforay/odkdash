@@ -22,6 +22,8 @@ class EmailController extends AbstractActionController
 
     public function indexAction()
     {
+        $configData = $this->commonService->getGlobalConfigDetails();
+        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -54,6 +56,7 @@ class EmailController extends AbstractActionController
         $facilityService = $this->getServiceLocator()->get('FacilityService');
         $result = $odkFormService->getAllFacilityNames();
         $facilityResult = $facilityService->getFacilityProfileByAudit($ids);
+        
         return new ViewModel(array(
             'facilityName' => $result,
             'facilityResult' => $facilityResult,
@@ -93,8 +96,10 @@ class EmailController extends AbstractActionController
         }
         $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $facilityService = $this->getServiceLocator()->get('FacilityService');
+        
         $result = $odkFormService->getAllFacilityNamesV5();
         $facilityResult = $facilityService->getFacilityProfileByAuditV5($ids);
+        //var_dump($facilityResult);die;
         return new ViewModel(array(
             'facilityName' => $result,
             'facilityResult' => $facilityResult,
@@ -124,6 +129,7 @@ class EmailController extends AbstractActionController
             $params = $request->getPost();
             $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $odkFormService->getFacilitiesAuditsV5($params);
+           // var_dump($result);die;
             $viewModel = new ViewModel(array(
                 'result' => $result
             ));

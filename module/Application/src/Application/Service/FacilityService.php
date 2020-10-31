@@ -172,7 +172,7 @@ class FacilityService {
         $result = 0;
         $container = new Container('alert');
         $auditMailDb = $this->sm->get('AuditMailTable');
-        $facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer5Table');
         $commonService = new \Application\Service\CommonService();
         $config = new \Laminas\Config\Reader\Ini();
@@ -258,8 +258,8 @@ class FacilityService {
     }
 
     public function getFacilityProfileByAuditV5($ids){
-        $facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
-        return $facilityDb->fetchFacilityProfileByAudit($ids);
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchFacilityProfileByAuditV5($ids);
     }
     
     public function getProvinceList(){

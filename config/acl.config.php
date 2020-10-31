@@ -59,6 +59,7 @@ return array(
         ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
+            'email-v5' => 'allow',
         ),
         'Application\\Controller\\Facility' => array(
             'index' => 'allow',

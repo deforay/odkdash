@@ -305,7 +305,7 @@ class SpiRt5FacilitiesTable extends AbstractTableGateway {
       return $result;
     }
     
-    public function fetchFacilityProfileByAudit($ids){
+    public function fetchFacilityProfileByAuditV5($ids){
 	$result = array();
 	$fResult = array();
 	$auditsResult = array();
@@ -325,9 +325,9 @@ class SpiRt5FacilitiesTable extends AbstractTableGateway {
 	        $auditsQueryStr = $sql->getSqlStringForSqlObject($auditsQuery);
 	        $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 		
-		$fQuery = $sql->select()->from(array('spirt5'=>'spi_rt_5_facilities'))
+		$fQuery = $sql->select()->from(array('spirt3'=>'spi_rt_3_facilities'))
 	                                ->columns(array('facility_name','email'))
-	                                ->where(array('spirt5.facility_name'=>$auditResult->facilityname));
+	                                ->where(array('spirt3.facility_name'=>$auditResult->facilityname));
 	        $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
 	        $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
 	    }

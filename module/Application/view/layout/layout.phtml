@@ -229,9 +229,15 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
           <?php } ?> 
      
           <?php
-          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index")) {
+          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index") && preg_match("/v3/i", $config['web_version'])) {
           ?>
             <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'index')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email'); ?></span></a></li>
+          <?php } ?>
+
+          <?php
+          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v5") && preg_match("/v5/i", $config['web_version'])) {
+          ?>
+            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v5')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPIRRT'); ?></span></a></li>
           <?php } ?>
 
           <?php
