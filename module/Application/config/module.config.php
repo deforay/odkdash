@@ -98,6 +98,16 @@ return array(
                     ),
                 ),
             ),
+            'spi-v6-form' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v6[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'spi-facility' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -125,6 +135,16 @@ return array(
                     'route' => '/spi-v5-reports[/:action][/][:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV5Reports',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'spi-v6-reports' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v6-reports[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6Reports',
                         'action' => 'index',
                     ),
                 ),
@@ -195,6 +215,16 @@ return array(
                     'route' => '/dashboard-v5[/:action][/][:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\DashboardV5',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'dashboard-v6' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/dashboard-v6[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\DashboardV6',
                         'action' => 'index',
                     ),
                 ),

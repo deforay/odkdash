@@ -1,0 +1,1778 @@
+<?php
+use Laminas\Session\Container;
+
+$sessionLogin = new Container('credo');
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css" />
+<style>
+	.auditPointName {
+		color: #fff;
+		margin: 0;
+
+		min-width: 200px;
+		vertical-align: top;
+	}
+
+	.auditPointName:hover {
+		white-space: normal !important;
+		overflow: visible;
+		text-overflow: '';
+	}
+
+	.event a {
+		background-color: #8eaffe !important;
+		background-image: none !important;
+		color: #ffffff !important;
+		border-radius: 50%;
+	}
+
+
+	.highcharts-tooltip span {
+		width: 250px;
+		overflow: auto;
+		white-space: normal !important;
+	}
+
+	.ms-parent {
+		width: 100% !important;
+	}
+
+	.title h3 {
+		display: inline;
+		font-weight: 400;
+	}
+
+	/*multiselect*/
+	/*.ui-state-hover, .ui-widget-content .ui-state-hover{color: #1c94c4;border: 1px solid #cccccc;background:none;}
+.ui-state-active{color: #1c94c4;border: 1px solid #cccccc;background:none;}
+.ui-multiselect-header{display: none;}
+*/
+	.widget-calendar .cal-container .cal-calendar .ui-datepicker table.ui-datepicker-calendar tr td a.ui-state-highlight {
+		background: none !important;
+		color: #888;
+		border: none;
+	}
+
+	.limitBar {
+		color: #555;
+		background-color: #fff;
+		background-image: none;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		padding: 1px;
+		vertical-align: middle;
+	}
+
+	.highcharts-legend {
+		display: block !important;
+	}
+
+
+	.center {
+		text-align: center;
+	}
+</style>
+<script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<div class="am-content">
+	<div class="page-head">
+		<span style="">
+			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> SPI-RRT Audits<a id="showFilterBtn" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;" onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a></h2>
+		</span>
+	</div>
+	<div class="main-content">
+		<!--+general-chart("classes", "title", "height", "id", "counter value", "counter desc", tools enabled (use true or false))-->
+		<div class="row" id="advanceFilter" style="display: none;">
+			<div class="col-sm-12">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<form role="form" class="form-horizontal">
+							<div class="form-group">
+								<label for="date" class="col-sm-2 control-label">Date Range</label>
+								<div class=" col-lg-4">
+									<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="datepicker form-control" id="dateRange" readonly>
+								</div>
+								<label for="auditRndNoFilter" class="col-sm-2 control-label"><?= $this->translate('Audit Round No.'); ?></label>
+								<div class=" col-lg-4">
+									<select class="form-control" id="auditRndNoFilter">
+										<option value=''><?= $this->translate('All'); ?></option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label for="level" class="col-sm-2 control-label">Level</label>
+								<div class=" col-lg-4">
+									<select class="form-control" id="level">
+										<option value="">All</option>
+										<option value="Region/Province/Zone">Region/Province/Zone</option>
+										<option value="District">District</option>
+										<option value="Referral center">Referral center</option>
+										<option value="HealthCenter">Health center</option>
+										<option value="Dispensary">Dispensary</option>
+										<option value="Health Post">Health Post</option>
+										<option value="Other">Other</option>
+									</select>
+								</div>
+								<label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+								<div class=" col-lg-4">
+									<select class="form-control" id="affiliation">
+										<option value="">All</option>
+										<option value="Government">Government</option>
+										<option value="Private">Private</option>
+										<option value="Faith-based Organization">Faith-based Organization</option>
+										<option value="Non-governmental organization">Non-governmental organization</option>
+										<option value="Other">Other</option>
+									</select>
+								</div>
+							</div>
+							<!-- <div class="form-group">
+								<label for="province" class="col-sm-2 control-label">Province</label>
+								<div class=" col-lg-4">
+									<select class="" id="provinceDistrict" multiple="multiple" onchange="getAllDistrict();">
+										<?php
+										foreach ($levelNamesResult as $levelName) {
+										?>
+											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+								<label for="district" class="col-sm-2 control-label">District</label>
+								<div class=" col-lg-4 districtFilter">
+									<select class="form-control" id="district">
+										<?php
+										foreach ($levelNamesResult as $levelName) {
+										?>
+											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+							</div> -->
+							<div class="form-group">
+								<label for="scoreLevel" class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
+								<div class=" col-lg-4">
+									<select class="form-control" id="scoreLevel">
+										<option value="">All</option>
+										<option value="0">0</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+									</select>
+								</div>
+								<label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
+								<div class=" col-lg-4">
+									<select class="form-control" id="testPoint">
+										<option value="">All</option>
+										<?php
+										foreach ($testingPointResult as $val) {
+										?>
+											<option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="testPointNameSection"></div>
+							</div>
+							<div class="form-group" style="text-align:center;">
+								<button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
+								&nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span>Hide Advanced Option</span></a>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="widget widget-pie">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+								<h3><?php echo $this->translate('Overall Performance'); ?></h3>
+							</div>
+							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apall')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div class="row chart-container" style="min-height:430px !important;">
+						<div class="col-md-12">
+							<div id="widget-top-1" style="width: 100%;"></div>
+						</div>
+					</div>
+					<div class="row chart-info">
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="widget widget-pie widget-pie-stats">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+								<h3 style="font-size: 18px;"><?php echo $this->translate('Performance - Last 180 days'); ?></h3>
+							</div>
+							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apl180')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div class="row chart-container" style="min-height:430px !important;">
+						<div class="col-md-12">
+							<div id="widget-top-3" style="width: 100%;"></div>
+						</div>
+					</div>
+					<div class="row chart-info">
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="widget widget-pie">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+								<h3><?php echo $this->translate('Audit Performance'); ?></h3>
+							</div>
+							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('ap')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+					</div>
+
+					Date : <input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
+					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()"><?php echo $this->translate('OK'); ?></a>
+					<div id="dateRangePickerValue">
+						<div class="row chart-container">
+							<div class="col-md-12">
+								<div id="widget-top-2" style="width: 100%;">
+									<?php
+									if (isset($perflast30[0]['totalDataPoints']) && trim($perflast30[0]['totalDataPoints']) == 0) {
+										echo "<div style='height:380px;text-align:center;'><h3>" . $this->translate('No data available') . "</h3></div>";
+									}
+									?>
+								</div>
+							</div>
+						</div>
+						<div class="row chart-info">
+							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['oldestDate']) ?></span></div>
+							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['newestDate']) ?></span></div>
+							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="widget">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-12 col-sm-12 col-md-12">
+								<h3><?= $this->translate('Performance of High Volume Sites'); ?></h3>
+							</div>
+						</div>
+						<div style="margin-top:2%;" class="row">
+							<div class="col-lg-6 col-md-6">
+								<input style="width:70%;margin-left:1%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="testingVolumeDate">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()"><?php echo $this->translate('OK'); ?></a>
+							</div>
+							<div class="col-lg-6 col-md-6" style="text-align:right;">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('hv')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div class="chart-container" id="testVolumeValues">
+						<div style="width:100%;height:304px" id="volumeChart"></div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="col-md-6">
+				<div class="widget">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+								<h3><?php echo $this->translate('Latest Audits'); ?></h3>
+							</div>
+							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('la')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div class="chart-container">
+						<div id="audit-points-barchart" style="width:100%;height:345px"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6" id="lefter">
+				<div class="widget widget-radar widget-pie">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-7 col-sm-7 col-md-7 col-xs-7">
+								<h3><?php echo $this->translate('Audit Performance'); ?></h3>
+							</div>
+							<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+						<div style="margin-top:2%;" class="row">
+							<div class="col-lg-6 col-md-6">
+								<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
+									<?php
+									foreach ($spiV5auditRoundNo as $auditRoundNo) {
+									?>
+										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
+
+							<div class="col-lg-6 col-md-6">
+								<label style=""><?php echo $this->translate('Date'); ?></label>
+								<input style="width:65%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="audiPerformanceDate">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditDetails()"><?php echo $this->translate('OK'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div id="radarChart"></div>
+				</div>
+				<div class="widget widget-radar widget-pie">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+								<h3><?php echo $this->translate('Worst Performing Questions'); ?></h3>
+							</div>
+							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3" style="white-space:nowrap">
+								<label style=""><?php echo $this->translate('Limit'); ?></label>
+								<select class="limitBar" id="limitBar" style="" onchange="getAuditWorstDetails()">
+									<option value="5">5</option>
+									<option value="10" selected="selected">10</option>
+									<option value="15">15</option>
+									<option value="20">20</option>
+									<option value="30">30</option>
+								</select>
+							</div>
+						</div>
+
+						<div style="margin-top:2%;" class="row">
+							<div class="col-lg-6 col-md-6">
+								<select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+									<?php
+									foreach ($spiV5auditRoundNo as $auditRoundNo) {
+									?>
+										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6">
+								<label style="margin-left: 1%;"><?= $this->translate('Date'); ?></label>
+								<input style="width:57%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="worstDate">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()"><?php echo $this->translate('OK'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div class="chart-container" id="zeroCountChart" style="height:220px;"></div>
+				</div>
+			</div>
+
+			<div class="col-md-6" id="righter">
+				<div class="widget widget-map">
+
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+								<h3><?php echo $this->translate('Audit Locations'); ?></h3>
+							</div>
+						</div>
+
+						<div style="margin-top:2%;" class="row">
+							<div class="col-lg-6 col-md-6">
+								<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+									<?php
+									foreach ($spiV5auditRoundNo as $auditRoundNo) {
+									?>
+										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6">
+								<label style="margin-left: 1%;"><?= $this->translate('Date'); ?></label>
+								<input style="width:60%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="locationDateRange">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()"><?php echo $this->translate('OK'); ?></a>
+							</div>
+						</div>
+					</div>
+
+					<div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<div class="widget">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+								<h3><?php echo $this->translate('Audit Dates'); ?></h3>
+							</div>
+							<div class="col-lg-2 col-sm-2 col-md-2 col-xs-2" style="text-align:center;">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('ad')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div class="chart-container">
+						<div style="width:100%;height:340px" id="auditDates"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php
+		$loginContainer = new \Laminas\Session\Container('credo');
+		$role = $loginContainer->roleCode;
+		$acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+			$update = true;
+		} else {
+			$update = false;
+		}
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+			$approve = true;
+		} else {
+			$approve = false;
+		}
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\Email', 'index')) {
+			$email = true;
+		} else {
+			$email = false;
+		}
+
+		?>
+
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<div class="widget widget-radar widget-pie">
+					<div class="widget-head">
+						<span class="title">
+							<h3><?php echo $this->translate('Latest Audits'); ?></h3>
+						</span>
+					</div>
+					<div class="table-container">
+						<table id="latestAuditsTbl" class="datatables table table-striped table-bordered table-condensed">
+							<thead>
+								<tr>
+									<th style="width:8%;"><?php echo $this->translate('Facility ID') ?></th>
+									<th><?php echo $this->translate('Facility name'); ?></th>
+									<th style="width:10%;"><?php echo $this->translate('Audit Date'); ?></th>
+									<th style="width:10%;"><?php echo $this->translate('Received Date'); ?></th>
+									<th style="width:8%;"><?php echo $this->translate('Status'); ?></th>
+									<?php if ($update || $approve || $email) { ?>
+										<th><?php echo $this->translate('Actions'); ?></th>
+									<?php  } ?>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								$count = 0;
+
+								foreach ($rawSubmissions as $row) {
+
+									if ($count == 25) break;
+
+								?>
+									<tr>
+										<td><?php echo $row['facilityid']; ?></td>
+										<td><?php echo $row['facilityname']; ?></td>
+										<td><?php echo $this->humanDateFormat($row['assesmentofaudit']); ?></td>
+										<td><?php echo $this->humanDateFormat($row['today']); ?></td>
+										<td><?php echo ucfirst($row['status']); ?></td>
+
+										<?php if ($update || $approve || $email) { ?>
+											<td>
+												<?php
+												if ($update) {
+												?> <a href="/spi-v5/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+												<?php }
+												if ($email && ($row['status'] == 'approved')) { ?>
+													<a href="/email/email-v5/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
+												<?php
+												}
+
+												if ($row['status'] == 'pending' && $approve) { ?>
+													<a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')" style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;
+												<?php } ?>
+											</td>
+
+										<?php } ?>
+									</tr>
+								<?php
+									$count++;
+								}
+								?>
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM&libraries=drawing,geometry,places"></script>
+
+<script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
+
+<script src="<?php echo $this->basePath('assets/js/highcharts.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highchart-exporting.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/highchart-offline-exporting.js'); ?>"></script>
+<!--<script src="https://code.highcharts.com/modules/exporting.js"></script>-->
+<!--<script src="https://code.highcharts.com/modules/offline-exporting.js"></script>-->
+<script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
+
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script type="text/javascript">
+	var color1 = "red";
+	var color2 = "orange";
+	var color3 = "yellow";
+	var color4 = "#8DD63E";
+	var color5 = "#528A16";
+
+	//Get the template css colors into js vars
+	function getColor(c) {
+		var tmp = $("<div>", {
+			class: c
+		}).appendTo("body");
+		var color = tmp.css("background-color");
+		tmp.remove();
+
+		return color;
+	}
+
+	var colors = {};
+	colors.primary = getColor('clr-primary');
+	colors.success = getColor('clr-success');
+	colors.info = getColor('clr-info');
+	colors.warning = getColor('clr-warning');
+	colors.danger = getColor('clr-danger');
+	colors.alt1 = getColor('clr-alt1');
+	colors.alt2 = getColor('clr-alt2');
+	colors.alt3 = getColor('clr-alt3');
+	colors.alt4 = getColor('clr-alt4');
+
+	function widget_top_1() {
+
+
+		<?php
+
+		$perf1[0]['level0'] = ($perf1[0]['level0'] > 0) ? $perf1[0]['level0'] : 0;
+		$perf1[0]['level1'] = ($perf1[0]['level1'] > 0) ? $perf1[0]['level1'] : 0;
+		$perf1[0]['level2'] = ($perf1[0]['level2'] > 0) ? $perf1[0]['level2'] : 0;
+		$perf1[0]['level3'] = ($perf1[0]['level3'] > 0) ? $perf1[0]['level3'] : 0;
+		$perf1[0]['level4'] = ($perf1[0]['level4'] > 0) ? $perf1[0]['level4'] : 0;
+
+		?>
+
+		var data = [{
+				y: <?php echo $perf1[0]['level0']; ?>,
+				color: color1,
+				name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level0']; ?>",
+				url: '/view-data?source=apall&level=level0'
+			},
+			{
+				y: <?php echo $perf1[0]['level1']; ?>,
+				color: color2,
+				name: "<?= $this->translate('Level 1 (40-59)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level1']; ?>",
+				url: '/view-data?source=apall&level=level1'
+			},
+			{
+				y: <?php echo $perf1[0]['level2']; ?>,
+				color: color3,
+				name: "<?= $this->translate('Level 2 (60-79)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level2']; ?>",
+				url: '/view-data?source=apall&level=level2'
+			},
+			{
+				y: <?php echo $perf1[0]['level3']; ?>,
+				color: color4,
+				name: "<?= $this->translate('Level 3 (80-89)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level3']; ?>",
+				url: '/view-data?source=apall&level=level3'
+			},
+			{
+				y: <?php echo $perf1[0]['level4']; ?>,
+				color: color5,
+				name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level4']; ?>",
+				url: '/view-data?source=apall&level=level4'
+			},
+
+
+		];
+
+		<?php $total = $perf1[0]['level0'] + $perf1[0]['level1'] + $perf1[0]['level2'] + $perf1[0]['level3'] + $perf1[0]['level4']; ?>
+
+		$('#widget-top-1').highcharts({
+			chart: {
+				plotBackgroundColor: null,
+				plotBorderWidth: null,
+				plotShadow: false,
+				type: 'pie'
+			},
+			title: {
+				text: ''
+			},
+			exporting: {
+				chartOptions: {
+					subtitle: {
+						text: 'Total Audits:- <?php echo $total; ?>',
+					}
+				}
+			},
+			tooltip: {
+				pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
+			},
+			legend: {
+				layout: 'vertical',
+				align: 'center',
+				verticalAlign: 'bottom',
+				backgroundColor: '#f3f3f3',
+				borderWidth: 0,
+				useHTML: true,
+				itemMarginBottom: 10,
+				labelFormatter: function() {
+					return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">' + this.percentage.toFixed(1) + '% (No. of Audits ' + Highcharts.numberFormat(this.y, 0) + ')</span></div>';
+				}
+
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: {
+						enabled: false
+					},
+					showInLegend: true
+				}
+			},
+			series: [{
+				name: 'Audit Performance',
+				colorByPoint: true,
+				point: {
+					events: {
+						click: function(e) {
+							//console.log(e.point.url);
+							window.open(e.point.url, '_blank');
+							e.preventDefault();
+						}
+					}
+				},
+				data: data
+			}]
+		});
+
+	}
+
+	function widget_top_2() {
+		<?php
+		if ($perflast30[0]['totalDataPoints'] > 0) {
+			$perflast30[0]['level0'] = ($perflast30[0]['level0'] > 0) ? $perflast30[0]['level0'] : 0;
+			$perflast30[0]['level1'] = ($perflast30[0]['level1'] > 0) ? $perflast30[0]['level1'] : 0;
+			$perflast30[0]['level2'] = ($perflast30[0]['level2'] > 0) ? $perflast30[0]['level2'] : 0;
+			$perflast30[0]['level3'] = ($perflast30[0]['level3'] > 0) ? $perflast30[0]['level3'] : 0;
+			$perflast30[0]['level4'] = ($perflast30[0]['level4'] > 0) ? $perflast30[0]['level4'] : 0;
+
+		?>
+
+			var data = [{
+					y: <?php echo $perflast30[0]['level0']; ?>,
+					color: color1,
+					name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
+					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level0']; ?>",
+					url: '/view-data?source=ap&level=level0&drange=' + $("#spiRTv3").val()
+				},
+				{
+					y: <?php echo $perflast30[0]['level1']; ?>,
+					color: color2,
+					name: "<?= $this->translate('Level 1 (40-59)'); ?>",
+					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level1']; ?>",
+					url: '/view-data?source=ap&level=level1&drange=' + $("#spiRTv3").val()
+				},
+				{
+					y: <?php echo $perflast30[0]['level2']; ?>,
+					color: color3,
+					name: "<?= $this->translate('Level 2 (60-79)'); ?>",
+					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level2']; ?>",
+					url: '/view-data?source=ap&level=level2&drange=' + $("#spiRTv3").val()
+				},
+				{
+					y: <?php echo $perflast30[0]['level3']; ?>,
+					color: color4,
+					name: "<?= $this->translate('Level 3 (80-89)'); ?>",
+					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level3']; ?>",
+					url: '/view-data?source=ap&level=level3&drange=' + $("#spiRTv3").val()
+				},
+				{
+					y: <?php echo $perflast30[0]['level4']; ?>,
+					color: color5,
+					name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
+					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level4']; ?>",
+					url: '/view-data?source=ap&level=level4&drange=' + $("#spiRTv3").val()
+				},
+			];
+
+			<?php $total = $perflast30[0]['level0'] + $perflast30[0]['level1'] + $perflast30[0]['level2'] + $perflast30[0]['level3'] + $perflast30[0]['level4']; ?>
+			$('#widget-top-2').highcharts({
+				chart: {
+					plotBackgroundColor: null,
+					plotBorderWidth: null,
+					plotShadow: false,
+					type: 'pie'
+				},
+				title: {
+					text: ''
+				},
+				exporting: {
+					chartOptions: {
+						subtitle: {
+							text: 'Total Audits:- <?php echo $total; ?>',
+						}
+					}
+				},
+				tooltip: {
+					pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
+				},
+
+				legend: {
+					layout: 'vertical',
+					align: 'center',
+					verticalAlign: 'bottom',
+					backgroundColor: '#f3f3f3',
+					borderWidth: 0,
+					useHTML: true,
+					itemMarginBottom: 10,
+					labelFormatter: function() {
+						return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">' + this.percentage.toFixed(1) + '% (No. of Audits ' + Highcharts.numberFormat(this.y, 0) + ')</span></div>';
+					}
+
+				},
+				plotOptions: {
+					pie: {
+						allowPointSelect: true,
+						cursor: 'pointer',
+						dataLabels: {
+							enabled: false
+						},
+						showInLegend: true,
+						shadow: false,
+						center: ['50%', '50%']
+					}
+				},
+				series: [{
+					name: 'Audit Performance',
+					colorByPoint: true,
+					point: {
+						events: {
+							click: function(e) {
+								window.open(e.point.url, '_blank');
+								e.preventDefault();
+							}
+						}
+					},
+					data: data
+				}]
+			});
+
+		<?php
+		}
+		?>
+
+
+	}
+
+	function widget_top_3() {
+
+
+		<?php
+
+		$perflast180[0]['level0'] = ($perflast180[0]['level0'] > 0) ? $perflast180[0]['level0'] : 0;
+		$perflast180[0]['level1'] = ($perflast180[0]['level1'] > 0) ? $perflast180[0]['level1'] : 0;
+		$perflast180[0]['level2'] = ($perflast180[0]['level2'] > 0) ? $perflast180[0]['level2'] : 0;
+		$perflast180[0]['level3'] = ($perflast180[0]['level3'] > 0) ? $perflast180[0]['level3'] : 0;
+		$perflast180[0]['level4'] = ($perflast180[0]['level4'] > 0) ? $perflast180[0]['level4'] : 0;
+
+		?>
+
+		var data = [{
+				y: <?php echo $perflast180[0]['level0']; ?>,
+				color: color1,
+				name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
+				number: "<?= $this->translate('No. of Audits') . " " . $perflast180[0]['level0']; ?>",
+				url: '/view-data?source=apl180&level=level0'
+			},
+			{
+				y: <?php echo $perflast180[0]['level1']; ?>,
+				color: color2,
+				name: "<?= $this->translate('Level 1 (40-59)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level1']; ?>",
+				url: '/view-data?source=apl180&level=level1'
+			},
+			{
+				y: <?php echo $perflast180[0]['level2']; ?>,
+				color: color3,
+				name: "<?= $this->translate('Level 2 (60-79)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level2']; ?>",
+				url: '/view-data?source=apl180&level=level2'
+			},
+			{
+				y: <?php echo $perflast180[0]['level3']; ?>,
+				color: color4,
+				name: "<?= $this->translate('Level 3 (80-89)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level3']; ?>",
+				url: '/view-data?source=apl180&level=level3'
+			},
+			{
+				y: <?php echo $perflast180[0]['level4']; ?>,
+				color: color5,
+				name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level4']; ?>",
+				url: '/view-data?source=apl180&level=level4'
+			}
+		];
+		<?php $total = $perflast180[0]['level0'] + $perflast180[0]['level1'] + $perflast180[0]['level2'] + $perflast180[0]['level3'] + $perflast180[0]['level4']; ?>
+		$('#widget-top-3').highcharts({
+			chart: {
+				plotBackgroundColor: null,
+				plotBorderWidth: null,
+				plotShadow: false,
+				type: 'pie'
+			},
+			title: {
+				text: ''
+			},
+			exporting: {
+				chartOptions: {
+					subtitle: {
+						text: 'Total Audits:- <?php echo $total; ?>',
+					}
+				}
+			},
+			tooltip: {
+				pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.number})</b>'
+			},
+
+			legend: {
+				layout: 'vertical',
+				align: 'center',
+				verticalAlign: 'bottom',
+				backgroundColor: '#f3f3f3',
+				borderWidth: 0,
+				useHTML: true,
+				itemMarginBottom: 10,
+				labelFormatter: function() {
+					return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">' + this.percentage.toFixed(1) + '% (No. of Audits ' + Highcharts.numberFormat(this.y, 0) + ')</span></div>';
+				}
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: {
+						enabled: false
+					},
+					showInLegend: true
+				}
+			},
+			series: [{
+				name: 'Audit Performance',
+				colorByPoint: true,
+				point: {
+					events: {
+						click: function(e) {
+							window.open(e.point.url, '_blank');
+							e.preventDefault();
+						}
+					}
+				},
+				data: data
+			}]
+
+		});
+
+
+	}
+
+	function bar_chart() {
+
+		<?php
+
+		$counter = 0;
+		$barData = array();
+		$volumeData = array();
+		$labNameData = array();
+		foreach ($allSubmissions as $row) {
+			if ($counter == 20) break;
+			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
+				$color = '#FF0000';
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] < 60) {
+				$color = '#FFA500';
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] < 80) {
+				$color = '#FFFF00';
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] < 90) {
+				$color = '#8DD63E';
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+				$color = '#528A16';
+			}
+
+			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCENTAGE'], 2) . ", color : '" . $color . "' }";
+			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
+			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
+			$counter++;
+		}
+		?>
+
+		$('#audit-points-barchart').highcharts({
+			chart: {
+				zoomType: 'xy'
+			},
+			title: {
+				text: ''
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: [<?php echo implode(",", $labNameData); ?>],
+				crosshair: true,
+				labels: {
+					enabled: false
+				}
+			},
+			legend: {
+				enabled: true
+			},
+			yAxis: [
+
+				{ // Primary yAxis
+					labels: {
+						format: '{value}%',
+						style: {
+							color: Highcharts.getOptions().colors[1]
+						}
+					},
+					title: {
+						text: '<?= $this->translate('Audit score in %'); ?>',
+						style: {
+							color: Highcharts.getOptions().colors[1]
+						}
+					},
+					min: 0,
+					max: 100
+				}, { // Secondary yAxis
+					title: {
+						text: '<?= $this->translate('Testing Volume'); ?>',
+						style: {
+							color: Highcharts.getOptions().colors[0]
+						}
+					},
+					labels: {
+						format: '{value}',
+						style: {
+							color: Highcharts.getOptions().colors[0]
+						}
+					},
+					opposite: true
+				}
+			],
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="padding:0;font-size:10px">{series.name}: </td>' +
+					'<td style="padding:0;font-size:10px">{point.y:.2f}</td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+					pointPadding: 0,
+					borderWidth: 0
+				}
+			},
+			series: [{
+				name: '<?= $this->translate('Audit Score Percentage'); ?>',
+				data: [<?php echo implode(",", $barData); ?>],
+				stack: 'score',
+				type: 'column',
+				tooltip: {
+					valueSuffix: ' %'
+				}
+			}, {
+				name: '<?= $this->translate('Testing Volume'); ?>',
+				type: 'column',
+				data: [<?php echo implode(",", $volumeData); ?>],
+				stack: 'volume',
+				color: {
+					pattern: "<?php echo $this->basePath('assets/img/pattern3.png'); ?>",
+					width: 6,
+					height: 6
+				},
+				yAxis: 1,
+				tooltip: {
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
+				}
+			}]
+		});
+
+	}
+
+	function getspiRTv3() {
+		dateRange = $("#spiRTv3").val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'spirtv5-datewise')); ?>", {
+				dateRange: dateRange,
+				auditRndNo: $("#auditRndNoFilter").val(),
+				testPoint: $("#testPoint").val(),
+				testPointName: $("#testPointName").val(),
+				level: $("#level").val(),
+				affiliation: $("#affiliation").val(),
+				province: $("#provinceDistrict").val(),
+				district: $("#district").val(),
+				scoreLevel: $("#scoreLevel").val()
+			},
+			function(data) {
+				$("#dateRangePickerValue").html(data);
+			});
+	}
+
+	function getTestingVolumeValue() {
+		dateRange = $("#testingVolumeDate").val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'testing-volume-datewise')); ?>", {
+				dateRange: dateRange,
+				auditRndNo: $("#auditRndNoFilter").val(),
+				testPoint: $("#testPoint").val(),
+				testPointName: $("#testPointName").val(),
+				level: $("#level").val(),
+				affiliation: $("#affiliation").val(),
+				province: $("#provinceDistrict").val(),
+				district: $("#district").val(),
+				scoreLevel: $("#scoreLevel").val()
+			},
+			function(data) {
+				$("#testVolumeValues").html(data);
+			});
+	}
+
+	function getAuditWorstDetails() {
+		value = $("#auditRndWorstNo").val();
+		limitBar = $("#limitBar").val();
+		dateRange = $("#worstDate").val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'worst-performance')); ?>", {
+				roundno: value,
+				limitBar: limitBar,
+				dateRange: dateRange,
+				auditRndNo: $("#auditRndNoFilter").val(),
+				testPoint: $("#testPoint").val(),
+				testPointName: $("#testPointName").val(),
+				level: $("#level").val(),
+				affiliation: $("#affiliation").val(),
+				province: $("#provinceDistrict").val(),
+				district: $("#district").val(),
+				scoreLevel: $("#scoreLevel").val()
+			},
+			function(data) {
+				$("#zeroCountChart").html(data);
+			});
+
+	}
+
+	function getAuditDetails() {
+		value = $("#auditRndNo").val();
+		dateRange = $("#audiPerformanceDate").val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-performance')); ?>", {
+				roundno: value,
+				dateRange: dateRange,
+				auditRndNo: $("#auditRndNoFilter").val(),
+				testPoint: $("#testPoint").val(),
+				testPointName: $("#testPointName").val(),
+				level: $("#level").val(),
+				affiliation: $("#affiliation").val(),
+				province: $("#provinceDistrict").val(),
+				district: $("#district").val(),
+				scoreLevel: $("#scoreLevel").val()
+			},
+			function(data) {
+				$("#radarChart").html(data);
+			});
+
+	}
+
+	function getAuditLocationDetails() {
+		value = $("#auditRndNoLocations").val();
+		dateRange = $("#locationDateRange").val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-locations')); ?>", {
+				roundno: value,
+				dateRange: dateRange,
+				auditRndNo: $("#auditRndNoFilter").val(),
+				testPoint: $("#testPoint").val(),
+				testPointName: $("#testPointName").val(),
+				level: $("#level").val(),
+				affiliation: $("#affiliation").val(),
+				province: $("#provinceDistrict").val(),
+				district: $("#district").val(),
+				scoreLevel: $("#scoreLevel").val()
+			},
+			function(data) {
+				$("#auditLocations").html(data);
+			});
+	}
+
+	//Calendar Widget
+	function calendar_widget() {
+		var widget = $(".widget-calendar");
+		var calNotes = $(".cal-notes", widget);
+		var calNotesDay = $(".day", calNotes);
+		var calNotesDate = $(".date", calNotes);
+
+		//Calculate the weekday name
+		var d = new Date();
+		var weekday = new Array(7);
+		weekday[0] = "Sunday";
+		weekday[1] = "Monday";
+		weekday[2] = "Tuesday";
+		weekday[3] = "Wednesday";
+		weekday[4] = "Thursday";
+		weekday[5] = "Friday";
+		weekday[6] = "Saturday";
+
+		var weekdayName = weekday[d.getDay()];
+
+		calNotesDay.html(weekdayName);
+
+		//Calculate the month name
+		var month = new Array();
+		month[0] = "January";
+		month[1] = "February";
+		month[2] = "March";
+		month[3] = "April";
+		month[4] = "May";
+		month[5] = "June";
+		month[6] = "July";
+		month[7] = "August";
+		month[8] = "September";
+		month[9] = "October";
+		month[10] = "November";
+		month[11] = "December";
+
+		var monthName = month[d.getMonth()];
+		var monthDay = d.getDate();
+
+		calNotesDate.html(monthName + " " + monthDay);
+
+		if (typeof jQuery.ui != 'undefined') {
+
+
+			<?php
+
+			$eventDatesArray = array();
+			$eventCount = array();
+			foreach ($allSubmissions as $row) {
+				$humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+				$eventDatesArray[] = "'" . $humanDate . "'";
+				if (isset($eventCount[$humanDate])) {
+					$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
+				} else {
+					$eventCount[$humanDate] = 1;
+				}
+			}
+
+			$countJson = json_encode($eventCount);
+
+			if ($countJson != null && $countJson != "") {
+			?>
+				var countJson = <?php echo $countJson; ?>
+			<?php
+			} else {
+			?>
+				var countJson = null;
+			<?php
+			}
+			?>
+
+
+			var eventDates = [<?php echo implode(",", $eventDatesArray); ?>];
+
+
+
+			$(".ui-datepicker").datepicker({
+				dateFormat: 'dd-M-yy',
+				onSelect: function(s, o) {
+					var sd = new Date(s);
+					var weekdayName = weekday[sd.getDay()];
+					var monthName = month[sd.getMonth()];
+					var monthDay = sd.getDate();
+					calNotesDay.html(weekdayName);
+					calNotesDate.html(monthName + " " + monthDay);
+				},
+				beforeShowDay: function(date) {
+					hdate = $.datepicker.formatDate('dd-M-yy', date);
+					if ($.inArray(hdate, eventDates) > -1) {
+						return [true, "event", "Audits on this date : " + countJson[hdate]];
+					} else {
+						return [true, '', "No recorded audits on this date"];
+					}
+				}
+			});
+		}
+	}
+
+	function getdata() {
+		var Base64 = {
+			_keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+			encode: function(e) {
+				var t = "";
+				var n, r, i, s, o, u, a;
+				var f = 0;
+				e = Base64._utf8_encode(e);
+				while (f < e.length) {
+					n = e.charCodeAt(f++);
+					r = e.charCodeAt(f++);
+					i = e.charCodeAt(f++);
+					s = n >> 2;
+					o = (n & 3) << 4 | r >> 4;
+					u = (r & 15) << 2 | i >> 6;
+					a = i & 63;
+					if (isNaN(r)) {
+						u = a = 64
+					} else if (isNaN(i)) {
+						a = 64
+					}
+					t = t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a)
+				}
+				return t
+			},
+			decode: function(e) {
+				var t = "";
+				var n, r, i;
+				var s, o, u, a;
+				var f = 0;
+				e = e.replace(/[^A-Za-z0-9+/=]/g, "");
+				while (f < e.length) {
+					s = this._keyStr.indexOf(e.charAt(f++));
+					o = this._keyStr.indexOf(e.charAt(f++));
+					u = this._keyStr.indexOf(e.charAt(f++));
+					a = this._keyStr.indexOf(e.charAt(f++));
+					n = s << 2 | o >> 4;
+					r = (o & 15) << 4 | u >> 2;
+					i = (u & 3) << 6 | a;
+					t = t + String.fromCharCode(n);
+					if (u != 64) {
+						t = t + String.fromCharCode(r)
+					}
+					if (a != 64) {
+						t = t + String.fromCharCode(i)
+					}
+				}
+				t = Base64._utf8_decode(t);
+				return t
+			},
+			_utf8_encode: function(e) {
+				e = e.replace(/rn/g, "n");
+				var t = "";
+				for (var n = 0; n < e.length; n++) {
+					var r = e.charCodeAt(n);
+					if (r < 128) {
+						t += String.fromCharCode(r)
+					} else if (r > 127 && r < 2048) {
+						t += String.fromCharCode(r >> 6 | 192);
+						t += String.fromCharCode(r & 63 | 128)
+					} else {
+						t += String.fromCharCode(r >> 12 | 224);
+						t += String.fromCharCode(r >> 6 & 63 | 128);
+						t += String.fromCharCode(r & 63 | 128)
+					}
+				}
+				return t
+			},
+			_utf8_decode: function(e) {
+				var t = "";
+				var n = 0;
+				var r = c1 = c2 = 0;
+				while (n < e.length) {
+					r = e.charCodeAt(n);
+					if (r < 128) {
+						t += String.fromCharCode(r);
+						n++
+					} else if (r > 191 && r < 224) {
+						c2 = e.charCodeAt(n + 1);
+						t += String.fromCharCode((r & 31) << 6 | c2 & 63);
+						n += 2
+					} else {
+						c2 = e.charCodeAt(n + 1);
+						c3 = e.charCodeAt(n + 2);
+						t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+						n += 3
+					}
+				}
+				return t
+			}
+		}
+
+		value = $("#auditRndNoLocations").val();
+		if (value != null) {
+			var encodedString = Base64.encode("'" + value + "'");
+			window.open('/common/audit-locations?id=' + encodedString, '_blank');
+		} else {
+			window.open('/common/audit-locations', '_blank');
+		}
+	}
+	$(document).ready(function() {
+		//initialize the javascript
+		var startDate = "";
+		var endDate = "";
+		$('.datepicker').daterangepicker({
+				format: 'DD-MMM-YYYY',
+				startDate: moment().subtract('days', 29),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+					'Last 7 Days': [moment().subtract('days', 6), moment()],
+					'Last 30 Days': [moment().subtract('days', 29), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+				},
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
+		<?php
+		$start_date = date('d-M-Y');
+		$end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
+		?>
+		$("#spiRTv3").val('<?php echo $end_date . " - " . $start_date; ?>');
+
+		$("#latestAuditsTbl").DataTable({
+			"order": [
+				[5, "desc"],
+				[2, "desc"]
+			],
+			"pageLength": 50
+		});
+
+		widget_top_1();
+		widget_top_2();
+		widget_top_3();
+		//radar_chart();
+		getAuditDetails();
+		//calendar_widget();
+		bar_chart();
+		//zeroCountsBarChart();
+		getAuditWorstDetails();
+
+		//getAuditLocationDetails();
+
+
+		$("#provinceDistrict").multipleSelect({
+			placeholder: 'Select Province',
+			width: '100%'
+		});
+		$("#auditRndNo").multipleSelect({
+			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
+			width: '31%',
+			minimumCountSelected: '2'
+		});
+		$("#auditRndWorstNo").multipleSelect({
+			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
+			width: '25%',
+			minimumCountSelected: '2'
+		});
+		$("#auditRndNoLocations").multipleSelect({
+			placeholder: '<?= $this->translate('Select Audit round(s)'); ?>',
+			width: '30%',
+			minimumCountSelected: '2'
+		});
+
+	});
+
+
+
+	function approveStatus(id) {
+		conf = confirm("Are you sure you want to approve this audit ?");
+		if (conf) {
+			$.post("<?php echo $this->url('spi-v5-form', array('action' => 'approve-status')); ?>", {
+					id: id
+				},
+				function(data) {
+					if (data > 0) {
+						alert("Audit updated successfully");
+						window.location.href = window.location;
+					}
+
+				});
+		}
+	}
+
+	function downloadSpiderPDF() {
+		value = $("#auditRndNo").val();
+		dateRange = $("#audiPerformanceDate").val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'download-spider-chart')); ?>", {
+				roundno: value,
+				dateRange: dateRange
+			},
+			function(data) {
+				if (data == "" || data == null || data == undefined) {
+					alert('<?= $this->translate('Unable to generate download'); ?>');
+				} else {
+					window.open('/temporary/' + data, '_blank');
+				}
+			});
+	}
+
+	$(function() {
+		<?php
+		$counter = 0;
+		$barData = array();
+		$volumeData = array();
+		$labNameData = array();
+
+		foreach ($testingVolume as $row) {
+			if ($counter == 10) break;
+			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
+				$color = '#FF0000';
+				$level = 0;
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] < 60) {
+				$color = '#FFA500';
+				$level = 1;
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] < 80) {
+				$color = '#FFFF00';
+				$level = 2;
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] < 90) {
+				$color = '#8DD63E';
+				$level = 3;
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+				$color = '#528A16';
+				$level = 4;
+			}
+
+			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
+			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
+			$testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
+			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : "  . "<br>'");
+			$counter++;
+		}
+		?>
+
+		$('#volumeChart').highcharts({
+			chart: {
+				zoomType: 'xy'
+			},
+			title: {
+				text: ''
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: [{
+				categories: [<?php echo implode(",", $labNameData); ?>],
+				crosshair: true,
+				labels: {
+					enabled: false
+				}
+			}],
+			yAxis: [{
+				labels: {
+					format: '{value}',
+					style: {
+						color: Highcharts.getOptions().colors[1]
+					}
+				},
+				title: {
+					text: '<?= $this->translate('No. of Testers'); ?>',
+					style: {
+						color: Highcharts.getOptions().colors[1]
+					}
+				},
+				opposite: true
+
+			}, { // Secondary yAxis
+				gridLineWidth: 0,
+				title: {
+					text: 'Level',
+					style: {
+						color: Highcharts.getOptions().colors[0]
+					}
+				},
+				labels: {
+					format: '{value}',
+					style: {
+						color: Highcharts.getOptions().colors[0]
+					}
+				},
+				min: 0,
+				max: 4,
+				opposite: true
+
+			}, { // Tertiary yAxis
+				gridLineWidth: 0,
+				title: {
+					text: '<?= $this->translate('Testing Volume'); ?>',
+					style: {
+						color: Highcharts.getOptions().colors[1]
+					}
+				},
+				labels: {
+					format: '{value}',
+					style: {
+						color: Highcharts.getOptions().colors[1]
+					}
+				}
+			}],
+			tooltip: {
+				shared: true
+			},
+			plotOptions: {
+				column: {
+					pointPadding: 0,
+					borderWidth: 0
+				},
+			},
+			legend: {
+				enabled: true
+			},
+			series: [{
+				name: '<?= $this->translate('Testing Volume'); ?>',
+				type: 'column',
+				yAxis: 2,
+				data: [<?php echo implode(",", $volumeData); ?>],
+				color: {
+					pattern: "<?php echo $this->basePath('assets/img/pattern3.png'); ?>",
+					width: 6,
+					height: 6
+				},
+				tooltip: {
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
+				}
+
+			}, {
+				name: '<?= $this->translate('Testers'); ?>',
+				type: 'column',
+				data: [<?php echo implode(",", $testerData); ?>],
+				tooltip: {
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
+				}
+
+			}, {
+				name: '<?= $this->translate('Level'); ?>',
+				type: 'column',
+				yAxis: 1,
+				data: [<?php echo implode(",", $levelData); ?>],
+				tooltip: {
+					valueSuffix: ' '
+				},
+				color: '#a058c4',
+
+			}]
+		});
+		<?php
+		$eventDatesArray = array();
+		$eventDatesArrayFormat = array();
+		$auditDataList = array();
+		$eventCount = array();
+		foreach ($allSubmissions as $row) {
+			$humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+			$eventDatesArray[] = "'" . $humanDate . "'";
+			$eventDatesArrayFormat[] = $humanDate;
+			if (isset($eventCount[$humanDate])) {
+				$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
+			} else {
+				$eventCount[$humanDate] = 1;
+			}
+
+			if (count($eventCount) >= 40) {
+				break;
+			}
+		}
+
+		$eventDatesArray = array_unique($eventDatesArray);
+		$eventDatesArrayFormat = array_unique($eventDatesArrayFormat);
+
+		foreach ($eventDatesArrayFormat as $val) {
+			$auditDataList[] = array(
+				'y' => $eventCount[$val],
+				'url' => '/dashboard/audit-details/' . base64_encode($val)
+			);
+		}
+		$auditDataList = json_encode($auditDataList);
+
+		?>
+		$('#auditDates').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: ''
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: [<?php echo implode(",", $eventDatesArray); ?>],
+				crosshair: true
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '<?= $this->translate('Audit Counts'); ?>'
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+					pointPadding: 0.2,
+					borderWidth: 0
+				},
+				series: {
+					cursor: 'pointer',
+					point: {
+						events: {
+							click: function() {
+								location.href = this.options.url;
+							}
+						}
+					}
+				}
+			},
+			series: [{
+				name: '<?= $this->translate('Audit Counts'); ?>',
+				data: $.parseJSON('<?php echo $auditDataList; ?>')
+			}]
+		});
+
+
+	});
+
+	function viewSpiV3Data(source) {
+		var params = '';
+		if (source == 'hv') {
+			var testVolumeDate = $("#testingVolumeDate").val();
+			params = '&drange=' + testVolumeDate;
+		} else if (source == 'ap') {
+			var auditDate = $("#spiRTv3").val();
+			params = '&drange=' + auditDate;
+		} else if (source == 'apspi') {
+			if ($("#auditRndNo").val() == null) {
+				var auditRoundNo = '';
+			} else {
+				var auditRoundNo = $("#auditRndNo").val();
+			}
+			var auditPerformanceDate = $("#audiPerformanceDate").val();
+			params = '&roundno=' + auditRoundNo + '&drange=' + auditPerformanceDate;
+		}
+		window.open('/view-data?source=' + source + params, '_blank');
+	}
+
+	function getTestingPointTypeNames() {
+		$.blockUI();
+		var testingPointType = $('#testPoint').val();
+		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'get-testing-point-type-names')); ?>", {
+				testingPointType: testingPointType
+			},
+			function(data) {
+				$('.testPointNameSection').html(data);
+				$.unblockUI();
+			});
+	}
+
+	function hideAdvanceSearch(hideId, showId) {
+		$("#" + hideId).hide();
+		$("#" + showId).show();
+		$("#dateRange,#auditRndNoFilter,#level,#affiliation,#scoreLevel,#testPoint").val('');
+	}
+
+	function search() {
+		$.blockUI({
+			message: '<h1>Loading...</h1>'
+		});
+		$("#spiRTv3,#testingVolumeDate,#audiPerformanceDate,#locationDateRange,#worstDate").val($("#dateRange").val());
+		getspiRTv3();
+		getTestingVolumeValue();
+		getAuditDetails();
+		getAuditLocationDetails();
+		getAuditWorstDetails();
+		$.unblockUI();
+	}
+
+	function getAllDistrict() {
+		var province = $('#provinceDistrict').val();
+		if (province != '' && province != null) {
+			$.post("<?php echo $this->url('spi-v3-form', array('action' => 'get-district-by-province')); ?>", {
+					province: province
+				},
+				function(data) {
+					$('.districtFilter').html(data);
+					$("#district").multipleSelect({
+						placeholder: 'Select District(s)',
+						width: '100%'
+					});
+				});
+		} else {
+			$('#district').html('');
+		}
+	}
+</script>

@@ -78,8 +78,9 @@
                      <label for="web_version" class="col-sm-2 control-label">Web Version <span class="mandatory">*</span></label>
                        <div class="col-lg-4">
                            <select name="web_version[]" id="web_version" class=" " title="Please select web version" multiple="multiple">
-                               <option value="v5"<?php if(preg_match("/v5/i", $config['web_version'])) { echo "selected='selected'";}  ?>>Version 5 (SPI-RRT)</option>
                                <option value="v3" <?php if(preg_match("/v3/i", $config['web_version'])) { echo "selected='selected'";}  ?>>Version 3 (SPI-RT)</option>
+                               <option value="v5"<?php if(preg_match("/v5/i", $config['web_version'])) { echo "selected='selected'";}  ?>>Version 5 (SPI-RRT)</option>
+                               <option value="v6" <?php if(preg_match("/v6/i", $config['web_version'])) { echo "selected='selected'";}  ?>>Version 6 (SPI-RRT)</option>
                            </select>
                        </div>
                    </div>

@@ -6,7 +6,7 @@ use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Json\Json;
 
-class SpiV5Controller extends AbstractActionController
+class SpiV6Controller extends AbstractActionController
 {
 
 
@@ -22,14 +22,14 @@ class SpiV5Controller extends AbstractActionController
     public function indexAction()
     {
         $request = $this->getRequest();
-        $testingPointResult = $this->odkFormService->getAllSpiV5TestingPointType();
+        $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
         //echo "ww";die;
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
         //var_dump($levelNamesResult);die;
         if ($request->isPost()) {
             
             $param = $request->getPost();
-            $result = $this->odkFormService->getAllSpiV5SubmissionsDetails($param);
+            $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         return new ViewModel(array(
@@ -55,7 +55,7 @@ class SpiV5Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             
-            $allSubmissions = $this->odkFormService->exportAllV5Submissions($params);
+            $allSubmissions = $this->odkFormService->exportAllV6Submissions($params);
 // echo $allSubmissions;die;
             $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
@@ -69,7 +69,7 @@ class SpiV5Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->approveSpiV5FormStatus($params);
+            $result = $this->odkFormService->approveSpiV6FormStatus($params);
             $viewModel = new ViewModel(array(
                 'result' => $result
             ));
@@ -85,7 +85,7 @@ class SpiV5Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getSpiV5FormData($params['auditId']);
+            $result = $this->odkFormService->getSpiV6FormData($params['auditId']);
             $viewModel = new ViewModel(array(
                 'formData' => $result,
                 'configData' => $configData,
@@ -95,7 +95,7 @@ class SpiV5Controller extends AbstractActionController
             return $viewModel;
         } else {
             $id = ($this->params()->fromRoute('id'));
-            $formData = $this->odkFormService->getSpiV5FormData($id);
+            $formData = $this->odkFormService->getSpiV6FormData($id);
             //echo "<pre>";
             //print_r($formData);die;
             $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
@@ -344,8 +344,7 @@ class SpiV5Controller extends AbstractActionController
     public function duplicateAction()
     {
         $request = $this->getRequest();
-        
-        $result = $this->odkFormService->getAllV5DuplicateSubmissionsDetails();
+        $result = $this->odkFormService->getAllV6DuplicateSubmissionsDetails();
         return new ViewModel(array('result' => $result));
     }
 
@@ -354,7 +353,7 @@ class SpiV5Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->removeAuditV5($params);
+            $result = $this->odkFormService->removeAuditV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
@@ -381,7 +380,7 @@ class SpiV5Controller extends AbstractActionController
     {
         $request = $this->getRequest();
         
-        $result = $this->odkFormService->getV5DownloadFilesRow();
+        $result = $this->odkFormService->getV6DownloadFilesRow();
         
         return new ViewModel(array('result' => $result));
     }

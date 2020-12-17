@@ -140,7 +140,7 @@ class GlobalTable extends AbstractTableGateway {
         foreach ($rResult as $aRow) {
            $row = array();
             $row[] = ucwords($aRow['display_name']);
-            $row[] = ucwords($aRow['global_value']);
+            $row[] = $aRow['global_value'];
             $output['aaData'][] = $row;
         }
         return $output;
