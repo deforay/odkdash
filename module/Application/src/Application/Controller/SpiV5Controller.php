@@ -252,13 +252,13 @@ class SpiV5Controller extends AbstractActionController
         }
     }
 
-    public function viewDataAction()
+    public function viewDataV5Action()
     {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getViewDataDetails($params);
+            $result = $this->odkFormService->getViewDataDetailsV5($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         $source = '';

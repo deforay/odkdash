@@ -120,7 +120,7 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $this->odkFormService->updateSpiV5Form($params);
-            return $this->redirect()->toUrl("/spi-v5/manage-facility");
+            return $this->redirect()->toUrl("/spi-v6/manage-facility");
         } else {
             $id = $this->params()->fromRoute('id');
             $facilitiesResult = $this->odkFormService->getAllFacilityNames();
@@ -141,8 +141,8 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseDataV5($params);
-            $perf1 = $this->odkFormService->getPerformanceV5($params);
+            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseDataV6($params);
+            $perf1 = $this->odkFormService->getPerformanceV6($params);
             //var_dump($perf1);die;
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData, 'perf1' => $perf1))
@@ -156,8 +156,8 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $zeroCounts = $this->odkFormService->getZeroQuestionCountsV5($params);
-            $spiV3Labels = $this->odkFormService->getSpiV5FormLabels();
+            $zeroCounts = $this->odkFormService->getZeroQuestionCountsV6($params);
+            $spiV3Labels = $this->odkFormService->getSpiV6FormLabels();
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('zeroCounts' => $zeroCounts, 'spiV3Labels' => $spiV3Labels, 'limitBar' => $params['limitBar']))
                 ->setTerminal(true);
@@ -170,7 +170,7 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocationV5($params);
+            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocationV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
                 ->setTerminal(true);
@@ -184,7 +184,7 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $this->odkFormService->getAllSubmissionsDatasV5($param);
+            $result = $this->odkFormService->getAllSubmissionsDatasV6($param);
             return $this->getResponse()->setContent(Json::encode($result));
         } else {
             $result = $this->odkFormService->getPendingFacilityNamesV5();
@@ -218,7 +218,7 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->deleteAuditDataV5($params);
+            $result = $this->odkFormService->deleteAuditDataV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
@@ -226,12 +226,12 @@ class SpiV6Controller extends AbstractActionController
         }
     }
 
-    public function spirtv5DatewiseAction()
+    public function spirtv6DatewiseAction()
     {
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $perflast30 = $this->odkFormService->getPerformanceLast30DaysV5($params);
+            $perflast30 = $this->odkFormService->getPerformanceLast30DaysV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('perflast30' => $perflast30))
                 ->setTerminal(true);
@@ -244,7 +244,7 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV5($params);
+            $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('testingVolume' => $testingVolume))
                 ->setTerminal(true);
@@ -252,13 +252,12 @@ class SpiV6Controller extends AbstractActionController
         }
     }
 
-    public function viewDataAction()
+    public function viewDataV6Action()
     {
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getViewDataDetails($params);
+            $result = $this->odkFormService->getViewDataDetailsV6($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         $source = '';
@@ -277,8 +276,8 @@ class SpiV6Controller extends AbstractActionController
         if ($this->params()->fromQuery('drange')) {
             $drange = $this->params()->fromQuery('drange');
         }
-        $testingPointResult = $this->odkFormService->getAllTestingPointType();
-        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+        $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
+        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         return new ViewModel(array(
             'source' => $source,
             'roundno' => $roundno,
@@ -294,7 +293,7 @@ class SpiV6Controller extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             
-            $result = $this->odkFormService->getTestingPointTypeNamesByTypeV5($params);
+            $result = $this->odkFormService->getTestingPointTypeNamesByTypeV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
@@ -308,7 +307,7 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->getAuditRoundWiseDataChartV5($params);
+            $result = $this->odkFormService->getAuditRoundWiseDataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result, 'configData' => $configData))

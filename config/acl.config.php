@@ -87,6 +87,7 @@ return array(
             'duplicate' => 'allow',
             'edit' => 'allow',
             'export' => 'allow',
+            'view-data-v5' => 'allow',
         ),
         'Application\\Controller\\SpiV6' => array(
             'index' => 'allow',
@@ -99,6 +100,7 @@ return array(
             'duplicate' => 'allow',
             'edit' => 'allow',
             'export' => 'allow',
+            'view-data-v6' => 'allow',
         ),
         'Application\\Controller\\SpiV3' => array(
             'index' => 'allow',

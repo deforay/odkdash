@@ -209,7 +209,7 @@ $sessionLogin = new Container('credo');
 								<h3><?php echo $this->translate('Overall Performance'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apall')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apall')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -233,7 +233,7 @@ $sessionLogin = new Container('credo');
 								<h3 style="font-size: 18px;"><?php echo $this->translate('Performance - Last 180 days'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apl180')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apl180')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -258,13 +258,13 @@ $sessionLogin = new Container('credo');
 								<h3><?php echo $this->translate('Audit Performance'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('ap')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('ap')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
 
 					Date : <input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
-					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()"><?php echo $this->translate('OK'); ?></a>
+					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv6()"><?php echo $this->translate('OK'); ?></a>
 					<div id="dateRangePickerValue">
 						<div class="row chart-container">
 							<div class="col-md-12">
@@ -301,7 +301,7 @@ $sessionLogin = new Container('credo');
 								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()"><?php echo $this->translate('OK'); ?></a>
 							</div>
 							<div class="col-lg-6 col-md-6" style="text-align:right;">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('hv')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('hv')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -320,7 +320,7 @@ $sessionLogin = new Container('credo');
 								<h3><?php echo $this->translate('Latest Audits'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('la')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('la')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -340,14 +340,14 @@ $sessionLogin = new Container('credo');
 							</div>
 							<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
 								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 						<div style="margin-top:2%;" class="row">
 							<div class="col-lg-6 col-md-6">
 								<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
 									<?php
-									foreach ($spiV5auditRoundNo as $auditRoundNo) {
+									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 									?>
 										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
 									<?php
@@ -387,7 +387,7 @@ $sessionLogin = new Container('credo');
 							<div class="col-lg-6 col-md-6">
 								<select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
 									<?php
-									foreach ($spiV5auditRoundNo as $auditRoundNo) {
+									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 									?>
 										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
 									<?php
@@ -420,7 +420,7 @@ $sessionLogin = new Container('credo');
 							<div class="col-lg-6 col-md-6">
 								<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
 									<?php
-									foreach ($spiV5auditRoundNo as $auditRoundNo) {
+									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 									?>
 										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
 									<?php
@@ -453,7 +453,7 @@ $sessionLogin = new Container('credo');
 								<h3><?php echo $this->translate('Audit Dates'); ?></h3>
 							</div>
 							<div class="col-lg-2 col-sm-2 col-md-2 col-xs-2" style="text-align:center;">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV3Data('ad')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('ad')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -527,7 +527,7 @@ $sessionLogin = new Container('credo');
 											<td>
 												<?php
 												if ($update) {
-												?> <a href="/spi-v5/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+												?> <a href="/spi-v6/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
 													<a href="/email/email-v5/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
@@ -1070,9 +1070,9 @@ $sessionLogin = new Container('credo');
 
 	}
 
-	function getspiRTv3() {
+	function getspiRTv6() {
 		dateRange = $("#spiRTv3").val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'spirtv5-datewise')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'spirtv6-datewise')); ?>", {
 				dateRange: dateRange,
 				auditRndNo: $("#auditRndNoFilter").val(),
 				testPoint: $("#testPoint").val(),
@@ -1090,7 +1090,7 @@ $sessionLogin = new Container('credo');
 
 	function getTestingVolumeValue() {
 		dateRange = $("#testingVolumeDate").val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'testing-volume-datewise')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'testing-volume-datewise')); ?>", {
 				dateRange: dateRange,
 				auditRndNo: $("#auditRndNoFilter").val(),
 				testPoint: $("#testPoint").val(),
@@ -1110,7 +1110,7 @@ $sessionLogin = new Container('credo');
 		value = $("#auditRndWorstNo").val();
 		limitBar = $("#limitBar").val();
 		dateRange = $("#worstDate").val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'worst-performance')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'worst-performance')); ?>", {
 				roundno: value,
 				limitBar: limitBar,
 				dateRange: dateRange,
@@ -1132,7 +1132,7 @@ $sessionLogin = new Container('credo');
 	function getAuditDetails() {
 		value = $("#auditRndNo").val();
 		dateRange = $("#audiPerformanceDate").val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-performance')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-performance')); ?>", {
 				roundno: value,
 				dateRange: dateRange,
 				auditRndNo: $("#auditRndNoFilter").val(),
@@ -1153,7 +1153,7 @@ $sessionLogin = new Container('credo');
 	function getAuditLocationDetails() {
 		value = $("#auditRndNoLocations").val();
 		dateRange = $("#locationDateRange").val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-locations')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-locations')); ?>", {
 				roundno: value,
 				dateRange: dateRange,
 				auditRndNo: $("#auditRndNoFilter").val(),
@@ -1445,7 +1445,7 @@ $sessionLogin = new Container('credo');
 	function approveStatus(id) {
 		conf = confirm("Are you sure you want to approve this audit ?");
 		if (conf) {
-			$.post("<?php echo $this->url('spi-v5-form', array('action' => 'approve-status')); ?>", {
+			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'approve-status')); ?>", {
 					id: id
 				},
 				function(data) {
@@ -1461,7 +1461,7 @@ $sessionLogin = new Container('credo');
 	function downloadSpiderPDF() {
 		value = $("#auditRndNo").val();
 		dateRange = $("#audiPerformanceDate").val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'download-spider-chart')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-spider-chart')); ?>", {
 				roundno: value,
 				dateRange: dateRange
 			},
@@ -1707,7 +1707,7 @@ $sessionLogin = new Container('credo');
 
 	});
 
-	function viewSpiV3Data(source) {
+	function viewSpiV6Data(source) {
 		var params = '';
 		if (source == 'hv') {
 			var testVolumeDate = $("#testingVolumeDate").val();
@@ -1724,13 +1724,13 @@ $sessionLogin = new Container('credo');
 			var auditPerformanceDate = $("#audiPerformanceDate").val();
 			params = '&roundno=' + auditRoundNo + '&drange=' + auditPerformanceDate;
 		}
-		window.open('/view-data?source=' + source + params, '_blank');
+		window.open('/view-data-v6?source=' + source + params, '_blank');
 	}
 
 	function getTestingPointTypeNames() {
 		$.blockUI();
 		var testingPointType = $('#testPoint').val();
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'get-testing-point-type-names')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
 				testingPointType: testingPointType
 			},
 			function(data) {
@@ -1750,7 +1750,7 @@ $sessionLogin = new Container('credo');
 			message: '<h1>Loading...</h1>'
 		});
 		$("#spiRTv3,#testingVolumeDate,#audiPerformanceDate,#locationDateRange,#worstDate").val($("#dateRange").val());
-		getspiRTv3();
+		getspiRTv6();
 		getTestingVolumeValue();
 		getAuditDetails();
 		getAuditLocationDetails();

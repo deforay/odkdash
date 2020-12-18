@@ -20,6 +20,7 @@ use Application\Model\SpiRt5FacilitiesTable;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
 use Application\Model\SpiForm5LabelsTable;
+use Application\Model\SpiForm6LabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
@@ -298,6 +299,11 @@ class Module
                 'SpiForm5LabelsTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiForm5LabelsTable($dbAdapter);
+                    return $table;
+                },
+                'SpiForm6LabelsTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiForm6LabelsTable($dbAdapter);
                     return $table;
                 },
                 'SpiRtFacilitiesTable' => function ($sm) {

@@ -55,6 +55,12 @@ class OdkFormService
         return $db->saveData($params);
     }
 
+    public function saveSpiFormVer6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->saveData($params);
+    }
+
     public function getPerformance($params)
     {
         $db = $this->sm->get('SpiFormVer3Table');
@@ -4278,4 +4284,197 @@ class OdkFormService
         return $db->addDownloadDataDetails($params);
     }
 
+    public function getPerformanceV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getPerformanceV6($params);
+    }
+
+    public function getPerformanceLast30DaysV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getPerformanceLast30DaysV6($params);
+    }
+
+    public function getPerformanceLast180DaysV6($params = null)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getPerformanceLast180DaysV6();
+    }
+
+    public function getAllApprovedSubmissionsV6($sortOrder = 'DESC')
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllApprovedSubmissionsV6($sortOrder);
+    }
+
+    public function getAllApprovedTestingVolumeV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAllApprovedTestingVolumeV6($params);
+    }
+
+    public function getAllSubmissionsV6($sortOrder = 'DESC')
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAllSubmissionsV6($sortOrder);
+    }
+
+    //get all audit round no
+    public function getSpiV6FormAuditNo()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchSpiV6FormAuditNo();
+    }
+
+    public function getSpiV6FormUniqueLevelNames()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchSpiV6FormUniqueLevelNames();
+    }
+
+    public function getAllTestingPointTypeV6()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllTestingPointTypeV6();
+    }
+
+    public function updateSpiV6Form($params)
+    {
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $db = $this->sm->get('SpiFormVer6Table');
+            $result = $db->updateSpiV6FormDetails($params);
+            if ($result > 0) {
+                $adapter->commit();
+                $container = new Container('alert');
+                $container->alertMsg = 'Form details updated successfully';
+                return $result;
+            }
+        } catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    public function getAllSubmissionsDatasV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllSubmissionsDatas($params, $acl);
+    }
+
+    public function deleteAuditDataV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->deleteAuditRowData($params);
+    }
+
+    public function getZeroQuestionCountsV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getZeroQuestionCountsV6($params);
+    }
+
+    public function getSpiV6FormLabels()
+    {
+        $db = $this->sm->get('SpiForm5LabelsTable');
+        return $db->getAllLabels();
+    }
+
+    public function getAuditRoundWiseDataV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAuditRoundWiseDataV6($params);
+    }
+
+    public function getAllApprovedSubmissionLocationV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllApprovedSubmissionLocationV6($params);
+    }
+
+    //download spider chart pdf
+    public function getAuditRoundWiseDataChartV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseDataV6($params);
+        $MyData = new Data();
+        /* Create and populate the pData object */
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
+        $MyData->setAbscissa("Label");
+
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
+        //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
+        //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
+        //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
+
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+        //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
+        //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
+
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar.png");
+        return $fileName;
+    }
+
+    public function getTestingPointTypeNamesByTypeV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchTestingPointTypeNamesByTypeV6($params);
+    }
+
+    public function getViewDataDetailsV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchViewDataDetails($params);
+    }
+
+    public function getViewDataDetailsV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->fetchViewDataDetails($params);
+    }
 }

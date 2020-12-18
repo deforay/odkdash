@@ -28,18 +28,18 @@ class DashboardV6Controller extends AbstractActionController
     {
         $params = array();
         //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $perf1 = $this->odkFormService->getPerformanceV5($params);
-        $perflast30 = $this->odkFormService->getPerformanceLast30DaysV5('');
-        $perflast180 = $this->odkFormService->getPerformanceLast180DaysV5();
-        $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV5();
-        $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV5('');
-        $rawSubmissions = $this->odkFormService->getAllSubmissionsV5();
+        $perf1 = $this->odkFormService->getPerformanceV6($params);
+        $perflast30 = $this->odkFormService->getPerformanceLast30DaysV6('');
+        $perflast180 = $this->odkFormService->getPerformanceLast180DaysV6();
+        $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV6();
+        $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6('');
+        $rawSubmissions = $this->odkFormService->getAllSubmissionsV6();
         //$auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData('');
         //$zeroCounts = $this->odkFormService->getZeroQuestionCounts();
         //$spiV3Labels = $this->odkFormService->getSpiV3FormLabels();
-        $spiV5auditRoundNo = $this->odkFormService->getSpiV5FormAuditNo();
-        $levelNamesResult = $this->odkFormService->getSpiV5FormUniqueLevelNames();
-        $testingPointResult = $this->odkFormService->getAllTestingPointTypeV5();
+        $spiV6auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
+        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
+        $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
         
         // print_r($perflast30);die;
         return new ViewModel(array(
@@ -52,7 +52,7 @@ class DashboardV6Controller extends AbstractActionController
             //'auditRoundWiseData' => $auditRoundWiseData,
             //'spiV3Labels' => $spiV3Labels,
             //'zeroCounts' => $zeroCounts,
-            'spiV5auditRoundNo' => $spiV5auditRoundNo,
+            'spiV6auditRoundNo' => $spiV6auditRoundNo,
             'testingPointResult' => $testingPointResult,
             'levelNamesResult' => $levelNamesResult
         ));

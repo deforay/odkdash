@@ -239,6 +239,26 @@ return array(
                     ),
                 ),
             ),
+            'view-data-v6' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-v6',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
+                        'action' => 'view-data-v6',
+                    ),
+                ),
+            ),
+            'view-data-v5' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-v5',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV5',
+                        'action' => 'view-data-v5',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
