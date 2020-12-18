@@ -136,8 +136,8 @@ if ($h < 52) {
 $pdfContent = '<br><br><br><br>';
 $pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
 $pdfContent .= '<tr>';
-$pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('temporary/radar-spiv5.png') . '" alt="PDF" /></td>';
-$pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/piechart-spiv5.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('temporary/radar-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/piechart-spiv6.png') . '" alt="PDF" /></td>';
 $pdfContent .= '</tr>';
 $pdfContent .= '</table><br><br><br><br>';
 
@@ -182,7 +182,7 @@ $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
 // print_r($pdfContent);die;
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
-$fileName = "SPI-V5.pdf";
+$fileName = "SPI-V6.pdf";
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
 $pdf->Output($filePath, "F");
 echo $fileName;

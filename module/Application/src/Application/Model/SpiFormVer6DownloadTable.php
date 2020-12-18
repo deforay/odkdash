@@ -58,10 +58,10 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
         $queryStr = $sql->getSqlStringForSqlObject($query);
         $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($queryResult) {
-            $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
-                ->where('spiv5.status != "deleted"');
+            $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                ->where('spiv6.status != "deleted"');
             if (isset($queryResult->auditroundno) && $queryResult->auditroundno != '') {
-                $sQuery = $sQuery->where("spiv5.auditroundno='" . $queryResult->auditroundno . "'");
+                $sQuery = $sQuery->where("spiv6.auditroundno='" . $queryResult->auditroundno . "'");
             }
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
@@ -71,39 +71,39 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
                     $end_date = $this->dateFormat(trim($dateField[2]));
                 }
-                $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $start_date . "'", "spiv5.assesmentofaudit <='" . $end_date . "'"));
+                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date . "'", "spiv6.assesmentofaudit <='" . $end_date . "'"));
             }
             if (isset($queryResult->testingpointtype) && $queryResult->testingpointtype != '') {
                 
                 
                     if (strtolower(trim($queryResult->testingpointtype)) != 'other') {
-                        $sQuery = $sQuery->where("spiv5.testingpointtype='" . $queryResult->testingpointtype . "'");
+                        $sQuery = $sQuery->where("spiv6.testingpointtype='" . $queryResult->testingpointtype . "'");
                     } else {
-                        $sQuery = $sQuery->where("spiv5.testingpointtype_other='" . $queryResult->testingpointtype . "'");
+                        $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $queryResult->testingpointtype . "'");
                     }
                 
             }
             if (isset($queryResult->level) && $queryResult->level != '') {
-                $sQuery = $sQuery->where("spiv5.level='" . $queryResult->level . "'");
+                $sQuery = $sQuery->where("spiv6.level='" . $queryResult->level . "'");
             }
             if (isset($queryResult->affiliation) && $queryResult->affiliation != '') {
-                $sQuery = $sQuery->where("spiv5.affiliation='" . $queryResult->affiliation . "'");
+                $sQuery = $sQuery->where("spiv6.affiliation='" . $queryResult->affiliation . "'");
             }
             if (isset($queryResult->level_name) && $queryResult->level_name != '') {
                 $provinces = explode(",", $queryResult->level_name);
-                $sQuery = $sQuery->where('spiv5.level_name IN ("' . implode('", "', $provinces) . '")');
+                $sQuery = $sQuery->where('spiv6.level_name IN ("' . implode('", "', $provinces) . '")');
             }
             if (isset($queryResult->AUDIT_SCORE_PERCENTAGE) && $queryResult->AUDIT_SCORE_PERCENTAGE != '') {
                 if ($queryResult->AUDIT_SCORE_PERCENTAGE == 0) {
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
                 } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 1) {
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
                 } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 2) {
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
                 } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 3) {
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
                 } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 4) {
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
             $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);

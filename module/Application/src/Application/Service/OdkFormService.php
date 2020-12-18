@@ -4109,28 +4109,28 @@ class OdkFormService
                 $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
                 $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
                 $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
-            $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
-            $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
-            $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
-            $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
-            $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
+                $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
+                $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
+                $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
+                $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
+                $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
             
             // print_r(($sResult));die;
            
@@ -4147,4 +4147,135 @@ class OdkFormService
             //return "";
         }
     }
+
+    public function getSpiV6PerformancePieChart($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getPerformanceV6($params);
+        // echo "Prasath";die;
+        $MyData = new Data();
+        if (count($result) > 0) {
+            foreach ($result as $key => $data) {
+                $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
+                $MyData->setSerieDescription("Level" . $key);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Level" . $key, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        
+        $percentage = $result[0]['level0'] + $result[0]['level1'] + $result[0]['level2'] + $result[0]['level3'] + $result[0]['level4'];
+        
+        /* Define the absissa serie */
+        $MyData->addPoints(
+            array(
+                $this->translator->translate('Level 0 (Below 40)') . "&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level0'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" .  $result[0]['level0'] . ")",
+                $this->translator->translate('Level 1 (40-59)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level1'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level1'] . ")",
+                $this->translator->translate('Level 2 (60-79)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level2'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level2'] . ")",
+                $this->translator->translate('Level 3 (80-89)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level3'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level3'] . ")",
+                $this->translator->translate('Level 4 (90 and above)') . "&nbsp;" . round(($result[0]['level4'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level4'] . ")"
+            ),
+            "Labels"
+        );
+        $MyData->setAbscissa("Labels");
+        
+        /* Create the pChart object */
+        $myPicture = new Image(400, 510, $MyData);
+        $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
+        $path = font_path . DIRECTORY_SEPARATOR;
+        
+        
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
+       
+        $PieChart = new Pie($myPicture, $MyData);
+        $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => TRUE));
+        $PieChart->drawPieLegend(5, 390);
+        $fileName =  'piechart-spiv6.png';
+        $myPicture->drawText(540, 200, "Extended AA pass / Splitted", ["R" => 0, "G" => 0, "B" => 0, "Align" => TEXT_ALIGN_TOPMIDDLE]);
+        $fileName = 'piechart-spiv6.png';
+        $PieChart->pChartObject->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        
+        //header('Content-Type: text/plain');
+        //var_dump($path);die;
+        //$result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart-spiv5.png");
+        return $fileName;
+    }
+
+    public function getSpiV6AuditRoundWiseDataChart($params)
+    {
+        
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseDataV6($params);
+        $MyData = new Data();
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2), round($adata['RTRI_SCORE'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit","RTRT Surveillance"), "Label");
+        $MyData->setAbscissa("Label");
+        
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
+        //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
+        //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
+        //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
+
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+        
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+        //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
+        //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
+        
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+        
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+        
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+        
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-spiv6.png';
+        //print_r($fileName);die;
+        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
+    public function addV6DownloadData($params)
+    {
+        $db = $this->sm->get('SpiFormVer6DownloadTable');
+        return $db->addDownloadDataDetails($params);
+    }
+
 }

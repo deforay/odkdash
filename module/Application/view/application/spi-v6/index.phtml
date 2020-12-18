@@ -409,7 +409,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $a
     // var district = $('#district').val();
     var scoreLevel = $('#scoreLevel').val();
     var testPoint = $('#testPoint').val();
-    $.post("<?php echo $this->url('spi-v5-form', array('action' => 'export-as-pdf')); ?>", {
+    $.post("<?php echo $this->url('spi-v6-form', array('action' => 'export-as-pdf')); ?>", {
         dateRange: dateRange,
         auditRndNo: auditRndNo,
         level: level,
@@ -442,7 +442,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $a
     var scoreLevel = $('#scoreLevel').val();
     var testPoint = $('#testPoint').val();
     //var testPointName = ($('#testPointName').length > 0) ? $('#testPointName').val() : '';
-    $.post("<?php echo $this->url('spi-v5-form', array('action' => 'save-download-data')); ?>", {
+    $.post("<?php echo $this->url('spi-v6-form', array('action' => 'save-download-data')); ?>", {
         dateRange: dateRange,
         auditRndNo: auditRndNo,
         level: level,

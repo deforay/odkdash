@@ -56,7 +56,7 @@ class SpiV6Controller extends AbstractActionController
             $params = $request->getPost();
             
             $allSubmissions = $this->odkFormService->exportAllV6Submissions($params);
-// echo $allSubmissions;die;
+            // print_r($allSubmissions);die;
             $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
             $viewModel->setTerminal(true);
@@ -323,13 +323,13 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $this->odkFormService->getAllSpiV5SubmissionsDetails($param);
+            $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
             
            
             $configData = $this->commonService->getGlobalConfigDetails();
             
-            $pieResult = $this->odkFormService->getSpiV5PerformancePieChart($param);
-            $spiderResult = $this->odkFormService->getSpiV5AuditRoundWiseDataChart($param);
+            $pieResult = $this->odkFormService->getSpiV6PerformancePieChart($param);
+            $spiderResult = $this->odkFormService->getSpiV6AuditRoundWiseDataChart($param);
            // var_dump($spiderResult);die;
             //echo "<pre>";
             //print_r(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult));
@@ -367,7 +367,7 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->addV5DownloadData($params);
+            $result = $this->odkFormService->addV6DownloadData($params);
            // var_dump($result);die;
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))

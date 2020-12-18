@@ -376,12 +376,12 @@ class SpiFormVer6Table extends AbstractTableGateway {
     }
     
     
-    public function getPerformanceV5($params){
+    public function getPerformanceV6($params){
         //echo "ss";die;
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
+        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                                 ->columns(array(
                                                 'oldestDate' => new \Laminas\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
                                                 'newestDate' => new \Laminas\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
@@ -392,13 +392,13 @@ class SpiFormVer6Table extends AbstractTableGateway {
                                                 'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
                                                 'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
                                                 ))
-                                ->where(array('spiv5.status'=>'approved'));
+                                ->where(array('spiv6.status'=>'approved'));
         if(isset($params['fieldName']) && trim($params['fieldName'])!= ''){
             $sQuery = $sQuery->where(array($params['fieldName']=>$params['val']));
         }
         
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $sQuery = $sQuery->where('spiv5.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+            $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
       // die("ss");
         $start_date = '';
@@ -413,39 +413,39 @@ class SpiFormVer6Table extends AbstractTableGateway {
             }
         }
         if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $start_date ."'", "spiv5.assesmentofaudit <='" . $end_date."'"));
+            $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date ."'", "spiv6.assesmentofaudit <='" . $end_date."'"));
         }
         
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
             
             if(trim($params['testPoint'])!= 'other'){
-                $sQuery = $sQuery->where("spiv5.testingpointtype='".$params['testPoint']."'");
+                $sQuery = $sQuery->where("spiv6.testingpointtype='".$params['testPoint']."'");
              }else{
-                $sQuery = $sQuery->where("spiv5.testingpointtype_other='".$params['testPointName']."'");
+                $sQuery = $sQuery->where("spiv6.testingpointtype_other='".$params['testPointName']."'");
              }
             } if(isset($params['level']) && $params['level']!=''){
-               $sQuery = $sQuery->where("spiv5.level='".$params['level']."'");
+               $sQuery = $sQuery->where("spiv6.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
-               $sQuery = $sQuery->where("spiv5.affiliation='".$params['affiliation']."'");
+               $sQuery = $sQuery->where("spiv6.affiliation='".$params['affiliation']."'");
             }
             
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
                 if($params['scoreLevel'] == 0){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
                 }else if($params['scoreLevel'] == 1){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
                 }else if($params['scoreLevel'] == 2){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
                 }else if($params['scoreLevel'] == 3){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
                 }else if($params['scoreLevel'] == 4){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
         
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
@@ -1214,18 +1214,18 @@ class SpiFormVer6Table extends AbstractTableGateway {
       return $sResult;
     }
 
-    public function getAuditRoundWiseDataV5($params) {
+    public function getAuditRoundWiseDataV6($params) {
         $logincontainer = new Container('credo');
         //$rResult = $this->getAllSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
+        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
         ->order(array("id DESC"));
         if(isset($params['roundno']) && $params['roundno']!=''){
-            $sQuery = $sQuery->where('spiv5.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+            $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $start_date = '';
         $end_date = '';
@@ -1239,39 +1239,39 @@ class SpiFormVer6Table extends AbstractTableGateway {
             }
         }
         if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $start_date ."'", "spiv5.assesmentofaudit <='" . $end_date."'"));
+            $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date ."'", "spiv6.assesmentofaudit <='" . $end_date."'"));
         }
         if($params['auditRndNo']!=''){
-            $sQuery = $sQuery->where("spiv5.auditroundno='".$params['auditRndNo']."'");
+            $sQuery = $sQuery->where("spiv6.auditroundno='".$params['auditRndNo']."'");
         }
         
         if(isset($params['testPoint']) && trim($params['testPoint'])!=''){
             
             if(isset($params['testPoint']) && trim($params['testPoint'])!='' && strtolower(trim($params['testPoint']))== 'other'){
-                $sQuery = $sQuery->where("spiv5.testingpointtype_other='".$params['testPointName']."'");
+                $sQuery = $sQuery->where("spiv6.testingpointtype_other='".$params['testPointName']."'");
             }else{
-                $sQuery = $sQuery->where("spiv5.testingpointtype='".$params['testPoint']."'");
+                $sQuery = $sQuery->where("spiv6.testingpointtype='".$params['testPoint']."'");
             }
 
         } if(isset($params['level']) && $params['level']!=''){
-            $sQuery = $sQuery->where("spiv5.level='".$params['level']."'");
+            $sQuery = $sQuery->where("spiv6.level='".$params['level']."'");
             }
             if(isset($params['affiliation']) && $params['affiliation']!=''){
-                $sQuery = $sQuery->where("spiv5.affiliation='".$params['affiliation']."'");
+                $sQuery = $sQuery->where("spiv6.affiliation='".$params['affiliation']."'");
             }
             
             
             if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
                 if($params['scoreLevel'] == 0){
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
                 }else if($params['scoreLevel'] == 1){
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
                 }else if($params['scoreLevel'] == 2){
-                    $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
                 }else if($params['scoreLevel'] == 3){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
                 }else if($params['scoreLevel'] == 4){
-                  $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+                  $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
         
