@@ -2783,11 +2783,11 @@ class SpiFormVer6Table extends AbstractTableGateway {
         * you want to insert a non-database field (for example a counter or static image)
         */
 	if($parameters['source'] == 'hv') {
-            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'facilityname','avgMonthTesting','NumberofTester');
-            $orderColumns = array('assesmentofaudit','facilityname','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCENTAGE');
+            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'facilityname','NumberofTester');
+            $orderColumns = array('assesmentofaudit','facilityname','NumberofTester','AUDIT_SCORE_PERCENTAGE');
         }else if($parameters['source'] == 'la'){
-            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'facilityname','avgMonthTesting','AUDIT_SCORE_PERCENTAGE');
-            $orderColumns = array('assesmentofaudit','facilityname','avgMonthTesting','AUDIT_SCORE_PERCENTAGE');
+            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'facilityname','AUDIT_SCORE_PERCENTAGE');
+            $orderColumns = array('assesmentofaudit','facilityname','AUDIT_SCORE_PERCENTAGE');
         }else if($parameters['source'] == 'ad'){
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')","DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
             $orderColumns = array('assesmentofaudit','assesmentofaudit');
@@ -2981,10 +2981,10 @@ class SpiFormVer6Table extends AbstractTableGateway {
         }else{
             //For Others
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                                    ->columns(array('assesmentofaudit','facilityname','testingpointtype','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCENTAGE'));
+                                    ->columns(array('assesmentofaudit','facilityname','testingpointtype','NumberofTester','AUDIT_SCORE_PERCENTAGE'));
        
             $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                                     ->columns(array('assesmentofaudit','facilityname','testingpointtype','avgMonthTesting','NumberofTester','AUDIT_SCORE_PERCENTAGE'));
+                                     ->columns(array('assesmentofaudit','facilityname','testingpointtype','NumberofTester','AUDIT_SCORE_PERCENTAGE'));
         }
         
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
@@ -3001,7 +3001,10 @@ class SpiFormVer6Table extends AbstractTableGateway {
             $sQuery->where($sWhere);
         }
  
-        if (isset($sOrder) && $sOrder != "") {
+        if(trim($sOrder) === 'desc'){
+            $sOrder = '';
+        }
+        if (isset($sOrder) && $sOrder != "" ) {
             $sQuery->order($sOrder);
         }
  
@@ -3009,9 +3012,9 @@ class SpiFormVer6Table extends AbstractTableGateway {
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
-
+        
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         /* Data set length after filtering */
         $sQuery->reset('limit');
