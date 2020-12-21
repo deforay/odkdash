@@ -530,7 +530,7 @@ $sessionLogin = new Container('credo');
 												?> <a href="/spi-v6/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
-													<a href="/email/email-v5/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
+													<a href="/email/email-v6/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
 												<?php
 												}
 

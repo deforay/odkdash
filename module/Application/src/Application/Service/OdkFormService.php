@@ -4477,4 +4477,17 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer5Table');
         return $db->fetchViewDataDetails($params);
     }
+
+    //get all facility names v6
+    public function getAllFacilityNamesV6()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllFacilityNames();
+    }
+
+    public function getFacilitiesAuditsV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchFacilitiesAudits($params);
+    }
 }

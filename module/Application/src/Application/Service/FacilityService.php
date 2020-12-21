@@ -185,7 +185,85 @@ class FacilityService {
             $toName = ucwords($params['facilityName']);
             $toEmailAddress = trim($params['emailAddress']);
             $cc = $configResult['admin']['emailAddress'];
-            $subject = 'SPI-RT-CHECKLIST';
+            $subject = 'SPI-RRT-CHECKLIST';
+            $message = '';
+            $message.= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#DFDFDF;">';
+              $message.= '<tr><td align="center">';
+                $message.= '<table cellpadding="3" style="width:92%;font-family:Helvetica,Arial,sans-serif;margin:30px 0px 30px 0px;padding:2% 0% 0% 2%;background-color:#ffffff;">';
+                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facilityName']).'</strong>,</td></tr>';
+                  $message.= '<tr><td><p>'.ucfirst(trim($params['message'])).'</p></td></tr>';
+                $message.= '</table>';
+              $message.= '</tr></td>';
+            $message.= '</table>';
+            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress,$cc,$subject,$message,$fromName,$fromEmailAddress);
+            if($mailId> 0){
+                $result = $facilityDb->updateFacilityEmailAddress($params);
+                if($result> 0){
+                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email") && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email")) {
+                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email");
+                    }
+                    
+                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId) && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId)) {
+                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId);
+                    }
+                    
+                    //Move Attachement File(s)
+                    $errorAttachement = 0;
+                    if(isset($_FILES['attchement']['name']) && count($_FILES['attchement']['name']) > 0) {
+                        for($attch=0;$attch<count($_FILES['attchement']['name']);$attch++){
+                            if(trim($_FILES['attchement']['name'][$attch])!= ''){
+                                $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
+                                $fileName = $commonService->generateRandomString(5, 'alphanum') . "." . $extension;
+                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId. DIRECTORY_SEPARATOR . $fileName)) {
+                                }else{
+                                    $errorAttachement+=1;
+                                }
+                            }
+                        }
+                    }
+                    $adapter->commit();
+                    if($errorAttachement > 0){
+                        if($errorAttachement > 1){
+                          $container->alertMsg = $errorAttachement. 'attachements were failed to upload!';
+                        }else{
+                          $container->alertMsg = $errorAttachement. 'attachement was failed to upload!';
+                        }
+                    }else{
+                       $container->alertMsg = 'Mail queue added successfully.';
+                    }
+                }else{
+                    $mailId = 0;
+                    $container->alertMsg = 'We have experienced the problem..Please try again!';
+                }
+            }else{
+                $container->alertMsg = 'We have experienced the problem..Please try again!';
+            }
+          return $mailId;
+        }catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        } 
+    }
+
+    public function addEmailV6($params){
+        $result = 0;
+        $container = new Container('alert');
+        $auditMailDb = $this->sm->get('AuditMailTable');
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        $db = $this->sm->get('SpiFormVer6Table');
+        $commonService = new \Application\Service\CommonService();
+        $config = new \Laminas\Config\Reader\Ini();
+        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $fromName = $configResult['admin']['name'];
+            $fromEmailAddress = $configResult['admin']['emailAddress'];
+            $toName = ucwords($params['facilityName']);
+            $toEmailAddress = trim($params['emailAddress']);
+            $cc = $configResult['admin']['emailAddress'];
+            $subject = 'SPI-RRT-CHECKLIST-Version 6';
             $message = '';
             $message.= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#DFDFDF;">';
               $message.= '<tr><td align="center">';
@@ -260,6 +338,11 @@ class FacilityService {
     public function getFacilityProfileByAuditV5($ids){
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchFacilityProfileByAuditV5($ids);
+    }
+
+    public function getFacilityProfileByAuditV6($ids){
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchFacilityProfileByAuditV6($ids);
     }
     
     public function getProvinceList(){

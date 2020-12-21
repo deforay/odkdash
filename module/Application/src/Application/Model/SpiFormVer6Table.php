@@ -2546,9 +2546,9 @@ class SpiFormVer6Table extends AbstractTableGateway {
         if(isset($params['facilityName']) && trim($params['facilityName'])!= '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($dbAdapter);
-            $query = $sql->select()->from(array('spiv5'=>'spi_form_v_6'))
+            $query = $sql->select()->from(array('spiv6'=>'spi_form_v_6'))
                                    ->columns(array('id','assesmentofaudit'))
-                                   ->where(array('spiv5.facilityname'=>$params['facilityName'],'spiv5.status'=>'approved'));
+                                   ->where(array('spiv6.facilityname'=>$params['facilityName'],'spiv6.status'=>'approved'));
             $queryStr = $sql->getSqlStringForSqlObject($query);
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
