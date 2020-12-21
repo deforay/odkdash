@@ -250,6 +250,12 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
           <?php } ?>
 
           <?php
+          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v6") && preg_match("/v6/i", $config['web_version'])) {
+          ?>
+            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT Version 6'); ?></span></a></li>
+          <?php } ?>
+
+          <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Common", "audit-locations")) {
           ?>
             <li class="parent"><a href="/common/audit-locations"><i class="icon s7-map-marker"></i><span><?php echo $this->translate('Map'); ?></span></a></li>
