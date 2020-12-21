@@ -31,10 +31,10 @@ class SpiV5ReportsController extends AbstractActionController
             $result = $this->odkFormService->getAllApprovedV5FormSubmissionsTable($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
-        $spiV3auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
+        $spiV3auditRoundNo = $this->odkFormService->getSpiV5FormAuditNo();
         
-        $pendingCount = $this->odkFormService->getSpiV3PendingCount();
-        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+        $pendingCount = $this->odkFormService->getSpiV5PendingCount();
+        $levelNamesResult = $this->odkFormService->getSpiV5FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllSpiV5TestingPointType();
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,

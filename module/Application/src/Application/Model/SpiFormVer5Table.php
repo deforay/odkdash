@@ -2561,11 +2561,11 @@ class SpiFormVer5Table extends AbstractTableGateway {
       return array('audits'=>$audits,'facilityProfile'=>$aResult);
     }
     
-    public function getSpiV3PendingCount(){
+    public function getSpiV5PendingCount(){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
                                 ->where('spiv3.status = "pending"');
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');

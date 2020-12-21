@@ -6,7 +6,7 @@
 	<div class="page-head">
 		<div class="row">
 			<div class="col-sm-8">
-				<h2><?= $this->translate('SPI-RRT Facility Report'); ?></h2>
+				<h2><?= $this->translate('SPI-RRT Version 6 Facility Report'); ?></h2>
 			</div>
 		</div>
 	</div>
@@ -209,7 +209,7 @@
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "<?php echo $this->url('spi-v5-reports', array('action' => 'facility-report')); ?>",
+			"sAjaxSource": "<?php echo $this->url('spi-v6-reports', array('action' => 'facility-report')); ?>",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "auditRndNo",
@@ -280,7 +280,7 @@
 			message: '<h1>Loading...</h1>'
 		});
 		var dateRange = $("#dateRange").val();
-		$.post("<?php echo $this->url('spi-v5-reports', array('action' => 'export-facility-report')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-reports', array('action' => 'export-facility-report')); ?>", {
 				dateRange: dateRange
 			},
 			function(data) {
@@ -305,7 +305,7 @@
 		$.blockUI();
 		let testingPointType = $('#testPoint').val();
 		
-		$.post("<?php echo $this->url('spi-v5-form', array('action' => 'get-testing-point-type-names')); ?>", {
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
 				testingPointType: testingPointType
 			},
 			function(data) {

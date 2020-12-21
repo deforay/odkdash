@@ -1786,7 +1786,7 @@ class SpiFormVer6Table extends AbstractTableGateway {
     }
 
 
-    public function fetchAllApprovedV5FormSubmissionsTable($parameters){
+    public function fetchAllApprovedV6FormSubmissionsTable($parameters){
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -1938,7 +1938,7 @@ class SpiFormVer6Table extends AbstractTableGateway {
        $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_3'))
+        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                                 ->where(array('spiv5.status'=>'approved'));
         if($parameters['auditRndNo']!=''){
            $tQuery = $tQuery->where("spiv5.auditroundno='".$parameters['auditRndNo']."'");
@@ -2562,14 +2562,14 @@ class SpiFormVer6Table extends AbstractTableGateway {
       return array('audits'=>$audits,'facilityProfile'=>$aResult);
     }
     
-    public function getSpiV3PendingCount(){
+    public function getSpiV6PendingCount(){
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                                ->where('spiv3.status = "pending"');
+        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                                ->where('spiv6.status = "pending"');
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         //echo $sQueryStr;die;

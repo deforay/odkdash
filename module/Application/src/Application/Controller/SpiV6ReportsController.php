@@ -28,14 +28,14 @@ class SpiV6ReportsController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
-            $result = $this->odkFormService->getAllApprovedV5FormSubmissionsTable($param);
+            $result = $this->odkFormService->getAllApprovedV6FormSubmissionsTable($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
-        $spiV3auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
+        $spiV3auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
         
-        $pendingCount = $this->odkFormService->getSpiV3PendingCount();
-        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
-        $testingPointResult = $this->odkFormService->getAllSpiV5TestingPointType();
+        $pendingCount = $this->odkFormService->getSpiV6PendingCount();
+        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
+        $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
             'pendingCount' => $pendingCount,
@@ -50,7 +50,7 @@ class SpiV6ReportsController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             
-            $result = $this->odkFormService->exportV5FacilityReport($params);
+            $result = $this->odkFormService->exportV6FacilityReport($params);
             $viewModel = new ViewModel(array('result' => $result));
             $viewModel->setTerminal(true);
             return $viewModel;
