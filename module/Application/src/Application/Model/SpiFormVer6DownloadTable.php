@@ -45,6 +45,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             'level_name' => '',
             'AUDIT_SCORE_PERCENTAGE' => (isset($params['scoreLevel']) && trim($params['scoreLevel']) != '') ? $params['scoreLevel'] : null
         );
+        // print_r($downloadData);die;
         $this->insert($downloadData);
         return $this->lastInsertValue;
     }

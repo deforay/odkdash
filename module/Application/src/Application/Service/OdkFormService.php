@@ -4079,8 +4079,9 @@ class OdkFormService
                             $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
                             $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
                             $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'));
-            //                 //$sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
-            // $colmnNo++;
+                            // print_r($colmnNo);
+                            // $sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
+                            // $colmnNo++;
                 }
             }
             // $sheet->getStyle()->getFont()->setBold(true);
@@ -4114,7 +4115,7 @@ class OdkFormService
                             // $colNo++;
                         }
                     }
-                    // print_r("Prasath");die;
+                    // print_r($outputScore);die;
                 $rCount = $rRowCount + 3;
                 
                 $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -4286,6 +4287,7 @@ class OdkFormService
 
     public function addV6DownloadData($params)
     {
+        // print_r($params);die;
         $db = $this->sm->get('SpiFormVer6DownloadTable');
         return $db->addDownloadDataDetails($params);
     }

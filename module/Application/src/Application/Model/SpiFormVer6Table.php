@@ -2037,7 +2037,7 @@ class SpiFormVer6Table extends AbstractTableGateway {
         $row = array();
         $row[] = $aRow['facilityname'];
         $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
-        $row[] = $aRow['testingpointname']. " - " .$aRow['testingpointtype'];
+        $row[] = $aRow['testingpointtype'];
         $row[] = $aRow['PERSONAL_SCORE'];
         $row[] = $aRow['PHYSICAL_SCORE'];
         $row[] = $aRow['SAFETY_SCORE'];
