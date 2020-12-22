@@ -119,13 +119,13 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $this->odkFormService->updateSpiV5Form($params);
+            $this->odkFormService->updateSpiV6Form($params);
             return $this->redirect()->toUrl("/spi-v6/manage-facility");
         } else {
             $id = $this->params()->fromRoute('id');
             $facilitiesResult = $this->odkFormService->getAllFacilityNames();
-            $result = $this->odkFormService->getSpiV5FormData($id);
-            $provinceList = $this->odkFormService->getSpiV5FormUniqueLevelNames();
+            $result = $this->odkFormService->getSpiV6FormData($id);
+            $provinceList = $this->odkFormService->getSpiV6FormUniqueLevelNames();
             $districtList = $this->odkFormService->getSpiV3FormUniqueDistrict();
             return new ViewModel(array(
                 'formData' => $result,
@@ -187,7 +187,7 @@ class SpiV6Controller extends AbstractActionController
             $result = $this->odkFormService->getAllSubmissionsDatasV6($param);
             return $this->getResponse()->setContent(Json::encode($result));
         } else {
-            $result = $this->odkFormService->getPendingFacilityNamesV5();
+            $result = $this->odkFormService->getPendingFacilityNamesV6();
 
             return new ViewModel(array(
                 'pendingFacilityName' => $result,

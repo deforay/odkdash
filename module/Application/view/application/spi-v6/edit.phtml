@@ -1392,7 +1392,7 @@ tr.shown th.details-control {
                           <tr>
                            <td>8.4</td>
                            <td>Is there a sufficient supply of RTRI tests available at the site?
-Please provide number of tests currently available…….</td>
+                              Please provide number of tests currently available…….</td>
                            <td style="text-align:center;">
                             <?php echo (isset($formData['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
                            </td>
@@ -1511,14 +1511,233 @@ Please provide number of tests currently available…….</td>
                            <td style="text-align:center;"><?php echo $formData['RTRI_Q_8_11_INVALID_RTRI_RESULTS']; ?></td>
                           </tr>
                           <tr>
-                          <th colspan="6">8.0 HIV-1 RECENT INFECTION SURVEILLANCE USING THE RAPID TEST FOR RECENT INFECTION SCORE</th>
+                          <th colspan="6">8.0 HIV-1 RECENT INFECTION SURVEILLANCE USING THE RAPID TEST FOR RECENT INFECTION SCORE
+                          If the country has implemented HIV-1 Recent Infection Surveillance under a study protocol proceed with Section S.0 and D.0 Otherwise, STOP here.
+                          Please note that Section S.0 and D.0 are for study purposes only and are not to be included in the overall SPI-RRT score.</th>
                           <td style="text-align:center;"><?php echo $formData['RTRI_SCORE']; ?></td>
                          </tr>
                         </table>
                       </td>
                      </tr>
                     </table>
-                     <?php } ?>
+                     <?php } if(isset($formData['DO_SURVEILLANCE']) && $formData['DO_SURVEILLANCE']=='yes'){ ?>
+                    <table cellspacing="0" cellpadding="5" class="table table-bordered">
+                      <tr id="surveillanceTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#surveillanceTable').slideToggle('slow'),addShowClass('shown','surveillanceTable1');">
+                              
+                        </th>
+                        <th  style="width:93%">
+                        <a href="javascript:void(0);" onclick="$('#surveillanceTable').slideToggle('slow'),addShowClass('shown','surveillanceTable1');">S.0	HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL</a>
+                        </th>
+                        <th style="text-align:center;width:5%">S</th>
+                      </tr>
+                      <tr id="surveillanceTable" style="display: none;">
+                      <td colspan="3">
+                        <table cellspacing="0" cellpadding="5" class="table table-bordered">
+                          <tr>
+                                <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
+                                <th style="text-align:center;width:3%;">YES</th>
+                                <th style="text-align:center;width:4%;">Partial</th>
+                                <th style="text-align:center;width:3%;">NO</th>
+                                <th style="text-align:center;width:40%;">Comments</th>
+                                <th style="text-align:center;width:5%;">Score</th>
+                          </tr>
+                          <tr>
+                            <td>S.1</td>
+                            <td>Are counselors adhering to the study protocol for eligibility, consent, and counseling?</td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_1"><?php echo ($formData['S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']; ?></td>
+                          </tr>
+                          <tr>
+                            <td>S.2</td>
+                            <td>Are counselors following the study protocol for confirming new diagnosis?</td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_2"><?php echo ($formData['S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']; ?></td>
+                          </tr>
+                          <tr>
+                            <td>S.3</td>
+                            <td>For those patients with RTRI recent, are VL tests requested, samples collected and sent to VL testing lab, and VL test requests recorded in the recency VL order form?</td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_3_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_3_TESTS_RECORDED_RECENCY'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_3_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_3_TESTS_RECORDED_RECENCY'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_3_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_3_TESTS_RECORDED_RECENCY'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_3"><?php echo ($formData['S0_C_3_TESTS_RECORDED_RECENCY']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_3_TESTS_RECORDED_RECENCY']; ?></td>
+                          </tr>
+                          <tr>
+                            <td>S.4</td>
+                            <td>Are processes in place and well documented (Job Aid, SOP, etc.) for returning RTRI results? (if applicable)</td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_4_PROCESS_DOCUMENTED']) && $formData['S0_Q_4_PROCESS_DOCUMENTED'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_4_PROCESS_DOCUMENTED']) && $formData['S0_Q_4_PROCESS_DOCUMENTED'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_4_PROCESS_DOCUMENTED']) && $formData['S0_Q_4_PROCESS_DOCUMENTED'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_4"><?php echo ($formData['S0_C_4_PROCESS_DOCUMENTED']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_4_PROCESS_DOCUMENTED']; ?></td>
+                          </tr>
+                          <tr>
+                            <td>S.5</td>
+                            <td>Are RITA results returned to the facility/client within 2 weeks (dependent on protocol)? </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_5"><?php echo ($formData['S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']; ?></td>
+                          </tr>
+                          <tr>
+                            <td>S.6</td>
+                            <td>Are protocol violations documented?</td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_6"><?php echo ($formData['S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']; ?></td>
+                          </tr>
+                          <tr>
+                            <td>S.7</td>
+                            <td>Are appropriate steps taken and documented according to the study procedures when a protocol violation occurs?</td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS'] == 1 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS'] == 0.5 ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td style="text-align:center;">
+                            <?php echo (isset($formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS'] == "0" ) ? "<img src='".$this->basePath('assets/img/black-tick.png')."' width='20'>" : ""; ?>
+                            </td>
+                            <td><textarea class="form-control" name="sur_c_s_7"><?php echo ($formData['S0_C_7_DOCUMENTING_PROTOCOL_ERRORS']); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']; ?></td>
+                          </tr>
+                          <tr>
+                          <th colspan="7">S.0	HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL </th>
+                          </tr>
+                        </table>
+                      </td>
+                      </tr>
+                    </table>
+                    <table cellspacing="0" cellpadding="5" class="table table-bordered">
+                      <tr id="dataIndicatorTable1">
+                        <th style="text-align:center;width:3%" class="details-control" onclick="$('#dataIndicatorTable').slideToggle('slow'),addShowClass('shown','dataIndicatorTable1');">
+                              
+                        </th>
+                        <th  style="width:93%">
+                        <a href="javascript:void(0);" onclick="$('#dataIndicatorTable').slideToggle('slow'),addShowClass('shown','dataIndicatorTable1');">D.0	HIV-1 RECENT INFECTION SURVEILLANCE USING DATA INDICATORS</a>
+                        </th>
+                        <th style="text-align:center;width:5%">D</th>
+                      </tr>
+                      <tr id="dataIndicatorTable" style="display: none;">
+                      <td colspan="3">
+                        <table cellspacing="0" cellpadding="5" class="table table-bordered">
+                          <tr>
+                                <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
+                                <th style="text-align:center;width:3%;">Number</th>
+                                <th style="text-align:center;width:4%;">Denominator</th>
+                                <th style="text-align:center;width:3%;">Score</th>
+                                <!-- <th style="text-align:center;width:40%;">Comments</th>
+                                <th style="text-align:center;width:5%;">Score</th> -->
+                          </tr>
+                          <tr>
+                            <td>D.1</td>
+                            <td>Number of persons aged > 15 newly diagnosed with HIV at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_1" value="<?php echo ($formData['D0_N_1_DIAGNOSED_HIV_ABOVE_15']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_1" value="<?php echo ($formData['D0_D_1_DIAGNOSED_HIV_ABOVE_15']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_1" value="<?php echo ($formData['D0_S_1_DIAGNOSED_HIV_ABOVE_15']); ?>" /></td>
+                          </tr>
+                          <tr>
+                            <td>D.2</td>
+                            <td>Number of candidates screened for participation in RTRI at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_2" value="<?php echo ($formData['D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_2" value="<?php echo ($formData['D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_2" value="<?php echo ($formData['D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']); ?>" /></td>
+                          </tr>
+                          <tr>
+                            <td>D.3</td>
+                            <td>Number of total eligible candidates at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_3" value="<?php echo ($formData['D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_3" value="<?php echo ($formData['D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_3" value="<?php echo ($formData['D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD']); ?>" /></td>
+                          </tr>
+                          <tr>
+                            <td>D.4</td>
+                            <td>Number of eligible candidates at service delivery point who declined during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_4" value="<?php echo ($formData['D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_4" value="<?php echo ($formData['D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_4" value="<?php echo ($formData['D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']); ?>" /></td>
+                          </tr>
+                          <tr>
+                            <td>D.5</td>
+                            <td>Number of candidates with documented reason for refusal at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_5" value="<?php echo ($formData['D0_N_5_DOCUMENTED_AND_REFUSED']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_5" value="<?php echo ($formData['D0_D_5_DOCUMENTED_AND_REFUSED']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_5" value="<?php echo ($formData['D0_S_5_DOCUMENTED_AND_REFUSED']); ?>" /></td>
+                          </tr>
+                          <tr>
+                            <td>D.6</td>
+                            <td>Number of participants enrolled in RTRI testing at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_6" value="<?php echo ($formData['D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_6" value="<?php echo ($formData['D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_6" value="<?php echo ($formData['D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI']); ?>" /></td>
+                          </tr>
+                          <tr>
+                            <td>D.7</td>
+                            <td>Number of participants incorrectly enrolled (i.e. ineligible) at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_7" value="<?php echo ($formData['D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_7" value="<?php echo ($formData['D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_7" value="<?php echo ($formData['D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                          </tr><tr>
+                            <td>D.8</td>
+                            <td>Number of eligible participants enrolled with correct consent documentation at service delivery point during review period</td>
+                            <td><input type="text" class="form-control" name="dati_n_8" value="<?php echo ($formData['D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_d_8" value="<?php echo ($formData['D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                            <td><input type="text" class="form-control" name="dati_s_8" value="<?php echo ($formData['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                          </tr>
+                          <tr>
+                          <th colspan="5">D.0	HIV-1 RECENT INFECTION SURVEILLANCE USING DATA INDICATORS </th>
+                          </tr>
+                        </table>
+                      </td>
+                      </tr>
+                    </table>
+                    <?php } ?>
                     <h4><b>PART C: SCORING CRITERIA</b></h4>
                     <p>Each element marked will be assigned a point value:</p>
                     <div style="margin-left:10px;">

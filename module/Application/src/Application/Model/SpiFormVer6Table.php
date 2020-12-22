@@ -1229,8 +1229,8 @@ class SpiFormVer6Table extends AbstractTableGateway {
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
-                                ->where(array('spiv5.status'=>'pending'));
+        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                                ->where(array('spiv6.status'=>'pending'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -2306,6 +2306,42 @@ class SpiFormVer6Table extends AbstractTableGateway {
                 'RTRI_C_8_9_QC_RESULTS_RECORDED' => $params['rtri_C_8_9'],
                 'RTRI_C_8_10_INCORRECT_QC_DOCUMENTED' => $params['rtri_C_8_10'],
                 'RTRI_C_8_11_INVALID_RTRI_RESULTS' => $params['rtri_C_8_11'],
+                
+                'S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => $params['sur_c_s_1'],
+                'S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL' => $params['sur_c_s_2'],
+                'S0_C_3_TESTS_RECORDED_RECENCY' => $params['sur_c_s_3'],
+                'S0_C_4_PROCESS_DOCUMENTED' => $params['sur_c_s_4'],
+                'S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS' => $params['sur_c_s_5'],
+                'S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED' => $params['sur_c_s_6'],
+                'S0_C_7_DOCUMENTING_PROTOCOL_ERRORS' => $params['sur_c_s_7'],
+
+                'D0_N_1_DIAGNOSED_HIV_ABOVE_15' => $params['dati_n_1'],
+                'D0_D_1_DIAGNOSED_HIV_ABOVE_15' => $params['dati_d_1'],
+                'D0_S_1_DIAGNOSED_HIV_ABOVE_15' => $params['dati_s_1'],
+                'D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION' => $params['dati_n_2'],
+                'D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION' => $params['dati_d_2'],
+                'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION' => $params['dati_s_2'],
+
+                'D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD' => $params['dati_n_3'],
+                'D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD' => $params['dati_d_3'],
+                'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD' => $params['dati_s_3'],
+
+                'D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD' => $params['dati_n_4'],
+                'D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD' => $params['dati_d_4'],
+                'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD' => $params['dati_s_4'],
+                'D0_N_5_DOCUMENTED_AND_REFUSED' => $params['dati_n_5'],
+                'D0_D_5_DOCUMENTED_AND_REFUSED' => $params['dati_d_5'],
+                'D0_S_5_DOCUMENTED_AND_REFUSED' => $params['dati_s_5'],
+                'D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI' => $params['dati_n_6'],
+                'D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI' => $params['dati_d_6'],
+                'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI' => $params['dati_s_6'],
+                'D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI' => $params['dati_n_7'],
+                'D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI' => $params['dati_d_7'],  
+                'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI' => $params['dati_s_7'],  
+                'D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $params['dati_n_8'],
+                'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $params['dati_d_8'],
+                'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $params['dati_s_8'],
+                
                 'Latitude' => $params['latitude'],
                 'Longitude' => $params['longitude'],
                 

@@ -4682,4 +4682,11 @@ class OdkFormService
         }
     }
 
+    //get pending facility names v6
+    public function getPendingFacilityNamesV6()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchPendingFacilityNames();
+    }
+
 }
