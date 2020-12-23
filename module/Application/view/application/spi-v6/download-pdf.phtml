@@ -8,7 +8,7 @@ $fileContents = file_get_contents($configFile);
 //Convert the JSON string back into an array.
 $decoded = json_decode($fileContents, true);
 $language = $configData['language'];
-//var_dump($decoded[$language]);die;
+// var_dump($decoded[$language]);die;
 class MYPDF extends TCPDF
 {
 
@@ -966,7 +966,7 @@ for ($i = 1; $i < 12; $i++) {
     }
            
     if((isset($formData['RTRI_C_8_' . $i.'_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_C_8_' . $i.'_TESTERS_RECEIVED_RTRI_TRAINING'] !== ''))
-        $comments = $formData['EQA_C_6_' . $i.'_TESTERS_RECEIVED_RTRI_TRAINING'];
+        $comments = $formData['RTRI_C_8_' . $i.'_TESTERS_RECEIVED_RTRI_TRAINING'];
     if((isset($formData['RTRI_C_8_' . $i.'_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_C_8_' . $i.'_TESTERS_DEMONSTRATED_COMPETENCY'] !== ''))
         $comments = $formData['RTRI_C_8_' . $i.'_TESTERS_DEMONSTRATED_COMPETENCY'];
     if((isset($formData['RTRI_C_8_' . $i.'_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_C_8_' . $i.'_JOBAIDS_READILY_AVAILABLE'] !== ''))
@@ -1023,8 +1023,191 @@ $partBTable .= '</tr>';
 }
 
 
+if(strtolower($formData['DO_SURVEILLANCE']) =='yes'){
+$partBTable .= '<tr>';
+$partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL:label'] . '</td>';
+$partBTable .= '</tr>';
+
+for ($i = 1; $i < 8; $i++) {
+
+    $yes = "";
+    $no = "";
+    $partial = "";
+    $comments = "";
+    
+    if((isset($formData['S0_Q_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i.'_TESTS_RECORDED_RECENCY'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i.'_PROCESS_DOCUMENTED'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+    
+    ){
+        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+    }
+           
+    if((isset($formData['S0_C_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_C_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] !== ''))
+        $comments = $formData['S0_C_6_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'];
+    if((isset($formData['S0_C_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_C_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL'] !== ''))
+        $comments = $formData['S0_C_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL'];
+    if((isset($formData['S0_C_' . $i.'_TESTS_RECORDED_RECENCY']) && $formData['S0_C_' . $i.'_TESTS_RECORDED_RECENCY'] !== ''))
+        $comments = $formData['S0_C_' . $i.'_TESTS_RECORDED_RECENCY'];
+    if((isset($formData['S0_C_' . $i.'_PROCESS_DOCUMENTED']) && $formData['S0_C_' . $i.'_PROCESS_DOCUMENTED'] !== ''))
+        $comments = $formData['S0_C_' . $i.'_PROCESS_DOCUMENTED'];
+    if((isset($formData['S0_C_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_C_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS'] !== ''))
+        $comments = $formData['S0_C_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS'];
+    if((isset($formData['S0_C_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_C_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED'] !== ''))
+        $comments = $formData['S0_C_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED'];
+    if((isset($formData['S0_C_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_C_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS'] !== ''))
+        $comments = $formData['S0_C_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS'];
+
+    
+    $partBTable .= '<tr>';
+
+    $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_' . $i . '/S0_Q_' . $i . ':label'] . '</td>';
+    $partBTable .= '<td style="text-align:center;">';
+    $partBTable .= '';
+    $partBTable .= '</td>';
+
+    $partBTable .= '<td style="text-align:center;">';
+    $partBTable .= '';
+    $partBTable .= '</td>';
+
+    $partBTable .= '<td style="text-align:center;">';
+    $partBTable .= '';
+    $partBTable .= '</td>';
+
+    $partBTable .= '<td>' . ($comments) . '</td>';
+    $partBTable .= '<td></td>';
+    // if(trim($yes) !="")
+    //     $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+    // if(trim($partial) !="")
+    //     $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+    // if(trim($no) !="")
+    //     $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
+    $partBTable .= '</tr>';
+}
+
+$partBTable .= '<tr>';
+$partBTable .= '<td colspan="6" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_DISPLAY:label'] . '</td>';
+// $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
+$partBTable .= '</tr>';
+$partBTable .= "<tr>";
+$language;
+if ($language == 'Portuguese') {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECÇÃO</td>';
+} else {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
+}
+
+$partBTable .= '<td colspan="2" style="text-align:center;font-weight:bold;width:16%;">' . $decoded[$language]['/SPI_RT/Numerator:label'] . '</td>';
+$partBTable .= '<td colspan="2" style="text-align:center;font-weight:bold;width:16%;">' . $decoded[$language]['/SPI_RT/Denominator:label'] . '</td>';
+if ($language == 'Portuguese') {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:16%;">Pontuação</td>';
+} elseif ($language == 'Spanish') {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:16%;">Punteo</td>';
+} else {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:16%;">Score</td>';
+}
+
+$partBTable .= '</tr>';
+$partBTable .= '<tr>';
+$partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS:label'] . '</td>';
+$partBTable .= '</tr>';
+
+for ($i = 1; $i < 9; $i++) {
+
+    $yes = "";
+    $no = "";
+    $partial = "";
+    $numerator = "";
+    $denominator = "";
+    $scoreVal = "";
+           
+    if((isset($formData['D0_N_' . $i.'_DIAGNOSED_HIV_ABOVE_15']) && $formData['D0_N_' . $i.'_DIAGNOSED_HIV_ABOVE_15'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_DIAGNOSED_HIV_ABOVE_15'];
+    if((isset($formData['D0_N_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION']) && $formData['D0_N_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
+    if((isset($formData['D0_N_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD']) && $formData['D0_N_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD'];
+    if((isset($formData['D0_N_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']) && $formData['D0_N_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
+    if((isset($formData['D0_N_' . $i.'_DOCUMENTED_AND_REFUSED']) && $formData['D0_N_' . $i.'_DOCUMENTED_AND_REFUSED'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_DOCUMENTED_AND_REFUSED'];
+    if((isset($formData['D0_N_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI']) && $formData['D0_N_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI'];
+    if((isset($formData['D0_N_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_N_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
+    if((isset($formData['D0_N_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_N_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+        $numerator = $formData['D0_N_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+
+    if((isset($formData['D0_D_' . $i.'_DIAGNOSED_HIV_ABOVE_15']) && $formData['D0_D_' . $i.'_DIAGNOSED_HIV_ABOVE_15'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_DIAGNOSED_HIV_ABOVE_15'];
+    if((isset($formData['D0_D_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION']) && $formData['D0_D_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
+    if((isset($formData['D0_D_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD']) && $formData['D0_D_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD'];
+    if((isset($formData['D0_D_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']) && $formData['D0_D_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
+    if((isset($formData['D0_D_' . $i.'_DOCUMENTED_AND_REFUSED']) && $formData['D0_D_' . $i.'_DOCUMENTED_AND_REFUSED'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_DOCUMENTED_AND_REFUSED'];
+    if((isset($formData['D0_D_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI']) && $formData['D0_D_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI'];
+    if((isset($formData['D0_D_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_D_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
+    if((isset($formData['D0_D_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_D_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+        $denominator = $formData['D0_D_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+
+    if((isset($formData['D0_S_' . $i.'_DIAGNOSED_HIV_ABOVE_15']) && $formData['D0_S_' . $i.'_DIAGNOSED_HIV_ABOVE_15'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_DIAGNOSED_HIV_ABOVE_15'];
+    if((isset($formData['D0_S_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION']) && $formData['D0_S_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
+    if((isset($formData['D0_S_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD']) && $formData['D0_S_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_ELIGIBLE_DURING_REVIEW_PERIOD'];
+    if((isset($formData['D0_S_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']) && $formData['D0_S_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
+    if((isset($formData['D0_S_' . $i.'_DOCUMENTED_AND_REFUSED']) && $formData['D0_S_' . $i.'_DOCUMENTED_AND_REFUSED'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_DOCUMENTED_AND_REFUSED'];
+    if((isset($formData['D0_S_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI']) && $formData['D0_S_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_PARTICIAPANTS_ENROLLED_IN_RTRI'];
+    if((isset($formData['D0_S_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_S_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
+    if((isset($formData['D0_S_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_S_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+        $scoreVal = $formData['D0_S_' . $i.'_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+    
+    $partBTable .= '<tr>';
+
+    $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_' . $i . '/D0_Q_' . $i . ':label'] . '</td>';
+    $partBTable .= '<td colspan="2" style="text-align:center;">';
+    $partBTable .= $numerator;
+    $partBTable .= '</td>';
+
+    $partBTable .= '<td colspan="2" style="text-align:center;">';
+    $partBTable .= $denominator;
+    $partBTable .= '</td>';
+
+    $partBTable .= '<td style="text-align:center;">';
+    $partBTable .= $scoreVal;
+    $partBTable .= '</td>';
+
+    // $partBTable .= '<td>' . ($comments) . '</td>';
+    // $partBTable .= '<td></td>';
+    // if(trim($yes) !="")
+    //     $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+    // if(trim($partial) !="")
+    //     $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+    // if(trim($no) !="")
+    //     $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
+    $partBTable .= '</tr>';
+}
+}
 
 $partBTable .= '</table>';
+// $partBTable = '<table border="1" cellspacing="0" cellpadding="5" style="width:100%;">';
+
+
+
 if ($language == 'Portuguese') {
     $partBTable .= '<p>*A area marcada com asteriscos so é aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
 } else if ($language == 'Spanish') {

@@ -700,7 +700,7 @@
     "/SPI_RT/auditorSignature:label": "Firma",                                          
     "/SPI_RT/EQA/EQA_7_1/EQA_Q_7_1:label": "7.1 ¿El punto de prueba está inscrito en un programa EQA / PT?",                                          
     "/SPI_RT/PERSONAL/PER_G_1_10/PERSONAL_Q_1_10/0:label": "No",                                          
-    "/SPI_RT/EQA/EQA_OPT:hint": "Cálculo de campos Opt",                                          
+    "/SPI_RT/EQA/EQA_OPT:hint": "Cálculo de campos Opt",
     "/SPI_RT/TEST/TEST_5_6/TEST_Q_5_6/1:label": "Sí",                                          
     "/SPI_RT/EQA/EQA_7_4:label": ":",                                          
     "/SPI_RT/TESTSITE/level_name:label": "Nombre de nivel ():",                                          
@@ -1929,7 +1929,7 @@
     "/SPI_RT/SAFETY/SAF_3_5/SAFETY_Q_3_5:label": "3.5 Is PPE properly used by all testers consistently throughout the testing process?",                                          
     "/SPI_RT/auditorSignature:label": "Signature",                                          
     "/SPI_RT/EQA/EQA_7_1/EQA_Q_7_1:label": "7.1 Is the testing point enrolled in an EQA/PT program?",                                          
-    "/SPI_RT/PERSONAL/PER_G_1_10/PERSONAL_Q_1_10/0:label": "No",                                          
+    "/SPI_RT/PERSONAL/PER_G_1_10/PERSONAL_Q_1_10/0:label": "No",
     "/SPI_RT/EQA/EQA_OPT:hint": "Calculation of Opt fields",                                          
     "/SPI_RT/TEST/TEST_5_6/TEST_Q_5_6/1:label": "Yes",                                          
     "/SPI_RT/EQA/EQA_7_4:label": ":",                                          
@@ -2447,6 +2447,31 @@
     "/SPI_RT/INFECTIONSUR/RTRI_8_9/RTRI_Q_8_9:label": "8.9 Are QC results for RTRI properly recorded (e.g. kit name,                                           lot number,                                           expiration dates,                                           tester name,                                           RTRI visual results and recency interpretation for each level of QC)  and reviewed by person in charge?",                                          
     "/SPI_RT/INFECTIONSUR/RTRI_8_10/RTRI_Q_8_10:label": "8.10 Are appropriate steps taken and documented when RTRI QC results are incorrect?",                                          
     "/SPI_RT/INFECTIONSUR/RTRI_8_11/RTRI_Q_8_11:label": "8.11 Are appropriate steps taken and documented according to the SOP or guidelines for invalid RTRI test results? If yes,                                           how many in the last 3 months…………(use comments)",                                          
-    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 HIV-1 RECENT INFECTION SURVEILLANCE USING THE RAPID TEST FOR RECENT INFECTION SCORE"
+    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 HIV-1 RECENT INFECTION SURVEILLANCE USING THE RAPID TEST FOR RECENT INFECTION SCORE",
+
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL:label": "S.0 HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_1/S0_Q_1:label": "S.1 Are counselors adhering to the study protocol for eligibility, consent, and counseling?",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_2/S0_Q_2:label": "S.2 Are counselors following the study protocol for confirming new diagnosis?",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_3/S0_Q_3:label": "S.3 For those patients with RTRI recent, are VL tests requested, samples collected and sent to VL testing lab, and VL test requests recorded in the recency VL order form?",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_4/S0_Q_4:label": "S.4 Are processes in place and well documented (Job Aid, SOP, etc.) for returning RTRI results? (if applicable)",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_5/S0_Q_5:label": "S.5 Are RITA results returned to the facility/client within 2 weeks (dependent on protocol)? ",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_6/S0_Q_6:label": "S.6 Are protocol violations documented?",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_7/S0_Q_7:label": "S.7 Are appropriate steps taken and documented according to the study procedures when a protocol violation occurs?",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_DISPLAY:label": "S.0 HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL",
+
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS:label": "D.0 HIV-1 RECENT INFECTION SURVEILLANCE USING DATA INDICATORS",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_1/D0_Q_1:label": "D.1 Number of persons aged > 15 newly diagnosed with HIV at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_2/D0_Q_2:label": "D.2 Number of candidates screened for participation in RTRI at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_3/D0_Q_3:label": "D.3 Number of total eligible candidates at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_4/D0_Q_4:label": "D.4 Number of eligible candidates at service delivery point who declined during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_5/D0_Q_5:label": "D.5 Number of candidates with documented reason for refusal at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_6/D0_Q_6:label": "D.6 Number of participants enrolled in RTRI testing at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_7/D0_Q_7:label": "D.7 Number of participants incorrectly enrolled (i.e. ineligible) at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_8/D0_Q_8:label": "D.8 Number of eligible participants enrolled with correct consent documentation at service delivery point during review period",
+    "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_DISPLAY:label": "D.0 HIV-1 RECENT INFECTION SURVEILLANCE USING DATA INDICATORS",
+    
+    "/SPI_RT/Numerator:label": "Numerator",
+    "/SPI_RT/Denominator:label": "Denominator"
+
   }
 }
