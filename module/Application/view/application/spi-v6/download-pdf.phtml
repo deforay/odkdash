@@ -1024,6 +1024,27 @@ $partBTable .= '</tr>';
 
 
 if(strtolower($formData['DO_SURVEILLANCE']) =='yes'){
+$partBTable .= "<tr>";
+$language;
+if ($language == 'Portuguese') {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECÇÃO</td>';
+} else {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
+}
+
+$partBTable .= '<td style="text-align:center;font-weight:bold;width:7%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_10/PERSONAL_Q_1_10/1:label'] . '</td>';
+$partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_3/PERSONAL_Q_1_3/0.5:label'] . '</td>';
+$partBTable .= '<td style="text-align:center;font-weight:bold;width:7%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_8/PERSONAL_Q_1_8/0:label'] . '</td>';
+$partBTable .= '<td style="text-align:center;font-weight:bold;width:18%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_5/PERSONAL_C_1_5:label'] . '</td>';
+if ($language == 'Portuguese') {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">Pontuação</td>';
+} elseif ($language == 'Spanish') {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">Punteo</td>';
+} else {
+    $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">Score</td>';
+}
+
+$partBTable .= '</tr>';
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL:label'] . '</td>';
 $partBTable .= '</tr>';
@@ -1046,7 +1067,30 @@ for ($i = 1; $i < 8; $i++) {
     ){
         $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
     }
-           
+         
+    if((isset($formData['S0_Q_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5)
+    || (isset($formData['S0_Q_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i.'_TESTS_RECORDED_RECENCY'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i.'_PROCESS_DOCUMENTED'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+    
+    ){
+        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+    }
+
+    if((isset($formData['S0_Q_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0)
+    || (isset($formData['S0_Q_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i.'_TESTS_RECORDED_RECENCY'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i.'_PROCESS_DOCUMENTED'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i.'_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i.'_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
+    || (isset($formData['S0_Q_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i.'_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+    
+    ){
+        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+    }
     if((isset($formData['S0_C_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_C_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] !== ''))
         $comments = $formData['S0_C_6_' . $i.'_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'];
     if((isset($formData['S0_C_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_C_' . $i.'_COUNSELORS_FOLLOWING_PROTOCOL'] !== ''))
@@ -1067,15 +1111,15 @@ for ($i = 1; $i < 8; $i++) {
 
     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_' . $i . '/S0_Q_' . $i . ':label'] . '</td>';
     $partBTable .= '<td style="text-align:center;">';
-    $partBTable .= '';
+    $partBTable .= $yes;
     $partBTable .= '</td>';
 
     $partBTable .= '<td style="text-align:center;">';
-    $partBTable .= '';
+    $partBTable .= $partial;
     $partBTable .= '</td>';
 
     $partBTable .= '<td style="text-align:center;">';
-    $partBTable .= '';
+    $partBTable .= $no;
     $partBTable .= '</td>';
 
     $partBTable .= '<td>' . ($comments) . '</td>';

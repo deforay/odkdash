@@ -469,14 +469,117 @@ class OdkFormService
                             ->build();
             $heading = ['Facility Report'];
             $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
             $writer->addRow($headingTitle);
             $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
             $writer->addRow($rowFromValues);
             foreach ($output as $rowNo => $rowData) {
-                
                 $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
                 $writer->addRow($rowValues);
             }
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
+            $levelZeroStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            $levelOneStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            $levelTwoStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            $levelThreeStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            $levelFourStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+
+            if($outputScore['avgAuditScore'] > 0 && $outputScore['avgAuditScore'] < 40){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            }
+            else if($outputScore['avgAuditScore'] < 40 && $outputScore['avgAuditScore'] <= 59){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            }
+            else if($outputScore['avgAuditScore'] < 60 && $outputScore['avgAuditScore'] <= 79){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            }
+            else if($outputScore['avgAuditScore'] < 80 && $outputScore['avgAuditScore'] <= 89){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            }
+            else if($outputScore['avgAuditScore'] > 90){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            }
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ',$outputScore['levelZeroCount']],$levelZeroStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ',$outputScore['levelOneCount']],$levelOneStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ',$outputScore['levelTwoCount']],$levelTwoStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ',$outputScore['levelThreeCount']],$levelThreeStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ',$outputScore['levelFourCount']],$levelFourStyle)
+            );
             $writer->close();
             return $filename;
         } catch (Exception $exc) {
@@ -3813,19 +3916,15 @@ class OdkFormService
     public function exportAllV6Submissions($params)
     {
         // var_dump($params);die;
-        
         try {
+            $writer = WriterEntityFactory::createXLSXWriter();
+            $customTempFolderPath = TEMP_UPLOAD_PATH;
+            $filename = 'SPI-RRT--CHECKLIST-version-6-' . time() . '.xls';
+            $TemporaryFolderPath = $customTempFolderPath. DIRECTORY_SEPARATOR. $filename;
+            $writer->setTempFolder($customTempFolderPath);
+            $writer->openToFile($TemporaryFolderPath);
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
-            
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = "Spirt-v6_".time().".xls";
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
-            
-            $output = array();
-            $outputScore = array();
-            $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             $displayDate = "";
@@ -3858,18 +3957,18 @@ class OdkFormService
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             }
-            
+            if (isset($params['province']) && ($params['province'] != "")) {
+                $province = "Province/District(s) : " . implode(',', $params['province']);
+            }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
             }
             if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
             }
-            
             $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            // print_r(json_encode($sResult));die;
-            
+            // print_r($sResult);die;
             if (count($sResult) > 0) {
                 $auditScore = 0;
                 $levelZero = array();
@@ -3879,6 +3978,7 @@ class OdkFormService
                 $levelFour = array();
                 for ($l = 0; $l < count($sResult); $l++) {
                     $row = array();
+                    $cells = array();
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
                             if ($key == 'AUDIT_SCORE_PERCENTAGE') {
@@ -3907,12 +4007,10 @@ class OdkFormService
                                 $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
-                            
                         }
                     }
                     $output[] = $row;
                 }
-                
                 $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
                 $outputScore['levelZeroCount'] = count($levelZero);
                 $outputScore['levelOneCount'] = count($levelOne);
@@ -3920,146 +4018,161 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            $styleArray = array(
-                'font' => array(
-                    'bold' => true,
-                    'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                    ),
-                    )
-            );
-
-            $borderStyle = array(
-                    'alignment' => array(
-                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                        ),
-                        'borders' => array(
-                        'outline' => array(
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                    ),
-                    )
-            );
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('C2:D2');
-            $sheet->mergeCells('E2:F2');
-            $sheet->mergeCells('G2:H2');
-            //$sheet->mergeCells('I2:J2');
-            $sheet->mergeCells('K2:L2');
-            $sheet->mergeCells('M2:N2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-            $sheet->mergeCells('I4:I5');
-            
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $colmnNo = 0;
-            $rowmnNo = 4;
-            $rowmnNo1 = 5;
+            $fieldNames = array();
+            $lastColumnArray = array();
+            foreach ($outputScore as $key => $aRow) {
+                $lastColumnArray[] = $key;
+            }
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
-                            $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
-                            $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
-                            $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'));
-                            // print_r($colmnNo);
-                            // $sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
-                            // $colmnNo++;
+                    $fieldNames[] = $key;
                 }
             }
-            // $sheet->getStyle()->getFont()->setBold(true);
-            $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
-            $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('C2:D2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('E2:F2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('G2:H2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('I2:J2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('K2:L2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('M2:N2')->getFont()->setBold(TRUE)->setSize(13);
-            
-            $start = 0;
+            $mainheadingstyle = (new StyleBuilder())
+                                ->setFontBold()
+                                ->setFontColor(Color::BLACK)
+                                ->build();
+            $border = (new BorderBuilder())
+                    ->setBorderBottom(Color::BLACK)
+                    ->setBorderTop(Color::BLACK)
+                    ->setBorderLeft(Color::BLACK)
+                    ->setBorderRight(Color::BLACK)
+                    ->build();
+            $headingstyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBorder($border)
+                            ->build();
+            $style = (new StyleBuilder())
+                            ->setBorder($border)
+                            ->build();
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
+            $levelZeroStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            $levelOneStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            $levelTwoStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            $levelThreeStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            $levelFourStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            $heading = ['Facility Report'];
+            $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow($headingTitle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
+            $writer->addRow($rowFromValues);
             foreach ($output as $rowNo => $rowData) {
-                    $colNo = 0;
-                    foreach ($rowData as $field => $value) {
-                        if (!isset($value)) {
-                                    $value = "";
-                    }
-                    if (is_numeric($value)) {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    } else {
-                                $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                            }
-                            $rRowCount = $rowNo + 6;
-                            $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
-                            $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                            $sheet->getDefaultRowDimension()->setRowHeight(18);
-                            $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                            $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
-                            // $colNo++;
-                        }
-                    }
-                    // print_r($outputScore);die;
-                $rCount = $rRowCount + 3;
-                
-                $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
-                $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
-                $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
-                $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
-                $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
-                $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                // print_r($rowData);die;
+                $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
+                $writer->addRow($rowValues);
+            }
+            // $avg = intval($outputScore['avgAuditScore']);
+            // print_r($avg);die;
+            // if(intval($outputScore['avgAuditScore'])< 80 && intval($outputScore['avgAuditScore'])<= 89){
+            //     print_r(gettype($avg));die;
+            // }
             
-            // print_r(($sResult));die;
-           
-            
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            // print_r(($filename));die;
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 40 && (int)$outputScore['avgAuditScore'] <= 59){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 60 && (int)$outputScore['avgAuditScore'] <= 79){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 80 && (int)$outputScore['avgAuditScore'] <= 89){
+                // print_r($avg);die;
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] > 90){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            }
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ',$outputScore['levelZeroCount']],$levelZeroStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ',$outputScore['levelOneCount']],$levelOneStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ',$outputScore['levelTwoCount']],$levelTwoStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ',$outputScore['levelThreeCount']],$levelThreeStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ',$outputScore['levelFourCount']],$levelFourStyle)
+            );
 
+            $writer->close();
             return $filename;
         } catch (Exception $exc) {
-            //echo "error log";die;
+            return "";
             error_log("SPI-RT--CHECKLIST-version-6-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
-            //return "";
         }
     }
 
