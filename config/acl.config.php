@@ -102,6 +102,7 @@ return array(
             'edit' => 'allow',
             'export' => 'allow',
             'view-data-v6' => 'allow',
+            'view-data-section-zero-v6' => 'allow',
         ),
         'Application\\Controller\\SpiV3' => array(
             'index' => 'allow',

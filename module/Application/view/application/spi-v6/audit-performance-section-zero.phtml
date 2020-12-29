@@ -7,7 +7,7 @@
         display: none;
     }
 </style>
-<div id="container" style=" width: 100%; height: 465px; margin: 0 auto"></div>
+<div id="container-section-zero" style=" width: 100%; height: 465px; margin: 0 auto"></div>
 <div class="row chart-info">
     <div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php if (isset($perf1[0]['oldestDate']) && trim($perf1[0]['oldestDate']) != '') {
                                                                                                                                                 echo $this->humanDateFormat($perf1[0]['oldestDate']);
@@ -28,7 +28,7 @@
     });
 
     function radar_chart() {
-        $('#container').highcharts({
+        $('#container-section-zero').highcharts({
 
             chart: {
                 polar: true,
@@ -36,7 +36,7 @@
             },
 
             title: {
-                text: '<?= $this->translate('Audit Performance'); ?>',
+                text: '<?= $this->translate('Audit Performance S0'); ?>',
                 //x: -80
             },
 
@@ -45,7 +45,7 @@
             },
 
             xAxis: {
-                categories: ["Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit","RTRI"],
+                categories: ["Surveilance Eligibility","Counselor Protocol", "Recency Test Recorded", "Process Documented", "2 weeks Results", "Violation Documented", "Documented Errors"],
                 tickmarkPlacement: 'on',
                 lineWidth: 0
             },
@@ -64,17 +64,16 @@
                 <?php
                 foreach ($auditRoundWiseData as $auditNo => $adata) {
                 ?> {
-                        //name : 'Audit <?php echo $auditNo; ?>',
+                        //name : 'Audit < ?php echo $auditNo; ?>',
                         name: 'Audit Performance',
                         pointPlacement: 'on',
-                        data: [<?php echo round($adata['PERSONAL_SCORE'], 2); ?>,
-                            <?php echo round($adata['PHYSICAL_SCORE'], 2); ?>,
-                            <?php echo round($adata['SAFETY_SCORE'], 2); ?>,
-                            <?php echo round($adata['PRETEST_SCORE'], 2); ?>,
-                            <?php echo round($adata['TEST_SCORE'], 2); ?>,
-                            <?php echo round($adata['POST_SCORE'], 2); ?>,
-                            <?php echo round($adata['EQA_SCORE'], 2); ?>,
-                            <?php echo round($adata['RTRI_SCORE'], 2); ?>,
+                        data: [<?php echo round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2); ?>,
+                            <?php echo round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2); ?>,
+                            <?php echo round($adata['TESTS_RECORDED_RECENCY'], 2); ?>,
+                            <?php echo round($adata['PROCESS_DOCUMENTED'], 2); ?>,
+                            <?php echo round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2); ?>,
+                            <?php echo round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2); ?>,
+                            <?php echo round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2); ?>
                         ],
                     },
                 <?php
