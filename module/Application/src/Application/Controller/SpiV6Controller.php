@@ -55,7 +55,7 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             
-            $allSubmissions = $this->odkFormService->exportAllV6Submissions($params);
+            $allSubmissions = $this->odkFormService->exportV6All($params);
             // print_r($allSubmissions);die;
             $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
