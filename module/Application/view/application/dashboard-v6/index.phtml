@@ -364,8 +364,46 @@ $sessionLogin = new Container('credo');
 						</div>
 					</div>
 					<div id="radarChartSectionZero"></div>
-				</div>
+				</div>				
 			</div>
+
+			<!-- DO Section -->
+
+			<div class="col-md-6" id="lefter">
+				<div class="widget widget-radar widget-pie">
+					<div class="widget-head">
+						<div class="title row">
+							<div class="col-lg-7 col-sm-7 col-md-7 col-xs-7">
+								<h3><?php echo $this->translate('Audit Performance D0'); ?></h3>
+							</div>
+							<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSectionZeroProtocolSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSectionZeroProtocolSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+							</div>
+						</div>
+						<div style="margin-top:2%;" class="row">
+							<div class="col-lg-6 col-md-6">
+								<select class="" id="auditRndNoSectionZeroProtocol" multiple="multiple" onchange="getAuditSectionZeroProtocolDetails()">
+									<?php
+									foreach ($spiV6auditRoundNo as $auditRoundNo) {
+									?>
+										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</div>
+
+							<div class="col-lg-6 col-md-6">
+								<label style=""><?php echo $this->translate('Date'); ?></label>
+								<input style="width:65%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="audiPerformanceDateSectionZeroProtocol">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditSectionZeroProtocolDetails()"><?php echo $this->translate('OK'); ?></a>
+							</div>
+						</div>
+					</div>
+					<div id="radarChartSectionZeroProtocol"></div>
+				</div>
+		</div>
 		<div class="row">
 			<div class="col-md-6" id="lefter">
 				<div class="widget widget-radar widget-pie">
@@ -1206,8 +1244,30 @@ $sessionLogin = new Container('credo');
 			});
 
 	}
-	// section S0
-	
+	// section D0
+
+	function getAuditSectionZeroProtocolDetails() {
+		value = $("#auditRndNoSectionZeroProtocol").val();
+		dateRange = $("#audiPerformanceDateSectionZeroProtocol").val();
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-performance-section-zero-protocol')); ?>", {
+				roundno: value,
+				dateRange: dateRange,
+				auditRndNo: $("#auditRndNoFilter").val(),
+				testPoint: $("#testPoint").val(),
+				testPointName: $("#testPointName").val(),
+				level: $("#level").val(),
+				affiliation: $("#affiliation").val(),
+				province: $("#provinceDistrict").val(),
+				district: $("#district").val(),
+				scoreLevel: $("#scoreLevel").val()
+			},
+			function(data) {
+				$("#radarChartSectionZeroProtocol").html(data);
+			});
+
+	}
+
+
 
 	function getAuditLocationDetails() {
 		value = $("#auditRndNoLocations").val();
@@ -1476,13 +1536,14 @@ $sessionLogin = new Container('credo');
 
 		//getAuditLocationDetails();
 		getAuditSectionZeroDetails();
+		getAuditSectionZeroProtocolDetails();
 
 
 		$("#provinceDistrict").multipleSelect({
 			placeholder: 'Select Province',
 			width: '100%'
 		});
-		$("#auditRndNo,#auditRndNoSectionZero").multipleSelect({
+		$("#auditRndNo,#auditRndNoSectionZero,#auditRndNoSectionZeroProtocol").multipleSelect({
 			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
 			width: '31%',
 			minimumCountSelected: '2'
@@ -1538,6 +1599,22 @@ $sessionLogin = new Container('credo');
 		value = $("#auditRndNoSectionZero").val();
 		dateRange = $("#audiPerformanceDateSectionZero").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-section-zero-spider-chart')); ?>", {
+				roundno: value,
+				dateRange: dateRange
+			},
+			function(data) {
+				if (data == "" || data == null || data == undefined) {
+					alert('<?= $this->translate('Unable to generate download'); ?>');
+				} else {
+					window.open('/temporary/' + data, '_blank');
+				}
+			});
+	}
+
+	function downloadSectionZeroProtocolSpiderPDF() {
+		value = $("#auditRndNoSectionZeroProtocol").val();
+		dateRange = $("#audiPerformanceDateSectionZeroProtocol").val();
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-section-zero-protocol-spider-chart')); ?>", {
 				roundno: value,
 				dateRange: dateRange
 			},
@@ -1823,6 +1900,27 @@ $sessionLogin = new Container('credo');
 		window.open('/view-data-section-zero-v6?source=' + source + params, '_blank');
 	}
 
+	// Section D0
+	function viewSectionZeroProtocolSpiV6Data(source) {
+		var params = '';
+		if (source == 'hv') {
+			var testVolumeDate = $("#testingVolumeDate").val();
+			params = '&drange=' + testVolumeDate;
+		} else if (source == 'ap') {
+			var auditDate = $("#spiRTv3").val();
+			params = '&drange=' + auditDate;
+		} else if (source == 'apspi') {
+			if ($("#auditRndNoSectionZeroProtocol").val() == null) {
+				var auditRoundNo = '';
+			} else {
+				var auditRoundNo = $("#auditRndNoSectionZeroProtocol").val();
+			}
+			var auditPerformanceDate = $("#audiPerformanceDateSectionZeroProtocol").val();
+			params = '&roundno=' + auditRoundNo + '&drange=' + auditPerformanceDate;
+		}
+		window.open('/view-data-section-zero-protocol-v6?source=' + source + params, '_blank');
+	}
+
 	function getTestingPointTypeNames() {
 		$.blockUI();
 		var testingPointType = $('#testPoint').val();
@@ -1852,6 +1950,7 @@ $sessionLogin = new Container('credo');
 		getAuditLocationDetails();
 		getAuditWorstDetails();
 		getAuditSectionZeroDetails();
+		getAuditSectionZeroProtocolDetails();
 		$.unblockUI();
 	}
 

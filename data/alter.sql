@@ -2016,3 +2016,5 @@ INSERT INTO `privileges`
 (`resource_id`, `privilege_name`, `display_name`) 
 VALUES 
 ('Application\\Controller\\SpiV6', 'view-data-section-zero-v6', 'View Section S0 Data');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');

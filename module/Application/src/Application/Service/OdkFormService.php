@@ -4376,6 +4376,15 @@ class OdkFormService
         return $db->getAuditRoundWiseS0DataV6($params);
     }
 
+    // Roundwise Audit Data for Section D0
+    
+    public function getAuditRoundWiseSectionD0DataV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAuditRoundWiseD0DataV6($params);
+    }
+
     
 
     
@@ -4505,6 +4514,67 @@ class OdkFormService
         return $fileName;
     }
 
+    /*
+    get section D0 V6
+    */
+
+    public function getAuditRoundWiseD0DataChartV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseD0DataV6($params);
+        $MyData = new Data();
+        /* Create and populate the pData object */
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                
+                $MyData->addPoints(array(round($adata['DIAGNOSED_HIV_ABOVE_15'], 2), round($adata['CANDIDATE_SCREENED_FOR_PARTICIPATION'], 2), round($adata['ELIGIBLE_DURING_REVIEW_PERIOD'], 2), round($adata['ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'], 2), round($adata['DOCUMENTED_AND_REFUSED'], 2), round($adata['PARTICIAPANTS_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'], 2),round($adata['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("HIV above 15","Screened for participation", "Eligible during Review", "Eligible and declined", "Documented and refused", "Enrolled in RTRI", "Incorrectly Enrolled","Correctly Enrolled"), "Label");
+        $MyData->setAbscissa("Label");
+
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-d0-v6.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
     public function getTestingPointTypeNamesByTypeV6($params)
     {
         $db = $this->sm->get('SpiFormVer6Table');
@@ -4522,6 +4592,13 @@ class OdkFormService
         //echo "ss";die;
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchViewDataS0Details($params);
+    }
+
+    public function getViewDataD0DetailsV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchViewDataD0Details($params);
     }
 
     public function getViewDataDetailsV5($params)
