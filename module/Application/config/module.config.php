@@ -249,6 +249,17 @@ return array(
                     ),
                 ),
             ),
+
+            'view-data-section-zero-v6' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-section-zero-v6',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
+                        'action' => 'view-data-section-zero-v6',
+                    ),
+                ),
+            ),
             'view-data-v5' => array(
                 'type' => 'literal',
                 'options' => array(

@@ -151,6 +151,21 @@ class SpiV6Controller extends AbstractActionController
         }
     }
 
+    public function auditPerformanceSectionZeroAction()
+    {
+        
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseSectionS0DataV6($params);
+            //var_dump('ss');die;
+            $perf1 = $this->odkFormService->getPerformanceV6($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData, 'perf1' => $perf1))
+                ->setTerminal(true);
+            return $viewModel;
+        }
+    }
+
     public function worstPerformanceAction()
     {
         
@@ -288,6 +303,46 @@ class SpiV6Controller extends AbstractActionController
         ));
     }
 
+    
+
+    public function viewDataSectionZeroV6Action()
+    {
+       // echo "ss";die;
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $this->odkFormService->getViewDataS0DetailsV6($params);
+            //var_dump($result);die;
+            return $this->getResponse()->setContent(Json::encode($result));
+        }
+        $source = '';
+        $roundno = '';
+        $drange = '';
+        $level = '';
+        if ($this->params()->fromQuery('source')) {
+            $source = $this->params()->fromQuery('source');
+        }
+        if ($this->params()->fromQuery('level')) {
+            $level = $this->params()->fromQuery('level');
+        }
+        if ($this->params()->fromQuery('roundno')) {
+            $roundno = $this->params()->fromQuery('roundno');
+        }
+        if ($this->params()->fromQuery('drange')) {
+            $drange = $this->params()->fromQuery('drange');
+        }
+        $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
+        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
+        return new ViewModel(array(
+            'source' => $source,
+            'roundno' => $roundno,
+            'drange' => $drange,
+            'level' => $level,
+            'testingPointResult' => $testingPointResult,
+            'levelNamesResult' => $levelNamesResult
+        ));
+    }
+
     public function getTestingPointTypeNamesAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -308,6 +363,19 @@ class SpiV6Controller extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $result = $this->odkFormService->getAuditRoundWiseDataChartV6($params);
+            $configData = $this->commonService->getGlobalConfigDetails();
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result, 'configData' => $configData))
+                ->setTerminal(true);
+            return $viewModel;
+        }
+    }
+
+    public function downloadSectionZeroSpiderChartAction()
+    {   
+        if ($this->getRequest()->isPost()) {
+            $params = $this->getRequest()->getPost();
+            $result = $this->odkFormService->getAuditRoundWiseS0DataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result, 'configData' => $configData))

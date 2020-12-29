@@ -4285,6 +4285,73 @@ class OdkFormService
         return $fileName;
     }
 
+    // public function getSpiV6AuditRoundWiseS0DataChart($params)
+    // {
+        
+    //     $db = $this->sm->get('SpiFormVer6Table');
+    //     $result = $db->getAuditRoundWiseS0DataV6($params);
+    //     $MyData = new Data();
+    //     $filename = '';
+    //     if (count($result) > 0) {
+    //         foreach ($result as $auditNo => $adata) {
+    //             //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+    //             $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
+    //             $MyData->setSerieDescription("Audit Performance " . $auditNo, $auditNo);
+    //             $rgbColor = array();
+    //             //Create a loop., round($adata['RTRI_SCORE'], , round($adata['RTRI_SCORE'], 2)2)
+    //             foreach (array('r', 'g', 'b') as $color) {
+    //                 //Generate a random number between 0 and 255.
+    //                 $rgbColor[$color] = mt_rand(0, 255);
+    //             }
+    //             $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+    //         }
+    //     }
+    //     /* Define the absissa serie */
+    //     $MyData->addPoints(array(
+    //         "Surveilance Eligibility",
+    //         "Counselor Protocol", 
+    //         "Recency Test Recorded",
+    //         "Process Documented",
+    //         "2 weeks Results",
+    //         "Violation Documented", 
+    //         "Documented Errors"
+    //         ), "Label");
+    //     $MyData->setAbscissa("Label");
+        
+    //     /* Create the pChart object */
+    //     $myPicture = new Image(600, 690, $MyData);
+        
+
+    //     /* Add a border to the picture */
+    //     $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+        
+    //     $path = font_path . DIRECTORY_SEPARATOR;
+    //     /* Write the picture title */
+       
+        
+    //     /* Set the default font properties */
+    //     $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+    //     /* Enable shadow computing */
+    //     $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+        
+    //     /* Create the pRadar object */
+    //     $SplitChart = new Radar();
+    //     /* Draw a radar chart */
+    //     $myPicture->setGraphArea(15, 15, 590, 590);
+    //     $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+    //     $SplitChart->drawRadar($myPicture, $MyData, $Options);
+        
+    //     /* Write the chart legend */
+    //     $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+    //     $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+        
+    //     /* Render the picture (choose the best way) */
+    //     $fileName =  'radar-section-s0-spiv6.png';
+    //     //print_r($fileName);die;
+    //     $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+    //     return $fileName;
+    //}
+
     public function addV6DownloadData($params)
     {
         // print_r($params);die;
@@ -4397,6 +4464,19 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->getAuditRoundWiseDataV6($params);
     }
+    
+    // Roundwise Audit Data for Section S0
+    
+    public function getAuditRoundWiseSectionS0DataV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAuditRoundWiseS0DataV6($params);
+    }
+
+    
+
+    
 
     public function getAllApprovedSubmissionLocationV6($params)
     {
@@ -4414,7 +4494,7 @@ class OdkFormService
         $filename = '';
         if (count($result) > 0) {
             foreach ($result as $auditNo => $adata) {
-                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                
                 $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
                 $rgbColor = array();
@@ -4432,19 +4512,13 @@ class OdkFormService
 
         /* Create the pChart object */
         $myPicture = new Image(600, 690, $MyData);
-        //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
-        //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
-        //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
-        //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
-
+        
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
         $path = font_path . DIRECTORY_SEPARATOR;
         /* Write the picture title */
-        //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
-        //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
-
+       
         /* Set the default font properties */
         $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
 
@@ -4468,6 +4542,67 @@ class OdkFormService
         return $fileName;
     }
 
+    /*
+    get section S0 V6
+    */
+
+    public function getAuditRoundWiseS0DataChartV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseS0DataV6($params);
+        $MyData = new Data();
+        /* Create and populate the pData object */
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                
+                $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Surveilance Eligibility","Counselor Protocol", "Recency Test Recorded", "Process Documented", "2 weeks Results", "Violation Documented", "Documented Errors"), "Label");
+        $MyData->setAbscissa("Label");
+
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-s0-v6.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
     public function getTestingPointTypeNamesByTypeV6($params)
     {
         $db = $this->sm->get('SpiFormVer6Table');
@@ -4478,6 +4613,13 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchViewDataDetails($params);
+    }
+
+    public function getViewDataS0DetailsV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchViewDataS0Details($params);
     }
 
     public function getViewDataDetailsV5($params)

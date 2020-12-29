@@ -205,6 +205,10 @@ class ComposerStaticInitbdb89d39c1f374917ba8ddb29f7a9bf1
             'CpChart\\' => 8,
             'Complex\\' => 8,
         ),
+        'B' => 
+        array (
+            'Box\\Spout\\' => 10,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -526,6 +530,10 @@ class ComposerStaticInitbdb89d39c1f374917ba8ddb29f7a9bf1
         'Complex\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
+        'Box\\Spout\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/box/spout/src/Spout',
         ),
     );
 
