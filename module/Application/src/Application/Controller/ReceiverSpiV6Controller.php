@@ -29,7 +29,7 @@ class ReceiverSpiV6Controller extends AbstractActionController
 
         $params = json_decode($jsonData, true);
 
-        $this->var_error_log($params);die;
+        //$this->var_error_log($params);die;
         $result = $this->odkFormService->saveSpiFormVer6($params);
 
         $viewModel->setTerminal(true);

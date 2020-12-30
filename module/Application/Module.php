@@ -86,6 +86,7 @@ class Module
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6'
         ) {
 
             if (!isset($session->userId) || $session->userId == "") {
@@ -172,6 +173,10 @@ class Module
                 'Application\Controller\ReceiverSpiV5' => function ($sm) {
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\ReceiverSpiV5Controller($odkFormService);
+                },
+                'Application\Controller\ReceiverSpiV6' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\ReceiverSpiV6Controller($odkFormService);
                 },
                 'Application\Controller\Login' => function ($sm) {
                     $userService = $sm->getServiceLocator()->get('UserService');

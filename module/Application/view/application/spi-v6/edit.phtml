@@ -1322,7 +1322,7 @@ tr.shown th.details-control {
                       </td>
                      </tr>
                      </table>
-                     <?php if(isset($formData['performrtritesting']) && $formData['performrtritesting']=='yes'){ ?>
+                     <?php if(isset($formData['performrtritesting']) && strtolower($formData['performrtritesting'])=='yes'){ ?>
                      <table cellspacing="0" cellpadding="5" class="table table-bordered">
                      <tr id="rapidTestingTable1">
                         <th style="text-align:center;width:3%" class="details-control" onclick="$('#rapidTestingTable').slideToggle('slow'),addShowClass('shown','rapidTestingTable1');">
@@ -1520,7 +1520,7 @@ tr.shown th.details-control {
                       </td>
                      </tr>
                     </table>
-                     <?php } if(isset($formData['DO_SURVEILLANCE']) && $formData['DO_SURVEILLANCE']=='yes'){ ?>
+                     <?php } if(isset($formData['DO_SURVEILLANCE']) && strtolower($formData['DO_SURVEILLANCE'])=='yes'){ ?>
                     <table cellspacing="0" cellpadding="5" class="table table-bordered">
                       <tr id="surveillanceTable1">
                         <th style="text-align:center;width:3%" class="details-control" onclick="$('#surveillanceTable').slideToggle('slow'),addShowClass('shown','surveillanceTable1');">

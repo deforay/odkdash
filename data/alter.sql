@@ -2004,6 +2004,9 @@ ALTER TABLE `spi_form_v_6` ADD `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`
 
 -- Selvam 29-Dec-2021
 
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-v6', 'View Data');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'view-data-v5', 'View Data');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'email-v6', 'Email');
 INSERT INTO `privileges` 
 (`resource_id`, `privilege_name`, `display_name`) 
 VALUES 
