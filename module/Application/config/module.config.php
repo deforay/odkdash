@@ -68,6 +68,17 @@ return array(
                     ),
                 ),
             ),
+
+            'odk-receiver-v6' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/receiver-spi-v6[/]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\ReceiverSpiV6',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'login' => array(
                 'type'    => 'segment',
                 'options' => array(
