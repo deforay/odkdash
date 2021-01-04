@@ -194,6 +194,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $a
     <div class="spacer col-lg-12">
       <!--<button type="button" onclick="window.location.href='< ?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>'" class="btn btn-space btn-primary">Export All Data</button>-->
       <button type="button" onclick="exportData();" class="btn btn-space btn-primary"><?= $this->translate('Export All Data'); ?></button>
+      <button type="button" onclick="exportSAndDData();" class="btn btn-space btn-primary"><?= $this->translate('Export D and S Data'); ?></button>
       &nbsp;&nbsp;<button type="button" onclick="exportPDFData();" class="btn btn-space btn-primary"><?= $this->translate('Export as PDF'); ?></button>
     </div>
     <br>
@@ -379,6 +380,36 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $a
     var scoreLevel = $('#scoreLevel').val();
     var testPoint = $('#testPoint').val();
     $.post("<?php echo $this->url('spi-v6-form', array('action' => 'export')); ?>", {
+        dateRange: dateRange,
+        auditRndNo: auditRndNo,
+        level: level,
+        affiliation: affiliation,
+       // province: province,
+        scoreLevel: scoreLevel,
+        testPoint: testPoint
+      },
+      function(data) {
+        if (data == "" || data == null || data == undefined) {
+          $.unblockUI();
+          alert('<?= $this->translate('Unable to generate download'); ?>');
+        } else {
+          console.log(data);
+          $.unblockUI();
+          document.location.href = '/temporary/' + data;
+        }
+      });
+  }
+
+  function exportSAndDData(){
+    $.blockUI();
+    var dateRange = $('#date').val();
+    var auditRndNo = $('#auditRndNo').val();
+    var level = $('#level').val();
+    var affiliation = $('#affiliation').val();
+    //var province = $('#province').val();
+    var scoreLevel = $('#scoreLevel').val();
+    var testPoint = $('#testPoint').val();
+    $.post("<?php echo $this->url('spi-v6-form', array('action' => 'exportSAndD')); ?>", {
         dateRange: dateRange,
         auditRndNo: auditRndNo,
         level: level,

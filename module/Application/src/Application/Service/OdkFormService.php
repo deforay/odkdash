@@ -367,6 +367,9 @@ class OdkFormService
                     $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
                 }
             }
+            else{
+                $displayDate = "Date Range : ";
+            }
             $auditRndNo = '';
             $levelData = '';
             $affiliation = '';
@@ -376,11 +379,20 @@ class OdkFormService
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
                 $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
             }
+            else{
+                $auditRndNo = "Audit Round No. : ";
+            }
             if (isset($params['level']) && ($params['level'] != "")) {
                 $levelData = "Level : " . $params['level'];
             }
+            else{
+                $levelData = "Level : ";
+            }
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
+            }
+            else{
+                $affiliation = "Affiliation : ";
             }
             if (isset($params['province']) && ($params['province'] != "")) {
                 $province = "Province/District(s) : " . implode(',', $params['province']);
@@ -388,8 +400,14 @@ class OdkFormService
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
             }
+            else{
+                $scoreLevel = "Score Level : ";
+            }
             if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
+            }
+            else{
+                $testPoint = "Type of Testing Point : ";
             }
             $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -467,12 +485,22 @@ class OdkFormService
             $style = (new StyleBuilder())
                             ->setBorder($border)
                             ->build();
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
             $heading = ['Facility Report'];
             $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
             $writer->addRow(
                 WriterEntityFactory::createRowFromArray([''])
             );
             $writer->addRow($headingTitle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([ $displayDate,$auditRndNo,$levelData,$affiliation,$scoreLevel,$testPoint],$basicStyle)
+            );
             $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
             $writer->addRow(
                 WriterEntityFactory::createRowFromArray([''])
@@ -482,10 +510,7 @@ class OdkFormService
                 $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
                 $writer->addRow($rowValues);
             }
-            $basicStyle = (new StyleBuilder())
-                            ->setFontBold()
-                            ->setFontColor(Color::BLACK)
-                            ->build();
+            
             $levelZeroStyle = (new StyleBuilder())
                             ->setFontBold()
                             ->setFontColor(Color::BLACK)
@@ -512,35 +537,35 @@ class OdkFormService
                             ->setBackgroundColor(Color::rgb(0, 128, 0))
                             ->build();
 
-            if($outputScore['avgAuditScore'] > 0 && $outputScore['avgAuditScore'] < 40){
+            if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
                 $avgStyle = (new StyleBuilder())
                             ->setFontBold()
                             ->setFontColor(Color::BLACK)
                             ->setBackgroundColor(Color::RED)
                             ->build();
             }
-            else if($outputScore['avgAuditScore'] < 40 && $outputScore['avgAuditScore'] <= 59){
+            else if((int)$outputScore['avgAuditScore'] < 40 && (int)$outputScore['avgAuditScore'] <= 59){
                 $avgStyle = (new StyleBuilder())
                             ->setFontBold()
                             ->setFontColor(Color::BLACK)
                             ->setBackgroundColor(Color::rgb(128, 128, 0))
                             ->build();
             }
-            else if($outputScore['avgAuditScore'] < 60 && $outputScore['avgAuditScore'] <= 79){
+            else if((int)$outputScore['avgAuditScore'] < 60 && (int)$outputScore['avgAuditScore'] <= 79){
                 $avgStyle = (new StyleBuilder())
                             ->setFontBold()
                             ->setFontColor(Color::BLACK)
                             ->setBackgroundColor(Color::YELLOW)
                             ->build();
             }
-            else if($outputScore['avgAuditScore'] < 80 && $outputScore['avgAuditScore'] <= 89){
+            else if((int)$outputScore['avgAuditScore'] < 80 && (int)$outputScore['avgAuditScore'] <= 89){
                 $avgStyle = (new StyleBuilder())
                             ->setFontBold()
                             ->setFontColor(Color::BLACK)
                             ->setBackgroundColor(Color::rgb(0, 255, 0))
                             ->build();
             }
-            else if($outputScore['avgAuditScore'] > 90){
+            else if((int)$outputScore['avgAuditScore'] > 90){
                 $avgStyle = (new StyleBuilder())
                             ->setFontBold()
                             ->setFontColor(Color::BLACK)
@@ -3913,6 +3938,356 @@ class OdkFormService
         return $db->getFormData($id);
     }
 
+    public function exportSAndDV6Submissions($params)
+    {
+        // var_dump($params);die;
+        try {
+            $logincontainer = new Container('credo');
+            $writer = WriterEntityFactory::createXLSXWriter();
+            $customTempFolderPath = TEMP_UPLOAD_PATH;
+            $filename = 'SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xls';
+            $TemporaryFolderPath = $customTempFolderPath. DIRECTORY_SEPARATOR. $filename;
+            $writer->setTempFolder($customTempFolderPath);
+            $writer->openToFile($TemporaryFolderPath);
+            $common = new \Application\Service\CommonService();
+            // $queryContainer = new Container('query');
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $sql = new Sql($dbAdapter);
+            $displayDate = "";
+            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+                $dateRangeDate = explode(" - ", $params['dateRange']);
+                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+                    $fromDate = $dateRangeDate[0];
+                }
+                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+                    $toDate = $dateRangeDate[1];
+                }
+                if ($fromDate == $toDate) {
+                    $displayDate = "Date Range : " . $fromDate;
+                } else {
+                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
+                }
+            }
+            else{
+                $displayDate = "Date Range : ";
+            }
+            $auditRndNo = '';
+            $levelData = '';
+            $affiliation = '';
+            $province = '';
+            $scoreLevel = '';
+            $testPoint = '';
+            if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
+                $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
+            }
+            else{
+                $auditRndNo = "Audit Round No. : ";
+            }
+            if (isset($params['level']) && ($params['level'] != "")) {
+                $levelData = "Level : " . $params['level'];
+            }
+            else{
+                $levelData = "Level : ";
+            }
+            if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
+                $affiliation = "Affiliation : " . $params['affiliation'];
+            }
+            else{
+                $affiliation = "Affiliation : ";
+            }
+            if (isset($params['province']) && ($params['province'] != "")) {
+                $province = "Province/District(s) : " . implode(',', $params['province']);
+            }
+            else{
+                $province = "Province/District(s) : ";
+            }
+            if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
+                $scoreLevel = "Score Level : " . $params['scoreLevel'];
+            }
+            else{
+                $scoreLevel = "Score Level : ";
+            }
+            if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
+                $testPoint = "Type of Testing Point : " . $params['testPoint'];
+            }
+            else{
+                $testPoint = "Type of Testing Point : ";
+            }
+
+            $start_date = "";
+            $end_date = "";
+            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+                $dateField = explode(" ", $params['dateRange']);
+                //print_r($proceed_date);die;
+                if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                    $start_date = $this->dateFormat($dateField[0]);                
+                }
+                if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                    $end_date = $this->dateFormat($dateField[2]);
+                }
+            }
+            
+            
+            $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                            ->columns(array('formId','formVersion','meta-instance-id','meta-model-version','meta-ui-version','meta-submission-date','meta-is-complete','meta-date-marked-as-complete','start','end','today','deviceid','assesmentofaudit','auditEndTime','auditStartTime','auditroundno','facility','facilityname','testingpointtype','testingpointtype_other','physicaladdress','level','level_other','affiliation','affiliation_other','NumberofTester','AUDIT_SCORE_PERCENTAGE','AUDIT_SCORE_PERCANTAGE_ROUNDED','DO_SURVEILLANCE','S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY','S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY','S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL','S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL','S0_Q_3_TESTS_RECORDED_RECENCY','S0_C_3_TESTS_RECORDED_RECENCY','S0_Q_4_PROCESS_DOCUMENTED','S0_C_4_PROCESS_DOCUMENTED','S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS','S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS','S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED','S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED','S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS','S0_C_7_DOCUMENTING_PROTOCOL_ERRORS','D0_N_1_DIAGNOSED_HIV_ABOVE_15','D0_D_1_DIAGNOSED_HIV_ABOVE_15','D0_S_1_DIAGNOSED_HIV_ABOVE_15','D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION','D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION','D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION','D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD','D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD','D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD','D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD','D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD','D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD','D0_N_5_DOCUMENTED_AND_REFUSED','D0_D_5_DOCUMENTED_AND_REFUSED','D0_S_5_DOCUMENTED_AND_REFUSED','D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI','D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI','D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI','D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI','D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI','D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI','D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI','D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI','D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'))
+                            ->where('spiv6.status != "deleted"');
+
+            if($params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv6.auditroundno='".$params['auditRndNo']."'");
+            }
+            if (trim($start_date) != "" && trim($end_date) != "") {
+                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date ."'", "spiv6.assesmentofaudit <='" . $end_date."'"));
+            }
+            if($params['level']!=''){
+            $sQuery = $sQuery->where("spiv6.level='".$params['level']."'");
+            }
+            if($params['affiliation']!=''){
+            $sQuery = $sQuery->where("spiv6.affiliation='".$params['affiliation']."'");
+            }
+            
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+                if($params['scoreLevel'] == 0){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
+                }else if($params['scoreLevel'] == 1){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+                }else if($params['scoreLevel'] == 2){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+                }else if($params['scoreLevel'] == 3){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+                }else if($params['scoreLevel'] == 4){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+                }
+            }
+            if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+                $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            }
+            if (isset($sWhere) && $sWhere != "") {
+                $sQuery->where($sWhere);
+            }
+    
+            if (isset($sOrder) && $sOrder != "") {
+                $sQuery->order($sOrder);
+            }
+            $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            // print_r($sResult);die;
+            if (count($sResult) > 0) {
+                $auditScore = 0;
+                $levelZero = array();
+                $levelOne = array();
+                $levelTwo = array();
+                $levelThree = array();
+                $levelFour = array();
+                for ($l = 0; $l < count($sResult); $l++) {
+                    $row = array();
+                    $cells = array();
+                    foreach ($sResult[$l] as $key => $aRow) {
+                        if ($key != 'id' && $key != 'content' && $key != 'token') {
+                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
+                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
+                                $auditScore += $sResult[$l][$key];
+                                if ($sResult[$l][$key] < 40) {
+                                    $levelZero[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                    $levelOne[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                    $levelTwo[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                    $levelThree[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 90) {
+                                    $levelFour[] = $sResult[$l][$key];
+                                }
+                            }
+                            if ($key == 'level_other') {
+                                $level = " - " . $sResult[$l][$key];
+                            } else {
+                                $level = '';
+                            }
+                            if ($key == 'today') {
+                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                            } else if ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                            }
+                            $row[] = $sResult[$l][$key] . $level;
+                        }
+                    }
+                    $output[] = $row;
+                }
+                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
+                $outputScore['levelZeroCount'] = count($levelZero);
+                $outputScore['levelOneCount'] = count($levelOne);
+                $outputScore['levelTwoCount'] = count($levelTwo);
+                $outputScore['levelThreeCount'] = count($levelThree);
+                $outputScore['levelFourCount'] = count($levelFour);
+            }
+            // print_r($outputScore);die;
+            $fieldNames = array();
+            $lastColumnArray = array();
+            foreach ($outputScore as $key => $aRow) {
+                $lastColumnArray[] = $key;
+            }
+            foreach ($sResult[0] as $key => $aRow) {
+                if ($key != 'id' && $key != 'content' && $key != 'token') {
+                    $fieldNames[] = $key;
+                }
+            }
+            $mainheadingstyle = (new StyleBuilder())
+                                ->setFontBold()
+                                ->setFontColor(Color::BLACK)
+                                ->build();
+            $border = (new BorderBuilder())
+                    ->setBorderBottom(Color::BLACK)
+                    ->setBorderTop(Color::BLACK)
+                    ->setBorderLeft(Color::BLACK)
+                    ->setBorderRight(Color::BLACK)
+                    ->build();
+            $headingstyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBorder($border)
+                            ->build();
+            $style = (new StyleBuilder())
+                            ->setBorder($border)
+                            ->build();
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
+            $levelZeroStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            $levelOneStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            $levelTwoStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            $levelThreeStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            $levelFourStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            $heading = ['Facility Report'];
+            $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow($headingTitle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([ $displayDate,$auditRndNo,$levelData,$affiliation,$scoreLevel,$testPoint],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
+            $writer->addRow($rowFromValues);
+            foreach ($output as $rowNo => $rowData) {
+                // print_r($rowData);die;
+                $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
+                $writer->addRow($rowValues);
+            }
+            // $avg = intval($outputScore['avgAuditScore']);
+            // print_r($avg);die;
+            // if(intval($outputScore['avgAuditScore'])< 80 && intval($outputScore['avgAuditScore'])<= 89){
+            //     print_r(gettype($avg));die;
+            // }
+            $avgStyle = (new StyleBuilder())
+                        ->setFontBold()
+                        ->setFontColor(Color::BLACK)
+                        ->build();
+            if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 40 && (int)$outputScore['avgAuditScore'] <= 59){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 60 && (int)$outputScore['avgAuditScore'] <= 79){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 80 && (int)$outputScore['avgAuditScore'] <= 89){
+                // print_r($avg);die;
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] > 90){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            }
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ',$outputScore['levelZeroCount']],$levelZeroStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ',$outputScore['levelOneCount']],$levelOneStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ',$outputScore['levelTwoCount']],$levelTwoStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ',$outputScore['levelThreeCount']],$levelThreeStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ',$outputScore['levelFourCount']],$levelFourStyle)
+            );
+
+            $writer->close();
+            return $filename;
+        } catch (Exception $exc) {
+            return "";
+            error_log("SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-REPORT-EXCEL--" . $exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
     public function exportAllV6Submissions($params)
     {
         // var_dump($params);die;
@@ -3942,6 +4317,9 @@ class OdkFormService
                     $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
                 }
             }
+            else{
+                $displayDate = "Date Range : ";
+            }
             $auditRndNo = '';
             $levelData = '';
             $affiliation = '';
@@ -3951,20 +4329,38 @@ class OdkFormService
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
                 $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
             }
+            else{
+                $auditRndNo = "Audit Round No. : ";
+            }
             if (isset($params['level']) && ($params['level'] != "")) {
                 $levelData = "Level : " . $params['level'];
+            }
+            else{
+                $levelData = "Level : ";
             }
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             }
+            else{
+                $affiliation = "Affiliation : ";
+            }
             if (isset($params['province']) && ($params['province'] != "")) {
                 $province = "Province/District(s) : " . implode(',', $params['province']);
+            }
+            else{
+                $province = "Province/District(s) : ";
             }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
             }
+            else{
+                $scoreLevel = "Score Level : ";
+            }
             if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
+            }
+            else{
+                $testPoint = "Type of Testing Point : ";
             }
             $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -4084,6 +4480,12 @@ class OdkFormService
             $writer->addRow(
                 WriterEntityFactory::createRowFromArray([''])
             );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([ $displayDate,$auditRndNo,$levelData,$affiliation,$scoreLevel,$testPoint],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
             $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
             $writer->addRow($rowFromValues);
             foreach ($output as $rowNo => $rowData) {
@@ -4096,7 +4498,10 @@ class OdkFormService
             // if(intval($outputScore['avgAuditScore'])< 80 && intval($outputScore['avgAuditScore'])<= 89){
             //     print_r(gettype($avg));die;
             // }
-            
+            $avgStyle = (new StyleBuilder())
+            ->setFontBold()
+            ->setFontColor(Color::BLACK)
+            ->build();
             if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
                 $avgStyle = (new StyleBuilder())
                             ->setFontBold()
