@@ -4367,6 +4367,21 @@ class OdkFormService
             // print_r($sResult);die;
             if (count($sResult) > 0) {
                 $auditScore = 0;
+                $sQ1Score = 0;
+                $sQ2Score = 0;
+                $sQ3Score = 0;
+                $sQ4Score = 0;
+                $sQ5Score = 0;
+                $sQ6Score = 0;
+                $sQ7Score = 0;
+                $D0_S1_Score = 0;
+                $D0_S2_Score = 0;
+                $D0_S3_Score = 0;
+                $D0_S4_Score = 0;
+                $D0_S5_Score = 0;
+                $D0_S6_Score = 0;
+                $D0_S7_Score = 0;
+                $D0_S8_Score = 0;
                 $levelZero = array();
                 $levelOne = array();
                 $levelTwo = array();
@@ -4377,6 +4392,51 @@ class OdkFormService
                     $cells = array();
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
+                            if(($key == 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY')) {
+                                $sQ1Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL')) {
+                                $sQ2Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_3_TESTS_RECORDED_RECENCY')) {
+                                $sQ3Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_4_PROCESS_DOCUMENTED')) {
+                                $sQ4Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS')) {
+                                $sQ5Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED')) {
+                                $sQ6Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS')) {
+                                $sQ7Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_1_DIAGNOSED_HIV_ABOVE_15')) {
+                                $D0_S1_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION')) {
+                                $D0_S2_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD')) {
+                                $D0_S3_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD')) {
+                                $D0_S4_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_5_DOCUMENTED_AND_REFUSED')) {
+                                $D0_S5_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI')) {
+                                $D0_S6_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI')) {
+                                $D0_S7_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI')) {
+                                $D0_S8_Score += $sResult[$l][$key];
+                            }
                             if ($key == 'AUDIT_SCORE_PERCENTAGE') {
                                 if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
                                 $auditScore += $sResult[$l][$key];
@@ -4408,12 +4468,31 @@ class OdkFormService
                     $output[] = $row;
                 }
                 $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
+                $outputScore['avgAuditScore'] = round($outputScore['avgAuditScore']);
+                $outputScore['sQ1Score'] = (count($sResult) > 0) ? round((float)$sQ1Score / count($sResult), 2) : 0;
+                $outputScore['sQ2Score'] = (count($sResult) > 0) ? round((float)$sQ2Score / count($sResult), 2) : 0;
+                $outputScore['sQ3Score'] = (count($sResult) > 0) ? round((float)$sQ3Score / count($sResult), 2) : 0;
+                $outputScore['sQ4Score'] = (count($sResult) > 0) ? round((float)$sQ4Score / count($sResult), 2) : 0;
+                $outputScore['sQ5Score'] = (count($sResult) > 0) ? round((float)$sQ5Score / count($sResult), 2) : 0;
+                $outputScore['sQ6Score'] = (count($sResult) > 0) ? round((float)$sQ6Score / count($sResult), 2) : 0;
+                $outputScore['sQ7Score'] = (count($sResult) > 0) ? round((float)$sQ7Score / count($sResult), 2) : 0;
+                $outputScore['D0_S1_Score'] = (count($sResult) > 0) ? round((float)$D0_S1_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S2_Score'] = (count($sResult) > 0) ? round((float)$D0_S2_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S3_Score'] = (count($sResult) > 0) ? round((float)$D0_S3_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S4_Score'] = (count($sResult) > 0) ? round((float)$D0_S4_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S5_Score'] = (count($sResult) > 0) ? round((float)$D0_S5_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S6_Score'] = (count($sResult) > 0) ? round((float)$D0_S6_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S7_Score'] = (count($sResult) > 0) ? round((float)$D0_S7_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S8_Score'] = (count($sResult) > 0) ? round((float)$D0_S8_Score / count($sResult), 2) : 0;
+                // $outputScore['sQ1Score'] = round($outputScore['sQ1Score']);
                 $outputScore['levelZeroCount'] = count($levelZero);
                 $outputScore['levelOneCount'] = count($levelOne);
                 $outputScore['levelTwoCount'] = count($levelTwo);
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
+                // print_r(count($sResult));die;
             }
+            // print_r($outputScore);die;
             $fieldNames = array();
             $lastColumnArray = array();
             foreach ($outputScore as $key => $aRow) {
@@ -4549,6 +4628,58 @@ class OdkFormService
             );
             $writer->addRow(
                 WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY Score    : ',$outputScore['sQ1Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL Score    : ',$outputScore['sQ2Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_3_TESTS_RECORDED_RECENCY Score    : ',$outputScore['sQ3Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_4_PROCESS_DOCUMENTED Score    : ',$outputScore['sQ4Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS Score    : ',$outputScore['sQ5Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED Score    : ',$outputScore['sQ6Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS Score    : ',$outputScore['sQ7Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_1_DIAGNOSED_HIV_ABOVE_15 Score    : ',$outputScore['D0_S1_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION Score    : ',$outputScore['D0_S2_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD Score    : ',$outputScore['D0_S3_Score']],$basicStyle)
+            );
+
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD Score    : ',$outputScore['D0_S4_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_5_DOCUMENTED_AND_REFUSED Score    : ',$outputScore['D0_S5_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI Score    : ',$outputScore['D0_S6_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI Score    : ',$outputScore['D0_S7_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI Score    : ',$outputScore['D0_S8_Score']],$basicStyle)
             );
             $writer->addRow(
                 WriterEntityFactory::createRowFromArray([''])
