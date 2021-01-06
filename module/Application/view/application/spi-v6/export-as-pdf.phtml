@@ -140,7 +140,12 @@ $pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('tempo
 $pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/piechart-spiv6.png') . '" alt="PDF" /></td>';
 $pdfContent .= '</tr>';
 $pdfContent .= '</table><br><br><br><br>';
-
+$pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
+$pdfContent .= '<tr>';
+$pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('temporary/radar-section-s0-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/radar-section-d0-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '</tr>';
+$pdfContent .= '</table><br><br><br><br>';
 $pdf->writeHTML($pdfContent, true, 0, true, 0);
 
 $testingResult = '<table border="1" BORDERCOLOR=RED cellspacing="0" cellpadding="5" >';
