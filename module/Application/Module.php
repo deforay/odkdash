@@ -12,11 +12,15 @@ namespace Application;
 
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer5Table;
+use Application\Model\SpiFormVer6Table;
 use Application\Model\SpiFormVer3DuplicateTable;
+use Application\Model\SpiFormVer5DuplicateTable;
+use Application\Model\SpiFormVer6DuplicateTable;
 use Application\Model\SpiRt5FacilitiesTable;
 use Application\Model\UsersTable;
 use Application\Model\SpiFormLabelsTable;
 use Application\Model\SpiForm5LabelsTable;
+use Application\Model\SpiForm6LabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
 use Application\Model\UserRoleMapTable;
@@ -28,7 +32,7 @@ use Application\Model\UserTokenMapTable;
 use Application\Model\AuditMailTable;
 use Application\Model\SpiFormVer3DownloadTable;
 use Application\Model\SpiFormVer5DownloadTable;
-
+use Application\Model\SpiFormVer6DownloadTable;
 use Application\Model\SpiFormVer3TempTable;
 
 use Application\Service\OdkFormService;
@@ -82,6 +86,7 @@ class Module
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6'
         ) {
 
             if (!isset($session->userId) || $session->userId == "") {
@@ -169,6 +174,10 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\ReceiverSpiV5Controller($odkFormService);
                 },
+                'Application\Controller\ReceiverSpiV6' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\ReceiverSpiV6Controller($odkFormService);
+                },
                 'Application\Controller\Login' => function ($sm) {
                     $userService = $sm->getServiceLocator()->get('UserService');
                     return new \Application\Controller\LoginController($userService);
@@ -181,6 +190,10 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\SpiV5ReportsController($odkFormService);
                 },
+                'Application\Controller\SpiV6Reports' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\SpiV6ReportsController($odkFormService);
+                },
                 'Application\Controller\SpiV3' => function ($sm) {
                     $commonService = $sm->getServiceLocator()->get('CommonService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
@@ -190,6 +203,11 @@ class Module
                     $commonService = $sm->getServiceLocator()->get('CommonService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\SpiV5Controller($odkFormService, $commonService);
+                },
+                'Application\Controller\SpiV6' => function ($sm) {
+                    $commonService = $sm->getServiceLocator()->get('CommonService');
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\SpiV6Controller($odkFormService, $commonService);
                 },
                 'Application\Controller\Common' => function ($sm) {
                     $commonService = $sm->getServiceLocator()->get('CommonService');
@@ -234,6 +252,10 @@ class Module
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\DashboardV5Controller($odkFormService);
                 },
+                'Application\Controller\DashboardV6' => function ($sm) {
+                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
+                    return new \Application\Controller\DashboardV6Controller($odkFormService);
+                },
             ),
         );
     }
@@ -264,6 +286,11 @@ class Module
                     $table = new SpiFormVer5Table($dbAdapter);
                     return $table;
                 },
+                'SpiFormVer6Table' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiFormVer6Table($dbAdapter);
+                    return $table;
+                },
                 'UsersTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new UsersTable($dbAdapter);
@@ -277,6 +304,11 @@ class Module
                 'SpiForm5LabelsTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiForm5LabelsTable($dbAdapter);
+                    return $table;
+                },
+                'SpiForm6LabelsTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiForm6LabelsTable($dbAdapter);
                     return $table;
                 },
                 'SpiRtFacilitiesTable' => function ($sm) {
@@ -335,12 +367,28 @@ class Module
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormVer5DownloadTable($dbAdapter);
                     return $table;
-                },           
+                },
+                'SpiFormVer6DownloadTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiFormVer6DownloadTable($dbAdapter);
+                    return $table;
+                },
                 'SpiFormVer3DuplicateTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormVer3DuplicateTable($dbAdapter);
                     return $table;
-                }, 'SpiFormVer3TempTable' => function ($sm) {
+                },
+                'SpiFormVer5DuplicateTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiFormVer5DuplicateTable($dbAdapter);
+                    return $table;
+                },
+                'SpiFormVer6DuplicateTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new SpiFormVer6DuplicateTable($dbAdapter);
+                    return $table;
+                },
+                'SpiFormVer3TempTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormVer3TempTable($dbAdapter);
                     return $table;

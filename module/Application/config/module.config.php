@@ -68,6 +68,17 @@ return array(
                     ),
                 ),
             ),
+
+            'odk-receiver-v6' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/receiver-spi-v6[/]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\ReceiverSpiV6',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'login' => array(
                 'type'    => 'segment',
                 'options' => array(
@@ -94,6 +105,16 @@ return array(
                     'route' => '/spi-v5[/:action][/][:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV5',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'spi-v6-form' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v6[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
                         'action' => 'index',
                     ),
                 ),
@@ -125,6 +146,16 @@ return array(
                     'route' => '/spi-v5-reports[/:action][/][:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV5Reports',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'spi-v6-reports' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/spi-v6-reports[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6Reports',
                         'action' => 'index',
                     ),
                 ),
@@ -199,6 +230,16 @@ return array(
                     ),
                 ),
             ),
+            'dashboard-v6' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/dashboard-v6[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\DashboardV6',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'view-data' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -206,6 +247,48 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV3',
                         'action' => 'view-data',
+                    ),
+                ),
+            ),
+            'view-data-v6' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-v6',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
+                        'action' => 'view-data-v6',
+                    ),
+                ),
+            ),
+
+            'view-data-section-zero-v6' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-section-zero-v6',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
+                        'action' => 'view-data-section-zero-v6',
+                    ),
+                ),
+            ),
+
+            'view-data-section-zero-protocol-v6' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-section-zero-protocol-v6',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV6',
+                        'action' => 'view-data-section-zero-protocol-v6',
+                    ),
+                ),
+            ),
+            'view-data-v5' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route' => '/view-data-v5',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\SpiV5',
+                        'action' => 'view-data-v5',
                     ),
                 ),
             ),

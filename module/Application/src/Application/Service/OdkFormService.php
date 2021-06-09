@@ -24,6 +24,13 @@ use CpChart\Chart\Pie;
 use CpChart\Chart\Radar;
 use CpChart\Data;
 use CpChart\Image;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Box\Spout\Common\Entity\Row;
+use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
+use Box\Spout\Common\Entity\Style\CellAlignment;
+use Box\Spout\Common\Entity\Style\Color;
+use Box\Spout\Common\Entity\Style\Border;
+use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
 
 class OdkFormService
 {
@@ -52,6 +59,12 @@ class OdkFormService
     public function saveSpiFormVer5($params)
     {
         $db = $this->sm->get('SpiFormVer5Table');
+        return $db->saveData($params);
+    }
+
+    public function saveSpiFormVer6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
         return $db->saveData($params);
     }
 
@@ -233,7 +246,7 @@ class OdkFormService
             $sheet->mergeCells('H4:H5');
             $sheet->mergeCells('I4:I5');
 
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report SPI-RT--CHECKLIST-version-3', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -328,20 +341,15 @@ class OdkFormService
     public function exportAllV5Submissions($params)
     {
         // var_dump($params);die;
-        
         try {
+            $writer = WriterEntityFactory::createXLSXWriter();
+            $customTempFolderPath = TEMP_UPLOAD_PATH;
+            $filename = 'SPI-RRT--CHECKLIST-version-5-' . time() . '.xls';
+            $TemporaryFolderPath = $customTempFolderPath. DIRECTORY_SEPARATOR. $filename;
+            $writer->setTempFolder($customTempFolderPath);
+            $writer->openToFile($TemporaryFolderPath);
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
-            
-            
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = "Spirt-v5_".time().".xls";
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
-            
-            $output = array();
-            $outputScore = array();
-            $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             $displayDate = "";
@@ -359,6 +367,9 @@ class OdkFormService
                     $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
                 }
             }
+            else{
+                $displayDate = "Date Range : ";
+            }
             $auditRndNo = '';
             $levelData = '';
             $affiliation = '';
@@ -368,24 +379,39 @@ class OdkFormService
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
                 $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
             }
+            else{
+                $auditRndNo = "Audit Round No. : ";
+            }
             if (isset($params['level']) && ($params['level'] != "")) {
                 $levelData = "Level : " . $params['level'];
+            }
+            else{
+                $levelData = "Level : ";
             }
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             }
-            
+            else{
+                $affiliation = "Affiliation : ";
+            }
+            if (isset($params['province']) && ($params['province'] != "")) {
+                $province = "Province/District(s) : " . implode(',', $params['province']);
+            }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
+            }
+            else{
+                $scoreLevel = "Score Level : ";
             }
             if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
             }
-            
+            else{
+                $testPoint = "Type of Testing Point : ";
+            }
             $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            // print_r(json_encode($sResult));die;
-            
+            // print_r($sResult);die;
             if (count($sResult) > 0) {
                 $auditScore = 0;
                 $levelZero = array();
@@ -395,9 +421,10 @@ class OdkFormService
                 $levelFour = array();
                 for ($l = 0; $l < count($sResult); $l++) {
                     $row = array();
+                    $cells = array();
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
-                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
+                            if ($key == 'AUDIT_SCORE_PERCANTAGE') {
                                 if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
                                 $auditScore += $sResult[$l][$key];
                                 if ($sResult[$l][$key] < 40) {
@@ -423,12 +450,10 @@ class OdkFormService
                                 $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
-                            
                         }
                     }
                     $output[] = $row;
                 }
-                
                 $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
                 $outputScore['levelZeroCount'] = count($levelZero);
                 $outputScore['levelOneCount'] = count($levelOne);
@@ -436,145 +461,156 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            $styleArray = array(
-                'font' => array(
-                    'bold' => true,
-                    'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                    ),
-                    )
-            );
-
-            $borderStyle = array(
-                    'alignment' => array(
-                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                        ),
-                        'borders' => array(
-                        'outline' => array(
-                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                    ),
-                    )
-            );
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('C2:D2');
-            $sheet->mergeCells('E2:F2');
-            $sheet->mergeCells('G2:H2');
-            //$sheet->mergeCells('I2:J2');
-            $sheet->mergeCells('K2:L2');
-            $sheet->mergeCells('M2:N2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-            $sheet->mergeCells('I4:I5');
-            
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $colmnNo = 0;
-            $rowmnNo = 4;
-            $rowmnNo1 = 5;
+            $fieldNames = array();
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
-                            $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
-                            $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
-                            $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'));
-            //                 //$sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
-            // $colmnNo++;
+                $fieldNames[] = $key;
                 }
             }
-            // $sheet->getStyle()->getFont()->setBold(true);
-            $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
-            $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('C2:D2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('E2:F2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('G2:H2')->getFont()->setBold(TRUE)->setSize(13);
-            // $sheet->getStyle('I2:J2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('K2:L2')->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('M2:N2')->getFont()->setBold(TRUE)->setSize(13);
-            
-            $start = 0;
+            $mainheadingstyle = (new StyleBuilder())
+                                ->setFontBold()
+                                ->setFontColor(Color::BLACK)
+                                ->build();
+            $border = (new BorderBuilder())
+                    ->setBorderBottom(Color::BLACK)
+                    ->setBorderTop(Color::BLACK)
+                    ->setBorderLeft(Color::BLACK)
+                    ->setBorderRight(Color::BLACK)
+                    ->build();
+            $headingstyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBorder($border)
+                            ->build();
+            $style = (new StyleBuilder())
+                            ->setBorder($border)
+                            ->build();
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
+            $heading = ['Facility Report SPI-RRT--CHECKLIST-version-5'];
+            $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow($headingTitle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([ $displayDate,$auditRndNo,$levelData,$affiliation,$scoreLevel,$testPoint],$basicStyle)
+            );
+            $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow($rowFromValues);
             foreach ($output as $rowNo => $rowData) {
-                    $colNo = 0;
-                    foreach ($rowData as $field => $value) {
-                        if (!isset($value)) {
-                                    $value = "";
-                    }
-                    if (is_numeric($value)) {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    } else {
-                                $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                            }
-                            $rRowCount = $rowNo + 6;
-                            $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
-                            $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                            $sheet->getDefaultRowDimension()->setRowHeight(18);
-                            $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                            $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
-                            // $colNo++;
-                        }
-                    }
-                    // print_r("Prasath");die;
-                $rCount = $rRowCount + 3;
-                
-                $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-                $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
-            $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
-            $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
-            $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
-            $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
-            $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
-            $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'),\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(TRUE)->setSize(13);
+                $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
+                $writer->addRow($rowValues);
+            }
             
-            // print_r(($sResult));die;
-           
-            
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            // print_r(($filename));die;
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $levelZeroStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            $levelOneStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            $levelTwoStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            $levelThreeStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            $levelFourStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
 
+            if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 40 && (int)$outputScore['avgAuditScore'] <= 59){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 60 && (int)$outputScore['avgAuditScore'] <= 79){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 80 && (int)$outputScore['avgAuditScore'] <= 89){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] > 90){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            }
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ',$outputScore['levelZeroCount']],$levelZeroStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ',$outputScore['levelOneCount']],$levelOneStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ',$outputScore['levelTwoCount']],$levelTwoStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ',$outputScore['levelThreeCount']],$levelThreeStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ',$outputScore['levelFourCount']],$levelFourStyle)
+            );
+            $writer->close();
             return $filename;
         } catch (Exception $exc) {
-            //echo "error log";die;
-            error_log("SPI-RT--CHECKLIST-version-3-REPORT-EXCEL--" . $exc->getMessage());
+            return "";
+            error_log("SPI-RRT--CHECKLIST-version-5-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
-            //return "";
         }
     }
 
@@ -1070,7 +1106,7 @@ class OdkFormService
             $sheet->mergeCells('K4:K5');
             $sheet->mergeCells('L4:L5');
 
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report Version 3', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 
             $sheet->setCellValue('A4', html_entity_decode('Facility name', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -1238,7 +1274,7 @@ class OdkFormService
             $sheet->mergeCells('L4:L5');
             $sheet->mergeCells('M4:M5');
 
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report Version 5', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 
             $sheet->setCellValue('A4', html_entity_decode('Facility name', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
@@ -1331,6 +1367,12 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getSpiV3PendingCount();
+    }
+
+    public function getSpiV5PendingCount()
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->getSpiV5PendingCount();
     }
 
     public function updateSpiForm($params)
@@ -3814,4 +3856,1678 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer5Table');
         return $db->fetchFacilitiesAudits($params);
     }
+
+    //version 6
+
+    public function getAllSpiV6TestingPointType()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllTestingPointTypeV6();
+    }
+
+    public function getAllSpiV6SubmissionsDetails($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllSubmissionsDetails($params, $acl);
+    }
+
+    public function getAllV6DuplicateSubmissionsDetails()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllV6DuplicateSubmissionsDetails();
+    }
+
+    public function getV6DownloadFilesRow()
+    {
+        $db = $this->sm->get('SpiFormVer6DownloadTable');
+        return $db->fetchDownloadFilesRow();
+    }
+
+    public function getAllV5DuplicateSubmissionsDetails()
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->fetchAllV5DuplicateSubmissionsDetails();
+    }
+
+    public function removeAuditV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5DuplicateTable');
+        return $db->removeAuditData($params);
+    }
+
+    public function removeAuditV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6DuplicateTable');
+        return $db->removeAuditData($params);
+    }
+
+    public function approveSpiV6FormStatus($params)
+    {
+        //\Zend\Debug\Debug::dump(count($params['idList']));die;
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            //$facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
+            $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+            $db = $this->sm->get('SpiFormVer6Table');
+            if (isset($params['idList']) && $params['idList'] != '') {
+                for ($i = 0; $i < count($params['idList']); $i++) {
+                    $result = $db->updateFormStatus($params['idList'][$i], 'approved');
+                    $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
+                }
+            }
+            if (isset($params['id'])) {
+                $result = $db->updateFormStatus($params['id'], 'approved');
+                $facilityDb->addFacilityBasedOnForm($params['id']);
+            }
+            if ($result > 0) {
+                $adapter->commit();
+                return $result;
+            }
+        } catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    public function getSpiV6FormData($id)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getFormData($id);
+    }
+
+    public function exportSAndDV6Submissions($params)
+    {
+        // var_dump($params);die;
+        try {
+            $logincontainer = new Container('credo');
+            $writer = WriterEntityFactory::createXLSXWriter();
+            $customTempFolderPath = TEMP_UPLOAD_PATH;
+            $filename = 'SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xls';
+            $TemporaryFolderPath = $customTempFolderPath. DIRECTORY_SEPARATOR. $filename;
+            $writer->setTempFolder($customTempFolderPath);
+            $writer->openToFile($TemporaryFolderPath);
+            $common = new \Application\Service\CommonService();
+            // $queryContainer = new Container('query');
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $sql = new Sql($dbAdapter);
+            $displayDate = "";
+            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+                $dateRangeDate = explode(" - ", $params['dateRange']);
+                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+                    $fromDate = $dateRangeDate[0];
+                }
+                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+                    $toDate = $dateRangeDate[1];
+                }
+                if ($fromDate == $toDate) {
+                    $displayDate = "Date Range : " . $fromDate;
+                } else {
+                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
+                }
+            }
+            else{
+                $displayDate = "Date Range : ";
+            }
+            $auditRndNo = '';
+            $levelData = '';
+            $affiliation = '';
+            $province = '';
+            $scoreLevel = '';
+            $testPoint = '';
+            if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
+                $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
+            }
+            else{
+                $auditRndNo = "Audit Round No. : ";
+            }
+            if (isset($params['level']) && ($params['level'] != "")) {
+                $levelData = "Level : " . $params['level'];
+            }
+            else{
+                $levelData = "Level : ";
+            }
+            if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
+                $affiliation = "Affiliation : " . $params['affiliation'];
+            }
+            else{
+                $affiliation = "Affiliation : ";
+            }
+            if (isset($params['province']) && ($params['province'] != "")) {
+                $province = "Province/District(s) : " . implode(',', $params['province']);
+            }
+            else{
+                $province = "Province/District(s) : ";
+            }
+            if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
+                $scoreLevel = "Score Level : " . $params['scoreLevel'];
+            }
+            else{
+                $scoreLevel = "Score Level : ";
+            }
+            if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
+                $testPoint = "Type of Testing Point : " . $params['testPoint'];
+            }
+            else{
+                $testPoint = "Type of Testing Point : ";
+            }
+
+            $start_date = "";
+            $end_date = "";
+            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+                $dateField = explode(" ", $params['dateRange']);
+                //print_r($proceed_date);die;
+                if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                    $start_date = $this->dateFormat($dateField[0]);                
+                }
+                if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                    $end_date = $this->dateFormat($dateField[2]);
+                }
+            }
+            
+            
+            $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                            ->columns(array('formId','formVersion','meta-instance-id','meta-model-version','meta-ui-version','meta-submission-date','meta-is-complete','meta-date-marked-as-complete','start','end','today','deviceid','assesmentofaudit','auditEndTime','auditStartTime','auditroundno','facility','facilityname','testingpointtype','testingpointtype_other','physicaladdress','level','level_other','affiliation','affiliation_other','NumberofTester','AUDIT_SCORE_PERCENTAGE','AUDIT_SCORE_PERCANTAGE_ROUNDED','DO_SURVEILLANCE','S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY','S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY','S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL','S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL','S0_Q_3_TESTS_RECORDED_RECENCY','S0_C_3_TESTS_RECORDED_RECENCY','S0_Q_4_PROCESS_DOCUMENTED','S0_C_4_PROCESS_DOCUMENTED','S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS','S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS','S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED','S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED','S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS','S0_C_7_DOCUMENTING_PROTOCOL_ERRORS','D0_N_1_DIAGNOSED_HIV_ABOVE_15','D0_D_1_DIAGNOSED_HIV_ABOVE_15','D0_S_1_DIAGNOSED_HIV_ABOVE_15','D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION','D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION','D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION','D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD','D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD','D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD','D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD','D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD','D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD','D0_N_5_DOCUMENTED_AND_REFUSED','D0_D_5_DOCUMENTED_AND_REFUSED','D0_S_5_DOCUMENTED_AND_REFUSED','D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI','D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI','D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI','D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI','D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI','D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI','D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI','D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI','D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'))
+                            ->where('spiv6.status != "deleted"');
+
+            if($params['auditRndNo']!=''){
+            $sQuery = $sQuery->where("spiv6.auditroundno='".$params['auditRndNo']."'");
+            }
+            if (trim($start_date) != "" && trim($end_date) != "") {
+                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date ."'", "spiv6.assesmentofaudit <='" . $end_date."'"));
+            }
+            if($params['level']!=''){
+            $sQuery = $sQuery->where("spiv6.level='".$params['level']."'");
+            }
+            if($params['affiliation']!=''){
+            $sQuery = $sQuery->where("spiv6.affiliation='".$params['affiliation']."'");
+            }
+            
+            if(isset($params['scoreLevel']) && $params['scoreLevel']!=''){
+                if($params['scoreLevel'] == 0){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
+                }else if($params['scoreLevel'] == 1){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+                }else if($params['scoreLevel'] == 2){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+                }else if($params['scoreLevel'] == 3){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+                }else if($params['scoreLevel'] == 4){
+                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+                }
+            }
+            if(isset($logincontainer->token) && count($logincontainer->token) > 0){
+                $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            }
+            if (isset($sWhere) && $sWhere != "") {
+                $sQuery->where($sWhere);
+            }
+    
+            if (isset($sOrder) && $sOrder != "") {
+                $sQuery->order($sOrder);
+            }
+            $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            // print_r($sResult);die;
+            if (count($sResult) > 0) {
+                $auditScore = 0;
+                $levelZero = array();
+                $levelOne = array();
+                $levelTwo = array();
+                $levelThree = array();
+                $levelFour = array();
+                for ($l = 0; $l < count($sResult); $l++) {
+                    $row = array();
+                    $cells = array();
+                    foreach ($sResult[$l] as $key => $aRow) {
+                        if ($key != 'id' && $key != 'content' && $key != 'token') {
+                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
+                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
+                                $auditScore += $sResult[$l][$key];
+                                if ($sResult[$l][$key] < 40) {
+                                    $levelZero[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                    $levelOne[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                    $levelTwo[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                    $levelThree[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 90) {
+                                    $levelFour[] = $sResult[$l][$key];
+                                }
+                            }
+                            if ($key == 'level_other') {
+                                $level = " - " . $sResult[$l][$key];
+                            } else {
+                                $level = '';
+                            }
+                            if ($key == 'today') {
+                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                            } else if ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                            }
+                            $row[] = $sResult[$l][$key] . $level;
+                        }
+                    }
+                    $output[] = $row;
+                }
+                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
+                $outputScore['levelZeroCount'] = count($levelZero);
+                $outputScore['levelOneCount'] = count($levelOne);
+                $outputScore['levelTwoCount'] = count($levelTwo);
+                $outputScore['levelThreeCount'] = count($levelThree);
+                $outputScore['levelFourCount'] = count($levelFour);
+            }
+            // print_r($outputScore);die;
+            $fieldNames = array();
+            $lastColumnArray = array();
+            foreach ($outputScore as $key => $aRow) {
+                $lastColumnArray[] = $key;
+            }
+            foreach ($sResult[0] as $key => $aRow) {
+                if ($key != 'id' && $key != 'content' && $key != 'token') {
+                    $fieldNames[] = $key;
+                }
+            }
+            $mainheadingstyle = (new StyleBuilder())
+                                ->setFontBold()
+                                ->setFontColor(Color::BLACK)
+                                ->build();
+            $border = (new BorderBuilder())
+                    ->setBorderBottom(Color::BLACK)
+                    ->setBorderTop(Color::BLACK)
+                    ->setBorderLeft(Color::BLACK)
+                    ->setBorderRight(Color::BLACK)
+                    ->build();
+            $headingstyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBorder($border)
+                            ->build();
+            $style = (new StyleBuilder())
+                            ->setBorder($border)
+                            ->build();
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
+            $levelZeroStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            $levelOneStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            $levelTwoStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            $levelThreeStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            $levelFourStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            $heading = ['Facility Report SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION'];
+            $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow($headingTitle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([ $displayDate,$auditRndNo,$levelData,$affiliation,$scoreLevel,$testPoint],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
+            $writer->addRow($rowFromValues);
+            foreach ($output as $rowNo => $rowData) {
+                // print_r($rowData);die;
+                $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
+                $writer->addRow($rowValues);
+            }
+            // $avg = intval($outputScore['avgAuditScore']);
+            // print_r($avg);die;
+            // if(intval($outputScore['avgAuditScore'])< 80 && intval($outputScore['avgAuditScore'])<= 89){
+            //     print_r(gettype($avg));die;
+            // }
+            $avgStyle = (new StyleBuilder())
+                        ->setFontBold()
+                        ->setFontColor(Color::BLACK)
+                        ->build();
+            if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 40 && (int)$outputScore['avgAuditScore'] <= 59){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 60 && (int)$outputScore['avgAuditScore'] <= 79){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 80 && (int)$outputScore['avgAuditScore'] <= 89){
+                // print_r($avg);die;
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] > 90){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            }
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ',$outputScore['levelZeroCount']],$levelZeroStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ',$outputScore['levelOneCount']],$levelOneStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ',$outputScore['levelTwoCount']],$levelTwoStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ',$outputScore['levelThreeCount']],$levelThreeStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ',$outputScore['levelFourCount']],$levelFourStyle)
+            );
+
+            $writer->close();
+            return $filename;
+        } catch (Exception $exc) {
+            return "";
+            error_log("SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-REPORT-EXCEL--" . $exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    public function exportAllV6Submissions($params)
+    {
+        // var_dump($params);die;
+        try {
+            $writer = WriterEntityFactory::createXLSXWriter();
+            $customTempFolderPath = TEMP_UPLOAD_PATH;
+            $filename = 'SPI-RRT--CHECKLIST-version-6-' . time() . '.xls';
+            $TemporaryFolderPath = $customTempFolderPath. DIRECTORY_SEPARATOR. $filename;
+            $writer->setTempFolder($customTempFolderPath);
+            $writer->openToFile($TemporaryFolderPath);
+            $common = new \Application\Service\CommonService();
+            $queryContainer = new Container('query');
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $sql = new Sql($dbAdapter);
+            $displayDate = "";
+            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+                $dateRangeDate = explode(" - ", $params['dateRange']);
+                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+                    $fromDate = $dateRangeDate[0];
+                }
+                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+                    $toDate = $dateRangeDate[1];
+                }
+                if ($fromDate == $toDate) {
+                    $displayDate = "Date Range : " . $fromDate;
+                } else {
+                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
+                }
+            }
+            else{
+                $displayDate = "Date Range : ";
+            }
+            $auditRndNo = '';
+            $levelData = '';
+            $affiliation = '';
+            $province = '';
+            $scoreLevel = '';
+            $testPoint = '';
+            if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
+                $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
+            }
+            else{
+                $auditRndNo = "Audit Round No. : ";
+            }
+            if (isset($params['level']) && ($params['level'] != "")) {
+                $levelData = "Level : " . $params['level'];
+            }
+            else{
+                $levelData = "Level : ";
+            }
+            if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
+                $affiliation = "Affiliation : " . $params['affiliation'];
+            }
+            else{
+                $affiliation = "Affiliation : ";
+            }
+            if (isset($params['province']) && ($params['province'] != "")) {
+                $province = "Province/District(s) : " . implode(',', $params['province']);
+            }
+            else{
+                $province = "Province/District(s) : ";
+            }
+            if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
+                $scoreLevel = "Score Level : " . $params['scoreLevel'];
+            }
+            else{
+                $scoreLevel = "Score Level : ";
+            }
+            if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
+                $testPoint = "Type of Testing Point : " . $params['testPoint'];
+            }
+            else{
+                $testPoint = "Type of Testing Point : ";
+            }
+            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            // print_r($sResult);die;
+            if (count($sResult) > 0) {
+                $auditScore = 0;
+                $sQ1Score = 0;
+                $sQ2Score = 0;
+                $sQ3Score = 0;
+                $sQ4Score = 0;
+                $sQ5Score = 0;
+                $sQ6Score = 0;
+                $sQ7Score = 0;
+                $D0_S1_Score = 0;
+                $D0_S2_Score = 0;
+                $D0_S3_Score = 0;
+                $D0_S4_Score = 0;
+                $D0_S5_Score = 0;
+                $D0_S6_Score = 0;
+                $D0_S7_Score = 0;
+                $D0_S8_Score = 0;
+                $levelZero = array();
+                $levelOne = array();
+                $levelTwo = array();
+                $levelThree = array();
+                $levelFour = array();
+                for ($l = 0; $l < count($sResult); $l++) {
+                    $row = array();
+                    $cells = array();
+                    foreach ($sResult[$l] as $key => $aRow) {
+                        if ($key != 'id' && $key != 'content' && $key != 'token') {
+                            if(($key == 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY')) {
+                                $sQ1Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL')) {
+                                $sQ2Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_3_TESTS_RECORDED_RECENCY')) {
+                                $sQ3Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_4_PROCESS_DOCUMENTED')) {
+                                $sQ4Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS')) {
+                                $sQ5Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED')) {
+                                $sQ6Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS')) {
+                                $sQ7Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_1_DIAGNOSED_HIV_ABOVE_15')) {
+                                $D0_S1_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION')) {
+                                $D0_S2_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD')) {
+                                $D0_S3_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD')) {
+                                $D0_S4_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_5_DOCUMENTED_AND_REFUSED')) {
+                                $D0_S5_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI')) {
+                                $D0_S6_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI')) {
+                                $D0_S7_Score += $sResult[$l][$key];
+                            }
+                            if(($key == 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI')) {
+                                $D0_S8_Score += $sResult[$l][$key];
+                            }
+                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
+                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) continue;
+                                $auditScore += $sResult[$l][$key];
+                                if ($sResult[$l][$key] < 40) {
+                                    $levelZero[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                    $levelOne[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                    $levelTwo[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                    $levelThree[] = $sResult[$l][$key];
+                                } else if ($sResult[$l][$key] >= 90) {
+                                    $levelFour[] = $sResult[$l][$key];
+                                }
+                            }
+                            if ($key == 'level_other') {
+                                $level = " - " . $sResult[$l][$key];
+                            } else {
+                                $level = '';
+                            }
+                            if ($key == 'today') {
+                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                            } else if ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                            }
+                            $row[] = $sResult[$l][$key] . $level;
+                        }
+                    }
+                    $output[] = $row;
+                }
+                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
+                $outputScore['avgAuditScore'] = round($outputScore['avgAuditScore']);
+                $outputScore['sQ1Score'] = (count($sResult) > 0) ? round((float)$sQ1Score / count($sResult), 2) : 0;
+                $outputScore['sQ2Score'] = (count($sResult) > 0) ? round((float)$sQ2Score / count($sResult), 2) : 0;
+                $outputScore['sQ3Score'] = (count($sResult) > 0) ? round((float)$sQ3Score / count($sResult), 2) : 0;
+                $outputScore['sQ4Score'] = (count($sResult) > 0) ? round((float)$sQ4Score / count($sResult), 2) : 0;
+                $outputScore['sQ5Score'] = (count($sResult) > 0) ? round((float)$sQ5Score / count($sResult), 2) : 0;
+                $outputScore['sQ6Score'] = (count($sResult) > 0) ? round((float)$sQ6Score / count($sResult), 2) : 0;
+                $outputScore['sQ7Score'] = (count($sResult) > 0) ? round((float)$sQ7Score / count($sResult), 2) : 0;
+                $outputScore['D0_S1_Score'] = (count($sResult) > 0) ? round((float)$D0_S1_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S2_Score'] = (count($sResult) > 0) ? round((float)$D0_S2_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S3_Score'] = (count($sResult) > 0) ? round((float)$D0_S3_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S4_Score'] = (count($sResult) > 0) ? round((float)$D0_S4_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S5_Score'] = (count($sResult) > 0) ? round((float)$D0_S5_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S6_Score'] = (count($sResult) > 0) ? round((float)$D0_S6_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S7_Score'] = (count($sResult) > 0) ? round((float)$D0_S7_Score / count($sResult), 2) : 0;
+                $outputScore['D0_S8_Score'] = (count($sResult) > 0) ? round((float)$D0_S8_Score / count($sResult), 2) : 0;
+                // $outputScore['sQ1Score'] = round($outputScore['sQ1Score']);
+                $outputScore['levelZeroCount'] = count($levelZero);
+                $outputScore['levelOneCount'] = count($levelOne);
+                $outputScore['levelTwoCount'] = count($levelTwo);
+                $outputScore['levelThreeCount'] = count($levelThree);
+                $outputScore['levelFourCount'] = count($levelFour);
+                // print_r(count($sResult));die;
+            }
+            // print_r($outputScore);die;
+            $fieldNames = array();
+            $lastColumnArray = array();
+            foreach ($outputScore as $key => $aRow) {
+                $lastColumnArray[] = $key;
+            }
+            foreach ($sResult[0] as $key => $aRow) {
+                if ($key != 'id' && $key != 'content' && $key != 'token') {
+                    $fieldNames[] = $key;
+                }
+            }
+            $mainheadingstyle = (new StyleBuilder())
+                                ->setFontBold()
+                                ->setFontColor(Color::BLACK)
+                                ->build();
+            $border = (new BorderBuilder())
+                    ->setBorderBottom(Color::BLACK)
+                    ->setBorderTop(Color::BLACK)
+                    ->setBorderLeft(Color::BLACK)
+                    ->setBorderRight(Color::BLACK)
+                    ->build();
+            $headingstyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBorder($border)
+                            ->build();
+            $style = (new StyleBuilder())
+                            ->setBorder($border)
+                            ->build();
+            $basicStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->build();
+            $levelZeroStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            $levelOneStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            $levelTwoStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            $levelThreeStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            $levelFourStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            $heading = ['Facility Report SPI-RRT--CHECKLIST-version-6'];
+            $headingTitle = WriterEntityFactory::createRowFromArray($heading,$mainheadingstyle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow($headingTitle);
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([ $displayDate,$auditRndNo,$levelData,$affiliation,$scoreLevel,$testPoint],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames,$headingstyle);
+            $writer->addRow($rowFromValues);
+            foreach ($output as $rowNo => $rowData) {
+                // print_r($rowData);die;
+                $rowValues = WriterEntityFactory::createRowFromArray($rowData,$style);
+                $writer->addRow($rowValues);
+            }
+            // $avg = intval($outputScore['avgAuditScore']);
+            // print_r($avg);die;
+            // if(intval($outputScore['avgAuditScore'])< 80 && intval($outputScore['avgAuditScore'])<= 89){
+            //     print_r(gettype($avg));die;
+            // }
+            $avgStyle = (new StyleBuilder())
+            ->setFontBold()
+            ->setFontColor(Color::BLACK)
+            ->build();
+            if((int)$outputScore['avgAuditScore'] > 0 && (int)$outputScore['avgAuditScore'] < 40){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::RED)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 40 && (int)$outputScore['avgAuditScore'] <= 59){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(128, 128, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 60 && (int)$outputScore['avgAuditScore'] <= 79){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::YELLOW)
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] < 80 && (int)$outputScore['avgAuditScore'] <= 89){
+                // print_r($avg);die;
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 255, 0))
+                            ->build();
+            }
+            else if((int)$outputScore['avgAuditScore'] > 90){
+                $avgStyle = (new StyleBuilder())
+                            ->setFontBold()
+                            ->setFontColor(Color::BLACK)
+                            ->setBackgroundColor(Color::rgb(0, 128, 0))
+                            ->build();
+            }
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ',$outputScore['avgAuditScore']],$avgStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY Score    : ',$outputScore['sQ1Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL Score    : ',$outputScore['sQ2Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_3_TESTS_RECORDED_RECENCY Score    : ',$outputScore['sQ3Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_4_PROCESS_DOCUMENTED Score    : ',$outputScore['sQ4Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS Score    : ',$outputScore['sQ5Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED Score    : ',$outputScore['sQ6Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS Score    : ',$outputScore['sQ7Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_1_DIAGNOSED_HIV_ABOVE_15 Score    : ',$outputScore['D0_S1_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION Score    : ',$outputScore['D0_S2_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD Score    : ',$outputScore['D0_S3_Score']],$basicStyle)
+            );
+
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD Score    : ',$outputScore['D0_S4_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_5_DOCUMENTED_AND_REFUSED Score    : ',$outputScore['D0_S5_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI Score    : ',$outputScore['D0_S6_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI Score    : ',$outputScore['D0_S7_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Avg. D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI Score    : ',$outputScore['D0_S8_Score']],$basicStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray([''])
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ',$outputScore['levelZeroCount']],$levelZeroStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ',$outputScore['levelOneCount']],$levelOneStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ',$outputScore['levelTwoCount']],$levelTwoStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ',$outputScore['levelThreeCount']],$levelThreeStyle)
+            );
+            $writer->addRow(
+                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ',$outputScore['levelFourCount']],$levelFourStyle)
+            );
+
+            $writer->close();
+            return $filename;
+        } catch (Exception $exc) {
+            return "";
+            error_log("SPI-RRT--CHECKLIST-version-6-REPORT-EXCEL--" . $exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    public function getSpiV6PerformancePieChart($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getPerformanceV6($params);
+        // echo "Prasath";die;
+        $MyData = new Data();
+        if (count($result) > 0) {
+            foreach ($result as $key => $data) {
+                $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
+                $MyData->setSerieDescription("Level" . $key);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Level" . $key, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        
+        $percentage = $result[0]['level0'] + $result[0]['level1'] + $result[0]['level2'] + $result[0]['level3'] + $result[0]['level4'];
+        
+        /* Define the absissa serie */
+        $MyData->addPoints(
+            array(
+                $this->translator->translate('Level 0 (Below 40)') . "&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level0'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" .  $result[0]['level0'] . ")",
+                $this->translator->translate('Level 1 (40-59)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level1'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level1'] . ")",
+                $this->translator->translate('Level 2 (60-79)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level2'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level2'] . ")",
+                $this->translator->translate('Level 3 (80-89)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level3'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level3'] . ")",
+                $this->translator->translate('Level 4 (90 and above)') . "&nbsp;" . round(($result[0]['level4'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level4'] . ")"
+            ),
+            "Labels"
+        );
+        $MyData->setAbscissa("Labels");
+        
+        /* Create the pChart object */
+        $myPicture = new Image(400, 510, $MyData);
+        $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
+        $path = font_path . DIRECTORY_SEPARATOR;
+        
+        
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
+       
+        $PieChart = new Pie($myPicture, $MyData);
+        $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => TRUE));
+        $PieChart->drawPieLegend(5, 390);
+        $fileName =  'piechart-spiv6.png';
+        $myPicture->drawText(540, 200, "Extended AA pass / Splitted", ["R" => 0, "G" => 0, "B" => 0, "Align" => TEXT_ALIGN_TOPMIDDLE]);
+        $fileName = 'piechart-spiv6.png';
+        $PieChart->pChartObject->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        
+        //header('Content-Type: text/plain');
+        //var_dump($path);die;
+        //$result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart-spiv5.png");
+        return $fileName;
+    }
+
+    public function getSpiV6AuditRoundWiseDataChart($params)
+    {
+        
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseDataV6($params);
+        $MyData = new Data();
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2), round($adata['RTRI_SCORE'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit","RTRT Surveillance"), "Label");
+        $MyData->setAbscissa("Label");
+        
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
+        //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
+        //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
+        //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
+
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+        
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+        //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
+        //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
+        
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+        
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+        
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+        
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-spiv6.png';
+        //print_r($fileName);die;
+        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
+    public function getSpiV6AuditRoundWiseS0DataChart($params)
+    {
+        
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseS0DataV6($params);
+        $MyData = new Data();
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance " . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop., round($adata['RTRI_SCORE'], , round($adata['RTRI_SCORE'], 2)2)
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array(
+            "Surveilance Eligibility",
+            "Counselor Protocol", 
+            "Recency Test Recorded",
+            "Process Documented",
+            "2 weeks Results",
+            "Violation Documented", 
+            "Documented Errors"
+            ), "Label");
+        $MyData->setAbscissa("Label");
+        
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+        
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+        
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+        
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+        
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-section-s0-spiv6.png';
+        //print_r($fileName);die;
+        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
+    public function getSpiV6AuditRoundWiseD0DataChart($params)
+    {
+        
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseD0DataV6($params);
+        $MyData = new Data();
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
+                $MyData->addPoints(array(round($adata['DIAGNOSED_HIV_ABOVE_15'], 2), round($adata['CANDIDATE_SCREENED_FOR_PARTICIPATION'], 2), round($adata['ELIGIBLE_DURING_REVIEW_PERIOD'], 2), round($adata['ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'], 2), round($adata['DOCUMENTED_AND_REFUSED'], 2), round($adata['PARTICIAPANTS_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance " . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop., round($adata['RTRI_SCORE'], , round($adata['RTRI_SCORE'], 2)2)
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array(
+            "HIV above 15",
+            "Screened for participation", 
+            "Eligible during Review",
+            "Eligible and declined",
+            "Documented and refused",
+            "Enrolled in RTRI", 
+            "Incorrectly Enrolled",
+            "Correctly Enrolled"
+            ), "Label");
+        $MyData->setAbscissa("Label");
+        
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+        
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+        
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+        
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+        
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-section-d0-spiv6.png';
+        //print_r($fileName);die;
+        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
+    public function addV6DownloadData($params)
+    {
+        // print_r($params);die;
+        $db = $this->sm->get('SpiFormVer6DownloadTable');
+        return $db->addDownloadDataDetails($params);
+    }
+
+    public function getPerformanceV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getPerformanceV6($params);
+    }
+
+    public function getPerformanceLast30DaysV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getPerformanceLast30DaysV6($params);
+    }
+
+    public function getPerformanceLast180DaysV6($params = null)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getPerformanceLast180DaysV6();
+    }
+
+    public function getAllApprovedSubmissionsV6($sortOrder = 'DESC')
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllApprovedSubmissionsV6($sortOrder);
+    }
+
+    public function getAllApprovedTestingVolumeV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAllApprovedTestingVolumeV6($params);
+    }
+
+    public function getAllSubmissionsV6($sortOrder = 'DESC')
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAllSubmissionsV6($sortOrder);
+    }
+
+    //get all audit round no
+    public function getSpiV6FormAuditNo()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchSpiV6FormAuditNo();
+    }
+
+    public function getSpiV6FormUniqueLevelNames()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchSpiV6FormUniqueLevelNames();
+    }
+
+    public function getAllTestingPointTypeV6()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllTestingPointTypeV6();
+    }
+
+    public function updateSpiV6Form($params)
+    {
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $db = $this->sm->get('SpiFormVer6Table');
+            $result = $db->updateSpiV6FormDetails($params);
+            if ($result > 0) {
+                $adapter->commit();
+                $container = new Container('alert');
+                $container->alertMsg = 'Form details updated successfully';
+                return $result;
+            }
+        } catch (Exception $exc) {
+            $adapter->rollBack();
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    public function getAllSubmissionsDatasV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $acl = $this->sm->get('AppAcl');
+        return $db->fetchAllSubmissionsDatas($params, $acl);
+    }
+
+    public function deleteAuditDataV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->deleteAuditRowData($params);
+    }
+
+    public function getZeroQuestionCountsV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getZeroQuestionCountsV6($params);
+    }
+
+    public function getSpiV6FormLabels()
+    {
+        $db = $this->sm->get('SpiForm5LabelsTable');
+        return $db->getAllLabels();
+    }
+
+    public function getAuditRoundWiseDataV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAuditRoundWiseDataV6($params);
+    }
+    
+    // Roundwise Audit Data for Section S0
+    
+    public function getAuditRoundWiseSectionS0DataV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAuditRoundWiseS0DataV6($params);
+    }
+
+    // Roundwise Audit Data for Section D0
+    
+    public function getAuditRoundWiseSectionD0DataV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getAuditRoundWiseD0DataV6($params);
+    }
+
+    
+
+    
+
+    public function getAllApprovedSubmissionLocationV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllApprovedSubmissionLocationV6($params);
+    }
+
+    //download spider chart pdf
+    public function getAuditRoundWiseDataChartV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseDataV6($params);
+        $MyData = new Data();
+        /* Create and populate the pData object */
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                
+                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
+        $MyData->setAbscissa("Label");
+
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar.png");
+        return $fileName;
+    }
+
+    /*
+    get section S0 V6
+    */
+
+    public function getAuditRoundWiseS0DataChartV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseS0DataV6($params);
+        $MyData = new Data();
+        /* Create and populate the pData object */
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                
+                $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("Surveilance Eligibility","Counselor Protocol", "Recency Test Recorded", "Process Documented", "2 weeks Results", "Violation Documented", "Documented Errors"), "Label");
+        $MyData->setAbscissa("Label");
+
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-s0-v6.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
+    /*
+    get section D0 V6
+    */
+
+    public function getAuditRoundWiseD0DataChartV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        $result = $db->getAuditRoundWiseD0DataV6($params);
+        $MyData = new Data();
+        /* Create and populate the pData object */
+        $filename = '';
+        if (count($result) > 0) {
+            foreach ($result as $auditNo => $adata) {
+                
+                $MyData->addPoints(array(round($adata['DIAGNOSED_HIV_ABOVE_15'], 2), round($adata['CANDIDATE_SCREENED_FOR_PARTICIPATION'], 2), round($adata['ELIGIBLE_DURING_REVIEW_PERIOD'], 2), round($adata['ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'], 2), round($adata['DOCUMENTED_AND_REFUSED'], 2), round($adata['PARTICIAPANTS_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'], 2),round($adata['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'], 2)), "Audit Performance");
+                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
+                $rgbColor = array();
+                //Create a loop.
+                foreach (array('r', 'g', 'b') as $color) {
+                    //Generate a random number between 0 and 255.
+                    $rgbColor[$color] = mt_rand(0, 255);
+                }
+                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
+            }
+        }
+        /* Define the absissa serie */
+        $MyData->addPoints(array("HIV above 15","Screened for participation", "Eligible during Review", "Eligible and declined", "Documented and refused", "Enrolled in RTRI", "Incorrectly Enrolled","Correctly Enrolled"), "Label");
+        $MyData->setAbscissa("Label");
+
+        /* Create the pChart object */
+        $myPicture = new Image(600, 690, $MyData);
+        
+        /* Add a border to the picture */
+        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
+
+        $path = font_path . DIRECTORY_SEPARATOR;
+        /* Write the picture title */
+       
+        /* Set the default font properties */
+        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
+
+        /* Enable shadow computing */
+        $myPicture->setShadow(TRUE, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
+
+        /* Create the pRadar object */
+        $SplitChart = new Radar();
+        /* Draw a radar chart */
+        $myPicture->setGraphArea(15, 15, 590, 590);
+        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
+        $SplitChart->drawRadar($myPicture, $MyData, $Options);
+
+        /* Write the chart legend */
+        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
+        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
+
+        /* Render the picture (choose the best way) */
+        $fileName =  'radar-d0-v6.png';
+        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        return $fileName;
+    }
+
+    public function getTestingPointTypeNamesByTypeV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchTestingPointTypeNamesByTypeV6($params);
+    }
+
+    public function getViewDataDetailsV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchViewDataDetails($params);
+    }
+
+    public function getViewDataS0DetailsV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchViewDataS0Details($params);
+    }
+
+    public function getViewDataD0DetailsV6($params)
+    {
+        //echo "ss";die;
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchViewDataD0Details($params);
+    }
+
+    public function getViewDataDetailsV5($params)
+    {
+        $db = $this->sm->get('SpiFormVer5Table');
+        return $db->fetchViewDataDetails($params);
+    }
+
+    //get all facility names v6
+    public function getAllFacilityNamesV6()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllFacilityNames();
+    }
+
+    public function getFacilitiesAuditsV6($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchFacilitiesAudits($params);
+    }
+
+    public function getAllApprovedV6FormSubmissionsTable($params)
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchAllApprovedV6FormSubmissionsTable($params);
+    }
+
+    public function getSpiV6PendingCount()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getSpiV6PendingCount();
+    }
+
+    public function exportV6FacilityReport($params)
+    {
+        try {
+            $common = new \Application\Service\CommonService();
+            $queryContainer = new Container('query');            
+            $output = array();           
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xls';
+            //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $sheet = $spreadsheet->getActiveSheet();
+            $sql = new Sql($dbAdapter);
+            if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+                $dateRangeDate = explode(" - ", $params['dateRange']);
+                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+                    $fromDate = $dateRangeDate[0];
+                }
+                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+                    $toDate = $dateRangeDate[1];
+                }
+                if ($fromDate == $toDate) {
+                    $displayDate = "Date : " . $fromDate;
+                } else {
+                    $displayDate = "Date : " . $fromDate . " to " . $toDate;
+                }
+            } else {
+                $displayDate = "";
+            }
+
+            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportQuery);
+
+            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            if (count($sResult) > 0) {
+
+                foreach ($sResult as $aRow) {
+                    $auditDate = "";
+                    if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
+                        $auditDate = $common->humanDateFormat($aRow['assesmentofaudit']);
+                    }
+                    $row = array();
+                    $row[] = $aRow['facilityname'];
+                    $row[] = $auditDate;
+                    $row[] = $aRow['testingpointtype'];
+                    $row[] = $aRow['PERSONAL_SCORE'];
+                    $row[] = $aRow['PHYSICAL_SCORE'];
+                    $row[] = $aRow['SAFETY_SCORE'];
+                    $row[] = $aRow['PRETEST_SCORE'];
+                    $row[] = $aRow['TEST_SCORE'];
+                    $row[] = $aRow['POST_SCORE'];
+                    $row[] = $aRow['EQA_SCORE'];
+                    $row[] = $aRow['RTRI_SCORE'];
+                    $row[] = $aRow['FINAL_AUDIT_SCORE'];
+                    $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                    $output[] = $row;
+                }
+            }
+            //echo "<pre>";
+            //print_r($output);die;
+            $styleArray = array(
+                'font' => array(
+                    'bold' => true,
+                    'size' => 12,
+                ),
+                'alignment' => array(
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ),
+                'borders' => array(
+                    'outline' => array(
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                    ),
+                    )
+            );
+
+            $borderStyle = array(
+                    'alignment' => array(
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        ),
+                        'borders' => array(
+                        'outline' => array(
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                    ),
+                    )
+            );
+
+            $sheet->mergeCells('A1:B1');
+            $sheet->mergeCells('A2:B2');
+            $sheet->mergeCells('A4:A5');
+            $sheet->mergeCells('B4:B5');
+            $sheet->mergeCells('C4:C5');
+            $sheet->mergeCells('D4:D5');
+            $sheet->mergeCells('E4:E5');
+            $sheet->mergeCells('F4:F5');
+            $sheet->mergeCells('G4:G5');
+            $sheet->mergeCells('H4:H5');
+            $sheet->mergeCells('I4:I5');
+            $sheet->mergeCells('J4:J5');
+            $sheet->mergeCells('K4:K5');
+            $sheet->mergeCells('L4:L5');
+            $sheet->mergeCells('M4:M5');
+
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report Version 6', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+            $sheet->setCellValue('A4', html_entity_decode('Facility name', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('B4', html_entity_decode('Audit Date', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('C4', html_entity_decode('Testing Point', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('D4', html_entity_decode('Personnel Training & Certification', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('E4', html_entity_decode('Physical', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('F4', html_entity_decode('Safety', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('G4', html_entity_decode('Pre-Testing', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('H4', html_entity_decode('Testing', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('I4', html_entity_decode('Post-Testing', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('J4', html_entity_decode('External QA', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('K4', html_entity_decode('RTRI', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('L4', html_entity_decode('Total', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('M4', html_entity_decode('% Scores', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+
+
+            $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
+            $sheet->getStyle('A2:B2')->getFont()->setBold(TRUE)->setSize(13);
+
+            $sheet->getStyle('A4:A5')->applyFromArray($styleArray);
+            $sheet->getStyle('B4:B5')->applyFromArray($styleArray);
+            $sheet->getStyle('C4:C5')->applyFromArray($styleArray);
+            $sheet->getStyle('D4:D5')->applyFromArray($styleArray);
+            $sheet->getStyle('E4:E5')->applyFromArray($styleArray);
+            $sheet->getStyle('F4:F5')->applyFromArray($styleArray);
+            $sheet->getStyle('G4:G5')->applyFromArray($styleArray);
+            $sheet->getStyle('H4:H5')->applyFromArray($styleArray);
+            $sheet->getStyle('I4:I5')->applyFromArray($styleArray);
+            $sheet->getStyle('J4:J5')->applyFromArray($styleArray);
+            $sheet->getStyle('K4:K5')->applyFromArray($styleArray);
+            $sheet->getStyle('L4:L5')->applyFromArray($styleArray);
+            $sheet->getStyle('M4:M5')->applyFromArray($styleArray);
+
+            $start = 0;
+            foreach ($output as $rowNo => $rowData) {
+                $colNo = 1;
+                foreach ($rowData as $field => $value) {
+                    
+                    if (!isset($value)) {
+                        $value = "";
+                    }
+                    //echo $colNo.'---'.$rowNo;die;
+                    if (is_numeric($value)) {
+                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
+                    } else {
+                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+                    }
+                    $rRowCount = $rowNo + 6;
+                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
+                    $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
+                    $sheet->getDefaultRowDimension()->setRowHeight(18);
+                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
+                    $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+                    ++$colNo;
+                }
+            }
+
+            //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+            //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            return $filename;
+        } catch (Exception $exc) {
+            return "";
+            error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
+    //get pending facility names v6
+    public function getPendingFacilityNamesV6()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchPendingFacilityNames();
+    }
+
+    
 }

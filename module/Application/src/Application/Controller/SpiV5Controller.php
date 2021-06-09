@@ -252,13 +252,13 @@ class SpiV5Controller extends AbstractActionController
         }
     }
 
-    public function viewDataAction()
+    public function viewDataV5Action()
     {
         
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getViewDataDetails($params);
+            $result = $this->odkFormService->getViewDataDetailsV5($params);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         $source = '';
@@ -345,7 +345,7 @@ class SpiV5Controller extends AbstractActionController
     {
         $request = $this->getRequest();
         
-        $result = $this->odkFormService->getAllDuplicateSubmissionsDetails();
+        $result = $this->odkFormService->getAllV5DuplicateSubmissionsDetails();
         return new ViewModel(array('result' => $result));
     }
 
@@ -354,7 +354,7 @@ class SpiV5Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->removeAudit($params);
+            $result = $this->odkFormService->removeAuditV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);

@@ -12,7 +12,7 @@ $common = new CommonService();
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
 <div class="am-content">
   <div class="page-head">
-    <h2>SPI-RT 3.0 Checklist (Possible Duplicate Audit(s))</h2>
+    <h2>SPI-RT 5.0 Checklist (Possible Duplicate Audit(s))</h2>
   </div>
 
   <div class="main-content">
@@ -93,7 +93,7 @@ $common = new CommonService();
   function removeData(id) {
     conf = confirm("Are you sure you want to remove this duplicate audit ?");
     if (conf) {
-      $.post("<?php echo $this->url('spi-v3-form', array('action' => 'remove-audit')); ?>", {
+      $.post("<?php echo $this->url('spi-v5-form', array('action' => 'remove-audit')); ?>", {
           id: id
         },
         function(data) {

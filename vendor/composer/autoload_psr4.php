@@ -86,4 +86,5 @@ return array(
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'CpChart\\' => array($vendorDir . '/szymach/c-pchart/src'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
+    'Box\\Spout\\' => array($vendorDir . '/box/spout/src/Spout'),
 );
