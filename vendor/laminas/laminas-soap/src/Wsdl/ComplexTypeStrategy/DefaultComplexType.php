@@ -8,25 +8,22 @@
 
 namespace Laminas\Soap\Wsdl\ComplexTypeStrategy;
 
-use DOMElement;
 use Laminas\Soap\Exception;
 use Laminas\Soap\Wsdl;
-use Laminas\Soap\Wsdl\DocumentationStrategy\DocumentationStrategyInterface;
 use ReflectionClass;
-use ReflectionProperty;
 
 class DefaultComplexType extends AbstractComplexTypeStrategy
 {
     /**
      * Add a complex type by recursively using all the class properties fetched via Reflection.
      *
-     * @param string $type Name of the class to be specified
+     * @param  string $type Name of the class to be specified
      * @return string XSD Type for the given PHP type
      * @throws Exception\InvalidArgumentException if class does not exist
      */
     public function addComplexType($type)
     {
-        if (! class_exists($type)) {
+        if (!class_exists($type)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Cannot add a complex type %s that is not an object or where '
                 . 'class could not be found in "DefaultComplexType" strategy.',
@@ -71,41 +68,13 @@ class DefaultComplexType extends AbstractComplexTypeStrategy
                     $element->setAttribute('nillable', 'true');
                 }
 
-                $this->addPropertyDocumentation($property, $element);
                 $all->appendChild($element);
             }
         }
 
         $complexType->appendChild($all);
-        $this->addComplexTypeDocumentation($class, $complexType);
         $this->getContext()->getSchema()->appendChild($complexType);
 
         return $soapType;
-    }
-
-    /**
-     * @return void
-     */
-    private function addPropertyDocumentation(ReflectionProperty $property, DOMElement $element)
-    {
-        if ($this->documentationStrategy instanceof DocumentationStrategyInterface) {
-            $documentation = $this->documentationStrategy->getPropertyDocumentation($property);
-            if ($documentation) {
-                $this->getContext()->addDocumentation($element, $documentation);
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function addComplexTypeDocumentation(ReflectionClass $class, DOMElement $element)
-    {
-        if ($this->documentationStrategy instanceof DocumentationStrategyInterface) {
-            $documentation = $this->documentationStrategy->getComplexTypeDocumentation($class);
-            if ($documentation) {
-                $this->getContext()->addDocumentation($element, $documentation);
-            }
-        }
     }
 }

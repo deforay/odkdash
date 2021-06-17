@@ -30,7 +30,8 @@
 	  }?>
 	];
     $(document).ready(function(){
-		let myLatLng = new google.maps.LatLng(33.968301,-13.259328);
+		
+		let myLatLng = new google.maps.LatLng({lat:<?php echo $configData['latitude'];?>,lng:<?php echo $configData['longitude'];?>});
 		new Maplace({
 		  locations: LocsA,
 		  map_div: '#gmap',

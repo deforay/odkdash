@@ -60,7 +60,7 @@ class DependencyRewriterPlugin implements EventSubscriberInterface, PluginInterf
         return [
             InstallerEvents::PRE_DEPENDENCIES_SOLVING => ['onPreDependenciesSolving', 1000],
             PackageEvents::PRE_PACKAGE_INSTALL => ['onPrePackageInstall', 1000],
-            // PluginEvents::PRE_COMMAND_RUN => ['onPreCommandRun', 1000],
+            PluginEvents::PRE_COMMAND_RUN => ['onPreCommandRun', 1000],
         ];
     }
 

@@ -8,8 +8,7 @@
 
 namespace Laminas\I18n\View\Helper;
 
-use DateTimeInterface;
-use IntlCalendar;
+use DateTime;
 use IntlDateFormatter;
 use Laminas\I18n\Exception;
 use Laminas\View\Helper\AbstractHelper;
@@ -57,11 +56,11 @@ class DateFormat extends AbstractHelper
     /**
      * Format a date
      *
-     * @param  DateTimeInterface|IntlCalendar|int|array $date
-     * @param  int                                      $dateType
-     * @param  int                                      $timeType
-     * @param  string|null                              $locale
-     * @param  string|null                              $pattern
+     * @param  DateTime|int|array $date
+     * @param  int                $dateType
+     * @param  int                $timeType
+     * @param  string|null        $locale
+     * @param  string|null        $pattern
      * @return string
      */
     public function __invoke(

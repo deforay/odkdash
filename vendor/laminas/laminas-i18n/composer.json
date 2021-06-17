@@ -19,14 +19,17 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.9.x-dev",
+            "dev-develop": "2.10.x-dev"
+        },
         "laminas": {
             "component": "Laminas\\I18n",
             "config-provider": "Laminas\\I18n\\ConfigProvider"
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0",
-        "ext-intl": "*",
+        "php": "^5.6 || ^7.0",
         "laminas/laminas-stdlib": "^2.7 || ^3.0",
         "laminas/laminas-zendframework-bridge": "^1.0"
     },
@@ -36,15 +39,13 @@
         "laminas/laminas-config": "^2.6",
         "laminas/laminas-eventmanager": "^2.6.2 || ^3.0",
         "laminas/laminas-filter": "^2.6.1",
-        "laminas/laminas-servicemanager": "^3.2.1",
+        "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3",
         "laminas/laminas-validator": "^2.6",
         "laminas/laminas-view": "^2.6.3",
-        "phpunit/phpunit": "^9.3"
-    },
-    "conflict": {
-        "phpspec/prophecy": "<1.9.0"
+        "phpunit/phpunit": "^5.7.27 || ^6.5.14 || ^7.5.16"
     },
     "suggest": {
+        "ext-intl": "Required for most features of Laminas\\I18n; included in default builds of PHP",
         "laminas/laminas-cache": "Laminas\\Cache component",
         "laminas/laminas-config": "Laminas\\Config component",
         "laminas/laminas-eventmanager": "You should install this package to use the events in the translator",
@@ -75,6 +76,6 @@
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "replace": {
-        "zendframework/zend-i18n": "^2.10.1"
+        "zendframework/zend-i18n": "self.version"
     }
 }
