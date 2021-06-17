@@ -36,7 +36,8 @@
 	      controls_on_map: true,
 		  map_options : {
 			  mapTypeId: google.maps.MapTypeId.ROADMAP,
-			  zoom: 8,
+			  zoom: 6,
+			  set_center: [<?php echo $configData['latitude'];?>, <?php echo $configData['longitude'];?>],
 			   scrollwheel: false
 		  }
 		}).Load();
