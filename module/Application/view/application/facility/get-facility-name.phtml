@@ -155,7 +155,7 @@
             }
             var cnfm = confirm("Do you wish to merge facility names?");
             if (cnfm) {
-                alert("dd");
+                //alert("dd");
                 $.post("<?php echo $this->url('spi-v3-form', array('action' => 'merge-facility-name')); ?>", {
                         fName: fName,
                         facilityId: facilityId,

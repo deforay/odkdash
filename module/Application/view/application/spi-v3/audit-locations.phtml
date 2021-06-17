@@ -30,14 +30,17 @@
 	  }?>
 	];
     $(document).ready(function(){
+		let myLatLng = new google.maps.LatLng(33.968301,-13.259328);
 		new Maplace({
 		  locations: LocsA,
 		  map_div: '#gmap',
 	      controls_on_map: true,
+		  
 		  map_options : {
 			  mapTypeId: google.maps.MapTypeId.ROADMAP,
-			  zoom: 8,
-			   scrollwheel: false
+			  zoom: 6,
+			  center: myLatLng,
+			scrollwheel: false
 		  }
 		}).Load();
 		
