@@ -68,7 +68,7 @@ ALTER TABLE `user_role_map`
   ADD CONSTRAINT `user_role_map_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `user_role_map_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`);
 
---saravanna 03-may-2016
+-- saravanna 03-may-2016
 CREATE TABLE IF NOT EXISTS  `global_config` (
  `config_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
  `display_name` VARCHAR( 255 ) NOT NULL ,
@@ -245,7 +245,7 @@ ALTER TABLE `r_spi_form_v_3_download`
   
 ALTER TABLE `r_spi_form_v_3_download` ADD `user` INT(11) NOT NULL AFTER `r_download_id`;
 
---saravanan 05-apr-2017
+-- saravanan 05-apr-2017
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'duplicate', 'Duplicate');
 
 CREATE TABLE `spi_form_v_3_duplicate` (
@@ -533,7 +533,7 @@ CREATE TABLE `spi_v5_form_labels` (
  `short_label` varchar(255) DEFAULT NULL,
  `label` text NOT NULL,
  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE `spi_form_v_5` (
  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -807,7 +807,7 @@ CREATE TABLE `spi_form_v_5` (
  `instanceName` varchar(255) DEFAULT NULL,
  `status` varchar(100) DEFAULT 'pending',
  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 
 -- Selvam 29 September 2020
@@ -841,9 +841,9 @@ CREATE TABLE `r_spi_form_v_5_download` (
  `AUDIT_SCORE_PERCENTAGE` varchar(255) DEFAULT NULL,
  `download_status` int(11) NOT NULL DEFAULT '0',
  PRIMARY KEY (`r_download_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---Sudarmathi 05 Oct 2020
+-- Sudarmathi 05 Oct 2020
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\DashboardV5', 'Manage DashboardV5');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DashboardV5', 'index', 'Access');
 
@@ -851,17 +851,17 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 -- Prasath M 14-Pct-2020
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Version', 'web_version', 'v3');
 
---Selvam 15 Oct 2020
+-- Selvam 15 Oct 2020
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES
 ('Application\\Controller\\SpiV5Reports', 'SPI V5 Reports');
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`)
  VALUES ('Application\\Controller\\SpiV5Reports', 'facility-report', 'Facility Report');
 
---Selvam 31 Oct 2020
+-- Selvam 31 Oct 2020
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Email', 'email-v5', 'Access V5');
 
---Sudarmathi 17 Dec 2020
+-- Sudarmathi 17 Dec 2020
 
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\DashboardV6', 'Manage Dashboard V6');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DashboardV6', 'index', 'Access');
@@ -1448,7 +1448,7 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\SpiV6Reports', 'SPI V6 Reports');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6Reports', 'facility-report', 'Facility Report');
 
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'approve-status', 'Approved Status'), ('Application\\Controller\\SpiV6', 'download-pdf', 'Download pdf'), ('Application\\Controller\\SpiV6', 'edit', 'Edit'), ('Application\\Controller\\SpiV6', 'manage-facility', 'Access to edit SPI Form')
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'approve-status', 'Approved Status'), ('Application\\Controller\\SpiV6', 'download-pdf', 'Download pdf'), ('Application\\Controller\\SpiV6', 'edit', 'Edit'), ('Application\\Controller\\SpiV6', 'manage-facility', 'Access to edit SPI Form');
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'corrective-action-pdf', 'Corrective Action PDF');
 
@@ -1971,32 +1971,40 @@ ALTER TABLE `spi_form_v_6` ADD `S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED` TEXT NULL 
 ALTER TABLE `spi_form_v_6` ADD `S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED` TEXT NULL AFTER `S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED`;
 ALTER TABLE `spi_form_v_6` ADD `S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS` TEXT NULL AFTER `S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED`;
 ALTER TABLE `spi_form_v_6` ADD `S0_C_7_DOCUMENTING_PROTOCOL_ERRORS` TEXT NULL AFTER `S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS`;
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_1_DIAGNOSED_HIV_ABOVE_15` TEXT NULL AFTER `S0_C_7_DOCUMENTING_PROTOCOL_ERRORS`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_1_DIAGNOSED_HIV_ABOVE_15` TEXT NULL AFTER `D0_Q_1_DIAGNOSED_HIV_ABOVE_15`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_1_DIAGNOSED_HIV_ABOVE_15` TEXT NULL AFTER `D0_N_1_DIAGNOSED_HIV_ABOVE_15`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_1_DIAGNOSED_HIV_ABOVE_15` TEXT NULL AFTER `D0_D_1_DIAGNOSED_HIV_ABOVE_15`;
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_2_CANDIDATE_SCREENED_FOR_PARTICIPATION` TEXT NULL AFTER `D0_D_1_DIAGNOSED_HIV_ABOVE_15`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION` TEXT NULL AFTER `D0_Q_2_CANDIDATE_SCREENED_FOR_PARTICIPATION`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION` TEXT NULL AFTER `D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION` TEXT NULL AFTER `D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION`;
 ALTER TABLE `spi_form_v_6` CHANGE `deviceid` `deviceid` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_3_ELIGIBLE_DURING_REVIEW_PERIOD` TEXT NULL AFTER `D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD` TEXT NULL AFTER `D0_Q_3_ELIGIBLE_DURING_REVIEW_PERIOD`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD` TEXT NULL AFTER `D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD` TEXT NULL AFTER `D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD`;
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD` TEXT NULL AFTER `D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD` TEXT NULL AFTER `D0_Q_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD` TEXT NULL AFTER `D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD` TEXT NULL AFTER `D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD`;
 
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_5_DOCUMENTED_AND_REFUSED` TEXT NULL AFTER `D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_5_DOCUMENTED_AND_REFUSED` TEXT NULL AFTER `D0_Q_5_DOCUMENTED_AND_REFUSED`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_5_DOCUMENTED_AND_REFUSED` TEXT NULL AFTER `D0_N_5_DOCUMENTED_AND_REFUSED`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_5_DOCUMENTED_AND_REFUSED` TEXT NULL AFTER `D0_D_5_DOCUMENTED_AND_REFUSED`;
 
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_6_PARTICIAPANTS_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_D_5_DOCUMENTED_AND_REFUSED`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_Q_6_PARTICIAPANTS_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI`;
 
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_Q_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI`;
 
+ALTER TABLE `spi_form_v_6` ADD `D0_Q_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_Q_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`;
 ALTER TABLE `spi_form_v_6` ADD `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` TEXT NULL AFTER `D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`;

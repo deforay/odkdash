@@ -59,7 +59,7 @@ class Composite implements ComplexTypeStrategy
      */
     public function connectTypeToStrategy($type, $strategy)
     {
-        if (!is_string($type)) {
+        if (! is_string($type)) {
             throw new Exception\InvalidArgumentException('Invalid type given to Composite Type Map.');
         }
         $this->typeMap[$type] = $strategy;
@@ -78,7 +78,7 @@ class Composite implements ComplexTypeStrategy
         if (is_string($strategy) && class_exists($strategy)) {
             $strategy = new $strategy;
         }
-        if (!($strategy instanceof ComplexTypeStrategy)) {
+        if (! ($strategy instanceof ComplexTypeStrategy)) {
             throw new Exception\InvalidArgumentException(
                 'Default Strategy for Complex Types is not a valid strategy object.'
             );
@@ -103,7 +103,7 @@ class Composite implements ComplexTypeStrategy
                 $strategy = new $strategy();
             }
 
-            if (!($strategy instanceof ComplexTypeStrategy)) {
+            if (! ($strategy instanceof ComplexTypeStrategy)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Strategy for Complex Type "%s" is not a valid strategy object.',
                     $type
@@ -138,7 +138,7 @@ class Composite implements ComplexTypeStrategy
      */
     public function addComplexType($type)
     {
-        if (!($this->context instanceof Wsdl)) {
+        if (! ($this->context instanceof Wsdl)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Cannot add complex type "%s", no context is set for this composite strategy.',
                 $type

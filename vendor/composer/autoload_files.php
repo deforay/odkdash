@@ -89,6 +89,6 @@ return array(
     '4888a6f58c08148ebe17682f9ce9b2a8' => $vendorDir . '/markbaker/matrix/classes/src/Operations/divideby.php',
     'eef6fa3879d3efa347cd24d5eb348f85' => $vendorDir . '/markbaker/matrix/classes/src/Operations/divideinto.php',
     '6124b4c8570aa390c21fafd04a26c69f' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-    'fe6aee0c0ec174a325f8335f6c481d7d' => $vendorDir . '/laminas/laminas-diagnostics/src/autoload.php',
+    '9f6f441b84e4df4ba142856876af35d9' => $vendorDir . '/zendframework/zenddiagnostics/src/autoload.php',
     '7bb4f001eb5212bde073bf47a4bbedad' => $vendorDir . '/szymach/c-pchart/constants.php',
 );
