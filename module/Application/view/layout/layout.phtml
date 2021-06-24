@@ -202,7 +202,8 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
           if(preg_match("/v3/i", $config['web_version'])){
           ?>
             <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
-          <?php } if(preg_match("/v5/i", $config['web_version'])) {?>
+          <?php } ?> 
+          <?php if(preg_match("/v5/i", $config['web_version'])) {?>
             <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
             <?php } ?>
             <?php if(preg_match("/v6/i", $config['web_version'])) {?>
