@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
+class ComposerStaticInitae832051b7e03e56d36efe0688b17b07
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -90,7 +90,7 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
         '4888a6f58c08148ebe17682f9ce9b2a8' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/Operations/divideby.php',
         'eef6fa3879d3efa347cd24d5eb348f85' => __DIR__ . '/..' . '/markbaker/matrix/classes/src/Operations/divideinto.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-        'fe6aee0c0ec174a325f8335f6c481d7d' => __DIR__ . '/..' . '/laminas/laminas-diagnostics/src/autoload.php',
+        '9f6f441b84e4df4ba142856876af35d9' => __DIR__ . '/..' . '/zendframework/zenddiagnostics/src/autoload.php',
         '7bb4f001eb5212bde073bf47a4bbedad' => __DIR__ . '/..' . '/szymach/c-pchart/constants.php',
     );
 
@@ -104,6 +104,7 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
             'ZipStream\\' => 10,
             'Zend\\Version\\' => 13,
             'Zend\\Debug\\' => 11,
+            'ZendDiagnostics\\' => 16,
         ),
         'W' => 
         array (
@@ -180,10 +181,8 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
             'Laminas\\EventManager\\' => 21,
             'Laminas\\Escaper\\' => 16,
             'Laminas\\Dom\\' => 12,
-            'Laminas\\Diagnostics\\' => 20,
             'Laminas\\Diactoros\\' => 18,
             'Laminas\\Di\\' => 11,
-            'Laminas\\DependencyPlugin\\' => 25,
             'Laminas\\Db\\' => 11,
             'Laminas\\Crypt\\' => 14,
             'Laminas\\Console\\' => 16,
@@ -232,6 +231,10 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
         'Zend\\Debug\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-debug/src',
+        ),
+        'ZendDiagnostics\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zenddiagnostics/src',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -466,10 +469,6 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-dom/src',
         ),
-        'Laminas\\Diagnostics\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-diagnostics/src',
-        ),
         'Laminas\\Diactoros\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-diactoros/src',
@@ -477,10 +476,6 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
         'Laminas\\Di\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-di/src',
-        ),
-        'Laminas\\DependencyPlugin\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-dependency-plugin/src',
         ),
         'Laminas\\Db\\' => 
         array (
@@ -562,6 +557,7 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
@@ -1048,10 +1044,10 @@ class ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitfa63b9302aaa5fd12a1d02bc1795bdeb::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitae832051b7e03e56d36efe0688b17b07::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitae832051b7e03e56d36efe0688b17b07::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitae832051b7e03e56d36efe0688b17b07::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitae832051b7e03e56d36efe0688b17b07::$classMap;
 
         }, null, ClassLoader::class);
     }
