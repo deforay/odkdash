@@ -11,6 +11,7 @@ $config = $this->GlobalConfigHelper();
 $web_version = $config['web_version'];
 $isV3 = preg_match("/v3/i", $web_version);
 $isV5 = preg_match("/v5/i", $web_version);
+$isV6 = preg_match("/v6/i", $web_version);
 ?>
 <style>
 	/*multiselect*/
@@ -28,28 +29,29 @@ $isV5 = preg_match("/v5/i", $web_version);
 			<div class="col-md-12" id="righter">
 				<div class="widget widget-map">
 					<div class="widget-head">
-					<input type="hidden" name="inpId" id="inpId" value="<?php echo $nos;?>"/>
-						
+						<input type="hidden" name="inpId" id="inpId" value="<?php echo $nos; ?>" />
+
 						<span class="title"><b><?= $this->translate('Audit Locations'); ?></b></span>
 
 						<span style="margin-left: 8%;">
 							<label><?= $this->translate('Form Version'); ?></label>
 							<select class="" name="chooseFormVersion" id="chooseFormVersion" onchange="getAuditLocationsByForm(this.value)">
-								<?php if($isV3 && $isV5){ ?>
-								<option value="v3">SPI-RT Version 3</option>
-								<option value="v5" selected>SPI-RRT Version 5</option>
-								<?php }elseif($isV3){ ?>
-								<option value="v3">SPI-RT Version 3</option>
-								<?php }elseif($isV5){ ?>
-								<option value="v5">SPI-RRT Version 5</option>
+								<?php if ($isV6) { ?>
+									<option value="v6">SPI-RRT Version 6</option>
+								<?php } ?>
+								<?php if ($isV5) { ?>
+									<option value="v5">SPI-RRT Version 5</option>
+								<?php } ?>
+								<?php if ($isV3) { ?>
+									<option value="v3">SPI-RT Version 3</option>
 								<?php } ?>
 							</select>
-							
+
 						</span>
 						<span style="margin-left: 0%;">
 							<label><?= $this->translate('Audit Round'); ?></label>
 							<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
-								
+
 							</select>
 							<label><?= $this->translate('Date Range'); ?></label>
 							<input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="datepicker" id="locationDateRange">
@@ -76,34 +78,43 @@ $isV5 = preg_match("/v5/i", $web_version);
 		var formVersionId = $("#chooseFormVersion").val();
 		value = $("#auditRndNoLocations").val();
 		dateRange = $("#locationDateRange").val();
-		if(formVersionId == 'v3'){
+		if (formVersionId == 'v3') {
 			$.post("<?php echo $this->url('spi-v3-form', array('action' => 'audit-locations')); ?>", {
-				roundno: value,
-				dateRange: dateRange
-			},
-			function(data) {
-				$("#auditLocations").html(data);
-			});
+					roundno: value,
+					dateRange: dateRange
+				},
+				function(data) {
+					$("#auditLocations").html(data);
+				});
 		}
 
-		if(formVersionId == 'v5'){
+		if (formVersionId == 'v5') {
 			$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-locations')); ?>", {
-				roundno: value,
-				dateRange: dateRange
-			},
-			function(data) {
-				$("#auditLocations").html(data);
-			});
+					roundno: value,
+					dateRange: dateRange
+				},
+				function(data) {
+					$("#auditLocations").html(data);
+				});
+		}
+		if (formVersionId == 'v6') {
+			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-locations')); ?>", {
+					roundno: value,
+					dateRange: dateRange
+				},
+				function(data) {
+					$("#auditLocations").html(data);
+				});
 		}
 
-		
+
 	}
-	
-	function getAuditLocationsByForm(formType){
-		let inpId =  $("#inpId").val();
+
+	function getAuditLocationsByForm(formType) {
+		let inpId = $("#inpId").val();
 		$.post("<?php echo $this->url('common', array('action' => 'get-audit-location-based-on-form')); ?>", {
 				formVersion: formType,
-				inpId:inpId
+				inpId: inpId
 			},
 			function(data) {
 				$("#auditRndNoLocations").html(data);
