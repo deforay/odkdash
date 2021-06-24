@@ -32,16 +32,18 @@
 
 		//let myLatLng = new google.maps.LatLng({lat:< ?php echo $configData['latitude'];?>,lng:< ?php echo $configData['longitude'];?>});
 		new Maplace({
-			locations: LocsA,
-			map_div: '#gmap',
-			controls_on_map: true,
-			map_options: {
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				zoom: 6,
-				set_center: [<?php echo $configData['latitude']; ?>, <?php echo $configData['longitude']; ?>],
-				scrollwheel: false
-			}
+		  locations: LocsA,
+		  map_div: '#gmap',
+	      controls_on_map: true,		  
+		  map_options : {
+			  mapTypeId: google.maps.MapTypeId.ROADMAP,
+			  zoom: 6,
+			  //center: myLatLng,
+			  set_center: [<?php echo $configData['latitude'];?>, <?php echo $configData['longitude'];?>],
+			  //set_center: [-13.259328, 33.968301],
+			scrollwheel: false
+		  }
 		}).Load();
-
-	});
+		
+      });
 </script>
