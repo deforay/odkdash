@@ -13,6 +13,7 @@ $config = $this->GlobalConfigHelper();
 // echo $commonVal->getGlobalConfigDetails();
 // $config = $commonVal->getGlobalConfigDetails();
 $web_version = $config['web_version'];
+$totalVersions = count(explode(",",$web_version));
 //echo $web_version;
 //print_r($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report"));die;
 
@@ -183,12 +184,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
           <ul class="nav navbar-nav am-nav-right">
             <li><a href="/" style="font-size:1.8em;"><?= $this->translate('Dashboard for Quality Improvement of HIV Rapid Testing'); ?></a></li>
           </ul>
-          <!--             <ul class="nav navbar-nav am-nav-right">
-              <li><a href="javascript:alert('Under Construction')">Logbook Data Analysis</a></li>
-              <li><a href="javascript:alert('Under Construction')">SPI M&E</a></li>
-              <li><a href="javascript:alert('Under Construction')">SPI RT 2.x</a></li>
-              <li><a href="/">SPI RT 3.0</a></li>
-             </ul>-->
+          
 
         </div>
       </div>
@@ -197,25 +193,48 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
       <div class="content">
         <div class="am-logo"><img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:50px;margin-left:10px;" /></div>
         <ul class="sidebar-elements">
-          <?php
-          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) {
-          if(preg_match("/v3/i", $config['web_version'])){
-          ?>
-            <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
-          <?php } ?> 
-          <?php if(preg_match("/v5/i", $config['web_version'])) {?>
-            <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
-            <?php } ?>
-            <?php if(preg_match("/v6/i", $config['web_version'])) {?>
-            <li class="parent"><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
+            <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) { ?>
+              <?php if($totalVersions == 1){ ?>
+                <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
+                <?php }elseif(preg_match("/v5/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                <?php }elseif(preg_match("/v6/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
+                <?php } ?>
+              <?php }else{ ?>
+                <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Dashboard'); ?></span></a>
+                <ul class="sub-menu">
+                  <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
+                    <li class=""><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
+                      <?php } ?> 
+                      <?php if(preg_match("/v5/i", $config['web_version'])) {?>
+                        <li class=""><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                      <?php } ?>
+                      <?php if(preg_match("/v6/i", $config['web_version'])) {?>
+                        <li class=""><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
+                      <?php } ?>
+                </ul>
+                </li>
+              <?php } ?>
           <?php } ?>
-          <?php } ?>
+          
           <?php if (trim($auditMenu) != "") { ?>
+            <?php if($totalVersions == 1){ ?>
+              <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RT'); ?></span></a></li>
+                <?php }elseif(preg_match("/v5/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v5-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT'); ?></span></a></li>
+                <?php }elseif(preg_match("/v6/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT V6'); ?></span></a></li>
+                <?php } ?>
+            <?php }else{ ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Audit'); ?></span></a>
               <ul class="sub-menu">
                 <?php echo $auditMenu; ?>
               </ul>
             </li>
+          <?php } ?>
           <?php } ?>
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Facility", "index")) {
