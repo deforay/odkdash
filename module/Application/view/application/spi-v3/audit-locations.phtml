@@ -40,8 +40,8 @@
 			  mapTypeId: google.maps.MapTypeId.ROADMAP,
 			  zoom: 6,
 			  //center: myLatLng,
-			  //set_center: [< ?php echo $configData['latitude'];?>, < ?php echo $configData['longitude'];?>],
-			  set_center: [-13.259328, 33.968301],
+			  set_center: [<?php echo $configData['latitude'];?>, <?php echo $configData['longitude'];?>],
+			  //set_center: [-13.259328, 33.968301],
 			scrollwheel: false
 		  }
 		}).Load();
