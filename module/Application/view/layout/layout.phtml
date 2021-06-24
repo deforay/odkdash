@@ -195,23 +195,23 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
         <ul class="sidebar-elements">
             <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Index", "index")) { ?>
               <?php if($totalVersions == 1){ ?>
-                <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
+                <?php if(preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\Dashboard", "index")){ ?>
                   <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
-                <?php }elseif(preg_match("/v5/i", $config['web_version'])){ ?>
+                <?php }elseif(preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5", "index")){ ?>
                   <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
-                <?php }elseif(preg_match("/v6/i", $config['web_version'])){ ?>
+                <?php }elseif(preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6", "index")){ ?>
                   <li class="parent"><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
                 <?php } ?>
               <?php }else{ ?>
                 <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Dashboard'); ?></span></a>
                 <ul class="sub-menu">
-                  <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
+                  <?php if(preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\Dashboard", "index")){ ?>
                     <li class=""><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
                       <?php } ?> 
-                      <?php if(preg_match("/v5/i", $config['web_version'])) {?>
+                      <?php if(preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5", "index")) {?>
                         <li class=""><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
                       <?php } ?>
-                      <?php if(preg_match("/v6/i", $config['web_version'])) {?>
+                      <?php if(preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6", "index")) {?>
                         <li class=""><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
                       <?php } ?>
                 </ul>
