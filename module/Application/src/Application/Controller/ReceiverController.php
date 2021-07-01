@@ -4,10 +4,8 @@ namespace Application\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-
 class ReceiverController extends AbstractActionController
 {
-
 
     private $odkFormService = null;
 
@@ -18,24 +16,18 @@ class ReceiverController extends AbstractActionController
 
     public function indexAction()
     {
-        //echo "ss";die;
-        $viewModel = new ViewModel();
-
-        //$this->var_error_log(file_get_contents('php://input'));
-
+        
         $jsonData = utf8_encode(file_get_contents('php://input'));
-
-        //$this->var_error_log($jsonData);
-
         $params = json_decode($jsonData, true);
-
-        //$this->var_error_log($params);die;
         $result = $this->odkFormService->saveSpiFormVer3($params);
-
+        // $this->var_error_log($params);die;
+        //Tested for ODK Central
+        //$result = $this->odkFormService->getOdkCentralSubmissions();
+        
+        $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
         return $viewModel;
     }
-
 
     public function var_error_log($object = null)
     {

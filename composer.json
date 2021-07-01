@@ -66,5 +66,6 @@
         "phpoffice/phpspreadsheet": "^1.14",
         "szymach/c-pchart": "^3.0",
         "box/spout": "^3.1"
+            //"guzzlehttp/guzzle": "^7.3"
     }
 }

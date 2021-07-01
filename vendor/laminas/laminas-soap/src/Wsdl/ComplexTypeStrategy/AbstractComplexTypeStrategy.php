@@ -9,7 +9,6 @@
 namespace Laminas\Soap\Wsdl\ComplexTypeStrategy;
 
 use Laminas\Soap\Wsdl;
-use Laminas\Soap\Wsdl\DocumentationStrategy\DocumentationStrategyInterface;
 
 /**
  * Abstract class for Laminas\Soap\Wsdl\Strategy.
@@ -18,15 +17,9 @@ abstract class AbstractComplexTypeStrategy implements ComplexTypeStrategyInterfa
 {
     /**
      * Context object
-     *
      * @var Wsdl
      */
     protected $context;
-
-    /**
-     * @var DocumentationStrategyInterface
-     */
-    protected $documentationStrategy;
 
     /**
      * Set the WSDL Context object this strategy resides in.
@@ -51,8 +44,8 @@ abstract class AbstractComplexTypeStrategy implements ComplexTypeStrategyInterfa
     /**
      * Look through registered types
      *
-     * @param string $phpType
-     * @return null|string
+     * @param  string $phpType
+     * @return string
      */
     public function scanRegisteredTypes($phpType)
     {
@@ -61,16 +54,5 @@ abstract class AbstractComplexTypeStrategy implements ComplexTypeStrategyInterfa
             return $soapTypes[$phpType];
         }
         return;
-    }
-
-    /**
-     * Sets the strategy for generating complex type documentation
-     *
-     * @param DocumentationStrategyInterface $documentationStrategy
-     * @return void
-     */
-    public function setDocumentationStrategy(DocumentationStrategyInterface $documentationStrategy)
-    {
-        $this->documentationStrategy = $documentationStrategy;
     }
 }

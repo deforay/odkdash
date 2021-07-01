@@ -122,6 +122,7 @@ class SpiV3Controller extends AbstractActionController
             $result = $this->odkFormService->getFormData($id);
             $provinceList = $this->odkFormService->getSpiV3FormUniqueLevelNames();
             $districtList = $this->odkFormService->getSpiV3FormUniqueDistrict();
+            //\Zend\Debug\Debug::dump($result['facilityInfo']->fName);die;
             return new ViewModel(array(
                 'formData' => $result,
                 'facilities' => $facilitiesResult,

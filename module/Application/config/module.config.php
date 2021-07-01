@@ -373,6 +373,16 @@ return array(
                         ),
                     ),
                 ),
+                'sync-odk-spirt-v3' => array(
+                    'type'    => 'simple',
+                    'options' => array(
+                        'route'    => 'sync-odk-spirt-v3',
+                        'defaults' => array(
+                            'controller' => 'Application\Controller\Cron',
+                            'action' => 'sync-odk-spirt-v3'
+                        ),
+                    ),
+                ),
             ),
         ),
     ),
