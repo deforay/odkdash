@@ -366,7 +366,6 @@ class SpiFormVer3Table extends AbstractTableGateway
         //error_log(print_r($params,true));
 
         foreach ($params as $submission) {
-
             $par = array();
             $data = array();
             foreach ($submission as $key => $submissionData) {

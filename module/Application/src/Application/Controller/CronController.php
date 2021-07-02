@@ -47,4 +47,8 @@ class CronController extends AbstractActionController
     public function syncOdkSpirtV3Action(){
         $this->odkFormService->getOdkCentralSubmissions();
     }
+
+    public function syncOdkSpirtV6Action(){
+        $this->odkFormService->getV6OdkCentralSubmissions();
+    }
 }

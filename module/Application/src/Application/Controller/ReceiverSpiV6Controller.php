@@ -18,10 +18,8 @@ class ReceiverSpiV6Controller extends AbstractActionController
     
     public function indexAction()
     {
-        //echo "ss";die;
-        $viewModel = new ViewModel();
-
-        //$this->var_error_log(file_get_contents('php://input'));
+        
+        $viewModel = new ViewModel();        
 
         $jsonData = utf8_encode(file_get_contents('php://input'));
 
@@ -31,6 +29,7 @@ class ReceiverSpiV6Controller extends AbstractActionController
 
         //$this->var_error_log($params);die;
         $result = $this->odkFormService->saveSpiFormVer6($params);
+        
 
         $viewModel->setTerminal(true);
         return $viewModel;

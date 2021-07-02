@@ -5740,6 +5740,86 @@ class OdkFormService
         $spiV3db->saveOdkCentralData($responseSubmission, $formDetails,$correctiveActions);
     }
 
+    public function getV6OdkCentralSubmissions()
+    {
+        $config = new \Laminas\Config\Reader\Ini();
+        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
+        $email = $configResult['odkcentral']['spirrt']['email'];
+        $password = $configResult['odkcentral']['spirrt']['password'];
+        $spiV6db = $this->sm->get('SpiFormVer6Table');
+        $lastDateQuery = $spiV6db->getLatestFormDate();
+        $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
+        //echo $lastFormDate;die;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://odk-central.labsinformatics.com/v1/sessions");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "{
+        \"email\": \"$email\",
+        \"password\": \"$password\"
+        }");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Content-Type: application/json",
+        ));
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $ch = curl_init();
+        $token = base64_encode($email . ':' . $password);
+        curl_setopt($ch, CURLOPT_URL, "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Authorization: Basic $token",
+        ));
+        $instanceIdList = curl_exec($ch);
+        curl_close($ch);
+        $responseSubmission = $this->formatResponse($instanceIdList);
+        $instanceLists = array();
+        $correctiveActions = array();
+        foreach ($responseSubmission['value'] as $submission) {
+            foreach ($submission as $key => $listValue) {
+                if ($key === '__id') {
+                    $instanceLists[] = $listValue;
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, "$spirrtURL/submissions/$listValue.xml");
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HEADER, false);
+
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        "Authorization: Basic $token",
+                        "Content-Type: application/xml",
+                    ));
+                    $response2 = curl_exec($ch);
+                    curl_close($ch);
+                    $xml = simplexml_load_string($response2);
+                    $json = json_encode($xml);
+                    $array = json_decode($json, true);
+                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0])?$array['correctiveaction']:array($array['correctiveaction']);
+                }
+            }
+        }
+        // \Zend\Debug\Debug::dump(count($correctiveActions['uuid:3d22edc7-bcc8-421c-a001-21bdd52699a5']));
+        //\Zend\Debug\Debug::dump($responseSubmission);die;
+        //getFormVersion
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "$spirrtURL");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Authorization: Basic $token",
+        ));
+        $formResponse = curl_exec($ch);
+        curl_close($ch);
+        $formDetails = $this->formatResponse($formResponse);
+
+        //\Zend\Debug\Debug::dump($formDetails);die;
+        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails,$correctiveActions);
+    }
+
     public function formatResponse($strResponse)
     {
         $response = html_entity_decode(stripslashes($strResponse), ENT_QUOTES, 'UTF-8');
