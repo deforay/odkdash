@@ -151,6 +151,12 @@ class Server implements LaminasServerServer
     protected $sendErrors;
 
     /**
+     * Allows LIBXML_PARSEHUGE Options of DOMDocument->loadXML( string $source [, int $options = 0 ] ) to be set
+     * @var bool
+     */
+    protected $parseHuge;
+
+    /**
      * Constructor
      *
      * Sets display_errors INI setting to off (prevent client errors due to bad
@@ -166,7 +172,7 @@ class Server implements LaminasServerServer
      */
     public function __construct($wsdl = null, array $options = null)
     {
-        if (!extension_loaded('soap')) {
+        if (! extension_loaded('soap')) {
             throw new Exception\ExtensionNotLoadedException('SOAP extension is not loaded.');
         }
 
@@ -238,6 +244,10 @@ class Server implements LaminasServerServer
                     $this->setSendErrors($value);
                     break;
 
+                case 'parse_huge':
+                    $this->setParseHuge($value);
+                    break;
+
                 default:
                     break;
             }
@@ -290,6 +300,10 @@ class Server implements LaminasServerServer
             $options['send_errors'] = $this->getSendErrors();
         }
 
+        if (null !== $this->parseHuge) {
+            $options['parse_huge'] = $this->getParseHuge();
+        }
+
         return $options;
     }
 
@@ -302,7 +316,7 @@ class Server implements LaminasServerServer
      */
     public function setEncoding($encoding)
     {
-        if (!is_string($encoding)) {
+        if (! is_string($encoding)) {
             throw new Exception\InvalidArgumentException('Invalid encoding specified');
         }
 
@@ -329,7 +343,7 @@ class Server implements LaminasServerServer
      */
     public function setSoapVersion($version)
     {
-        if (!in_array($version, [SOAP_1_1, SOAP_1_2])) {
+        if (! in_array($version, [SOAP_1_1, SOAP_1_2])) {
             throw new Exception\InvalidArgumentException('Invalid soap version specified');
         }
 
@@ -423,11 +437,11 @@ class Server implements LaminasServerServer
      */
     public function setClassmap($classmap)
     {
-        if (!is_array($classmap)) {
+        if (! is_array($classmap)) {
             throw new Exception\InvalidArgumentException('Classmap must be an array');
         }
         foreach ($classmap as $class) {
-            if (!class_exists($class)) {
+            if (! class_exists($class)) {
                 throw new Exception\InvalidArgumentException('Invalid class in class map');
             }
         }
@@ -455,18 +469,18 @@ class Server implements LaminasServerServer
      */
     public function setTypemap($typeMap)
     {
-        if (!is_array($typeMap)) {
+        if (! is_array($typeMap)) {
             throw new Exception\InvalidArgumentException('Typemap must be an array');
         }
 
         foreach ($typeMap as $type) {
-            if (!is_callable($type['from_xml'])) {
+            if (! is_callable($type['from_xml'])) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Invalid from_xml callback for type: %s',
                     $type['type_name']
                 ));
             }
-            if (!is_callable($type['to_xml'])) {
+            if (! is_callable($type['to_xml'])) {
                 throw new Exception\InvalidArgumentException('Invalid to_xml callback for type: ' . $type['type_name']);
             }
         }
@@ -572,6 +586,28 @@ class Server implements LaminasServerServer
     }
 
     /**
+     * Set flag to allow DOMDocument->loadXML() to parse huge nodes
+     *
+     * @param  bool $parseHuge
+     * @return self
+     */
+    public function setParseHuge($parseHuge)
+    {
+        $this->parseHuge = (bool) $parseHuge;
+        return $this;
+    }
+
+    /**
+     * Get flag to allow DOMDocument->loadXML() to parse huge nodes
+     *
+     * @return bool
+     */
+    public function getParseHuge()
+    {
+        return $this->parseHuge;
+    }
+
+    /**
      * Attach a function as a server method
      *
      * @param  array|string $function Function name, array of function names to attach,
@@ -637,14 +673,14 @@ class Server implements LaminasServerServer
             return $this->setObject($class);
         }
 
-        if (!is_string($class)) {
+        if (! is_string($class)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid class argument (%s)',
                 gettype($class)
             ));
         }
 
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Class "%s" does not exist',
                 $class
@@ -671,7 +707,7 @@ class Server implements LaminasServerServer
      */
     public function setObject($object)
     {
-        if (!is_object($object)) {
+        if (! is_object($object)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid object argument (%s)',
                 gettype($object)
@@ -729,7 +765,7 @@ class Server implements LaminasServerServer
      */
     public function setPersistence($mode)
     {
-        if (!in_array($mode, [SOAP_PERSISTENCE_SESSION, SOAP_PERSISTENCE_REQUEST])) {
+        if (! in_array($mode, [SOAP_PERSISTENCE_SESSION, SOAP_PERSISTENCE_REQUEST])) {
             throw new Exception\InvalidArgumentException('Invalid persistence mode specified');
         }
 
@@ -786,12 +822,17 @@ class Server implements LaminasServerServer
             $loadEntities = libxml_disable_entity_loader(true);
 
             $dom = new DOMDocument();
-            $loadStatus = $dom->loadXML($xml);
+
+            if (true === $this->getParseHuge()) {
+                $loadStatus = $dom->loadXML($xml, LIBXML_PARSEHUGE);
+            } else {
+                $loadStatus = $dom->loadXML($xml);
+            }
 
             libxml_disable_entity_loader($loadEntities);
 
             // @todo check libxml errors ? validate document ?
-            if (!$loadStatus) {
+            if (! $loadStatus) {
                 throw new Exception\InvalidArgumentException('Invalid XML');
             }
 
@@ -871,17 +912,17 @@ class Server implements LaminasServerServer
         $options = $this->getOptions();
         $server  = new SoapServer($this->wsdl, $options);
 
-        if (!empty($this->functions)) {
+        if (! empty($this->functions)) {
             $server->addFunction($this->functions);
         }
 
-        if (!empty($this->class)) {
+        if (! empty($this->class)) {
             $args = $this->classArgs;
             array_unshift($args, $this->class);
             call_user_func_array([$server, 'setClass'], $args);
         }
 
-        if (!empty($this->object)) {
+        if (! empty($this->object)) {
             $server->setObject($this->object);
         }
 
@@ -961,14 +1002,14 @@ class Server implements LaminasServerServer
         ini_set('display_errors', (string) $displayErrorsOriginalState);
 
         // Send a fault, if we have one
-        if ($fault instanceof SoapFault && !$this->returnResponse) {
+        if ($fault instanceof SoapFault && ! $this->returnResponse) {
             $soap->fault($fault->faultcode, $fault->getMessage());
 
             return;
         }
 
         // Echo the response, if we're not returning it
-        if (!$this->returnResponse) {
+        if (! $this->returnResponse) {
             echo $this->response;
 
             return;
@@ -1133,7 +1174,7 @@ class Server implements LaminasServerServer
             'Receiver',
             'Server'
         ];
-        if (!in_array($code, $allowedFaultModes)) {
+        if (! in_array($code, $allowedFaultModes)) {
             $code = 'Receiver';
         }
 
@@ -1145,12 +1186,9 @@ class Server implements LaminasServerServer
      *
      * @param  int $errno
      * @param  string $errstr
-     * @param  string $errfile
-     * @param  int $errline
-     * @param  array $errcontext
      * @throws SoapFault
      */
-    public function handlePhpErrors($errno, $errstr, $errfile = null, $errline = null, array $errcontext = null)
+    public function handlePhpErrors($errno, $errstr)
     {
         throw $this->fault($errstr, 'Receiver');
     }
