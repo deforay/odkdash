@@ -55,7 +55,7 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from('r_spi_form_v_5_download')->where(array('download_status' => 0));
-        $queryStr = $sql->getSqlStringForSqlObject($query);
+        $queryStr = $sql->buildSqlString($query);
         $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($queryResult) {
             $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
@@ -106,7 +106,7 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
                     $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
-            $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+            $sQueryStr = $sql->buildSqlString($sQuery);
             $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             //update download status
             $this->update(array('download_status' => 1), array('r_download_id' => $queryResult->r_download_id));
@@ -142,7 +142,7 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from('r_spi_form_v_5_download')->where(array('download_status' => 1, 'user' => $logincontainer->userId))->order('r_download_id desc')->limit(5);
-        $queryStr = $sql->getSqlStringForSqlObject($query);
+        $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 }

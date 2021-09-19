@@ -41,7 +41,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $d = array('data_dump' => json_encode($params) , 'received_on' => new \Laminas\Db\Sql\Expression("NOW()"));
         $dbAdapter = $this->adapter;
         $insert->values($d);
-        $selectString = $sql->getSqlStringForSqlObject($insert);
+        $selectString = $sql->buildSqlString($insert);
         $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
        
        //get global values
@@ -357,7 +357,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             );
             $dbAdapter = $this->adapter;
             $insert->values($par);
-            $selectString = $sql->getSqlStringForSqlObject($insert);
+            $selectString = $sql->buildSqlString($insert);
             //error_log($selectString);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);        
             
@@ -450,7 +450,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -545,7 +545,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             }
         }
         
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         // die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
@@ -574,7 +574,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
@@ -591,7 +591,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -675,7 +675,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
               $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -833,7 +833,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
         
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
 
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -841,7 +841,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
@@ -888,7 +888,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -981,7 +981,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }
         //get earliest date
         $eQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
-        $eQueryStr = $sql->getSqlStringForSqlObject($eQuery); // Get the string of the Sql, instead of the Select-instance
+        $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
         $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get duplicate value
         $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_5 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -1103,14 +1103,14 @@ class SpiFormVer5Table extends AbstractTableGateway {
            $sQuery->offset($sOffset);
        }
 
-       $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+       $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
        //echo $sQueryStr;die;
        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
        /* Data set length after filtering */
        $sQuery->reset('limit');
        $sQuery->reset('offset');
-       $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+       $fQuery = $sql->buildSqlString($sQuery);
        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
        $iFilteredTotal = count($aResultFilterTotal);
 
@@ -1120,7 +1120,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -1184,7 +1184,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
                                 ->where(array('spiv5.status'=>'pending'));
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
     }
@@ -1194,7 +1194,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
                                 ->where(array('spiv5.id'=>$id));
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if($sResult){
             if(trim($sResult->facility)!= '' || trim($sResult->facilityid)!= '' || trim($sResult->facilityname)!= ''){
@@ -1208,7 +1208,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 }else if(isset($sResult->facilityname) && $sResult->facilityname!= ''){
                    $fQuery = $fQuery->where("spirt3.facility_name='".$sResult->facilityname."'");
                 }
-                $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+                $fQueryStr = $sql->buildSqlString($fQuery);
                 $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             }
         }
@@ -1280,7 +1280,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($params['fieldName']) && trim($params['fieldName'])!=''){
             $sQuery = $sQuery->where(array($params['fieldName']=>$params['val']));
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         
@@ -1403,7 +1403,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 }
             }
         
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
@@ -1520,7 +1520,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -1686,14 +1686,14 @@ class SpiFormVer5Table extends AbstractTableGateway {
            $sQuery->offset($sOffset);
        }
        $queryContainer->exportQuery = $sQuery;
-       $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+       $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
        //echo $sQueryStr;die;
        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
        /* Data set length after filtering */
        $sQuery->reset('limit');
        $sQuery->reset('offset');
-       $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+       $fQuery = $sql->buildSqlString($sQuery);
        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
        $iFilteredTotal = count($aResultFilterTotal);
 
@@ -1756,7 +1756,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
               $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -1927,14 +1927,14 @@ class SpiFormVer5Table extends AbstractTableGateway {
            $sQuery->offset($sOffset);
        }
        $queryContainer->exportQuery = $sQuery;
-       $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+       $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
        //echo $sQueryStr;die;
        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
        /* Data set length after filtering */
        $sQuery->reset('limit');
        $sQuery->reset('offset');
-       $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+       $fQuery = $sql->buildSqlString($sQuery);
        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
        $iFilteredTotal = count($aResultFilterTotal);
 
@@ -1975,7 +1975,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
               $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -2088,7 +2088,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                   $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
@@ -2156,7 +2156,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                                         ->columns(array('id'))
                                         ->where("spirt3.facility_name='".$params['testingFacilityName']."'");
-                $fQueryStr = $sql->getSqlStringForSqlObject($fQuery);
+                $fQueryStr = $sql->buildSqlString($fQuery);
                 $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 if($fResult){
                    $id = $fResult->id;
@@ -2288,7 +2288,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
@@ -2302,7 +2302,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                                 ->where(array($params['fieldName']=>$params['val']))
                                 ->group('auditroundno')
                                 ->order("auditroundno ASC");
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
@@ -2317,7 +2317,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($params['editFacilityName']) && trim($params['editFacilityName'])!= ''){
             $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
                                            ->where(array('spirt3.facility_name'=>$params['dafaultFacilityName']));
-            $facilityQueryStr = $sql->getSqlStringForSqlObject($facilityQuery);
+            $facilityQueryStr = $sql->buildSqlString($facilityQuery);
             $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($facilityResult){
                 $data = array(
@@ -2329,7 +2329,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             
             $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname'))
                                     ->where(array('spiv5.facilityname'=>$params['dafaultFacilityName']));
-            $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+            $aQueryStr = $sql->buildSqlString($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($aResult){
                 $data = array(
@@ -2343,7 +2343,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         for($i=0;$i<$c;$i++){
             $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname','id'))
                                     ->where(array('spiv5.facilityname'=>$params['upFaciltyName'][$i]));
-            $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+            $aQueryStr = $sql->buildSqlString($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
             if(count($aResult)>0){
@@ -2358,7 +2358,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             //Update status in Facility table
             $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
                                            ->where(array('spirt3.facility_name'=>$params['upFaciltyName'][$i]));
-            $facilityQueryStr = $sql->getSqlStringForSqlObject($facilityQuery);
+            $facilityQueryStr = $sql->buildSqlString($facilityQuery);
             $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($facilityResult){
                 $facilityDb->update(array('status'=>'deleted'),array('facility_name'=>$params['upFaciltyName'][$i]));
@@ -2372,13 +2372,13 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname'=>new Expression("DISTINCT facilityname")));
-        $uQueryStr = $sql->getSqlStringForSqlObject($uQuery);
+        $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         //$aQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
         $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                                 ->where('spirt3.status != "deleted"');
-        $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+        $aQueryStr = $sql->buildSqlString($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         
         return array('uniqueName'=>$uResult,'allName'=>$aResult);
@@ -2486,14 +2486,14 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
@@ -2505,7 +2505,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         else if(isset($parameters['fieldName']) && $parameters['fieldName']=='facilityName'){
             $tQuery=$tQuery->where(array('facilityname'=>$parameters['val']));
         }
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -2550,14 +2550,14 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $query = $sql->select()->from(array('spiv5'=>'spi_form_v_5'))
                                    ->columns(array('id','assesmentofaudit'))
                                    ->where(array('spiv5.facilityname'=>$params['facilityName'],'spiv5.status'=>'approved'));
-            $queryStr = $sql->getSqlStringForSqlObject($query);
+            $queryStr = $sql->buildSqlString($query);
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
             //$aQuery = $sql->select()->from(array('spiv5_fclt' => 'spi_rt_5_facilities'))
             $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
                                     ->columns(array('facility_name','email'))
                                     ->where(array('spiv3_fclt.facility_name'=>$params['facilityName']));
-            $aQueryStr = $sql->getSqlStringForSqlObject($aQuery);
+            $aQueryStr = $sql->buildSqlString($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         }
       return array('audits'=>$audits,'facilityProfile'=>$aResult);
@@ -2572,7 +2572,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if(isset($logincontainer->token) && count($logincontainer->token) > 0){
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return count($rResult);
@@ -2697,20 +2697,20 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
         
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -2774,7 +2774,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                                     ->columns(array(new Expression('DISTINCT(token) as token')))
                                     ->group('token')
                                     ->order("token ASC");
-        $tokenQueryStr = $sql->getSqlStringForSqlObject($tokenQuery);
+        $tokenQueryStr = $sql->buildSqlString($tokenQuery);
         return $dbAdapter->query($tokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     
@@ -3015,19 +3015,19 @@ class SpiFormVer5Table extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
         
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -3148,7 +3148,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                                     ->columns(array(new Expression('DISTINCT(testingpointtype) as testingPointType')))
                                     ->group('testingpointtype')
                                     ->order("testingpointtype ASC");
-        $queryStr = $sql->getSqlStringForSqlObject($query);
+        $queryStr = $sql->buildSqlString($query);
         
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
@@ -3171,7 +3171,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
             }else{
                 $query = $query->where(array('testingpointtype'=>$params['testingPointType']));
             }
-            $queryStr = $sql->getSqlStringForSqlObject($query);
+            $queryStr = $sql->buildSqlString($query);
             //print_r($queryStr);
             $typeResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         }
@@ -3185,11 +3185,11 @@ class SpiFormVer5Table extends AbstractTableGateway {
                                ->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv3.facility');
                             //    ->group("province")
                             //    ->order("province ASC");
-        $queryStr = $sql->getSqlStringForSqlObject($query);
+        $queryStr = $sql->buildSqlString($query);
         //$query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
         //                       ->columns(array(new Expression('DISTINCT(level_name) as level_name')))
         //                       ->order("level_name ASC");
-        //$queryStr = $sql->getSqlStringForSqlObject($query);
+        //$queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     public function fetchDistrictData($params)
@@ -3203,7 +3203,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         }else{
             $query = $query->where('f.province="'.$params['province'].'" AND f.district!=""');
         }
-        $queryStr = $sql->getSqlStringForSqlObject($query);
+        $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     
@@ -3214,7 +3214,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $vId = explode(",",$params['validateId']);
         $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
                             ->where('spiv3.id IN ("' . implode('", "', $vId) . '")');
-        $newQueryStr = $sql->getSqlStringForSqlObject($newQuery); // Get the string of the Sql, instead of the Select-instance
+        $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
         $totalResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         if($totalResult){
             foreach($totalResult as $newResult){
@@ -3463,7 +3463,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                     );
                     $dbAdapter = $this->adapter;
                     $insert->values($par);
-                    $selectString = $sql->getSqlStringForSqlObject($insert);
+                    $selectString = $sql->buildSqlString($insert);
                     $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
                     if($results->getGeneratedValue()>0){
                         $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->adapter);

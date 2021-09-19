@@ -300,7 +300,7 @@ return array(
             'Laminas\Log\LoggerAbstractServiceFactory',
         ),
         'factories' => array(
-            'translator' => 'Laminas\Mvc\Service\TranslatorServiceFactory',
+            'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
         ),
     ),
     'translator' => array(

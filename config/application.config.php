@@ -8,6 +8,26 @@
 return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
+        'Laminas\Serializer',
+        'Laminas\Cache',
+        'Laminas\Di',
+        'Laminas\Mvc\Middleware',
+        'Laminas\Mvc\Plugin\FilePrg',
+        'Laminas\Mvc\Plugin\FlashMessenger',
+        'Laminas\Mvc\Plugin\Identity',
+        'Laminas\Mvc\Plugin\Prg',
+        'Laminas\Session',
+        'Laminas\Mvc\I18n',
+        'Laminas\Log',
+        'Laminas\Form',
+        'Laminas\Hydrator',
+        'Laminas\InputFilter',
+        'Laminas\Filter',
+        'Laminas\I18n',
+        'Laminas\Db',
+        'Laminas\Router',
+        'Laminas\Validator',
+        'Laminas\Diactoros',
         'Application',
     ),
 

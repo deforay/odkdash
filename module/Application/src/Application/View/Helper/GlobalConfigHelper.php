@@ -1,23 +1,21 @@
 <?php
+
 namespace Application\View\Helper;
 
-use Laminas\ServiceManager\ServiceLocatorAwareInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Helper\AbstractHelper;
 
-class GlobalConfigHelper extends AbstractHelper implements ServiceLocatorAwareInterface{
-    
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator){
-        $this->serviceLocator = $serviceLocator;  
-        return $this;  
+
+class GlobalConfigHelper extends AbstractHelper
+{
+
+    private $globalTable;
+    public function __construct($globalTable)
+    {
+        $this->globalTable = $globalTable;
     }
-    
-    public function getServiceLocator(){  
-        return $this->serviceLocator;  
-    }
-    public function __invoke(){
-        $sm = $this->getServiceLocator()->getServiceLocator();
-        $globalDb = $sm->get('GlobalTable');
-        return $globalDb->getGlobalConfig();
+
+    public function __invoke()
+    {
+        return $this->globalTable->getGlobalConfig();
     }
 }

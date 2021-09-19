@@ -20,13 +20,13 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.7.x-dev",
-            "dev-develop": "2.8.x-dev"
+            "dev-master": "2.8.x-dev",
+            "dev-develop": "2.9.x-dev"
         }
     },
     "require": {
         "php": "^5.6 || ^7.0",
-        "laminas/laminas-stdlib": "^2.7.7 || ^3.1",
+        "laminas/laminas-stdlib": "^3.2.1",
         "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {

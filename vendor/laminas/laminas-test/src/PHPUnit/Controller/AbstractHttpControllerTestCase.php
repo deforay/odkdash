@@ -1,25 +1,33 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-test for the canonical source repository
- * @copyright https://github.com/laminas/laminas-test/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-test/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
+
 namespace Laminas\Test\PHPUnit\Controller;
 
+use ArrayIterator;
 use Laminas\Dom\Document;
-use PHPUnit_Framework_ExpectationFailedException;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Test\PHPUnit\Constraint\HasRedirectConstraint;
+use Laminas\Test\PHPUnit\Constraint\IsRedirectedRouteNameConstraint;
+use PHPUnit\Framework\ExpectationFailedException;
+
+use function count;
+use function implode;
+use function preg_match;
+use function sprintf;
 
 abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
 {
     /**
      * HTTP controller must not use the console request
+     *
      * @var bool
      */
     protected $useConsoleRequest = false;
 
     /**
      * XPath namespaces
+     *
      * @var array
      */
     protected $xpathNamespaces = [];
@@ -28,20 +36,20 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
      * Get response header by key
      *
      * @param  string $header
-     * @return \Laminas\Http\Header\HeaderInterface|false
+     * @return HeaderInterface|false
      */
     protected function getResponseHeader($header)
     {
-        $response       = $this->getResponse();
-        $headers        = $response->getHeaders();
-        $responseHeader = $headers->get($header, false);
-        return $responseHeader;
+        $response = $this->getResponse();
+        $headers  = $response->getHeaders();
+        return $headers->get($header, false);
     }
 
     /**
      * Assert response has the given reason phrase
      *
      * @param string $phrase
+     * @return void
      */
     public function assertResponseReasonPhrase($phrase)
     {
@@ -51,16 +59,17 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert response header exists
      *
-     * @param  string $header
+     * @param string $header
+     * @return void
      */
     public function assertHasResponseHeader($header)
     {
         $responseHeader = $this->getResponseHeader($header);
         if (false === $responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header "%s" found',
                 $header
-            ));
+            )));
         }
         $this->assertNotEquals(false, $responseHeader);
     }
@@ -68,16 +77,17 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert response header does not exist
      *
-     * @param  string $header
+     * @param string $header
+     * @return void
      */
     public function assertNotHasResponseHeader($header)
     {
         $responseHeader = $this->getResponseHeader($header);
         if (false !== $responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header "%s" WAS NOT found',
                 $header
-            ));
+            )));
         }
         $this->assertFalse($responseHeader);
     }
@@ -85,39 +95,40 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert response header exists and contains the given string
      *
-     * @param  string $header
-     * @param  string $match
+     * @param string $header
+     * @param string $match
+     * @return void
      */
     public function assertResponseHeaderContains($header, $match)
     {
         $responseHeader = $this->getResponseHeader($header);
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header, header "%s" doesn\'t exist',
                 $header
-            ));
+            )));
         }
 
-        if (!$responseHeader instanceof \ArrayIterator) {
+        if (! $responseHeader instanceof ArrayIterator) {
             $responseHeader = [$responseHeader];
         }
 
         $headerMatched = false;
 
         foreach ($responseHeader as $currentHeader) {
-            if ($match == $currentHeader->getFieldValue()) {
+            if ($match === $currentHeader->getFieldValue()) {
                 $headerMatched = true;
                 break;
             }
         }
 
-        if (!$headerMatched) {
-            throw new \PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! $headerMatched) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header "%s" exists and contains "%s", actual content is "%s"',
                 $header,
                 $match,
                 $currentHeader->getFieldValue()
-            ));
+            )));
         }
 
         $this->assertEquals($match, $currentHeader->getFieldValue());
@@ -126,30 +137,31 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert response header exists and contains the given string
      *
-     * @param  string $header
-     * @param  string $match
+     * @param string $header
+     * @param string $match
+     * @return void
      */
     public function assertNotResponseHeaderContains($header, $match)
     {
         $responseHeader = $this->getResponseHeader($header);
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header, header "%s" doesn\'t exist',
                 $header
-            ));
+            )));
         }
 
-        if (!$responseHeader instanceof \ArrayIterator) {
+        if (! $responseHeader instanceof ArrayIterator) {
             $responseHeader = [$responseHeader];
         }
 
         foreach ($responseHeader as $currentHeader) {
-            if ($match == $currentHeader->getFieldValue()) {
-                throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            if ($match === $currentHeader->getFieldValue()) {
+                throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                     'Failed asserting response header "%s" DOES NOT CONTAIN "%s"',
                     $header,
                     $match
-                ));
+                )));
             }
         }
 
@@ -159,20 +171,21 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert response header exists and matches the given pattern
      *
-     * @param  string $header
-     * @param  string $pattern
+     * @param string $header
+     * @param string $pattern
+     * @return void
      */
     public function assertResponseHeaderRegex($header, $pattern)
     {
         $responseHeader = $this->getResponseHeader($header);
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header, header "%s" doesn\'t exist',
                 $header
-            ));
+            )));
         }
 
-        if (!$responseHeader instanceof \ArrayIterator) {
+        if (! $responseHeader instanceof ArrayIterator) {
             $responseHeader = [$responseHeader];
         }
 
@@ -186,13 +199,13 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
             }
         }
 
-        if (!$headerMatched) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! $headerMatched) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header "%s" exists and matches regex "%s", actual content is "%s"',
                 $header,
                 $pattern,
                 $currentHeader->getFieldValue()
-            ));
+            )));
         }
 
         $this->assertTrue($headerMatched);
@@ -201,20 +214,21 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert response header does not exist and/or does not match the given regex
      *
-     * @param  string $header
-     * @param  string $pattern
+     * @param string $header
+     * @param string $pattern
+     * @return void
      */
     public function assertNotResponseHeaderRegex($header, $pattern)
     {
         $responseHeader = $this->getResponseHeader($header);
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response header, header "%s" doesn\'t exist',
                 $header
-            ));
+            )));
         }
 
-        if (!$responseHeader instanceof \ArrayIterator) {
+        if (! $responseHeader instanceof ArrayIterator) {
             $responseHeader = [$responseHeader];
         }
 
@@ -224,11 +238,11 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
             $headerMatched = (bool) preg_match($pattern, $currentHeader->getFieldValue());
 
             if ($headerMatched) {
-                throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+                throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                     'Failed asserting response header "%s" DOES NOT MATCH regex "%s"',
                     $header,
                     $pattern
-                ));
+                )));
             }
         }
 
@@ -237,29 +251,33 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
 
     /**
      * Assert that response is a redirect
+     *
+     * @return void
      */
     public function assertRedirect()
     {
         $responseHeader = $this->getResponseHeader('Location');
         if (false === $responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(
+            throw new ExpectationFailedException($this->createFailureMessage(
                 'Failed asserting response is a redirect'
-            );
+            ));
         }
         $this->assertNotEquals(false, $responseHeader);
     }
 
     /**
      * Assert that response is NOT a redirect
+     *
+     * @return void
      */
     public function assertNotRedirect()
     {
         $responseHeader = $this->getResponseHeader('Location');
         if (false !== $responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response is NOT a redirect, actual redirection is "%s"',
                 $responseHeader->getFieldValue()
-            ));
+            )));
         }
         $this->assertFalse($responseHeader);
     }
@@ -267,22 +285,23 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert that response redirects to given URL
      *
-     * @param  string $url
+     * @param string $url
+     * @return void
      */
     public function assertRedirectTo($url)
     {
         $responseHeader = $this->getResponseHeader('Location');
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(
                 'Failed asserting response is a redirect'
-            );
+            ));
         }
-        if ($url != $responseHeader->getFieldValue()) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if ($url !== $responseHeader->getFieldValue()) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response redirects to "%s", actual redirection is "%s"',
                 $url,
                 $responseHeader->getFieldValue()
-            ));
+            )));
         }
         $this->assertEquals($url, $responseHeader->getFieldValue());
     }
@@ -290,44 +309,76 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert that response does not redirect to given URL
      *
-     * @param  string $url
+     * @param string $url
+     * @return void
      */
     public function assertNotRedirectTo($url)
     {
         $responseHeader = $this->getResponseHeader('Location');
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(
                 'Failed asserting response is a redirect'
-            );
+            ));
         }
-        if ($url == $responseHeader->getFieldValue()) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if ($url === $responseHeader->getFieldValue()) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response redirects to "%s"',
                 $url
-            ));
+            )));
         }
         $this->assertNotEquals($url, $responseHeader->getFieldValue());
     }
 
     /**
+     * Assert that response redirects to given route
+     */
+    final public function assertRedirectToRoute(string $route): void
+    {
+        self::assertThat(
+            $route,
+            self::logicalAnd(
+                new HasRedirectConstraint($this),
+                new IsRedirectedRouteNameConstraint($this)
+            )
+        );
+    }
+
+    /**
+     * Assert that response does not redirect to given route
+     */
+    final public function assertNotRedirectToRoute(string $route): void
+    {
+        self::assertThat(
+            $route,
+            self::logicalNot(
+                self::logicalAnd(
+                    new HasRedirectConstraint($this),
+                    new IsRedirectedRouteNameConstraint($this)
+                )
+            )
+        );
+    }
+
+    /**
      * Assert that redirect location matches pattern
      *
-     * @param  string $pattern
+     * @param string $pattern
+     * @return void
      */
     public function assertRedirectRegex($pattern)
     {
         $responseHeader = $this->getResponseHeader('Location');
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(
                 'Failed asserting response is a redirect'
-            );
+            ));
         }
-        if (!preg_match($pattern, $responseHeader->getFieldValue())) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if (! preg_match($pattern, $responseHeader->getFieldValue())) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response redirects to URL MATCHING "%s", actual redirection is "%s"',
                 $pattern,
                 $responseHeader->getFieldValue()
-            ));
+            )));
         }
         $this->assertTrue((bool) preg_match($pattern, $responseHeader->getFieldValue()));
     }
@@ -335,21 +386,22 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert that redirect location does not match pattern
      *
-     * @param  string $pattern
+     * @param string $pattern
+     * @return void
      */
     public function assertNotRedirectRegex($pattern)
     {
         $responseHeader = $this->getResponseHeader('Location');
-        if (!$responseHeader) {
-            throw new PHPUnit_Framework_ExpectationFailedException(
+        if (! $responseHeader) {
+            throw new ExpectationFailedException($this->createFailureMessage(
                 'Failed asserting response is a redirect'
-            );
+            ));
         }
         if (preg_match($pattern, $responseHeader->getFieldValue())) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting response DOES NOT redirect to URL MATCHING "%s"',
                 $pattern
-            ));
+            )));
         }
         $this->assertFalse((bool) preg_match($pattern, $responseHeader->getFieldValue()));
     }
@@ -357,7 +409,8 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Register XPath namespaces
      *
-     * @param   array $xpathNamespaces
+     * @param array $xpathNamespaces
+     * @return void
      */
     public function registerXpathNamespaces(array $xpathNamespaces)
     {
@@ -380,22 +433,19 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
             $document->registerXpathNamespaces($this->xpathNamespaces);
         }
 
-        $result = Document\Query::execute(
+        return Document\Query::execute(
             $path,
             $document,
             $useXpath ? Document\Query::TYPE_XPATH : Document\Query::TYPE_CSS
         );
-
-        return $result;
     }
 
     /**
      * Execute a xpath query
      *
-     * @param  string $path
-     * @return array
+     * @param string $path
      */
-    private function xpathQuery($path)
+    private function xpathQuery($path): Document\NodeList
     {
         return $this->query($path, true);
     }
@@ -423,20 +473,32 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     }
 
     /**
+     * @param string $path
+     * @param bool $useXpath
+     */
+    private function queryCountOrxpathQueryCount($path, $useXpath = false): int
+    {
+        if ($useXpath) {
+            return $this->xpathQueryCount($path);
+        }
+
+        return $this->queryCount($path);
+    }
+
+    /**
      * Assert against DOM/XPath selection
      *
      * @param string $path
      * @param bool $useXpath
      */
-    private function queryAssertion($path, $useXpath = false)
+    private function queryAssertion($path, $useXpath = false): void
     {
-        $method = $useXpath ? 'xpathQueryCount' : 'queryCount';
-        $match = $this->$method($path);
-        if (!$match > 0) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        $match = $this->queryCountOrxpathQueryCount($path, $useXpath);
+        if (! $match > 0) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s EXISTS',
                 $path
-            ));
+            )));
         }
         $this->assertTrue($match > 0);
     }
@@ -444,7 +506,8 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection
      *
-     * @param  string $path CSS selector path
+     * @param string $path CSS selector path
+     * @return void
      */
     public function assertQuery($path)
     {
@@ -454,7 +517,8 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection
      *
-     * @param  string $path XPath path
+     * @param string $path XPath path
+     * @return void
      */
     public function assertXpathQuery($path)
     {
@@ -467,15 +531,14 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
      * @param string $path CSS selector path
      * @param bool $useXpath
      */
-    private function notQueryAssertion($path, $useXpath = false)
+    private function notQueryAssertion($path, $useXpath = false): void
     {
-        $method = $useXpath ? 'xpathQueryCount' : 'queryCount';
-        $match  = $this->$method($path);
-        if ($match != 0) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        $match = $this->queryCountOrxpathQueryCount($path, $useXpath);
+        if ($match !== 0) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s DOES NOT EXIST',
                 $path
-            ));
+            )));
         }
         $this->assertEquals(0, $match);
     }
@@ -483,7 +546,8 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection
      *
-     * @param  string $path CSS selector path
+     * @param string $path CSS selector path
+     * @return void
      */
     public function assertNotQuery($path)
     {
@@ -493,7 +557,8 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection
      *
-     * @param  string $path XPath path
+     * @param string $path XPath path
+     * @return void
      */
     public function assertNotXpathQuery($path)
     {
@@ -504,20 +569,19 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
      * Assert against DOM/XPath selection; should contain exact number of nodes
      *
      * @param string $path CSS selector path
-     * @param string $count Number of nodes that should match
+     * @param int $count Number of nodes that should match
      * @param bool $useXpath
      */
-    private function queryCountAssertion($path, $count, $useXpath = false)
+    private function queryCountAssertion($path, $count, $useXpath = false): void
     {
-        $method = $useXpath ? 'xpathQueryCount' : 'queryCount';
-        $match = $this->$method($path);
-        if ($match != $count) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        $match = $this->queryCountOrxpathQueryCount($path, $useXpath);
+        if ($match !== $count) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s OCCURS EXACTLY %d times, actually occurs %d times',
                 $path,
                 $count,
                 $match
-            ));
+            )));
         }
         $this->assertEquals($match, $count);
     }
@@ -525,8 +589,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection; should contain exact number of nodes
      *
-     * @param  string $path CSS selector path
-     * @param  string $count Number of nodes that should match
+     * @param string $path CSS selector path
+     * @param int $count Number of nodes that should match
+     * @return void
      */
     public function assertQueryCount($path, $count)
     {
@@ -536,8 +601,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; should contain exact number of nodes
      *
-     * @param  string $path XPath path
-     * @param  string $count Number of nodes that should match
+     * @param string $path XPath path
+     * @param int $count Number of nodes that should match
+     * @return void
      */
     public function assertXpathQueryCount($path, $count)
     {
@@ -547,20 +613,19 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM/XPath selection; should NOT contain exact number of nodes
      *
-     * @param  string $path CSS selector path
-     * @param  string $count Number of nodes that should NOT match
+     * @param string $path CSS selector path
+     * @param int $count Number of nodes that should NOT match
      * @param bool $useXpath
      */
-    private function notQueryCountAssertion($path, $count, $useXpath = false)
+    private function notQueryCountAssertion($path, $count, $useXpath = false): void
     {
-        $method = $useXpath ? 'xpathQueryCount' : 'queryCount';
-        $match = $this->$method($path);
-        if ($match == $count) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        $match = $this->queryCountOrxpathQueryCount($path, $useXpath);
+        if ($match === $count) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s DOES NOT OCCUR EXACTLY %d times',
                 $path,
                 $count
-            ));
+            )));
         }
         $this->assertNotEquals($match, $count);
     }
@@ -568,8 +633,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection; should NOT contain exact number of nodes
      *
-     * @param  string $path CSS selector path
-     * @param  string $count Number of nodes that should NOT match
+     * @param string $path CSS selector path
+     * @param int $count Number of nodes that should NOT match
+     * @return void
      */
     public function assertNotQueryCount($path, $count)
     {
@@ -579,8 +645,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; should NOT contain exact number of nodes
      *
-     * @param  string $path XPath path
-     * @param  string $count Number of nodes that should NOT match
+     * @param string $path XPath path
+     * @param int $count Number of nodes that should NOT match
+     * @return void
      */
     public function assertNotXpathQueryCount($path, $count)
     {
@@ -591,20 +658,19 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
      * Assert against DOM/XPath selection; should contain at least this number of nodes
      *
      * @param string $path CSS selector path
-     * @param string $count Minimum number of nodes that should match
+     * @param int $count Minimum number of nodes that should match
      * @param bool $useXpath
      */
-    private function queryCountMinAssertion($path, $count, $useXpath = false)
+    private function queryCountMinAssertion($path, $count, $useXpath = false): void
     {
-        $method = $useXpath ? 'xpathQueryCount' : 'queryCount';
-        $match = $this->$method($path);
+        $match = $this->queryCountOrxpathQueryCount($path, $useXpath);
         if ($match < $count) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s OCCURS AT LEAST %d times, actually occurs %d times',
                 $path,
                 $count,
                 $match
-            ));
+            )));
         }
         $this->assertTrue($match >= $count);
     }
@@ -612,8 +678,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection; should contain at least this number of nodes
      *
-     * @param  string $path CSS selector path
-     * @param  string $count Minimum number of nodes that should match
+     * @param string $path CSS selector path
+     * @param int $count Minimum number of nodes that should match
+     * @return void
      */
     public function assertQueryCountMin($path, $count)
     {
@@ -623,8 +690,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; should contain at least this number of nodes
      *
-     * @param  string $path XPath path
-     * @param  string $count Minimum number of nodes that should match
+     * @param string $path XPath path
+     * @param int $count Minimum number of nodes that should match
+     * @return void
      */
     public function assertXpathQueryCountMin($path, $count)
     {
@@ -634,21 +702,20 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM/XPath selection; should contain no more than this number of nodes
      *
-     * @param  string $path CSS selector path
-     * @param  string $count Maximum number of nodes that should match
+     * @param string $path CSS selector path
+     * @param int $count Maximum number of nodes that should match
      * @param bool $useXpath
      */
-    private function queryCountMaxAssertion($path, $count, $useXpath = false)
+    private function queryCountMaxAssertion($path, $count, $useXpath = false): void
     {
-        $method = $useXpath ? 'xpathQueryCount' : 'queryCount';
-        $match = $this->$method($path);
+        $match = $this->queryCountOrxpathQueryCount($path, $useXpath);
         if ($match > $count) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s OCCURS AT MOST %d times, actually occurs %d times',
                 $path,
                 $count,
                 $match
-            ));
+            )));
         }
         $this->assertTrue($match <= $count);
     }
@@ -656,8 +723,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection; should contain no more than this number of nodes
      *
-     * @param  string $path CSS selector path
-     * @param  string $count Maximum number of nodes that should match
+     * @param string $path CSS selector path
+     * @param int $count Maximum number of nodes that should match
+     * @return void
      */
     public function assertQueryCountMax($path, $count)
     {
@@ -667,8 +735,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; should contain no more than this number of nodes
      *
-     * @param  string $path XPath path
-     * @param  string $count Maximum number of nodes that should match
+     * @param string $path XPath path
+     * @param int $count Maximum number of nodes that should match
+     * @return void
      */
     public function assertXpathQueryCountMax($path, $count)
     {
@@ -678,25 +747,25 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM/XPath selection; node should contain content
      *
-     * @param  string $path CSS selector path
-     * @param  string $match content that should be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $match content that should be contained in matched nodes
      * @param bool $useXpath
      */
-    private function queryContentContainsAssertion($path, $match, $useXpath = false)
+    private function queryContentContainsAssertion($path, $match, $useXpath = false): void
     {
         $result = $this->query($path, $useXpath);
 
-        if ($result->count() == 0) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if ($result->count() === 0) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s EXISTS',
                 $path
-            ));
+            )));
         }
 
         $nodeValues = [];
 
         foreach ($result as $node) {
-            if ($node->nodeValue == $match) {
+            if ($node->nodeValue === $match) {
                 $this->assertEquals($match, $node->nodeValue);
                 return;
             }
@@ -704,19 +773,20 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
             $nodeValues[] = $node->nodeValue;
         }
 
-        throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        throw new ExpectationFailedException($this->createFailureMessage(sprintf(
             'Failed asserting node denoted by %s CONTAINS content "%s", Contents: [%s]',
             $path,
             $match,
             implode(',', $nodeValues)
-        ));
+        )));
     }
 
     /**
      * Assert against DOM selection; node should contain content
      *
-     * @param  string $path CSS selector path
-     * @param  string $match content that should be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $match content that should be contained in matched nodes
+     * @return void
      */
     public function assertQueryContentContains($path, $match)
     {
@@ -726,8 +796,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; node should contain content
      *
-     * @param  string $path XPath path
-     * @param  string $match content that should be contained in matched nodes
+     * @param string $path XPath path
+     * @param string $match content that should be contained in matched nodes
+     * @return void
      */
     public function assertXpathQueryContentContains($path, $match)
     {
@@ -737,26 +808,26 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM/XPath selection; node should NOT contain content
      *
-     * @param  string $path CSS selector path
-     * @param  string $match content that should NOT be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $match content that should NOT be contained in matched nodes
      * @param bool $useXpath
      */
-    private function notQueryContentContainsAssertion($path, $match, $useXpath = false)
+    private function notQueryContentContainsAssertion($path, $match, $useXpath = false): void
     {
         $result = $this->query($path, $useXpath);
-        if ($result->count() == 0) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if ($result->count() === 0) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s EXISTS',
                 $path
-            ));
+            )));
         }
         foreach ($result as $node) {
-            if ($node->nodeValue == $match) {
-                throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            if ($node->nodeValue === $match) {
+                throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                     'Failed asserting node DENOTED BY %s DOES NOT CONTAIN content "%s"',
                     $path,
                     $match
-                ));
+                )));
             }
         }
         $currentValue = $node->nodeValue;
@@ -766,8 +837,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection; node should NOT contain content
      *
-     * @param  string $path CSS selector path
-     * @param  string $match content that should NOT be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $match content that should NOT be contained in matched nodes
+     * @return void
      */
     public function assertNotQueryContentContains($path, $match)
     {
@@ -777,8 +849,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; node should NOT contain content
      *
-     * @param  string $path XPath path
-     * @param  string $match content that should NOT be contained in matched nodes
+     * @param string $path XPath path
+     * @param string $match content that should NOT be contained in matched nodes
+     * @return void
      */
     public function assertNotXpathQueryContentContains($path, $match)
     {
@@ -788,35 +861,49 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM/XPath selection; node should match content
      *
-     * @param  string $path CSS selector path
-     * @param  string $pattern Pattern that should be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $pattern Pattern that should be contained in matched nodes
      * @param bool $useXpath
      */
-    private function queryContentRegexAssertion($path, $pattern, $useXpath = false)
+    private function queryContentRegexAssertion($path, $pattern, $useXpath = false): void
     {
         $result = $this->query($path, $useXpath);
-        if ($result->count() == 0) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if ($result->count() === 0) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s EXISTS',
                 $path
-            ));
+            )));
         }
-        if (!preg_match($pattern, $result->current()->nodeValue)) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+
+        $found      = false;
+        $nodeValues = [];
+
+        foreach ($result as $node) {
+            $nodeValues[] = $node->nodeValue;
+            if (preg_match($pattern, $node->nodeValue)) {
+                $found = true;
+                break;
+            }
+        }
+
+        if (! $found) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node denoted by %s CONTAINS content MATCHING "%s", actual content is "%s"',
                 $path,
                 $pattern,
-                $result->current()->nodeValue
-            ));
+                implode('', $nodeValues)
+            )));
         }
-        $this->assertTrue((bool) preg_match($pattern, $result->current()->nodeValue));
+
+        $this->assertTrue($found);
     }
 
     /**
      * Assert against DOM selection; node should match content
      *
-     * @param  string $path CSS selector path
-     * @param  string $pattern Pattern that should be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $pattern Pattern that should be contained in matched nodes
+     * @return void
      */
     public function assertQueryContentRegex($path, $pattern)
     {
@@ -826,8 +913,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; node should match content
      *
-     * @param  string $path XPath path
-     * @param  string $pattern Pattern that should be contained in matched nodes
+     * @param string $path XPath path
+     * @param string $pattern Pattern that should be contained in matched nodes
+     * @return void
      */
     public function assertXpathQueryContentRegex($path, $pattern)
     {
@@ -841,21 +929,21 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
      * @param string $pattern pattern that should NOT be contained in matched nodes
      * @param bool $useXpath
      */
-    private function notQueryContentRegexAssertion($path, $pattern, $useXpath = false)
+    private function notQueryContentRegexAssertion($path, $pattern, $useXpath = false): void
     {
         $result = $this->query($path, $useXpath);
-        if ($result->count() == 0) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+        if ($result->count() === 0) {
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s EXISTS',
                 $path
-            ));
+            )));
         }
         if (preg_match($pattern, $result->current()->nodeValue)) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting node DENOTED BY %s DOES NOT CONTAIN content MATCHING "%s"',
                 $path,
                 $pattern
-            ));
+            )));
         }
         $this->assertFalse((bool) preg_match($pattern, $result->current()->nodeValue));
     }
@@ -863,8 +951,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against DOM selection; node should NOT match content
      *
-     * @param  string $path CSS selector path
-     * @param  string $pattern pattern that should NOT be contained in matched nodes
+     * @param string $path CSS selector path
+     * @param string $pattern pattern that should NOT be contained in matched nodes
+     * @return void
      */
     public function assertNotQueryContentRegex($path, $pattern)
     {
@@ -874,8 +963,9 @@ abstract class AbstractHttpControllerTestCase extends AbstractControllerTestCase
     /**
      * Assert against XPath selection; node should NOT match content
      *
-     * @param  string $path XPath path
-     * @param  string $pattern pattern that should NOT be contained in matched nodes
+     * @param string $path XPath path
+     * @param string $pattern pattern that should NOT be contained in matched nodes
+     * @return void
      */
     public function assertNotXpathQueryContentRegex($path, $pattern)
     {

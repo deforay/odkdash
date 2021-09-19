@@ -62,11 +62,29 @@ class Module
             $eventManager->attach('dispatch', array($this, 'preSetter'), 100);
             //$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatchError'), -999);
         }
-        
+
+        // //Attach render errors
+        // $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, function ($e) {
+        //     if ($e->getParam('exception')) {
+        //         $this->exception($e->getParam('exception')); //Custom error render function.
+        //     }
+        // });
+        // //Attach dispatch errors
+        // $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) {
+        //     if ($e->getParam('exception')) {
+        //         $this->exception($e->getParam('exception')); //Custom error render function.
+        //     }
+        // });
+
         $this->initTranslator($e);
-        
     }
 
+
+    // public function exception($e) {
+    //     echo "<span style='font-family: courier new; padding: 2px 5px; background:red; color: white;'> " . $e->getMessage() . '</span><br/>' ;
+    //     echo "<pre>" . $e->getTraceAsString() . '</pre>' ;   
+    //     die;
+    // }
 
     public function preSetter(MvcEvent $e)
     {
@@ -150,7 +168,7 @@ class Module
 
     protected function initTranslator(MvcEvent $event)
     {
-        
+
         $serviceManager = $event->getApplication()->getServiceManager();
         $translator = $serviceManager->get('translator');
         $config = ($serviceManager->get('Config'));
@@ -320,7 +338,7 @@ class Module
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiRt5FacilitiesTable($dbAdapter);
                     return $table;
-                },                
+                },
                 'RolesTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new RolesTable($dbAdapter);
@@ -426,8 +444,13 @@ class Module
         return array(
             'invokables' => array(
                 'humanDateFormat' => 'Application\View\Helper\HumanDateFormat',
-                'GlobalConfigHelper' => 'Application\View\Helper\GlobalConfigHelper',
-            ),
+            ), 'factories' => array(
+                'GlobalConfigHelper' => function ($sm) {
+                    $globalTable = $sm->get('GlobalTable');
+                    return new \Application\View\Helper\GlobalConfigHelper($globalTable);
+                },
+
+            )
         );
     }
 

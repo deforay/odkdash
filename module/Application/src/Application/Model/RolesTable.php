@@ -152,14 +152,14 @@ class RolesTable extends AbstractTableGateway  {
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //error_log($sQueryForm);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
@@ -202,7 +202,7 @@ class RolesTable extends AbstractTableGateway  {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $query = $sql->select()->from('roles')->order('role_name')->where(array('status'=>'active'));
-        $roleQueryStr = $sql->getSqlStringForSqlObject($query); // Get the string of the Sql, instead of the Select-instance
+        $roleQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
         return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
     
@@ -210,12 +210,12 @@ class RolesTable extends AbstractTableGateway  {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $resourceQuery = $sql->select()->from('resources')->order('display_name');
-        $resourceQueryStr = $sql->getSqlStringForSqlObject($resourceQuery); // Get the string of the Sql, instead of the Select-instance
+        $resourceQueryStr = $sql->buildSqlString($resourceQuery); // Get the string of the Sql, instead of the Select-instance
         $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $n = sizeof($resourceResult);
         for ($i = 0; $i < $n; $i++) {
             $privilageQuery = $sql->select()->from('privileges')->where(array('resource_id' => $resourceResult[$i]['resource_id']))->order('display_name');
-            $privilageQueryStr = $sql->getSqlStringForSqlObject($privilageQuery); // Get the string of the Sql, instead of the Select-instance
+            $privilageQueryStr = $sql->buildSqlString($privilageQuery); // Get the string of the Sql, instead of the Select-instance
             $resourceResult[$i]['privileges'] = $dbAdapter->query($privilageQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         }
         return $resourceResult;

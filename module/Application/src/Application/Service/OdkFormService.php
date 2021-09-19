@@ -141,7 +141,7 @@ class OdkFormService
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
             }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
                 $auditScore = 0;
@@ -397,7 +397,7 @@ class OdkFormService
             } else {
                 $testPoint = "Type of Testing Point : ";
             }
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             // print_r($sResult);die;
             if (count($sResult) > 0) {
@@ -1021,7 +1021,7 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
 
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
@@ -1183,7 +1183,7 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
 
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
@@ -3355,7 +3355,6 @@ class OdkFormService
                     $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
                     $partBTable .= '</tr>';
-
                 }
 
                 $partBTable .= '</table>';
@@ -3782,7 +3781,7 @@ class OdkFormService
                         }
                         if ($inc == $findInstancePosition) {
                             $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID' => trim($cell->getValue())));
-                            $validateQueryStr = $sql->getSqlStringForSqlObject($validateQuery);
+                            $validateQueryStr = $sql->buildSqlString($validateQuery);
                             $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                             if ($validateResult) {
                                 $validateData = 1; //exist meta instance id
@@ -4216,7 +4215,7 @@ class OdkFormService
             if (isset($sOrder) && $sOrder != "") {
                 $sQuery->order($sOrder);
             }
-            $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+            $sQueryStr = $sql->buildSqlString($sQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             // print_r($sResult);die;
             if (count($sResult) > 0) {
@@ -4502,7 +4501,7 @@ class OdkFormService
             } else {
                 $testPoint = "Type of Testing Point : ";
             }
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             // print_r($sResult);die;
             if (count($sResult) > 0) {
@@ -5509,7 +5508,7 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
 
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
@@ -5717,7 +5716,7 @@ class OdkFormService
                     $xml = simplexml_load_string($response2);
                     $json = json_encode($xml);
                     $array = json_decode($json, true);
-                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0])?$array['correctiveaction']:array($array['correctiveaction']);
+                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                 }
             }
         }
@@ -5737,7 +5736,7 @@ class OdkFormService
         $formDetails = $this->formatResponse($formResponse);
 
         //\Zend\Debug\Debug::dump($formDetails);die;
-        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails,$correctiveActions);
+        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
     }
 
     public function getV6OdkCentralSubmissions()
@@ -5797,7 +5796,7 @@ class OdkFormService
                     $xml = simplexml_load_string($response2);
                     $json = json_encode($xml);
                     $array = json_decode($json, true);
-                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0])?$array['correctiveaction']:array($array['correctiveaction']);
+                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                 }
             }
         }
@@ -5817,7 +5816,7 @@ class OdkFormService
         $formDetails = $this->formatResponse($formResponse);
 
         //\Zend\Debug\Debug::dump($formDetails);die;
-        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails,$correctiveActions);
+        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
     }
 
     public function formatResponse($strResponse)
@@ -5826,5 +5825,4 @@ class OdkFormService
         $obj = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response), true);
         return $obj;
     }
-
 }

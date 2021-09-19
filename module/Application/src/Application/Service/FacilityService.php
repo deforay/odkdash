@@ -368,7 +368,7 @@ class FacilityService {
             $sheet = $excel->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllFacilityQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllFacilityQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if(count($sResult) > 0) {
                 foreach($sResult as $aRow) {

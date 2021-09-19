@@ -37,7 +37,7 @@ class UsersTable extends AbstractTableGateway {
         $username = $params['username'];
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-        $password = sha1($params['password'] . $configResult["password"]["salt"]);        
+        $password = sha1($params['password'] . $configResult["password"]["salt"]);   
         
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);

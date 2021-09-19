@@ -136,7 +136,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
         
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         $queryContainer->exportAllDataQuery = $sQuery;
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -144,14 +144,14 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
         $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
                                  ->where('spiv3.status != "deleted" and spiv3.spi_data_status=0');
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
@@ -184,11 +184,11 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
         }
         //get count of exist data
         $totalQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('totalData' => new \Laminas\Db\Sql\Expression("COUNT(*)")))->where('spiv3.status != "deleted"');
-        $totalQueryStr = $sql->getSqlStringForSqlObject($totalQuery); // Get the string of the Sql, instead of the Select-instance
+        $totalQueryStr = $sql->buildSqlString($totalQuery); // Get the string of the Sql, instead of the Select-instance
         $totalResult = $dbAdapter->query($totalQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get count of new data
         $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Laminas\Db\Sql\Expression("COUNT(id)")));
-        $newQueryStr = $sql->getSqlStringForSqlObject($newQuery); // Get the string of the Sql, instead of the Select-instance
+        $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
         $newResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         
         $output['totalData'] = $totalResult['totalData'];

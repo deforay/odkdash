@@ -18,15 +18,18 @@ use Application\Service\CommonService;
  *
  * @author amit
  */
-class GlobalTable extends AbstractTableGateway {
+class GlobalTable extends AbstractTableGateway
+{
 
     protected $table = 'global_config';
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-    public function fetchAllConfig($parameters) {
+
+    public function fetchAllConfig($parameters)
+    {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
@@ -48,7 +51,7 @@ class GlobalTable extends AbstractTableGateway {
         if (isset($parameters['iSortCol_0'])) {
             for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
                 if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $aColumns[intval($parameters['iSortCol_' . $i])] . " " . ( $parameters['sSortDir_' . $i] ) . ",";
+                    $sOrder .= $aColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -75,9 +78,9 @@ class GlobalTable extends AbstractTableGateway {
 
                 for ($i = 0; $i < $colSize; $i++) {
                     if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' OR ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                     } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                     }
                 }
                 $sWhereSub .= ")";
@@ -116,14 +119,14 @@ class GlobalTable extends AbstractTableGateway {
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //error_log($sQueryForm);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
@@ -138,18 +141,19 @@ class GlobalTable extends AbstractTableGateway {
             "aaData" => array()
         );
         foreach ($rResult as $aRow) {
-           $row = array();
+            $row = array();
             $row[] = ucwords($aRow['display_name']);
             $row[] = $aRow['global_value'];
             $output['aaData'][] = $row;
         }
         return $output;
     }
-    public function getGlobalConfig() {
+    public function getGlobalConfig()
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from('global_config');
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $size = sizeof($configValues);
         $arr = array();
@@ -160,53 +164,50 @@ class GlobalTable extends AbstractTableGateway {
         // using assign to automatically create view variables
         // the column names will now become view variables
         return $arr;
-        
     }
-    
-    public function updateConfigDetails($params) {
+
+    public function updateConfigDetails($params)
+    {
         $result = 0;
-        $common=new CommonService();
-        if(isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])){
+        $common = new CommonService();
+        if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])) {
             unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
-            $this->update(array('global_value'=>''),array('global_name'=>'logo'));
+            $this->update(array('global_value' => ''), array('global_name' => 'logo'));
         }
-        
-        if(isset($_FILES['logo']['name']) && $_FILES['logo']['name']!= ""){
-            if(!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
+
+        if (isset($_FILES['logo']['name']) && $_FILES['logo']['name'] != "") {
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-            $string = $common->generateRandomString(6).".";
-            $imageName = "logo".$string.$extension;
+            $string = $common->generateRandomString(6) . ".";
+            $imageName = "logo" . $string . $extension;
             if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
-                $this->update(array('global_value'=>$imageName),array('global_name'=>'logo'));
+                $this->update(array('global_value' => $imageName), array('global_name' => 'logo'));
             }
         }
         $out = '';
         foreach ($params as $fieldName => $fieldValue) {
-            if($fieldName!= 'removedLogoImage' && $fieldName!= 'web_version'){
+            if ($fieldName != 'removedLogoImage' && $fieldName != 'web_version') {
                 $result = $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
-            }
-            else if($fieldName == 'web_version')
-            {
-                foreach($fieldValue as $ver)
-                {
-                    $out = $ver.','.$out;
+            } else if ($fieldName == 'web_version') {
+                foreach ($fieldValue as $ver) {
+                    $out = $ver . ',' . $out;
                 }
                 $verVal = substr($out, 0, -1);
-                $this->update(array('global_value'=>$verVal),array('global_name'=>'web_version'));
+                $this->update(array('global_value' => $verVal), array('global_name' => 'web_version'));
             }
         }
-      return $result;
+        return $result;
     }
-    
-    public function getGlobalValue($globalName) {
+
+    public function getGlobalValue($globalName)
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from('global_config')->where(array('global_name' => $globalName));
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $configValues[0]['global_value'];
     }
-    
 }

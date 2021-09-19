@@ -2,17 +2,20 @@
 
 /**
  * @see       https://github.com/laminas/laminas-test for the canonical source repository
- * @copyright https://github.com/laminas/laminas-test/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-test/blob/master/LICENSE.md New BSD License
  */
+
 namespace Laminas\Test\PHPUnit\Controller;
 
-use PHPUnit_Framework_ExpectationFailedException;
+use PHPUnit\Framework\ExpectationFailedException;
+
+use function sprintf;
+use function stripos;
 
 abstract class AbstractConsoleControllerTestCase extends AbstractControllerTestCase
 {
     /**
      * HTTP controller must use the console request
+     *
      * @var bool
      */
     protected $useConsoleRequest = true;
@@ -27,13 +30,13 @@ abstract class AbstractConsoleControllerTestCase extends AbstractControllerTestC
     {
         $response = $this->getResponse();
         if (false === stripos($response->getContent(), $match)) {
-            throw new PHPUnit_Framework_ExpectationFailedException(
+            throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf(
                     'Failed asserting output CONTAINS content "%s", actual content is "%s"',
                     $match,
                     $response->getContent()
                 )
-            );
+            ));
         }
         $this->assertNotSame(false, stripos($response->getContent(), $match));
     }
@@ -48,10 +51,10 @@ abstract class AbstractConsoleControllerTestCase extends AbstractControllerTestC
     {
         $response = $this->getResponse();
         if (false !== stripos($response->getContent(), $match)) {
-            throw new PHPUnit_Framework_ExpectationFailedException(sprintf(
+            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
                 'Failed asserting output DOES NOT CONTAIN content "%s"',
                 $match
-            ));
+            )));
         }
         $this->assertSame(false, stripos($response->getContent(), $match));
     }

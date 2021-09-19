@@ -32,7 +32,7 @@ class SpiForm6LabelsTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_v6_form_labels'));
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;//die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $response = array();

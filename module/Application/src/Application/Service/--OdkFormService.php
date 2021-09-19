@@ -129,7 +129,7 @@ class OdkFormService
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
             }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
 
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
@@ -377,7 +377,7 @@ class OdkFormService
         //         $testPoint = "Type of Testing Point : " . $params['testPoint'];
         //     }
 
-        //     $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportAllDataQuery);
+        //     $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
         //     echo $sQueryStr;die;
         //     $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             
@@ -978,7 +978,7 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            $sQueryStr = $sql->getSqlStringForSqlObject($queryContainer->exportQuery);
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
 
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
@@ -3386,7 +3386,7 @@ class OdkFormService
                         }
                         if ($inc == $findInstancePosition) {
                             $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID' => trim($cell->getValue())));
-                            $validateQueryStr = $sql->getSqlStringForSqlObject($validateQuery);
+                            $validateQueryStr = $sql->buildSqlString($validateQuery);
                             $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                             if ($validateResult) {
                                 $validateData = 1; //exist meta instance id
