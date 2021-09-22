@@ -189,14 +189,14 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV5', 'download-pdf') || $a
                 $.post("<?php echo $this->url('spi-v5-form',array('action'=>'delete')); ?>", {deleteId:auditId},
                     function(data){
                         if(data == 0){
-                          alert("OOPS..We have experienced the problem.Please try again!");
+                          alert("Oops! We have experienced a problem.Please try again!");
                         }else{
                           table.draw();
                         }
                     });
             }
         }else{
-           alert("OOPS..We have experienced the problem.Please try again!");
+           alert("Oops! We have experienced a problem.Please try again!");
         }
     }
 </script>
