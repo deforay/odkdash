@@ -1300,13 +1300,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
-    public function getAllSubmissionsV6($sortOrder = 'DESC')
+    public function getAllSubmissionsV6($sortOrder = 'DESC', $limit=100)
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where('spiv6.status != "deleted"')
+            ->limit($limit)
             ->order(array("status DESC", "id $sortOrder"));
         if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');

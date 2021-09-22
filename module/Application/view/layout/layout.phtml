@@ -54,11 +54,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3", "index
 }
 
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index") && preg_match("/v5/i", $config['web_version'])) {
-  $auditMenu .= "<li><a href=" . $this->url('spi-v5-form', array('action' => 'index')) . ">SPI-RRT</a></li>";
+  $auditMenu .= "<li><a href=" . $this->url('spi-v5-form', array('action' => 'index')) . ">SPI-RRT v5</a></li>";
 }
 
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index") && preg_match("/v6/i", $config['web_version'])) {
-  $auditMenu .= "<li><a href=" . $this->url('spi-v6-form', array('action' => 'index')) . ">SPI-RRT V6</a></li>";
+  $auditMenu .= "<li><a href=" . $this->url('spi-v6-form', array('action' => 'index')) . ">SPI-RRT</a></li>";
 }
 
 ?>
@@ -198,9 +198,9 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
                 <?php if(preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\Dashboard", "index")){ ?>
                   <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
                 <?php }elseif(preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5", "index")){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
                 <?php }elseif(preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6", "index")){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
                 <?php } ?>
               <?php }else{ ?>
                 <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Dashboard'); ?></span></a>
@@ -209,10 +209,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
                     <li class=""><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
                       <?php } ?> 
                       <?php if(preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5", "index")) {?>
-                        <li class=""><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                        <li class=""><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
                       <?php } ?>
                       <?php if(preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6", "index")) {?>
-                        <li class=""><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT V6'); ?></span></a></li>
+                        <li class=""><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
                       <?php } ?>
                 </ul>
                 </li>
@@ -224,9 +224,9 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
               <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
                   <li class="parent"><a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RT'); ?></span></a></li>
                 <?php }elseif(preg_match("/v5/i", $config['web_version'])){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('spi-v5-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v5-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT v5'); ?></span></a></li>
                 <?php }elseif(preg_match("/v6/i", $config['web_version'])){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT V6'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT'); ?></span></a></li>
                 <?php } ?>
             <?php }else{ ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Audit'); ?></span></a>
@@ -250,10 +250,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
                 <li><a href="<?php echo $this->url('spi-v3-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI-RT Facility Report'); ?></a></li>
                 <?php } ?>
                 <?php if(preg_match("/v5/i", $config['web_version']) && ($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report"))){ ?>
-                  <li><a href="<?php echo $this->url('spi-v5-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI-RRT Facility Report'); ?></a></li>
+                  <li><a href="<?php echo $this->url('spi-v5-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI-RRT v5 Facility Report'); ?></a></li>
                   <?php } ?>
                 <?php if(preg_match("/v6/i", $config['web_version']) && ($acl->isAllowed($role, "Application\Controller\SpiV6Reports", "facility-report"))){ ?>
-                <li><a href="<?php echo $this->url('spi-v6-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI-RRT V6 Facility Report'); ?></a></li>
+                <li><a href="<?php echo $this->url('spi-v6-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI-RRT Facility Report'); ?></a></li>
                 <?php } ?> 
               </ul>
             </li>
@@ -269,13 +269,13 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v5") && preg_match("/v5/i", $config['web_version'])) {
           ?>
-            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v5')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT'); ?></span></a></li>
+            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v5')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT v5'); ?></span></a></li>
           <?php } ?>
 
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v6") && preg_match("/v6/i", $config['web_version'])) {
           ?>
-            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT Version 6'); ?></span></a></li>
+            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT'); ?></span></a></li>
           <?php } ?>
 
           <?php
@@ -302,7 +302,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
   </div>
   <div id="dDiv" class="dialog">
     <div style="text-align:center"><span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span></div>
-    <iframe id="dFrame" src="" style="border:none;" scrolling='yes' marginwidth='0' marginheight='0' frameborder='0' vspace='0' hspace='0'>some problem</iframe>
+    <iframe id="dFrame" src="" style="border:none;" scrolling='yes' marginwidth='0' marginheight='0' frameborder='0' vspace='0' hspace='0'>Oops! There seems to be a problem.</iframe>
   </div>
 
   <script src="<?php echo $this->basePath('assets/lib/jquery.nanoscroller/javascripts/jquery.nanoscroller.min.js'); ?>" type="text/javascript"></script>

@@ -340,8 +340,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
     public function saveOdkCentralData($params, $formDetails, $correctiveActions)
     {
-        //\Zend\Debug\Debug::dump($correctiveActions);
-        \Zend\Debug\Debug::dump($params);die;
+        
         if ($params == null || $params == "" || (is_array($params) && count($params['value']) == 0)) {
             exit;
         }

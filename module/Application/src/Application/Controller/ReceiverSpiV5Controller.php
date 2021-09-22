@@ -25,7 +25,7 @@ class ReceiverSpiV5Controller extends AbstractActionController
 
         $jsonData = utf8_encode(file_get_contents('php://input'));
 
-        $this->var_error_log($jsonData);
+        //$this->var_error_log($jsonData);
 
         $params = json_decode($jsonData, true);
 
