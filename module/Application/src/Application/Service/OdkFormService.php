@@ -794,7 +794,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -857,7 +857,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit", "RTRT Surveillance"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment", "RTRI"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -3907,7 +3907,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -4932,7 +4932,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit", "RTRT Surveillance"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment", "RTRI"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -5264,7 +5264,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
