@@ -7,6 +7,7 @@ $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $adminMenu = "";
 $auditMenu = "";
+$emailMenu = "";
 
 $config = $this->GlobalConfigHelper();
 // \Zend\Debug\Debug::dump($commonVal->getGlobalConfigDetails());
@@ -65,6 +66,18 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV5", "index
 
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index") && preg_match("/v6/i", $config['web_version'])) {
   $auditMenu .= "<li><a href=" . $this->url('spi-v6-form', array('action' => 'index')) . ">SPI-RRT</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index") && preg_match("/v3/i", $config['web_version'])) {
+  $emailMenu .= "<li><a href=" . $this->url('email', array('action' => 'index')) . ">SPI-RT</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v5") && preg_match("/v5/i", $config['web_version'])) {
+  $emailMenu .= "<li><a href=" . $this->url('email', array('action' => 'email-v5')) . ">SPI-RRT v5</a></li>";
+}
+
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v6") && preg_match("/v6/i", $config['web_version'])) {
+  $emailMenu .= "<li><a href=" . $this->url('email', array('action' => 'email-v6')) . ">SPI-RRT</a></li>";
 }
 
 ?>
@@ -265,23 +278,23 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6", "index
             </li>
          
           <?php } ?> 
-     
-          <?php
-          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "index") && preg_match("/v3/i", $config['web_version'])) {
-          ?>
-            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'index')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RT'); ?></span></a></li>
-          <?php } ?>
 
-          <?php
-          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v5") && preg_match("/v5/i", $config['web_version'])) {
-          ?>
-            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v5')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT v5'); ?></span></a></li>
+          <?php if (trim($emailMenu) != "") { ?>
+            <?php if($totalVersions == 1){ ?>
+              <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'index')); ?>"><span><?php echo $this->translate('Email SPI-RT'); ?></span></a></li>
+                <?php }elseif(preg_match("/v5/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v5')); ?>"><span><?php echo $this->translate('Email SPI-RRT v5'); ?></span></a></li>
+                <?php }elseif(preg_match("/v6/i", $config['web_version'])){ ?>
+                  <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>"><span><?php echo $this->translate('Email SPI-RRT'); ?></span></a></li>
+                <?php } ?>
+            <?php }else{ ?>
+            <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Email'); ?></span></a>
+              <ul class="sub-menu">
+                <?php echo $emailMenu; ?>
+              </ul>
+            </li>
           <?php } ?>
-
-          <?php
-          if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email-v6") && preg_match("/v6/i", $config['web_version'])) {
-          ?>
-            <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email SPI-RRT'); ?></span></a></li>
           <?php } ?>
 
           <?php
