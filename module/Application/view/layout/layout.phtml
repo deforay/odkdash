@@ -289,7 +289,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email
                   <li class="parent"><a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>"><span><?php echo $this->translate('Email SPI-RRT'); ?></span></a></li>
                 <?php } ?>
             <?php }else{ ?>
-            <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Email'); ?></span></a>
+            <li class="parent"><a href="#"><i class="icon s7-mail"></i><span><?php echo $this->translate('Email'); ?></span></a>
               <ul class="sub-menu">
                 <?php echo $emailMenu; ?>
               </ul>
