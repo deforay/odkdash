@@ -34,6 +34,8 @@ use Application\Model\SpiFormVer3DownloadTable;
 use Application\Model\SpiFormVer5DownloadTable;
 use Application\Model\SpiFormVer6DownloadTable;
 use Application\Model\SpiFormVer3TempTable;
+use Application\Model\TrackTable;
+
 
 use Application\Service\OdkFormService;
 use Application\Service\UserService;
@@ -411,6 +413,12 @@ class Module
                     $table = new SpiFormVer3TempTable($dbAdapter);
                     return $table;
                 },
+                'TrackTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new TrackTable($dbAdapter);
+                    return $table;
+                },
+                
 
                 'OdkFormService' => function ($sm) {
                     return new OdkFormService($sm);

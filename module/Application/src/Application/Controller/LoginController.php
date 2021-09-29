@@ -6,6 +6,7 @@ use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Session\Container;
 
+
 class LoginController extends AbstractActionController
 {
 
@@ -37,6 +38,8 @@ class LoginController extends AbstractActionController
 
     public function logoutAction() {
         $sessionLogin = new Container('credo');
+        $user_name = $sessionLogin->login;
+        $route = $this->userService->logout($user_name);
         $sessionLogin->getManager()->getStorage()->clear();
         return $this->redirect()->toRoute("login");
     }    

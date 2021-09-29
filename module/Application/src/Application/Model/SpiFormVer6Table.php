@@ -10,6 +10,8 @@ use Laminas\Db\Sql\Sql;
 //use Application\Model\SpiRt5FacilitiesTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Session\Container;
+use Application\Model\TrackTable;
+use Application\Service\CommonService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -3060,7 +3062,12 @@ class SpiFormVer6Table extends AbstractTableGateway
     {
         // \Zend\Debug\Debug::dump($params);
         if (trim($params['formId']) != "") {
+            $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
+            $commonservice = new CommonService();
+            $sessionLogin = new Container('credo');
+            $user_name = $sessionLogin->login;
             $dbAdapter = $this->adapter;
+            $trackTable = new TrackTable($dbAdapter);
             $sql = new Sql($dbAdapter);
             $formId = base64_decode($params['formId']);
             $summationData = array();
@@ -3248,6 +3255,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             // \Zend\Debug\Debug::dump($data);die;
 
             $result = $this->update($data, array('id' => $formId));
+            $trackTable->insert(array('event_type' => 'Update-SPI RT Form 6-Request',
+            'action' => $user_name . ' has updated the SPI RT Form 6 information',
+            'resource' => 'SPI-RT-Form-6',
+            'date_time' => $commonservice->getDateTime(),
+            'ip_address' => $ip));
 
             return $formId;
         }
