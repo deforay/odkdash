@@ -10,8 +10,7 @@ use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Session\Container;
-use Application\Model\TrackTable;
-use Application\Service\CommonService;
+use Application\Model\EventLogTable;
 
 
 
@@ -1764,7 +1763,10 @@ class SpiFormVer3Table extends AbstractTableGateway
 
     public function getFormData($id)
     {
+        $logincontainer = new Container('credo');
+        $username = $logincontainer->login;
         $dbAdapter = $this->adapter;
+        $trackTable = new EventLogTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('spiv3.id' => $id));
@@ -1784,6 +1786,11 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $fQueryStr = $sql->buildSqlString($fQuery);
                 $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             }
+            $subject = '';
+            $eventType = 'Print-SPI RT Form 3-PDF';
+            $action = $username . ' has printed the SPI RT Form 3 PDF';
+            $resourceName = 'Print-SPI-RT-Form-3-PDF';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
         }
         return $sResult;
     }
@@ -2507,12 +2514,10 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         //\Zend\Debug\Debug::dump($params);die;
         if (trim($params['formId']) != "") {
-            $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
-            $commonservice = new CommonService();
             $sessionLogin = new Container('credo');
             $user_name = $sessionLogin->login;
             $dbAdapter = $this->adapter;
-            $trackTable = new TrackTable($dbAdapter);
+            $eventTable = new EventLogTable($dbAdapter);
             $sql = new Sql($dbAdapter);
             $formId = base64_decode($params['formId']);
             $summationData = array();
@@ -2660,11 +2665,11 @@ class SpiFormVer3Table extends AbstractTableGateway
                 'correctiveaction' => $summationData,
             );
             $result = $this->update($data, array('id' => $formId));
-            $trackTable->insert(array('event_type' => 'Update-SPI RT Form 3-Request',
-            'action' => $user_name . ' has updated the SPI RT Form 3 information',
-            'resource' => 'SPI-RT-Form-3',
-            'date_time' => $commonservice->getDateTime(),
-            'ip_address' => $ip));
+            $subject = '';
+            $eventType = 'Update-SPI RT Form 3-Request';
+            $action = $user_name . ' has updated the SPI RT Form 3 information';
+            $resourceName = 'SPI-RT-Form-3';
+            $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
 
             return $formId;
         }

@@ -7,6 +7,8 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
+use Application\Model\EventLogTable;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -31,7 +33,10 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
 
     public function addDownloadDataDetails($params)
     {
-        $logincontainer = new Container('credo');
+            $logincontainer = new Container('credo');
+            $username = $logincontainer->login;
+            $dbAdapter = $this->adapter;
+        $trackTable = new EventLogTable($dbAdapter);
         $province = null;
         if (isset($params['province']) && is_array($params['province']) && count($params['province']) > 0) {
             $province = implode(',', $params['province']);
@@ -48,6 +53,11 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             'AUDIT_SCORE_PERCANTAGE' => (isset($params['scoreLevel']) && trim($params['scoreLevel']) != '') ? $params['scoreLevel'] : null
         );
         $this->insert($downloadData);
+            $subject = '';
+            $eventType = 'Export-SPI RT Form 3-PDF';
+            $action = $username . ' has exported the SPI RT Form 3 PDF';
+            $resourceName = 'SPI-RT-Form-3-PDF';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
         return $this->lastInsertValue;
     }
 

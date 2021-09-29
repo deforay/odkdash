@@ -10,7 +10,7 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
-use Application\Model\TrackTable;
+use Application\Model\EventLogTable;
 
 
 /*
@@ -34,8 +34,6 @@ class UsersTable extends AbstractTableGateway {
     
     
     public function login($params) {
-        $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
-        $commonservice = new CommonService();
         $container = new Container('alert');
         $logincontainer = new Container('credo');
         $username = $params['username'];
@@ -44,7 +42,7 @@ class UsersTable extends AbstractTableGateway {
         $password = sha1($params['password'] . $configResult["password"]["salt"]);   
         
         $dbAdapter = $this->adapter;
-        $trackTable = new TrackTable($dbAdapter);
+        $trackTable = new EventLogTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
                                 ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
@@ -67,11 +65,11 @@ class UsersTable extends AbstractTableGateway {
             $logincontainer->login = $sResult->login;
             $logincontainer->roleCode = $sResult->role_code;
             $logincontainer->token = $token;
-            $trackTable->insert(array('event_type' => 'login',
-            'action' => $username . ' logged in',
-            'resource' => 'user',
-            'date_time' => $commonservice->getDateTime(),
-            'ip_address' => $ip));
+            $subject = '';
+            $eventType = 'login in';
+            $action = $username . ' logged in';
+            $resourceName = 'login in';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             return 'dashboard';
         } else {
             $container->alertMsg = 'Please check your login credentials';
@@ -315,16 +313,14 @@ class UsersTable extends AbstractTableGateway {
         return $queryResult;
     }
 
-    function logout($user_name)
+    function logout($username)
     {
-        $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
-        $commonservice = new CommonService();
         $dbAdapter = $this->adapter;
-        $trackTable = new TrackTable($dbAdapter);
-        $trackTable->insert(array('event_type' => 'log-out',
-        'action' => $user_name . ' logged out',
-        'resource' => 'user',
-            'date_time' => $commonservice->getDateTime(),
-            'ip_address' => $ip));
+        $trackTable = new EventLogTable($dbAdapter);
+        $subject = '';
+            $eventType = 'log-out';
+            $action = $username . ' logged out';
+            $resourceName = 'log-out';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
     }
 }

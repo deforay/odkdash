@@ -2021,14 +2021,3 @@ VALUES
 ('Application\\Controller\\SpiV6', 'view-data-section-zero-v6', 'View Section S0 Data');
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');
-
--- Sakthivel 29-Sep-2021
-  CREATE TABLE `track` (
-  `log_id` int NOT NULL AUTO_INCREMENT,
-  `event_type` TEXT DEFAULT NULL,
-  `action` mediumtext,
-  `resource` TEXT DEFAULT NULL,
-  `date_time` datetime DEFAULT NULL,
-  `ip_address` TEXT DEFAULT NULL,
-  PRIMARY KEY (`log_id`)
-  );
