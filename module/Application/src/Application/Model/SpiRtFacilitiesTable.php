@@ -44,8 +44,6 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         if($result!=""){
             if($formVersion == 3){
                 $fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$result['facilityname']));
-            }elseif($formVersion == 5){
-                $fQuery = $sql->select()->from('spi_rt_5_facilities')->where(array('facility_name'=>$result['facilityname']));
             }
 			$fQueryStr = $sql->buildSqlString($fQuery);
 			$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();

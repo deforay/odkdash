@@ -794,7 +794,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -857,7 +857,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment", "RTRI"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit", "RTRT Surveillance"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -898,16 +898,16 @@ class OdkFormService
         return $fileName;
     }
 
-    public function getFormData($id)
+    public function getFormData($id,$pdf='no')
     {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getFormData($id);
+        return $db->getFormData($id,$pdf);
     }
 
-    public function getSpiV5FormData($id)
+    public function getSpiV5FormData($id,$pdf='no')
     {
         $db = $this->sm->get('SpiFormVer5Table');
-        return $db->getFormData($id);
+        return $db->getFormData($id,$pdf);
     }
 
     public function getSpiV3FormLabels()
@@ -3907,7 +3907,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -4087,10 +4087,10 @@ class OdkFormService
         }
     }
 
-    public function getSpiV6FormData($id)
+    public function getSpiV6FormData($id,$pdf='no')
     {
         $db = $this->sm->get('SpiFormVer6Table');
-        return $db->getFormData($id);
+        return $db->getFormData($id,$pdf);
     }
 
     public function exportSAndDV6Submissions($params)
@@ -4932,7 +4932,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment", "RTRI"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit", "RTRT Surveillance"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */
@@ -5264,7 +5264,7 @@ class OdkFormService
             }
         }
         /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment"), "Label");
+        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
         $MyData->setAbscissa("Label");
 
         /* Create the pChart object */

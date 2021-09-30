@@ -95,7 +95,7 @@ class SpiV5Controller extends AbstractActionController
             return $viewModel;
         } else {
             $id = ($this->params()->fromRoute('id'));
-            $formData = $this->odkFormService->getSpiV5FormData($id);
+            $formData = $this->odkFormService->getSpiV5FormData($id,'yes');
             //echo "<pre>";
             //print_r($formData);die;
             $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
@@ -107,7 +107,7 @@ class SpiV5Controller extends AbstractActionController
     public function correctiveActionPdfAction()
     {
         $id = ($this->params()->fromRoute('id'));
-        $formData = $this->odkFormService->getFormData($id);
+        $formData = $this->odkFormService->getFormData($id,'yes');
         $configData = $this->commonService->getGlobalConfigDetails();
         $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
         $viewModel->setTerminal(true);

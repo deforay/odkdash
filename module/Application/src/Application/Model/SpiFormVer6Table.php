@@ -1914,7 +1914,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
-    public function getFormData($id)
+    public function getFormData($id,$pdfDowload = 'no')
     {
             $logincontainer = new Container('credo');
             $username = $logincontainer->login;
@@ -1940,11 +1940,13 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $fQueryStr = $sql->buildSqlString($fQuery);
                 $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             }
+            if($pdfDowload == 'yes'){
             $subject = '';
             $eventType = 'Print-SPI RT Form 6-PDF';
             $action = $username . ' has printed the SPI RT Form 6 PDF';
             $resourceName = 'Print-SPI-RT-Form-6-PDF';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+            }
         }
         return $sResult;
     }

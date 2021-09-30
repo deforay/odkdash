@@ -1761,7 +1761,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         return $rResult;
     }
 
-    public function getFormData($id)
+    public function getFormData($id,$pdfDowload = 'no')
     {
         $logincontainer = new Container('credo');
         $username = $logincontainer->login;
@@ -1786,11 +1786,13 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $fQueryStr = $sql->buildSqlString($fQuery);
                 $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             }
+            if($pdfDowload == 'yes'){
             $subject = '';
             $eventType = 'Print-SPI RT Form 3-PDF';
             $action = $username . ' has printed the SPI RT Form 3 PDF';
             $resourceName = 'Print-SPI-RT-Form-3-PDF';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+            }
         }
         return $sResult;
     }
@@ -2715,7 +2717,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         $result = 0;
         $result1 = 0;
         $result2 = 0;
+        $logincontainer = new Container('credo');
+        $userName = $logincontainer->login;
         $dbAdapter = $this->adapter;
+        $auditTable = new EventLogTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $facilityDb = new \Application\Model\SpiRtFacilitiesTable($this->adapter);
         $spiFormV5Db = new \Application\Model\SpiFormVer5Table($this->adapter);
@@ -2801,6 +2806,11 @@ class SpiFormVer3Table extends AbstractTableGateway
             }
         }
         $result = (int) $result1 || (int) $result2;
+        $subject = '';
+            $eventType = 'Merge-Facility-Name-SPI RT Form 3';
+            $action = $userName . ' has merged the facility name for SPI RT Form 3';
+            $resourceName = 'Merge-Facility-Name-SPI RT Form 3';
+            $auditTable->addEventLog($subject, $eventType, $action, $resourceName);
         return $result;
     }
 
