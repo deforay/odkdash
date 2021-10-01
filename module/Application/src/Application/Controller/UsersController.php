@@ -69,4 +69,21 @@ class UsersController extends AbstractActionController
             ));
         }
     }
+
+    public function profileAction()
+    {
+        $request = $this->getRequest();
+        
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $this->userService->updateUserProfile($params);
+            return $this->redirect()->toRoute("dashboard");
+        } else {
+        $id = base64_decode($this->params()->fromRoute('id'));
+        $result = $this->userService->getUser($id);
+        return new ViewModel(array(
+                'result' => $result
+            ));
+        }
+    }
 }

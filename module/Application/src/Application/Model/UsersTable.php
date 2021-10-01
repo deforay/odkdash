@@ -11,6 +11,8 @@ use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\EventLogTable;
+use \Application\Service\ImageResizeService;
+
 
 
 /*
@@ -95,6 +97,7 @@ class UsersTable extends AbstractTableGateway {
                 'password' => $password,
                 'email' => $params['email'],
                 'status' => $params['status'],
+                'contact_no' => $params['mobile_no'],
                 'created_on'=>$common->getDateTime()
             );
             $this->insert($data);
@@ -107,6 +110,22 @@ class UsersTable extends AbstractTableGateway {
                     for($t=0;$t<count($splitToken); $t++){
                         $userTokenMap->insert(array('user_id'=>$lastInsertId,'token'=>trim($splitToken[$t])));
                     }
+                }
+            }
+            if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
+                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users");
+                }
+                $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['user_image']['name'], PATHINFO_EXTENSION));
+                $imageName = time() . '_' . $lastInsertId . "." . $extension;
+                if (move_uploaded_file($_FILES["user_image"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName)) {
+                    
+                    $resizeObj = new ImageResizeService(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName);
+                    $resizeObj->resizeImage(320, 214, 'auto');
+                    $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName, 100);
+                    $imageUpName = '/uploads' . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName;
+                    $imageData = array('user_image' => $imageUpName);
+                    $this->update($imageData, array("id" => $lastInsertId));
                 }
             }
             return $lastInsertId;
@@ -133,6 +152,7 @@ class UsersTable extends AbstractTableGateway {
                 'last_name' => $params['lastName'],
                 'login' => $params['userName'],
                 'email' => $params['email'],
+                'contact_no' => $params['mobile_no'],
                 'status' => $params['status']
             );
             $this->update($data,array('id'=>$userId));
@@ -145,6 +165,29 @@ class UsersTable extends AbstractTableGateway {
                     for($t=0;$t<count($splitToken); $t++){
                         $userTokenMap->insert(array('user_id'=>$userId,'token'=>trim($splitToken[$t])));
                     }
+                }
+            }
+            if (isset($params['existImage']) && $params['existImage'] == '') {
+                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                    unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
+                    $imageData = array('user_image' => '');
+                    $result = $this->update($imageData, array("id" => $userId));
+                }
+            }
+            if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
+                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users");
+                }
+                $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['user_image']['name'], PATHINFO_EXTENSION));
+                $imageName = time() . '_' . $userId . "." . $extension;
+                if (move_uploaded_file($_FILES["user_image"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName)) {
+                    
+                    $resizeObj = new ImageResizeService(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName);
+                    $resizeObj->resizeImage(320, 214, 'auto');
+                    $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName, 100);
+                    $imageUpName = '/uploads' . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName;
+                    $imageData = array('user_image' => $imageUpName);
+                    $this->update($imageData, array("id" => $userId));
                 }
             }
             return $userId;
@@ -322,5 +365,45 @@ class UsersTable extends AbstractTableGateway {
             $action = $username . ' logged out';
             $resourceName = 'log-out';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+    }
+
+    public function updateUserProfileDetails($params){
+        $common=new CommonService();
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $userId=base64_decode($params['userId']);
+        if (!empty($userId)) {
+            $data = array(
+                'first_name' => $params['firstName'],
+                'last_name' => $params['lastName'],
+                'email' => $params['email'],
+                'contact_no' => $params['mobile_no']
+            );
+            $this->update($data,array('id'=>$userId));
+            if (isset($params['existImage']) && $params['existImage'] == '') {
+                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                    unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
+                    $imageData = array('user_image' => '');
+                    $result = $this->update($imageData, array("id" => $userId));
+                }
+            }
+            if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
+                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users");
+                }
+                $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['user_image']['name'], PATHINFO_EXTENSION));
+                $imageName = time() . '_' . $userId . "." . $extension;
+                if (move_uploaded_file($_FILES["user_image"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName)) {
+                    
+                    $resizeObj = new ImageResizeService(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName);
+                    $resizeObj->resizeImage(320, 214, 'auto');
+                    $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName, 100);
+                    $imageUpName = '/uploads' . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName;
+                    $imageData = array('user_image' => $imageUpName);
+                    $this->update($imageData, array("id" => $userId));
+                }
+            }
+            return $userId;
+        }
     }
 }

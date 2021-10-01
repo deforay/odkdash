@@ -2026,3 +2026,10 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 
 DROP table `track`;
 DROP table `spi_rt_5_facilities`;
+
+--Sakthivel 1-Oct-2021
+
+ ALTER TABLE `users` ADD `contact_no` varchar(255) DEFAULT NULL AFTER `email`;
+ ALTER TABLE `users` ADD `user_image` varchar(255) DEFAULT NULL AFTER `contact_no`;
+
+ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\Users', 'profile', 'Edit Profile');

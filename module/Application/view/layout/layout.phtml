@@ -188,7 +188,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email
                   <?php
                   if (isset($sessionLogin->userId)) {
                   ?>
-                    <li><a href="<?php echo $this->url('login', array('action' => 'logout')); ?>"> <span class="icon s7-power"></span><?= $this->translate('Sign Out'); ?></a></li>
+                    <li>
+                      <a href="<?php echo $this->url('users', array('action' => 'profile','id'=> base64_encode($sessionLogin->userId))); ?>"><i class="glyphicon glyphicon-user" style="color:#33333357;"></i>&nbsp;&nbsp;&nbsp;<?= $this->translate('Edit Profile'); ?></a>
+                      <a href="<?php echo $this->url('login', array('action' => 'logout')); ?>"><i class="glyphicon glyphicon-user" style="color:#33333357;"></i>&nbsp;&nbsp;&nbsp;<?= $this->translate('Change Password'); ?></a>
+                      <a href="<?php echo $this->url('login', array('action' => 'logout')); ?>"> <span class="icon s7-power"></span><?= $this->translate('Sign Out'); ?></a></li>
                   <?php } else {
                   ?>
                     <li><a href="<?php echo $this->url('login', array('action' => 'index')); ?>"> <?= $this->translate('Login'); ?></a></li>
