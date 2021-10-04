@@ -36,6 +36,7 @@ class UsersTable extends AbstractTableGateway {
     
     
     public function login($params) {
+        $common=new CommonService();
         $container = new Container('alert');
         $logincontainer = new Container('credo');
         $username = $params['username'];
@@ -52,6 +53,10 @@ class UsersTable extends AbstractTableGateway {
                                 ->where(array('login' => $username, 'password' => $password,'u.status' =>'active'));
         $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $data = array(
+            'last_login_datetime'=>$common->getDateTime()
+        );
+        $this->update($data,array('id'=>$sResult->id));
         if ($sResult) {
             $token = array();
             $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
@@ -67,6 +72,7 @@ class UsersTable extends AbstractTableGateway {
             $logincontainer->login = $sResult->login;
             $logincontainer->roleCode = $sResult->role_code;
             $logincontainer->token = $token;
+            $logincontainer->userImage = $sResult->user_image;
             $subject = '';
             $eventType = 'login in';
             $action = $username . ' logged in';

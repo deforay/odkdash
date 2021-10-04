@@ -2035,4 +2035,6 @@ DROP table `spi_rt_5_facilities`;
  INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\Users', 'profile', 'Edit Profile');
 
 --Sakthivel 04-10-2021
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\Users', 'change-password', 'Change Password');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Users', 'change-password', 'Change Password');
+
+ALTER TABLE  `users` ADD  `last_login_datetime` DATETIME NULL DEFAULT NULL;
