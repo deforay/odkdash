@@ -182,8 +182,14 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email
           <ul class="nav navbar-nav navbar-right am-user-nav">
             <?php if (isset($sessionLogin->userId)) { ?>
               <li class="dropdown">
+              <?php if (!empty($sessionLogin->userImage)) { ?>
+                <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><img src="<?php echo $this->basePath($sessionLogin->userImage) ?>">
+                <?php } else {
+                  ?>
                 <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle"><img src="/assets/img/nobody.jpg">
-                  <span class="user-name">John Doe</span><span class="angle-down s7-angle-down"></span></a>
+                <?php
+                  } ?>  
+                <span class="user-name">John Doe</span><span class="angle-down s7-angle-down"></span></a>
                 <ul role="menu" class="dropdown-menu">
                   <?php
                   if (isset($sessionLogin->userId)) {
