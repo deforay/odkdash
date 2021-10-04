@@ -406,4 +406,17 @@ class UsersTable extends AbstractTableGateway {
             return $userId;
         }
     }
+
+    public function updatePassword($params){
+        $logincontainer = new Container('credo');
+        $common=new CommonService();
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $userId=$logincontainer->userId;
+            $config = new \Laminas\Config\Reader\Ini();
+            $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+            $password = sha1($params['newpassword'] . $configResult["password"]["salt"]);
+            $data = array('password' => $password);
+            return $this->update($data,array('id'=>$userId));
+    }
 }

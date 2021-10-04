@@ -111,4 +111,29 @@ class UserService {
             error_log($exc->getTraceAsString());
         }
     }
+
+    public function updatePassword($params) {
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $userDb = $this->sm->get('UsersTable');
+            $result = $userDb->updatePassword($params);
+            if ($result > 0) {
+                $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'user-password-update';
+                $action = 'updates a user password'.$params['userName'];
+                $resourceName = 'users';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                //-------->
+                $container = new Container('alert');
+                $container->alertMsg = 'Password changed successfully';
+            }
+        } catch (Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
 }

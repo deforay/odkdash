@@ -86,4 +86,21 @@ class UsersController extends AbstractActionController
             ));
         }
     }
+
+    public function changePasswordAction()
+    {
+        $request = $this->getRequest();
+        
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $this->userService->updatePassword($params);
+            return $this->redirect()->toRoute("dashboard");
+        } else {
+            $id = base64_decode($this->params()->fromRoute('id'));
+            $result = $this->userService->getUser($id);
+            return new ViewModel(array(
+                'result' => $result
+            ));
+        }
+    }
 }
