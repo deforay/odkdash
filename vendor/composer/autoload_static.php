@@ -160,6 +160,7 @@ class ComposerStaticInit055a2267c0886c6d6de4e53131465eb2
             'Laminas\\View\\' => 13,
             'Laminas\\Validator\\' => 18,
             'Laminas\\Uri\\' => 12,
+            'Laminas\\Text\\' => 13,
             'Laminas\\Test\\' => 13,
             'Laminas\\Stratigility\\' => 21,
             'Laminas\\Stdlib\\' => 15,
@@ -176,6 +177,7 @@ class ComposerStaticInit055a2267c0886c6d6de4e53131465eb2
             'Laminas\\Mvc\\Plugin\\FilePrg\\' => 27,
             'Laminas\\Mvc\\Middleware\\' => 23,
             'Laminas\\Mvc\\I18n\\' => 17,
+            'Laminas\\Mvc\\Console\\' => 20,
             'Laminas\\Mvc\\' => 12,
             'Laminas\\ModuleManager\\' => 22,
             'Laminas\\Log\\' => 12,
@@ -374,6 +376,10 @@ class ComposerStaticInit055a2267c0886c6d6de4e53131465eb2
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-uri/src',
         ),
+        'Laminas\\Text\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-text/src',
+        ),
         'Laminas\\Test\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-test/src',
@@ -437,6 +443,10 @@ class ComposerStaticInit055a2267c0886c6d6de4e53131465eb2
         'Laminas\\Mvc\\I18n\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-mvc-i18n/src',
+        ),
+        'Laminas\\Mvc\\Console\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-mvc-console/src',
         ),
         'Laminas\\Mvc\\' => 
         array (

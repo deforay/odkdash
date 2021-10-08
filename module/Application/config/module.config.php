@@ -384,7 +384,7 @@ return array(
                     ),
                 ),
                 'sync-odk-spirt-v6' => array(
-                    'type'    => 'simple',
+                    //'type'    => 'simple',
                     'options' => array(
                         'route'    => 'sync-odk-spirt-v6',
                         'defaults' => array(
