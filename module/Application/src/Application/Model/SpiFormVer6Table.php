@@ -416,6 +416,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
     public function saveOdkCentralData($params, $formDetails, $correctiveActions)
     {
+        // print_r($formDetails);die;
         if ($params == null || $params == "" || (is_array($params) && count($params['value']) == 0)) {
             exit;
         }
@@ -444,6 +445,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data = array();
             foreach ($submission as $key => $submissionData) {
                 $data['token'] = $formDetails["enketoId"];
+                $data['uuid'] = $submissionData["__id"];
                 $data['content'] = 'record';
                 $data['formId'] = $formDetails["xmlFormId"];
                 $data['formVersion'] = $formDetails['version'];
@@ -766,6 +768,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
                     $par = array(
                         'token' => $data['token'],
+                        'uuid' => $data['uuid'],
                         'content' => $data['content'],
                         'formId' => $data['formId'],
                         'formVersion' => $data['formVersion'],
@@ -1075,17 +1078,24 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'status' => $approveStatus,
                     );
                     $dbAdapter = $this->adapter;
+            $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                                ->where(array('spiv6.uuid' => $data["uuid"]));
+        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        if($data["uuid"] != $sResult["uuid"]){
                     $insert->values($par);
                     $selectString = $sql->buildSqlString($insert);
-                    //error_log($selectString);
                     $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
-
+        }
+        else {
+            $this->update($par, array('uuid' => $data["uuid"]));
+        }
                     if ($approveStatus == 'approved') {
                         //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
                         $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                         $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 5);
                     }
-
+                // }
                 } catch (Exception $e) {
                     error_log($e->getMessage());
                     error_log($e->getTraceAsString());

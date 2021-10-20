@@ -1646,16 +1646,16 @@
         },
         {
             "name": "laminas/laminas-component-installer",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-component-installer.git",
-                "reference": "223d81cf648ff9380bd13cfe07a31324b0ffc8b8"
+                "reference": "6f1e11473861e4e2208178b1dfa395a992039674"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-component-installer/zipball/223d81cf648ff9380bd13cfe07a31324b0ffc8b8",
-                "reference": "223d81cf648ff9380bd13cfe07a31324b0ffc8b8",
+                "url": "https://api.github.com/repos/laminas/laminas-component-installer/zipball/6f1e11473861e4e2208178b1dfa395a992039674",
+                "reference": "6f1e11473861e4e2208178b1dfa395a992039674",
                 "shasum": ""
             },
             "require": {
@@ -1711,26 +1711,26 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-05-10T19:40:40+00:00"
+            "time": "2021-09-30T12:20:49+00:00"
         },
         {
             "name": "laminas/laminas-config",
-            "version": "3.6.0",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-config.git",
-                "reference": "2f2273a6bdf966a9adf6042f8950b6c33199a3b7"
+                "reference": "e43d13dcfc273d4392812eb395ce636f73f34dfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-config/zipball/2f2273a6bdf966a9adf6042f8950b6c33199a3b7",
-                "reference": "2f2273a6bdf966a9adf6042f8950b6c33199a3b7",
+                "url": "https://api.github.com/repos/laminas/laminas-config/zipball/e43d13dcfc273d4392812eb395ce636f73f34dfd",
+                "reference": "e43d13dcfc273d4392812eb395ce636f73f34dfd",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "laminas/laminas-stdlib": "^2.7.7 || ^3.1",
-                "php": "^7.3 || ~8.0.0",
+                "laminas/laminas-stdlib": "^3.6",
+                "php": "^7.3 || ~8.0.0 || ~8.1.0",
                 "psr/container": "^1.0"
             },
             "conflict": {
@@ -1741,9 +1741,8 @@
                 "laminas/laminas-coding-standard": "~1.0.0",
                 "laminas/laminas-filter": "^2.7.2",
                 "laminas/laminas-i18n": "^2.10.3",
-                "laminas/laminas-servicemanager": "^3.4.1",
-                "malukenho/docheader": "^0.1.6",
-                "phpunit/phpunit": "^8.5.8"
+                "laminas/laminas-servicemanager": "^3.7",
+                "phpunit/phpunit": "^9.5.5"
             },
             "suggest": {
                 "laminas/laminas-filter": "^2.7.2; install if you want to use the Filter processor",
@@ -1780,7 +1779,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-09-08T09:58:39+00:00"
+            "time": "2021-10-01T16:07:46+00:00"
         },
         {
             "name": "laminas/laminas-console",
@@ -1921,28 +1920,28 @@
         },
         {
             "name": "laminas/laminas-development-mode",
-            "version": "3.3.0",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-development-mode.git",
-                "reference": "11b2adc8837e4419a5b31e2a7ae59f06636d4096"
+                "reference": "7218e3ca62cf87d4206817d37de86f8bd4c9d56a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-development-mode/zipball/11b2adc8837e4419a5b31e2a7ae59f06636d4096",
-                "reference": "11b2adc8837e4419a5b31e2a7ae59f06636d4096",
+                "url": "https://api.github.com/repos/laminas/laminas-development-mode/zipball/7218e3ca62cf87d4206817d37de86f8bd4c9d56a",
+                "reference": "7218e3ca62cf87d4206817d37de86f8bd4c9d56a",
                 "shasum": ""
             },
             "require": {
                 "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^7.3 || ~8.0.0"
+                "php": "^7.3 || ~8.0.0 || ~8.1.0"
             },
             "replace": {
                 "zfcampus/zf-development-mode": "^3.2.0"
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "~1.0.0",
-                "mikey179/vfsstream": "^1.6.5",
+                "mikey179/vfsstream": "^1.6.10",
                 "phpunit/phpunit": "^9.3"
             },
             "bin": [
@@ -1977,7 +1976,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2020-12-16T22:26:52+00:00"
+            "time": "2021-10-05T09:59:45+00:00"
         },
         {
             "name": "laminas/laminas-di",
@@ -3207,27 +3206,22 @@
         },
         {
             "name": "laminas/laminas-mvc-form",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-mvc-form.git",
-                "reference": "c027f5becb817736096d0967c5e42cd7f746d5e4"
+                "reference": "9e03ded7e7605a5b1e34a2f187b14d7fd4f1e44f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-mvc-form/zipball/c027f5becb817736096d0967c5e42cd7f746d5e4",
-                "reference": "c027f5becb817736096d0967c5e42cd7f746d5e4",
+                "url": "https://api.github.com/repos/laminas/laminas-mvc-form/zipball/9e03ded7e7605a5b1e34a2f187b14d7fd4f1e44f",
+                "reference": "9e03ded7e7605a5b1e34a2f187b14d7fd4f1e44f",
                 "shasum": ""
             },
             "require": {
-                "laminas/laminas-code": "^3.5.0",
-                "laminas/laminas-form": "^2.16.3",
-                "laminas/laminas-i18n": "^2.11.1",
-                "laminas/laminas-zendframework-bridge": "^1.2.0",
-                "php": "^7.3 || ~8.0.0"
-            },
-            "conflict": {
-                "laminas/laminas-code": "<3.5.0 || >=4.0.0"
+                "laminas/laminas-code": "^3.5.1",
+                "laminas/laminas-form": "^2.17.0",
+                "laminas/laminas-i18n": "^2.11.1"
             },
             "replace": {
                 "zendframework/zend-mvc-form": "^1.0.0"
@@ -3262,7 +3256,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-04-29T08:33:42+00:00"
+            "time": "2021-10-08T09:59:01+00:00"
         },
         {
             "name": "laminas/laminas-mvc-i18n",
@@ -6733,25 +6727,27 @@
         },
         {
             "name": "szymach/c-pchart",
-            "version": "v3.0.9",
+            "version": "v3.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/szymach/c-pchart.git",
-                "reference": "c71e1d8f08037148e684dd7b7bf22a3d2eeefe06"
+                "reference": "daf0912e0bd9069508a87a4419e4735a34e09698"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/szymach/c-pchart/zipball/c71e1d8f08037148e684dd7b7bf22a3d2eeefe06",
-                "reference": "c71e1d8f08037148e684dd7b7bf22a3d2eeefe06",
+                "url": "https://api.github.com/repos/szymach/c-pchart/zipball/daf0912e0bd9069508a87a4419e4735a34e09698",
+                "reference": "daf0912e0bd9069508a87a4419e4735a34e09698",
                 "shasum": ""
             },
             "require": {
                 "ext-gd": "*",
-                "php": ">=5.4"
+                "php": "^5.4|^7.0|^8.0"
             },
             "require-dev": {
-                "codeception/codeception": "^2.4",
-                "phpunit/phpunit": "^4.8|^7.1",
+                "codeception/codeception": "^4.1.22",
+                "codeception/module-asserts": "^1.3",
+                "codeception/module-filesystem": "^1.0",
+                "phpunit/phpunit": "^5.7|^9.5",
                 "squizlabs/php_codesniffer": "^3.4"
             },
             "type": "library",
@@ -6796,9 +6792,9 @@
             ],
             "support": {
                 "issues": "https://github.com/szymach/c-pchart/issues",
-                "source": "https://github.com/szymach/c-pchart/tree/v3.0.9"
+                "source": "https://github.com/szymach/c-pchart/tree/v3.0.10"
             },
-            "time": "2020-09-17T17:48:29+00:00"
+            "time": "2021-09-25T16:34:55+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -7485,16 +7481,16 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "30f38bffc6f24293dadd1823936372dfa9e86e2f"
+                "reference": "a12f7e301eb7258bb68acd89d4aefa05c2906cae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/30f38bffc6f24293dadd1823936372dfa9e86e2f",
-                "reference": "30f38bffc6f24293dadd1823936372dfa9e86e2f",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/a12f7e301eb7258bb68acd89d4aefa05c2906cae",
+                "reference": "a12f7e301eb7258bb68acd89d4aefa05c2906cae",
                 "shasum": ""
             },
             "require": {
@@ -7529,9 +7525,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.5.0"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.5.1"
             },
-            "time": "2021-09-17T15:28:14+00:00"
+            "time": "2021-10-02T14:08:47+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -7920,16 +7916,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.9",
+            "version": "9.5.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ea8c2dfb1065eb35a79b3681eee6e6fb0a6f273b"
+                "reference": "c814a05837f2edb0d1471d6e3f4ab3501ca3899a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ea8c2dfb1065eb35a79b3681eee6e6fb0a6f273b",
-                "reference": "ea8c2dfb1065eb35a79b3681eee6e6fb0a6f273b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c814a05837f2edb0d1471d6e3f4ab3501ca3899a",
+                "reference": "c814a05837f2edb0d1471d6e3f4ab3501ca3899a",
                 "shasum": ""
             },
             "require": {
@@ -7945,7 +7941,7 @@
                 "phar-io/version": "^3.0.2",
                 "php": ">=7.3",
                 "phpspec/prophecy": "^1.12.1",
-                "phpunit/php-code-coverage": "^9.2.3",
+                "phpunit/php-code-coverage": "^9.2.7",
                 "phpunit/php-file-iterator": "^3.0.5",
                 "phpunit/php-invoker": "^3.1.1",
                 "phpunit/php-text-template": "^2.0.3",
@@ -8007,7 +8003,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.9"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.10"
             },
             "funding": [
                 {
@@ -8019,7 +8015,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-08-31T06:47:40+00:00"
+            "time": "2021-09-25T07:38:51+00:00"
         },
         {
             "name": "sebastian/cli-parser",

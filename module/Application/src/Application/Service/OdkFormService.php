@@ -5664,14 +5664,19 @@ class OdkFormService
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $spirtURL = $configResult['odkcentral']['spirt']['url'];
+        $spirtURL = $configResult['odkcentral']['spirrt']['url'];
         $email = $configResult['odkcentral']['spirt']['email'];
         $password = $configResult['odkcentral']['spirt']['password'];
         $spiV3db = $this->sm->get('SpiFormVer3Table');
         $lastDateQuery = $spiV3db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-        //echo $lastFormDate;die;
+        if($lastFormDate != ''){
+            $url = "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+            }else{
+            $url = "$spirrtURL.svc/Submissions";
+            }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://odk-central.labsinformatics.com/v1/sessions");
+        curl_setopt($ch, CURLOPT_URL, $spirtURL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -5686,7 +5691,7 @@ class OdkFormService
         curl_close($ch);
         $ch = curl_init();
         $token = base64_encode($email . ':' . $password);
-        curl_setopt($ch, CURLOPT_URL, "$spirtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate");
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
 
@@ -5744,14 +5749,19 @@ class OdkFormService
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
+        $spirtURL = $configResult['odkcentral']['spirrt']['url'];
         $email = $configResult['odkcentral']['spirrt']['email'];
         $password = $configResult['odkcentral']['spirrt']['password'];
         $spiV6db = $this->sm->get('SpiFormVer6Table');
         $lastDateQuery = $spiV6db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-        //echo $lastFormDate;die;
+        if($lastFormDate != ''){
+            $url = "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+            }else{
+            $url = "$spirrtURL.svc/Submissions";
+            }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://odk-central.labsinformatics.com/v1/sessions");
+        curl_setopt($ch, CURLOPT_URL, $spirtURL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -5766,7 +5776,7 @@ class OdkFormService
         curl_close($ch);
         $ch = curl_init();
         $token = base64_encode($email . ':' . $password);
-        curl_setopt($ch, CURLOPT_URL, "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate");
+        curl_setopt($ch, CURLOPT_URL, $url);    
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
 
@@ -5775,6 +5785,8 @@ class OdkFormService
         ));
         $instanceIdList = curl_exec($ch);
         curl_close($ch);
+        // print_r($lastFormDate == '');die;
+
         $responseSubmission = $this->formatResponse($instanceIdList);
         $instanceLists = array();
         $correctiveActions = array();

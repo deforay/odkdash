@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/reflection-docblock/src', $vendorDir . '/phpdocumentor/type-resolver/src'),
+    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'Webimpress\\SafeWriter\\' => array($vendorDir . '/webimpress/safe-writer/src'),
@@ -24,7 +24,7 @@ return array(
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Server\\' => array($vendorDir . '/psr/http-server-handler/src', $vendorDir . '/psr/http-server-middleware/src'),
-    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src', $vendorDir . '/psr/http-factory/src'),
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'Psr\\EventDispatcher\\' => array($vendorDir . '/psr/event-dispatcher/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
@@ -80,7 +80,7 @@ return array(
     'Laminas\\ComponentInstaller\\' => array($vendorDir . '/laminas/laminas-component-installer/src'),
     'Laminas\\Code\\' => array($vendorDir . '/laminas/laminas-code/src'),
     'Laminas\\Cli\\' => array($vendorDir . '/laminas/laminas-cli/src'),
-    'Laminas\\Cache\\Storage\\Adapter\\' => array($vendorDir . '/laminas/laminas-cache-storage-adapter-apc/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-apcu/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-blackhole/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-dba/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-ext-mongodb/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-filesystem/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-memcache/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-memcached/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-memory/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-mongodb/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-redis/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-session/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-wincache/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-xcache/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-zend-server/src'),
+    'Laminas\\Cache\\Storage\\Adapter\\' => array($vendorDir . '/laminas/laminas-cache-storage-adapter-zend-server/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-xcache/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-wincache/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-session/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-redis/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-mongodb/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-memory/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-memcached/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-memcache/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-filesystem/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-ext-mongodb/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-dba/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-blackhole/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-apcu/src', $vendorDir . '/laminas/laminas-cache-storage-adapter-apc/src'),
     'Laminas\\Cache\\' => array($vendorDir . '/laminas/laminas-cache/src'),
     'Laminas\\Authentication\\' => array($vendorDir . '/laminas/laminas-authentication/src'),
     'JsonMachine\\' => array($vendorDir . '/halaxa/json-machine/src'),
