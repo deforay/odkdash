@@ -27,8 +27,8 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService = $this->getServiceLocator()->get('FacilityService');
-            $tempId = $facilityService->addEmail($params);
+            // $facilityService = $this->getServiceLocator()->get('FacilityService');
+            $tempId = $this->facilityService->addEmail($params);
             if ($tempId > 0) {
                 $ids = '';
                 if (isset($params['audits']) && count($params['audits']) > 0) {
@@ -52,10 +52,10 @@ class EmailController extends AbstractActionController
             $pdfIds = $ids;
             $ids = '';
         }
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $facilityService = $this->getServiceLocator()->get('FacilityService');
-        $result = $odkFormService->getAllFacilityNames();
-        $facilityResult = $facilityService->getFacilityProfileByAudit($ids);
+        // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        // $facilityService = $this->getServiceLocator()->get('FacilityService');
+        $result = $this->odkFormService->getAllFacilityNames();
+        $facilityResult = $this->facilityService->getFacilityProfileByAudit($ids);
         
         return new ViewModel(array(
             'facilityName' => $result,
@@ -69,8 +69,8 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService = $this->getServiceLocator()->get('FacilityService');
-            $tempId = $facilityService->addEmailV5($params);
+            // $facilityService = $this->getServiceLocator()->get('FacilityService');
+            $tempId = $this->facilityService->addEmailV5($params);
             if ($tempId > 0) {
                 $ids = '';
                 if (isset($params['audits']) && count($params['audits']) > 0) {
@@ -94,11 +94,11 @@ class EmailController extends AbstractActionController
             $pdfIds = $ids;
             $ids = '';
         }
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $facilityService = $this->getServiceLocator()->get('FacilityService');
+        // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        // $facilityService = $this->getServiceLocator()->get('FacilityService');
         
-        $result = $odkFormService->getAllFacilityNamesV5();
-        $facilityResult = $facilityService->getFacilityProfileByAuditV5($ids);
+        $result = $this->odkFormService->getAllFacilityNamesV5();
+        $facilityResult = $this->facilityService->getFacilityProfileByAuditV5($ids);
         //var_dump($facilityResult);die;
         return new ViewModel(array(
             'facilityName' => $result,
@@ -112,8 +112,8 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $facilityService = $this->getServiceLocator()->get('FacilityService');
-            $tempId = $facilityService->addEmailV6($params);
+            // $facilityService = $this->getServiceLocator()->get('FacilityService');
+            $tempId = $this->facilityService->addEmailV6($params);
             if ($tempId > 0) {
                 $ids = '';
                 if (isset($params['audits']) && count($params['audits']) > 0) {
@@ -137,11 +137,11 @@ class EmailController extends AbstractActionController
             $pdfIds = $ids;
             $ids = '';
         }
-        $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-        $facilityService = $this->getServiceLocator()->get('FacilityService');
+        // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+        // $facilityService = $this->getServiceLocator()->get('FacilityService');
         
-        $result = $odkFormService->getAllFacilityNamesV6();
-        $facilityResult = $facilityService->getFacilityProfileByAuditV6($ids);
+        $result = $this->odkFormService->getAllFacilityNamesV6();
+        $facilityResult = $this->facilityService->getFacilityProfileByAuditV6($ids);
         // var_dump($facilityResult);die;
         return new ViewModel(array(
             'facilityName' => $result,
@@ -155,8 +155,8 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getFacilitiesAudits($params);
+            // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->getFacilitiesAudits($params);
             $viewModel = new ViewModel(array(
                 'result' => $result
             ));
@@ -170,8 +170,8 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getFacilitiesAuditsV5($params);
+            // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->getFacilitiesAuditsV5($params);
            // var_dump($result);die;
             $viewModel = new ViewModel(array(
                 'result' => $result
@@ -186,8 +186,8 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $result = $odkFormService->getFacilitiesAuditsV6($params);
+            // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            $result = $this->odkFormService->getFacilitiesAuditsV6($params);
         //    var_dump($result);die;
             $viewModel = new ViewModel(array(
                 'result' => $result
@@ -202,10 +202,10 @@ class EmailController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $odkFormService = $this->getServiceLocator()->get('OdkFormService');
-            $commonService = $this->getServiceLocator()->get('CommonService');
-            $result = $odkFormService->getFormData($params['auditId']);
-            $configData = $commonService->getGlobalConfigDetails();
+            // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
+            // $commonService = $this->getServiceLocator()->get('CommonService');
+            $result = $this->odkFormService->getFormData($params['auditId']);
+            $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel(array(
                 'formData' => $result,
                 'configData' => $configData,
