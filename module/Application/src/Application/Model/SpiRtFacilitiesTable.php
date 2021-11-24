@@ -316,9 +316,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
     
     public function updateFacilityEmailAddress($params){
 	$result = 0;
-	if(isset($params['facilityName']) && trim($params['facilityName'])!= ''){
+	if(isset($params['facility']) && trim($params['facility'])!= ''){
 	    $result = 1;
-	    $this->update(array('email'=>$params['emailAddress']),array('facility_name'=>$params['facilityName']));
+	    $this->update(array('email'=>$params['emailAddress']),array('facility_name'=>$params['facility']));
 	}
       return $result;
     }

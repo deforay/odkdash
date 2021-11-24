@@ -17,6 +17,7 @@ use CpChart\Chart\Pie;
 // use pImage;
 // use pPie;
 use CpChart\Chart\Radar;
+use SaintSystems\OData\ODataClient;
 use CpChart\Data;
 use CpChart\Image;
 use Laminas\Db\Sql\Sql;
@@ -5664,7 +5665,7 @@ class OdkFormService
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $spirtURL = $configResult['odkcentral']['spirt']['url'];
-        $spirtURL = $configResult['odkcentral']['spirrt']['url'];
+        $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
         $email = $configResult['odkcentral']['spirt']['email'];
         $password = $configResult['odkcentral']['spirt']['password'];
         $spiV3db = $this->sm->get('SpiFormVer3Table');
@@ -5749,9 +5750,7 @@ class OdkFormService
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
-        $spirtURL = $configResult['odkcentral']['spirrt']['url'];
-        $email = $configResult['odkcentral']['spirrt']['email'];
-        $password = $configResult['odkcentral']['spirrt']['password'];
+        $spirtURL = $configResult['odkcentral']['spirt']['url'];
         $spiV6db = $this->sm->get('SpiFormVer6Table');
         $lastDateQuery = $spiV6db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
@@ -5760,6 +5759,14 @@ class OdkFormService
             }else{
             $url = "$spirrtURL.svc/Submissions";
             }
+        // $odataClient = new ODataClient($spirrtURL, function($request) {
+        $config = new \Laminas\Config\Reader\Ini();
+        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $email = $configResult['odkcentral']['spirrt']['email'];
+        $password = $configResult['odkcentral']['spirrt']['password'];
+        // $request->headers['Authorization'] = 'Basic '.base64_encode($email . ':' . $password);
+        // });
+        // $url = $odataClient->from('Submissions')->where('__system/submissionDate','>',$lastFormDate)->get();
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $spirtURL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -5785,7 +5792,6 @@ class OdkFormService
         ));
         $instanceIdList = curl_exec($ch);
         curl_close($ch);
-        // print_r($lastFormDate == '');die;
 
         $responseSubmission = $this->formatResponse($instanceIdList);
         $instanceLists = array();

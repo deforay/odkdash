@@ -118,7 +118,7 @@ class FacilityService {
               $message.= '</tr></td>';
             $message.= '</table>';
             $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress,$cc,$subject,$message,$fromName,$fromEmailAddress);
-            if($mailId> 0){
+        if($mailId> 0){
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if($result> 0){
                     if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email") && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email")) {
