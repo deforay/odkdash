@@ -104,7 +104,7 @@ class FacilityService {
         try {
             $fromName = $configResult['admin']['name'];
             $fromEmailAddress = $configResult['admin']['emailAddress'];
-            $toName = ucwords($params['facilityName']);
+            $toName = ucwords($params['facility']);
             $toEmailAddress = trim($params['emailAddress']);
             $cc = $configResult['admin']['emailAddress'];
             $subject = 'SPI-RT-CHECKLIST';
@@ -112,7 +112,7 @@ class FacilityService {
             $message.= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#DFDFDF;">';
               $message.= '<tr><td align="center">';
                 $message.= '<table cellpadding="3" style="width:92%;font-family:Helvetica,Arial,sans-serif;margin:30px 0px 30px 0px;padding:2% 0% 0% 2%;background-color:#ffffff;">';
-                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facilityName']).'</strong>,</td></tr>';
+                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facility']).'</strong>,</td></tr>';
                   $message.= '<tr><td><p>'.ucfirst(trim($params['message'])).'</p></td></tr>';
                 $message.= '</table>';
               $message.= '</tr></td>';
@@ -182,7 +182,7 @@ class FacilityService {
         try {
             $fromName = $configResult['admin']['name'];
             $fromEmailAddress = $configResult['admin']['emailAddress'];
-            $toName = ucwords($params['facilityName']);
+            $toName = ucwords($params['facility']);
             $toEmailAddress = trim($params['emailAddress']);
             $cc = $configResult['admin']['emailAddress'];
             $subject = 'SPI-RRT-CHECKLIST';
@@ -190,7 +190,7 @@ class FacilityService {
             $message.= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#DFDFDF;">';
               $message.= '<tr><td align="center">';
                 $message.= '<table cellpadding="3" style="width:92%;font-family:Helvetica,Arial,sans-serif;margin:30px 0px 30px 0px;padding:2% 0% 0% 2%;background-color:#ffffff;">';
-                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facilityName']).'</strong>,</td></tr>';
+                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facility']).'</strong>,</td></tr>';
                   $message.= '<tr><td><p>'.ucfirst(trim($params['message'])).'</p></td></tr>';
                 $message.= '</table>';
               $message.= '</tr></td>';
@@ -260,7 +260,7 @@ class FacilityService {
         try {
             $fromName = $configResult['admin']['name'];
             $fromEmailAddress = $configResult['admin']['emailAddress'];
-            $toName = ucwords($params['facilityName']);
+            $toName = ucwords($params['facility']);
             $toEmailAddress = trim($params['emailAddress']);
             $cc = $configResult['admin']['emailAddress'];
             $subject = 'SPI-RRT-CHECKLIST-Version 6';
@@ -268,7 +268,7 @@ class FacilityService {
             $message.= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#DFDFDF;">';
               $message.= '<tr><td align="center">';
                 $message.= '<table cellpadding="3" style="width:92%;font-family:Helvetica,Arial,sans-serif;margin:30px 0px 30px 0px;padding:2% 0% 0% 2%;background-color:#ffffff;">';
-                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facilityName']).'</strong>,</td></tr>';
+                  $message.= '<tr><td>Hi <strong>'.ucwords($params['facility']).'</strong>,</td></tr>';
                   $message.= '<tr><td><p>'.ucfirst(trim($params['message'])).'</p></td></tr>';
                 $message.= '</table>';
               $message.= '</tr></td>';
