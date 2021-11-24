@@ -2365,3 +2365,19 @@ CREATE TABLE `spi_form_v_6` (
  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
+-- Sakthivel 24-Nov-2021
+
+CREATE TABLE `user_login_history` (
+  `history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `login_id` varchar (1000) DEFAULT NULL,
+  `login_attempted_datetime` datetime DEFAULT NULL,
+  `login_status` varchar (1000) DEFAULT NULL,
+  `ip_address` varchar (1000) DEFAULT NULL,
+  `browser` varchar (1000),
+  `operating_system` varchar (1000) DEFAULT NULL,
+   PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\UserLoginHistory', 'Manage User Login History');
+
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\UserLoginHistory', 'index', 'Access');

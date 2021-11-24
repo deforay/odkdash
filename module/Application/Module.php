@@ -22,6 +22,7 @@ use Application\Model\SpiForm5LabelsTable;
 use Application\Model\SpiForm6LabelsTable;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\RolesTable;
+use Application\Model\UserLoginHistoryTable;
 use Application\Model\UserRoleMapTable;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
@@ -40,6 +41,7 @@ use Application\Service\UserService;
 use Application\Service\FacilityService;
 use Application\Service\CommonService;
 use Application\Service\RoleService;
+use Application\Service\UserLoginHistoryService;
 use Application\Service\TcpdfExtends;
 
 use Application\Model\Acl;
@@ -262,6 +264,10 @@ class Module
                     $roleService = $sm->getServiceLocator()->get('RoleService');
                     return new \Application\Controller\RolesController($roleService);
                 },
+                'Application\Controller\UserLoginHistory' => function ($sm) {
+                    $userLoginHistoryService = $sm->getServiceLocator()->get('UserLoginHistoryService');
+                    return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
+                },
                 'Application\Controller\Dashboard' => function ($sm) {
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\DashboardController($odkFormService);
@@ -337,6 +343,11 @@ class Module
                 'RolesTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new RolesTable($dbAdapter);
+                    return $table;
+                },
+                'UserLoginHistoryTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new UserLoginHistoryTable($dbAdapter);
                     return $table;
                 },
                 'UserRoleMapTable' => function ($sm) {
@@ -424,6 +435,9 @@ class Module
                 },
                 'RoleService' => function ($sm) {
                     return new RoleService($sm);
+                },
+                'UserLoginHistoryService' => function ($sm) {
+                    return new UserLoginHistoryService($sm);
                 },
                 'TcpdfExtends' => function ($sm) {
                     return new TcpdfExtends($sm);

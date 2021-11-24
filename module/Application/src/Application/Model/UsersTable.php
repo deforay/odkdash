@@ -11,6 +11,7 @@ use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\EventLogTable;
+use Application\Model\UserLoginHistoryTable;
 use \Application\Service\ImageResizeService;
 
 
@@ -46,6 +47,7 @@ class UsersTable extends AbstractTableGateway {
         
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
+        $$userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
                                 ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
@@ -78,6 +80,7 @@ class UsersTable extends AbstractTableGateway {
             $action = $username . ' logged in';
             $resourceName = 'login in';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+            $$userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
             return 'dashboard';
         } else {
             $container->alertMsg = 'Please check your login credentials';

@@ -38,6 +38,9 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
+        'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
+        ),
     ),
     'SA' => array(
         'Application\\Controller\\Common' => array(
@@ -130,6 +133,9 @@ return array(
         ),
         'Application\\Controller\\SpiV6Reports' => array(
             'facility-report' => 'allow',
+        ),
+        'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
         ),
     ),
     'US' => array(
@@ -252,6 +258,9 @@ return array(
         'Application\\Controller\\SpiV6Reports' => array(
             'facility-report' => 'allow',
         ),
+        'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
+        ),
     ),
     'DE' => array(
         'Application\\Controller\\Common' => array(
@@ -264,13 +273,26 @@ return array(
         'Application\\Controller\\Index' => array(
             'index' => 'allow',
         ),
+        'Application\\Controller\\Dashboard' => array(
+            'index' => 'deny',
+            'audit-details' => 'deny',
+        ),
+        'Application\\Controller\\DashboardV6' => array(
+            'index' => 'deny',
+        ),
+        'Application\\Controller\\DashboardV5' => array(
+            'index' => 'deny',
+        ),
         'Application\\Controller\\Email' => array(
             'index' => 'allow',
+            'email-v5' => 'deny',
+            'email-v6' => 'deny',
         ),
         'Application\\Controller\\Facility' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'get-province-list' => 'deny',
             'get-facility-name' => 'allow',
         ),
         'Application\\Controller\\Roles' => array(
@@ -278,22 +300,64 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
+        'Application\\Controller\\SpiV5' => array(
+            'index' => 'deny',
+            'manage-facility' => 'deny',
+            'approve-status' => 'deny',
+            'corrective-action-pdf' => 'deny',
+            'delete' => 'deny',
+            'download-pdf' => 'deny',
+            'download-files' => 'deny',
+            'duplicate' => 'deny',
+            'edit' => 'deny',
+            'export' => 'deny',
+            'view-data-v5' => 'deny',
+        ),
+        'Application\\Controller\\SpiV6' => array(
+            'index' => 'deny',
+            'manage-facility' => 'deny',
+            'approve-status' => 'deny',
+            'corrective-action-pdf' => 'deny',
+            'delete' => 'deny',
+            'download-pdf' => 'deny',
+            'download-files' => 'deny',
+            'duplicate' => 'deny',
+            'edit' => 'deny',
+            'export' => 'deny',
+            'view-data-v6' => 'deny',
+            'view-data-section-zero-protocol-v6' => 'deny',
+            'view-data-section-zero-v6' => 'deny',
+        ),
         'Application\\Controller\\SpiV3' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
+            'view-data' => 'deny',
             'delete' => 'allow',
+            'download-files' => 'deny',
+            'duplicate' => 'deny',
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
         ),
+        'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
+        ),
         'Application\\Controller\\Users' => array(
             'index' => 'allow',
             'add' => 'allow',
+            'change-password' => 'deny',
             'edit' => 'allow',
+            'profile' => 'deny',
         ),
         'Application\\Controller\\SpiV3Reports' => array(
             'facility-report' => 'allow',
+        ),
+        'Application\\Controller\\SpiV5Reports' => array(
+            'facility-report' => 'deny',
+        ),
+        'Application\\Controller\\SpiV6Reports' => array(
+            'facility-report' => 'deny',
         ),
     ),
 );

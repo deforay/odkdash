@@ -180,6 +180,16 @@ return array(
                     ),
                 ),
             ),
+            'user-login-history' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/user-login-history[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\UserLoginHistory',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'users' => array(
                 'type' => 'segment',
                 'options' => array(
