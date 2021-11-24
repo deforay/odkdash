@@ -48,7 +48,7 @@
                         <table class="col-lg-12">
                             <tr>
                                 <td class="col-lg-6">
-                                    <b><?= $this->translate('Facility Name');?></b><span class="mandatory">*</span>
+                                    <b><?= $this->translate('Facility Name'); ?></b><span class="mandatory">*</span>
                                 </td>
                                 <td class="col-lg-6" align="center">
                                     <select id="facilityName" name="facilityName" onchange="getEditField(this.value);" class="form-control">
@@ -69,7 +69,7 @@
                                 </td>
                             </tr>
                             <tr class="editFC" style="display:none;">
-                                <td class="col-lg-6"><b>Facility Id</b> <span class="mandatory">*</span></td>
+                                <td class="col-lg-6"><b>Updated/New Facility ID</b> <span class="mandatory">*</span></td>
                                 <td class="col-lg-6"><input type="text" name="facilityId" id="facilityId" class="form-control" /></td>
                             </tr>
                             <tr class="editFC" style="display:none;">
@@ -78,8 +78,11 @@
                                 </td>
                             </tr>
                             <tr class="editFC" style="display:none;">
-                                <td class="col-lg-6"><b><?= $this->translate('Facility Name'); ?></b> <span class="mandatory">*</span></td>
-                                <td class="col-lg-6"><input type="hidden" name="defaultFacilityName" id="defaultFacilityName" /><input type="text" name="editFacilityName" id="editFacilityName" class="form-control" /></td>
+                                <td class="col-lg-6"><b><?= $this->translate('Updated/New Facility Name'); ?></b> <span class="mandatory">*</span></td>
+                                <td class="col-lg-6">
+                                    <input type="hidden" name="defaultFacilityName" id="defaultFacilityName" />
+                                    <input type="text" name="editFacilityName" id="editFacilityName" class="form-control" />
+                                </td>
                             </tr>
                             <tr class="editFC" style="display:none;">
                                 <td colspan="2">
@@ -88,7 +91,7 @@
                             </tr>
                             <tr>
                                 <td class="col-lg-6">
-                                    <b><?= $this->translate('Facility List'); ?></b><span class="mandatory">*</span>
+                                    <b><?= $this->translate('Facility to merge with this'); ?></b><span class="mandatory">*</span>
                                 </td>
                                 <td class="col-lg-6">
                                     <select id="upFaciltyName" name="upFaciltyName[]" class="" multiple="multiple">
@@ -110,7 +113,8 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <hr>&nbsp;&nbsp;</td>
+                                    <hr>&nbsp;&nbsp;
+                                </td>
                             </tr>
                             <tr>
                                 <td colspan="2" class="updateButton">
@@ -138,7 +142,7 @@
     function updateFacilityName() {
         var fName = $("#facilityName").val();
         var facilityId = $("#facilityId").val();
-        var dafaultFacilityName = $("#defaultFacilityName").val();
+        var defaultFacilityName = $("#defaultFacilityName").val();
         var editFacilityName = $("#editFacilityName").val();
         var upFaciltyName = $("#upFaciltyName").val();
 
@@ -153,30 +157,30 @@
                 $("#editFacilityName").focus();
                 return false;
             }
-            var cnfm = confirm("Do you wish to merge facility names?");
+            var cnfm = confirm("Do you wish to proceed with merging these facility names?");
             if (cnfm) {
                 //alert("dd");
                 $.post("<?php echo $this->url('spi-v3-form', array('action' => 'merge-facility-name')); ?>", {
                         fName: fName,
                         facilityId: facilityId,
-                        dafaultFacilityName: dafaultFacilityName,
+                        defaultFacilityName: defaultFacilityName,
                         editFacilityName: editFacilityName,
                         upFaciltyName: upFaciltyName
                     },
                     function(data) {
-                        if (data > 0) {
-                            alert("Facility name merged successfully");
+                        //if (data > 0) {
+                            alert("Facility names merged successfully");
                             parent.closeModal();
                             parent.window.location.href = window.parent.location.href;
-                        } else {
-                            alert("We have experienced the problem..Please try again later!");
-                            parent.closeModal();
-                            parent.window.location.href = window.parent.location.href;
-                        }
+                        //} else {
+                        //    alert("Error.Please try again later!");
+                        //    parent.closeModal();
+                        //    parent.window.location.href = window.parent.location.href;
+                        //}
                     });
             }
         } else {
-            alert("Please choose facility name");
+            alert("Please fill all the mandatory fields");
         }
     }
 

@@ -2022,19 +2022,19 @@ VALUES
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');
 
---Sakthivel 30-Sep-2021
+-- Sakthivel 30-Sep-2021
 
 DROP table `track`;
 DROP table `spi_rt_5_facilities`;
 
---Sakthivel 1-Oct-2021
+-- Sakthivel 1-Oct-2021
 
  ALTER TABLE `users` ADD `contact_no` varchar(255) DEFAULT NULL AFTER `email`;
  ALTER TABLE `users` ADD `user_image` varchar(255) DEFAULT NULL AFTER `contact_no`;
 
  INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\Users', 'profile', 'Edit Profile');
 
---Sakthivel 04-10-2021
+-- Sakthivel 04-10-2021
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Users', 'change-password', 'Change Password');
 
 ALTER TABLE  `users` ADD  `last_login_datetime` DATETIME NULL DEFAULT NULL;
@@ -2363,5 +2363,5 @@ CREATE TABLE `spi_form_v_6` (
  `D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` text,
  `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` text,
  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=274 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 

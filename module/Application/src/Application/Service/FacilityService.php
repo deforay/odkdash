@@ -155,10 +155,10 @@ class FacilityService {
                     }
                 }else{
                     $mailId = 0;
-                    $container->alertMsg = 'We have experienced the problem..Please try again!';
+                    $container->alertMsg = 'Error.Please try again!';
                 }
             }else{
-                $container->alertMsg = 'We have experienced the problem..Please try again!';
+                $container->alertMsg = 'Error.Please try again!';
             }
           return $mailId;
         }catch (Exception $exc) {
@@ -233,10 +233,10 @@ class FacilityService {
                     }
                 }else{
                     $mailId = 0;
-                    $container->alertMsg = 'We have experienced the problem..Please try again!';
+                    $container->alertMsg = 'Error.Please try again!';
                 }
             }else{
-                $container->alertMsg = 'We have experienced the problem..Please try again!';
+                $container->alertMsg = 'Error.Please try again!';
             }
           return $mailId;
         }catch (Exception $exc) {
@@ -311,10 +311,10 @@ class FacilityService {
                     }
                 }else{
                     $mailId = 0;
-                    $container->alertMsg = 'We have experienced the problem..Please try again!';
+                    $container->alertMsg = 'Error.Please try again!';
                 }
             }else{
-                $container->alertMsg = 'We have experienced the problem..Please try again!';
+                $container->alertMsg = 'Error.Please try again!';
             }
           return $mailId;
         }catch (Exception $exc) {

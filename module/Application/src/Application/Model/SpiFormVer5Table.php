@@ -2336,7 +2336,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         $facilityDb= new \Application\Model\SpiRtFacilitiesTable($this->adapter);
         if(isset($params['editFacilityName']) && trim($params['editFacilityName'])!= ''){
             $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
-                                           ->where(array('spirt3.facility_name'=>$params['dafaultFacilityName']));
+                                           ->where(array('spirt3.facility_name'=>$params['defaultFacilityName']));
             $facilityQueryStr = $sql->buildSqlString($facilityQuery);
             $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($facilityResult){
@@ -2344,11 +2344,11 @@ class SpiFormVer5Table extends AbstractTableGateway {
                               'facility_id'=>$params['facilityId'],
                               'facility_name'=>$params['editFacilityName']
                             );
-                $facilityDb->update($data,array('facility_name'=>$params['dafaultFacilityName']));
+                $facilityDb->update($data,array('facility_name'=>$params['defaultFacilityName']));
             }
             
             $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname'))
-                                    ->where(array('spiv5.facilityname'=>$params['dafaultFacilityName']));
+                                    ->where(array('spiv5.facilityname'=>$params['defaultFacilityName']));
             $aQueryStr = $sql->buildSqlString($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if($aResult){
@@ -2356,7 +2356,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
                               'facilityid'=>$params['facilityId'],
                               'facilityname'=>$params['editFacilityName']
                             );
-                $this->update($data,array('facilityname'=>$params['dafaultFacilityName']));
+                $this->update($data,array('facilityname'=>$params['defaultFacilityName']));
             }
         }
         $c = count($params['upFaciltyName']);
