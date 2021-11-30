@@ -3705,6 +3705,11 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer5DownloadTable');
         return $db->fetchDownloadFilesRow();
     }
+    public function getDownloadFilesRow()
+    {
+        $db = $this->sm->get('SpiFormVer3DownloadTable');
+        return $db->fetchDownloadFilesRow();
+    }
 
     public function validateSPIV3File($params)
     {

@@ -24,6 +24,7 @@
                     foreach($result as $row){
                         $file_content = '<i class="fa fa-exclamation" aria-hidden="true" title="Download data not available" style="color:red;"></i>';
                         if(file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $row['r_download_id'].'.zip')){
+                          mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR. "download". DIRECTORY_SEPARATOR . $row['r_download_id'].'.zip', 0777, true);
                             $file_content = '<a href="/temporary/download/'. $row['r_download_id'].'.zip"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Zip</a>';
                         }
                         ?>
