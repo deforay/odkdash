@@ -320,11 +320,11 @@ class SpiV3Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSubmissionsDetails($param);
-            $spiderResult = $this->odkFormService->getAuditRoundWiseDataChart($param);
-            $pieResult = $this->odkFormService->getPerformancePieChart($param);
+            // $spiderResult = $this->odkFormService->getAuditRoundWiseDataChart($param);
+            // $pieResult = $this->odkFormService->getPerformancePieChart($param);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult))
+            $viewModel->setVariables(array('result' => $result, 'configData' => $configData, 'argument' => $param))
                 ->setTerminal(true);
             return $viewModel;
         }
