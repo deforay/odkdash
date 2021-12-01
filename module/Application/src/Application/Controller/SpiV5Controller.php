@@ -309,10 +309,10 @@ class SpiV5Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->getAuditRoundWiseDataChartV5($params);
+            // $result = $this->odkFormService->getAuditRoundWiseDataChartV5($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result, 'configData' => $configData))
+            $viewModel->setVariables(array('configData' => $configData))
                 ->setTerminal(true);
             return $viewModel;
         }

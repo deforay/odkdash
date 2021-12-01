@@ -17,8 +17,8 @@ class MYPDF extends TCPDF
     public function Header()
     {
         // Logo
-        if (trim($this->logo) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-            $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+        if (trim($this->logo) != "" && file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            $image_file = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
             $this->Image($image_file, 12, 3, 20, '', 'PNG', '', 'T', false, 300, 'L', false, false, 0, false, false, false);
         }
         // Set font
@@ -145,11 +145,11 @@ $pdf->writeHTML($pdfContent, true, 0, true, 0);
 
 $testingResult = '<table border="1" BORDERCOLOR=RED cellspacing="0" cellpadding="5" >';
 $testingResult .= '<tr style="background-color:#3598DC;color:#fff;text-align:center">';
-$testingResult .= '<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Personnel Training & Certification</b></th><th><b>Physical</b></th><th><b>Safety</b></th><th><b>Pre-Testing</b></th><th><b>Testing</b></th><th><b>Post-Testing</b></th><th><b>External QA</b></th><th><b>Total(%)</b></th>';
+$testingResult .= '<th><b>Facility Name</b></th><th><b>Audit Round No.</b></th><th><b>Audit Date</b></th><th><b>Testing Point Name</b></th><th><b>Testing Point Type</b></th><th><b>Level</b></th><th><b>Affiliation</b></th><th><b>Personnel Training & Certification</b></th><th><b>Physical</b></th><th><b>Safety</b></th><th><b>Pre-Testing</b></th><th><b>Testing</b></th><th><b>Post-Testing</b></th><th><b>External QA</b></th><th><b>RTRI</b></th><th><b>Total(%)</b></th>';
 $testingResult .= '</tr>';
 foreach ($result['aaData'] as $aRow) {
     $testingResult .= '<tr style="border:1px solid #dddddd;">';
-    $testingResult .= '<td>' . $aRow[1] . '</td><td>' . $aRow[2] . '</td><td>' . $aRow[3] . '</td><td>' . $aRow[4] . '</td><td>' . $aRow[5] . '</td><td>' . $aRow[6] . '</td><td>' . $aRow[7] . '</td><td>' . $aRow[11] . '</td><td>' . $aRow[12] . '</td><td>' . $aRow[13] . '</td><td>' . $aRow[14] . '</td><td>' . $aRow[15] . '</td><td>' . $aRow[16] . '</td><td>' . $aRow[17] . '</td><td>' . $aRow[18] . '</td>';
+    $testingResult .= '<td>' . $aRow[1] . '</td><td>' . $aRow[2] . '</td><td>' . $aRow[3] . '</td><td>' . $aRow[4] . '</td><td>' . $aRow[5] . '</td><td>' . $aRow[6] . '</td><td>' . $aRow[7] . '</td><td>' . $aRow[10] . '</td><td>' . $aRow[11] . '</td><td>' . $aRow[12] . '</td><td>' . $aRow[13] . '</td><td>' . $aRow[14] . '</td><td>' . $aRow[15] . '</td><td>' . $aRow[16] . '</td><td>' . $aRow[17] . '</td><td>' . $aRow[18] . '</td>';
     $testingResult .= '</tr>';
 }
 $testingResult .= '</table>';

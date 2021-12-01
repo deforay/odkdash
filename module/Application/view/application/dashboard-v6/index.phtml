@@ -1599,6 +1599,7 @@ $sessionLogin = new Container('credo');
 				dateRange: dateRange
 			},
 			function(data) {
+				console.log(data);
 				if (data == "" || data == null || data == undefined) {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {

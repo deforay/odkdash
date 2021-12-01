@@ -433,10 +433,10 @@ class SpiV6Controller extends AbstractActionController
         
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->getAuditRoundWiseDataChartV6($params);
+            // $result = $this->odkFormService->getAuditRoundWiseDataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result, 'configData' => $configData))
+            $viewModel->setVariables(array('configData' => $configData))
                 ->setTerminal(true);
             return $viewModel;
         }
@@ -446,10 +446,10 @@ class SpiV6Controller extends AbstractActionController
     {   
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->getAuditRoundWiseS0DataChartV6($params);
+            // $result = $this->odkFormService->getAuditRoundWiseS0DataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result, 'configData' => $configData))
+            $viewModel->setVariables(array('configData' => $configData))
                 ->setTerminal(true);
             return $viewModel;
         }
@@ -459,10 +459,10 @@ class SpiV6Controller extends AbstractActionController
     {   
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $result = $this->odkFormService->getAuditRoundWiseD0DataChartV6($params);
+            // $result = $this->odkFormService->getAuditRoundWiseD0DataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result, 'configData' => $configData))
+            $viewModel->setVariables(array('configData' => $configData))
                 ->setTerminal(true);
             return $viewModel;
         }
