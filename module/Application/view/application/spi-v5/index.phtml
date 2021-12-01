@@ -217,9 +217,9 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
 
   function formatValue(value) {
     //return '<a href="/spi-v3/print/'+value+'" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
-    return '<a href="javascript:void(0);" onclick="downloadPdf(' + value + ')" target="_blank"><i class="fa fa-print"></i> <?= $this->translate('Print Full Survey'); ?></a>' +
+    return '<a href="javascript:void(0);" onclick="downloadPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Full Survey'); ?></a>' +
       '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-      '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf(' + value + ')" target="_blank"><i class="fa fa-print"></i> <?= $this->translate('Print Corrective Actions'); ?></a>';
+      '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Corrective Actions'); ?></a>';
   }
   $(document).ready(function() {
     var startDate = "";
