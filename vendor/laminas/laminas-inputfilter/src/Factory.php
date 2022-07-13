@@ -1,41 +1,44 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-inputfilter for the canonical source repository
- * @copyright https://github.com/laminas/laminas-inputfilter/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-inputfilter/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\InputFilter;
 
 use Laminas\Filter\FilterChain;
+use Laminas\Filter\FilterInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Validator\ValidatorChain;
 use Laminas\Validator\ValidatorInterface;
 use Traversable;
 
+use function class_exists;
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_callable;
+use function is_int;
+use function is_object;
+use function is_string;
+use function sprintf;
+
+/**
+ * @psalm-import-type InputSpecification from InputFilterInterface
+ * @psalm-import-type FilterSpecification from InputFilterInterface
+ * @psalm-import-type ValidatorSpecification from InputFilterInterface
+ * @psalm-import-type InputFilterSpecification from InputFilterInterface
+ * @psalm-import-type CollectionSpecification from InputFilterInterface
+ */
 class Factory
 {
-    /**
-     * @var FilterChain
-     */
+    /** @var FilterChain|null */
     protected $defaultFilterChain;
 
-    /**
-     * @var ValidatorChain
-     */
+    /** @var ValidatorChain|null */
     protected $defaultValidatorChain;
 
-    /**
-     * @var InputFilterPluginManager
-     */
+    /** @var InputFilterPluginManager|null */
     protected $inputFilterManager;
 
-    /**
-     * @param InputFilterPluginManager $inputFilterManager
-     */
-    public function __construct(InputFilterPluginManager $inputFilterManager = null)
+    public function __construct(?InputFilterPluginManager $inputFilterManager = null)
     {
         $this->defaultFilterChain    = new FilterChain();
         $this->defaultValidatorChain = new ValidatorChain();
@@ -48,8 +51,7 @@ class Factory
     /**
      * Set default filter chain to use
      *
-     * @param  FilterChain $filterChain
-     * @return Factory
+     * @return $this
      */
     public function setDefaultFilterChain(FilterChain $filterChain)
     {
@@ -80,8 +82,7 @@ class Factory
     /**
      * Set default validator chain to use
      *
-     * @param  ValidatorChain $validatorChain
-     * @return Factory
+     * @return $this
      */
     public function setDefaultValidatorChain(ValidatorChain $validatorChain)
     {
@@ -110,8 +111,7 @@ class Factory
     }
 
     /**
-     * @param  InputFilterPluginManager $inputFilterManager
-     * @return self
+     * @return $this
      */
     public function setInputFilterManager(InputFilterPluginManager $inputFilterManager)
     {
@@ -135,7 +135,7 @@ class Factory
     /**
      * Factory for input objects
      *
-     * @param  array|Traversable|InputProviderInterface $inputSpecification
+     * @param  InputSpecification|Traversable|InputProviderInterface $inputSpecification
      * @throws Exception\InvalidArgumentException
      * @throws Exception\RuntimeException
      * @return InputInterface|InputFilterInterface
@@ -146,20 +146,22 @@ class Factory
             $inputSpecification = $inputSpecification->getInputSpecification();
         }
 
-        if (! is_array($inputSpecification) && ! $inputSpecification instanceof Traversable) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects an array or Traversable; received "%s"',
-                __METHOD__,
-                (is_object($inputSpecification) ? get_class($inputSpecification) : gettype($inputSpecification))
-            ));
-        }
         if ($inputSpecification instanceof Traversable) {
             $inputSpecification = ArrayUtils::iteratorToArray($inputSpecification);
         }
 
+        /** @psalm-suppress DocblockTypeContradiction */
+        if (! is_array($inputSpecification)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '%s expects an array or Traversable; received "%s"',
+                __METHOD__,
+                is_object($inputSpecification) ? get_class($inputSpecification) : gettype($inputSpecification)
+            ));
+        }
+
         $class = Input::class;
 
-        if (isset($inputSpecification['type'])) {
+        if (isset($inputSpecification['type']) && is_string($inputSpecification['type'])) {
             $class = $inputSpecification['type'];
         }
 
@@ -192,6 +194,11 @@ class Factory
             ? $this->injectFilterAndValidatorChainsWithPluginManagers($input)
             : $this->injectDefaultFilterAndValidatorChains($input);
 
+        /**
+         * Even though the specification is typed, psalm cannot tell the individual item types inside the switch
+         *
+         * @psalm-suppress MixedArgument, DeprecatedMethod
+         */
         foreach ($inputSpecification as $key => $value) {
             switch ($key) {
                 case 'name':
@@ -242,7 +249,7 @@ class Factory
                             '%s expects the value associated with "filters" to be an array/Traversable of filters'
                             . ' or filter specifications, or a FilterChain; received "%s"',
                             __METHOD__,
-                            (is_object($value) ? get_class($value) : gettype($value))
+                            is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
                     $this->populateFilters($input->getFilterChain(), $value);
@@ -257,9 +264,10 @@ class Factory
                             '%s expects the value associated with "validators" to be an array/Traversable of validators'
                             . ' or validator specifications, or a ValidatorChain; received "%s"',
                             __METHOD__,
-                            (is_object($value) ? get_class($value) : gettype($value))
+                            is_object($value) ? get_class($value) : gettype($value)
                         ));
                     }
+
                     $this->populateValidators($input->getValidatorChain(), $value);
                     break;
                 default:
@@ -274,10 +282,11 @@ class Factory
     /**
      * Factory for input filters
      *
-     * @param  array|Traversable|InputFilterProviderInterface $inputFilterSpecification
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
+     * phpcs:ignore Generic.Files.LineLength.TooLong
+     * @param InputFilterSpecification|CollectionSpecification|Traversable|InputFilterProviderInterface $inputFilterSpecification
      * @return InputFilterInterface
+     * @throws Exception\RuntimeException
+     * @throws Exception\InvalidArgumentException
      */
     public function createInputFilter($inputFilterSpecification)
     {
@@ -285,7 +294,12 @@ class Factory
             $inputFilterSpecification = $inputFilterSpecification->getInputFilterSpecification();
         }
 
-        if (! is_array($inputFilterSpecification) && ! $inputFilterSpecification instanceof Traversable) {
+        if ($inputFilterSpecification instanceof Traversable) {
+            $inputFilterSpecification = ArrayUtils::iteratorToArray($inputFilterSpecification);
+        }
+
+        /** @psalm-suppress DocblockTypeContradiction */
+        if (! is_array($inputFilterSpecification)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects an array or Traversable; received "%s"',
                 __METHOD__,
@@ -293,9 +307,6 @@ class Factory
                     ? get_class($inputFilterSpecification)
                     : gettype($inputFilterSpecification)
             ));
-        }
-        if ($inputFilterSpecification instanceof Traversable) {
-            $inputFilterSpecification = ArrayUtils::iteratorToArray($inputFilterSpecification);
         }
 
         $type = InputFilter::class;
@@ -329,7 +340,8 @@ class Factory
                 continue;
             }
 
-            if ($value instanceof InputInterface
+            if (
+                $value instanceof InputInterface
                 || $value instanceof InputFilterInterface
             ) {
                 $inputFilter->add($value, $key);
@@ -339,12 +351,13 @@ class Factory
             // Patch to enable nested, integer indexed input_filter_specs.
             // Check type and name are in spec, and that composed type is
             // an input filter...
-            if ((isset($value['type']) && is_string($value['type']))
+            if (
+                (isset($value['type']) && is_string($value['type']))
                 && (isset($value['name']) && is_string($value['name']))
                 && $this->getInputFilterManager()->get($value['type']) instanceof InputFilter
             ) {
                 // If $key is an integer, reset it to the specified name.
-                if (is_integer($key)) {
+                if (is_int($key)) {
                     $key = $value['name'];
                 }
 
@@ -360,28 +373,29 @@ class Factory
     }
 
     /**
-     * @param  FilterChain       $chain
-     * @param  array|Traversable $filters
+     * @param  iterable<array-key, FilterInterface|callable|FilterSpecification> $filters
      * @throws Exception\RuntimeException
      * @return void
      */
     protected function populateFilters(FilterChain $chain, $filters)
     {
         foreach ($filters as $filter) {
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
             if (is_object($filter) || is_callable($filter)) {
                 $chain->attach($filter);
                 continue;
             }
 
+            /** @psalm-suppress RedundantConditionGivenDocblockType, DocblockTypeContradiction */
             if (is_array($filter)) {
                 if (! isset($filter['name'])) {
                     throw new Exception\RuntimeException(
                         'Invalid filter specification provided; does not include "name" key'
                     );
                 }
-                $name = $filter['name'];
-                $priority = isset($filter['priority']) ? $filter['priority'] : FilterChain::DEFAULT_PRIORITY;
-                $options = [];
+                $name     = $filter['name'];
+                $priority = $filter['priority'] ?? FilterChain::DEFAULT_PRIORITY;
+                $options  = [];
                 if (isset($filter['options'])) {
                     $options = $filter['options'];
                 }
@@ -396,8 +410,7 @@ class Factory
     }
 
     /**
-     * @param  ValidatorChain    $chain
-     * @param  string[]|ValidatorInterface[] $validators
+     * @param  iterable<array-key, ValidatorInterface|ValidatorSpecification> $validators
      * @throws Exception\RuntimeException
      * @return void
      */
@@ -409,6 +422,7 @@ class Factory
                 continue;
             }
 
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
             if (is_array($validator)) {
                 if (! isset($validator['name'])) {
                     throw new Exception\RuntimeException(
@@ -424,7 +438,7 @@ class Factory
                 if (isset($validator['break_chain_on_failure'])) {
                     $breakChainOnFailure = $validator['break_chain_on_failure'];
                 }
-                $priority = isset($validator['priority']) ? $validator['priority'] : ValidatorChain::DEFAULT_PRIORITY;
+                $priority = $validator['priority'] ?? ValidatorChain::DEFAULT_PRIORITY;
                 $chain->attachByName($name, $options, $breakChainOnFailure, $priority);
                 continue;
             }
@@ -440,7 +454,6 @@ class Factory
      *
      * This ensures custom plugins are made available to the input instance.
      *
-     * @param InputInterface $input
      * @return void
      */
     protected function injectDefaultFilterAndValidatorChains(InputInterface $input)
@@ -460,20 +473,23 @@ class Factory
      *
      * This ensures custom plugins are made available to the input instance.
      *
-     * @param InputInterface $input
      * @return void
      */
     protected function injectFilterAndValidatorChainsWithPluginManagers(InputInterface $input)
     {
         if ($this->defaultFilterChain) {
-            $input->getFilterChain()
-                ? $input->getFilterChain()->setPluginManager($this->defaultFilterChain->getPluginManager())
+            $filterChain = $input->getFilterChain();
+            /** @psalm-suppress RedundantConditionGivenDocblockType, DocblockTypeContradiction */
+            $filterChain instanceof FilterChain
+                ? $filterChain->setPluginManager($this->defaultFilterChain->getPluginManager())
                 : $input->setFilterChain(clone $this->defaultFilterChain);
         }
 
         if ($this->defaultValidatorChain) {
-            $input->getValidatorChain()
-                ? $input->getValidatorChain()->setPluginManager($this->defaultValidatorChain->getPluginManager())
+            $validatorChain = $input->getValidatorChain();
+            /** @psalm-suppress RedundantConditionGivenDocblockType, DocblockTypeContradiction */
+            $validatorChain instanceof ValidatorChain
+                ? $validatorChain->setPluginManager($this->defaultValidatorChain->getPluginManager())
                 : $input->setValidatorChain(clone $this->defaultValidatorChain);
         }
     }

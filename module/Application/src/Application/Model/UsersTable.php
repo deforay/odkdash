@@ -27,47 +27,53 @@ use \Application\Service\ImageResizeService;
  *
  * @author amit
  */
-class UsersTable extends AbstractTableGateway {
+class UsersTable extends AbstractTableGateway
+{
 
     protected $table = 'users';
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-    
-    public function login($params) {
-        $common=new CommonService();
+
+
+    public function login($params)
+    {
+        $common = new CommonService();
         $container = new Container('alert');
         $logincontainer = new Container('credo');
         $username = $params['username'];
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-        $password = sha1($params['password'] . $configResult["password"]["salt"]);   
-        
+        $password = sha1($params['password'] . $configResult["password"]["salt"]);
+
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
-        $$userHistoryTable = new UserLoginHistoryTable($dbAdapter);
+        $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
-                                ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
-                                ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name','role_code'))
-                                ->where(array('login' => $username, 'password' => $password,'u.status' =>'active'));
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+            ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
+            ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name', 'role_code'))
+            ->where(array('login' => $username, 'u.status' => 'active'));
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         $data = array(
-            'last_login_datetime'=>$common->getDateTime()
+            'last_login_datetime' => $common->getDateTime()
         );
-        $this->update($data,array('id'=>$sResult->id));
+        if($sResult !== false && !empty($sResult)){
+            $this->update($data, array('id' => $sResult->id));
+        }
+        
         if ($sResult) {
             $token = array();
             $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
-                                            ->columns(array('token'))
-                                            ->where(array('user_id'=>$sResult->id))
-                                            ->order("token ASC");
-            $userTokenQueryStr = $sql->getSqlStringForSqlObject($userTokenQuery);
+                ->columns(array('token'))
+                ->where(array('user_id' => $sResult->id))
+                ->order("token ASC");
+            $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
             $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            foreach($userTokenResult as $userToken){
+            foreach ($userTokenResult as $userToken) {
                 $token[] = $userToken['token'];
             }
             $logincontainer->userId = $sResult->id;
@@ -80,16 +86,17 @@ class UsersTable extends AbstractTableGateway {
             $action = $username . ' logged in';
             $resourceName = 'login in';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-            $$userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
+            $userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
             return 'dashboard';
         } else {
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
         }
     }
-    
-    public function addUserDetails($params){
-        $common=new CommonService();
+
+    public function addUserDetails($params)
+    {
+        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
@@ -107,17 +114,17 @@ class UsersTable extends AbstractTableGateway {
                 'email' => $params['email'],
                 'status' => $params['status'],
                 'contact_no' => $params['mobile_no'],
-                'created_on'=>$common->getDateTime()
+                'created_on' => $common->getDateTime()
             );
             $this->insert($data);
-            $lastInsertId=$this->lastInsertValue;
-            if($lastInsertId>0){
-                $userRoleMap->insert(array('user_id'=>$lastInsertId,'role_id'=>$params['roleId']));
+            $lastInsertId = $this->lastInsertValue;
+            if ($lastInsertId > 0) {
+                $userRoleMap->insert(array('user_id' => $lastInsertId, 'role_id' => $params['roleId']));
                 //Add User-Token
-                if(isset($params['token']) && trim($params['token'])!= ''){
-                    $splitToken = explode(",",$params['token']);
-                    for($t=0;$t<count($splitToken); $t++){
-                        $userTokenMap->insert(array('user_id'=>$lastInsertId,'token'=>trim($splitToken[$t])));
+                if (isset($params['token']) && trim($params['token']) != '') {
+                    $splitToken = explode(",", $params['token']);
+                    for ($t = 0; $t < count($splitToken); $t++) {
+                        $userTokenMap->insert(array('user_id' => $lastInsertId, 'token' => trim($splitToken[$t])));
                     }
                 }
             }
@@ -128,7 +135,7 @@ class UsersTable extends AbstractTableGateway {
                 $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['user_image']['name'], PATHINFO_EXTENSION));
                 $imageName = time() . '_' . $lastInsertId . "." . $extension;
                 if (move_uploaded_file($_FILES["user_image"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName)) {
-                    
+
                     $resizeObj = new ImageResizeService(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName);
                     $resizeObj->resizeImage(320, 214, 'auto');
                     $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName, 100);
@@ -140,20 +147,21 @@ class UsersTable extends AbstractTableGateway {
             return $lastInsertId;
         }
     }
-    
-    public function updateUserDetails($params){
-        $common=new CommonService();
+
+    public function updateUserDetails($params)
+    {
+        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
-        $userId=base64_decode($params['userId']);
+        $userId = base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
             $config = new \Laminas\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $password = sha1($params['password'] . $configResult["password"]["salt"]);
             $data = array('password' => $password);
-            $this->update($data,array('id'=>$userId));
+            $this->update($data, array('id' => $userId));
         }
         if (isset($params['userName']) && trim($params['userName']) != "") {
             $data = array(
@@ -164,15 +172,15 @@ class UsersTable extends AbstractTableGateway {
                 'contact_no' => $params['mobile_no'],
                 'status' => $params['status']
             );
-            $this->update($data,array('id'=>$userId));
-            if($userId>0){
-                $userRoleMap->update(array('role_id'=>$params['roleId']),array('user_id'=>$userId));
+            $this->update($data, array('id' => $userId));
+            if ($userId > 0) {
+                $userRoleMap->update(array('role_id' => $params['roleId']), array('user_id' => $userId));
                 //Update User-Token
-                $userTokenMap->delete(array('user_id'=>$userId));
-                if(isset($params['token']) && trim($params['token'])!= ''){
-                    $splitToken = explode(",",$params['token']);
-                    for($t=0;$t<count($splitToken); $t++){
-                        $userTokenMap->insert(array('user_id'=>$userId,'token'=>trim($splitToken[$t])));
+                $userTokenMap->delete(array('user_id' => $userId));
+                if (isset($params['token']) && trim($params['token']) != '') {
+                    $splitToken = explode(",", $params['token']);
+                    for ($t = 0; $t < count($splitToken); $t++) {
+                        $userTokenMap->insert(array('user_id' => $userId, 'token' => trim($splitToken[$t])));
                     }
                 }
             }
@@ -190,7 +198,7 @@ class UsersTable extends AbstractTableGateway {
                 $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['user_image']['name'], PATHINFO_EXTENSION));
                 $imageName = time() . '_' . $userId . "." . $extension;
                 if (move_uploaded_file($_FILES["user_image"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName)) {
-                    
+
                     $resizeObj = new ImageResizeService(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName);
                     $resizeObj->resizeImage(320, 214, 'auto');
                     $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName, 100);
@@ -202,16 +210,16 @@ class UsersTable extends AbstractTableGateway {
             return $userId;
         }
     }
-    
-    public function fetchAllUsers($parameters,$acl)
+
+    public function fetchAllUsers($parameters, $acl)
     {
-        
+
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
-	
-        $aColumns = array('first_name','last_name','email','status');
-        $orderColumns = array('first_name','email','status');
+
+        $aColumns = array('first_name', 'last_name', 'email', 'status');
+        $orderColumns = array('first_name', 'email', 'status');
 
         /*
         * Paging
@@ -230,7 +238,7 @@ class UsersTable extends AbstractTableGateway {
         if (isset($parameters['iSortCol_0'])) {
             for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
                 if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ( $parameters['sSortDir_' . $i] ) . ",";
+                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -254,12 +262,12 @@ class UsersTable extends AbstractTableGateway {
                     $sWhereSub .= " AND (";
                 }
                 $colSize = count($aColumns);
- 
+
                 for ($i = 0; $i < $colSize; $i++) {
                     if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' OR ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                     } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                     }
                 }
                 $sWhereSub .= ")";
@@ -285,44 +293,44 @@ class UsersTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from('users');
-        
-        
+
+
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
         }
- 
+
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
         }
- 
+
         if (isset($sLimit) && isset($sOffset)) {
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->getSqlStringForSqlObject($sQuery);
+        $fQuery = $sql->buildSqlString($sQuery);
         $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
         $tQuery =  $sql->select()->from('users');
-        $tQueryStr = $sql->getSqlStringForSqlObject($tQuery); // Get the string of the Sql, instead of the Select-instance
+        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-           "sEcho" => intval($parameters['sEcho']),
-           "iTotalRecords" => $iTotal,
-           "iTotalDisplayRecords" => $iFilteredTotal,
-           "aaData" => array()
+            "sEcho" => intval($parameters['sEcho']),
+            "iTotalRecords" => $iTotal,
+            "iTotalDisplayRecords" => $iFilteredTotal,
+            "aaData" => array()
         );
-        
+
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
         if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
@@ -330,36 +338,37 @@ class UsersTable extends AbstractTableGateway {
         } else {
             $update = false;
         }
-        
+
         foreach ($rResult as $aRow) {
-         $row = array();
-         
-         $row[] = ucwords($aRow['first_name']." ".$aRow['last_name']);
-         $row[] = $aRow['email'];
-         $row[] = ucwords($aRow['status']);
-         if($update){
-         $edit = '<a href="/users/edit/'.base64_encode($aRow['id']).'" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
-         $row[] =$edit;
-         }
-         $output['aaData'][] = $row;
+            $row = array();
+
+            $row[] = ucwords($aRow['first_name'] . " " . $aRow['last_name']);
+            $row[] = $aRow['email'];
+            $row[] = ucwords($aRow['status']);
+            if ($update) {
+                $edit = '<a href="/users/edit/' . base64_encode($aRow['id']) . '" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
+                $row[] = $edit;
+            }
+            $output['aaData'][] = $row;
         }
         return $output;
     }
-    
-    public function fetchUser($id){
+
+    public function fetchUser($id)
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $query = $sql->select()->from(array('u'=>'users'))
-                               ->join(array('urm' => 'user_role_map'), "urm.user_id=u.id", array('role_id'),'left')
-                               ->where(array('id'=>$id));
-        $queryStr = $sql->getSqlStringForSqlObject($query);
+        $query = $sql->select()->from(array('u' => 'users'))
+            ->join(array('urm' => 'user_role_map'), "urm.user_id=u.id", array('role_id'), 'left')
+            ->where(array('id' => $id));
+        $queryStr = $sql->buildSqlString($query);
         $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if($queryResult){
+        if ($queryResult) {
             $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
-                                            ->columns(array('token'))
-                                            ->where(array('user_id'=>$id))
-                                            ->order("token ASC");
-            $userTokenQueryStr = $sql->getSqlStringForSqlObject($userTokenQuery);
+                ->columns(array('token'))
+                ->where(array('user_id' => $id))
+                ->order("token ASC");
+            $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
             $queryResult['userToken'] = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         }
         return $queryResult;
@@ -370,17 +379,18 @@ class UsersTable extends AbstractTableGateway {
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
         $subject = '';
-            $eventType = 'log-out';
-            $action = $username . ' logged out';
-            $resourceName = 'log-out';
-            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+        $eventType = 'log-out';
+        $action = $username . ' logged out';
+        $resourceName = 'log-out';
+        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
     }
 
-    public function updateUserProfileDetails($params){
-        $common=new CommonService();
+    public function updateUserProfileDetails($params)
+    {
+        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $userId=base64_decode($params['userId']);
+        $userId = base64_decode($params['userId']);
         if (!empty($userId)) {
             $data = array(
                 'first_name' => $params['firstName'],
@@ -388,7 +398,7 @@ class UsersTable extends AbstractTableGateway {
                 'email' => $params['email'],
                 'contact_no' => $params['mobile_no']
             );
-            $this->update($data,array('id'=>$userId));
+            $this->update($data, array('id' => $userId));
             if (isset($params['existImage']) && $params['existImage'] == '') {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
                     unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
@@ -403,7 +413,7 @@ class UsersTable extends AbstractTableGateway {
                 $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['user_image']['name'], PATHINFO_EXTENSION));
                 $imageName = time() . '_' . $userId . "." . $extension;
                 if (move_uploaded_file($_FILES["user_image"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName)) {
-                    
+
                     $resizeObj = new ImageResizeService(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName);
                     $resizeObj->resizeImage(320, 214, 'auto');
                     $resizeObj->saveImage(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $imageName, 100);
@@ -416,16 +426,17 @@ class UsersTable extends AbstractTableGateway {
         }
     }
 
-    public function updatePassword($params){
+    public function updatePassword($params)
+    {
         $logincontainer = new Container('credo');
-        $common=new CommonService();
+        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $userId=$logincontainer->userId;
-            $config = new \Laminas\Config\Reader\Ini();
-            $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
-            $password = sha1($params['newpassword'] . $configResult["password"]["salt"]);
-            $data = array('password' => $password);
-            return $this->update($data,array('id'=>$userId));
+        $userId = $logincontainer->userId;
+        $config = new \Laminas\Config\Reader\Ini();
+        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $password = sha1($params['newpassword'] . $configResult["password"]["salt"]);
+        $data = array('password' => $password);
+        return $this->update($data, array('id' => $userId));
     }
 }

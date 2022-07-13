@@ -1,32 +1,27 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-inputfilter for the canonical source repository
- * @copyright https://github.com/laminas/laminas-inputfilter/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-inputfilter/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\InputFilter;
 
 /**
  * InputFilter which only checks the containing Inputs when non-empty data is set,
  * else it reports valid
- *
- * This is analog to {@see Laminas\InputFilter\Input} with the option ->setRequired(false)
+ * This is analog to {@see Input} with the option ->setRequired(false)
  */
 class OptionalInputFilter extends InputFilter
 {
     /**
      * Set data to use when validating and filtering
      *
-     * @param  iterable|mixed $data
-     *     must be a non-empty iterable in order trigger actual validation, else it is always valid
+     * @param iterable|null $data must be a non-empty iterable in order trigger
+     *                            actual validation, else it is always valid
+     * @return $this
      * @throws Exception\InvalidArgumentException
-     * @return InputFilterInterface
      */
     public function setData($data)
     {
-        return parent::setData($data ?: []);
+        parent::setData($data ?: []);
+
+        return $this;
     }
 
     /**
@@ -49,7 +44,7 @@ class OptionalInputFilter extends InputFilter
      *     which would likely cause failures later on in your program
      * Fallbacks for the inputs are not respected by design
      *
-     * @return array|null
+     * @return array<string, mixed>|null
      */
     public function getValues()
     {

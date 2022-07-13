@@ -1,10 +1,6 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-view for the canonical source repository
- * @copyright https://github.com/laminas/laminas-view/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-view/blob/master/LICENSE.md New BSD License
- */
+declare(strict_types=1);
 
 namespace Laminas\View\Helper;
 
@@ -12,24 +8,23 @@ use Laminas\View\Model\ModelInterface as Model;
 
 /**
  * Helper for storing and retrieving the root and current view model
+ *
+ * @final
  */
 class ViewModel extends AbstractHelper
 {
-    /**
-     * @var Model
-     */
+    use DeprecatedAbstractHelperHierarchyTrait;
+
+    /** @var Model|null */
     protected $current;
 
-    /**
-     * @var Model
-     */
+    /** @var Model|null */
     protected $root;
 
     /**
      * Set the current view model
      *
-     * @param  Model $model
-     * @return ViewModel
+     * @return $this
      */
     public function setCurrent(Model $model)
     {
@@ -40,7 +35,7 @@ class ViewModel extends AbstractHelper
     /**
      * Get the current view model
      *
-     * @return null|Model
+     * @return Model|null
      */
     public function getCurrent()
     {
@@ -54,14 +49,13 @@ class ViewModel extends AbstractHelper
      */
     public function hasCurrent()
     {
-        return ($this->current instanceof Model);
+        return $this->current instanceof Model;
     }
 
     /**
      * Set the root view model
      *
-     * @param  Model $model
-     * @return ViewModel
+     * @return $this
      */
     public function setRoot(Model $model)
     {
@@ -72,7 +66,7 @@ class ViewModel extends AbstractHelper
     /**
      * Get the root view model
      *
-     * @return null|Model
+     * @return Model|null
      */
     public function getRoot()
     {
@@ -86,6 +80,6 @@ class ViewModel extends AbstractHelper
      */
     public function hasRoot()
     {
-        return ($this->root instanceof Model);
+        return $this->root instanceof Model;
     }
 }

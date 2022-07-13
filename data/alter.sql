@@ -2381,3 +2381,8 @@ CREATE TABLE `user_login_history` (
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\UserLoginHistory', 'Manage User Login History');
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\UserLoginHistory', 'index', 'Access');
+
+-- Amit 02-Mar-2022
+ALTER TABLE `spi_form_v_6` CHANGE `id` `id` INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `spi_form_v_5` CHANGE `id` `id` INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `spi_form_v_3` CHANGE `id` `id` INT NOT NULL AUTO_INCREMENT;

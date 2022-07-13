@@ -17,7 +17,7 @@ $resourceResult = $resourceResult->{$result->role_code};
                   <form role="form" name="addRoleInformation" id="addRoleInformation" method="post" action="<?php echo $this->url('roles', array('action' => 'edit')); ?>" autocomplete="off" >
                     <div class="form-group col-lg-6">
                       <label>Role Name <span class="mandatory">*</span> </label>
-                      <input type="text" placeholder="Role Name" class="form-control isRequired" name="roleName" id="roleName" title="Please enter the role name" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" .$result->role_id; ?>', 'Already exist this name . Please choose another name.')" value="<?php echo $result->role_name; ?>">
+                      <input type="text" placeholder="Role Name" class="form-control isRequired" name="roleName" id="roleName" title="Please enter the role name" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" .$result->role_id; ?>', 'This name already exists. Please choose another name.')" value="<?php echo $result->role_name; ?>">
 					  <input type="hidden" class="form-control isRequired" id="roleId" name="roleId" value="<?php echo base64_encode($result->role_id); ?>"/>
                     </div>
                     <div class="form-group col-lg-6">

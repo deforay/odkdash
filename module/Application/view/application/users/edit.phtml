@@ -41,7 +41,7 @@ if(isset($result->userToken) && count($result->userToken)>0){
                     </div>
 					<div class="form-group col-lg-6">
                       <label>Login Id <span class="mandatory">*</span></label>
-                      <input type="text" placeholder="Login Id" class="form-control" name="userName" id="userName" title="Please enter the user name" onblur="checkNameValidation('users','login', this,'<?php echo "id##" .$result->id; ?>', 'Already exist this name . Please choose another name.')" value="<?php echo $result->login; ?>">
+                      <input type="text" placeholder="Login Id" class="form-control" name="userName" id="userName" title="Please enter the user name" onblur="checkNameValidation('users','login', this,'<?php echo "id##" .$result->id; ?>', 'This name already exists. Please choose another name.')" value="<?php echo $result->login; ?>">
                     </div>
 					<div class="form-group col-lg-6">
                       <label>Password <span class="mandatory">*</span></label>

@@ -30,6 +30,7 @@ return array(
         'Laminas\Router',
         'Laminas\Validator',
         'Laminas\Diactoros',
+        'Laminas\ZendFrameworkBridge',
         'Application',
     ),
 

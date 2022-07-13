@@ -14,7 +14,7 @@
                   <form role="form" name="addRoleInformation" id="addRoleInformation" method="post" action="<?php echo $this->url('roles', array('action' => 'add')); ?>" autocomplete="off" >
                     <div class="form-group col-lg-6">
                       <label>Role Name <span class="mandatory">*</span> </label>
-                      <input type="text" placeholder="Role Name" class="form-control isRequired" name="roleName" id="roleName" title="Please enter the role name" onblur="checkNameValidation('roles','role_name', this, null, 'Already exist this name . Please choose another name.')" >
+                      <input type="text" placeholder="Role Name" class="form-control isRequired" name="roleName" id="roleName" title="Please enter the role name" onblur="checkNameValidation('roles','role_name', this, null, 'This name already exists. Please choose another name.')" >
                     </div>
                     <div class="form-group col-lg-6">
                       <label>Role Code <span class="mandatory">*</span></label>

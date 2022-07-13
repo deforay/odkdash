@@ -74,7 +74,11 @@
         "serve": "Start the built-in PHP web server and serve the application.",
         "test": "Run unit tests."
     },
-    "require-dev": {
-        "laminas/laminas-test": "^3.4.2"
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "laminas/laminas-component-installer": true,
+            "laminas/laminas-skeleton-installer": true
+        }
     }
 }

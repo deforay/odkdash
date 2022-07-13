@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-inputfilter for the canonical source repository
- * @copyright https://github.com/laminas/laminas-inputfilter/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-inputfilter/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\InputFilter;
 
 /**
@@ -14,12 +8,12 @@ namespace Laminas\InputFilter;
 interface UnfilteredDataInterface
 {
     /**
-     * @return array|object
+     * @return array<array-key, mixed>
      */
     public function getUnfilteredData();
 
     /**
-     * @param array|object $data
+     * @param array<array-key, mixed> $data
      * @return $this
      */
     public function setUnfilteredData($data);

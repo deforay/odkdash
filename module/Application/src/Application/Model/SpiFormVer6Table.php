@@ -1080,7 +1080,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $dbAdapter = $this->adapter;
             $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                                 ->where(array('spiv6.uuid' => $data["uuid"]));
-        $sQueryStr = $sql->getSqlStringForSqlObject($sQuery);
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if($data["uuid"] != $sResult["uuid"]){
                     $insert->values($par);

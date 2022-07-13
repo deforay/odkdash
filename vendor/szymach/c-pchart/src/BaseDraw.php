@@ -264,17 +264,20 @@ abstract class BaseDraw
     {
         if ($R < 0) {
             $R = 0;
-        } if ($R > 255) {
+        }
+        if ($R > 255) {
             $R = 255;
         }
         if ($G < 0) {
             $G = 0;
-        } if ($G > 255) {
+        }
+        if ($G > 255) {
             $G = 255;
         }
         if ($B < 0) {
             $B = 0;
-        } if ($B > 255) {
+        }
+        if ($B > 255) {
             $B = 255;
         }
         if ($Alpha < 0) {
@@ -285,7 +288,7 @@ abstract class BaseDraw
         }
 
         $Alpha = $this->convertAlpha($Alpha);
-        return imagecolorallocatealpha($Picture, $R, $G, $B, $Alpha);
+        return imagecolorallocatealpha($Picture, (int) $R, (int) $G, (int) $B, (int) $Alpha);
     }
 
     /**
@@ -295,7 +298,7 @@ abstract class BaseDraw
      */
     public function convertAlpha($AlphaValue)
     {
-        return (127 / 100) * (100 - $AlphaValue);
+        return floor((127 / 100) * (100 - $AlphaValue));
     }
 
     /**
@@ -507,7 +510,7 @@ abstract class BaseDraw
             return 0;
         }
         if (floor($Value2) != 0) {
-            return $Value1 % $Value2;
+            return (int) $Value1 % (int) $Value2;
         }
 
         $MinValue = min($Value1, $Value2);
@@ -516,7 +519,7 @@ abstract class BaseDraw
             $Factor = $Factor * 10;
         }
 
-        return ($Value1 * $Factor) % ($Value2 * $Factor);
+        return floor($Value1 * $Factor) % floor($Value2 * $Factor);
     }
 
     /**
@@ -573,7 +576,12 @@ abstract class BaseDraw
      */
     public function fixBoxCoordinates($Xa, $Ya, $Xb, $Yb)
     {
-        return [min($Xa, $Xb), min($Ya, $Yb), max($Xa, $Xb), max($Ya, $Yb)];
+        return [
+            (int) min($Xa, $Xb),
+            (int) min($Ya, $Yb),
+            (int) max($Xa, $Xb),
+            (int) max($Ya, $Yb)
+        ];
     }
 
     /**
@@ -1695,6 +1703,26 @@ abstract class BaseDraw
                 }
                 $this->drawLabelBox($MinX, $Y - 3, $Description, $Series, $Format);
             }
+        }
+    }
+
+    /**
+     * @param GdImage|resource $image
+     * @param array $points
+     * @param int $numPoints
+     * @param int $color
+     * @return void
+     */
+    protected function imageFilledPolygonWrapper(
+        $image,
+        array $points,
+        $numPoints,
+        $color
+    ) {
+        if (version_compare(PHP_VERSION, '8.1.0') === -1) {
+            imagefilledpolygon($image, $points, $numPoints, $color);
+        } else {
+            imagefilledpolygon($image, $points, $color);
         }
     }
 }
