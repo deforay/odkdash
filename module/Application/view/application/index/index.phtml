@@ -86,36 +86,23 @@ $sessionLogin = new Container('credo');
 	<div class="main-content">
 
 		<div class="row" style="margin-bottom:10px;clear:both;">
-			<div class="col-md-6">
-				<div class="widget" style="min-height:440px;">
+			<div class="col-md-12">
+				<div class="widget" style="max-height:520px;">
 					<h3><?= $this->translate('Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) Checklist'); ?></h3>
+					<br>
+					<img src="<?php echo $this->basePath('assets/img/odkdash-cycle.png'); ?>"  style="height:400px;margin:0 auto;display:block;;" />
 				</div>
 			</div>
-			<div class="col-md-6">
+			<!-- <div class="col-md-6">
 				<div class="widget">
 					<img src="<?php echo $this->basePath('assets/img/odkdash-cycle.png'); ?>" style="width:100%;" />
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<div class="row">
-			<div class="col-md-6">
-				<div class="widget">
-					<div class="widget-head">
-						<div class="title row">
-							<div class="col-lg-12 col-sm-12 col-md-12">
-								<h3><?= $this->translate('Performance of High Volume Sites'); ?></h3>
-							</div>
-						</div>
-
-					</div>
-					<div class="chart-container" id="testVolumeValues">
-						<div style="width:100%;height:345px" id="volumeChart"></div>
-					</div>
-				</div>
-			</div>
 
 
-			<div class="col-md-6">
+			<div class="col-md-12">
 				<div class="widget">
 					<div class="widget-head">
 						<span class="title">
@@ -131,45 +118,9 @@ $sessionLogin = new Container('credo');
 		</div>
 		<div class="row">
 
-			<div class="col-md-6" id="lefter">
-				<div class="widget widget-radar widget-pie">
-					<div class="widget-head">
-						<div class="title row">
-							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
-								<h3><?= $this->translate('Audit Performance'); ?></h3>
+			
 
-							</div>
-						</div>
-
-					</div>
-					<div id="radarChart"></div>
-				</div>
-				<div class="widget widget-radar widget-pie">
-					<div class="widget-head">
-						<div class="title row">
-							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
-								<h3><?= $this->translate('Poor Performance – QSE Section Questions') ?></h3>
-							</div>
-							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3" style="white-space:nowrap">
-								<label style=""><?= $this->translate('Limit'); ?></label>
-								<select class="limitBar" id="limitBar" style="" onchange="getAuditWorstDetails()">
-									<option value="5">5</option>
-									<option value="10" selected="selected">10</option>
-									<option value="15">15</option>
-									<option value="20">20</option>
-									<option value="30">30</option>
-								</select>
-							</div>
-						</div>
-
-
-					</div>
-					<div class="chart-container" id="zeroCountChart" style="height:262px;"></div>
-				</div>
-
-			</div>
-
-			<div class="col-md-6" id="righter">
+			<div class="col-md-12" id="righter">
 				<div class="widget widget-map">
 
 					<div class="widget-head">
@@ -182,11 +133,6 @@ $sessionLogin = new Container('credo');
 
 					</div>
 
-
-
-
-
-
 					<div class="map-container" id="auditLocations" style="height:1135px;max-height:1500px;">
 
 					</div>
@@ -194,27 +140,6 @@ $sessionLogin = new Container('credo');
 			</div>
 
 		</div>
-
-		<div class="row">
-
-
-			<div class="col-md-12 col-sm-12">
-				<div class="widget">
-					<div class="widget-head">
-						<span class="title">
-							<h3><?= $this->translate('Audit Dates'); ?></h3>
-						</span>
-					</div>
-					<div class="chart-container">
-						<div style="width:100%;height:340px" id="auditDates"></div>
-					</div>
-				</div>
-			</div>
-
-
-
-		</div>
-
 
 	</div>
 
