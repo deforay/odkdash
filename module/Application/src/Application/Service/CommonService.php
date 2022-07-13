@@ -14,19 +14,23 @@ use Laminas\Mime\Mime;
 use Laminas\Mail\Transport\Sendmail;
 use Laminas\Db\Sql\Expression;
 
-class CommonService {
+class CommonService
+{
 
     public $sm = null;
 
-    public function __construct($sm = null) {
+    public function __construct($sm = null)
+    {
         $this->sm = $sm;
     }
 
-    public function getServiceManager() {
+    public function getServiceManager()
+    {
         return $this->sm;
     }
 
-    public static function generateRandomString($length = 8, $seeds = 'alphanum') {
+    public static function generateRandomString($length = 8, $seeds = 'alphanum')
+    {
         // Possible seeds
         $seedings['alpha'] = 'abcdefghijklmnopqrstuvwqyz';
         $seedings['numeric'] = '0123456789';
@@ -54,7 +58,8 @@ class CommonService {
         return $str;
     }
 
-    public function checkFieldValidations($params) {
+    public function checkFieldValidations($params)
+    {
 
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
         $tableName = $params['tableName'];
@@ -96,7 +101,8 @@ class CommonService {
         }
     }
 
-    public function dateFormat($date) {
+    public function dateFormat($date)
+    {
         if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
             return "0000-00-00";
         } else {
@@ -117,7 +123,8 @@ class CommonService {
         }
     }
 
-    public function humanDateFormat($date) {
+    public function humanDateFormat($date)
+    {
         if ($date == null || $date == "" || $date == "0000-00-00" || $date == "0000-00-00 00:00:00") {
             return "";
         } else {
@@ -131,7 +138,8 @@ class CommonService {
         }
     }
 
-    public function viewDateFormat($date) {
+    public function viewDateFormat($date)
+    {
 
         if ($date == null || $date == "" || $date == "0000-00-00") {
             return "";
@@ -146,12 +154,14 @@ class CommonService {
         }
     }
 
-    public function insertTempMail($to, $subject, $message, $fromMail, $fromName, $cc, $bcc) {
+    public function insertTempMail($to, $subject, $message, $fromMail, $fromName, $cc, $bcc)
+    {
         $tempmailDb = $this->sm->get('TempMailTable');
         return $tempmailDb->insertTempMailDetails($to, $subject, $message, $fromMail, $fromName, $cc, $bcc);
     }
 
-    public function sendTempMail() {
+    public function sendTempMail()
+    {
         try {
             $tempMailDb = $this->sm->get('TempMailTable');
             $config = new \Laminas\Config\Reader\Ini();
@@ -181,15 +191,15 @@ class CommonService {
                     $alertMail = new Mail\Message();
                     $id = $result['temp_id'];
                     $tempMailDb->updateTempMailStatus($id);
-                
+
                     $fromEmail = $result['from_mail'];
                     $fromFullName = $result['from_full_name'];
                     $subject = $result['subject'];
-                    
+
                     $alertMail->addFrom($fromEmail, $fromFullName);
                     $alertMail->addReplyTo($fromEmail, $fromFullName);
                     $alertMail->addTo($result['to_email']);
-                    
+
                     if (isset($result['cc']) && trim($result['cc']) != "") {
                         $alertMail->addCc($result['cc']);
                     }
@@ -199,19 +209,19 @@ class CommonService {
                     }
 
                     $alertMail->setSubject($subject);
-                    
+
                     $html = new MimePart($result['message']);
                     $html->type = "text/html";
 
                     $body = new MimeMessage();
                     $body->setParts(array($html));
-                    
-                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id;
-                    if(is_dir($dirPath)) {
-                        $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email". DIRECTORY_SEPARATOR . $id);
+
+                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id;
+                    if (is_dir($dirPath)) {
+                        $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id);
                         while (($filename = readdir($dh)) !== false) {
                             if ($filename != "." && $filename != "..") {
-                                $fileContent = fopen($dirPath. DIRECTORY_SEPARATOR. $filename, 'r');
+                                $fileContent = fopen($dirPath . DIRECTORY_SEPARATOR . $filename, 'r');
                                 $attachment = new MimePart($fileContent);
                                 $attachment->filename    = $filename;
                                 $attachment->type        = Mime::TYPE_OCTETSTREAM;
@@ -223,9 +233,9 @@ class CommonService {
                         closedir($dh);
                         $this->removeDirectory($dirPath);
                     }
-                    
+
                     $alertMail->setBody($body);
-                    
+
                     $transport->send($alertMail);
                     $tempMailDb->deleteTempMail($id);
                 }
@@ -237,7 +247,8 @@ class CommonService {
         }
     }
 
-    public function sendAuditMail() {
+    public function sendAuditMail()
+    {
         try {
             $auditMailDb = $this->sm->get('AuditMailTable');
             $config = new \Laminas\Config\Reader\Ini();
@@ -267,15 +278,15 @@ class CommonService {
                     $alertMail = new Mail\Message();
                     $id = $result['mail_id'];
                     $auditMailDb->updateInitialAuditMailStatus($id);
-                    
+
                     $fromEmail = $result['from_mail'];
                     $fromFullName = $result['from_full_name'];
                     $subject = $result['subject'];
-                    
+
                     $alertMail->addFrom($fromEmail, $fromFullName);
                     $alertMail->addReplyTo($fromEmail, $fromFullName);
                     $alertMail->addTo($result['to_email']);
-                    
+
                     if (isset($result['cc']) && trim($result['cc']) != "") {
                         $alertMail->addCc($result['cc']);
                     }
@@ -285,37 +296,37 @@ class CommonService {
                     }
 
                     $alertMail->setSubject($subject);
-                    
+
                     $html = new MimePart($result['message']);
                     $html->type = "text/html";
 
                     $body = new MimeMessage();
                     $body->setParts(array($html));
-                    
-                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id;
-                    if(is_dir($dirPath)) {
-                        $dh  = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email". DIRECTORY_SEPARATOR . $id);
+
+                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id;
+                    if (is_dir($dirPath)) {
+                        $dh  = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id);
                         // while (($filename = readdir($dh)) !== false) {
-                            foreach ($dh as $filename => $value){
-                                if (!in_array($value,array(".",".."))){
-                                    $fileContent = fopen($dirPath. DIRECTORY_SEPARATOR. $value, 'r');
-                                    $attachment = new MimePart($fileContent);
-                                    $attachment->filename    = $value;
-                                    $attachment->type        = Mime::TYPE_OCTETSTREAM;
-                                    $attachment->encoding    = Mime::ENCODING_BASE64;
-                                    $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
-                                    $body->addPart($attachment);
-                                }
+                        foreach ($dh as $filename => $value) {
+                            if (!in_array($value, array(".", ".."))) {
+                                $fileContent = fopen($dirPath . DIRECTORY_SEPARATOR . $value, 'r');
+                                $attachment = new MimePart($fileContent);
+                                $attachment->filename    = $value;
+                                $attachment->type        = Mime::TYPE_OCTETSTREAM;
+                                $attachment->encoding    = Mime::ENCODING_BASE64;
+                                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
+                                $body->addPart($attachment);
                             }
+                        }
                         // }
                         // closedir($dh);
                         $this->removeDirectory($dirPath);
                     }
-                    
+
                     $alertMail->setBody($body);
-                    
-                    if($transport->send($alertMail)){
-                       $auditMailDb->updateAuditMailStatus($id);
+
+                    if ($transport->send($alertMail)) {
+                        $auditMailDb->updateAuditMailStatus($id);
                     }
                 }
             }
@@ -325,23 +336,27 @@ class CommonService {
             error_log('whoops! Something went wrong in send-audit-mail.');
         }
     }
-    
-    public static function getDate($timezone = 'Asia/Calcutta') {
+
+    public static function getDate($timezone = 'Asia/Calcutta')
+    {
         $date = new \DateTime(date('Y-m-d'), new \DateTimeZone($timezone));
         return $date->format('Y-m-d');
     }
 
-    public static function getDateTime($timezone = 'Asia/Calcutta') {
+    public static function getDateTime($timezone = 'Asia/Calcutta')
+    {
         $date = new \DateTime(date('Y-m-d H:i:s'), new \DateTimeZone($timezone));
         return $date->format('Y-m-d H:i:s');
     }
 
-    public static function getCurrentTime($timezone = 'Asia/Calcutta') {
+    public static function getCurrentTime($timezone = 'Asia/Calcutta')
+    {
         $date = new \DateTime(date('Y-m-d H:i:s'), new \DateTimeZone($timezone));
         return $date->format('H:i');
     }
 
-    public function checkMultipleFieldValidations($params) {
+    public function checkMultipleFieldValidations($params)
+    {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
         $jsonData = $params['json_data'];
         $tableName = $jsonData['tableName'];
@@ -361,18 +376,21 @@ class CommonService {
         $data = count($result);
         return $data;
     }
-    
-    public function getAllConfig($params){
+
+    public function getAllConfig($params)
+    {
         $configDb = $this->sm->get('GlobalTable');
-        return $configDb->fetchAllConfig($params);      
+        return $configDb->fetchAllConfig($params);
     }
-    public function getGlobalConfigDetails(){
+    public function getGlobalConfigDetails()
+    {
         $globalDb = $this->sm->get('GlobalTable');
         $result = $globalDb->getGlobalConfig();
-        return $result;        
+        return $result;
     }
-    
-    public function updateConfig($params) {
+
+    public function updateConfig($params)
+    {
         $container = new Container('alert');
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
@@ -386,14 +404,15 @@ class CommonService {
             $eventLogDb = $this->sm->get('EventLogTable');
             $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
             $adapter->commit();
-            $container->alertMsg ="Global Config Updated Successfully.";
-        }catch (Exception $exc) {
+            $container->alertMsg = "Global Config Updated Successfully.";
+        } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
-    
-    public function dbBackup() {
+
+    public function dbBackup()
+    {
         try {
             $configResult = include(CONFIG_PATH . '/autoload/local.php');
             $dbUsername = $configResult["db"]["username"];
@@ -430,8 +449,9 @@ class CommonService {
             error_log('whoops! Something went wrong in cron/dbBackup');
         }
     }
-    
-    function removeDirectory($dirname) {
+
+    function removeDirectory($dirname)
+    {
         // Sanity check
         if (!file_exists($dirname)) {
             return false;
@@ -459,5 +479,3 @@ class CommonService {
         return rmdir($dirname);
     }
 }
-
-?>

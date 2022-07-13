@@ -49,6 +49,7 @@ class UsersTable extends AbstractTableGateway
         $password = sha1($params['password'] . $configResult["password"]["salt"]);
 
         $dbAdapter = $this->adapter;
+        $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $sql = new Sql($dbAdapter);
@@ -61,10 +62,10 @@ class UsersTable extends AbstractTableGateway
         $data = array(
             'last_login_datetime' => $common->getDateTime()
         );
-        if($sResult !== false && !empty($sResult)){
+        if ($sResult !== false && !empty($sResult)) {
             $this->update($data, array('id' => $sResult->id));
         }
-        
+
         if ($sResult) {
             $token = array();
             $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
@@ -87,7 +88,21 @@ class UsersTable extends AbstractTableGateway
             $resourceName = 'login in';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             $userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
-            return 'dashboard';
+
+            $redirect = $gTable->getGlobalValue('web_version');
+            $redirectRoute = 'dashboard';
+            if (isset($redirect) && !empty($redirect) && !is_array($redirect)) {
+                if (!empty($redirect) && $redirect == 'v6') {
+                    $redirectRoute = 'dashboard-v6';
+                }
+                if (!empty($redirect) && $redirect == 'v5') {
+                    $redirectRoute = 'dashboard-v5';
+                }
+                if (!empty($redirect) && $redirect == 'v3') {
+                    $redirectRoute = 'dashboard';
+                }
+            }
+            return $redirectRoute;
         } else {
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
