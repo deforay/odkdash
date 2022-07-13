@@ -90,7 +90,7 @@ $sessionLogin = new Container('credo');
 				<div class="widget" style="max-height:520px;">
 					<h3><?= $this->translate('Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) Checklist'); ?></h3>
 					<br>
-					<img src="<?php echo $this->basePath('assets/img/odkdash-cycle.png'); ?>"  style="height:400px;margin:0 auto;display:block;;" />
+					<img src="<?php echo $this->basePath('assets/img/odkdash-cycle.png'); ?>" style="height:400px;margin:0 auto;display:block;;" />
 				</div>
 			</div>
 			<!-- <div class="col-md-6">
@@ -118,7 +118,7 @@ $sessionLogin = new Container('credo');
 		</div>
 		<div class="row">
 
-			
+
 
 			<div class="col-md-12" id="righter">
 				<div class="widget widget-map">
@@ -198,21 +198,21 @@ $sessionLogin = new Container('credo');
 		$labNameData = array();
 		foreach ($allSubmissions as $row) {
 			if ($counter == 20) break;
-			if ($row['AUDIT_SCORE_PERCANTAGE'] < 40) {
+			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
 				$color = '#FF0000';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] < 60) {
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] < 60) {
 				$color = '#FFA500';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] < 80) {
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] < 80) {
 				$color = '#FFFF00';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] < 90) {
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] < 90) {
 				$color = '#8DD63E';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
 				$color = '#528A16';
 			}
 
-			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCANTAGE'], 2) . ", color : '" . $color . "' }";
+			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCENTAGE'], 2) . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
 		}
 		?>
@@ -304,7 +304,7 @@ $sessionLogin = new Container('credo');
 				},
 				yAxis: 1,
 				tooltip: {
-					valueSuffix: ' <?= $this->translate('Tests');?>'
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
 				}
 			}]
 		});
@@ -325,18 +325,18 @@ $sessionLogin = new Container('credo');
 			});
 	}
 
-	function getAuditWorstDetails() {
+	// function getAuditWorstDetails() {
 
-		limitBar = $("#limitBar").val();
+	// 	limitBar = $("#limitBar").val();
 
-		$.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {
-				limitBar: limitBar
-			},
-			function(data) {
-				$("#zeroCountChart").html(data);
-			});
+	// 	$.post("<?php echo $this->url('spi-v3-form', array('action' => 'worst-performance')); ?>", {
+	// 			limitBar: limitBar
+	// 		},
+	// 		function(data) {
+	// 			$("#zeroCountChart").html(data);
+	// 		});
 
-	}
+	// }
 
 	function getAuditDetails() {
 
@@ -569,7 +569,7 @@ $sessionLogin = new Container('credo');
 
 		bar_chart();
 		//zeroCountsBarChart();
-		getAuditWorstDetails();
+		//getAuditWorstDetails();
 
 		getAuditLocationDetails();
 
@@ -668,7 +668,7 @@ $sessionLogin = new Container('credo');
 					}
 				},
 				title: {
-					text: '<?= $this->translate('No. of Testers');?>',
+					text: '<?= $this->translate('No. of Testers'); ?>',
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}
@@ -731,19 +731,19 @@ $sessionLogin = new Container('credo');
 					height: 6
 				},
 				tooltip: {
-					valueSuffix: ' <?= $this->translate('Tests');?>'
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
 				}
 
 			}, {
-				name: '<?= $this->translate('Testers');?>',
+				name: '<?= $this->translate('Testers'); ?>',
 				type: 'column',
 				data: [<?php echo implode(",", $testerData); ?>],
 				tooltip: {
-					valueSuffix: ' <?= $this->translate('Tests');?>'
+					valueSuffix: ' <?= $this->translate('Tests'); ?>'
 				}
 
 			}, {
-				name: '<?= $this->translate('Level');?>',
+				name: '<?= $this->translate('Level'); ?>',
 				type: 'column',
 				yAxis: 1,
 				data: [<?php echo implode(",", $levelData); ?>],

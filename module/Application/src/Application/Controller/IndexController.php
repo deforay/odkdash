@@ -18,18 +18,20 @@ class IndexController extends AbstractActionController
 {
 
     private $odkFormService = null;
+    private $commonService = null;
 
-    public function __construct($odkFormService)
+    public function __construct($odkFormService, $commonService)
     {
         $this->odkFormService = $odkFormService;
+        $this->commonService = $commonService;
     }
 
     public function indexAction()
     {
         $params = array();
 
-        $allSubmissions = $this->odkFormService->getAllApprovedSubmissions();
-        $testingVolume = $this->odkFormService->getAllApprovedTestingVolume('');
+        $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV6();
+        $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6('');
 
         return new ViewModel(array(
             'allSubmissions' => $allSubmissions,
@@ -41,10 +43,14 @@ class IndexController extends AbstractActionController
     {
 
         if ($this->getRequest()->isPost()) {
+            $configData = $this->commonService->getGlobalConfigDetails();
             $params = $this->getRequest()->getPost();
-            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocation($params);
+            $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocationV6($params);
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('allSubmissions' => $allSubmissions))
+            $viewModel->setVariables(array(
+                'allSubmissions' => $allSubmissions,
+                'configData' => $configData
+            ))
                 ->setTerminal(true);
             return $viewModel;
         }
@@ -55,8 +61,9 @@ class IndexController extends AbstractActionController
 
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData($params);
-            $perf1 = $this->odkFormService->getPerformance($params);
+            $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseDataV6($params);
+            $perf1 = $this->odkFormService->getPerformanceV6($params);
+            //var_dump($perf1);die;
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('auditRoundWiseData' => $auditRoundWiseData, 'perf1' => $perf1))
                 ->setTerminal(true);

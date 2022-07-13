@@ -183,8 +183,9 @@ class Module
         return array(
             'factories' => array(
                 'Application\Controller\Index' => function ($sm) {
+                    $commonService = $sm->getServiceLocator()->get('CommonService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\IndexController($odkFormService);
+                    return new \Application\Controller\IndexController($odkFormService, $commonService);
                 },
                 'Application\Controller\Receiver' => function ($sm) {
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
