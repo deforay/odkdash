@@ -23,16 +23,13 @@
 </div>
 <script>
     $(document).ready(function() {
-        //initialize the javascript
-        radar_chart();
-    });
 
-    function radar_chart() {
         $('#container-section-zero').highcharts({
 
             chart: {
                 polar: true,
-                type: 'line'
+                type: 'line',
+                reflow: true
             },
 
             title: {
@@ -45,7 +42,7 @@
             },
 
             xAxis: {
-                categories: ["Surveilance Eligibility","Counselor Protocol", "Recency Test Recorded", "Process Documented", "2 weeks Results", "Violation Documented", "Documented Errors"],
+                categories: ["Surveilance Eligibility", "Counselor Protocol", "Recency Test Recorded", "Process Documented", "2 weeks Results", "Violation Documented", "Documented Errors"],
                 tickmarkPlacement: 'on',
                 lineWidth: 0
             },
@@ -82,5 +79,5 @@
             ]
 
         });
-    }
+    });
 </script>
