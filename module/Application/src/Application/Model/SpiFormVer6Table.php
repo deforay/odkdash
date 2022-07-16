@@ -69,7 +69,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $val = json_encode($val);
                 }
                 $data[$key] = $val . "";
-
             }
 
             try {
@@ -405,12 +404,10 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                     $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 5);
                 }
-
             } catch (Exception $e) {
                 error_log($e->getMessage());
                 error_log($e->getTraceAsString());
             }
-
         }
     }
 
@@ -478,23 +475,23 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['affiliation'] = $submissionData['TESTSITE']['affiliation'];
                 $data['affiliation_other'] = $submissionData['TESTSITE']['affiliation_other'];
                 $data['NumberofTester'] = (isset($submissionData['TESTSITE']['NumberofTester']) && $submissionData['TESTSITE']['NumberofTester'] > 0 ? $submissionData['TESTSITE']['NumberofTester'] : 0);
-                $data['client_tested_HIV'] =$submissionData['TESTSITE']['client_tested_HIV'];
-                $data['client_tested_HIV_PM'] =$submissionData['TESTSITE']['client_tested_HIV_PM'];
-                $data['client_tested_HIV_PQ'] =$submissionData['TESTSITE']['client_tested_HIV_PQ'];
-                $data['client_newly_HIV'] =$submissionData['TESTSITE']['client_newly_HIV'];
-                $data['client_newly_HIV_PM'] =$submissionData['TESTSITE']['client_newly_HIV_PM'];
-                $data['client_newly_HIV_PQ'] =$submissionData['TESTSITE']['client_newly_HIV_PQ'];
-                $data['client_negative_HIV'] =$submissionData['TESTSITE']['client_negative_HIV'];
-                $data['client_negative_HIV_PM'] =$submissionData['TESTSITE']['client_negative_HIV_PM'];
-                $data['client_negative_HIV_PQ'] =$submissionData['TESTSITE']['client_negative_HIV_PQ'];
-                $data['client_positive_HIV_RTRI'] =$submissionData['TESTSITE']['client_positive_HIV_RTRI'];
-                $data['client_positive_HIV_RTRI_PM'] =$submissionData['TESTSITE']['client_positive_HIV_RTRI_PM'];
-                $data['client_positive_HIV_RTRI_PQ'] =$submissionData['TESTSITE']['client_positive_HIV_RTRI_PQ'];
-                $data['client_recent_RTRI'] =$submissionData['TESTSITE']['client_recent_RTRI'];
-                $data['client_recent_RTRI_PM'] =$submissionData['TESTSITE']['client_recent_RTRI_PM'];
-                $data['client_recent_RTRI_PQ'] =$submissionData['TESTSITE']['client_recent_RTRI_PQ'];
-                $data['name_auditor_lead'] =$submissionData['TESTSITE']['name_auditor_lead'];
-                $data['name_auditor2'] =$submissionData['TESTSITE']['nameOfAuditor2'];
+                $data['client_tested_HIV'] = $submissionData['TESTSITE']['client_tested_HIV'];
+                $data['client_tested_HIV_PM'] = $submissionData['TESTSITE']['client_tested_HIV_PM'];
+                $data['client_tested_HIV_PQ'] = $submissionData['TESTSITE']['client_tested_HIV_PQ'];
+                $data['client_newly_HIV'] = $submissionData['TESTSITE']['client_newly_HIV'];
+                $data['client_newly_HIV_PM'] = $submissionData['TESTSITE']['client_newly_HIV_PM'];
+                $data['client_newly_HIV_PQ'] = $submissionData['TESTSITE']['client_newly_HIV_PQ'];
+                $data['client_negative_HIV'] = $submissionData['TESTSITE']['client_negative_HIV'];
+                $data['client_negative_HIV_PM'] = $submissionData['TESTSITE']['client_negative_HIV_PM'];
+                $data['client_negative_HIV_PQ'] = $submissionData['TESTSITE']['client_negative_HIV_PQ'];
+                $data['client_positive_HIV_RTRI'] = $submissionData['TESTSITE']['client_positive_HIV_RTRI'];
+                $data['client_positive_HIV_RTRI_PM'] = $submissionData['TESTSITE']['client_positive_HIV_RTRI_PM'];
+                $data['client_positive_HIV_RTRI_PQ'] = $submissionData['TESTSITE']['client_positive_HIV_RTRI_PQ'];
+                $data['client_recent_RTRI'] = $submissionData['TESTSITE']['client_recent_RTRI'];
+                $data['client_recent_RTRI_PM'] = $submissionData['TESTSITE']['client_recent_RTRI_PM'];
+                $data['client_recent_RTRI_PQ'] = $submissionData['TESTSITE']['client_recent_RTRI_PQ'];
+                $data['name_auditor_lead'] = $submissionData['TESTSITE']['name_auditor_lead'];
+                $data['name_auditor2'] = $submissionData['TESTSITE']['nameOfAuditor2'];
                 $data['info4'] = $submissionData['SPIRRT']['info4'];
                 $data['INSTANCE'] = $submissionData['TESTSITE']['INSTANCE'];
                 $data['PERSONAL_Q_1_1_HIV_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_1_HIV_TRAINING'];
@@ -533,28 +530,28 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['PHYSICAL_SCORE'] = $submissionData['PHYSICAL']['PHYSICAL_SCORE'];
                 $data['PHYSICAL_Display'] = $submissionData['PHYSICAL']['PHYSICAL_Display'];
                 $data['PHYSICALPHOTO'] = $submissionData['PHYSICAL']['PHYSICALPHOTO'];
-                $data['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES'] =$submissionData['SAFETY']['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES'];
-                $data['SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES'] =$submissionData['SAFETY']['SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES'];
-                $data['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE'] =$submissionData['SAFETY']['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE'];
-                $data['SAFETY_C_3_2_ACCIDENTAL_EXPOSURE'] =$submissionData['SAFETY']['SAFETY_C_3_2_ACCIDENTAL_EXPOSURE'];
-                $data['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES'] =$submissionData['SAFETY']['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES'];
-                $data['SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES'] =$submissionData['SAFETY']['SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES'];
-                $data['SAFETY_Q_3_4_PPE_AVAILABILITY'] =$submissionData['SAFETY']['SAFETY_Q_3_4_PPE_AVAILABILITY'];
-                $data['SAFETY_C_3_4_PPE_AVAILABILITY'] =$submissionData['SAFETY']['SAFETY_C_3_4_PPE_AVAILABILITY'];
-                $data['SAFETY_Q_3_5_PPE_USED_PROPERLY'] =$submissionData['SAFETY']['SAFETY_Q_3_5_PPE_USED_PROPERLY'];
-                $data['SAFETY_C_3_5_PPE_USED_PROPERLY'] =$submissionData['SAFETY']['SAFETY_C_3_5_PPE_USED_PROPERLY'];
-                $data['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY'] =$submissionData['SAFETY']['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY'];
-                $data['SAFETY_C_3_6_WATER_SOAP_AVAILABILITY'] =$submissionData['SAFETY']['SAFETY_C_3_6_WATER_SOAP_AVAILABILITY'];
-                $data['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE'] =$submissionData['SAFETY']['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE'];
-                $data['SAFETY_C_3_7_DISINFECTANT_AVAILABLE'] =$submissionData['SAFETY']['SAFETY_C_3_7_DISINFECTANT_AVAILABLE'];
-                $data['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY'] =$submissionData['SAFETY']['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY'];
-                $data['SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY'] =$submissionData['SAFETY']['SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY'];
-                $data['SAFETY_Q_3_9_SEGREGATION_OF_WASTE'] =$submissionData['SAFETY']['SAFETY_Q_3_9_SEGREGATION_OF_WASTE'];
-                $data['SAFETY_C_3_9_SEGREGATION_OF_WASTE'] =$submissionData['SAFETY']['SAFETY_C_3_9_SEGREGATION_OF_WASTE'];
-                $data['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED'] =$submissionData['SAFETY']['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED'];
-                $data['SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED'] =$submissionData['SAFETY']['SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED'];
-                $data['SAFETY_SCORE'] =$submissionData['SAFETY']['SAFETY_SCORE'];
-                $data['SAFETY_DISPLAY'] =$submissionData['SAFETY']['SAFETY_DISPLAY'];
+                $data['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES'] = $submissionData['SAFETY']['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES'];
+                $data['SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES'] = $submissionData['SAFETY']['SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES'];
+                $data['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE'] = $submissionData['SAFETY']['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE'];
+                $data['SAFETY_C_3_2_ACCIDENTAL_EXPOSURE'] = $submissionData['SAFETY']['SAFETY_C_3_2_ACCIDENTAL_EXPOSURE'];
+                $data['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES'] = $submissionData['SAFETY']['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES'];
+                $data['SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES'] = $submissionData['SAFETY']['SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES'];
+                $data['SAFETY_Q_3_4_PPE_AVAILABILITY'] = $submissionData['SAFETY']['SAFETY_Q_3_4_PPE_AVAILABILITY'];
+                $data['SAFETY_C_3_4_PPE_AVAILABILITY'] = $submissionData['SAFETY']['SAFETY_C_3_4_PPE_AVAILABILITY'];
+                $data['SAFETY_Q_3_5_PPE_USED_PROPERLY'] = $submissionData['SAFETY']['SAFETY_Q_3_5_PPE_USED_PROPERLY'];
+                $data['SAFETY_C_3_5_PPE_USED_PROPERLY'] = $submissionData['SAFETY']['SAFETY_C_3_5_PPE_USED_PROPERLY'];
+                $data['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY'] = $submissionData['SAFETY']['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY'];
+                $data['SAFETY_C_3_6_WATER_SOAP_AVAILABILITY'] = $submissionData['SAFETY']['SAFETY_C_3_6_WATER_SOAP_AVAILABILITY'];
+                $data['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE'] = $submissionData['SAFETY']['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE'];
+                $data['SAFETY_C_3_7_DISINFECTANT_AVAILABLE'] = $submissionData['SAFETY']['SAFETY_C_3_7_DISINFECTANT_AVAILABLE'];
+                $data['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY'] = $submissionData['SAFETY']['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY'];
+                $data['SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY'] = $submissionData['SAFETY']['SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY'];
+                $data['SAFETY_Q_3_9_SEGREGATION_OF_WASTE'] = $submissionData['SAFETY']['SAFETY_Q_3_9_SEGREGATION_OF_WASTE'];
+                $data['SAFETY_C_3_9_SEGREGATION_OF_WASTE'] = $submissionData['SAFETY']['SAFETY_C_3_9_SEGREGATION_OF_WASTE'];
+                $data['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED'] = $submissionData['SAFETY']['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED'];
+                $data['SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED'] = $submissionData['SAFETY']['SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED'];
+                $data['SAFETY_SCORE'] = $submissionData['SAFETY']['SAFETY_SCORE'];
+                $data['SAFETY_DISPLAY'] = $submissionData['SAFETY']['SAFETY_DISPLAY'];
                 $data['SAFETYPHOTO'] = $submissionData['SAFETY']['SAFETYPHOTO'];
                 $data['PRE_Q_4_1_NATIONAL_GUIDELINES'] = $submissionData['PRETEST']['PRE_Q_4_1_NATIONAL_GUIDELINES'];
                 $data['PRE_C_4_1_NATIONAL_GUIDELINES'] = $submissionData['PRETEST']['PRE_C_4_1_NATIONAL_GUIDELINES'];
@@ -683,10 +680,10 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['endofsurvey'] = $submissionData['endofsurvey'];
                 $data['sitecode'] = $submissionData['preclosure_questions']['sitecode'];
 
-                $data['info5'] =$submissionData['scoring']['info5'];
-                $data['info6'] =$submissionData['scoring']['info6'];
-                $data['info10'] =$submissionData['scoring']['info10'];
-                $data['info11'] =$submissionData['scoring']['info11'];
+                $data['info5'] = $submissionData['scoring']['info5'];
+                $data['info6'] = $submissionData['scoring']['info6'];
+                $data['info10'] = $submissionData['scoring']['info10'];
+                $data['info11'] = $submissionData['scoring']['info11'];
                 $data['SUMMARY_NOT_AVL'] = $submissionData['SUMMARY_NOT_AVL'];
                 $data['info12'] = $submissionData['SUMMARY']['info12'];
                 $data['info177'] = '';
@@ -697,14 +694,14 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['info182'] = '';
                 $data['info183'] = '';
                 $data['info17a'] = $submissionData['Summary_cont_a']['info17a'];
-                $data['info21'] =$submissionData['Summary_cont_a']['info21'];
-                $data['info22'] =$submissionData['Summary_cont_a']['info22'];
-                $data['info23'] =$submissionData['Summary_cont_a']['info23'];
-                $data['info24'] =$submissionData['Summary_cont_a']['info24'];
-                $data['info25'] =$submissionData['Summary_cont_a']['info25'];
-                $data['info26'] =$submissionData['Summary_cont_a']['info26'];
+                $data['info21'] = $submissionData['Summary_cont_a']['info21'];
+                $data['info22'] = $submissionData['Summary_cont_a']['info22'];
+                $data['info23'] = $submissionData['Summary_cont_a']['info23'];
+                $data['info24'] = $submissionData['Summary_cont_a']['info24'];
+                $data['info25'] = $submissionData['Summary_cont_a']['info25'];
+                $data['info26'] = $submissionData['Summary_cont_a']['info26'];
                 $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['__id']]);
-                $data['sitephoto'] =$submissionData['sitephoto'];
+                $data['sitephoto'] = $submissionData['sitephoto'];
                 $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1];
                 $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0];
                 $data['Altitude'] = $submissionData["lab_geopoint"]["coordinates"][2];
@@ -1078,31 +1075,28 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'status' => $approveStatus,
                     );
                     $dbAdapter = $this->adapter;
-            $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                                ->where(array('spiv6.uuid' => $data["uuid"]));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if($data["uuid"] != $sResult["uuid"]){
-                    $insert->values($par);
-                    $selectString = $sql->buildSqlString($insert);
-                    $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
-        }
-        else {
-            $this->update($par, array('uuid' => $data["uuid"]));
-        }
+                    $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+                        ->where(array('spiv6.uuid' => $data["uuid"]));
+                    $sQueryStr = $sql->buildSqlString($sQuery);
+                    $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                    if ($data["uuid"] != $sResult["uuid"]) {
+                        $insert->values($par);
+                        $selectString = $sql->buildSqlString($insert);
+                        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+                    } else {
+                        $this->update($par, array('uuid' => $data["uuid"]));
+                    }
                     if ($approveStatus == 'approved') {
                         //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
                         $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                         $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 5);
                     }
-                // }
+                    // }
                 } catch (Exception $e) {
                     error_log($e->getMessage());
                     error_log($e->getTraceAsString());
                 }
-
             }
-
         }
     }
 
@@ -1154,7 +1148,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else {
                 $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
             }
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -1231,7 +1226,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else {
                 $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
             }
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -1311,7 +1307,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
-    public function getAllSubmissionsV6($sortOrder = 'DESC', $limit=100)
+    public function getAllSubmissionsV6($sortOrder = 'DESC', $limit = 100)
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
@@ -1366,7 +1362,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
             }
             // }
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -1924,12 +1921,12 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
-    public function getFormData($id,$pdfDowload = 'no')
+    public function getFormData($id, $pdfDowload = 'no')
     {
-            $logincontainer = new Container('credo');
-            $username = $logincontainer->login;
-            $dbAdapter = $this->adapter;
-            $trackTable = new EventLogTable($dbAdapter);
+        $logincontainer = new Container('credo');
+        $username = $logincontainer->login;
+        $dbAdapter = $this->adapter;
+        $trackTable = new EventLogTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where(array('spiv6.id' => $id));
@@ -1941,21 +1938,23 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                     ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
                 if (isset($sResult->facility) && $sResult->facility > 0) {
-                    $fQuery = $fQuery->where("spirt3.id='" . $sResult->facility . "'");
+                    $fQuery = $fQuery->where(array("spirt3.id" => $sResult->facility));
                 } else if (isset($sResult->facilityid) && $sResult->facilityid != '') {
-                    $fQuery = $fQuery->where("spirt3.facility_id='" . $sResult->facilityid . "'");
+                    $fQuery = $fQuery->where(array("spirt3.facility_id" => $sResult->facilityid));
                 } else if (isset($sResult->facilityname) && $sResult->facilityname != '') {
-                    $fQuery = $fQuery->where("spirt3.facility_name='" . $sResult->facilityname . "'");
+                    $fQuery = $fQuery->where(array("spirt3.facility_name" => $sResult->facilityname));
                 }
+
                 $fQueryStr = $sql->buildSqlString($fQuery);
+
                 $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             }
-            if($pdfDowload == 'yes'){
-            $subject = '';
-            $eventType = 'Print-SPI RT Form 6-PDF';
-            $action = $username . ' has printed the SPI RT Form 6 PDF';
-            $resourceName = 'Print-SPI-RT-Form-6-PDF';
-            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+            if ($pdfDowload == 'yes') {
+                $subject = '';
+                $eventType = 'Print-SPI RT Form 6-PDF';
+                $action = $username . ' has printed the SPI RT Form 6 PDF';
+                $resourceName = 'Print-SPI-RT-Form-6-PDF';
+                $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             }
         }
         return $sResult;
@@ -2000,8 +1999,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else {
                 $sQuery = $sQuery->where("spiv6.testingpointtype='" . $params['testPoint'] . "'");
             }
-
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -2052,11 +2051,9 @@ class SpiFormVer6Table extends AbstractTableGateway
             $auditRoundWiseData[$auditNo]['POST_SCORE'] = array_sum($auditScores['POST_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['EQA_SCORE'] = array_sum($auditScores['EQA_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['RTRI_SCORE'] = array_sum($auditScores['RTRI_SCORE']) / count($auditScores['PERSONAL_SCORE']);
-
         }
         $response = array('');
         return $auditRoundWiseData;
-
     }
 
     /*
@@ -2105,8 +2102,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else {
                 $sQuery = $sQuery->where("spiv6.testingpointtype='" . $params['testPoint'] . "'");
             }
-
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -2156,13 +2153,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             $auditRoundWiseData[$auditNo]['RESULTS_RETURNED_IN_TWO_WEEKS'] = array_sum($auditScores['RESULTS_RETURNED_IN_TWO_WEEKS']) / count($auditScores['RESULTS_RETURNED_IN_TWO_WEEKS']);
             $auditRoundWiseData[$auditNo]['PROTOCOL_VIOLATION_DOCUMENTED'] = array_sum($auditScores['PROTOCOL_VIOLATION_DOCUMENTED']) / count($auditScores['PROTOCOL_VIOLATION_DOCUMENTED']);
             $auditRoundWiseData[$auditNo]['DOCUMENTING_PROTOCOL_ERRORS'] = array_sum($auditScores['DOCUMENTING_PROTOCOL_ERRORS']) / count($auditScores['DOCUMENTING_PROTOCOL_ERRORS']);
-
         }
 
         //var_dump($auditRoundWiseData);die;
         $responseOfSectionS0 = array('');
         return $auditRoundWiseData;
-
     }
 
     /*
@@ -2211,8 +2206,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else {
                 $sQuery = $sQuery->where("spiv6.testingpointtype='" . $params['testPoint'] . "'");
             }
-
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -2252,7 +2247,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             $responseOfSectionS0[0]['PARTICIAPANTS_ENROLLED_IN_RTRI'][] = (float) $row['D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI'];
             $responseOfSectionS0[0]['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'][] = (float) $row['D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
             $responseOfSectionS0[0]['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'][] = (float) $row['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
-
         }
 
         $auditRoundWiseData = array();
@@ -2265,13 +2259,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             $auditRoundWiseData[$auditNo]['PARTICIAPANTS_ENROLLED_IN_RTRI'] = array_sum($auditScores['PARTICIAPANTS_ENROLLED_IN_RTRI']) / count($auditScores['PARTICIAPANTS_ENROLLED_IN_RTRI']);
             $auditRoundWiseData[$auditNo]['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] = array_sum($auditScores['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) / count($auditScores['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']);
             $auditRoundWiseData[$auditNo]['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] = array_sum($auditScores['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) / count($auditScores['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']);
-
         }
 
         //var_dump($auditRoundWiseData);die;
         $responseOfSectionS0 = array('');
         return $auditRoundWiseData;
-
     }
 
     public function getZeroQuestionCountsV6($params)
@@ -2296,7 +2288,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
                 $start_date = $this->dateFormat($dateField[0]);
-
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
                 $end_date = $this->dateFormat($dateField[2]);
@@ -2318,7 +2309,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
             }
             // }
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -2449,7 +2441,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                         } else {
                             $response[$col] = 1;
                         }
-
                     }
                 }
             }
@@ -2580,16 +2571,19 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(array('spiv3.status' => 'approved'));
         if ($parameters['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
-        }if (trim($start_date) != "" && trim($end_date) != "") {
+        }
+        if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
-        }if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
+        }
+        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $sQuery = $sQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
             if (trim($parameters['testPoint']) != 'other') {
                 $sQuery = $sQuery->where("spiv3.testingpointname='" . $parameters['testPointName'] . "'");
             } else {
                 $sQuery = $sQuery->where("spiv3.testingpointtype_other='" . $parameters['testPointName'] . "'");
             }
-        }if ($parameters['level'] != '') {
+        }
+        if ($parameters['level'] != '') {
             $sQuery = $sQuery->where("spiv3.level='" . $parameters['level'] . "'");
         }
         if (is_array($parameters['province']) && count($parameters['province']) > 0) {
@@ -2617,9 +2611,11 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
-        }if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        }
+        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
-        }if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
+        }
+        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
@@ -2661,9 +2657,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(array('spiv3.status' => 'approved'));
         if ($parameters['auditRndNo'] != '') {
             $tQuery = $tQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
-        }if (trim($start_date) != "" && trim($end_date) != "") {
+        }
+        if (trim($start_date) != "" && trim($end_date) != "") {
             $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
-        }if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
+        }
+        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $tQuery = $tQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
             // if(isset($parameters['testPointName']) && trim($parameters['testPointName'])!= ''){
             if (trim($parameters['testPoint']) != 'other') {
@@ -2672,7 +2670,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $tQuery = $tQuery->where("spiv3.testingpointtype_other='" . $parameters['testPointName'] . "'");
             }
             // }
-        }if ($parameters['level'] != '') {
+        }
+        if ($parameters['level'] != '') {
             $tQuery = $tQuery->where("spiv3.level='" . $parameters['level'] . "'");
         }
         // if(is_array($parameters['province']) && count($parameters['province'])>0 ){
@@ -2700,9 +2699,11 @@ class SpiFormVer6Table extends AbstractTableGateway
         // }
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
-        }if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        }
+        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
-        }if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
+        }
+        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
@@ -2842,7 +2843,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(array('spiv5.status' => 'approved'));
         if ($parameters['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv5.auditroundno='" . $parameters['auditRndNo'] . "'");
-        }if (trim($start_date) != "" && trim($end_date) != "") {
+        }
+        if (trim($start_date) != "" && trim($end_date) != "") {
             $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $start_date . "'", "spiv5.assesmentofaudit <='" . $end_date . "'"));
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
@@ -2852,15 +2854,18 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else {
                 $sQuery = $sQuery->where("spiv5.testingpointtype_other='" . $parameters['testPointName'] . "'");
             }
-        }if ($parameters['level'] != '') {
+        }
+        if ($parameters['level'] != '') {
             $sQuery = $sQuery->where("spiv5.level='" . $parameters['level'] . "'");
         }
 
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
-        }if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        }
+        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
             $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
-        }if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
+        }
+        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
@@ -2902,9 +2907,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(array('spiv5.status' => 'approved'));
         if ($parameters['auditRndNo'] != '') {
             $tQuery = $tQuery->where("spiv5.auditroundno='" . $parameters['auditRndNo'] . "'");
-        }if (trim($start_date) != "" && trim($end_date) != "") {
+        }
+        if (trim($start_date) != "" && trim($end_date) != "") {
             $tQuery = $tQuery->where(array("spiv5.assesmentofaudit >='" . $start_date . "'", "spiv5.assesmentofaudit <='" . $end_date . "'"));
-        }if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
+        }
+        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $tQuery = $tQuery->where("spiv5.testingpointtype='" . $parameters['testPoint'] . "'");
             if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '') {
                 if (trim($parameters['testPoint']) == 'other' && trim($parameters['testPointName']) != '') {
@@ -2919,9 +2926,11 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
-        }if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        }
+        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
             $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
-        }if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
+        }
+        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
@@ -3006,7 +3015,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
             }
             // }
-        }if (isset($params['level']) && $params['level'] != '') {
+        }
+        if (isset($params['level']) && $params['level'] != '') {
             $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
@@ -3280,7 +3290,6 @@ class SpiFormVer6Table extends AbstractTableGateway
 
             return $formId;
         }
-
     }
     public function fetchSpiV6FormAuditNo()
     {
@@ -4705,7 +4714,8 @@ class SpiFormVer6Table extends AbstractTableGateway
         } else if ($parameters['source'] == 'apspi') {
             //For Audit Performance
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('assesmentofaudit',
+                ->columns(array(
+                    'assesmentofaudit',
                     'D0_S_1_DIAGNOSED_HIV_ABOVE_15' => new Expression('AVG(D0_S_1_DIAGNOSED_HIV_ABOVE_15)'),
                     'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION' => new Expression('AVG(D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION)'),
                     'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD' => new Expression('AVG(D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD)'),
@@ -4713,7 +4723,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                     'D0_S_5_DOCUMENTED_AND_REFUSED' => new Expression('AVG(D0_S_5_DOCUMENTED_AND_REFUSED)'),
                     'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI' => new Expression('AVG(D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI)'),
                     'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI' => new Expression('AVG(D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI)'),
-                    'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => new Expression('AVG(D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI)')))
+                    'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => new Expression('AVG(D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI)')
+                ))
                 ->group('spiv3.assesmentofaudit');
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => new Expression('AVG(S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY)'), 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL' => new Expression('AVG(S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL)'), 'S0_Q_3_TESTS_RECORDED_RECENCY' => new Expression('AVG(S0_Q_3_TESTS_RECORDED_RECENCY)'), 'S0_Q_4_PROCESS_DOCUMENTED' => new Expression('AVG(S0_Q_4_PROCESS_DOCUMENTED)'), 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS' => new Expression('AVG(S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS)'), 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED' => new Expression('AVG(S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED)'), 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS' => new Expression('AVG(S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS)')))

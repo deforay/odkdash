@@ -20,7 +20,8 @@ class TcpdfExtends extends TCPDF
         if (trim($this->logo) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
             $image_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo, PATHINFO_EXTENSION));
-            $this->Image($image_file, 12, 3, 20, '', strtoupper($extension), '', 'T', false, 300, 'L', false, false, 0, false, false, false);
+            //$this->Image($image_file, 12, 3, 20, '', strtoupper($extension), '', 'T', false, 300, 'L', false, false, 0, false, false, false);
+            $this->Image($image_file, 12, 3, 20, '', '', '', 'T', false, 300, '', false, false, 0, false, false, false);
         }
         // Set font
         $this->SetFont('helvetica', 'B', 12);
