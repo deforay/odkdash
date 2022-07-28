@@ -123,10 +123,6 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
             'Laminas\\Router\\' => 15,
             'Laminas\\Psr7Bridge\\' => 19,
             'Laminas\\Permissions\\Acl\\' => 24,
-            'Laminas\\Mvc\\Plugin\\Prg\\' => 23,
-            'Laminas\\Mvc\\Plugin\\Identity\\' => 28,
-            'Laminas\\Mvc\\Plugin\\FlashMessenger\\' => 34,
-            'Laminas\\Mvc\\Plugin\\FilePrg\\' => 27,
             'Laminas\\Mvc\\Middleware\\' => 23,
             'Laminas\\Mvc\\I18n\\' => 17,
             'Laminas\\Mvc\\Console\\' => 20,
@@ -138,12 +134,8 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
             'Laminas\\Log\\' => 12,
             'Laminas\\Loader\\' => 15,
             'Laminas\\Json\\' => 13,
-            'Laminas\\InputFilter\\' => 20,
             'Laminas\\I18n\\' => 13,
-            'Laminas\\Hydrator\\' => 17,
             'Laminas\\Http\\' => 13,
-            'Laminas\\Form\\' => 13,
-            'Laminas\\Filter\\' => 15,
             'Laminas\\EventManager\\' => 21,
             'Laminas\\Escaper\\' => 16,
             'Laminas\\Diactoros\\' => 18,
@@ -154,11 +146,9 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
             'Laminas\\Console\\' => 16,
             'Laminas\\Config\\' => 15,
             'Laminas\\ComponentInstaller\\' => 27,
-            'Laminas\\Code\\' => 13,
             'Laminas\\Cli\\' => 12,
             'Laminas\\Cache\\Storage\\Adapter\\' => 30,
             'Laminas\\Cache\\' => 14,
-            'Laminas\\Authentication\\' => 23,
         ),
         'J' => 
         array (
@@ -388,22 +378,6 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-permissions-acl/src',
         ),
-        'Laminas\\Mvc\\Plugin\\Prg\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-mvc-plugin-prg/src',
-        ),
-        'Laminas\\Mvc\\Plugin\\Identity\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-mvc-plugin-identity/src',
-        ),
-        'Laminas\\Mvc\\Plugin\\FlashMessenger\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-mvc-plugin-flashmessenger/src',
-        ),
-        'Laminas\\Mvc\\Plugin\\FilePrg\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-mvc-plugin-fileprg/src',
-        ),
         'Laminas\\Mvc\\Middleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-mvc-middleware/src',
@@ -448,29 +422,13 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-json/src',
         ),
-        'Laminas\\InputFilter\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-inputfilter/src',
-        ),
         'Laminas\\I18n\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-i18n/src',
         ),
-        'Laminas\\Hydrator\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-hydrator/src',
-        ),
         'Laminas\\Http\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-http/src',
-        ),
-        'Laminas\\Form\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-form/src',
-        ),
-        'Laminas\\Filter\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-filter/src',
         ),
         'Laminas\\EventManager\\' => 
         array (
@@ -512,10 +470,6 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-component-installer/src',
         ),
-        'Laminas\\Code\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-code/src',
-        ),
         'Laminas\\Cli\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-cli/src',
@@ -541,10 +495,6 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
         'Laminas\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-cache/src',
-        ),
-        'Laminas\\Authentication\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/laminas/laminas-authentication/src',
         ),
         'JsonMachine\\' => 
         array (
