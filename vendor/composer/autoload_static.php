@@ -552,8 +552,8 @@ class ComposerStaticInit42e5b60ed1bd1a1006f885fe03b280a4
         ),
         'Illuminate\\Support\\' => 
         array (
-            0 => __DIR__ . '/..' . '/illuminate/macroable',
-            1 => __DIR__ . '/..' . '/illuminate/collections',
+            0 => __DIR__ . '/..' . '/illuminate/collections',
+            1 => __DIR__ . '/..' . '/illuminate/macroable',
             2 => __DIR__ . '/..' . '/illuminate/support',
         ),
         'Illuminate\\Contracts\\' => 

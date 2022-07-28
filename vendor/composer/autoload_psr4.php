@@ -89,7 +89,7 @@ return array(
     'Laminas\\Cache\\' => array($vendorDir . '/laminas/laminas-cache/src'),
     'Laminas\\Authentication\\' => array($vendorDir . '/laminas/laminas-authentication/src'),
     'JsonMachine\\' => array($vendorDir . '/halaxa/json-machine/src'),
-    'Illuminate\\Support\\' => array($vendorDir . '/illuminate/macroable', $vendorDir . '/illuminate/collections', $vendorDir . '/illuminate/support'),
+    'Illuminate\\Support\\' => array($vendorDir . '/illuminate/collections', $vendorDir . '/illuminate/macroable', $vendorDir . '/illuminate/support'),
     'Illuminate\\Contracts\\' => array($vendorDir . '/illuminate/contracts'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),

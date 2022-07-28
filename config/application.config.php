@@ -21,7 +21,6 @@ return array(
         'Laminas\Session',
         'Laminas\Mvc\I18n',
         'Laminas\Log',
-        'Laminas\Form',
         'Laminas\Hydrator',
         'Laminas\InputFilter',
         'Laminas\Filter',
