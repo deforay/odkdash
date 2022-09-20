@@ -52,11 +52,11 @@
                     <div class=" col-lg-4">
                       <select class="form-control" id="auditRndNo">
                         <option value=''><?= $this->translate('All'); ?></option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
+                        <?php
+                        for ($i = 1; $i <= 100; $i++) {
+                          echo "<option value='" . $i . "'>" . $i . "</option>";
+                        }
+                        ?>
                       </select>
                     </div>
                   </div>
@@ -65,11 +65,11 @@
                     <label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
                     <div class=" col-lg-4">
                       <select class="form-control" id="level">
-                        <option value=""><?= $this->translate('All');?></option>
+                        <option value=""><?= $this->translate('All'); ?></option>
                         <option value="Region/Province/Zone"><?= $this->translate('Region/Province/Zone'); ?></option>
                         <option value="District"><?= $this->translate('District'); ?></option>
                         <option value="Referral center"><?= $this->translate('Referral center'); ?></option>
-                        <option value="Health center"><?= $this->translate('Health center');?></option>
+                        <option value="Health center"><?= $this->translate('Health center'); ?></option>
                         <option value="Dispensary"><?= $this->translate('Dispensary'); ?></option>
                         <option value="Health Post"><?= $this->translate('Health Post'); ?></option>
                         <option value="Other"><?= $this->translate('Other'); ?></option>
@@ -218,7 +218,7 @@
             <tr>
               <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
               <th style="width:14%;"><?= $this->translate('HIV above 15'); ?></th>
-              
+
               <th style="width:14%;"><?= $this->translate('Screened for participation'); ?></th>
               <th style="width:10%;"><?= $this->translate('Eligible during Review'); ?></th>
               <th style="width:14%;"><?= $this->translate('Eligible and declined'); ?></th>

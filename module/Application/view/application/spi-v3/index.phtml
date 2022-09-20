@@ -50,11 +50,11 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                   <div class=" col-lg-4">
                     <select class="form-control" id="auditRndNo">
                       <option value=''><?= $this->translate('All'); ?></option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
+                      <?php
+                      for ($i = 1; $i <= 100; $i++) {
+                        echo "<option value='" . $i . "'>" . $i . "</option>";
+                      }
+                      ?>
                     </select>
                   </div>
                 </div>
@@ -74,16 +74,16 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                     </select>
                   </div>
                   <label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
-									<div class=" col-lg-4">
-										<select class="form-control" id="affiliation">
-											<option value=""><?= $this->translate('All'); ?></option>
-											<option value="Government"><?= $this->translate('Government'); ?></option>
-											<option value="Private"><?= $this->translate('Private'); ?></option>
-											<option value="Faith-based Organization"><?= $this->translate('Faith-based Organization'); ?></option>
-											<option value="Non-governmental organization"><?= $this->translate('Non-governmental organization'); ?></option>
-											<option value="Other"><?= $this->translate('Other'); ?></option>
-										</select>
-									</div>
+                  <div class=" col-lg-4">
+                    <select class="form-control" id="affiliation">
+                      <option value=""><?= $this->translate('All'); ?></option>
+                      <option value="Government"><?= $this->translate('Government'); ?></option>
+                      <option value="Private"><?= $this->translate('Private'); ?></option>
+                      <option value="Faith-based Organization"><?= $this->translate('Faith-based Organization'); ?></option>
+                      <option value="Non-governmental organization"><?= $this->translate('Non-governmental organization'); ?></option>
+                      <option value="Other"><?= $this->translate('Other'); ?></option>
+                    </select>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="province" class="col-sm-2 control-label"><?= $this->translate('Province'); ?></label>
@@ -148,7 +148,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
               </form>
             </div>
             <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'duplicate')) { ?>
-              <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"><?= $this->translate('Duplicates');?> (0)</a>&nbsp;&nbsp;
+              <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"><?= $this->translate('Duplicates'); ?> (0)</a>&nbsp;&nbsp;
             <?php } ?>
             <a href="/spi-v3/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Audits in Bulk </a>
           </div>
@@ -159,19 +159,19 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
         <thead>
           <tr>
             <th></th>
-            <th><?= $this->translate('Facility Name');?></th>
-            <th><?= $this->translate('Facility Province');?></th>
-            <th><?= $this->translate('Facility District');?></th>
-            <th style="width:8%;"><?= $this->translate('Audit Round No.');?></th>
-            <th style="width:10%;"><?= $this->translate('Audit Date');?></th>
-            <th style="width:10%;"><?= $this->translate('Testing Point Name');?></th>
-            <th style="width:6%;"><?= $this->translate('Testing Point Type');?></th>
-            <th style="width:8%;"><?= $this->translate('Level');?></th>
-            <th><?= $this->translate('Affiliation');?></th>
-            <th style="width:5%;"><?= $this->translate('Audit Score %');?></th>
-            <th style="width:8%;"><?= $this->translate('Status');?></th>
+            <th><?= $this->translate('Facility Name'); ?></th>
+            <th><?= $this->translate('Facility Province'); ?></th>
+            <th><?= $this->translate('Facility District'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Audit Round No.'); ?></th>
+            <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
+            <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
+            <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Level'); ?></th>
+            <th><?= $this->translate('Affiliation'); ?></th>
+            <th style="width:5%;"><?= $this->translate('Audit Score %'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Status'); ?></th>
             <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
-              <th><?= $this->translate('Action');?></th>
+              <th><?= $this->translate('Action'); ?></th>
             <?php } ?>
           </tr>
         </thead>
@@ -464,7 +464,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
           $.unblockUI();
-           window.open('/temporary/' + data, '_blank');
+          window.open('/temporary/' + data, '_blank');
         }
       });
   }

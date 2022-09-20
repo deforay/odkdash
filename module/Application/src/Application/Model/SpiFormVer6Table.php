@@ -4950,20 +4950,39 @@ class SpiFormVer6Table extends AbstractTableGateway
         //$queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
+    // public function fetchDistrictData($params)
+    // {
+    //     $dbAdapter = $this->adapter;
+    //     $sql = new Sql($dbAdapter);
+    //     $query = $sql->select()->from(array('f' => 'spi_rt_3_facilities'))
+    //         ->group('district');
+    //     if (is_array($params['province'])) {
+    //         $query = $query->where('f.province IN ("' . implode('", "', $params['province']) . '") AND f.district!=""');
+    //     } else {
+    //         $query = $query->where('f.province="' . $params['province'] . '" AND f.district!=""');
+    //     }
+    //     $queryStr = $sql->buildSqlString($query);
+    //     return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    // }
+
     public function fetchDistrictData($params)
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
-        $query = $sql->select()->from(array('f' => 'spi_rt_3_facilities'))
-            ->group('district');
-        if (is_array($params['province'])) {
+        $query = $sql->select()
+            ->quantifier(\Laminas\Db\Sql\Select::QUANTIFIER_DISTINCT)
+            ->from(array('f' => 'spi_rt_3_facilities'))
+            ->columns(array('district'));
+        if (!empty($params['province']) && is_array($params['province'])) {
             $query = $query->where('f.province IN ("' . implode('", "', $params['province']) . '") AND f.district!=""');
-        } else {
+        } else if (!empty($params['province']) && !is_array($params['province'])) {
             $query = $query->where('f.province="' . $params['province'] . '" AND f.district!=""');
+        } else {
+            $query = $query->where('f.district!=""');
         }
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-    }
+    }    
 
     public function addValidateSpiv3Data($params)
     {

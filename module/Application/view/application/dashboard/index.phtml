@@ -101,11 +101,11 @@ $sessionLogin = new Container('credo');
 								<div class=" col-lg-4">
 									<select class="form-control" id="auditRndNoFilter">
 										<option value=''><?= $this->translate('All'); ?></option>
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
+										<?php 
+											for($i=1;$i<=100;$i++){
+												echo "<option value='".$i."'>".$i."</option>";
+											}
+										?>
 									</select>
 								</div>
 							</div>
@@ -142,6 +142,9 @@ $sessionLogin = new Container('credo');
 									<select class="" id="provinceDistrict" multiple="multiple" onchange="getAllDistrict();">
 										<?php
 										foreach ($levelNamesResult as $levelName) {
+											if(empty($levelName['province'])) {
+												continue;
+											}
 										?>
 											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
 										<?php
@@ -152,13 +155,7 @@ $sessionLogin = new Container('credo');
 								<label for="district" class="col-sm-2 control-label">District</label>
 								<div class=" col-lg-4 districtFilter">
 									<select class="form-control" id="district">
-										<?php
-										foreach ($levelNamesResult as $levelName) {
-										?>
-											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
-										<?php
-										}
-										?>
+										<option value="">All</option>
 									</select>
 								</div>
 							</div>
