@@ -34,6 +34,8 @@ use Application\Model\SpiFormVer3DownloadTable;
 use Application\Model\SpiFormVer5DownloadTable;
 use Application\Model\SpiFormVer6DownloadTable;
 use Application\Model\SpiFormVer3TempTable;
+use Application\Model\CountriesTable;
+use Application\Model\UserCountryMapTable;
 
 
 use Application\Service\OdkFormService;
@@ -416,6 +418,16 @@ class Module
                 'SpiFormVer3TempTable' => function ($sm) {
                     $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
                     $table = new SpiFormVer3TempTable($dbAdapter);
+                    return $table;
+                },
+                'CountriesTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new CountriesTable($dbAdapter);
+                    return $table;
+                },
+                'UserCountryMapTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new UserCountryMapTable($dbAdapter);
                     return $table;
                 },
 

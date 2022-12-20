@@ -116,6 +116,7 @@ class UsersTable extends AbstractTableGateway
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
+        $userCountryMap = new UserCountryMapTable($dbAdapter);
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);
@@ -134,7 +135,13 @@ class UsersTable extends AbstractTableGateway
             $this->insert($data);
             $lastInsertId = $this->lastInsertValue;
             if ($lastInsertId > 0) {
+
                 $userRoleMap->insert(array('user_id' => $lastInsertId, 'role_id' => $params['roleId']));
+                if(count($params['country']) > 0){
+                    foreach($params['country'] as $country){
+                        $userCountryMap->insert(array('user_id' => $lastInsertId, 'country_id' => $country));
+                    }
+                }
                 //Add User-Token
                 if (isset($params['token']) && trim($params['token']) != '') {
                     $splitToken = explode(",", $params['token']);
@@ -170,6 +177,7 @@ class UsersTable extends AbstractTableGateway
         $sql = new Sql($dbAdapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
+        $userCountryMap = new UserCountryMapTable($dbAdapter);
         $userId = base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
             $config = new \Laminas\Config\Reader\Ini();
@@ -189,7 +197,13 @@ class UsersTable extends AbstractTableGateway
             );
             $this->update($data, array('id' => $userId));
             if ($userId > 0) {
+                $userCountryMap->delete(array('user_id' => $userId));
                 $userRoleMap->update(array('role_id' => $params['roleId']), array('user_id' => $userId));
+                if(count($params['country']) > 0){
+                    foreach($params['country'] as $country){
+                        $userCountryMap->insert(array('user_id' => $userId, 'country_id' => $country));
+                    }
+                }
                 //Update User-Token
                 $userTokenMap->delete(array('user_id' => $userId));
                 if (isset($params['token']) && trim($params['token']) != '') {

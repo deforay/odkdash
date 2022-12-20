@@ -40,11 +40,10 @@ class UsersController extends AbstractActionController
             $this->userService->addUser($params);
             return $this->redirect()->toRoute("users");
         }
-        
-        
         $roleResult = $this->roleService->getAllActiveRoles();
         $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
-        return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult));
+        $countries = $this->odkFormService->getAllCountries();
+        return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult, 'countries' => $countries));
     }
 
     public function editAction()
@@ -58,14 +57,17 @@ class UsersController extends AbstractActionController
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->userService->getUser($id);
+            $userCountryMapResult = $this->odkFormService->getSelectedCountry($id);
             
-            
+            $countries = $this->odkFormService->getAllCountries();
             $roleResult = $this->roleService->getAllActiveRoles();
             $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
             return new ViewModel(array(
                 'result' => $result,
                 'roleResults' => $roleResult,
-                'tokenResults' => $tokenResult
+                'tokenResults' => $tokenResult,
+                'userCountryMapResult' => $userCountryMapResult,
+                'countries' => $countries
             ));
         }
     }

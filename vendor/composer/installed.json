@@ -2055,6 +2055,7 @@
                     "type": "community_bridge"
                 }
             ],
+            "abandoned": true,
             "install-path": "../laminas/laminas-cache-storage-adapter-zend-server"
         },
         {

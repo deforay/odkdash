@@ -15,7 +15,7 @@
     padding: 0;
     overflow: hidden;
     cursor: pointer;
-    border: 1px solid #aaa;
+    border: none;
     text-align: left;
     white-space: nowrap;
     line-height: 26px;
