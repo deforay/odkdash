@@ -57,14 +57,16 @@ class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        /** @var $application \Laminas\Mvc\Application */
+        $application = $e->getApplication();
+
+        $eventManager        = $application->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
-        $languagecontainer = new Container('language');
+        //$languagecontainer = new Container('language');
 
         if (php_sapi_name() != 'cli') {
             $eventManager->attach('dispatch', array($this, 'preSetter'), 100);
-            //$eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'dispatchError'), -999);
         }
 
         // //Attach render errors
@@ -93,29 +95,33 @@ class Module
     public function preSetter(MvcEvent $e)
     {
 
-
         $session = new Container('credo');
-        $sm = $e->getApplication()->getServiceManager();
+
+
+        /** @var $application \Laminas\Mvc\Application */
+        $application = $e->getApplication();
+
+        $sm = $application->getServiceManager();
         $commonService = $sm->get('CommonService');
         $config = $commonService->getGlobalConfigDetails();
-        $session->countryName = $config['country-name'];
-
-
-
+        if (!empty($session) && !isset($session->countryName) && !empty($session->countryName)) {
+            $session->countryName = $config['country-name'];
+        }
+        /** @var \Laminas\Http\Request $request */
+        $request = $e->getRequest();
 
         if (
-            $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
+            !$request->isXmlHttpRequest()
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6'
         ) {
 
-            if (!isset($session->userId) || $session->userId == "") {
-                if ($e->getRequest()->isXmlHttpRequest()) {
-                    return;
-                }
+            if (empty($session) || !isset($session->userId) || empty($session->userId)) {
                 $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
+                /** @var \Laminas\Http\Response $response */
                 $response = $e->getResponse();
                 $response->getHeaders()->addHeaderLine('Location', $url);
                 $response->setStatusCode(302);
@@ -128,11 +134,11 @@ class Module
                     return $response;
                 };
                 //Attach the "break" as a listener with a high priority
-                $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
+                $application->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
                 return $response;
             } else {
-                $sm = $e->getApplication()->getServiceManager();
-                $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
+                $sm = $application->getServiceManager();
+                $viewModel = $application->getViewModel();
                 $acl = $sm->get('AppAcl');
                 $viewModel->acl = $acl;
                 $session->acl = serialize($acl);
@@ -143,26 +149,15 @@ class Module
 
                 $role = $session->roleCode;
 
-                //\Zend\Debug\Debug::dump($role);
-
-                //\Zend\Debug\Debug::dump($acl->isAllowed($role, $resource, $privilege));
-                //\Zend\Debug\Debug::dump($privilege);
-                //die;
-                //if($e->getRequest()->isXmlHttpRequest() || $role == 'SA') {
-                if ($e->getRequest()->isXmlHttpRequest()) {
-                    return;
-                } else {
-
-                    if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
-                        $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
-                        $e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
-                    }
+                if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
+                    $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
+                    $application->getEventManager()->trigger('dispatch.error', $e);
                 }
             }
         } else {
             if (isset($session->userId)) {
-                $sm = $e->getApplication()->getServiceManager();
-                $viewModel = $e->getApplication()->getMvcEvent()->getViewModel();
+                $sm = $application->getServiceManager();
+                $viewModel = $application->getMvcEvent()->getViewModel();
                 $acl = $sm->get('AppAcl');
                 $viewModel->acl = $acl;
                 $session->acl = serialize($acl);
