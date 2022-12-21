@@ -5,7 +5,7 @@
 
 			if (isset($row['Latitude']) && $row['Latitude'] != "") {
 				$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				if ($row['AUDIT_SCORE_PERCENTAGE'] > 90) {
+				if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
 					$icon = $this->basePath('assets/img/map-points/dark-green.png');
 				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] <= 89) {
 					$icon = $this->basePath('assets/img/map-points/light-green.png');
