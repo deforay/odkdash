@@ -25,6 +25,7 @@ class UsersController extends AbstractActionController
 
     public function indexAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -35,6 +36,7 @@ class UsersController extends AbstractActionController
 
     public function addAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -50,6 +52,7 @@ class UsersController extends AbstractActionController
 
     public function editAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -76,6 +79,7 @@ class UsersController extends AbstractActionController
 
     public function profileAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -93,6 +97,7 @@ class UsersController extends AbstractActionController
 
     public function changePasswordAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         
         if ($request->isPost()) {

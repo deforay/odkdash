@@ -60,6 +60,7 @@ class DashboardController extends AbstractActionController
 
     public function auditDetailsAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if ($request->isPost()) {

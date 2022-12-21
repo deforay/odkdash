@@ -24,7 +24,7 @@ class SpiV5ReportsController extends AbstractActionController
 
     public function facilityReportAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -46,6 +46,7 @@ class SpiV5ReportsController extends AbstractActionController
 
     public function exportFacilityReportAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();

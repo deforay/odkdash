@@ -11,7 +11,7 @@ class CommonController extends AbstractActionController
     private $commonService = null;
     private $odkFormService = null;
 
-    public function __construct($commonService,$odkFormService)
+    public function __construct($commonService, $odkFormService)
     {
         $this->commonService = $commonService;
         $this->odkFormService = $odkFormService;
@@ -20,6 +20,7 @@ class CommonController extends AbstractActionController
     public function indexAction()
     {
         $result = "";
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -34,11 +35,12 @@ class CommonController extends AbstractActionController
     public function multipleFieldValidationAction()
     {
         $result = "";
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
             //\Zend\Debug\Debug::dump($params);die;
-            
+
             $result = $this->commonService->checkMultipleFieldValidations($params);
         }
         $viewModel = new ViewModel();
@@ -49,9 +51,10 @@ class CommonController extends AbstractActionController
     }
     public function auditLocationsAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isGet()) {
-            $val = $request->getQuery();            
+            $val = $request->getQuery();
             $spiV3auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
             return new ViewModel(array(
                 'id' => $val,
@@ -60,16 +63,18 @@ class CommonController extends AbstractActionController
         }
     }
 
-    public function getAuditLocationBasedOnFormAction(){
+    public function getAuditLocationBasedOnFormAction()
+    {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
             $auditRoundNo = array();
             $id = $params['inpId'];
-            if(trim($params["formVersion"]) == 'v3'){
+            if (trim($params["formVersion"]) == 'v3') {
                 $auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
             }
-            if(trim($params["formVersion"]) == 'v5'){
+            if (trim($params["formVersion"]) == 'v5') {
                 $auditRoundNo = $this->odkFormService->getSpiV5FormAuditNo();
             }
             //\Zend\Debug\Debug::dump($auditRoundNo);die;
@@ -77,8 +82,8 @@ class CommonController extends AbstractActionController
         $viewModel = new ViewModel();
         $viewModel->setVariables(array(
             'result' => $auditRoundNo,
-            'id'=>$id
-            ))
+            'id' => $id
+        ))
             ->setTerminal(true);
 
         return $viewModel;

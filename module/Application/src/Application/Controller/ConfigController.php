@@ -17,6 +17,7 @@ class ConfigController extends AbstractActionController
     }
     public function indexAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -27,7 +28,7 @@ class ConfigController extends AbstractActionController
 
     public function editGlobalAction()
     {
-
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();

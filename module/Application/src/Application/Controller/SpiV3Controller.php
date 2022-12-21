@@ -21,6 +21,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function indexAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllTestingPointType();
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
@@ -49,6 +50,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function exportAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -63,6 +65,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function approveStatusAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -79,6 +82,7 @@ class SpiV3Controller extends AbstractActionController
     {
         
         $configData = $this->commonService->getGlobalConfigDetails();
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -111,6 +115,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function editAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -176,7 +181,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function manageFacilityAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -249,7 +254,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function viewDataAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -315,7 +320,7 @@ class SpiV3Controller extends AbstractActionController
     public function exportAsPdfAction()
     {
         
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -332,15 +337,13 @@ class SpiV3Controller extends AbstractActionController
 
     public function duplicateAction()
     {
-        $request = $this->getRequest();
-        
         $result = $this->odkFormService->getAllDuplicateSubmissionsDetails();
         return new ViewModel(array('result' => $result));
     }
 
     public function removeAuditAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $result = $this->odkFormService->removeAudit($params);
@@ -367,7 +370,6 @@ class SpiV3Controller extends AbstractActionController
 
     public function downloadFilesAction()
     {
-        $request = $this->getRequest();
         
         $result = $this->odkFormService->getDownloadFilesRow();
         return new ViewModel(array('result' => $result));
@@ -375,7 +377,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function getDistrictByProvinceAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -389,7 +391,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function validateSpiv3DataAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -402,7 +404,7 @@ class SpiV3Controller extends AbstractActionController
     }
     public function validateSpiv3DetailsAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -412,6 +414,7 @@ class SpiV3Controller extends AbstractActionController
     }
     public function addSpiv3ValidateDataAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();

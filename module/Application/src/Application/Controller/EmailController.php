@@ -23,7 +23,8 @@ class EmailController extends AbstractActionController
     public function indexAction()
     {
         $configData = $this->commonService->getGlobalConfigDetails();
-        
+
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -56,7 +57,7 @@ class EmailController extends AbstractActionController
         // $facilityService = $this->getServiceLocator()->get('FacilityService');
         $result = $this->odkFormService->getAllFacilityNames();
         $facilityResult = $this->facilityService->getFacilityProfileByAudit($ids);
-        
+
         return new ViewModel(array(
             'facilityName' => $result,
             'facilityResult' => $facilityResult,
@@ -66,6 +67,7 @@ class EmailController extends AbstractActionController
 
     public function emailV5Action()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -96,7 +98,7 @@ class EmailController extends AbstractActionController
         }
         // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         // $facilityService = $this->getServiceLocator()->get('FacilityService');
-        
+
         $result = $this->odkFormService->getAllFacilityNamesV5();
         $facilityResult = $this->facilityService->getFacilityProfileByAuditV5($ids);
         //var_dump($facilityResult);die;
@@ -109,6 +111,7 @@ class EmailController extends AbstractActionController
 
     public function emailV6Action()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -139,7 +142,7 @@ class EmailController extends AbstractActionController
         }
         // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
         // $facilityService = $this->getServiceLocator()->get('FacilityService');
-        
+
         $result = $this->odkFormService->getAllFacilityNamesV6();
         $facilityResult = $this->facilityService->getFacilityProfileByAuditV6($ids);
         // var_dump($facilityResult);die;
@@ -152,6 +155,7 @@ class EmailController extends AbstractActionController
 
     public function getFacilitiesAuditsAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -167,12 +171,13 @@ class EmailController extends AbstractActionController
 
     public function getFacilitiesV5AuditsAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
             // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $this->odkFormService->getFacilitiesAuditsV5($params);
-           // var_dump($result);die;
+            // var_dump($result);die;
             $viewModel = new ViewModel(array(
                 'result' => $result
             ));
@@ -183,12 +188,13 @@ class EmailController extends AbstractActionController
 
     public function getFacilitiesV6AuditsAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
             // $odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $this->odkFormService->getFacilitiesAuditsV6($params);
-        //    var_dump($result);die;
+            //    var_dump($result);die;
             $viewModel = new ViewModel(array(
                 'result' => $result
             ));
@@ -199,6 +205,7 @@ class EmailController extends AbstractActionController
 
     public function downloadPdfAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();

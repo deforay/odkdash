@@ -21,6 +21,7 @@ class FacilityController extends AbstractActionController
 
     public function indexAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -32,6 +33,7 @@ class FacilityController extends AbstractActionController
 
     public function addAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -43,6 +45,7 @@ class FacilityController extends AbstractActionController
 
     public function editAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -62,6 +65,7 @@ class FacilityController extends AbstractActionController
 
     public function facilityListAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
 
         if ($request->isGet()) {
@@ -87,6 +91,7 @@ class FacilityController extends AbstractActionController
 
     public function getTestingPointAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -98,6 +103,7 @@ class FacilityController extends AbstractActionController
 
     public function getFacilityAuditRoundAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -127,6 +133,7 @@ class FacilityController extends AbstractActionController
 
     public function mapProvinceAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -142,6 +149,7 @@ class FacilityController extends AbstractActionController
 
     public function getFacilityDetailsAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -157,6 +165,7 @@ class FacilityController extends AbstractActionController
 
     public function exportFacilityAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             
@@ -171,7 +180,7 @@ class FacilityController extends AbstractActionController
 
     public function searchProvinceListAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isGet()) {
             $val = $request->getQuery('q');
@@ -181,7 +190,7 @@ class FacilityController extends AbstractActionController
     }
     public function searchDistrictListAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isGet()) {
             $val = $request->getQuery('q');
