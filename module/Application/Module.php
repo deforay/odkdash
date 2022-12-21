@@ -103,10 +103,11 @@ class Module
 
         $sm = $application->getServiceManager();
         $commonService = $sm->get('CommonService');
-
-        $config = $commonService->getGlobalConfigDetails();
-        $session->countryName = $config['country-name'];
-
+        
+        if (!isset($session->countryName) || empty($session->countryName)) {
+            $config = $commonService->getGlobalConfigDetails();
+            $session->countryName = $config['country-name'];
+        }
         /** @var \Laminas\Http\Request $request */
         $request = $e->getRequest();
 
