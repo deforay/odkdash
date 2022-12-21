@@ -21,6 +21,7 @@ class LoginController extends AbstractActionController
     public function indexAction()
     {
         $logincontainer = new Container('credo');
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();

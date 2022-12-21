@@ -21,13 +21,14 @@ class SpiV5Controller extends AbstractActionController
 
     public function indexAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllSpiV5TestingPointType();
         //echo "ww";die;
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
         //var_dump($levelNamesResult);die;
         if ($request->isPost()) {
-            
+
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV5SubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
@@ -51,12 +52,13 @@ class SpiV5Controller extends AbstractActionController
 
     public function exportAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $allSubmissions = $this->odkFormService->exportAllV5Submissions($params);
-// echo $allSubmissions;die;
+            // echo $allSubmissions;die;
             $viewModel = new ViewModel(array('allSubmissions' => $allSubmissions));
 
             $viewModel->setTerminal(true);
@@ -66,6 +68,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function approveStatusAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -80,8 +83,9 @@ class SpiV5Controller extends AbstractActionController
 
     public function downloadPdfAction()
     {
-        
+
         $configData = $this->commonService->getGlobalConfigDetails();
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -95,7 +99,7 @@ class SpiV5Controller extends AbstractActionController
             return $viewModel;
         } else {
             $id = ($this->params()->fromRoute('id'));
-            $formData = $this->odkFormService->getSpiV5FormData($id,'yes');
+            $formData = $this->odkFormService->getSpiV5FormData($id, 'yes');
             //echo "<pre>";
             //print_r($formData);die;
             $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
@@ -107,7 +111,7 @@ class SpiV5Controller extends AbstractActionController
     public function correctiveActionPdfAction()
     {
         $id = ($this->params()->fromRoute('id'));
-        $formData = $this->odkFormService->getFormData($id,'yes');
+        $formData = $this->odkFormService->getFormData($id, 'yes');
         $configData = $this->commonService->getGlobalConfigDetails();
         $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
         $viewModel->setTerminal(true);
@@ -116,6 +120,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function editAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -138,7 +143,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function auditPerformanceAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseDataV5($params);
@@ -153,7 +158,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function worstPerformanceAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $zeroCounts = $this->odkFormService->getZeroQuestionCountsV5($params);
@@ -167,13 +172,13 @@ class SpiV5Controller extends AbstractActionController
 
     public function auditLocationsAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocationV5($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('allSubmissions' => $allSubmissions,'configData'=>$configData))
+            $viewModel->setVariables(array('allSubmissions' => $allSubmissions, 'configData' => $configData))
                 ->setTerminal(true);
             return $viewModel;
         }
@@ -181,7 +186,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function manageFacilityAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -200,7 +205,7 @@ class SpiV5Controller extends AbstractActionController
     {
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            
+
             $result = $this->odkFormService->mergeFacilityName($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
@@ -216,7 +221,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function deleteAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $result = $this->odkFormService->deleteAuditDataV5($params);
@@ -229,7 +234,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function spirtv5DatewiseAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $perflast30 = $this->odkFormService->getPerformanceLast30DaysV5($params);
@@ -242,7 +247,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function testingVolumeDatewiseAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV5($params);
@@ -255,7 +260,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function viewDataV5Action()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -294,7 +299,7 @@ class SpiV5Controller extends AbstractActionController
     {
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            
+
             $result = $this->odkFormService->getTestingPointTypeNamesByTypeV5($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
@@ -305,8 +310,8 @@ class SpiV5Controller extends AbstractActionController
 
     public function downloadSpiderChartAction()
     {
-        
-        
+
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             // $result = $this->odkFormService->getAuditRoundWiseDataChartV5($params);
@@ -320,18 +325,18 @@ class SpiV5Controller extends AbstractActionController
 
     public function exportAsPdfAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV5SubmissionsDetails($param);
-            
-           
+
+
             $configData = $this->commonService->getGlobalConfigDetails();
-            
+
             // $pieResult = $this->odkFormService->getSpiV5PerformancePieChart($param);
             // $spiderResult = $this->odkFormService->getSpiV5AuditRoundWiseDataChart($param);
-           // var_dump($spiderResult);die;
+            // var_dump($spiderResult);die;
             //echo "<pre>";
             //print_r(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult));
             //die;
@@ -344,15 +349,13 @@ class SpiV5Controller extends AbstractActionController
 
     public function duplicateAction()
     {
-        $request = $this->getRequest();
-        
         $result = $this->odkFormService->getAllV5DuplicateSubmissionsDetails();
         return new ViewModel(array('result' => $result));
     }
 
     public function removeAuditAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $result = $this->odkFormService->removeAuditV5($params);
@@ -365,12 +368,12 @@ class SpiV5Controller extends AbstractActionController
 
     public function saveDownloadDataAction()
     {
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->odkFormService->addV5DownloadData($params);
-           // var_dump($result);die;
+            // var_dump($result);die;
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
@@ -380,16 +383,15 @@ class SpiV5Controller extends AbstractActionController
 
     public function downloadFilesAction()
     {
-        $request = $this->getRequest();
-        
+
         $result = $this->odkFormService->getV5DownloadFilesRow();
-        
+
         return new ViewModel(array('result' => $result));
     }
 
     public function getDistrictByProvinceAction()
     {
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -403,7 +405,7 @@ class SpiV5Controller extends AbstractActionController
 
     public function validateSpiv3DataAction()
     {
-        
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -416,7 +418,8 @@ class SpiV5Controller extends AbstractActionController
     }
     public function validateSpiv3DetailsAction()
     {
-        
+
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -426,10 +429,11 @@ class SpiV5Controller extends AbstractActionController
     }
     public function addSpiv3ValidateDataAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->odkFormService->addValidateSpiv3Data($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result));
