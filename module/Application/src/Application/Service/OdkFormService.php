@@ -529,31 +529,31 @@ class OdkFormService
                 ->setBackgroundColor(Color::rgb(0, 128, 0))
                 ->build();
 
-            if ((int) $outputScore['avgAuditScore'] > 0 && (int) $outputScore['avgAuditScore'] < 40) {
+            if ((int) $outputScore['avgAuditScore'] >= 0 && (int) $outputScore['avgAuditScore'] < 40) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::RED)
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 40 && (int) $outputScore['avgAuditScore'] <= 59) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 40 && (int) $outputScore['avgAuditScore'] <= 59) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::rgb(128, 128, 0))
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 60 && (int) $outputScore['avgAuditScore'] <= 79) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 60 && (int) $outputScore['avgAuditScore'] <= 79) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::YELLOW)
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 80 && (int) $outputScore['avgAuditScore'] <= 89) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 80 && (int) $outputScore['avgAuditScore'] <= 89) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::rgb(0, 255, 0))
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] > 90) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 90) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
@@ -4211,7 +4211,7 @@ class OdkFormService
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
-            if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+            if (isset($logincontainer->token) && !empty($logincontainer->token)) {
                 $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
             }
             if (isset($sWhere) && $sWhere != "") {
@@ -4365,32 +4365,32 @@ class OdkFormService
                 ->setFontBold()
                 ->setFontColor(Color::BLACK)
                 ->build();
-            if ((int) $outputScore['avgAuditScore'] > 0 && (int) $outputScore['avgAuditScore'] < 40) {
+            if ((int) $outputScore['avgAuditScore'] >= 0 && (int) $outputScore['avgAuditScore'] < 40) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::RED)
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 40 && (int) $outputScore['avgAuditScore'] <= 59) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 40 && (int) $outputScore['avgAuditScore'] <= 59) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::rgb(128, 128, 0))
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 60 && (int) $outputScore['avgAuditScore'] <= 79) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 60 && (int) $outputScore['avgAuditScore'] <= 79) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::YELLOW)
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 80 && (int) $outputScore['avgAuditScore'] <= 89) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 80 && (int) $outputScore['avgAuditScore'] <= 89) {
                 // print_r($avg);die;
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::rgb(0, 255, 0))
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] > 90) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 90) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
@@ -4729,32 +4729,32 @@ class OdkFormService
                 ->setFontBold()
                 ->setFontColor(Color::BLACK)
                 ->build();
-            if ((int) $outputScore['avgAuditScore'] > 0 && (int) $outputScore['avgAuditScore'] < 40) {
+            if ((int) $outputScore['avgAuditScore'] >= 0 && (int) $outputScore['avgAuditScore'] < 40) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::RED)
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 40 && (int) $outputScore['avgAuditScore'] <= 59) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 40 && (int) $outputScore['avgAuditScore'] <= 59) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::rgb(128, 128, 0))
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 60 && (int) $outputScore['avgAuditScore'] <= 79) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 60 && (int) $outputScore['avgAuditScore'] <= 79) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::YELLOW)
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] < 80 && (int) $outputScore['avgAuditScore'] <= 89) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 80 && (int) $outputScore['avgAuditScore'] <= 89) {
                 // print_r($avg);die;
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)
                     ->setBackgroundColor(Color::rgb(0, 255, 0))
                     ->build();
-            } else if ((int) $outputScore['avgAuditScore'] > 90) {
+            } else if ((int) $outputScore['avgAuditScore'] >= 90) {
                 $avgStyle = (new StyleBuilder())
                     ->setFontBold()
                     ->setFontColor(Color::BLACK)

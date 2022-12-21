@@ -969,7 +969,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             }
         }
 
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
 
@@ -1012,7 +1012,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             ->where("spiv3.status='approved'")
             ->where("(`assesmentofaudit` BETWEEN '" . $start_date . "' - INTERVAL DATEDIFF('" . $start_date . "','" . $end_date . "') DAY AND '" . $start_date . "')");
         //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
@@ -1098,7 +1098,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             ))
             ->where(array('status' => 'approved'))
             ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -1116,7 +1116,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"')
             ->order(array("status DESC", "id $sortOrder"));
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -1132,7 +1132,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->order(array("avgMonthTesting DESC"));
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $start_date = '';
@@ -1371,7 +1371,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
             }
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -1464,7 +1464,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
             }
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
@@ -1663,7 +1663,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"');
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -1693,7 +1693,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         /* Total data set length */
         $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"');
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
@@ -1812,7 +1812,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $start_date = '';
@@ -1946,7 +1946,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
 
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $start_date = '';
@@ -2133,7 +2133,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('status' => 'approved'))
             ->order(array("assesmentofaudit $sortOrder"));
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -2281,7 +2281,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
@@ -2369,7 +2369,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
@@ -2426,7 +2426,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $start_date = '';
@@ -2701,7 +2701,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
             ->group('auditroundno')
             ->order("auditroundno ASC");
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -3030,7 +3030,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status = "pending"');
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -3142,7 +3142,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery = $sQuery->where("spiv3.assesmentofaudit='" . $this->dateFormat($parameters['assesmentOfAuditDate']) . "'");
             $tQuery = $tQuery->where("spiv3.assesmentofaudit='" . $this->dateFormat($parameters['assesmentOfAuditDate']) . "'");
         }
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
@@ -3450,7 +3450,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointname', 'testingpointtype', 'avgMonthTesting', 'NumberofTester', 'AUDIT_SCORE_PERCANTAGE'));
         }
 
-        if (isset($logincontainer->token) && count($logincontainer->token) > 0) {
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }

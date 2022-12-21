@@ -32,7 +32,7 @@ class EmailController extends AbstractActionController
             $tempId = $this->facilityService->addEmail($params);
             if ($tempId > 0) {
                 $ids = '';
-                if (isset($params['audits']) && count($params['audits']) > 0) {
+                if (isset($params['audits']) && !empty($params['audits'])) {
                     $idArray = array();
                     for ($au = 0; $au < count($params['audits']); $au++) {
                         $idArray[] = $params['audits'][$au];
@@ -75,7 +75,7 @@ class EmailController extends AbstractActionController
             $tempId = $this->facilityService->addEmailV5($params);
             if ($tempId > 0) {
                 $ids = '';
-                if (isset($params['audits']) && count($params['audits']) > 0) {
+                if (isset($params['audits']) && !empty($params['audits'])) {
                     $idArray = array();
                     for ($au = 0; $au < count($params['audits']); $au++) {
                         $idArray[] = $params['audits'][$au];
@@ -119,7 +119,7 @@ class EmailController extends AbstractActionController
             $tempId = $this->facilityService->addEmailV6($params);
             if ($tempId > 0) {
                 $ids = '';
-                if (isset($params['audits']) && count($params['audits']) > 0) {
+                if (isset($params['audits']) && !empty($params['audits'])) {
                     $idArray = array();
                     for ($au = 0; $au < count($params['audits']); $au++) {
                         $idArray[] = $params['audits'][$au];
