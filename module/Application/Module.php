@@ -110,7 +110,6 @@ class Module
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6'
         ) {
-
             if (!isset($session->userId) || $session->userId == "") {
                 if ($e->getRequest()->isXmlHttpRequest()) {
                     return;
@@ -127,6 +126,7 @@ class Module
                     $event->stopPropagation();
                     return $response;
                 };
+
                 //Attach the "break" as a listener with a high priority
                 $e->getApplication()->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
                 return $response;
@@ -142,9 +142,9 @@ class Module
                 $privilege = $params['action'];
 
                 $role = $session->roleCode;
-
+                
                 //\Zend\Debug\Debug::dump($role);
-
+                
                 //\Zend\Debug\Debug::dump($acl->isAllowed($role, $resource, $privilege));
                 //\Zend\Debug\Debug::dump($privilege);
                 //die;
@@ -152,10 +152,10 @@ class Module
                 if ($e->getRequest()->isXmlHttpRequest()) {
                     return;
                 } else {
-
+                        
                     if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
-                        $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
-                        $e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
+                            $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
+                            $e->getApplication()->getEventManager()->trigger('dispatch.error', $e);
                     }
                 }
             }
@@ -255,7 +255,8 @@ class Module
                     $userService = $sm->getServiceLocator()->get('UserService');
                     $roleService = $sm->getServiceLocator()->get('RoleService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\UsersController($userService, $roleService, $odkFormService);
+                    $commonService = $sm->getServiceLocator()->get('CommonService');
+                    return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService);
                 },
                 'Application\Controller\Email' => function ($sm) {
                     $facilityService = $sm->getServiceLocator()->get('FacilityService');

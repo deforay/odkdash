@@ -52,12 +52,14 @@ class UsersTable extends AbstractTableGateway
         $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
+        $userCountryMap = new UserCountryMapTable($dbAdapter);
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
             ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
             ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name', 'role_code'))
             ->where(array('login' => $username, 'u.status' => 'active'));
         $sQueryStr = $sql->buildSqlString($sQuery);
+        // die($sQueryStr);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         $data = array(
             'last_login_datetime' => $common->getDateTime()
@@ -67,6 +69,12 @@ class UsersTable extends AbstractTableGateway
         }
 
         if ($sResult) {
+            $userCountryMapArray = array();
+            $userCountryMapResult = $userCountryMap->fetchSelectedCountry($sResult->id);
+            foreach ($userCountryMapResult as $ucMap) {
+                $userCountryMapArray[] = $ucMap['country_id'];
+            }
+
             $token = array();
             $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
                 ->columns(array('token'))
@@ -81,6 +89,7 @@ class UsersTable extends AbstractTableGateway
             $logincontainer->login = $sResult->login;
             $logincontainer->roleCode = $sResult->role_code;
             $logincontainer->token = $token;
+            $logincontainer->userCountryMap = $userCountryMapArray;
             $logincontainer->userImage = $sResult->user_image;
             $subject = '';
             $eventType = 'login in';
