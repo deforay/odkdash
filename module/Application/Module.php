@@ -100,9 +100,6 @@ class Module
         $config = $commonService->getGlobalConfigDetails();
         $session->countryName = $config['country-name'];
 
-
-
-
         if (
             $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
@@ -471,6 +468,10 @@ class Module
                 'GlobalConfigHelper' => function ($sm) {
                     $globalTable = $sm->get('GlobalTable');
                     return new \Application\View\Helper\GlobalConfigHelper($globalTable);
+                },
+                'GetCountryDetailsByIdHelper' => function ($sm) {
+                    $countriesTable = $sm->get('CountriesTable');
+                    return new \Application\View\Helper\GetCountryDetailsByIdHelper($countriesTable);
                 },
 
             )

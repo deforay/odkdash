@@ -70,7 +70,12 @@ class UsersTable extends AbstractTableGateway
 
         if ($sResult) {
             $userCountryMapArray = array();
-            $userCountryMapResult = $userCountryMap->fetchSelectedCountry($sResult->id);
+            $userCountryQuery = $sql->select()->from(array('u_c_map' => 'user_country_map'))
+                ->join(array('c' => 'countries'), "c.country_id=u_c_map.country_id", array('country_id', 'country_name', 'iso2'))
+                ->where(array('u_c_map.user_id' => $sResult->id))
+                ->order("country_name ASC");
+            $userCountryQueryStr = $sql->buildSqlString($userCountryQuery);
+            $userCountryMapResult = $dbAdapter->query($userCountryQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             foreach ($userCountryMapResult as $ucMap) {
                 $userCountryMapArray[] = $ucMap['country_id'];
             }

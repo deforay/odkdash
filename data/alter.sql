@@ -2386,3 +2386,6 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 ALTER TABLE `spi_form_v_6` CHANGE `id` `id` INT NOT NULL AUTO_INCREMENT;
 ALTER TABLE `spi_form_v_5` CHANGE `id` `id` INT NOT NULL AUTO_INCREMENT;
 ALTER TABLE `spi_form_v_3` CHANGE `id` `id` INT NOT NULL AUTO_INCREMENT;
+
+-- Thana 21-Dec-2022
+ALTER TABLE `countries` ADD `latitude` VARCHAR(256) NULL DEFAULT NULL AFTER `country_id`, ADD `longitude` VARCHAR(256) NULL DEFAULT NULL AFTER `latitude`;

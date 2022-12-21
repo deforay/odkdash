@@ -28,8 +28,6 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        $params = array();
-
         $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV6();
         $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6('');
 

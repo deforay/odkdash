@@ -1,5 +1,19 @@
+<?php 
+use Laminas\Session\Container;
+$logincontainer = new Container('credo');
+$countryConfig = $this->GetCountryDetailsByIdHelper();
+
+if(isset($logincontainer->userCountryMap[0]) && $logincontainer->userCountryMap[0] != ""){
+	$lat = $countryConfig[$logincontainer->userCountryMap[0]]['latitude'];
+	$lng = $countryConfig[$logincontainer->userCountryMap[0]]['longitude'];
+}else{
+	$lat = $configData['latitude'];
+	$lng = $configData['longitude'];
+}
+?>
 <div class="gmap" id="gmap" style="min-height: 1125px;width:100%;"></div>
 <script>
+
 	var LocsA = [
 		<?php foreach ($allSubmissions as $row) {
 
@@ -35,10 +49,9 @@
 			map_options: {
 				mapTypeId: google.maps.MapTypeId.ROADMAP,
 				zoom: 6,
-				set_center: [<?php echo $configData['latitude']; ?>, <?php echo $configData['longitude']; ?>],
+				set_center: [<?php echo $lat; ?>, <?php echo $lng; ?>],
 				scrollwheel: false
 			}
 		}).Load();
-
 	});	
 </script>
