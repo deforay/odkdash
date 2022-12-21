@@ -13,12 +13,14 @@ class UsersController extends AbstractActionController
     private $odkFormService = null;
     private $userService = null;
     private $roleService = null;
+    private $commonService = null;
 
-    public function __construct($userService, $roleService, $odkFormService)
+    public function __construct($userService, $roleService, $odkFormService, $commonService)
     {
         $this->userService = $userService;
         $this->roleService = $roleService;
         $this->odkFormService = $odkFormService;
+        $this->commonService = $commonService;
     }    
 
     public function indexAction()
@@ -44,7 +46,7 @@ class UsersController extends AbstractActionController
         }
         $roleResult = $this->roleService->getAllActiveRoles();
         $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
-        $countries = $this->odkFormService->getAllCountries();
+        $countries = $this->commonService->getAllCountries();
         return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult, 'countries' => $countries));
     }
 
@@ -60,9 +62,9 @@ class UsersController extends AbstractActionController
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->userService->getUser($id);
-            $userCountryMapResult = $this->odkFormService->getSelectedCountry($id);
+            $userCountryMapResult = $this->commonService->getSelectedCountry($id);
             
-            $countries = $this->odkFormService->getAllCountries();
+            $countries = $this->commonService->getAllCountries();
             $roleResult = $this->roleService->getAllActiveRoles();
             $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
             return new ViewModel(array(

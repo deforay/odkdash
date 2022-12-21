@@ -103,10 +103,10 @@ class Module
 
         $sm = $application->getServiceManager();
         $commonService = $sm->get('CommonService');
+
         $config = $commonService->getGlobalConfigDetails();
-        if (!empty($session) && !isset($session->countryName) && !empty($session->countryName)) {
-            $session->countryName = $config['country-name'];
-        }
+        $session->countryName = $config['country-name'];
+
         /** @var \Laminas\Http\Request $request */
         $request = $e->getRequest();
 
@@ -250,7 +250,8 @@ class Module
                     $userService = $sm->getServiceLocator()->get('UserService');
                     $roleService = $sm->getServiceLocator()->get('RoleService');
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\UsersController($userService, $roleService, $odkFormService);
+                    $commonService = $sm->getServiceLocator()->get('CommonService');
+                    return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService);
                 },
                 'Application\Controller\Email' => function ($sm) {
                     $facilityService = $sm->getServiceLocator()->get('FacilityService');

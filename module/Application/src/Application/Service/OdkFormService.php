@@ -5848,14 +5848,4 @@ class OdkFormService
         $obj = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response), true);
         return $obj;
     }
-
-    public function getAllCountries(){
-        $db = $this->sm->get('CountriesTable');
-        return $db->fetchAllCountries();
-    }
-    
-    public function getSelectedCountry($id){
-        $db = $this->sm->get('UserCountryMapTable');
-        return $db->fetchSelectedCountry($id);
-    }
 }
