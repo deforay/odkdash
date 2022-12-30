@@ -139,7 +139,7 @@ class Module
                 return $response;
             } else {
                 $sm = $application->getServiceManager();
-                $viewModel = $application->getViewModel();
+                $viewModel = $application->getMvcEvent()->getViewModel();
                 $acl = $sm->get('AppAcl');
                 $viewModel->acl = $acl;
                 $session->acl = serialize($acl);
