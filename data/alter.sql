@@ -2456,7 +2456,7 @@ INSERT INTO `countries` (`country_id`, `latitude`, `longitude`, `country_name`, 
 (52, '-4.038333', '21.758664', 'Congo, the Democratic Republic of the', 'CD', 'COD', 180, 'active'),
 (53, '-21.236736', '-159.777671', 'Cook Islands', 'CK', 'COK', 184, 'inactive'),
 (54, '9.748917', '-83.753428', 'Costa Rica', 'CR', 'CRI', 188, 'active'),
-(55, '7.539989', '-5.54708', 'Cote d\'Ivoire', 'CI', 'CIV', 384, 'inactive'),
+(55, '7.539989', '-5.54708', 'Cote d\Ivoire', 'CI', 'CIV', 384, 'inactive'),
 (56, '45.1', '15.2', 'Croatia', 'HR', 'HRV', 191, 'inactive'),
 (57, '21.521757', '-77.781167', 'Cuba', 'CU', 'CUB', 192, 'inactive'),
 (58, NULL, NULL, 'Cura', 'CW', 'CUW', 531, 'inactive'),
@@ -2652,3 +2652,8 @@ INSERT INTO `countries` (`country_id`, `latitude`, `longitude`, `country_name`, 
 (248, '-19.015438', '29.154857', 'Zambia', 'ZM', 'ZMB', 894, 'inactive'),
 (249, '', '', 'Zimbabwe', 'ZW', 'ZWE', 716, 'inactive'),
 (250, '-26.522503', '31.465866', 'Eswatini', 'SZ', 'SWZ', 748, 'active');
+
+CREATE TABLE `user_country_map` (
+  `user_id` int DEFAULT NULL,
+  `country_id` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
