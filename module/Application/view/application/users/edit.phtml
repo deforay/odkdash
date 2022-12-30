@@ -99,7 +99,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									</select>
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Countries <span class="mandatory">*</span></label>
+									<label>Countries </label>
 									<select class="form-control select2" multiple="multiple" name="country[]" id="country" title="Please select the country">
 										<?php foreach($countries as $row){ ?>
 											<option value="<?php echo $row['country_id'];?>" <?php echo (in_array($row['country_id'], $userCountryMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['country_name']);?></option>
