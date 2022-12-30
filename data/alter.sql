@@ -2657,3 +2657,6 @@ CREATE TABLE `user_country_map` (
   `user_id` int DEFAULT NULL,
   `country_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Thana 30-Dec-2022
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Google Map Key', 'map_key', 'AIzaSyDhZa4hDifE6p2sbaxJehS7gcrZOJScIqM');
