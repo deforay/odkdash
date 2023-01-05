@@ -333,7 +333,7 @@ $config = $this->GlobalConfigHelper();
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<button class="btn btn-primary" id="rtriStuff"><?= _("Show S0 and D0 Audit Performance Charts"); ?> </button>
+				<button class="btn btn-primary" id="rtriStuff"><?= $this->translate("Show S0 and D0 Audit Performance Charts"); ?> </button>
 			</div>
 		</div>
 		<br>
@@ -1499,10 +1499,10 @@ $config = $this->GlobalConfigHelper();
 				getAuditSectionZeroDetails();
 				getAuditSectionZeroProtocolDetails();
 
-				if ($.trim($('#rtriStuff').text()) === "<?= _("Show S0 and D0 Audit Performance Charts"); ?>") {
-					$('#rtriStuff').text("<?= _("Hide S0 and D0 Audit Performance Charts"); ?>");
+				if ($.trim($('#rtriStuff').text()) === "<?= $this->translate("Show S0 and D0 Audit Performance Charts"); ?>") {
+					$('#rtriStuff').text("<?= $this->translate("Hide S0 and D0 Audit Performance Charts"); ?>");
 				} else {
-					$('#rtriStuff').text("<?= _("Show S0 and D0 Audit Performance Charts"); ?>");
+					$('#rtriStuff').text("<?= $this->translate("Show S0 and D0 Audit Performance Charts"); ?>");
 				}
 			});
 		});

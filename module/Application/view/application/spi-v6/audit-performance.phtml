@@ -45,7 +45,7 @@
             },
 
             xAxis: {
-                categories: ["Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment","RTRI"],
+                categories: ["Personnel Training & Certification", "Physical Facility", "Safety", "Pre-Testing Phase", "Testing Phase", "Post-Testing Phase", "External Quality Assessment", "RTRI"],
                 tickmarkPlacement: 'on',
                 lineWidth: 0
             },
@@ -74,7 +74,7 @@
                             <?php echo round($adata['TEST_SCORE'], 2); ?>,
                             <?php echo round($adata['POST_SCORE'], 2); ?>,
                             <?php echo round($adata['EQA_SCORE'], 2); ?>,
-                            <?php echo round($adata['RTRI_SCORE'], 2); ?>,
+                            <?php echo $adata['RTRI_SCORE']> 0 ? round($adata['RTRI_SCORE'], 2) : null; ?>,
                         ],
                     },
                 <?php
