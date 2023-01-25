@@ -1932,11 +1932,10 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(array('spiv6.id' => $id));
         $sQueryStr = $sql->buildSqlString($sQuery);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-       
         if ($sResult) {
             if (trim($sResult->facility) != '' || trim($sResult->facilityid) != '' || trim($sResult->facilityname) != '') {
                 //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
-              /*  $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                     ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
                 if (isset($sResult->facility) && $sResult->facility > 0) {
                     $fQuery = $fQuery->where(array("spirt3.id" => $sResult->facility));
@@ -1945,17 +1944,10 @@ class SpiFormVer6Table extends AbstractTableGateway
                 } else if (isset($sResult->facilityname) && $sResult->facilityname != '') {
                     $fQuery = $fQuery->where(array("spirt3.facility_name" => $sResult->facilityname));
                 }
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
-                $fQueryStr = $sql->buildSqlString($fQuery);*/
 
-                $sQuery = "SELECT v.facilityname as fName,f.latitude,f.longitude,f.email,f.contact_person,f.facility_id as ffId,f.id FROM spi_form_v_6 as v 
-                    left join spi_rt_3_facilities as f on f.facility_name=v.facilityname 
-                    WHERE v.id = $id AND facilityname NOT IN (SELECT DISTINCT facility_name FROM spi_rt_3_facilities)";
-                $fResult = $dbAdapter->query($sQuery, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                $fQueryStr = $sql->buildSqlString($fQuery);
 
-               $sResult['facilityInfo'] = $fResult;
-
+                $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             }
             if ($pdfDowload == 'yes') {
                 $subject = '';

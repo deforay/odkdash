@@ -106,7 +106,7 @@ if ($language == 'Portuguese') {
 } else {
     $langDateFormat = '(dd/mm/yyyy)';
 }
-
+//echo '<pre>'; print_r($formData); die;
 $fId = (isset($formData['facilityInfo']['ffId'])) ? ucwords($formData['facilityInfo']['ffId']) : '';
 $fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facilityInfo']['fName']) : '';
 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
@@ -1525,9 +1525,11 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 }
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
+$signArr = json_decode($formData['auditorSignature']);
+$signImg = '<img src="'.$signArr->url.'" width="90" />';
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '</td></tr>';
+$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] .'<br>('. $formData['staffaudited']. ')</td></tr>';
 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
@@ -1535,10 +1537,11 @@ $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 $signBox2 = '<table cellspacing="0" cellpadding="4">';
 
 if ($language == 'Spanish') {
-    $signBox2 .= '<tr><td>Nombre y firma del auditor:</td></tr>';
+    $signBox2 .= '<tr><td>Nombre y firma del auditor:</td>';
 } else {
-    $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td></tr>';
+    $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td>';
 }
+$signBox2 .= '<td>'.$signImg.'</td></tr>';
 
 if ($language == 'Portuguese') {
     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";

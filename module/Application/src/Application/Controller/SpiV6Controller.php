@@ -127,7 +127,8 @@ class SpiV6Controller extends AbstractActionController
     public function correctiveActionPdfAction()
     {
         $id = ($this->params()->fromRoute('id'));
-        $formData = $this->odkFormService->getFormData($id, 'yes');
+       // $formData = $this->odkFormService->getFormData($id, 'yes');
+       $formData = $this->odkFormService->getSpiV6FormData($id, 'yes');
         $configData = $this->commonService->getGlobalConfigDetails();
         $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
         $viewModel->setTerminal(true);
