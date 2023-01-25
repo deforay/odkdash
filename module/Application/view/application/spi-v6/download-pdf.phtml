@@ -1542,13 +1542,13 @@ if ($language == 'Spanish') {
     $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td>';
 }
 $signBox2 .= '<td>'.$signImg.'</td></tr>';
-
+$dateValue = "<td>".$this->humanDateFormat($formData['assesmentofaudit'])."</td>";
 if ($language == 'Portuguese') {
-    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
+    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td> ".$dateValue ."</tr>";
 } else if ($language == 'Spanish') {
-    $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td></tr>";
+    $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td>".$dateValue ."</tr>";
 } else {
-    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
+    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td>".$dateValue ."</tr>";
 }
 $signBox2 .= '</table>';
 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
