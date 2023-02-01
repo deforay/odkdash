@@ -3955,4 +3955,15 @@ class SpiFormVer3Table extends AbstractTableGateway
 
         return $rResult;
     }
+
+    public function fetchV3DetailsByMetaInstanceId($metaInstantId)
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from('spi_form_v_3')
+        ->where("`meta-instance-id` = '$metaInstantId'");
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        return $rResult;
+    }
 }
