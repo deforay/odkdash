@@ -347,7 +347,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $a
   }
 
   function downloadCorrectiveActionPdf(formId) {
-    window.open('<?php echo $this->url('spi-v6-form', array('action' => 'download-pdf')) ?>' + formId);
+    window.open('<?php echo $this->url('spi-v6-form', array('action' => 'corrective-action-pdf')) ?>' + formId);
     return false;
   }
 

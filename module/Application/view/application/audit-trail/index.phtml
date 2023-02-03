@@ -1,0 +1,195 @@
+<?php
+use Laminas\Session\Container;
+$sessionLogin = new Container('credo');
+//echo '<pre>'; print_r($result); die;
+$auditRecency = $result['auditInfo'];
+$currentRecency = $result['currentRecord'];
+$metaInstance="";
+$version="";
+if(isset($params['metaInstance']))
+$metaInstance = $params['metaInstance'];
+$version = $params['version'];
+?>
+<style>
+	#current, #auditTable {
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+</style>
+<div class="am-content">
+  <div class="page-head">
+    <h2><?= $this->translate('Audit Trail'); ?></h2>
+  </div>
+
+  <div class="main-content">
+    <div class="widget widget-fullwidth widget-small" style="padding:5px;">
+	<div class="row">
+	<div class="col-sm-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+                    <form name="auditTrail" id="auditTrail"  class="mb-5" action="<?php echo $this->url('audit-trail', array('action' => 'index')); ?>" method="post">
+                        
+					<div class="form-group row">
+                              <label class="col-sm-4 col-form-label" for="">Version Type<span class="mandatory">*</span></label>
+                              <div class="col-sm-4">
+							  <select class="form-control" id="version" name="version">
+								<option value=''>Choose Version</option>
+                      <option <?php if(isset($version) && $version=='v3') echo 'selected'; ?> value='v3'>SPI RT V3</option>
+					  <option <?php if(isset($version) && $version=='v6') echo 'selected'; ?> value='v6'>SPI RRT</option>
+
+                    </select>  
+				   </div>
+                         </div>
+					
+					
+					<div class="form-group row">
+                              <label class="col-sm-4 col-form-label" for="">Meta Instance ID<span class="mandatory">*</span></label>
+                              <div class="col-sm-4">
+                                   <input type="text" value="<?php echo $metaInstance; ?>" class="form-control isRequired" id="metaInstance" name="metaInstance" placeholder="Enter the Meta Instance ID" title="Please enter the Meta Instance ID">
+                              </div>
+                         </div>
+                         <div class="row items-push">
+                              <div class="col-lg-7 offset-lg-4">
+                                   <a href="<?php echo $this->url('audit-trail', array('action' => 'index')); ?>" class="btn btn-danger">Cancel</a>&nbsp;
+                                   <button type="submit" class="btn btn-primary" onclick="validateNow();return false;"><i class="fa fa-fw fa-check"></i> Submit</button>
+                              </div>
+                         </div>
+                    </form>
+               </div>
+          </div>
+     </div>
+</div>
+</div>
+<?php if(!empty($metaInstance)){ ?>
+     <h3> Audit Trail for SPI Form <b><?php echo $metaInstance; ?></b></h3>
+     <table id="auditTable" class="table table-bordered table-striped table-vcenter" aria-hidden="true">
+								<thead>
+									<tr>
+										<?php
+                                        $colArr = array();
+										foreach ($result['auditColumns'] as $col) {
+											$colArr[] = $col['COLUMN_NAME'];
+										?>
+											<th>
+												<?php
+												echo $col['COLUMN_NAME'];
+												?>
+											</th>
+										<?php } ?>
+									</tr>
+								</thead>
+								<tbody>
+                                <?php
+									if (!empty($auditRecency)) {
+										for ($i = 0; $i < count($auditRecency); $i++) {
+									?>
+											<tr>
+												<?php
+												for ($j = 0; $j < count($colArr); $j++) {
+
+													if (($j > 3) && ($i > 0) && $auditRecency[$i][$colArr[$j]] != $auditRecency[$i - 1][$colArr[$j]]) {
+														echo '<td style="background: orange; color:black;" >' . $auditRecency[$i][$colArr[$j]] . '</td>';
+													} else {
+														echo '<td>' . $auditRecency[$i][$colArr[$j]] . '</td>';
+													}
+												?>
+												<?php }
+												?>
+											</tr>
+									<?php
+										}
+									} else {
+										echo "<tr align='center'><td colspan='15'>No records available</td></tr>";
+									}
+									?>
+                                        </tbody>
+                                        </table>
+<br>
+                                        <h3> Current Record for SPI Form<b> <?php echo $metaInstance; ?></b></h3>
+                                        <table id="current" class="table table-striped table-hover table-bordered" aria-hidden="true">
+								<thead>
+									<tr>
+										<?php
+										$colValue=array();
+										foreach ($result['spiColumns'] as $col) {
+                                                       $colValue[] = $col['COLUMN_NAME'];
+										?>
+											<th>
+												<?php
+												echo $col['COLUMN_NAME'];
+												?>
+											</th>
+										<?php } ?>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									if (!empty($currentRecency)) {
+									?>
+											<tr>
+												<?php
+												for ($j = 3; $j < count($colValue); $j++) {
+												?>
+													<td>
+														<?php
+														echo $currentRecency[$colValue[$j]];
+														?>
+													</td>
+												<?php }
+												?>
+											</tr>
+									<?php
+										
+									} else {
+										echo "<tr align='center'><td colspan='10'>No records available</td></tr>";
+									}
+									?>
+								</tbody>
+
+							</table>
+							<?php } ?>
+</div>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
+<script type="text/javascript">
+oTable = null;
+oTable1 = null;
+$(document).ready(function() {
+         /* $("#auditTable").DataTable({
+			scrollY: '50vh',
+			scrollX: true,
+			scrollCollapse: true,
+			paging: false,
+			"aaSorting": [1, "asc"]
+		});*/
+
+		oTable = $('#auditTable').DataTable( {
+            "searching": false,
+		   scrollCollapse: true,
+		   paging: false,
+			   "aaSorting": [1, "asc"]
+		   } );
+
+     });
+
+     duplicateName = true;
+     function validateNow() {
+          var selVal = [];
+        
+
+          flag = deforayValidator.init({
+               formId: 'auditTrail'
+          });
+          if (flag) {
+               if (duplicateName) {
+                    $.blockUI();
+
+                    document.getElementById('auditTrail').submit();
+               }
+          }
+     }
+   
+    
+
+</script>

@@ -410,7 +410,7 @@ class SpiFormVer5Table extends AbstractTableGateway {
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);                
+                $start_date = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
                 $end_date = $this->dateFormat($dateField[2]);

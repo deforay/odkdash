@@ -190,6 +190,16 @@ return array(
                     ),
                 ),
             ),
+            'audit-trail' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/audit-trail[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\AuditTrail',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'users' => array(
                 'type' => 'segment',
                 'options' => array(

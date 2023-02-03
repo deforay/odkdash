@@ -2,13 +2,20 @@
 
 namespace Application\Model;
 
+use Application\Model\GlobalTable;
 use Laminas\Session\Container;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Expression;
+
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Zend\Debug\Debug;
 use Laminas\Config\Writer\PhpArray;
 use Application\Service\CommonService;
+use Application\Model\SpiRtFacilitiesTable;
+use Application\Model\EventLogTable;
+
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -37,7 +44,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-
+        $logincontainer = new Container('credo');
         $aColumns = array('login_id', 'login_attempted_datetime', 'ip_address', 'browser', 'operating_system', 'login_status');
 
         /*
@@ -113,6 +120,26 @@ class UserLoginHistoryTable extends AbstractTableGateway
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from('user_login_history');
         //$sQuery=$this->select();
+
+        $start_date = '';
+        $end_date = '';
+        if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
+            $dateField = explode("to", $parameters['dateRange']);
+            if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                $start_date = $this->dateFormat($dateField[0]);
+            }
+            if (isset($dateField[1]) && trim($dateField[1]) != "") {
+                $end_date = $this->dateFormat($dateField[1]);
+            }
+        }
+        //echo $start_date.' '.$end_date; die;
+        if (trim($start_date) != "" && trim($end_date) != "") {
+            $sQuery = $sQuery->where(array("login_attempted_datetime >='" . $start_date . "'", "login_attempted_datetime <='" . $end_date . "'"));
+        }
+        if ($parameters['userName'] != '') {
+            $sQuery = $sQuery->where("login_id like '%" . $parameters['userName'] . "%'");
+        }
+
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
         }
@@ -193,5 +220,26 @@ class UserLoginHistoryTable extends AbstractTableGateway
             'operating_system' => $os
         );
         $this->insert($data);
+    }
+
+    public function dateFormat($date) {
+        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
+            return "0000-00-00";
+        } else {
+            $dateArray = explode('-', $date);
+            if (sizeof($dateArray) == 0) {
+                return;
+            }
+            $newDate = trim($dateArray[2]) . "-";
+
+            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+            $mon = 1;
+            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
+
+            if (strlen($mon) == 1) {
+                $mon = "0" . $mon;
+            }
+            return $newDate .= trim($mon) . "-" . trim($dateArray[0]);
+        }
     }
 }

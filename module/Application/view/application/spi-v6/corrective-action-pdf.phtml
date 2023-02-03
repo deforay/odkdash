@@ -3,7 +3,13 @@
 
 use TCPDF;
 
-
+// Extend the TCPDF class to create custom Header and Footer
+$configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "label-spi-v6.php";
+$fileContents = file_get_contents($configFile);
+//Convert the JSON string back into an array.
+$decoded = json_decode($fileContents, true);
+$language = $configData['language'];
+// var_dump($decoded[$language]);die;
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF
 {
@@ -86,7 +92,104 @@ $pdf->SetFont('times', '', 10);
 
 // add a page
 $pdf->AddPage();
+
 //$pdf->SetY(20,true,false);
+
+$partA = '<p style="font-weight:bold;line-height:24px;">' . $decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:label'] . '</p>';
+//$partA.='<br/>';
+
+$pdf->writeHTML($partA, true, 0, true, 0);
+
+$pdf->writeHTMLCell('', 12, '', '', '<p>' . $decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'] . '</p>', 0, 1, false, true, 'L', true);
+if ($language == 'Portuguese') {
+    $langDateFormat = '(dd/mm/aaaa)';
+} else if ($language == 'Spanish') {
+    $langDateFormat = '(dd/mm/aaaa)';
+} else {
+    $langDateFormat = '(dd/mm/yyyy)';
+}
+//echo '<pre>'; print_r($formData); die;
+$fId = (isset($formData['facilityInfo']['ffId'])) ? ucwords($formData['facilityInfo']['ffId']) : '';
+$fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facilityInfo']['fName']) : '';
+$testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $this->humanDateFormat($formData['assesmentofaudit']) . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $fName . '</td>';
+if ($language == 'Portuguese') {
+    $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $fId . '</td>';
+} else if ($language == 'Spanish') {
+    $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $fId . '</td>';
+} else {
+    $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $fId . '</td>';
+}
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+//$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
+$testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . $formData['testingpointtype'];
+$testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . $formData['physicaladdress'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . $formData['level'];
+$testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "") . ':' . $formData['level_other'];
+$testingTab .= '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . $formData['affiliation'];
+$testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
+$testingTab .= '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . $formData['NumberofTester'] . '</td>';
+//$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . $formData['avgMonthTesting'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . $formData['name_auditor_lead'] . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . $formData['name_auditor2'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/clients_tested_hiv:label'] . '</b></td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_tested_HIV_PM'] . '<br/>';
+$testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . $formData['client_tested_HIV_PQ'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/new_hiv:label'] . '</b></td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_newly_HIV_PM'] . '<br/>';
+$testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . $formData['client_newly_HIV_PQ'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/hiv_negative:label'] . '</b></td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_negative_HIV_PM'] . '<br/>';
+$testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_negative_HIV_PQ'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/newly_identified_positives:label'] . '</b></td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_positive_HIV_RTRI_PM'] . '<br/>';
+$testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_positive_HIV_RTRI_PQ'] . '</td>';
+$testingTab .= '</tr>';
+
+$testingTab .= '<tr>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/recent_identified_positives:label'] . '</b></td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_recent_RTRI_PM'] . '<br/>';
+$testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_recent_RTRI_PQ'] . '</td>';
+$testingTab .= '</tr>';
+$testingTab .= '</table>';
+
+$pdf->writeHTML($testingTab, true, 0, true, 0);
+
 
 $partDTitle = '<p style="font-weight:bold;line-height:30px;">Part D. Auditor\'s Summation Report for SPI-RT Audit</p>';
 $pdf->writeHTML($partDTitle, true, 0, true, 0);
@@ -171,16 +274,18 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 }
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
+$signArr = json_decode($formData['auditorSignature']);
+$signImg = '<img src="'.$signArr->url.'" width="90" />';
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= "<tr><td>Staff Audited Signature:</td></tr>";
+$signBox1 .= '<tr><td>Staff Audited Signature: <br>('. $formData['staffaudited']. ')</td></tr>';
 $signBox1 .= "<tr><td>Person in Charge Name and Signature : " . $formData['personincharge'] . "</td></tr>";
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 
 $signBox2 = '<table cellspacing="0" cellpadding="4">';
-$signBox2 .= "<tr><td>Auditor Name and Signature:</td></tr>";
-$signBox2 .= "<tr><td>Date (dd/mm/yyyy):</td></tr>";
+$signBox2 .= "<tr><td>Auditor Name and Signature:</td><td>".$signImg."</td></tr>";
+$signBox2 .= "<tr><td>Date (dd/mm/yyyy):</td><td>".$this->humanDateFormat($formData['assesmentofaudit'])."</td></tr>";
 $signBox2 .= '</table>';
 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
 

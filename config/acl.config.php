@@ -41,6 +41,9 @@ return array(
         'Application\\Controller\\UserLoginHistory' => array(
             'index' => 'allow',
         ),
+        'Application\\Controller\\AuditTrail' => array(
+            'index' => 'allow',
+        ),
     ),
     'SA' => array(
         'Application\\Controller\\Common' => array(
@@ -135,6 +138,9 @@ return array(
             'facility-report' => 'allow',
         ),
         'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\AuditTrail' => array(
             'index' => 'allow',
         ),
     ),
@@ -261,6 +267,9 @@ return array(
         'Application\\Controller\\UserLoginHistory' => array(
             'index' => 'allow',
         ),
+        'Application\\Controller\\AuditTrail' => array(
+            'index' => 'allow',
+        ),
     ),
     'DE' => array(
         'Application\\Controller\\Common' => array(
@@ -341,6 +350,9 @@ return array(
             'download-pdf' => 'allow',
         ),
         'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\AuditTrail' => array(
             'index' => 'allow',
         ),
         'Application\\Controller\\Users' => array(
@@ -440,6 +452,9 @@ return array(
             'download-pdf' => 'allow',
         ),
         'Application\\Controller\\UserLoginHistory' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\AuditTrail' => array(
             'index' => 'allow',
         ),
         'Application\\Controller\\Users' => array(

@@ -1201,6 +1201,7 @@ $config = $this->GlobalConfigHelper();
 				scoreLevel: $("#scoreLevel").val()
 			},
 			function(data) {
+				//alert(data);
 				$("#zeroCountChart").html(data);
 			});
 

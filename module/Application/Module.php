@@ -36,6 +36,8 @@ use Application\Model\SpiFormVer6DownloadTable;
 use Application\Model\SpiFormVer3TempTable;
 use Application\Model\CountriesTable;
 use Application\Model\UserCountryMapTable;
+use Application\Model\AuditSpiFormV6Table;
+use Application\Model\AuditSpiFormV3Table;
 
 
 use Application\Service\OdkFormService;
@@ -45,6 +47,7 @@ use Application\Service\CommonService;
 use Application\Service\RoleService;
 use Application\Service\UserLoginHistoryService;
 use Application\Service\TcpdfExtends;
+use Application\Service\AuditTrailService;
 
 use Application\Model\Acl;
 use Laminas\Mvc\ModuleRouteListener;
@@ -268,6 +271,10 @@ class Module
                     $userLoginHistoryService = $sm->getServiceLocator()->get('UserLoginHistoryService');
                     return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
                 },
+                'Application\Controller\AuditTrail' => function ($sm) {
+                    $auditTrailService = $sm->getServiceLocator()->get('AuditTrailService');
+                    return new \Application\Controller\AuditTrailController($auditTrailService);
+                },
                 'Application\Controller\Dashboard' => function ($sm) {
                     $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
                     return new \Application\Controller\DashboardController($odkFormService);
@@ -427,6 +434,16 @@ class Module
                     $table = new UserCountryMapTable($dbAdapter);
                     return $table;
                 },
+                'AuditSpiFormV3Table' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new AuditSpiFormV3Table($dbAdapter);
+                    return $table;
+                },
+                'AuditSpiFormV6Table' => function ($sm) {
+                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+                    $table = new AuditSpiFormV6Table($dbAdapter);
+                    return $table;
+                },
 
                 'OdkFormService' => function ($sm) {
                     return new OdkFormService($sm);
@@ -448,6 +465,9 @@ class Module
                 },
                 'UserLoginHistoryService' => function ($sm) {
                     return new UserLoginHistoryService($sm);
+                },
+                'AuditTrailService' => function ($sm) {
+                    return new AuditTrailService($sm);
                 },
                 'TcpdfExtends' => function ($sm) {
                     return new TcpdfExtends($sm);

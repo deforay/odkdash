@@ -33,7 +33,10 @@ class CountriesTable extends AbstractTableGateway {
     
     public function fetchMapedCountries(){
         $logincontainer = new Container('credo');
-        $result = $this->select(array('country_id IN('.implode(",", $logincontainer->userCountryMap).')'))->toArray();
+        if(isset($logincontainer->userCountryMap) && !empty($logincontainer->userCountryMap))
+            $result = $this->select(array('country_id IN('.implode(",", $logincontainer->userCountryMap).')'))->toArray();
+                else
+            $result = $this->select()->toArray();
         $response = array();
         foreach($result as $row){
             $response[$row['country_id']] = $row;
