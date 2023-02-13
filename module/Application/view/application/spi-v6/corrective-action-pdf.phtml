@@ -191,6 +191,61 @@ $testingTab .= '</table>';
 $pdf->writeHTML($testingTab, true, 0, true, 0);
 
 
+$partCTitle = '<p style="font-weight:bold;">PART C: SCORING CRITERIA</p>';
+$pdf->writeHTML($partCTitle, true, 0, true, 0);
+$partCtableBox1 = '<table cellpadding="2">';
+$partCtableBox1 .= "<tr><td>
+  <p>Each element marked will be assigned a point value: • Items marked “Yes” receive 1 point each. • Items marked “Partial”
+  receive 0.5 point each. • Items marked “No” receive 0 point each.</p>
+  <p>Total points scored for each section should be tallied and recorded at the end of the section</p>
+  <p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance
+  level.</p>
+</td></tr>";
+$partCtableBox1 .= '</table>';
+$partCtableBox1 .= '</table>';
+$pdf->writeHTML($partCtableBox1, true, 0, true, 0);
+
+$partCTable = '<table border="1" cellspacing="0" cellpadding="5">';
+$partCTable .= '<tr style="font-weight:bold;text-align:center;">';
+  $partCTable .= '<td style="width:15%">Levels</td>';
+  $partCTable .= '<td  style="width:25%">% Score</td>';
+  $partCTable .= '<td  style="width:60%">Description of results</td>';
+$partCTable .= '</tr>';
+
+$partCTable .= '<tr style="text-align:left;">';
+  $partCTable .= '<td style="width:15%;background-color:#C00000;">Level 0</td>';
+  $partCTable .= '<td  style="width:25%">Less than 40%</td>';
+  $partCTable .= '<td  style="width:60%">Needs improvement in all areas and immediate remediation</td>';
+$partCTable .= '</tr>';
+
+$partCTable .= '<tr style="text-align:left;">';
+  $partCTable .= '<td style="width:15%;background-color:#E36C0A;">Level 1</td>';
+  $partCTable .= '<td  style="width:25%">40% - 59%</td>';
+  $partCTable .= '<td  style="width:60%">Needs improvement in specific areas</td>';
+$partCTable .= '</tr>';
+
+$partCTable .= '<tr style="text-align:left;">';
+  $partCTable .= '<td style="width:15%;background-color:#FFFF00;">Level 2</td>';
+  $partCTable .= '<td  style="width:25%">60% - 79%</td>';
+  $partCTable .= '<td  style="width:60%">Partially eligible</td>';
+$partCTable .= '</tr>';
+
+$partCTable .= '<tr style="text-align:left;">';
+  $partCTable .= '<td style="width:15%;background-color:#92D050;">Level 3</td>';
+  $partCTable .= '<td  style="width:25%">80% - 89%</td>';
+  $partCTable .= '<td  style="width:60%">Close to national site certification</td>';
+$partCTable .= '</tr>';
+
+$partCTable .= '<tr style="text-align:left;">';
+  $partCTable .= '<td style="width:15%;background-color:#00B050;">Level 4</td>';
+  $partCTable .= '<td  style="width:25%">90% or higher</td>';
+  $partCTable .= '<td  style="width:60%">Eligible to national site certification</td>';
+$partCTable .= '</tr>';
+$partCTable .= '</table>';
+
+$pdf->writeHTML($partCTable, true, 0, true, 0);
+
+
 $partDTitle = '<p style="font-weight:bold;line-height:30px;">Part D. Auditor\'s Summation Report for SPI-RT Audit</p>';
 $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
