@@ -33,6 +33,20 @@ class SpiFormVer6Table extends AbstractTableGateway
         $this->adapter = $adapter;
     }
 
+    public function getAllLabels(){
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_v6_form_labels'));
+        $sQueryStr = $sql->buildSqlString($sQuery);
+        //echo $sQueryStr;//die;
+        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $response = array();
+        foreach($rResult as $row){
+            $response[$row['field']] = array($row['short_label'],$row['label']);
+        }
+        return $response;
+    }
+
     public function saveData($params)
     {
 
@@ -2354,7 +2368,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         $response = array();

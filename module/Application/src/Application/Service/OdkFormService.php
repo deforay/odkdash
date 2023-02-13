@@ -5213,7 +5213,7 @@ class OdkFormService
 
     public function getSpiV6FormLabels()
     {
-        $db = $this->sm->get('SpiForm5LabelsTable');
+        $db = $this->sm->get('SpiFormVer6Table');
         return $db->getAllLabels();
     }
 
