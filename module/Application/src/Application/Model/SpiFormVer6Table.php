@@ -1345,7 +1345,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($dbAdapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'));
-        // ->order(array("avgMonthTesting DESC"));
+        // ->order(array("client_tested_HIV_PM DESC"));
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
@@ -3186,7 +3186,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 'affiliation' => $params['affiliation'],
                 'affiliation_other' => $params['affiliationOther'],
                 'NumberofTester' => (isset($params['NumberofTester']) && $params['NumberofTester'] > 0 ? $params['NumberofTester'] : 0),
-                // 'avgMonthTesting' => (isset($params['avgMonthTesting']) && $params['avgMonthTesting'] > 0 ? $params['avgMonthTesting'] : 0),
+                // 'avgMonthTesting' => (isset($params['client_tested_HIV_PM']) && $params['client_tested_HIV_PM'] > 0 ? $params['client_tested_HIV_PM'] : 0),
                 'name_auditor_lead' => $params['name_auditor_lead'],
                 'name_auditor2' => $params['name_auditor2'],
                 'PERSONAL_C_1_1_HIV_TRAINING' => $params['personal_c_1_1'],
@@ -3834,8 +3834,8 @@ class SpiFormVer6Table extends AbstractTableGateway
          * you want to insert a non-database field (for example a counter or static image)
          */
         if ($parameters['source'] == 'hv') {
-            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
-            $orderColumns = array('assesmentofaudit', 'facilityname', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE');
+            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname','testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
+            $orderColumns = array('assesmentofaudit', 'facilityname','testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
         } else if ($parameters['source'] == 'la') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
@@ -3956,11 +3956,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit','client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
 
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit','client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
 
             if ($parameters['source'] == 'apl180') {
@@ -4018,10 +4018,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         } else if ($parameters['source'] == 'apspi') {
             //For Audit Performance
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('assesmentofaudit', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
+                ->columns(array('assesmentofaudit','client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
                 ->group('spiv3.assesmentofaudit');
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('assesmentofaudit', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
+                ->columns(array('assesmentofaudit','client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
                 ->group('spiv3.assesmentofaudit');
 
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
@@ -4032,10 +4032,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         } else {
             //For Others
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
+                ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype','client_tested_HIV_PM', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
 
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
+                ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype','client_tested_HIV_PM', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
         }
 
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
@@ -4132,7 +4132,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
             } else if ($parameters['source'] == 'la') {
@@ -4140,7 +4140,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-                $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
             } else if ($parameters['source'] == 'ad') {
                 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
@@ -4495,7 +4495,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
             } else if ($parameters['source'] == 'la') {
@@ -4503,7 +4503,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-                $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
             } else if ($parameters['source'] == 'ad') {
                 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
@@ -4868,7 +4868,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
             } else if ($parameters['source'] == 'la') {
@@ -4876,7 +4876,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-                $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
+                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
             } else if ($parameters['source'] == 'ad') {
                 $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
@@ -5065,7 +5065,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     'affiliation' => $newResult['affiliation'],
                     'affiliation_other' => $newResult['affiliation_other'],
                     'NumberofTester' => (isset($newResult['NumberofTester']) && $newResult['NumberofTester'] > 0 ? $newResult['NumberofTester'] : 0),
-                    'avgMonthTesting' => (isset($newResult['avgMonthTesting']) && $newResult['avgMonthTesting'] > 0 ? $newResult['avgMonthTesting'] : 0),
+                    'avgMonthTesting' => (isset($newResult['client_tested_HIV_PM']) && $newResult['client_tested_HIV_PM'] > 0 ? $newResult['client_tested_HIV_PM'] : 0),
                     'name_auditor_lead' => $newResult['name_auditor_lead'],
                     'name_auditor2' => $newResult['name_auditor2'],
                     'info4' => $newResult['info4'],
