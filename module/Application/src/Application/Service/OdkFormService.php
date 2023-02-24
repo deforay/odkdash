@@ -5141,6 +5141,12 @@ class OdkFormService
         return $db->fetchAllApprovedSubmissionsV6($sortOrder);
     }
 
+    public function getHighVolumeSites()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->getHighVolumeSites();
+    }
+
     public function getAllApprovedTestingVolumeV6($params)
     {
         $db = $this->sm->get('SpiFormVer6Table');

@@ -33,6 +33,7 @@ class DashboardV6Controller extends AbstractActionController
         $perflast30 = $this->odkFormService->getPerformanceLast30DaysV6('');
         $perflast180 = $this->odkFormService->getPerformanceLast180DaysV6();
         $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV6();
+        $highVolumeSites = $this->odkFormService->getHighVolumeSites();
         $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6('');
         $rawSubmissions = $this->odkFormService->getAllSubmissionsV6();
         //$auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData('');
@@ -42,7 +43,6 @@ class DashboardV6Controller extends AbstractActionController
         $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
         
-        // print_r($perflast30);die;
         return new ViewModel(array(
             'perf1' => $perf1,
             'perflast30' => $perflast30,
@@ -50,6 +50,7 @@ class DashboardV6Controller extends AbstractActionController
             'allSubmissions' => $allSubmissions,
             'testingVolume' => $testingVolume,
             'rawSubmissions' => $rawSubmissions,
+            'highVolumeSites' => $highVolumeSites,
             //'auditRoundWiseData' => $auditRoundWiseData,
             //'spiV3Labels' => $spiV3Labels,
             //'zeroCounts' => $zeroCounts,

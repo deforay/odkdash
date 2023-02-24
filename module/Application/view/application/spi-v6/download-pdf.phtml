@@ -11,6 +11,8 @@ $language = $configData['language'];
 // var_dump($decoded[$language]);die;
 class MYPDF extends TCPDF
 {
+    public $header = '';
+    public $logo = '';
 
     public function setSchemeName($header, $logo)
     {
@@ -1526,10 +1528,10 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
 $signArr = json_decode($formData['auditorSignature']);
-$signImg = '<img src="'.$signArr->url.'" width="90" />';
+$signImg = '<img src="' . $signArr->url . '" width="90" />';
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] .'<br>('. $formData['staffaudited']. ')</td></tr>';
+$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>(' . $formData['staffaudited'] . ')</td></tr>';
 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
@@ -1541,14 +1543,14 @@ if ($language == 'Spanish') {
 } else {
     $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td>';
 }
-$signBox2 .= '<td>'.$signImg.'</td></tr>';
-$dateValue = "<td>".$this->humanDateFormat($formData['assesmentofaudit'])."</td>";
+$signBox2 .= '<td>' . $signImg . '</td></tr>';
+$dateValue = "<td>" . $this->humanDateFormat($formData['assesmentofaudit']) . "</td>";
 if ($language == 'Portuguese') {
-    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td> ".$dateValue ."</tr>";
+    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td> " . $dateValue . "</tr>";
 } else if ($language == 'Spanish') {
-    $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td>".$dateValue ."</tr>";
+    $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td>" . $dateValue . "</tr>";
 } else {
-    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td>".$dateValue ."</tr>";
+    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td>" . $dateValue . "</tr>";
 }
 $signBox2 .= '</table>';
 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');

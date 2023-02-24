@@ -2488,6 +2488,23 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
+    public function getHighVolumeSites()
+    {
+        $logincontainer = new Container('credo');
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+            ->where(array('status' => 'approved'))
+            ->order(array("client_tested_HIV_PM DESC"))
+            ->limit(10);
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
+            $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }
+        $sQueryStr = $sql->buildSqlString($sQuery);
+        //echo $sQueryStr;die;
+        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
     public function fecthAllApprovedSubmissionsTable($parameters)
     {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
