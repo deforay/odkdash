@@ -1527,8 +1527,8 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 }
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
-$signArr = json_decode($formData['auditorSignature']);
-$signImg = '<img src="' . $signArr->url . '" width="90" />';
+
+
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>(' . $formData['staffaudited'] . ')</td></tr>';
@@ -1543,13 +1543,20 @@ if ($language == 'Spanish') {
 } else {
     $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td>';
 }
-if(!empty($configData['embed_signatures_in_pdf']) && $configData['embed_signatures_in_pdf'] == "yes"){
 
-    $signBox2 .= '<td>' . $signImg . '</td></tr>';
-}else{
-    
-    $signBox2 .= '<td></td></tr>';
+
+$signImg = "";
+$signArr = !empty($formData['auditorSignature']) ? json_decode($formData['auditorSignature']) : null;
+
+if (
+    !empty($configData['embed_signatures_in_pdf']) &&
+    $configData['embed_signatures_in_pdf'] == "yes" &&
+    (!empty($signArr) && isset($signArr->url) && !empty($signArr->url))
+) {
+    $signImg = '<img src="' . $signArr->url . '" width="90" />';
 }
+
+$signBox2 .= '<td>' . $signImg . '</td></tr>';
 
 $dateValue = "<td>" . $this->humanDateFormat($formData['assesmentofaudit']) . "</td>";
 if ($language == 'Portuguese') {

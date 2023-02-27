@@ -27,7 +27,6 @@ class DashboardV5Controller extends AbstractActionController
     public function indexAction()
     {
         $params = array();
-        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $perf1 = $this->odkFormService->getPerformanceV5($params);
         $perflast30 = $this->odkFormService->getPerformanceLast30DaysV5('');
         $perflast180 = $this->odkFormService->getPerformanceLast180DaysV5();

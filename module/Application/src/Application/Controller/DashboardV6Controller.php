@@ -27,9 +27,7 @@ class DashboardV6Controller extends AbstractActionController
     public function indexAction()
     {
         $params = array();
-        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $perf1 = $this->odkFormService->getPerformanceV6($params);
-        //echo "ss";die;
         $perflast30 = $this->odkFormService->getPerformanceLast30DaysV6('');
         $perflast180 = $this->odkFormService->getPerformanceLast180DaysV6();
         $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV6();

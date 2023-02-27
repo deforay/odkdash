@@ -23,20 +23,17 @@ class AuditTrailController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
-          
+
         if ($request->isPost()) {
             $params = $request->getPost();
             $colCount = "0";
-              if(!empty($params['version']) && $params['version']=='v3')
-              {
-                  $result = $this->auditTrailService->getSpiV3Details($params);
-                  $colCount = 239;
-              }
-              else
-              {
-                  $result = $this->auditTrailService->getSpiV6Details($params);
-                  $colCount = 320;
-              }
+            if (!empty($params['version']) && $params['version'] == 'v3') {
+                $result = $this->auditTrailService->getSpiV3Details($params);
+                $colCount = 239;
+            } else {
+                $result = $this->auditTrailService->getSpiV6Details($params);
+                $colCount = 320;
+            }
             //return $this->getResponse()->setContent(Json::encode($result));
             return new ViewModel(array(
                 'result' => $result,
@@ -44,6 +41,5 @@ class AuditTrailController extends AbstractActionController
                 'colCount' => $colCount,
             ));
         }
-
     }
 }

@@ -3159,7 +3159,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                     ->columns(array('id'))
-                    ->where("spirt3.facility_name='" . $params['testingFacilityName'] . "'");
+                    ->where(array('spirt3.facility_name'=>$params['testingFacilityName']);
                 $fQueryStr = $sql->buildSqlString($fQuery);
                 $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 if ($fResult) {

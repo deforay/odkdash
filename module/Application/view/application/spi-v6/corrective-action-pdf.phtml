@@ -102,11 +102,11 @@ $pdf->writeHTML($partA, true, 0, true, 0);
 
 $pdf->writeHTMLCell('', 12, '', '', '<p>' . $decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'] . '</p>', 0, 1, false, true, 'L', true);
 if ($language == 'Portuguese') {
-    $langDateFormat = '(dd/mm/aaaa)';
+  $langDateFormat = '(dd/mm/aaaa)';
 } else if ($language == 'Spanish') {
-    $langDateFormat = '(dd/mm/aaaa)';
+  $langDateFormat = '(dd/mm/aaaa)';
 } else {
-    $langDateFormat = '(dd/mm/yyyy)';
+  $langDateFormat = '(dd/mm/yyyy)';
 }
 //echo '<pre>'; print_r($formData); die;
 $fId = (isset($formData['facilityInfo']['ffId'])) ? ucwords($formData['facilityInfo']['ffId']) : '';
@@ -120,11 +120,11 @@ $testingTab .= '</tr>';
 $testingTab .= '<tr>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $fName . '</td>';
 if ($language == 'Portuguese') {
-    $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $fId . '</td>';
+  $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $fId . '</td>';
 } else if ($language == 'Spanish') {
-    $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $fId . '</td>';
+  $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $fId . '</td>';
 } else {
-    $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $fId . '</td>';
+  $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $fId . '</td>';
 }
 $testingTab .= '</tr>';
 
@@ -207,39 +207,39 @@ $pdf->writeHTML($partCtableBox1, true, 0, true, 0);
 
 $partCTable = '<table border="1" cellspacing="0" cellpadding="5">';
 $partCTable .= '<tr style="font-weight:bold;text-align:center;">';
-  $partCTable .= '<td style="width:15%">Levels</td>';
-  $partCTable .= '<td  style="width:25%">% Score</td>';
-  $partCTable .= '<td  style="width:60%">Description of results</td>';
+$partCTable .= '<td style="width:15%">Levels</td>';
+$partCTable .= '<td  style="width:25%">% Score</td>';
+$partCTable .= '<td  style="width:60%">Description of results</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-  $partCTable .= '<td style="width:15%;background-color:#C00000;">Level 0</td>';
-  $partCTable .= '<td  style="width:25%">Less than 40%</td>';
-  $partCTable .= '<td  style="width:60%">Needs improvement in all areas and immediate remediation</td>';
+$partCTable .= '<td style="width:15%;background-color:#C00000;">Level 0</td>';
+$partCTable .= '<td  style="width:25%">Less than 40%</td>';
+$partCTable .= '<td  style="width:60%">Needs improvement in all areas and immediate remediation</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-  $partCTable .= '<td style="width:15%;background-color:#E36C0A;">Level 1</td>';
-  $partCTable .= '<td  style="width:25%">40% - 59%</td>';
-  $partCTable .= '<td  style="width:60%">Needs improvement in specific areas</td>';
+$partCTable .= '<td style="width:15%;background-color:#E36C0A;">Level 1</td>';
+$partCTable .= '<td  style="width:25%">40% - 59%</td>';
+$partCTable .= '<td  style="width:60%">Needs improvement in specific areas</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-  $partCTable .= '<td style="width:15%;background-color:#FFFF00;">Level 2</td>';
-  $partCTable .= '<td  style="width:25%">60% - 79%</td>';
-  $partCTable .= '<td  style="width:60%">Partially eligible</td>';
+$partCTable .= '<td style="width:15%;background-color:#FFFF00;">Level 2</td>';
+$partCTable .= '<td  style="width:25%">60% - 79%</td>';
+$partCTable .= '<td  style="width:60%">Partially eligible</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-  $partCTable .= '<td style="width:15%;background-color:#92D050;">Level 3</td>';
-  $partCTable .= '<td  style="width:25%">80% - 89%</td>';
-  $partCTable .= '<td  style="width:60%">Close to national site certification</td>';
+$partCTable .= '<td style="width:15%;background-color:#92D050;">Level 3</td>';
+$partCTable .= '<td  style="width:25%">80% - 89%</td>';
+$partCTable .= '<td  style="width:60%">Close to national site certification</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-  $partCTable .= '<td style="width:15%;background-color:#00B050;">Level 4</td>';
-  $partCTable .= '<td  style="width:25%">90% or higher</td>';
-  $partCTable .= '<td  style="width:60%">Eligible to national site certification</td>';
+$partCTable .= '<td style="width:15%;background-color:#00B050;">Level 4</td>';
+$partCTable .= '<td  style="width:25%">90% or higher</td>';
+$partCTable .= '<td  style="width:60%">Eligible to national site certification</td>';
 $partCTable .= '</tr>';
 $partCTable .= '</table>';
 
@@ -329,25 +329,36 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 }
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
-$signArr = json_decode($formData['auditorSignature']);
-$signImg = '<img src="'.$signArr->url.'" width="90" />';
+
+
+
+$signImg = "";
+$signArr = !empty($formData['auditorSignature']) ? json_decode($formData['auditorSignature']) : null;
+
+if (
+    !empty($configData['embed_signatures_in_pdf']) &&
+    $configData['embed_signatures_in_pdf'] == "yes" &&
+    (!empty($signArr) && isset($signArr->url) && !empty($signArr->url))
+) {
+    $signImg = '<img src="' . $signArr->url . '" width="90" />';
+}
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= '<tr><td>Staff Audited Signature: <br>('. $formData['staffaudited']. ')</td></tr>';
+$signBox1 .= '<tr><td>Staff Audited Signature: <br>(' . $formData['staffaudited'] . ')</td></tr>';
 $signBox1 .= "<tr><td>Person in Charge Name and Signature : " . $formData['personincharge'] . "</td></tr>";
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 
 $signBox2 = '<table cellspacing="0" cellpadding="4">';
-$signBox2 .= "<tr><td>Auditor Name and Signature:</td><td>".$signImg."</td></tr>";
-$signBox2 .= "<tr><td>Date (dd/mm/yyyy):</td><td>".$this->humanDateFormat($formData['assesmentofaudit'])."</td></tr>";
+$signBox2 .= "<tr><td>Auditor Name and Signature:</td><td>" . $signImg . "</td></tr>";
+$signBox2 .= "<tr><td>Date (dd/mm/yyyy):</td><td>" . $this->humanDateFormat($formData['assesmentofaudit']) . "</td></tr>";
 $signBox2 .= '</table>';
 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
 
 //Close and output PDF document
 $fileName = "SPI-RT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
-//$pdf->Output('example_003.pdf', 'I');
+
 $pdf->Output($filePath, "I");
 //echo $fileName;
 //============================================================+

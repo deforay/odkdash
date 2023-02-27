@@ -28,7 +28,6 @@ class DashboardController extends AbstractActionController
     public function indexAction()
     {
         $params = array();
-        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         $perf1 = $this->odkFormService->getPerformance($params);
         $perflast30 = $this->odkFormService->getPerformanceLast30Days('');
         $perflast180 = $this->odkFormService->getPerformanceLast180Days();
@@ -62,10 +61,8 @@ class DashboardController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
-        //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
         if ($request->isPost()) {
             $params = $request->getPost();
-            //$odkFormService = $this->getServiceLocator()->get('OdkFormService');
             $result = $this->odkFormService->getAllApprovedSubmissionsDetailsBasedOnAuditDate($params);
             return $this->getResponse()->setContent(Json::encode($result));
         } else {
