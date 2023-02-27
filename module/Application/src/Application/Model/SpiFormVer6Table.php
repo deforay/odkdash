@@ -3837,8 +3837,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname','testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname','testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
         } else if ($parameters['source'] == 'la') {
-            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
-            $orderColumns = array('assesmentofaudit', 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
+            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname','testingpointname', 'AUDIT_SCORE_PERCENTAGE', 'client_tested_HIV_PM');
+            $orderColumns = array('assesmentofaudit', 'facilityname','testingpointname', 'AUDIT_SCORE_PERCENTAGE', 'client_tested_HIV_PM');
         } else if ($parameters['source'] == 'ad') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
             $orderColumns = array('assesmentofaudit', 'assesmentofaudit');
