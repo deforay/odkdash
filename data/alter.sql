@@ -2670,3 +2670,5 @@ ALTER TABLE `spi_form_v_6` CHANGE `Accuracy` `Accuracy` TEXT CHARACTER SET utf8m
 
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\AuditTrail', 'Audit Trail');
 
+-- Thana 27-Feb-2023
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Embed Signatures In PDF', 'embed_signatures_in_pdf', 'yes');

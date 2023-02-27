@@ -23,7 +23,7 @@
 
             $barData[] = "{ y : " . $val . " , fullquestion : '" . $spiV3Labels[$col][1] . "' }";
             // $category[] = "'" . $spiV3Labels[$col][1] . "'";
-            $category[] = "'" . $spiV3Labels[$col][1] . "'";
+            $category[] = "'" . substr($spiV3Labels[$col][1], 0, 3) . "'";
             //$fullQuestions[$spiV3Labels[$col][0]] = "'".$spiV3Labels[$col][1]."'";
             $counter++;
         }

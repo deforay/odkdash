@@ -64,6 +64,16 @@
 									</div>
 								</div>
 								<div class="form-group">
+									<label for="embed_signatures_in_pdf" class="col-sm-2 control-label">Embed Signatures In PDF<span class="mandatory">*</span></label>
+									<div class="col-lg-4">
+										<select name="embed_signatures_in_pdf" id="embed_signatures_in_pdf" class="form-control isRequired" title="Please select audit approval status">
+											<option value="">--select</option>
+											<option value="yes" <?php echo ($config['embed_signatures_in_pdf'] == 'yes' ? " selected='selected'" : ""); ?>>Yes</option>
+											<option value="no" <?php echo ($config['embed_signatures_in_pdf'] == 'no' ? " selected='selected'" : ""); ?>>No</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
 									<label for="approve_status" class="col-sm-2 control-label">Language <span class="mandatory">*</span></label>
 									<div class="col-lg-4">
 										<select name="language" id="language" class="form-control isRequired" title="Please select language">
