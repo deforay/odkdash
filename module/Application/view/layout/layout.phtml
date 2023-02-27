@@ -259,11 +259,11 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email
           <?php if (trim($auditMenu) != "") { ?>
             <?php if($totalVersions == 1){ ?>
               <?php if(preg_match("/v3/i", $config['web_version'])){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RT'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v3-form', array('action' => 'index')); ?>"><i class="icon s7-display2"></i><span><?php echo $this->translate('Audit SPI-RT'); ?></span></a></li>
                 <?php }elseif(preg_match("/v5/i", $config['web_version'])){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('spi-v5-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT v5'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v5-form', array('action' => 'index')); ?>"><i class="icon s7-display2"></i><span><?php echo $this->translate('Audit SPI-RRT v5'); ?></span></a></li>
                 <?php }elseif(preg_match("/v6/i", $config['web_version'])){ ?>
-                  <li class="parent"><a href="<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>"><span><?php echo $this->translate('Audit SPI-RRT'); ?></span></a></li>
+                  <li class="parent"><a href="<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>"><i class="icon s7-display2"></i><span><?php echo $this->translate('Audit SPI-RRT'); ?></span></a></li>
                 <?php } ?>
             <?php }else{ ?>
             <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Audit'); ?></span></a>
@@ -276,7 +276,7 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Email", "email
           <?php
           if (isset($acl) && $acl->isAllowed($role, "Application\Controller\Facility", "index")) {
           ?>
-            <li class="parent"><a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span><?php echo $this->translate('Facility List'); ?></span></a></li>
+            <li class="parent"><a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>"><i class="icon s7-note2"></i><span><?php echo $this->translate('Facilities'); ?></span></a></li>
           <?php } ?>
           
           <?php if (isset($acl) && ($acl->isAllowed($role, "Application\Controller\SpiV3Reports", "facility-report") || ($acl->isAllowed($role, "Application\Controller\SpiV5Reports", "facility-report")) || ($acl->isAllowed($role, "Application\Controller\SpiV6Reports", "facility-report")) )) { ?>
