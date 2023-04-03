@@ -101,7 +101,7 @@ class OdkFormService
             $outputScore = array();
             $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -326,10 +326,11 @@ class OdkFormService
             // print_r(($filename));die;
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("SPI-RT--CHECKLIST-version-3-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+
+            return "";
         }
     }
 
@@ -346,7 +347,7 @@ class OdkFormService
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -595,10 +596,11 @@ class OdkFormService
             );
             $writer->close();
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("SPI-RRT--CHECKLIST-version-5-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+
+            return "";
         }
     }
 
@@ -939,7 +941,7 @@ class OdkFormService
                 $adapter->commit();
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -969,7 +971,7 @@ class OdkFormService
                 $adapter->commit();
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -1004,7 +1006,7 @@ class OdkFormService
             $output = array();
             $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
@@ -1147,10 +1149,10 @@ class OdkFormService
             //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+            return "";
         }
     }
 
@@ -1166,7 +1168,7 @@ class OdkFormService
             $filename = 'facility-report-v5' . date('d-M-Y-H-i-s') . '.xls';
             //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
@@ -1319,10 +1321,10 @@ class OdkFormService
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+            return "";
         }
     }
 
@@ -1369,7 +1371,7 @@ class OdkFormService
                 $container->alertMsg = 'Form details updated successfully';
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -3716,7 +3718,7 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer3TempTable');
         $dbMain = $this->sm->get('SpiFormVer3Table');
         $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['fileName']['name']);
         $fileName = str_replace(" ", "-", $fileName);
         $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
@@ -3979,7 +3981,7 @@ class OdkFormService
                 $container->alertMsg = 'Form details updated successfully';
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -4086,7 +4088,7 @@ class OdkFormService
                 $adapter->commit();
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -4113,7 +4115,7 @@ class OdkFormService
             $common = new \Application\Service\CommonService();
             // $queryContainer = new Container('query');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -4168,16 +4170,16 @@ class OdkFormService
                 $testPoint = "Type of Testing Point : ";
             }
 
-            $start_date = "";
-            $end_date = "";
+            $startDate = "";
+            $endDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateField = explode(" ", $params['dateRange']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $start_date = $this->dateFormat($dateField[0]);
+                    $startDate = $this->dateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $end_date = $this->dateFormat($dateField[2]);
+                    $endDate = $this->dateFormat($dateField[2]);
                 }
             }
 
@@ -4188,8 +4190,8 @@ class OdkFormService
             if ($params['auditRndNo'] != '') {
                 $sQuery = $sQuery->where("spiv6.auditroundno='" . $params['auditRndNo'] . "'");
             }
-            if (trim($start_date) != "" && trim($end_date) != "") {
-                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date . "'", "spiv6.assesmentofaudit <='" . $end_date . "'"));
+            if (trim($startDate) != "" && trim($endDate) != "") {
+                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
             }
             if ($params['level'] != '') {
                 $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
@@ -4433,10 +4435,10 @@ class OdkFormService
 
             $writer->close();
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+            return "";
         }
     }
 
@@ -4453,7 +4455,7 @@ class OdkFormService
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -4849,10 +4851,11 @@ class OdkFormService
 
             $writer->close();
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("SPI-RRT--CHECKLIST-version-6-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+
+            return "";
         }
     }
 
@@ -5191,7 +5194,7 @@ class OdkFormService
                 $container->alertMsg = 'Form details updated successfully';
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -5502,7 +5505,7 @@ class OdkFormService
             $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xls';
             //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
@@ -5655,10 +5658,11 @@ class OdkFormService
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+
+            return "";
         }
     }
 

@@ -74,8 +74,8 @@ class CommonController extends AbstractActionController
             if (trim($params["formVersion"]) == 'v3') {
                 $auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
             }
-            if (trim($params["formVersion"]) == 'v5') {
-                $auditRoundNo = $this->odkFormService->getSpiV5FormAuditNo();
+            if (trim($params["formVersion"]) == 'v6') {
+                $auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
             }
             //\Zend\Debug\Debug::dump($auditRoundNo);die;
         }

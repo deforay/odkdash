@@ -28,7 +28,7 @@ class ResourcesTable extends AbstractTableGateway {
 
     public function fetchAllResourceMap() {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $resourceQuery = $sql->select()->from('resources')
                                        ->order('display_name');
         $resourceQueryStr = $sql->buildSqlString($resourceQuery);

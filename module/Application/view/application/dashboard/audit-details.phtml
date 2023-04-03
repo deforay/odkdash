@@ -3,7 +3,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl=$this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 }else{
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
@@ -33,7 +33,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
                       <th>Affiliation</th>
                       <th style="width:5%;">Audit Score %</th>
                       <th style="width:8%;">Status</th>
-                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) { ?>
+                      <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) { ?>
                       <th>Action</th>
                       <?php } ?>
                     </tr>

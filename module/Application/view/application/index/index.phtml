@@ -1,6 +1,7 @@
 <?php
 
 use Laminas\Session\Container;
+
 $sessionLogin = new Container('credo');
 $config = $this->GlobalConfigHelper();
 ?>
@@ -142,7 +143,7 @@ $config = $this->GlobalConfigHelper();
 
 </div>
 </div>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key'];?>&libraries=drawing,geometry,places"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key']; ?>&libraries=drawing,geometry,places"></script>
 
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
@@ -613,20 +614,23 @@ $config = $this->GlobalConfigHelper();
 		$labNameData = array();
 
 		foreach ($testingVolume as $row) {
-			if ($counter == 10) break;
-			if ($row['AUDIT_SCORE_PERCANTAGE'] < 40) {
+			if ($counter == 10) {
+				break;
+			}
+			$percentage = $row['AUDIT_SCORE_PERCANTAGE'] ?? $row['AUDIT_SCORE_PERCENTAGE'];
+			if ($percentage < 40) {
 				$color = '#FF0000';
 				$level = 0;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] < 60) {
+			} else if ($percentage >= 40 && $percentage < 60) {
 				$color = '#FFA500';
 				$level = 1;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] < 80) {
+			} else if ($percentage >= 60 && $percentage < 80) {
 				$color = '#FFFF00';
 				$level = 2;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] < 90) {
+			} else if ($percentage >= 80 && $percentage < 90) {
 				$color = '#8DD63E';
 				$level = 3;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+			} else if ($percentage >= 90) {
 				$color = '#528A16';
 				$level = 4;
 			}

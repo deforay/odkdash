@@ -17,15 +17,18 @@ use Laminas\Db\Sql\Sql;
  *
  * @author amit
  */
-class TempMailTable extends AbstractTableGateway {
+class TempMailTable extends AbstractTableGateway
+{
 
     protected $table = 'temp_mail';
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-    public function insertTempMailDetails($toEmailAddress,$cc,$subject,$message,$fromName,$fromEmailAddress){
+
+    public function insertTempMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress)
+    {
         $data = array(
             'from_full_name' => $fromName,
             'from_mail' => $fromEmailAddress,
@@ -37,12 +40,14 @@ class TempMailTable extends AbstractTableGateway {
         $this->insert($data);
         return $this->lastInsertValue;
     }
-    
-    public function updateTempMailStatus($id){
-        return $this->update(array('status'=>'not-sent'),array('temp_id'=>$id));
+
+    public function updateTempMailStatus($id)
+    {
+        return $this->update(array('status' => 'not-sent'), array('temp_id' => $id));
     }
-    
-    public function deleteTempMail($id){
-        $this->delete(array('temp_id = '.$id));
+
+    public function deleteTempMail($id)
+    {
+        $this->delete(array('temp_id = ' . $id));
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Laminas\Session\Container;
+
 $sessionLogin = new Container('credo');
 $config = $this->GlobalConfigHelper();
 ?>
@@ -101,10 +102,10 @@ $config = $this->GlobalConfigHelper();
 								<div class=" col-lg-4">
 									<select class="form-control" id="auditRndNoFilter">
 										<option value=''><?= $this->translate('All'); ?></option>
-										<?php 
-											for($i=1;$i<=100;$i++){
-												echo "<option value='".$i."'>".$i."</option>";
-											}
+										<?php
+										for ($i = 1; $i <= 100; $i++) {
+											echo "<option value='" . $i . "'>" . $i . "</option>";
+										}
 										?>
 									</select>
 								</div>
@@ -142,7 +143,7 @@ $config = $this->GlobalConfigHelper();
 									<select class="" id="provinceDistrict" multiple="multiple" onchange="getAllDistrict();">
 										<?php
 										foreach ($levelNamesResult as $levelName) {
-											if(empty($levelName['province'])) {
+											if (empty($levelName['province'])) {
 												continue;
 											}
 										?>
@@ -400,7 +401,7 @@ $config = $this->GlobalConfigHelper();
 							</div>
 						</div>
 					</div>
-					<div class="chart-container" id="zeroCountChart" style="height:220px;"></div>
+					<div class="chart-container" id="zeroCountChart" style="height:330px;"></div>
 				</div>
 			</div>
 
@@ -465,17 +466,17 @@ $config = $this->GlobalConfigHelper();
 		$loginContainer = new \Laminas\Session\Container('credo');
 		$role = $loginContainer->roleCode;
 		$acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;
-		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'edit')) {
 			$update = true;
 		} else {
 			$update = false;
 		}
-		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) {
 			$approve = true;
 		} else {
 			$approve = false;
 		}
-		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\Email', 'index')) {
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\EmailController', 'index')) {
 			$email = true;
 		} else {
 			$email = false;
@@ -557,7 +558,7 @@ $config = $this->GlobalConfigHelper();
 
 </div>
 </div>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key'];?>&libraries=drawing,geometry,places"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key']; ?>&libraries=drawing,geometry,places"></script>
 
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
@@ -956,20 +957,23 @@ $config = $this->GlobalConfigHelper();
 		$volumeData = array();
 		$labNameData = array();
 		foreach ($allSubmissions as $row) {
-			if ($counter == 20) break;
-			if ($row['AUDIT_SCORE_PERCANTAGE'] < 40) {
+			if ($counter == 20) {
+				break;
+			}
+			$percentage = $row['AUDIT_SCORE_PERCANTAGE'] ?? $row['AUDIT_SCORE_PERCENTAGE'];
+			if ($percentage < 40) {
 				$color = '#FF0000';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] < 60) {
+			} else if ($percentage >= 40 && $percentage < 60) {
 				$color = '#FFA500';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] < 80) {
+			} else if ($percentage >= 60 && $percentage < 80) {
 				$color = '#FFFF00';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] < 90) {
+			} else if ($percentage >= 80 && $percentage < 90) {
 				$color = '#8DD63E';
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+			} else if ($percentage >= 90) {
 				$color = '#528A16';
 			}
 
-			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCANTAGE'], 2) . ", color : '" . $color . "' }";
+			$barData[] = "{ y : " . round($percentage, 2) . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . addslashes($row['testingpointname']) . "<br>'");
 			$counter++;
@@ -1392,10 +1396,10 @@ $config = $this->GlobalConfigHelper();
 				endDate = end.format('YYYY-MM-DD');
 			});
 		<?php
-		$start_date = date('d-M-Y');
-		$end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
+		$startDate = date('d-M-Y');
+		$endDate = date('d-M-Y', strtotime('-30 days', strtotime($startDate)));
 		?>
-		$("#spiRTv3").val('<?php echo $end_date . " - " . $start_date; ?>');
+		$("#spiRTv3").val('<?php echo $endDate . " - " . $startDate; ?>');
 
 		$("#latestAuditsTbl").DataTable({
 			"order": [
@@ -1415,7 +1419,7 @@ $config = $this->GlobalConfigHelper();
 		//zeroCountsBarChart();
 		getAuditWorstDetails();
 
-		//getAuditLocationDetails();
+		getAuditLocationDetails();
 
 
 		$("#provinceDistrict").multipleSelect({
@@ -1482,20 +1486,23 @@ $config = $this->GlobalConfigHelper();
 		$labNameData = array();
 
 		foreach ($testingVolume as $row) {
-			if ($counter == 10) break;
-			if ($row['AUDIT_SCORE_PERCANTAGE'] < 40) {
+			if ($counter == 10) {
+				break;
+			}
+			$percentage = $row['AUDIT_SCORE_PERCANTAGE'] ?? $row['AUDIT_SCORE_PERCENTAGE'];
+			if ($percentage < 40) {
 				$color = '#FF0000';
 				$level = 0;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] < 60) {
+			} else if ($percentage >= 40 && $percentage < 60) {
 				$color = '#FFA500';
 				$level = 1;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] < 80) {
+			} else if ($percentage >= 60 && $percentage < 80) {
 				$color = '#FFFF00';
 				$level = 2;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] < 90) {
+			} else if ($percentage >= 80 && $percentage < 90) {
 				$color = '#8DD63E';
 				$level = 3;
-			} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+			} else if ($percentage >= 90) {
 				$color = '#528A16';
 				$level = 4;
 			}

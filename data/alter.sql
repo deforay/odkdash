@@ -2032,7 +2032,7 @@ DROP table `spi_rt_5_facilities`;
  ALTER TABLE `users` ADD `contact_no` varchar(255) DEFAULT NULL AFTER `email`;
  ALTER TABLE `users` ADD `user_image` varchar(255) DEFAULT NULL AFTER `contact_no`;
 
- INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\Users', 'profile', 'Edit Profile');
+ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\UsersController', 'profile', 'Edit Profile');
 
 -- Sakthivel 04-10-2021
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Users', 'change-password', 'Change Password');

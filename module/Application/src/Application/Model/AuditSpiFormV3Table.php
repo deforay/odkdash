@@ -28,7 +28,7 @@ class AuditSpiFormV3Table extends AbstractTableGateway {
     public function fetchAllDetails($parameters)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $spiV3Db = new SpiFormVer3Table($this->adapter);
 
         $columnsSql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE  table_name = 'audit_spi_form_v_3' order by ordinal_position";

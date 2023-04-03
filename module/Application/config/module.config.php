@@ -22,7 +22,7 @@ return array(
                 'options' => array(
                     'route' => '/[/:action][/][:id]',
                     'defaults' => array(
-                        'controller'    => 'Application\Controller\Index',
+                        'controller'    => 'Application\Controller\IndexController',
                         'action'        => 'index',
                     ),
                 ),
@@ -33,7 +33,7 @@ return array(
                 'options' => array(
                     'route'    => '/audit-performance',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => 'Application\Controller\IndexController',
                         'action' => 'audit-performance',
                     ),
                 ),
@@ -43,7 +43,7 @@ return array(
                 'options' => array(
                     'route'    => '/audit-locations',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => 'Application\Controller\IndexController',
                         'action' => 'audit-locations',
                     ),
                 ),
@@ -53,7 +53,7 @@ return array(
                 'options' => array(
                     'route' => '/receiver[/]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Receiver',
+                        'controller' => 'Application\Controller\ReceiverController',
                         'action' => 'index',
                     ),
                 ),
@@ -63,7 +63,7 @@ return array(
                 'options' => array(
                     'route' => '/receiver-spi-v5[/]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\ReceiverSpiV5',
+                        'controller' => 'Application\Controller\ReceiverSpiV5Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -74,7 +74,7 @@ return array(
                 'options' => array(
                     'route' => '/receiver-spi-v6[/]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\ReceiverSpiV6',
+                        'controller' => 'Application\Controller\ReceiverSpiV6Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -84,7 +84,7 @@ return array(
                 'options' => array(
                     'route'    => '/login[/:action]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Login',
+                        'controller' => 'Application\Controller\LoginController',
                         'action' => 'index',
                     ),
                 ),
@@ -94,7 +94,7 @@ return array(
                 'options' => array(
                     'route' => '/spi-v3[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3',
+                        'controller' => 'Application\Controller\SpiV3Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -104,7 +104,7 @@ return array(
                 'options' => array(
                     'route' => '/spi-v5[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV5',
+                        'controller' => 'Application\Controller\SpiV5Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -114,7 +114,7 @@ return array(
                 'options' => array(
                     'route' => '/spi-v6[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6',
+                        'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -134,7 +134,7 @@ return array(
                 'options' => array(
                     'route' => '/spi-v3-reports[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3Reports',
+                        'controller' => 'Application\Controller\SpiV3ReportsController',
                         'action' => 'index',
                     ),
                 ),
@@ -145,7 +145,7 @@ return array(
                 'options' => array(
                     'route' => '/spi-v5-reports[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV5Reports',
+                        'controller' => 'Application\Controller\SpiV5ReportsController',
                         'action' => 'index',
                     ),
                 ),
@@ -155,7 +155,7 @@ return array(
                 'options' => array(
                     'route' => '/spi-v6-reports[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6Reports',
+                        'controller' => 'Application\Controller\SpiV6ReportsController',
                         'action' => 'index',
                     ),
                 ),
@@ -165,7 +165,7 @@ return array(
                 'options' => array(
                     'route' => '/common[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Common',
+                        'controller' => 'Application\Controller\CommonController',
                         'action' => 'index',
                     ),
                 ),
@@ -175,7 +175,7 @@ return array(
                 'options' => array(
                     'route' => '/roles[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Roles',
+                        'controller' => 'Application\Controller\RolesController',
                         'action' => 'index',
                     ),
                 ),
@@ -185,7 +185,7 @@ return array(
                 'options' => array(
                     'route' => '/user-login-history[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\UserLoginHistory',
+                        'controller' => 'Application\Controller\UserLoginHistoryController',
                         'action' => 'index',
                     ),
                 ),
@@ -195,7 +195,7 @@ return array(
                 'options' => array(
                     'route' => '/audit-trail[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\AuditTrail',
+                        'controller' => 'Application\Controller\AuditTrailController',
                         'action' => 'index',
                     ),
                 ),
@@ -205,7 +205,7 @@ return array(
                 'options' => array(
                     'route' => '/users[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Users',
+                        'controller' => 'Application\Controller\UsersController',
                         'action' => 'index',
                     ),
                 ),
@@ -215,7 +215,7 @@ return array(
                 'options' => array(
                     'route' => '/config[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Config',
+                        'controller' => 'Application\Controller\ConfigController',
                         'action' => 'index',
                     ),
                 ),
@@ -225,7 +225,7 @@ return array(
                 'options' => array(
                     'route' => '/email[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Email',
+                        'controller' => 'Application\Controller\EmailController',
                         'action' => 'index',
                     ),
                 ),
@@ -235,7 +235,7 @@ return array(
                 'options' => array(
                     'route' => '/dashboard[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Dashboard',
+                        'controller' => 'Application\Controller\DashboardController',
                         'action' => 'index',
                     ),
                 ),
@@ -245,7 +245,7 @@ return array(
                 'options' => array(
                     'route' => '/dashboard-v5[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\DashboardV5',
+                        'controller' => 'Application\Controller\DashboardV5Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -255,7 +255,7 @@ return array(
                 'options' => array(
                     'route' => '/dashboard-v6[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\DashboardV6',
+                        'controller' => 'Application\Controller\DashboardV6Controller',
                         'action' => 'index',
                     ),
                 ),
@@ -265,7 +265,7 @@ return array(
                 'options' => array(
                     'route' => '/view-data',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3',
+                        'controller' => 'Application\Controller\SpiV3Controller',
                         'action' => 'view-data',
                     ),
                 ),
@@ -275,7 +275,7 @@ return array(
                 'options' => array(
                     'route' => '/view-data-v6',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6',
+                        'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'view-data-v6',
                     ),
                 ),
@@ -286,7 +286,7 @@ return array(
                 'options' => array(
                     'route' => '/view-data-section-zero-v6',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6',
+                        'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'view-data-section-zero-v6',
                     ),
                 ),
@@ -297,7 +297,7 @@ return array(
                 'options' => array(
                     'route' => '/view-data-section-zero-protocol-v6',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6',
+                        'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'view-data-section-zero-protocol-v6',
                     ),
                 ),
@@ -307,7 +307,7 @@ return array(
                 'options' => array(
                     'route' => '/view-data-v5',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV5',
+                        'controller' => 'Application\Controller\SpiV5Controller',
                         'action' => 'view-data-v5',
                     ),
                 ),
@@ -358,7 +358,7 @@ return array(
                     'options' => array(
                         'route' => 'send-mail',
                         'defaults' => array(
-                            'controller' => 'Application\Controller\Cron',
+                            'controller' => 'Application\Controller\CronController',
                             'action' => 'send-mail'
                         ),
                     ),
@@ -368,7 +368,7 @@ return array(
                     'options' => array(
                         'route'    => 'db-backup',
                         'defaults' => array(
-                            'controller' => 'Application\Controller\Cron',
+                            'controller' => 'Application\Controller\CronController',
                             'action' => 'db-backup'
                         ),
                     ),
@@ -378,7 +378,7 @@ return array(
                     'options' => array(
                         'route'    => 'send-audit-mail',
                         'defaults' => array(
-                            'controller' => 'Application\Controller\Cron',
+                            'controller' => 'Application\Controller\CronController',
                             'action' => 'send-audit-mail'
                         ),
                     ),
@@ -388,7 +388,7 @@ return array(
                     'options' => array(
                         'route'    => 'generate-bulk-pdf',
                         'defaults' => array(
-                            'controller' => 'Application\Controller\Cron',
+                            'controller' => 'Application\Controller\CronController',
                             'action' => 'generate-bulk-pdf'
                         ),
                     ),
@@ -398,7 +398,7 @@ return array(
                     'options' => array(
                         'route'    => 'sync-odk-spirt-v3',
                         'defaults' => array(
-                            'controller' => 'Application\Controller\Cron',
+                            'controller' => 'Application\Controller\CronController',
                             'action' => 'sync-odk-spirt-v3'
                         ),
                     ),
@@ -408,7 +408,7 @@ return array(
                     'options' => array(
                         'route'    => 'sync-odk-spirt-v6',
                         'defaults' => array(
-                            'controller' => 'Application\Controller\Cron',
+                            'controller' => 'Application\Controller\CronController',
                             'action' => 'sync-odk-spirt-v6'
                         ),
                     ),

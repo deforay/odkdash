@@ -5,7 +5,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) {
   $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 } else {
   $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
@@ -120,7 +120,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
                 </div>
               </form>
             </div>
-            <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV5', 'duplicate')) { ?>
+            <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV5Controller', 'duplicate')) { ?>
               <a id="duplicate" href="/spi-v5/duplicate" class="btn btn-danger btn-sm"><?= $this->translate('Duplicates'); ?> (0)</a>&nbsp;&nbsp;
             <?php } ?>
             <a href="/spi-v5/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download Audits in Bulk </a>
@@ -142,7 +142,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $a
             <th><?= $this->translate('Affiliation'); ?></th>
             <th style="width:5%;"><?= $this->translate('Audit Score %'); ?></th>
             <th style="width:8%;"><?= $this->translate('Status'); ?></th>
-            <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) { ?>
+            <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) { ?>
               <th><?= $this->translate('Action'); ?></th>
             <?php } ?>
           </tr>

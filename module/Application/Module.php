@@ -88,13 +88,6 @@ class Module
         $this->initTranslator($e);
     }
 
-
-    // public function exception($e) {
-    //     echo "<span style='font-family: courier new; padding: 2px 5px; background:red; color: white;'> " . $e->getMessage() . '</span><br/>' ;
-    //     echo "<pre>" . $e->getTraceAsString() . '</pre>' ;   
-    //     die;
-    // }
-
     public function preSetter(MvcEvent $e)
     {
 
@@ -104,9 +97,9 @@ class Module
         /** @var $application \Laminas\Mvc\Application */
         $application = $e->getApplication();
 
-        $sm = $application->getServiceManager();
-        $commonService = $sm->get('CommonService');
-        
+        $diContainer = $application->getServiceManager();
+        $commonService = $diContainer->get('CommonService');
+
         if (!isset($session->countryName) || empty($session->countryName)) {
             $config = $commonService->getGlobalConfigDetails();
             $session->countryName = $config['country-name'];
@@ -116,11 +109,11 @@ class Module
 
         if (
             !$request->isXmlHttpRequest()
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Login'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Index'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\Receiver'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5Controller'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
         ) {
 
             if (empty($session) || !isset($session->userId) || empty($session->userId)) {
@@ -141,9 +134,9 @@ class Module
                 $application->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
                 return $response;
             } else {
-                $sm = $application->getServiceManager();
+                $diContainer = $application->getServiceManager();
                 $viewModel = $application->getMvcEvent()->getViewModel();
-                $acl = $sm->get('AppAcl');
+                $acl = $diContainer->get('AppAcl');
                 $viewModel->acl = $acl;
                 $session->acl = serialize($acl);
 
@@ -155,14 +148,16 @@ class Module
 
                 if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
                     $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
+                    var_dump($application->getEventManager());
+                    die;
                     $application->getEventManager()->trigger('dispatch.error', $e);
                 }
             }
         } else {
             if (isset($session->userId)) {
-                $sm = $application->getServiceManager();
+                $diContainer = $application->getServiceManager();
                 $viewModel = $application->getMvcEvent()->getViewModel();
-                $acl = $sm->get('AppAcl');
+                $acl = $diContainer->get('AppAcl');
                 $viewModel->acl = $acl;
                 $session->acl = serialize($acl);
             }
@@ -183,109 +178,201 @@ class Module
     {
         return array(
             'factories' => array(
-                'Application\Controller\Index' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\IndexController($odkFormService, $commonService);
+                'Application\Controller\IndexController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\IndexController($odkFormService, $commonService);
+                    }
                 },
-                'Application\Controller\Receiver' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\ReceiverController($odkFormService);
+                'Application\Controller\ReceiverController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\ReceiverController($odkFormService);
+                    }
                 },
-                'Application\Controller\ReceiverSpiV5' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\ReceiverSpiV5Controller($odkFormService);
+                'Application\Controller\ReceiverSpiV5Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\ReceiverSpiV5Controller($odkFormService);
+                    }
                 },
-                'Application\Controller\ReceiverSpiV6' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\ReceiverSpiV6Controller($odkFormService);
+                'Application\Controller\ReceiverSpiV6Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\ReceiverSpiV6Controller($odkFormService);
+                    }
                 },
-                'Application\Controller\Login' => function ($sm) {
-                    $userService = $sm->getServiceLocator()->get('UserService');
-                    return new \Application\Controller\LoginController($userService);
+                'Application\Controller\LoginController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $userService = $diContainer->get('UserService');
+                        return new \Application\Controller\LoginController($userService);
+                    }
                 },
-                'Application\Controller\SpiV3Reports' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\SpiV3ReportsController($odkFormService);
+                'Application\Controller\SpiV3ReportsController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\SpiV3ReportsController($odkFormService);
+                    }
                 },
-                'Application\Controller\SpiV5Reports' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\SpiV5ReportsController($odkFormService);
+                'Application\Controller\SpiV5ReportsController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\SpiV5ReportsController($odkFormService);
+                    }
                 },
-                'Application\Controller\SpiV6Reports' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\SpiV6ReportsController($odkFormService);
+                'Application\Controller\SpiV6ReportsController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\SpiV6ReportsController($odkFormService);
+                    }
                 },
-                'Application\Controller\SpiV3' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\SpiV3Controller($odkFormService, $commonService);
+                'Application\Controller\SpiV3Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\SpiV3Controller($odkFormService, $commonService);
+                    }
                 },
-                'Application\Controller\SpiV5' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\SpiV5Controller($odkFormService, $commonService);
+                'Application\Controller\SpiV5Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\SpiV5Controller($odkFormService, $commonService);
+                    }
                 },
-                'Application\Controller\SpiV6' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\SpiV6Controller($odkFormService, $commonService);
+                'Application\Controller\SpiV6Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\SpiV6Controller($odkFormService, $commonService);
+                    }
                 },
-                'Application\Controller\Common' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\CommonController($commonService, $odkFormService);
+                'Application\Controller\CommonController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\CommonController($commonService, $odkFormService);
+                    }
                 },
-                'Application\Controller\Cron' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\CronController($commonService, $odkFormService);
+                'Application\Controller\CronController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\CronController($commonService, $odkFormService);
+                    }
                 },
-                'Application\Controller\Config' => function ($sm) {
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    return new \Application\Controller\ConfigController($commonService);
+                'Application\Controller\ConfigController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $commonService = $diContainer->get('CommonService');
+                        return new \Application\Controller\ConfigController($commonService);
+                    }
                 },
-                'Application\Controller\Facility' => function ($sm) {
-                    $facilityService = $sm->getServiceLocator()->get('FacilityService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\FacilityController($facilityService, $odkFormService);
+                'Application\Controller\Facility' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $facilityService = $diContainer->get('FacilityService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\FacilityController($facilityService, $odkFormService);
+                    }
                 },
-                'Application\Controller\Users' => function ($sm) {
-                    $userService = $sm->getServiceLocator()->get('UserService');
-                    $roleService = $sm->getServiceLocator()->get('RoleService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService);
+                'Application\Controller\UsersController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $userService = $diContainer->get('UserService');
+                        $roleService = $diContainer->get('RoleService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        $commonService = $diContainer->get('CommonService');
+                        return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService);
+                    }
                 },
-                'Application\Controller\Email' => function ($sm) {
-                    $facilityService = $sm->getServiceLocator()->get('FacilityService');
-                    $commonService = $sm->getServiceLocator()->get('CommonService');
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\EmailController($facilityService, $odkFormService, $commonService);
+                'Application\Controller\EmailController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $facilityService = $diContainer->get('FacilityService');
+                        $commonService = $diContainer->get('CommonService');
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\EmailController($facilityService, $odkFormService, $commonService);
+                    }
                 },
-                'Application\Controller\Roles' => function ($sm) {
-                    $roleService = $sm->getServiceLocator()->get('RoleService');
-                    return new \Application\Controller\RolesController($roleService);
+                'Application\Controller\RolesController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $roleService = $diContainer->get('RoleService');
+                        return new \Application\Controller\RolesController($roleService);
+                    }
                 },
-                'Application\Controller\UserLoginHistory' => function ($sm) {
-                    $userLoginHistoryService = $sm->getServiceLocator()->get('UserLoginHistoryService');
-                    return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
+                'Application\Controller\UserLoginHistoryController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $userLoginHistoryService = $diContainer->get('UserLoginHistoryService');
+                        return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
+                    }
                 },
-                'Application\Controller\AuditTrail' => function ($sm) {
-                    $auditTrailService = $sm->getServiceLocator()->get('AuditTrailService');
-                    return new \Application\Controller\AuditTrailController($auditTrailService);
+                'Application\Controller\AuditTrailController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $auditTrailService = $diContainer->get('AuditTrailService');
+                        return new \Application\Controller\AuditTrailController($auditTrailService);
+                    }
                 },
-                'Application\Controller\Dashboard' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\DashboardController($odkFormService);
+                'Application\Controller\DashboardController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\DashboardController($odkFormService);
+                    }
                 },
-                'Application\Controller\DashboardV5' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\DashboardV5Controller($odkFormService);
+                'Application\Controller\DashboardV5Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\DashboardV5Controller($odkFormService);
+                    }
                 },
-                'Application\Controller\DashboardV6' => function ($sm) {
-                    $odkFormService = $sm->getServiceLocator()->get('OdkFormService');
-                    return new \Application\Controller\DashboardV6Controller($odkFormService);
+                'Application\Controller\DashboardV6Controller' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $odkFormService = $diContainer->get('OdkFormService');
+                        return new \Application\Controller\DashboardV6Controller($odkFormService);
+                    }
                 },
             ),
         );
@@ -302,175 +389,299 @@ class Module
     {
         return array(
             'factories' => array(
-                'AppAcl' => function ($sm) {
-                    $resourcesTable = $sm->get('ResourcesTable');
-                    $rolesTable = $sm->get('RolesTable');
-                    return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles());
+                'AppAcl' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $resourcesTable = $diContainer->get('ResourcesTable');
+                        $rolesTable = $diContainer->get('RolesTable');
+                        return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles());
+                    }
                 },
-                'SpiFormVer3Table' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3Table($dbAdapter);
-                    return $table;
+                'SpiFormVer3Table' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer3Table($dbAdapter);
+                    }
                 },
-                'SpiFormVer5Table' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer5Table($dbAdapter);
-                    return $table;
+                'SpiFormVer5Table' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer5Table($dbAdapter);
+                    }
                 },
-                'SpiFormVer6Table' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer6Table($dbAdapter);
-                    return $table;
+                'SpiFormVer6Table' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer6Table($dbAdapter);
+                    }
                 },
-                'UsersTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new UsersTable($dbAdapter);
-                    return $table;
+                'UsersTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new UsersTable($dbAdapter);
+                    }
                 },
-                'SpiFormLabelsTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormLabelsTable($dbAdapter);
-                    return $table;
+                'SpiFormLabelsTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormLabelsTable($dbAdapter);
+                    }
                 },
-                'SpiForm5LabelsTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiForm5LabelsTable($dbAdapter);
-                    return $table;
+                'SpiForm5LabelsTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiForm5LabelsTable($dbAdapter);
+                    }
                 },
-                'SpiForm6LabelsTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiForm6LabelsTable($dbAdapter);
-                    return $table;
+                'SpiForm6LabelsTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiForm6LabelsTable($dbAdapter);
+                    }
                 },
-                'SpiRtFacilitiesTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiRtFacilitiesTable($dbAdapter);
-                    return $table;
+                'SpiRtFacilitiesTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiRtFacilitiesTable($dbAdapter);
+                    }
                 },
-                'RolesTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new RolesTable($dbAdapter);
-                    return $table;
+                'RolesTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new RolesTable($dbAdapter);
+                    }
                 },
-                'UserLoginHistoryTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new UserLoginHistoryTable($dbAdapter);
-                    return $table;
+                'UserLoginHistoryTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new UserLoginHistoryTable($dbAdapter);
+                    }
                 },
-                'UserRoleMapTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new UserRoleMapTable($dbAdapter);
-                    return $table;
+                'UserRoleMapTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new UserRoleMapTable($dbAdapter);
+                    }
                 },
-                'GlobalTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new GlobalTable($dbAdapter);
-                    return $table;
+                'GlobalTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new GlobalTable($dbAdapter);
+                    }
                 },
-                'EventLogTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new EventLogTable($dbAdapter);
-                    return $table;
+                'EventLogTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new EventLogTable($dbAdapter);
+                    }
                 },
-                'ResourcesTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new ResourcesTable($dbAdapter);
-                    return $table;
+                'ResourcesTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new ResourcesTable($dbAdapter);
+                    }
                 },
-                'TempMailTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new TempMailTable($dbAdapter);
-                    return $table;
-                }, 'UserTokenMapTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new UserTokenMapTable($dbAdapter);
-                    return $table;
-                }, 'AuditMailTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new AuditMailTable($dbAdapter);
-                    return $table;
-                }, 'SpiFormVer3DownloadTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3DownloadTable($dbAdapter);
-                    return $table;
+                'TempMailTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new TempMailTable($dbAdapter);
+                    }
+                }, 'UserTokenMapTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new UserTokenMapTable($dbAdapter);
+                    }
+                }, 'AuditMailTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new AuditMailTable($dbAdapter);
+                    }
+                }, 'SpiFormVer3DownloadTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer3DownloadTable($dbAdapter);
+                    }
                 },
-                'SpiFormVer5DownloadTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer5DownloadTable($dbAdapter);
-                    return $table;
+                'SpiFormVer5DownloadTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer5DownloadTable($dbAdapter);
+                    }
                 },
-                'SpiFormVer6DownloadTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer6DownloadTable($dbAdapter);
-                    return $table;
+                'SpiFormVer6DownloadTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer6DownloadTable($dbAdapter);
+                    }
                 },
-                'SpiFormVer3DuplicateTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3DuplicateTable($dbAdapter);
-                    return $table;
+                'SpiFormVer3DuplicateTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer3DuplicateTable($dbAdapter);
+                    }
                 },
-                'SpiFormVer5DuplicateTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer5DuplicateTable($dbAdapter);
-                    return $table;
+                'SpiFormVer5DuplicateTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer5DuplicateTable($dbAdapter);
+                    }
                 },
-                'SpiFormVer6DuplicateTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer6DuplicateTable($dbAdapter);
-                    return $table;
+                'SpiFormVer6DuplicateTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer6DuplicateTable($dbAdapter);
+                    }
                 },
-                'SpiFormVer3TempTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new SpiFormVer3TempTable($dbAdapter);
-                    return $table;
+                'SpiFormVer3TempTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new SpiFormVer3TempTable($dbAdapter);
+                    }
                 },
-                'CountriesTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new CountriesTable($dbAdapter);
-                    return $table;
+                'CountriesTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new CountriesTable($dbAdapter);
+                    }
                 },
-                'UserCountryMapTable' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new UserCountryMapTable($dbAdapter);
-                    return $table;
+                'UserCountryMapTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new UserCountryMapTable($dbAdapter);
+                    }
                 },
-                'AuditSpiFormV3Table' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new AuditSpiFormV3Table($dbAdapter);
-                    return $table;
+                'AuditSpiFormV3Table' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new AuditSpiFormV3Table($dbAdapter);
+                    }
                 },
-                'AuditSpiFormV6Table' => function ($sm) {
-                    $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-                    $table = new AuditSpiFormV6Table($dbAdapter);
-                    return $table;
+                'AuditSpiFormV6Table' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new AuditSpiFormV6Table($dbAdapter);
+                    }
                 },
 
-                'OdkFormService' => function ($sm) {
-                    return new OdkFormService($sm);
+                'OdkFormService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new OdkFormService($diContainer);
+                    }
                 },
-                'CommonService' => function ($sm) {
-                    return new CommonService($sm);
+                'CommonService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new CommonService($diContainer);
+                    }
                 },
-                'UserService' => function ($sm) {
-                    return new UserService($sm);
+                'UserService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new UserService($diContainer);
+                    }
                 },
-                'FacilityService' => function ($sm) {
-                    return new FacilityService($sm);
+                'FacilityService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new FacilityService($diContainer);
+                    }
                 },
-                'CommonService' => function ($sm) {
-                    return new CommonService($sm);
+                'CommonService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new CommonService($diContainer);
+                    }
                 },
-                'RoleService' => function ($sm) {
-                    return new RoleService($sm);
+                'RoleService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new RoleService($diContainer);
+                    }
                 },
-                'UserLoginHistoryService' => function ($sm) {
-                    return new UserLoginHistoryService($sm);
+                'UserLoginHistoryService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new UserLoginHistoryService($diContainer);
+                    }
                 },
-                'AuditTrailService' => function ($sm) {
-                    return new AuditTrailService($sm);
+                'AuditTrailService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new AuditTrailService($diContainer);
+                    }
                 },
-                'TcpdfExtends' => function ($sm) {
-                    return new TcpdfExtends($sm);
+                'TcpdfExtends' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new TcpdfExtends($diContainer);
+                    }
                 }
             ),
 
@@ -484,13 +695,21 @@ class Module
             'invokables' => array(
                 'humanDateFormat' => 'Application\View\Helper\HumanDateFormat',
             ), 'factories' => array(
-                'GlobalConfigHelper' => function ($sm) {
-                    $globalTable = $sm->get('GlobalTable');
-                    return new \Application\View\Helper\GlobalConfigHelper($globalTable);
+                'GlobalConfigHelper' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $globalTable = $diContainer->get('GlobalTable');
+                        return new \Application\View\Helper\GlobalConfigHelper($globalTable);
+                    }
                 },
-                'GetCountryDetailsByIdHelper' => function ($sm) {
-                    $countriesTable = $sm->get('CountriesTable');
-                    return new \Application\View\Helper\GetCountryDetailsByIdHelper($countriesTable);
+                'GetCountryDetailsByIdHelper' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $countriesTable = $diContainer->get('CountriesTable');
+                        return new \Application\View\Helper\GetCountryDetailsByIdHelper($countriesTable);
+                    }
                 },
 
             )

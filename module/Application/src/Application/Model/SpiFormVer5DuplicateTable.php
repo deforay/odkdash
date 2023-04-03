@@ -32,7 +32,7 @@ class SpiFormVer5DuplicateTable extends AbstractTableGateway {
     {
         $result = false;
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $dResult = $dbAdapter->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'spi_form_v_5_duplicate'", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         if(count($dResult)>0){
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))

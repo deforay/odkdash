@@ -1,31 +1,34 @@
-<?php 
+<?php
+
 use Laminas\Session\Container;
+
 $logincontainer = new Container('credo');
 $countryConfig = $this->GetCountryDetailsByIdHelper();
 
-if(isset($logincontainer->userCountryMap[0]) && $logincontainer->userCountryMap[0] != ""){
+if (isset($logincontainer->userCountryMap[0]) && $logincontainer->userCountryMap[0] != "") {
 	$lat = $countryConfig[$logincontainer->userCountryMap[0]]['latitude'];
 	$lng = $countryConfig[$logincontainer->userCountryMap[0]]['longitude'];
-}else{
+} else {
 	$lat = $configData['latitude'];
 	$lng = $configData['longitude'];
 }
 ?>
 <div class="gmap" id="gmap" style="height: 100%;width:100%;"></div>
 <script>
-
 	var LocsA = [
 		<?php foreach ($allSubmissions as $row) {
 
+			$percentage = $row['AUDIT_SCORE_PERCANTAGE'] ?? $row['AUDIT_SCORE_PERCENTAGE'];
+
 			if (isset($row['Latitude']) && $row['Latitude'] != "") {
 				$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				if ($row['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+				if ($percentage >= 90) {
 					$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 80 && $row['AUDIT_SCORE_PERCANTAGE'] <= 89) {
+				} else if ($percentage >= 80 && $percentage <= 89) {
 					$icon = $this->basePath('assets/img/map-points/light-green.png');
-				} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 60 && $row['AUDIT_SCORE_PERCANTAGE'] <= 79) {
+				} else if ($percentage >= 60 && $percentage <= 79) {
 					$icon = $this->basePath('assets/img/map-points/yellow.png');
-				} else if ($row['AUDIT_SCORE_PERCANTAGE'] >= 40 && $row['AUDIT_SCORE_PERCANTAGE'] <= 599) {
+				} else if ($percentage >= 40 && $percentage <= 599) {
 					$icon = $this->basePath('assets/img/map-points/orange.png');
 				} else {
 					$icon = $this->basePath('assets/img/map-points/red.png');
@@ -53,5 +56,5 @@ if(isset($logincontainer->userCountryMap[0]) && $logincontainer->userCountryMap[
 				scrollwheel: false
 			}
 		}).Load();
-	});	
+	});
 </script>

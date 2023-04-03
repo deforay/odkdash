@@ -6,7 +6,8 @@
     "keywords": [
         "vl",
         "eid",
-        "spi-rt"
+        "spi-rt",
+        "spi-rrt"
     ],
     "require": {
         "php": "^7.3 || ~8.0.0",

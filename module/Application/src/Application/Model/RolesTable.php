@@ -136,7 +136,7 @@ class RolesTable extends AbstractTableGateway  {
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('roles')->where("role_code !='daemon'");
         //$sQuery=$this->select();
         if (isset($sWhere) && $sWhere != "") {
@@ -175,7 +175,7 @@ class RolesTable extends AbstractTableGateway  {
         
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\Roles', 'edit')) {
+        if ($acl->isAllowed($role, 'Application\Controller\RolesController', 'edit')) {
             $update = true;
         } else {
             $update = false;
@@ -200,7 +200,7 @@ class RolesTable extends AbstractTableGateway  {
 
     public function fecthAllActiveRoles() {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from('roles')->order('role_name')->where(array('status'=>'active'));
         $roleQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
         return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -208,7 +208,7 @@ class RolesTable extends AbstractTableGateway  {
     
     public function fetchAllRoles() {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $resourceQuery = $sql->select()->from('resources')->order('display_name');
         $resourceQueryStr = $sql->buildSqlString($resourceQuery); // Get the string of the Sql, instead of the Select-instance
         $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

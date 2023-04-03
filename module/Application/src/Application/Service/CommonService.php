@@ -107,7 +107,7 @@ class CommonService
             return "0000-00-00";
         } else {
             $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
+            if (empty($dateArray)) {
                 return;
             }
             $newDate = $dateArray[2] . "-";
@@ -167,7 +167,7 @@ class CommonService
             $config = new \Laminas\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
 
             // Setup SMTP transport using LOGIN authentication
             $transport = new SmtpTransport();
@@ -254,7 +254,7 @@ class CommonService
             $config = new \Laminas\Config\Reader\Ini();
             $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
 
             // Setup SMTP transport using LOGIN authentication
             $transport = new SmtpTransport();

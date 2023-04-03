@@ -19,32 +19,34 @@ use Application\Service\CommonService;
  *
  * @author amit
  */
-class CountriesTable extends AbstractTableGateway {
+class CountriesTable extends AbstractTableGateway
+{
 
     protected $table = 'countries';
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function fetchAllCountries(){
+    public function fetchAllCountries()
+    {
         return $this->select()->toArray();
     }
-    
-    public function fetchMapedCountries(){
+
+    public function fetchMapedCountries()
+    {
         $logincontainer = new Container('credo');
-        if(isset($logincontainer->userCountryMap) && !empty($logincontainer->userCountryMap))
-            $result = $this->select(array('country_id IN('.implode(",", $logincontainer->userCountryMap).')'))->toArray();
-                else
+        if (isset($logincontainer->userCountryMap) && !empty($logincontainer->userCountryMap) && is_array($logincontainer->userCountryMap)) {
+            $result = $this->select(array('country_id IN(' . implode(",", $logincontainer->userCountryMap) . ')'))->toArray();
+        } else {
             $result = $this->select()->toArray();
+        }
+
         $response = array();
-        foreach($result as $row){
+        foreach ($result as $row) {
             $response[$row['country_id']] = $row;
         }
         return $response;
     }
-
-
-    
 }
-?>

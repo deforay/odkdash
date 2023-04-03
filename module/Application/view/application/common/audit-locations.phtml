@@ -1,3 +1,7 @@
+<style>
+
+</style>
+
 <?php
 if ($id['id'] != '') {
 	$nos = str_replace("'", " ", base64_decode($id['id']));
@@ -50,6 +54,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 						</span>
 						<span style="margin-left: 0%;">
 							<label><?= $this->translate('Audit Round'); ?></label>
+							<select style="display:none;" id="hiddenAuditRndNoLocations"></select>
 							<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
 
 							</select>
@@ -68,7 +73,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 </div>
 
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key'];?>&libraries=drawing,geometry,places">
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key']; ?>&libraries=drawing,geometry,places">
 </script>
 
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
@@ -118,12 +123,29 @@ $isV6 = preg_match("/v6/i", $web_version);
 			},
 			function(data) {
 				$("#auditRndNoLocations").html(data);
+				//$("#hiddenAuditRndNoLocations").html(data);
 				$("#auditRndNoLocations").multipleSelect({
-					placeholder: '<?= $this->translate('Please select audit round no.'); ?>',
-					width: '20%',
-					minimumCountSelected: '2'
+					placeholder: '<?= $this->translate('Please select one or more audit round(s)'); ?>',
+					width: '25%'
 				});
-				//console.log(data);
+
+				// let x = [];
+				// var __OBJECTS = [];
+				// let i=1;
+				// $("#hiddenAuditRndNoLocations > option").each(function() {
+				// 	__OBJECTS.push(this.value);
+				// });
+
+				// redrawMap();
+
+				// function redrawMap() {
+				// 	var $card = __OBJECTS.shift();
+				// 	x.push($card);
+				// 	$("#auditRndNoLocations").multipleSelect('setSelects', x)
+				// 	if (__OBJECTS.length) {
+				// 		setTimeout(redrawMap, 1500)
+				// 	}
+				// }
 			});
 	}
 	$(document).ready(function() {
@@ -131,17 +153,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 		getAuditLocationsByForm(formVersionId);
 		getAuditLocationDetails();
 
-		$("#auditRndNoLocations").multipleSelect({
-			placeholder: '<?= $this->translate('Please select audit round no.'); ?>',
-			width: '20%',
-			minimumCountSelected: '2'
-		});
-		//    $(".select2").select2({
-		//      width: '100%',
-		//	  placeholder: '',
-		//	  allowClear: true,
-		//	  tags : false
-		//    });		
+
 		var startDate = "";
 		var endDate = "";
 		$('#locationDateRange').daterangepicker({

@@ -108,17 +108,17 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
         * Get data to display
         */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $start_date = "";
-        $end_date = "";
+        $sql = new Sql($this->adapter);
+        $startDate = "";
+        $endDate = "";
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);                
+                $startDate = $this->dateFormat($dateField[0]);                
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))

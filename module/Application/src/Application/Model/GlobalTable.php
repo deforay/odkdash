@@ -104,7 +104,7 @@ class GlobalTable extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('global_config');
         //$sQuery=$this->select();
         if (isset($sWhere) && $sWhere != "") {
@@ -151,7 +151,7 @@ class GlobalTable extends AbstractTableGateway
     public function getGlobalConfig()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('global_config');
         $sQueryStr = $sql->buildSqlString($sQuery);
         $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -204,7 +204,7 @@ class GlobalTable extends AbstractTableGateway
     public function getGlobalValue($globalName)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('global_config')->where(array('global_name' => $globalName));
         $sQueryStr = $sql->buildSqlString($sQuery);
         $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

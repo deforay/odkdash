@@ -65,7 +65,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
     {
         $result = array();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 0));
         $queryStr = $sql->buildSqlString($query);
         $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -78,12 +78,12 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $start_date = $this->dateFormat(trim($dateField[0]));
+                    $startDate = $this->dateFormat(trim($dateField[0]));
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $end_date = $this->dateFormat(trim($dateField[2]));
+                    $endDate = $this->dateFormat(trim($dateField[2]));
                 }
-                $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+                $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
             }
             if (isset($queryResult->testingpointtype) && $queryResult->testingpointtype != '') {
                 $sQuery = $sQuery->where("spiv3.testingpointtype='" . $queryResult->testingpointtype . "'");
@@ -132,7 +132,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             return "0000-00-00";
         } else {
             $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
+            if (empty($dateArray)) {
                 return;
             }
             $newDate = $dateArray[2] . "-";
@@ -152,7 +152,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 1, 'user' => $logincontainer->userId))->order('r_download_id desc')->limit(5);
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

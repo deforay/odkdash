@@ -873,7 +873,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array(
                 'oldestDate' => new \Laminas\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
@@ -893,19 +893,19 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        $start_date = '';
-        $end_date = '';
+        $startDate = '';
+        $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
 
         if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
@@ -983,25 +983,25 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
 
-        $start_date = date('Y-m-d');
-        $end_date = date('Y-m-d', strtotime('-30 days', strtotime($start_date)));
+        $startDate = date('Y-m-d');
+        $endDate = date('Y-m-d', strtotime('-30 days', strtotime($startDate)));
 
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $start_date = $this->dateFormat($dateField[2]);
+                $startDate = $this->dateFormat($dateField[2]);
             }
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $end_date = $this->dateFormat($dateField[0]);
+                $endDate = $this->dateFormat($dateField[0]);
             }
         }
 
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array(
-                'newestDate' => new \Laminas\Db\Sql\Expression("'$start_date'"),
-                'oldestDate' => new \Laminas\Db\Sql\Expression("'$end_date'"),
+                'newestDate' => new \Laminas\Db\Sql\Expression("'$startDate'"),
+                'oldestDate' => new \Laminas\Db\Sql\Expression("'$endDate'"),
                 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),
                 'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
                 'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
@@ -1010,7 +1010,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
             ))
             ->where("spiv3.status='approved'")
-            ->where("(`assesmentofaudit` BETWEEN '" . $start_date . "' - INTERVAL DATEDIFF('" . $start_date . "','" . $end_date . "') DAY AND '" . $start_date . "')");
+            ->where("(`assesmentofaudit` BETWEEN '" . $startDate . "' - INTERVAL DATEDIFF('" . $startDate . "','" . $endDate . "') DAY AND '" . $startDate . "')");
         //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
@@ -1082,7 +1082,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $today = date('Y-m-d');
         $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
@@ -1112,7 +1112,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"')
             ->order(array("status DESC", "id $sortOrder"));
@@ -1129,25 +1129,25 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->order(array("avgMonthTesting DESC"));
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $start_date = '';
-        $end_date = '';
+        $startDate = '';
+        $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
 
         if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
@@ -1291,17 +1291,17 @@ class SpiFormVer3Table extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $start_date = "";
-        $end_date = "";
+        $sql = new Sql($this->adapter);
+        $startDate = "";
+        $endDate = "";
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
 
@@ -1317,8 +1317,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         if ($parameters['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $sQuery = $sQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
@@ -1411,8 +1411,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         if ($parameters['auditRndNo'] != '') {
             $tQuery = $tQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $tQuery = $tQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
@@ -1478,13 +1478,13 @@ class SpiFormVer3Table extends AbstractTableGateway
         );
 
         $role = $logincontainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
             $downloadPdfAction = false;
         }
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) {
             $approveStatusAction = true;
         } else {
             $approveStatusAction = false;
@@ -1575,7 +1575,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchAllDuplicateSubmissionsDetails()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $rResult = $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCANTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`,`testingpointname`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
     }
@@ -1660,7 +1660,7 @@ class SpiFormVer3Table extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"');
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
@@ -1706,19 +1706,19 @@ class SpiFormVer3Table extends AbstractTableGateway
             "aaData" => array(),
         );
         $role = $logincontainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'edit')) {
             $update = true;
         } else {
             $update = false;
         }
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'delete')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'delete')) {
             $delete = true;
         } else {
             $delete = false;
         }
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
             $downloadPdfAction = false;
@@ -1757,7 +1757,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchPendingFacilityNames()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('spiv3.status' => 'pending'));
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -1771,7 +1771,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $username = $logincontainer->login;
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('spiv3.id' => $id));
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -1806,7 +1806,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $logincontainer = new Container('credo');
         //$rResult = $this->getAllSubmissions();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->order(array("id DESC"));
         if (isset($params['roundno']) && $params['roundno'] != '') {
@@ -1815,19 +1815,19 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $start_date = '';
-        $end_date = '';
+        $startDate = '';
+        $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if ($params['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv3.auditroundno='" . $params['auditRndNo'] . "'");
@@ -1938,7 +1938,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $logincontainer = new Container('credo');
         //$rResult = $this->fetchAllApprovedSubmissions();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('spiv3.status' => 'approved'))
             ->order(array("assesmentofaudit DESC"));
@@ -1949,19 +1949,19 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $start_date = '';
-        $end_date = '';
+        $startDate = '';
+        $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if ($params['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv3.auditroundno='" . $params['auditRndNo'] . "'");
@@ -2129,7 +2129,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('status' => 'approved'))
             ->order(array("assesmentofaudit $sortOrder"));
@@ -2222,16 +2222,16 @@ class SpiFormVer3Table extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $start_date = '';
-        $end_date = '';
+        $sql = new Sql($this->adapter);
+        $startDate = '';
+        $endDate = '';
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode(" ", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
@@ -2239,8 +2239,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         if ($parameters['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $sQuery = $sQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
@@ -2327,8 +2327,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         if ($parameters['auditRndNo'] != '') {
             $tQuery = $tQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $tQuery = $tQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
@@ -2419,29 +2419,37 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('spiv3.status' => 'approved'))
             ->order(array("assesmentofaudit DESC"));
-        if (isset($params['roundno']) && $params['roundno'] != '') {
-            $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
-        }
+
+
+        $auditRound = $params['roundno'] ?: array($this->fetchLatestSpiV3FormAuditNo());
+
+        $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $auditRound) . '")');
+
+        // if (isset($params['roundno']) && $params['roundno'] != '') {
+        //     $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+        // }
+        
+
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
-        $start_date = '';
-        $end_date = '';
+        $startDate = '';
+        $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
         if ($params['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv3.auditroundno='" . $params['auditRndNo'] . "'");
@@ -2501,9 +2509,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
-        return $rResult;
+        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function dateFormat($date)
@@ -2512,7 +2518,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             return "0000-00-00";
         } else {
             $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
+            if (empty($dateArray)) {
                 return;
             }
             $newDate = $dateArray[2] . "-";
@@ -2536,7 +2542,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $user_name = $sessionLogin->login;
             $dbAdapter = $this->adapter;
             $eventTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $formId = base64_decode($params['formId']);
             $summationData = array();
             if (isset($params['sectionNo'])) {
@@ -2695,25 +2701,43 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchSpiV3FormAuditNo()
     {
         $logincontainer = new Container('credo');
+        /** @var $dbAdapter \Laminas\Db\Adapter\AdapterInterface */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
+            ->columns(array('assesmentofaudit', 'auditroundno', 'rowCount' => new Expression("COUNT('auditroundno')")))
             ->group('auditroundno')
             ->order("auditroundno ASC");
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $rResult;
+        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
+    public function fetchLatestSpiV3FormAuditNo()
+    {
+        $logincontainer = new Container('credo');
+        /** @var $dbAdapter \Laminas\Db\Adapter\AdapterInterface */
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+            ->columns(array('auditroundno'))
+            ->group('auditroundno')
+            ->order(array("assesmentofaudit DESC", "auditroundno DESC"))
+            ->limit(1);
+        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        }
+        $sQueryStr = $sql->buildSqlString($sQuery);
+        $res = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        return $res->auditroundno;
     }
 
     public function fetchSpiV3FormFacilityAuditNo($params)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
             ->where(array($params['fieldName'] => $params['val']))
@@ -2736,7 +2760,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $userName = $logincontainer->login;
         $dbAdapter = $this->adapter;
         $auditTable = new EventLogTable($dbAdapter);
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $facilityDb = new \Application\Model\SpiRtFacilitiesTable($this->adapter);
         $spiFormV5Db = new \Application\Model\SpiFormVer5Table($this->adapter);
         if (isset($params['editFacilityName']) && trim($params['editFacilityName']) != '') {
@@ -2832,7 +2856,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchAllFacilityNames()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")));
         $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -2924,9 +2948,9 @@ class SpiFormVer3Table extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $start_date = "";
-        $end_date = "";
+        $sql = new Sql($this->adapter);
+        $startDate = "";
+        $endDate = "";
         $sQuery = $sql->select()->from('spi_form_v_3')->columns(array('id', 'facilityid', 'facilityname', 'testingpointname', 'testingpointtype', 'assesmentofaudit', 'AUDIT_SCORE_PERCANTAGE'));
 
         if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityId') {
@@ -2977,7 +3001,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         );
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
             $downloadPdfAction = false;
@@ -3007,7 +3031,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $aResult = "";
         if (isset($params['facilityName']) && trim($params['facilityName']) != '') {
             $dbAdapter = $this->adapter;
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                 ->columns(array('id', 'testingpointname', 'assesmentofaudit'))
                 ->where(array('spiv3.facilityname' => $params['facilityName'], 'spiv3.status' => 'approved'));
@@ -3027,7 +3051,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status = "pending"');
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
@@ -3129,9 +3153,9 @@ class SpiFormVer3Table extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $start_date = "";
-        $end_date = "";
+        $sql = new Sql($this->adapter);
+        $startDate = "";
+        $endDate = "";
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"');
 
@@ -3183,13 +3207,13 @@ class SpiFormVer3Table extends AbstractTableGateway
         );
 
         $role = $logincontainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'download-pdf')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
             $downloadPdfAction = false;
         }
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) {
             $approveStatusAction = true;
         } else {
             $approveStatusAction = false;
@@ -3230,7 +3254,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchSpiV3FormUniqueTokens()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $tokenQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array(new Expression('DISTINCT(token) as token')))
             ->group('token')
@@ -3332,16 +3356,16 @@ class SpiFormVer3Table extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-        $start_date = "";
-        $end_date = "";
+        $sql = new Sql($this->adapter);
+        $startDate = "";
+        $endDate = "";
         if (isset($parameters['drange']) && ($parameters['drange'] != "")) {
             $dateField = explode(" ", $parameters['drange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $end_date = $this->dateFormat($dateField[2]);
+                $endDate = $this->dateFormat($dateField[2]);
             }
         }
 
@@ -3360,10 +3384,10 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $dateField = explode(" ", $parameters['date']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $start_date = $this->dateFormat($dateField[0]);
+                    $startDate = $this->dateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $end_date = $this->dateFormat($dateField[2]);
+                    $endDate = $this->dateFormat($dateField[2]);
                 }
             }
             //For Audit Performance Row
@@ -3455,9 +3479,9 @@ class SpiFormVer3Table extends AbstractTableGateway
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
         }
 
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
-            $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $start_date . "'", "spiv3.assesmentofaudit <='" . $end_date . "'"));
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
+            $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
         }
 
         if (isset($sWhere) && $sWhere != "") {
@@ -3602,7 +3626,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchAllTestingPointType()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array(new Expression('DISTINCT(testingPointType) as testingPointType')))
             ->group('testingPointType')
@@ -3622,7 +3646,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $column = 'DISTINCT(testingpointname) as testingpointName';
             }
             $dbAdapter = $this->adapter;
-            $sql = new Sql($dbAdapter);
+            $sql = new Sql($this->adapter);
             $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                 ->columns(array(new Expression($column)))
                 ->where(array('testingpointtype' => $params['testingPointType']));
@@ -3636,7 +3660,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
 
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array('facilityname'))
             ->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
@@ -3653,7 +3677,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchDistrictData($params)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()
             ->quantifier(\Laminas\Db\Sql\Select::QUANTIFIER_DISTINCT)
             ->from(array('f' => 'spi_rt_3_facilities'))
@@ -3672,7 +3696,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function addValidateSpiv3Data($params)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $vId = explode(",", $params['validateId']);
         $newQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
             ->where('spiv3.id IN ("' . implode('", "', $vId) . '")');
@@ -3950,7 +3974,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function getLatestFormDate()
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $rResult = $dbAdapter->query("SELECT MAX(today) as last_added_form_date FROM spi_form_v_3", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         return $rResult;
@@ -3959,9 +3983,9 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchV3DetailsByMetaInstanceId($metaInstantId)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('spi_form_v_3')
-        ->where("`meta-instance-id` = '$metaInstantId'");
+            ->where("`meta-instance-id` = '$metaInstantId'");
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         return $rResult;

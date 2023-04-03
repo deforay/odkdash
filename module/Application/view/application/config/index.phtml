@@ -12,7 +12,7 @@ $acl=$this->layout()->acl;
 				<h2>Global Config</h2>
 				</div>
 				<div class="col-sm-4">
-				    <?php if ($acl->isAllowed($role, 'Application\Controller\Config','edit-global')) { ?>
+				    <?php if ($acl->isAllowed($role, 'Application\Controller\ConfigController','edit-global')) { ?>
 					<a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;Edit Global Config</a>
 					<?php } ?>
 				</div>

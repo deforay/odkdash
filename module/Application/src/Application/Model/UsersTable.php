@@ -53,7 +53,7 @@ class UsersTable extends AbstractTableGateway
         $trackTable = new EventLogTable($dbAdapter);
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $userCountryMap = new UserCountryMapTable($dbAdapter);
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
             ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
             ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name', 'role_code'))
@@ -127,7 +127,7 @@ class UsersTable extends AbstractTableGateway
     {
         $common = new CommonService();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
         $userCountryMap = new UserCountryMapTable($dbAdapter);
@@ -188,7 +188,7 @@ class UsersTable extends AbstractTableGateway
     {
         $common = new CommonService();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
         $userCountryMap = new UserCountryMapTable($dbAdapter);
@@ -334,7 +334,7 @@ class UsersTable extends AbstractTableGateway
         * Get data to display
         */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('users');
 
 
@@ -376,7 +376,7 @@ class UsersTable extends AbstractTableGateway
 
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
+        if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) {
             $update = true;
         } else {
             $update = false;
@@ -400,7 +400,7 @@ class UsersTable extends AbstractTableGateway
     public function fetchUser($id)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from(array('u' => 'users'))
             ->join(array('urm' => 'user_role_map'), "urm.user_id=u.id", array('role_id'), 'left')
             ->where(array('id' => $id));
@@ -432,7 +432,7 @@ class UsersTable extends AbstractTableGateway
     {
         $common = new CommonService();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $userId = base64_decode($params['userId']);
         if (!empty($userId)) {
             $data = array(
@@ -474,7 +474,7 @@ class UsersTable extends AbstractTableGateway
         $logincontainer = new Container('credo');
         $common = new CommonService();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $userId = $logincontainer->userId;
         $config = new \Laminas\Config\Reader\Ini();
         $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');

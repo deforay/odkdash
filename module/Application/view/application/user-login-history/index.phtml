@@ -5,7 +5,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6', 'approve-status')) {
+if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status')) {
   $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 } else {
   $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';

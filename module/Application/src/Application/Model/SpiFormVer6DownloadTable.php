@@ -64,7 +64,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
     {
         $result = array();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from('r_spi_form_v_6_download')->where(array('download_status' => 0));
         $queryStr = $sql->buildSqlString($query);
         $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -77,12 +77,12 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $start_date = $this->dateFormat(trim($dateField[0]));
+                    $startDate = $this->dateFormat(trim($dateField[0]));
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $end_date = $this->dateFormat(trim($dateField[2]));
+                    $endDate = $this->dateFormat(trim($dateField[2]));
                 }
-                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $start_date . "'", "spiv6.assesmentofaudit <='" . $end_date . "'"));
+                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
             }
             if (isset($queryResult->testingpointtype) && $queryResult->testingpointtype != '') {
                 
@@ -131,7 +131,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             return "0000-00-00";
         } else {
             $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
+            if (empty($dateArray)) {
                 return;
             }
             $newDate = $dateArray[2] . "-";
@@ -151,7 +151,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
     {
         $logincontainer = new Container('credo');
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $query = $sql->select()->from('r_spi_form_v_6_download')->where(array('download_status' => 1, 'user' => $logincontainer->userId))->order('r_download_id desc')->limit(5);
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

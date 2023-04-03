@@ -468,17 +468,17 @@ $config = $this->GlobalConfigHelper();
 		$loginContainer = new \Laminas\Session\Container('credo');
 		$role = $loginContainer->roleCode;
 		$acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;
-		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'edit')) {
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'edit')) {
 			$update = true;
 		} else {
 			$update = false;
 		}
-		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3', 'approve-status')) {
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) {
 			$approve = true;
 		} else {
 			$approve = false;
 		}
-		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\Email', 'index')) {
+		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\EmailController', 'index')) {
 			$email = true;
 		} else {
 			$email = false;
@@ -1393,10 +1393,10 @@ $config = $this->GlobalConfigHelper();
 				endDate = end.format('YYYY-MM-DD');
 			});
 		<?php
-		$start_date = date('d-M-Y');
-		$end_date = date('d-M-Y', strtotime('-30 days', strtotime($start_date)));
+		$startDate = date('d-M-Y');
+		$endDate = date('d-M-Y', strtotime('-30 days', strtotime($startDate)));
 		?>
-		$("#spiRTv3").val('<?php echo $end_date . " - " . $start_date; ?>');
+		$("#spiRTv3").val('<?php echo $endDate . " - " . $startDate; ?>');
 
 		$("#latestAuditsTbl").DataTable({
 			"order": [
@@ -1416,7 +1416,7 @@ $config = $this->GlobalConfigHelper();
 		//zeroCountsBarChart();
 		getAuditWorstDetails();
 
-		//getAuditLocationDetails();
+		getAuditLocationDetails();
 
 
 		$("#provinceDistrict").multipleSelect({

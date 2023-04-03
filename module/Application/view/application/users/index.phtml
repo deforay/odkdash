@@ -3,7 +3,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl=$this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
+if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) {
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 }else{
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
@@ -16,7 +16,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
 				<h2>User List</h2>
 				</div>
 				<div class="col-sm-4">
-						<?php if ($acl->isAllowed($role, 'Application\Controller\Users', 'add')) { ?>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'add')) { ?>
 						<a href="<?php echo $this->url('users',array('action' => 'add'));?>" class="btn btn-dark pull-right" style=""><i class="fa fa-plus"></i>&nbsp;Add User</a>
 						<?php } ?>
 				</div>
@@ -36,7 +36,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) {
 						<th>User Name</th>
 						<th>Email</th>
 						<th>Status</th>
-						<?php if ($acl->isAllowed($role, 'Application\Controller\Users', 'edit')) { ?>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) { ?>
 						<th>Action</th>
 						<?php } ?>
 					</tr>

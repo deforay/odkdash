@@ -151,7 +151,7 @@
     }
 
     function generatePdf(tId, auId) {
-        $.post("<?php echo $this->url('spi-v5-form', array('action' => 'download-pdf')); ?>", {
+        $.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-pdf')); ?>", {
                 tempId: tId,
                 auditId: auId
             },

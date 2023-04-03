@@ -117,24 +117,24 @@ class UserLoginHistoryTable extends AbstractTableGateway
          * Get data to display
          */
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('user_login_history');
         //$sQuery=$this->select();
 
-        $start_date = '';
-        $end_date = '';
+        $startDate = '';
+        $endDate = '';
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode("to", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $start_date = $this->dateFormat($dateField[0]);
+                $startDate = $this->dateFormat($dateField[0]);
             }
             if (isset($dateField[1]) && trim($dateField[1]) != "") {
-                $end_date = $this->dateFormat($dateField[1]);
+                $endDate = $this->dateFormat($dateField[1]);
             }
         }
-        //echo $start_date.' '.$end_date; die;
-        if (trim($start_date) != "" && trim($end_date) != "") {
-            $sQuery = $sQuery->where(array("login_attempted_datetime >='" . $start_date . "'", "login_attempted_datetime <='" . $end_date . "'"));
+        //echo $startDate.' '.$endDate; die;
+        if (trim($startDate) != "" && trim($endDate) != "") {
+            $sQuery = $sQuery->where(array("login_attempted_datetime >='" . $startDate . "'", "login_attempted_datetime <='" . $endDate . "'"));
         }
         if ($parameters['userName'] != '') {
             $sQuery = $sQuery->where("login_id like '%" . $parameters['userName'] . "%'");
@@ -191,7 +191,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
     {
         $common=new CommonService();
         $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
+        $sql = new Sql($this->adapter);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
         $os = PHP_OS;
@@ -227,7 +227,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
             return "0000-00-00";
         } else {
             $dateArray = explode('-', $date);
-            if (sizeof($dateArray) == 0) {
+            if (empty($dateArray)) {
                 return;
             }
             $newDate = trim($dateArray[2]) . "-";

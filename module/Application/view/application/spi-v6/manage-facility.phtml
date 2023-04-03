@@ -5,7 +5,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6', 'edit')) {
+if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit')) {
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 } else {
     $editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
@@ -104,7 +104,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $a
                         <th>Affiliation</th>
                         <th style="width:5%;">Audit Score %</th>
                         <th style="width:5%;">Status</th>
-                        <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV6', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV6', 'delete')) { ?>
+                        <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit') || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'delete')) { ?>
                             <th style="width:15%;">Action</th>
                         <?php } ?>
                     </tr>

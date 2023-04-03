@@ -105,30 +105,30 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getSpiV6FormData($params['auditId']);
+            $result = $this->odkFormService->getSpiV6FormData($params['auditId'], 'no');
             $viewModel = new ViewModel(array(
                 'formData' => $result,
                 'configData' => $configData,
                 'tempId' => $params['tempId']
             ));
-            $viewModel->setTerminal(true);
-            return $viewModel;
         } else {
             $id = ($this->params()->fromRoute('id'));
-            $formData = $this->odkFormService->getSpiV6FormData($id, 'yes');
-            //echo "<pre>";
-            //print_r($formData);die;
-            $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
-            $viewModel->setTerminal(true);
-            return $viewModel;
+            $result = $this->odkFormService->getSpiV6FormData($id, 'yes');
+            $viewModel = new ViewModel(array(
+                'formData' => $result,
+                'configData' => $configData
+            ));
         }
+
+        $viewModel->setTerminal(true);
+        return $viewModel;
     }
 
     public function correctiveActionPdfAction()
     {
         $id = ($this->params()->fromRoute('id'));
-       // $formData = $this->odkFormService->getFormData($id, 'yes');
-       $formData = $this->odkFormService->getSpiV6FormData($id, 'yes');
+        // $formData = $this->odkFormService->getFormData($id, 'yes');
+        $formData = $this->odkFormService->getSpiV6FormData($id, 'yes');
         $configData = $this->commonService->getGlobalConfigDetails();
         $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
         $viewModel->setTerminal(true);

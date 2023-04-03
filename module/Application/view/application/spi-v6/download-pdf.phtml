@@ -1,7 +1,5 @@
 <?php
 
-use TCPDF;
-
 // Extend the TCPDF class to create custom Header and Footer
 $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "label-spi-v6.php";
 $fileContents = file_get_contents($configFile);
@@ -53,11 +51,11 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
 // set document information
-$pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('ODK DASHBOARD');
-$pdf->SetTitle('SPI-RT Checklist');
-$pdf->SetSubject('ODK DASHBOARD');
-$pdf->SetKeywords('ODK DASHBOARD');
+$pdf->SetCreator('SPI-RRT DASHBOARD');
+$pdf->SetAuthor('SPI-RRT DASHBOARD');
+$pdf->SetTitle('SPI-RRT Checklist');
+$pdf->SetSubject('SPI-RRT Checklist');
+$pdf->SetKeywords('SPI-RRT Checklist');
 
 
 // set default header data
@@ -1571,7 +1569,7 @@ $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
 
 
 //Close and output PDF document
-$fileName = "SPI-RT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
+$fileName = "SPI-RRT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
 if (isset($tempId)) {
     $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $tempId . DIRECTORY_SEPARATOR . $fileName;
     $pdf->Output($filePath, "F");
