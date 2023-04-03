@@ -19,29 +19,30 @@ use Application\Service\CommonService;
  *
  * @author amit
  */
-class EventLogTable extends AbstractTableGateway {
+class EventLogTable extends AbstractTableGateway
+{
 
     protected $table = 'event_log';
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function addEventLog($subject, $eventType, $action, $resourceName) {
-            $logincontainer = new Container('credo');
-            $actor_id = $logincontainer->userId;
-            $common = new CommonService();
-            $currentDateTime=$common->getDateTime();
-            
-            $data = array('actor'=>$actor_id,
-                          'subject'=>$subject,
-                          'event_type'=>$eventType,
-                          'action'=>$action,
-                          'resource_name'=>$resourceName,
-                          'date_time'=> $currentDateTime
-                        );
-            $id = $this->insert($data);
+    public function addEventLog($subject, $eventType, $action, $resourceName)
+    {
+        $logincontainer = new Container('credo');
+        $actorId = $logincontainer->userId;
+        $currentDateTime = \Application\Service\CommonService::getDateTime();
+
+        $data = array(
+            'actor' => $actorId,
+            'subject' => $subject,
+            'event_type' => $eventType,
+            'action' => $action,
+            'resource_name' => $resourceName,
+            'date_time' => $currentDateTime
+        );
+        $id = $this->insert($data);
     }
-    
 }
-?>

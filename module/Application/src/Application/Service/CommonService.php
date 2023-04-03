@@ -23,7 +23,7 @@ class CommonService
     public function __construct($sm = null)
     {
         $this->sm = $sm;
-        $this->adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $this->adapter = $sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
     }
 
     public function getServiceManager()

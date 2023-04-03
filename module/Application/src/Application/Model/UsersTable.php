@@ -40,7 +40,6 @@ class UsersTable extends AbstractTableGateway
 
     public function login($params, $configResult)
     {
-        $common = new CommonService();
         $container = new Container('alert');
         $logincontainer = new Container('credo');
         $username = $params['username'];
@@ -60,7 +59,7 @@ class UsersTable extends AbstractTableGateway
         // die($sQueryStr);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         $data = array(
-            'last_login_datetime' => $common->getDateTime()
+            'last_login_datetime' => CommonService::getDateTime()
         );
         if ($sResult !== false && !empty($sResult)) {
             $this->update($data, array('id' => $sResult->id));
@@ -123,7 +122,6 @@ class UsersTable extends AbstractTableGateway
 
     public function addUserDetails($params, $configResult)
     {
-        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
@@ -140,15 +138,15 @@ class UsersTable extends AbstractTableGateway
                 'email' => $params['email'],
                 'status' => $params['status'],
                 'contact_no' => $params['mobile_no'],
-                'created_on' => $common->getDateTime()
+                'created_on' => \Application\Service\CommonService::getDateTime()
             );
             $this->insert($data);
             $lastInsertId = $this->lastInsertValue;
             if ($lastInsertId > 0) {
 
                 $userRoleMap->insert(array('user_id' => $lastInsertId, 'role_id' => $params['roleId']));
-                if(count($params['country']) > 0){
-                    foreach($params['country'] as $country){
+                if (!empty($params['country'])) {
+                    foreach ($params['country'] as $country) {
                         $userCountryMap->insert(array('user_id' => $lastInsertId, 'country_id' => $country));
                     }
                 }
@@ -207,8 +205,8 @@ class UsersTable extends AbstractTableGateway
             if ($userId > 0) {
                 $userCountryMap->delete(array('user_id' => $userId));
                 $userRoleMap->update(array('role_id' => $params['roleId']), array('user_id' => $userId));
-                if(count($params['country']) > 0){
-                    foreach($params['country'] as $country){
+                if (count($params['country']) > 0) {
+                    foreach ($params['country'] as $country) {
                         $userCountryMap->insert(array('user_id' => $userId, 'country_id' => $country));
                     }
                 }

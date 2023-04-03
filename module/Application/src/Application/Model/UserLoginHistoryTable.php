@@ -189,8 +189,6 @@ class UserLoginHistoryTable extends AbstractTableGateway
 
     public function userHistoryLog($userName, $loginStatus)
     {
-        $common=new CommonService();
-        $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $ipaddress = '';
         $browserAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -213,7 +211,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
 
         $data = array(
             'login_id' => $userName,
-            'login_attempted_datetime' => $common->getDateTime(),
+            'login_attempted_datetime' => \Application\Service\CommonService::getDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
@@ -222,7 +220,8 @@ class UserLoginHistoryTable extends AbstractTableGateway
         $this->insert($data);
     }
 
-    public function dateFormat($date) {
+    public function dateFormat($date)
+    {
         if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
             return "0000-00-00";
         } else {

@@ -146,11 +146,26 @@ class Module
 
                 $role = $session->roleCode;
 
+                // if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
+                //     $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
+                //     $application->getEventManager()->trigger('dispatch.error', $e);
+                // }
                 if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
-                    $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
-                    var_dump($application->getEventManager());
-                    die;
-                    $application->getEventManager()->trigger('dispatch.error', $e);
+
+                    /** @var \Laminas\Http\Response $response */
+                    $response = $e->getResponse();
+                    $response->setStatusCode(403);
+                    $response->sendHeaders();
+
+                    // To avoid additional processing
+                    // we can attach a listener for Event Route with a high priority
+                    $stopCallBack = function ($event) use ($response) {
+                        $event->stopPropagation();
+                        return $response;
+                    };
+                    //Attach the "break" as a listener with a high priority
+                    $application->getEventManager()->attach(MvcEvent::EVENT_ROUTE, $stopCallBack, -10000);
+                    return $response;
                 }
             }
         } else {

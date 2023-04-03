@@ -1,89 +1,89 @@
 <?php
 return array(
     'AD' => array(
-        'Application\\Controller\\Index' => array(
+        'Application\\Controller\\IndexController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Config' => array(
+        'Application\\Controller\\ConfigController' => array(
             'index' => 'deny',
             'edit' => 'deny',
         ),
-        'Application\\Controller\\Facility' => array(
+        'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'get-facility-name' => 'allow',
         ),
-        'Application\\Controller\\Roles' => array(
+        'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
+        'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\SpiV5' => array(
+        'Application\\Controller\\SpiV5Controller' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'download-pdf' => 'allow',
             'edit' => 'allow',
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Users' => array(
+        'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\UserLoginHistory' => array(
+        'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\AuditTrail' => array(
+        'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),
     ),
     'SA' => array(
-        'Application\\Controller\\Common' => array(
+        'Application\\Controller\\CommonController' => array(
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Config' => array(
+        'Application\\Controller\\ConfigController' => array(
             'index' => 'allow',
             'edit-global' => 'allow',
         ),
-        'Application\\Controller\\Index' => array(
+        'Application\\Controller\\IndexController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Dashboard' => array(
+        'Application\\Controller\\DashboardController' => array(
             'index' => 'allow',
             'audit-details' => 'allow',
         ),
-        'Application\\Controller\\DashboardV6' => array(
+        'Application\\Controller\\DashboardV6Controller' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\DashboardV5' => array(
+        'Application\\Controller\\DashboardV5Controller' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Email' => array(
+        'Application\\Controller\\EmailController' => array(
             'index' => 'allow',
             'email-v5' => 'allow',
             'email-v6' => 'allow',
         ),
-        'Application\\Controller\\Facility' => array(
+        'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
         ),
-        'Application\\Controller\\Roles' => array(
+        'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5' => array(
+        'Application\\Controller\\SpiV5Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
@@ -96,7 +96,7 @@ return array(
             'export' => 'allow',
             'view-data-v5' => 'allow',
         ),
-        'Application\\Controller\\SpiV6' => array(
+        'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
@@ -111,7 +111,7 @@ return array(
             'view-data-section-zero-protocol-v6' => 'allow',
             'view-data-section-zero-v6' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
+        'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
@@ -123,47 +123,47 @@ return array(
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
         ),
-        'Application\\Controller\\Users' => array(
+        'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3Reports' => array(
+        'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Reports' => array(
+        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV6Reports' => array(
+        'Application\\Controller\\SpiV6ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\UserLoginHistory' => array(
+        'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\AuditTrail' => array(
+        'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),
     ),
     'US' => array(
-        'Application\\Controller\\Index' => array(
+        'Application\\Controller\\IndexController' => array(
             'index' => 'deny',
         ),
-        'Application\\Controller\\Config' => array(
+        'Application\\Controller\\ConfigController' => array(
             'index' => 'deny',
             'edit-global' => 'deny',
         ),
-        'Application\\Controller\\Facility' => array(
+        'Application\\Controller\\FacilityController' => array(
             'index' => 'deny',
             'add' => 'deny',
             'edit' => 'deny',
             'get-facility-name' => 'deny',
         ),
-        'Application\\Controller\\Roles' => array(
+        'Application\\Controller\\RolesController' => array(
             'index' => 'deny',
             'add' => 'deny',
             'edit' => 'deny',
         ),
-        'Application\\Controller\\SpiV3' => array(
+        'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'deny',
             'approve-status' => 'deny',
@@ -171,50 +171,50 @@ return array(
             'edit' => 'deny',
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Users' => array(
+        'Application\\Controller\\UsersController' => array(
             'index' => 'deny',
             'add' => 'deny',
             'edit' => 'deny',
         ),
     ),
     'VIEWER' => array(
-        'Application\\Controller\\Common' => array(
+        'Application\\Controller\\CommonController' => array(
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Config' => array(
+        'Application\\Controller\\ConfigController' => array(
             'index' => 'allow',
             'edit-global' => 'allow',
         ),
-        'Application\\Controller\\Index' => array(
+        'Application\\Controller\\IndexController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Dashboard' => array(
+        'Application\\Controller\\DashboardController' => array(
             'index' => 'allow',
             'audit-details' => 'allow',
         ),
-        'Application\\Controller\\DashboardV6' => array(
+        'Application\\Controller\\DashboardV6Controller' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\DashboardV5' => array(
+        'Application\\Controller\\DashboardV5Controller' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Email' => array(
+        'Application\\Controller\\EmailController' => array(
             'index' => 'allow',
             'email-v5' => 'allow',
         ),
-        'Application\\Controller\\Facility' => array(
+        'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
         ),
-        'Application\\Controller\\Roles' => array(
+        'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5' => array(
+        'Application\\Controller\\SpiV5Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
@@ -226,7 +226,7 @@ return array(
             'edit' => 'allow',
             'export' => 'allow',
         ),
-        'Application\\Controller\\SpiV6' => array(
+        'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
@@ -238,7 +238,7 @@ return array(
             'edit' => 'allow',
             'export' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
+        'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
@@ -250,66 +250,66 @@ return array(
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
         ),
-        'Application\\Controller\\Users' => array(
+        'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3Reports' => array(
+        'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Reports' => array(
+        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV6Reports' => array(
+        'Application\\Controller\\SpiV6ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\UserLoginHistory' => array(
+        'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\AuditTrail' => array(
+        'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),
     ),
     'DE' => array(
-        'Application\\Controller\\Common' => array(
+        'Application\\Controller\\CommonController' => array(
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Config' => array(
+        'Application\\Controller\\ConfigController' => array(
             'index' => 'allow',
             'edit-global' => 'allow',
         ),
-        'Application\\Controller\\Index' => array(
+        'Application\\Controller\\IndexController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Dashboard' => array(
+        'Application\\Controller\\DashboardController' => array(
             'index' => 'deny',
             'audit-details' => 'deny',
         ),
-        'Application\\Controller\\DashboardV6' => array(
+        'Application\\Controller\\DashboardV6Controller' => array(
             'index' => 'deny',
         ),
-        'Application\\Controller\\DashboardV5' => array(
+        'Application\\Controller\\DashboardV5Controller' => array(
             'index' => 'deny',
         ),
-        'Application\\Controller\\Email' => array(
+        'Application\\Controller\\EmailController' => array(
             'index' => 'allow',
             'email-v5' => 'deny',
             'email-v6' => 'deny',
         ),
-        'Application\\Controller\\Facility' => array(
+        'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'get-province-list' => 'deny',
             'get-facility-name' => 'allow',
         ),
-        'Application\\Controller\\Roles' => array(
+        'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5' => array(
+        'Application\\Controller\\SpiV5Controller' => array(
             'index' => 'deny',
             'manage-facility' => 'deny',
             'approve-status' => 'deny',
@@ -322,7 +322,7 @@ return array(
             'export' => 'deny',
             'view-data-v5' => 'deny',
         ),
-        'Application\\Controller\\SpiV6' => array(
+        'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'deny',
             'manage-facility' => 'deny',
             'approve-status' => 'deny',
@@ -337,7 +337,7 @@ return array(
             'view-data-section-zero-protocol-v6' => 'deny',
             'view-data-section-zero-v6' => 'deny',
         ),
-        'Application\\Controller\\SpiV3' => array(
+        'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
@@ -349,68 +349,68 @@ return array(
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
         ),
-        'Application\\Controller\\UserLoginHistory' => array(
+        'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\AuditTrail' => array(
+        'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Users' => array(
+        'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'change-password' => 'deny',
             'edit' => 'allow',
             'profile' => 'deny',
         ),
-        'Application\\Controller\\SpiV3Reports' => array(
+        'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Reports' => array(
+        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'deny',
         ),
-        'Application\\Controller\\SpiV6Reports' => array(
+        'Application\\Controller\\SpiV6ReportsController' => array(
             'facility-report' => 'deny',
         ),
     ),
     'Admin' => array(
-        'Application\\Controller\\Common' => array(
+        'Application\\Controller\\CommonController' => array(
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\Config' => array(
+        'Application\\Controller\\ConfigController' => array(
             'index' => 'allow',
             'edit-global' => 'allow',
         ),
-        'Application\\Controller\\Index' => array(
+        'Application\\Controller\\IndexController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Dashboard' => array(
+        'Application\\Controller\\DashboardController' => array(
             'index' => 'allow',
             'audit-details' => 'allow',
         ),
-        'Application\\Controller\\DashboardV6' => array(
+        'Application\\Controller\\DashboardV6Controller' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\DashboardV5' => array(
+        'Application\\Controller\\DashboardV5Controller' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Email' => array(
+        'Application\\Controller\\EmailController' => array(
             'index' => 'allow',
             'email-v5' => 'allow',
             'email-v6' => 'allow',
         ),
-        'Application\\Controller\\Facility' => array(
+        'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
         ),
-        'Application\\Controller\\Roles' => array(
+        'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5' => array(
+        'Application\\Controller\\SpiV5Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
@@ -423,7 +423,7 @@ return array(
             'export' => 'allow',
             'view-data-v5' => 'allow',
         ),
-        'Application\\Controller\\SpiV6' => array(
+        'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
             'approve-status' => 'allow',
@@ -439,7 +439,7 @@ return array(
             'view-data-section-zero-protocol-v6' => 'allow',
             'view-data-section-zero-v6' => 'allow',
         ),
-        'Application\\Controller\\SpiV3' => array(
+        'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
@@ -451,25 +451,25 @@ return array(
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
         ),
-        'Application\\Controller\\UserLoginHistory' => array(
+        'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\AuditTrail' => array(
+        'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),
-        'Application\\Controller\\Users' => array(
+        'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'change-password' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV3Reports' => array(
+        'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Reports' => array(
+        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
-        'Application\\Controller\\SpiV6Reports' => array(
+        'Application\\Controller\\SpiV6ReportsController' => array(
             'facility-report' => 'allow',
         ),
     ),
