@@ -8,10 +8,9 @@
 return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
-        'Laminas\Mail',
-        'Laminas\Mvc\Console',
-        'Laminas\Serializer',
         'Laminas\Cache',
+        'Laminas\Mail',
+        'Laminas\Serializer',
         'Laminas\Di',
         'Laminas\Mvc\Middleware',
         'Laminas\Session',
@@ -22,7 +21,7 @@ return array(
         'Laminas\Router',
         'Laminas\Validator',
         'Laminas\Diactoros',
-        'Laminas\ZendFrameworkBridge',
+        'Laminas\Cache\Storage\Adapter\Filesystem',
         'Application',
     ),
     // These are various options for the listeners attached to the ModuleManager
