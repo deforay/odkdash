@@ -4,134 +4,144 @@ namespace Application\Service;
 
 use Laminas\Session\Container;
 
-class UserService {
+class UserService
+{
 
     public $sm = null;
+    public \Application\Model\UsersTable $usersTable;
 
-    public function __construct($sm) {
+    public function __construct($sm, $usersTable)
+    {
         $this->sm = $sm;
+        $this->usersTable = $usersTable;
     }
 
-    public function getServiceManager() {
+    public function getServiceManager()
+    {
         return $this->sm;
     }
 
-    public function login($params) {
-        $db = $this->sm->get('UsersTable');
-        return $db->login($params);
+    public function login($params)
+    {
+        $configResult = $this->sm->get('Config');
+        return $this->usersTable->login($params, $configResult);
     }
-    
-    public function addUser($params) {
+
+    public function addUser($params)
+    {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
-            $userDb = $this->sm->get('UsersTable');
-            $result = $userDb->addUserDetails($params);
+            $configResult = $this->sm->get('Config');
+            $result = $this->usersTable->addUserDetails($params, $configResult);
             if ($result > 0) {
                 $adapter->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-add';
-                $action = 'added a new user '.$params['userName'];
+                $action = 'added a new user ' . $params['userName'];
                 $resourceName = 'users';
                 $eventLogDb = $this->sm->get('EventLogTable');
-                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User added successfully';
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
-    
-    public function updateUser($params) {
+
+    public function updateUser($params)
+    {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $configResult = $this->sm->get('Config');
         $adapter->beginTransaction();
         try {
-            $userDb = $this->sm->get('UsersTable');
-            $result = $userDb->updateUserDetails($params);
+            $result = $this->usersTable->updateUserDetails($params, $configResult);
             if ($result > 0) {
                 $adapter->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-update';
-                $action = 'updates a user '.$params['userName'];
+                $action = 'updates a user ' . $params['userName'];
                 $resourceName = 'users';
                 $eventLogDb = $this->sm->get('EventLogTable');
-                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User details updated successfully';
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
-    
-    public function getAllUsers($parameters){
-        $userDb = $this->sm->get('UsersTable');
+
+    public function getAllUsers($parameters)
+    {
+
         $acl = $this->sm->get('AppAcl');
-        return $userDb->fetchAllUsers($parameters,$acl);
-    }
-    
-    public function getUser($id){
-        $userDb = $this->sm->get('UsersTable');
-        return $userDb->fetchUser($id);
+        return $this->usersTable->fetchAllUsers($parameters, $acl);
     }
 
-    public function logout($params) {
-        $db = $this->sm->get('UsersTable');
-        return $db->logout($params);
+    public function getUser($id)
+    {
+        return $this->usersTable->fetchUser($id);
     }
 
-    public function updateUserProfile($params) {
+    public function logout($params)
+    {
+        return $this->usersTable->logout($params);
+    }
+
+    public function updateUserProfile($params)
+    {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
-            $userDb = $this->sm->get('UsersTable');
-            $result = $userDb->updateUserProfileDetails($params);
+            $result = $this->usersTable->updateUserProfileDetails($params);
             if ($result > 0) {
                 $adapter->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-profile-update';
-                $action = 'updates a user profile'.$params['userName'];
+                $action = 'updates a user profile' . $params['userName'];
                 $resourceName = 'users';
                 $eventLogDb = $this->sm->get('EventLogTable');
-                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User Profile details updated successfully';
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
 
-    public function updatePassword($params) {
+    public function updatePassword($params)
+    {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
+        $configResult = $this->sm->get('Config');
         try {
-            $userDb = $this->sm->get('UsersTable');
-            $result = $userDb->updatePassword($params);
+            $result = $this->usersTable->updatePassword($params, $configResult);
             if ($result > 0) {
                 $adapter->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-password-update';
-                $action = 'updates a user password'.$params['userName'];
+                $action = 'updates a user password' . $params['userName'];
                 $resourceName = 'users';
                 $eventLogDb = $this->sm->get('EventLogTable');
-                $eventLogDb->addEventLog($subject,$eventType,$action,$resourceName);
+                $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Password changed successfully';
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }

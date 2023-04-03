@@ -31,11 +31,13 @@ class OdkFormService
 
     public $sm = null;
     public $translator = null;
+    public $adapter = null;
 
     public function __construct($sm)
     {
         $this->sm = $sm;
         $this->translator = $sm->get('translator');
+        $this->adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
     }
 
     public function getServiceManager()
@@ -91,7 +93,7 @@ class OdkFormService
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             // $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             // $excel = new \PHPExcel();
             // $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
@@ -156,7 +158,7 @@ class OdkFormService
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
 
-                            if ($key == 'AUDIT_SCORE_PERCANTAGE') {
+                            if ($key == 'AUDIT_SCORE_PERCANTAGE' || $key == 'AUDIT_SCORE_PERCENTAGE') {
                                 if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) {
                                     continue;
                                 }
@@ -321,8 +323,8 @@ class OdkFormService
             $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
             $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(true)->setSize(13);
 
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.xls';
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.xlsx';
             // print_r(($filename));die;
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
@@ -340,7 +342,7 @@ class OdkFormService
         try {
             $writer = WriterEntityFactory::createXLSXWriter();
             $customTempFolderPath = TEMP_UPLOAD_PATH;
-            $filename = 'SPI-RRT--CHECKLIST-version-5-' . time() . '.xls';
+            $filename = 'SPI-RRT--CHECKLIST-version-5-' . time() . '.xlsx';
             $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
             $writer->setTempFolder($customTempFolderPath);
             $writer->openToFile($TemporaryFolderPath);
@@ -901,16 +903,16 @@ class OdkFormService
         return $fileName;
     }
 
-    public function getFormData($id,$pdf='no')
+    public function getFormData($id, $pdf = 'no')
     {
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getFormData($id,$pdf);
+        return $db->getFormData($id, $pdf);
     }
 
-    public function getSpiV5FormData($id,$pdf='no')
+    public function getSpiV5FormData($id, $pdf = 'no')
     {
         $db = $this->sm->get('SpiFormVer5Table');
-        return $db->getFormData($id,$pdf);
+        return $db->getFormData($id, $pdf);
     }
 
     public function getSpiV3FormLabels()
@@ -1001,8 +1003,8 @@ class OdkFormService
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xls';
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xlsx';
             $output = array();
             $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
@@ -1146,7 +1148,7 @@ class OdkFormService
             }
 
             //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-            //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
+            //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xlsx';
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
         } catch (\Exception $exc) {
@@ -1164,8 +1166,8 @@ class OdkFormService
             $output = array();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = 'facility-report-v5' . date('d-M-Y-H-i-s') . '.xls';
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $filename = 'facility-report-v5' . date('d-M-Y-H-i-s') . '.xlsx';
             //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
             $sql = new Sql($this->adapter);
@@ -1318,7 +1320,7 @@ class OdkFormService
 
             //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
             //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
         } catch (\Exception $exc) {
@@ -4095,10 +4097,10 @@ class OdkFormService
         }
     }
 
-    public function getSpiV6FormData($id,$pdf='no')
+    public function getSpiV6FormData($id, $pdf = 'no')
     {
         $db = $this->sm->get('SpiFormVer6Table');
-        return $db->getFormData($id,$pdf);
+        return $db->getFormData($id, $pdf);
     }
 
     public function exportSAndDV6Submissions($params)
@@ -4108,7 +4110,7 @@ class OdkFormService
             $logincontainer = new Container('credo');
             $writer = WriterEntityFactory::createXLSXWriter();
             $customTempFolderPath = TEMP_UPLOAD_PATH;
-            $filename = 'SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xls';
+            $filename = 'SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xlsx';
             $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
             $writer->setTempFolder($customTempFolderPath);
             $writer->openToFile($TemporaryFolderPath);
@@ -4448,7 +4450,7 @@ class OdkFormService
         try {
             $writer = WriterEntityFactory::createXLSXWriter();
             $customTempFolderPath = TEMP_UPLOAD_PATH;
-            $filename = 'SPI-RRT--CHECKLIST-version-6-' . time() . '.xls';
+            $filename = 'SPI-RRT--CHECKLIST-version-6-' . time() . '.xlsx';
             $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
             $writer->setTempFolder($customTempFolderPath);
             $writer->openToFile($TemporaryFolderPath);
@@ -5501,8 +5503,8 @@ class OdkFormService
             $output = array();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
-            $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xls';
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xlsx';
             //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
             $sql = new Sql($this->adapter);
@@ -5655,7 +5657,7 @@ class OdkFormService
 
             //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
             //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xls($spreadsheet);
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
         } catch (\Exception $exc) {
@@ -5677,8 +5679,7 @@ class OdkFormService
 
     public function getOdkCentralSubmissions()
     {
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $configResult = $this->sm->get('Config');
         $spirtURL = $configResult['odkcentral']['spirt']['url'];
         $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
         $email = $configResult['odkcentral']['spirt']['email'];
@@ -5686,11 +5687,11 @@ class OdkFormService
         $spiV3db = $this->sm->get('SpiFormVer3Table');
         $lastDateQuery = $spiV3db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-        if($lastFormDate != ''){
+        if ($lastFormDate != '') {
             $url = "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
-            }else{
+        } else {
             $url = "$spirrtURL.svc/Submissions";
-            }
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $spirtURL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -5762,21 +5763,18 @@ class OdkFormService
 
     public function getV6OdkCentralSubmissions()
     {
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+        $configResult = $this->sm->get('Config');
         $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
         $spirtURL = $configResult['odkcentral']['spirt']['url'];
         $spiV6db = $this->sm->get('SpiFormVer6Table');
         $lastDateQuery = $spiV6db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-        if($lastFormDate != ''){
+        if ($lastFormDate != '') {
             $url = "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
-            }else{
+        } else {
             $url = "$spirrtURL.svc/Submissions";
-            }
+        }
         // $odataClient = new ODataClient($spirrtURL, function($request) {
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $email = $configResult['odkcentral']['spirrt']['email'];
         $password = $configResult['odkcentral']['spirrt']['password'];
         // $request->headers['Authorization'] = 'Basic '.base64_encode($email . ':' . $password);
@@ -5798,7 +5796,7 @@ class OdkFormService
         curl_close($ch);
         $ch = curl_init();
         $token = base64_encode($email . ':' . $password);
-        curl_setopt($ch, CURLOPT_URL, $url);    
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
 

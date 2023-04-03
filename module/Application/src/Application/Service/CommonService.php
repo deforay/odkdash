@@ -18,10 +18,12 @@ class CommonService
 {
 
     public $sm = null;
+    public $adapter = null;
 
     public function __construct($sm = null)
     {
         $this->sm = $sm;
+        $this->adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
     }
 
     public function getServiceManager()
@@ -62,6 +64,7 @@ class CommonService
     {
 
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+        $configResult = $this->sm->get('Config');
         $tableName = $params['tableName'];
         $fieldName = $params['fieldName'];
         $value = trim($params['value']);
@@ -78,8 +81,6 @@ class CommonService
                 $table = explode("##", $fnct);
                 if ($fieldName == 'password') {
                     //Password encrypted
-                    $config = new \Laminas\Config\Reader\Ini();
-                    $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
                     $password = sha1($value . $configResult["password"]["salt"]);
                     $select = $sql->select()->from($tableName)->where(array($fieldName => $password, $table[0] => $table[1]));
                     $statement = $sql->prepareStatementForSqlObject($select);
@@ -95,7 +96,7 @@ class CommonService
                 }
             }
             return $data;
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -164,8 +165,7 @@ class CommonService
     {
         try {
             $tempMailDb = $this->sm->get('TempMailTable');
-            $config = new \Laminas\Config\Reader\Ini();
-            $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+            $configResult = $this->sm->get('Config');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($this->adapter);
 
@@ -240,7 +240,7 @@ class CommonService
                     $tempMailDb->deleteTempMail($id);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
             error_log('whoops! Something went wrong in send-mail.');
@@ -251,8 +251,7 @@ class CommonService
     {
         try {
             $auditMailDb = $this->sm->get('AuditMailTable');
-            $config = new \Laminas\Config\Reader\Ini();
-            $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
+            $configResult = $this->sm->get('Config');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($this->adapter);
 
@@ -330,7 +329,7 @@ class CommonService
                     }
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
             error_log('whoops! Something went wrong in send-audit-mail.');
@@ -405,7 +404,7 @@ class CommonService
             $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
             $adapter->commit();
             $container->alertMsg = "Global Config Updated Successfully.";
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -443,7 +442,7 @@ class CommonService
                 }
                 closedir($dh);
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
             error_log('whoops! Something went wrong in cron/dbBackup');

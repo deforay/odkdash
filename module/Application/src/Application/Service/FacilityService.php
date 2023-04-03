@@ -12,10 +12,12 @@ class FacilityService
 {
 
     public $sm = null;
+    public $adapter = null;
 
     public function __construct($sm)
     {
         $this->sm = $sm;
+        $this->adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
     }
 
     public function getServiceManager()
@@ -44,7 +46,7 @@ class FacilityService
                 $container->alertMsg = 'Facility details added successfully';
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -72,7 +74,7 @@ class FacilityService
                 $container->alertMsg = 'Facility details updated successfully';
                 return $result;
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -105,9 +107,8 @@ class FacilityService
         $auditMailDb = $this->sm->get('AuditMailTable');
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer3Table');
+        $configResult = $this->sm->get('Config');
         $commonService = new \Application\Service\CommonService();
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -170,7 +171,7 @@ class FacilityService
                 $container->alertMsg = 'Error.Please try again!';
             }
             return $mailId;
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -184,9 +185,8 @@ class FacilityService
         $auditMailDb = $this->sm->get('AuditMailTable');
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer5Table');
+        $configResult = $this->sm->get('Config');
         $commonService = new \Application\Service\CommonService();
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -195,7 +195,7 @@ class FacilityService
             $toName = ($params['facility']);
             $toEmailAddress = trim($params['emailAddress']);
             $cc = $configResult['admin']['emailAddress'];
-            $subject = 'SPI-RRT-CHECKLIST - '. $toName;
+            $subject = 'SPI-RRT-CHECKLIST - ' . $toName;
             $message = '';
             $message .= '<table border="0" cellspacing="0" cellpadding="0" style="width:100%;background-color:#FFFFFF;">';
             $message .= '<tr><td align="center">';
@@ -249,7 +249,7 @@ class FacilityService
                 $container->alertMsg = 'Error.Please try again!';
             }
             return $mailId;
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -263,9 +263,8 @@ class FacilityService
         $auditMailDb = $this->sm->get('AuditMailTable');
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer6Table');
+        $configResult = $this->sm->get('Config');
         $commonService = new \Application\Service\CommonService();
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -374,15 +373,12 @@ class FacilityService
     public function exportFacility()
     {
         try {
-            $common = new \Application\Service\CommonService();
+
             $queryContainer = new Container('query');
-            $excel = new PHPExcel();
-            $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
-            $cacheSettings = array('memoryCacheSize' => '80MB');
-            \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $output = array();
-            $outputScore = array();
-            $sheet = $excel->getActiveSheet();
+            $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($this->adapter);
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllFacilityQuery);
@@ -403,22 +399,22 @@ class FacilityService
                     'size' => 12,
                 ),
                 'alignment' => array(
-                    'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 ),
                 'borders' => array(
                     'outline' => array(
-                        'style' => \PHPExcel_Style_Border::BORDER_THICK,
+                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
                     ),
                 )
             );
             $borderStyle = array(
                 'alignment' => array(
-                    'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 ),
                 'borders' => array(
                     'outline' => array(
-                        'style' => \PHPExcel_Style_Border::BORDER_MEDIUM,
+                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
                     ),
                 )
             );
@@ -437,7 +433,7 @@ class FacilityService
             $sheet->setCellValue('C4', html_entity_decode('Email', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
             $sheet->setCellValue('D4', html_entity_decode('Contact Person', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
 
-            $sheet->getStyle('A1:B1')->getFont()->setBold(TRUE)->setSize(16);
+            $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
 
             $sheet->getStyle('A4:A5')->applyFromArray($styleArray);
             $sheet->getStyle('B4:B5')->applyFromArray($styleArray);
@@ -467,14 +463,14 @@ class FacilityService
                 }
             }
 
-            $writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-            $filename = 'facility-list-report-' . date('d-M-Y-H-i-s') . '.xls';
+            $filename = 'facility-list-report-' . date('d-M-Y-H-i-s') . '.xlsx';
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
-        } catch (Exception $exc) {
-            return "";
+        } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
+
+            return "";
         }
     }
     public function getProvinceData($searchStr)

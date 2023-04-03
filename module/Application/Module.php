@@ -638,7 +638,8 @@ class Module
                 {
                     public function __invoke($diContainer)
                     {
-                        return new UserService($diContainer);
+                        $usersTable = $diContainer->get('UsersTable');
+                        return new UserService($diContainer, $usersTable);
                     }
                 },
                 'FacilityService' => new class

@@ -38,14 +38,12 @@ class UsersTable extends AbstractTableGateway
     }
 
 
-    public function login($params)
+    public function login($params, $configResult)
     {
         $common = new CommonService();
         $container = new Container('alert');
         $logincontainer = new Container('credo');
         $username = $params['username'];
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);
 
         $dbAdapter = $this->adapter;
@@ -123,7 +121,7 @@ class UsersTable extends AbstractTableGateway
         }
     }
 
-    public function addUserDetails($params)
+    public function addUserDetails($params, $configResult)
     {
         $common = new CommonService();
         $dbAdapter = $this->adapter;
@@ -131,8 +129,6 @@ class UsersTable extends AbstractTableGateway
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
         $userCountryMap = new UserCountryMapTable($dbAdapter);
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['password'] . $configResult["password"]["salt"]);
         $lastInsertId = 0;
         if (isset($params['userName']) && trim($params['userName']) != "") {
@@ -184,7 +180,7 @@ class UsersTable extends AbstractTableGateway
         }
     }
 
-    public function updateUserDetails($params)
+    public function updateUserDetails($params, $configResult)
     {
         $common = new CommonService();
         $dbAdapter = $this->adapter;
@@ -194,8 +190,6 @@ class UsersTable extends AbstractTableGateway
         $userCountryMap = new UserCountryMapTable($dbAdapter);
         $userId = base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
-            $config = new \Laminas\Config\Reader\Ini();
-            $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
             $password = sha1($params['password'] . $configResult["password"]["salt"]);
             $data = array('password' => $password);
             $this->update($data, array('id' => $userId));
@@ -469,15 +463,13 @@ class UsersTable extends AbstractTableGateway
         }
     }
 
-    public function updatePassword($params)
+    public function updatePassword($params, $configResult)
     {
         $logincontainer = new Container('credo');
         $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $userId = $logincontainer->userId;
-        $config = new \Laminas\Config\Reader\Ini();
-        $configResult = $config->fromFile(CONFIG_PATH . '/custom.config.ini');
         $password = sha1($params['newpassword'] . $configResult["password"]["salt"]);
         $data = array('password' => $password);
         return $this->update($data, array('id' => $userId));

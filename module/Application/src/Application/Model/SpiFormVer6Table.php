@@ -418,7 +418,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                     $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 5);
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 error_log($e->getMessage());
                 error_log($e->getTraceAsString());
             }
@@ -1106,7 +1106,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                         $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 5);
                     }
                     // }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     error_log($e->getMessage());
                     error_log($e->getTraceAsString());
                 }

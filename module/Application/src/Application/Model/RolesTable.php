@@ -235,7 +235,7 @@ class RolesTable extends AbstractTableGateway  {
                 $writer = new PhpArray();
                 $writer->toFile($configFile, $config);
                 
-            } catch (Exception $exc) {
+            } catch (\Exception $exc) {
         
                 error_log($exc->getMessage());
                 error_log($exc->getTraceAsString());

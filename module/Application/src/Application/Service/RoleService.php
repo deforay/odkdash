@@ -37,7 +37,7 @@ class RoleService {
                 $container = new Container('alert');
                 $container->alertMsg = 'Roles added successfully';
             }
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -64,7 +64,7 @@ class RoleService {
                 $container->alertMsg = 'Roles updated successfully';
             }
             
-        } catch (Exception $exc) {
+        } catch (\Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
