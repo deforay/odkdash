@@ -220,8 +220,8 @@ $config = $this->GlobalConfigHelper();
 						</div>
 					</div>
 					<div class="row chart-info">
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['oldestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perf1[0]['newestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['oldestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['newestDate']) ?></span></div>
 						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
 					</div>
 				</div>
@@ -244,8 +244,8 @@ $config = $this->GlobalConfigHelper();
 						</div>
 					</div>
 					<div class="row chart-info">
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['oldestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast180[0]['newestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['oldestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['newestDate']) ?></span></div>
 						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
 					</div>
 				</div>
@@ -279,8 +279,8 @@ $config = $this->GlobalConfigHelper();
 							</div>
 						</div>
 						<div class="row chart-info">
-							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['oldestDate']) ?></span></div>
-							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanDateFormat($perflast30[0]['newestDate']) ?></span></div>
+							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['oldestDate']) ?></span></div>
+							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['newestDate']) ?></span></div>
 							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
 						</div>
 					</div>
@@ -520,8 +520,8 @@ $config = $this->GlobalConfigHelper();
 									<tr>
 										<td><?php echo $row['facilityid']; ?></td>
 										<td><?php echo $row['facilityname']; ?></td>
-										<td><?php echo $this->humanDateFormat($row['assesmentofaudit']); ?></td>
-										<td><?php echo $this->humanDateFormat($row['today']); ?></td>
+										<td><?php echo $this->humanReadableDateFormat($row['assesmentofaudit']); ?></td>
+										<td><?php echo $this->humanReadableDateFormat($row['today']); ?></td>
 										<td><?php echo ucfirst($row['status']); ?></td>
 
 										<?php if ($update || $approve || $email) { ?>
@@ -972,7 +972,7 @@ $config = $this->GlobalConfigHelper();
 
 			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCENTAGE'], 2) . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
 		}
 		?>
@@ -1221,7 +1221,7 @@ $config = $this->GlobalConfigHelper();
 			$eventDatesArray = array();
 			$eventCount = array();
 			foreach ($allSubmissions as $row) {
-				$humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+				$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 				$eventDatesArray[] = "'" . $humanDate . "'";
 				if (isset($eventCount[$humanDate])) {
 					$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
@@ -1504,7 +1504,7 @@ $config = $this->GlobalConfigHelper();
 			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			$testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : "  . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : "  . "<br>'");
 			$counter++;
 		}
 		?>
@@ -1626,7 +1626,7 @@ $config = $this->GlobalConfigHelper();
 		$auditDataList = array();
 		$eventCount = array();
 		foreach ($allSubmissions as $row) {
-			$humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+			$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 			$eventDatesArray[] = "'" . $humanDate . "'";
 			$eventDatesArrayFormat[] = $humanDate;
 			if (isset($eventCount[$humanDate])) {

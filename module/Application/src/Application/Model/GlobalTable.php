@@ -169,7 +169,6 @@ class GlobalTable extends AbstractTableGateway
     public function updateConfigDetails($params)
     {
         $result = 0;
-        $common = new CommonService();
         if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])) {
             unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
             $this->update(array('global_value' => ''), array('global_name' => 'logo'));
@@ -180,7 +179,7 @@ class GlobalTable extends AbstractTableGateway
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-            $string = $common->generateRandomString(6) . ".";
+            $string = \Application\Service\CommonService::generateRandomString(6) . ".";
             $imageName = "logo" . $string . $extension;
             if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
                 $this->update(array('global_value' => $imageName), array('global_name' => 'logo'));

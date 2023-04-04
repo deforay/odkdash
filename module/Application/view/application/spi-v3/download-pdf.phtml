@@ -108,7 +108,7 @@ $fId = (isset($formData['facilityInfo']['ffId'])) ? ucwords($formData['facilityI
 $fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facilityInfo']['fName']) : '';
 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 $testingTab .= '<tr>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $this->humanDateFormat($formData['assesmentofaudit']) . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $this->humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
 $testingTab .= '</tr>';
 

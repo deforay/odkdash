@@ -75,10 +75,10 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = $this->dateFormat(trim($dateField[0]));
+                    $startDate = \Application\Service\CommonService::isoDateFormat(trim($dateField[0]));
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = $this->dateFormat(trim($dateField[2]));
+                    $endDate = \Application\Service\CommonService::isoDateFormat(trim($dateField[2]));
                 }
                 $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $startDate . "'", "spiv5.assesmentofaudit <='" . $endDate . "'"));
             }
@@ -123,27 +123,6 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
         return array('downloadResult' => $queryResult, 'formResult' => $result);
     }
 
-    public function dateFormat($date)
-    {
-        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
-            return "0000-00-00";
-        } else {
-            $dateArray = explode('-', $date);
-            if (empty($dateArray)) {
-                return;
-            }
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = 1;
-            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
-
-            if (strlen($mon) == 1) {
-                $mon = "0" . $mon;
-            }
-            return $newDate .= $mon . "-" . $dateArray[0];
-        }
-    }
 
     public function fetchDownloadFilesRow()
     {

@@ -7,7 +7,6 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
-use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
 use Application\Model\EventLogTable;
@@ -59,7 +58,7 @@ class UsersTable extends AbstractTableGateway
         // die($sQueryStr);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         $data = array(
-            'last_login_datetime' => CommonService::getDateTime()
+            'last_login_datetime' => \Application\Service\CommonService::getDateTime()
         );
         if ($sResult !== false && !empty($sResult)) {
             $this->update($data, array('id' => $sResult->id));
@@ -180,7 +179,6 @@ class UsersTable extends AbstractTableGateway
 
     public function updateUserDetails($params, $configResult)
     {
-        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
@@ -422,7 +420,6 @@ class UsersTable extends AbstractTableGateway
 
     public function updateUserProfileDetails($params)
     {
-        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $userId = base64_decode($params['userId']);
@@ -464,7 +461,6 @@ class UsersTable extends AbstractTableGateway
     public function updatePassword($params, $configResult)
     {
         $logincontainer = new Container('credo');
-        $common = new CommonService();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $userId = $logincontainer->userId;

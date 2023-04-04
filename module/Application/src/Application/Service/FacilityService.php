@@ -108,7 +108,6 @@ class FacilityService
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer3Table');
         $configResult = $this->sm->get('Config');
-        $commonService = new \Application\Service\CommonService();
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -145,7 +144,7 @@ class FacilityService
                         for ($attch = 0; $attch < count($_FILES['attchement']['name']); $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
-                                $fileName = $commonService->generateRandomString(5, 'alphanum') . "." . $extension;
+                                $fileName = \Application\Service\CommonService::generateRandomString(5) . "." . $extension;
                                 if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;
@@ -186,7 +185,6 @@ class FacilityService
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer5Table');
         $configResult = $this->sm->get('Config');
-        $commonService = new \Application\Service\CommonService();
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -223,7 +221,7 @@ class FacilityService
                         for ($attch = 0; $attch < count($_FILES['attchement']['name']); $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
-                                $fileName = $commonService->generateRandomString(5, 'alphanum') . "." . $extension;
+                                $fileName = \Application\Service\CommonService::generateRandomString(5) . "." . $extension;
                                 if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;
@@ -264,7 +262,6 @@ class FacilityService
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         $db = $this->sm->get('SpiFormVer6Table');
         $configResult = $this->sm->get('Config');
-        $commonService = new \Application\Service\CommonService();
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -301,7 +298,7 @@ class FacilityService
                         for ($attch = 0; $attch < count($_FILES['attchement']['name']); $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
-                                $fileName = $commonService->generateRandomString(5, 'alphanum') . "." . $extension;
+                                $fileName = \Application\Service\CommonService::generateRandomString(5) . "." . $extension;
                                 if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;

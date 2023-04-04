@@ -182,9 +182,9 @@ class OdkFormService
                                 $level = '';
                             }
                             if ($key == 'today') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -440,9 +440,9 @@ class OdkFormService
                                 $level = '';
                             }
                             if ($key == 'today') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -1034,7 +1034,7 @@ class OdkFormService
                 foreach ($sResult as $aRow) {
                     $auditDate = "";
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = $common->humanDateFormat($aRow['assesmentofaudit']);
+                        $auditDate = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
                     $row = array();
                     $row[] = $aRow['facilityname'];
@@ -1196,7 +1196,7 @@ class OdkFormService
                 foreach ($sResult as $aRow) {
                     $auditDate = "";
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = $common->humanDateFormat($aRow['assesmentofaudit']);
+                        $auditDate = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
                     $row = array();
                     $row[] = $aRow['facilityname'];
@@ -1545,7 +1545,7 @@ class OdkFormService
                 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $common->humanDateFormat($formData['assesmentofaudit']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . \Application\Service\CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
                 $testingTab .= '</tr>';
 
@@ -2273,7 +2273,7 @@ class OdkFormService
                 $fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facilityInfo']['fName']) : '';
                 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $this->humanDateFormat($formData['assesmentofaudit']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . \Application\Service\CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
                 $testingTab .= '</tr>';
 
@@ -4178,10 +4178,10 @@ class OdkFormService
                 $dateField = explode(" ", $params['dateRange']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = $this->dateFormat($dateField[0]);
+                    $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = $this->dateFormat($dateField[2]);
+                    $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
                 }
             }
 
@@ -4264,9 +4264,9 @@ class OdkFormService
                                 $level = '';
                             }
                             if ($key == 'today') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -4610,9 +4610,9 @@ class OdkFormService
                                 $level = '';
                             }
                             if ($key == 'today') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = $common->humanDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -5533,7 +5533,7 @@ class OdkFormService
                 foreach ($sResult as $aRow) {
                     $auditDate = "";
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = $common->humanDateFormat($aRow['assesmentofaudit']);
+                        $auditDate = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
                     $row = array();
                     $row[] = $aRow['facilityname'];

@@ -94,7 +94,7 @@ if (!empty($formData)) {
   $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 
   $testingTab .= '<tr>';
-  $testingTab .= '<td><b>Date of Audit</b>(dd/mm/yyyy): ' . $this->humanDateFormat($formData['assesmentofaudit']) . '</td>';
+  $testingTab .= '<td><b>Date of Audit</b>(dd/mm/yyyy): ' . $this->humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
   $testingTab .= '<td><b>Audit Round No:</b> ' . $formData['auditroundno'] . '</td>';
   $testingTab .= '</tr>';
 

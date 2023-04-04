@@ -32,13 +32,13 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
 
     public function addDownloadDataDetails($params)
     {
-            $logincontainer = new Container('credo');
-            $username = $logincontainer->login;
-            $dbAdapter = $this->adapter;
-            $trackTable = new EventLogTable($dbAdapter);
+        $logincontainer = new Container('credo');
+        $username = $logincontainer->login;
+        $dbAdapter = $this->adapter;
+        $trackTable = new EventLogTable($dbAdapter);
         $province = null;
         $province = null;
-        
+
         $downloadData = array(
             'user' => $logincontainer->userId,
             'auditroundno' => (isset($params['auditRndNo']) && trim($params['auditRndNo']) != '') ? $params['auditRndNo'] : null,
@@ -50,11 +50,11 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             'level_name' => '',
             'AUDIT_SCORE_PERCENTAGE' => (isset($params['scoreLevel']) && trim($params['scoreLevel']) != '') ? $params['scoreLevel'] : null
         );
-            $subject = '';
-            $eventType = 'Export-SPI RT Form 6-PDF';
-            $action = $username . ' has exported the SPI RT Form 6 PDF';
-            $resourceName = 'SPI-RT-Form-6-PDF';
-            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+        $subject = '';
+        $eventType = 'Export-SPI RT Form 6-PDF';
+        $action = $username . ' has exported the SPI RT Form 6 PDF';
+        $resourceName = 'SPI-RT-Form-6-PDF';
+        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
         // print_r($downloadData);die;
         $this->insert($downloadData);
         return $this->lastInsertValue;
@@ -77,22 +77,21 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = $this->dateFormat(trim($dateField[0]));
+                    $startDate = \Application\Service\CommonService::isoDateFormat(trim($dateField[0]));
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = $this->dateFormat(trim($dateField[2]));
+                    $endDate = \Application\Service\CommonService::isoDateFormat(trim($dateField[2]));
                 }
                 $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
             }
             if (isset($queryResult->testingpointtype) && $queryResult->testingpointtype != '') {
-                
-                
-                    if (strtolower(trim($queryResult->testingpointtype)) != 'other') {
-                        $sQuery = $sQuery->where("spiv6.testingpointtype='" . $queryResult->testingpointtype . "'");
-                    } else {
-                        $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $queryResult->testingpointtype . "'");
-                    }
-                
+
+
+                if (strtolower(trim($queryResult->testingpointtype)) != 'other') {
+                    $sQuery = $sQuery->where("spiv6.testingpointtype='" . $queryResult->testingpointtype . "'");
+                } else {
+                    $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $queryResult->testingpointtype . "'");
+                }
             }
             if (isset($queryResult->level) && $queryResult->level != '') {
                 $sQuery = $sQuery->where("spiv6.level='" . $queryResult->level . "'");
@@ -123,28 +122,6 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             $this->update(array('download_status' => 1), array('r_download_id' => $queryResult->r_download_id));
         }
         return array('downloadResult' => $queryResult, 'formResult' => $result);
-    }
-
-    public function dateFormat($date)
-    {
-        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
-            return "0000-00-00";
-        } else {
-            $dateArray = explode('-', $date);
-            if (empty($dateArray)) {
-                return;
-            }
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = 1;
-            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
-
-            if (strlen($mon) == 1) {
-                $mon = "0" . $mon;
-            }
-            return $newDate .= $mon . "-" . $dateArray[0];
-        }
     }
 
     public function fetchDownloadFilesRow()

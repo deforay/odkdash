@@ -40,7 +40,7 @@ $common = new CommonService();
               <tr>
                 <td><?php echo $duplicate['facilityname']; ?></td>
                 <td><?php echo $duplicate['auditroundno']; ?></td>
-                <td><?php echo $common->humanDateFormat($duplicate['assesmentofaudit']); ?></td>
+                <td><?php echo \Application\Service\CommonService::humanReadableDateFormat($duplicate['assesmentofaudit']); ?></td>
                 <td><?php echo $duplicate['testingpointname']; ?></td>
                 <td><?php echo $duplicate['testingpointtype']; ?></td>
                 <td><?php echo $duplicate['level']; ?></td>
@@ -55,7 +55,7 @@ $common = new CommonService();
                 <tr id="<?php echo $duplicate['id']; ?>">
                   <td><?php echo $duplicate['facilityname']; ?></td>
                   <td><?php echo $duplicate['auditroundno']; ?></td>
-                  <td><?php echo $common->humanDateFormat($duplicate['assesmentofaudit']); ?></td>
+                  <td><?php echo \Application\Service\CommonService::humanReadableDateFormat($duplicate['assesmentofaudit']); ?></td>
                   <td><?php echo $duplicate['testingpointname']; ?></td>
                   <td><?php echo $duplicate['testingpointtype']; ?></td>
                   <td><?php echo $duplicate['level']; ?></td>

@@ -87,7 +87,7 @@ $pdf->SetFont('times', '', 10);
 $pdf->AddPage('L');
 
 if ($argument['dateRange'] == '') {
-    $argument['dateRange'] = $common->humanDateFormat($result['eDate']) . " - " . date('d-M-Y');
+    $argument['dateRange'] = \Application\Service\CommonService::humanReadableDateFormat($result['eDate']) . " - " . date('d-M-Y');
 }
 if ($argument['auditRndNo'] == '') {
     $argument['auditRndNo'] = "All";

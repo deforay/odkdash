@@ -898,10 +898,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -991,10 +991,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $startDate = $this->dateFormat($dateField[2]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $endDate = $this->dateFormat($dateField[0]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
         }
 
@@ -1140,10 +1140,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -1298,10 +1298,10 @@ class SpiFormVer3Table extends AbstractTableGateway
             $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
 
@@ -1490,7 +1490,6 @@ class SpiFormVer3Table extends AbstractTableGateway
             $approveStatusAction = false;
         }
 
-        $commonService = new \Application\Service\CommonService();
         $auditScore = 0;
         $levelZero = array();
         $levelOne = array();
@@ -1524,7 +1523,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $row[] = $aRow['province'];
             $row[] = $aRow['district'];
             $row[] = $aRow['auditroundno'];
-            $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'] . $level;
@@ -1724,7 +1723,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $downloadPdfAction = false;
         }
 
-        $commonService = new \Application\Service\CommonService();
+
         foreach ($rResult as $aRow) {
             $row = array();
             $downloadPdf = "";
@@ -1733,7 +1732,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $row['DT_RowId'] = $aRow['id'];
             $row[] = $aRow['facilityname'];
             $row[] = $aRow['auditroundno'];
-            $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'];
             $row[] = $aRow['affiliation'];
@@ -1820,10 +1819,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -1954,10 +1953,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -2228,10 +2227,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode(" ", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
@@ -2395,11 +2394,11 @@ class SpiFormVer3Table extends AbstractTableGateway
             "aaData" => array(),
         );
 
-        $commonService = new \Application\Service\CommonService();
+
         foreach ($rResult as $aRow) {
             $row = array();
             $row[] = $aRow['facilityname'];
-            $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = $aRow['testingpointname'] . " - " . $aRow['testingpointtype'];
             $row[] = $aRow['PERSONAL_SCORE'];
             $row[] = $aRow['PHYSICAL_SCORE'];
@@ -2442,10 +2441,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -2512,27 +2511,6 @@ class SpiFormVer3Table extends AbstractTableGateway
         return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
-    public function dateFormat($date)
-    {
-        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
-            return "0000-00-00";
-        } else {
-            $dateArray = explode('-', $date);
-            if (empty($dateArray)) {
-                return;
-            }
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = 1;
-            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
-
-            if (strlen($mon) == 1) {
-                $mon = "0" . $mon;
-            }
-            return $newDate .= $mon . "-" . $dateArray[0];
-        }
-    }
 
     public function updateSpiFormDetails($params)
     {
@@ -2590,7 +2568,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             }
 
             $data = array(
-                //'assesmentofaudit' => $this->dateFormat($params['auditDate']),
+                //'assesmentofaudit' => \Application\Service\CommonService::isoDateFormat($params['auditDate']),
                 'auditroundno' => $params['auditRound'],
                 'facility' => ($id > 0) ? $id : null,
                 'facilityid' => $params['testingFacilityId'],
@@ -3006,7 +2984,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         } else {
             $downloadPdfAction = false;
         }
-        $commonService = new \Application\Service\CommonService();
+
         foreach ($rResult as $aRow) {
             $row = array();
             $downloadPdf = "";
@@ -3014,7 +2992,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $row[] = $aRow['facilityid'];
             $row[] = ucwords($aRow['facilityname']);
             $row[] = $aRow['testingpointtype'];
-            $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'], 2);
             if ($downloadPdfAction) {
                 $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
@@ -3163,8 +3141,8 @@ class SpiFormVer3Table extends AbstractTableGateway
             ->where('spiv3.status != "deleted"');
 
         if (isset($parameters['assesmentOfAuditDate']) && $parameters['assesmentOfAuditDate'] != '') {
-            $sQuery = $sQuery->where("spiv3.assesmentofaudit='" . $this->dateFormat($parameters['assesmentOfAuditDate']) . "'");
-            $tQuery = $tQuery->where("spiv3.assesmentofaudit='" . $this->dateFormat($parameters['assesmentOfAuditDate']) . "'");
+            $sQuery = $sQuery->where("spiv3.assesmentofaudit='" . \Application\Service\CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
+            $tQuery = $tQuery->where("spiv3.assesmentofaudit='" . \Application\Service\CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
         }
         if (isset($logincontainer->token) && !empty($logincontainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
@@ -3219,7 +3197,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $approveStatusAction = false;
         }
 
-        $commonService = new \Application\Service\CommonService();
+
         foreach ($rResult as $aRow) {
             $row = array();
             $downloadPdf = "";
@@ -3232,7 +3210,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
             $row[] = $aRow['facilityname'];
             $row[] = $aRow['auditroundno'];
-            $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'] . $level;
@@ -3362,10 +3340,10 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($parameters['drange']) && ($parameters['drange'] != "")) {
             $dateField = explode(" ", $parameters['drange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
 
@@ -3384,10 +3362,10 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $dateField = explode(" ", $parameters['date']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = $this->dateFormat($dateField[0]);
+                    $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = $this->dateFormat($dateField[2]);
+                    $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
                 }
             }
             //For Audit Performance Row
@@ -3519,7 +3497,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             "aaData" => array(),
         );
 
-        $commonService = new \Application\Service\CommonService();
+
         //$personalScoreArray = array();
         //$physicalScoreArray = array();
         //$safetyScoreArray = array();
@@ -3562,26 +3540,26 @@ class SpiFormVer3Table extends AbstractTableGateway
                 }
             }
             if ($parameters['source'] == 'hv') {
-                $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
             } else if ($parameters['source'] == 'la') {
-                $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'], 2);
                 $row[] = (isset($aRow['avgMonthTesting']) ? $aRow['avgMonthTesting'] : 0);
             } else if ($parameters['source'] == 'ad') {
-                $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
             } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $row[] = $aRow['facilityid'];
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = $aRow['auditroundno'];
-                $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['testingpointtype']);
                 $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
                 $row[] = ucwords($aRow['level']);
@@ -3589,7 +3567,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $row[] = $level;
                 $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'], 2);
             } else if ($parameters['source'] == 'apspi') {
-                $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = round($aRow['PERSONAL_SCORE'], 2);
                 $row[] = round($aRow['PHYSICAL_SCORE'], 2);
                 $row[] = round($aRow['SAFETY_SCORE'], 2);

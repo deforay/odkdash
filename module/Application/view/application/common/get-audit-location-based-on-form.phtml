@@ -8,7 +8,7 @@ $options = '';
 if (!empty($result)) {
     foreach ($result as $auditRoundNo) {
         $selected = in_array($auditRoundNo['auditroundno'], $round) ? "selected=selected" : "";
-        $options .= '<option value="' . $auditRoundNo['auditroundno'] . '" ' . $selected . '>' . $auditRoundNo['auditroundno'] . ' - ' . $this->humanDateFormat($auditRoundNo['assesmentofaudit']) . '</option>';
+        $options .= '<option value="' . $auditRoundNo['auditroundno'] . '" ' . $selected . '>' . $auditRoundNo['auditroundno'] . ' - ' . $this->humanReadableDateFormat($auditRoundNo['assesmentofaudit']) . '</option>';
     }
 }
 echo $options;

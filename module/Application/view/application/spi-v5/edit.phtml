@@ -24,7 +24,7 @@ tr.shown th.details-control {
                     <div class="form-group">
                       <label for="auditDate" class="col-sm-2 control-label">Date of Audit (dd/mm/yyyy)</label>
                       <div class=" col-lg-4">
-                        <input type="text" placeholder="Enter Date" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                        <input type="text" placeholder="Enter Date" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?>" readonly>
                       </div>
                       <label for="auditRound" class="col-sm-2 control-label">Audit Round No.</label>
                       <div class=" col-lg-4">

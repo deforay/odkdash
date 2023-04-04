@@ -2,6 +2,7 @@
 
 namespace Application\Service;
 
+use DateTimeImmutable;
 use Laminas\Session\Container;
 use Exception;
 use Laminas\Db\Sql\Sql;
@@ -11,8 +12,6 @@ use Laminas\Mail;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mime\Part as MimePart;
 use Laminas\Mime\Mime;
-use Laminas\Mail\Transport\Sendmail;
-use Laminas\Db\Sql\Expression;
 
 class CommonService
 {
@@ -23,7 +22,9 @@ class CommonService
     public function __construct($sm = null)
     {
         $this->sm = $sm;
-        $this->adapter = $sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        if (!empty($sm)) {
+            $this->adapter = $sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        }
     }
 
     public function getServiceManager()
@@ -31,33 +32,16 @@ class CommonService
         return $this->sm;
     }
 
-    public static function generateRandomString($length = 8, $seeds = 'alphanum')
+    public static function generateRandomString($length = 32)
     {
         // Possible seeds
-        $seedings['alpha'] = 'abcdefghijklmnopqrstuvwqyz';
-        $seedings['numeric'] = '0123456789';
-        $seedings['alphanum'] = 'abcdefghijklmnopqrstuvwqyz0123456789';
-        $seedings['hexidec'] = '0123456789abcdef';
-
-        // Choose seed
-        if (isset($seedings[$seeds])) {
-            $seeds = $seedings[$seeds];
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $number = random_int(0, 36);
+            $character = base_convert($number, 10, 36);
+            $randomString .= $character;
         }
-
-        // Seed generator
-        list($usec, $sec) = explode(' ', microtime());
-        $seed = (float) $sec + ((float) $usec * 100000);
-        mt_srand($seed);
-
-        // Generate
-        $str = '';
-        $seeds_count = strlen($seeds);
-
-        for ($i = 0; $length > $i; $i++) {
-            $str .= $seeds[mt_rand(0, $seeds_count - 1)];
-        }
-
-        return $str;
+        return $randomString;
     }
 
     public function checkFieldValidations($params)
@@ -102,56 +86,62 @@ class CommonService
         }
     }
 
-    public function dateFormat($date)
+    public static function verifyIfDateValid($date): bool
     {
-        if (!isset($date) || $date == null || $date == "" || $date == "0000-00-00") {
-            return "0000-00-00";
+        $date = trim($date);
+        $response = false;
+
+        if (empty($date) || 'undefined' === $date || 'null' === $date) {
+            $response = false;
         } else {
-            $dateArray = explode('-', $date);
-            if (empty($dateArray)) {
-                return;
+            try {
+                $dateTime = new DateTimeImmutable($date);
+                $errors = DateTimeImmutable::getLastErrors();
+                if (empty($dateTime) || $dateTime === false || !empty($errors['warning_count']) || !empty($errors['error_count'])) {
+                    //error_log("Invalid date :: $date");
+                    $response = false;
+                } else {
+                    $response = true;
+                }
+            } catch (Exception $e) {
+                //error_log("Invalid date :: $date :: " . $e->getMessage());
+                $response = false;
             }
-            $newDate = $dateArray[2] . "-";
+        }
 
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = 1;
-            $mon += array_search(ucfirst($dateArray[1]), $monthsArray);
+        return $response;
+    }
 
-            if (strlen($mon) == 1) {
-                $mon = "0" . $mon;
+    // Returns the given date in Y-m-d format
+    public static function isoDateFormat($date, $includeTime = false)
+    {
+        $date = trim($date);
+        if (false === self::verifyIfDateValid($date)) {
+            return null;
+        } else {
+            $format = "Y-m-d";
+            if ($includeTime === true) {
+                $format = $format . " H:i:s";
             }
-            return $newDate .= $mon . "-" . $dateArray[0];
+            return (new DateTimeImmutable($date))->format($format);
         }
     }
 
-    public function humanDateFormat($date)
+
+    // Returns the given date in d-M-Y format
+    // (with or without time depending on the $includeTime parameter)
+    public static function humanReadableDateFormat($date, $includeTime = false, $format = "d-M-Y")
     {
-        if ($date == null || $date == "" || $date == "0000-00-00" || $date == "0000-00-00 00:00:00") {
-            return "";
+        $date = trim($date);
+        if (false === self::verifyIfDateValid($date)) {
+            return null;
         } else {
-            $dateArray = explode('-', $date);
-            $newDate = $dateArray[2] . "-";
 
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = $monthsArray[$dateArray[1] - 1];
+            if ($includeTime === true) {
+                $format = $format . " H:i";
+            }
 
-            return $newDate .= $mon . "-" . $dateArray[0];
-        }
-    }
-
-    public function viewDateFormat($date)
-    {
-
-        if ($date == null || $date == "" || $date == "0000-00-00") {
-            return "";
-        } else {
-            $dateArray = explode('-', $date);
-            $newDate = $dateArray[2] . "-";
-
-            $monthsArray = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-            $mon = $monthsArray[$dateArray[1] - 1];
-
-            return $newDate .= $mon . "-" . $dateArray[0];
+            return (new DateTimeImmutable($date))->format($format);
         }
     }
 
@@ -336,22 +326,20 @@ class CommonService
         }
     }
 
-    public static function getDate($timezone = 'Asia/Calcutta')
+    public static function getDateTime($format = 'Y-m-d H:i:s', $timezone = null)
     {
-        $date = new \DateTime(date('Y-m-d'), new \DateTimeZone($timezone));
-        return $date->format('Y-m-d');
+        $timezone = $timezone ?? date_default_timezone_get();
+        return (new DateTimeImmutable("now", new \DateTimeZone($timezone)))->format($format);
     }
 
-    public static function getDateTime($timezone = 'Asia/Calcutta')
+    public static function getDate($timezone = null)
     {
-        $date = new \DateTime(date('Y-m-d H:i:s'), new \DateTimeZone($timezone));
-        return $date->format('Y-m-d H:i:s');
+        return self::getDateTime('Y-m-d', $timezone);
     }
 
-    public static function getCurrentTime($timezone = 'Asia/Calcutta')
+    public static function getCurrentTime($timezone = null)
     {
-        $date = new \DateTime(date('Y-m-d H:i:s'), new \DateTimeZone($timezone));
-        return $date->format('H:i');
+        return self::getDateTime('H:i', $timezone);
     }
 
     public function checkMultipleFieldValidations($params)
@@ -372,8 +360,7 @@ class CommonService
         }
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        $data = count($result);
-        return $data;
+        return count($result);
     }
 
     public function getAllConfig($params)
@@ -384,8 +371,7 @@ class CommonService
     public function getGlobalConfigDetails()
     {
         $globalDb = $this->sm->get('GlobalTable');
-        $result = $globalDb->getGlobalConfig();
-        return $result;
+        return $globalDb->getGlobalConfig();
     }
 
     public function updateConfig($params)
@@ -478,12 +464,14 @@ class CommonService
         return rmdir($dirname);
     }
 
-    public function getAllCountries(){
+    public function getAllCountries()
+    {
         $db = $this->sm->get('CountriesTable');
         return $db->fetchAllCountries();
     }
-    
-    public function getSelectedCountry($id){
+
+    public function getSelectedCountry($id)
+    {
         $db = $this->sm->get('UserCountryMapTable');
         return $db->fetchSelectedCountry($id);
     }

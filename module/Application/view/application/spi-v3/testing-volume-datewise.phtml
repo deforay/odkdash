@@ -35,7 +35,7 @@
             $levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
             $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
             $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-            $labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . addslashes($row['testingpointname']) . "<br>'");
+            $labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . addslashes($row['testingpointname']) . "<br>'");
             $counter++;
         }
         ?>

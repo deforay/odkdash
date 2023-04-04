@@ -210,7 +210,7 @@ $config = $this->GlobalConfigHelper();
 
 			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCENTAGE'], 2) . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
 		}
 		?>
@@ -402,7 +402,7 @@ $config = $this->GlobalConfigHelper();
 			$eventDatesArray = array();
 			$eventCount = array();
 			foreach ($allSubmissions as $row) {
-				$humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+				$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 				$eventDatesArray[] = "'" . $humanDate . "'";
 				if (isset($eventCount[$humanDate])) {
 					$eventCount[$humanDate] = $eventCount[$humanDate] + 1;
@@ -638,7 +638,7 @@ $config = $this->GlobalConfigHelper();
 			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			$testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanDateFormat($row['assesmentofaudit']) . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>'");
 			$counter++;
 		}
 		?>
@@ -759,7 +759,7 @@ $config = $this->GlobalConfigHelper();
 		$eventDatesArray = array();
 		$eventCount = array();
 		foreach ($allSubmissions as $row) {
-			$humanDate = $this->humanDateFormat($row['assesmentofaudit']);
+			$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 			$eventDatesArray[] = "'" . $humanDate . "'";
 			if (isset($eventCount[$humanDate])) {
 				$eventCount[$humanDate] = $eventCount[$humanDate] + 1;

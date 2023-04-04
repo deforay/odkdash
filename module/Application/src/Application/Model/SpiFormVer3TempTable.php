@@ -115,10 +115,10 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
             $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = $this->dateFormat($dateField[0]);                
+                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);                
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = $this->dateFormat($dateField[2]);
+                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
@@ -173,7 +173,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
          $row[] = '<input type="checkbox" class="checkSpiv3Data" name="chk[]" id="chk' . $aRow['id'] . '"  value="' . $aRow['id'] . '" onclick="getValidateId(this);"  />';
          $row[] = $aRow['facilityname'];
          $row[] = $aRow['auditroundno'];
-         $row[] = $commonService->humanDateFormat($aRow['assesmentofaudit']);
+         $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
          $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
          $row[] = $aRow['testingpointtype'];
          $row[] = $aRow['level'].$level;
