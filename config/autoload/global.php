@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Global Configuration Override
  *
@@ -26,7 +27,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'Laminas\Db\Adapter\Adapter'
-                    => 'Laminas\Db\Adapter\AdapterServiceFactory',
+            => 'Laminas\Db\Adapter\AdapterServiceFactory',
         ),
     ),
 );

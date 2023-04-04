@@ -11,6 +11,6 @@ class SendAuditMailFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $commonService = $container->get('CommonService');
-        return new SendTempMail($commonService);
+        return new SendAuditMail($commonService);
     }
 }

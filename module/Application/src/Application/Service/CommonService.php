@@ -256,10 +256,15 @@ class CommonService
             ));
             $transport->setOptions($options);
             $limit = '10';
-            $mailQuery = $sql->select()->from(array('a_mail' => 'audit_mails'))->where("status='pending'")->limit($limit);
+            $mailQuery = $sql->select()
+                ->from(array('a_mail' => 'audit_mails'))
+                ->where("status='pending'")->limit($limit);
             $mailQueryStr = $sql->buildSqlString($mailQuery);
-            $mailResult = $dbAdapter->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            if (count($mailResult) > 0) {
+            $mailResult = $dbAdapter
+                ->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)
+                ->toArray();
+
+            if (!empty($mailResult)) {
                 foreach ($mailResult as $result) {
                     $alertMail = new Mail\Message();
                     $id = $result['mail_id'];

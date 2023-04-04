@@ -700,7 +700,7 @@ class OdkFormService
         /* Create the pChart object */
         $myPicture = new Image(400, 510, $MyData);
         $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
 
         /* Set the default font properties */
         $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
@@ -754,7 +754,7 @@ class OdkFormService
         /* Create the pChart object */
         $myPicture = new Image(400, 510, $MyData);
         $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
 
         /* Set the default font properties */
         $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
@@ -812,7 +812,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
         //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
         //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
@@ -875,7 +875,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
         //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
         //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
@@ -3930,7 +3930,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
         //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
         //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
@@ -4899,7 +4899,7 @@ class OdkFormService
         /* Create the pChart object */
         $myPicture = new Image(400, 510, $MyData);
         $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
 
         /* Set the default font properties */
         $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
@@ -4956,7 +4956,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
         //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
         //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
@@ -5023,7 +5023,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
 
         /* Set the default font properties */
@@ -5089,7 +5089,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
 
         /* Set the default font properties */
@@ -5290,7 +5290,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
 
         /* Set the default font properties */
@@ -5351,7 +5351,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
 
         /* Set the default font properties */
@@ -5412,7 +5412,7 @@ class OdkFormService
         /* Add a border to the picture */
         $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
 
-        $path = font_path . DIRECTORY_SEPARATOR;
+        $path = FONT_PATH . DIRECTORY_SEPARATOR;
         /* Write the picture title */
 
         /* Set the default font properties */
