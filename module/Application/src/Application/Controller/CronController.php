@@ -22,16 +22,6 @@ class CronController extends AbstractActionController
     {
     }
 
-    public function sendMailAction()
-    {
-        $this->commonService->sendTempMail();
-    }
-
-    public function sendAuditMailAction()
-    {
-        $this->commonService->sendAuditMail();
-    }
-
     public function dbBackupAction()
     {
         $this->commonService->dbBackup();
@@ -41,14 +31,5 @@ class CronController extends AbstractActionController
     {
         $this->odkFormService->getDownloadDataList();
         $this->odkFormService->getV5DownloadDataList();
-        
-    }
-
-    public function syncOdkSpirtV3Action(){
-        $this->odkFormService->getOdkCentralSubmissions();
-    }
-
-    public function syncOdkSpirtV6Action(){
-        $this->odkFormService->getV6OdkCentralSubmissions();
     }
 }

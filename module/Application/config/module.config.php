@@ -321,6 +321,10 @@ return array(
         ),
         'factories' => array(
             'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
+            \Application\Command\SendTempMail::class => \Application\Command\SendTempMailFactory::class,
+            \Application\Command\SendAuditMail::class => \Application\Command\SendAuditMailFactory::class,
+            \Application\Command\SyncCentralV3::class => \Application\Command\SyncCentralV3Factory::class,
+            \Application\Command\SyncCentralV6::class => \Application\Command\SyncCentralV6Factory::class,
         ),
     ),
     'translator' => array(
@@ -349,20 +353,19 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+    'laminas-cli' => [
+        'commands' => [
+            'send-mail' => \Application\Command\SendTempMail::class,
+            'send-audit-mail' => \Application\Command\SendAuditMail::class,
+            'sync-central-v3' => \Application\Command\SyncCentralV3::class,
+            'sync-central-v6' => \Application\Command\SyncCentralV6::class,
+        ],
+    ],
     // Placeholder for console routes
     'console' => array(
         'router' => array(
             'routes' => array(
-                'mail-console-route' => array(
-                    'type' => 'simple',
-                    'options' => array(
-                        'route' => 'send-mail',
-                        'defaults' => array(
-                            'controller' => 'Application\Controller\CronController',
-                            'action' => 'send-mail'
-                        ),
-                    ),
-                ),
+                
                 'db-backup-console-route' => array(
                     'type'    => 'simple',
                     'options' => array(
@@ -380,16 +383,6 @@ return array(
                         'defaults' => array(
                             'controller' => 'Application\Controller\CronController',
                             'action' => 'send-audit-mail'
-                        ),
-                    ),
-                ),
-                'generate-bulk-pdf' => array(
-                    'type'    => 'simple',
-                    'options' => array(
-                        'route'    => 'generate-bulk-pdf',
-                        'defaults' => array(
-                            'controller' => 'Application\Controller\CronController',
-                            'action' => 'generate-bulk-pdf'
                         ),
                     ),
                 ),

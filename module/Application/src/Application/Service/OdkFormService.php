@@ -5677,7 +5677,7 @@ class OdkFormService
 
     // Finding the odkformsubmissions
 
-    public function getOdkCentralSubmissions()
+    public function syncOdkCentralV3()
     {
         $configResult = $this->sm->get('Config');
         $spirtURL = $configResult['odkcentral']['spirt']['url'];
@@ -5761,7 +5761,7 @@ class OdkFormService
         $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
     }
 
-    public function getV6OdkCentralSubmissions()
+    public function syncOdkCentralV6()
     {
         $configResult = $this->sm->get('Config');
         $spirrtURL = $configResult['odkcentral']['spirrt']['url'];

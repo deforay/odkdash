@@ -22,9 +22,6 @@ class CommonService
     public function __construct($sm = null)
     {
         $this->sm = $sm;
-        if (!empty($sm)) {
-            $this->adapter = $sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        }
     }
 
     public function getServiceManager()
@@ -157,7 +154,7 @@ class CommonService
             $tempMailDb = $this->sm->get('TempMailTable');
             $configResult = $this->sm->get('Config');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($this->adapter);
+            $sql = new Sql($dbAdapter);
 
             // Setup SMTP transport using LOGIN authentication
             $transport = new SmtpTransport();
@@ -243,7 +240,7 @@ class CommonService
             $auditMailDb = $this->sm->get('AuditMailTable');
             $configResult = $this->sm->get('Config');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($this->adapter);
+            $sql = new Sql($dbAdapter);
 
             // Setup SMTP transport using LOGIN authentication
             $transport = new SmtpTransport();

@@ -22,7 +22,7 @@ class ReceiverController extends AbstractActionController
         $result = $this->odkFormService->saveSpiFormVer3($params);
         // $this->var_error_log($params);die;
         //Tested for ODK Central
-        //$result = $this->odkFormService->getOdkCentralSubmissions();
+        //$result = $this->odkFormService->syncOdkCentralV3();
         
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
