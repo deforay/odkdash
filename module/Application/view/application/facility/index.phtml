@@ -5,7 +5,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
+if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit')) {
 	$editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 } else {
 	$editAction = '{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
@@ -47,16 +47,16 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 				<h2><?= $this->translate('Facilities'); ?></h2>
 			</div>
 			<div class="col-sm-6">
-				<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'export-facility')) { ?>
+				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'export-facility')) { ?>
 					<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;<?= $this->translate('Export All Facilities to Excel'); ?></a>
 				<?php }
-				if ($acl->isAllowed($role, 'Application\Controller\Facility', 'add')) { ?>
+				if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'add')) { ?>
 					<a href="<?php echo $this->url('spi-facility', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;<?= $this->translate('Add Facility'); ?></a>
 				<?php } ?>
-				<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-facility-name')) { ?>
+				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'get-facility-name')) { ?>
 					<a href="javascript:void(0);" class="btn btn-primary pull-right" onclick="showModal('/facility/get-facility-name',800,450);"><i class="fa fa-file-o"></i>&nbsp;<?= $this->translate('Merge Facilities'); ?></a>
 				<?php } ?>
-				<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-province-list')) { ?>
+				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'get-province-list')) { ?>
 					<a href="javascript:void(0);" class="btn btn-success pull-right" onclick="showModal('/facility/get-province-list',800,450);" style="margin-right:6px;"><i class="fa fa-link" aria-hidden="true"></i> &nbsp;<?= $this->translate('Map Province to Facility'); ?></a>
 				<?php } ?>
 			</div>
@@ -75,7 +75,7 @@ if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
 						<th><?= $this->translate('Facility Name'); ?></th>
 						<th><?= $this->translate('Email'); ?></th>
 						<th><?= $this->translate('Contact Person'); ?></th>
-						<?php if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) { ?>
+						<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit')) { ?>
 							<th><?= $this->translate('Action'); ?></th>
 						<?php } ?>
 					</tr>

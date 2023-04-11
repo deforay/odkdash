@@ -24,7 +24,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV5Controller', 'download-p
             
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
                 <?php
-                if ($acl->isAllowed($role, 'Application\Controller\Facility', 'get-facility-name')) {
+                if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'get-facility-name')) {
                 if(count($pendingFacilityName)>0){
                 ?>
                 <div class="row" id="pendingFacilityName" align="center">

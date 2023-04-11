@@ -230,7 +230,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
 		
 	$loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\Facility', 'edit')) {
+        if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit')) {
             $update = true;
         } else {
             $update = false;

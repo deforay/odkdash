@@ -124,7 +124,7 @@ return array(
                 'options' => array(
                     'route' => '/facility[/:action][/][:id]',
                     'defaults' => array(
-                        'controller' => 'Application\Controller\Facility',
+                        'controller' => 'Application\Controller\FacilityController',
                         'action' => 'index',
                     ),
                 ),

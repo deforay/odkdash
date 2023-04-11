@@ -150,6 +150,14 @@ class Module
                 //     $e->setError('ACL_ACCESS_DENIED')->setParam('route', $e->getRouteMatch());
                 //     $application->getEventManager()->trigger('dispatch.error', $e);
                 // }
+
+
+                // echo $role ."<br>";
+                // echo $resource ."<br>";
+                // echo $privilege ."<br>";
+
+                // die;
+
                 if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
 
                     /** @var \Laminas\Http\Response $response */
@@ -311,7 +319,7 @@ class Module
                         return new \Application\Controller\ConfigController($commonService);
                     }
                 },
-                'Application\Controller\Facility' => new class
+                'Application\Controller\FacilityController' => new class
                 {
                     public function __invoke($diContainer)
                     {
