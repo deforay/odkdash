@@ -31,8 +31,8 @@ class EventLogTable extends AbstractTableGateway
 
     public function addEventLog($subject, $eventType, $action, $resourceName)
     {
-        $logincontainer = new Container('credo');
-        $actorId = $logincontainer->userId;
+        $loginContainer = new Container('credo');
+        $actorId = $loginContainer->userId;
         $currentDateTime = \Application\Service\CommonService::getDateTime();
 
         $data = array(

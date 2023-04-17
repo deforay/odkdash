@@ -30,7 +30,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
     }
 
     public function fetchAllValidateSpiv3Details($parameters){
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -161,7 +161,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
                "aaData" => array()
         );
         
-        $role = $logincontainer->roleCode;
+        $role = $loginContainer->roleCode;
         $commonService = new \Application\Service\CommonService();
         foreach ($rResult as $aRow) {
          $row = array();

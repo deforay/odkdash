@@ -144,6 +144,7 @@ class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
             'Laminas\\Cli\\' => 12,
             'Laminas\\Cache\\Storage\\Adapter\\' => 30,
             'Laminas\\Cache\\' => 14,
+            'Laminas\\Authentication\\' => 23,
         ),
         'J' => 
         array (
@@ -464,6 +465,10 @@ class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
         'Laminas\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-cache/src',
+        ),
+        'Laminas\\Authentication\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laminas/laminas-authentication/src',
         ),
         'JsonMachine\\' => 
         array (

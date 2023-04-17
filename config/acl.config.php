@@ -35,6 +35,8 @@ return array(
         ),
         'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
+            'change-password' => 'allow',
+            'check-password' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
         ),
@@ -127,6 +129,8 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'change-password' => 'allow',
+            'check-password' => 'allow',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
@@ -175,6 +179,8 @@ return array(
             'index' => 'deny',
             'add' => 'deny',
             'edit' => 'deny',
+            'change-password' => 'allow',
+            'check-password' => 'allow',
         ),
     ),
     'VIEWER' => array(
@@ -254,6 +260,8 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'change-password' => 'allow',
+            'check-password' => 'allow',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
@@ -358,7 +366,8 @@ return array(
         'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
-            'change-password' => 'deny',
+            'change-password' => 'allow',
+            'check-password' => 'allow',
             'edit' => 'allow',
             'profile' => 'deny',
         ),
@@ -461,6 +470,7 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'change-password' => 'allow',
+            'check-password' => 'allow',
             'edit' => 'allow',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(

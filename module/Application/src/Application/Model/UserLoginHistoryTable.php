@@ -37,7 +37,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $aColumns = array('login_id', 'login_attempted_datetime', 'ip_address', 'browser', 'operating_system', 'login_status');
 
         /*

@@ -75,6 +75,7 @@ return array(
     'Laminas\\Cli\\' => array($vendorDir . '/laminas/laminas-cli/src'),
     'Laminas\\Cache\\Storage\\Adapter\\' => array($vendorDir . '/laminas/laminas-cache-storage-adapter-filesystem/src'),
     'Laminas\\Cache\\' => array($vendorDir . '/laminas/laminas-cache/src'),
+    'Laminas\\Authentication\\' => array($vendorDir . '/laminas/laminas-authentication/src'),
     'JsonMachine\\' => array($vendorDir . '/halaxa/json-machine/src'),
     'Illuminate\\Support\\' => array($vendorDir . '/illuminate/collections', $vendorDir . '/illuminate/macroable', $vendorDir . '/illuminate/support'),
     'Illuminate\\Contracts\\' => array($vendorDir . '/illuminate/contracts'),

@@ -18,9 +18,11 @@ use Laminas\Permissions\Acl\Role\GenericRole;
  *
  * @author amit
  */
-class Acl extends LaminasAcl {
+class Acl extends LaminasAcl
+{
 
-    public function __construct($resourceList,$rolesList) {
+    public function __construct($resourceList, $rolesList)
+    {
         foreach ($resourceList as $res) {
             if (!$this->hasResource($res['resource_id'])) {
                 $this->addResource(new GenericResource($res['resource_id']));
@@ -53,5 +55,4 @@ class Acl extends LaminasAcl {
 
         $this->allow('daemon');
     }
-
 }

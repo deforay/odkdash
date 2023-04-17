@@ -121,13 +121,27 @@ class UserService
         }
     }
 
+    public function checkPassword($params)
+    {
+        try {
+            $result = $this->usersTable->checkPassword($params);
+            if ($result === true) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } catch (\Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+
     public function updatePassword($params)
     {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
-        $configResult = $this->sm->get('Config');
         try {
-            $result = $this->usersTable->updatePassword($params, $configResult);
+            $result = $this->usersTable->updatePassword($params);
             if ($result > 0) {
                 $adapter->commit();
                 //<-- Event log

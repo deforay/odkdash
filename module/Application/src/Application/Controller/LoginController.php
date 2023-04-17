@@ -2,6 +2,7 @@
 
 namespace Application\Controller;
 
+use Application\Service\UserService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Session\Container;
@@ -11,16 +12,16 @@ class LoginController extends AbstractActionController
 {
 
 
-    private $userService = null;
+    public UserService $userService;
 
     public function __construct($userService)
     {
         $this->userService = $userService;
-    }    
+    }
 
     public function indexAction()
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -28,7 +29,7 @@ class LoginController extends AbstractActionController
             $route = $this->userService->login($params);
             return $this->redirect()->toRoute($route);
         }
-        if (isset($logincontainer->userId) && $logincontainer->userId != "") {
+        if (isset($loginContainer->userId) && $loginContainer->userId != "") {
             return $this->redirect()->toRoute("dashboard");
         } else {
             $vm = new ViewModel();
@@ -37,14 +38,12 @@ class LoginController extends AbstractActionController
         }
     }
 
-    public function logoutAction() {
+    public function logoutAction()
+    {
         $sessionLogin = new Container('credo');
         $user_name = $sessionLogin->login;
         $route = $this->userService->logout($user_name);
         $sessionLogin->getManager()->getStorage()->clear();
         return $this->redirect()->toRoute("login");
-    }    
-
-
+    }
 }
-

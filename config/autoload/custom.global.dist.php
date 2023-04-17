@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'settings' => [
+        'locale' => 'en_US',
+    ],
+
     'odkcentral' => [
         'spirrt' => [
             'url' => '',

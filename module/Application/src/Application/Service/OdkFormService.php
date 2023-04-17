@@ -4107,7 +4107,7 @@ class OdkFormService
     {
         // var_dump($params);die;
         try {
-            $logincontainer = new Container('credo');
+            $loginContainer = new Container('credo');
             $writer = WriterEntityFactory::createXLSXWriter();
             $customTempFolderPath = TEMP_UPLOAD_PATH;
             $filename = 'SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xlsx';
@@ -4215,8 +4215,8 @@ class OdkFormService
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
-            if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-                $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $logincontainer->token) . '")');
+            if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+                $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
             }
             if (isset($sWhere) && $sWhere != "") {
                 $sQuery->where($sWhere);

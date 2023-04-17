@@ -30,6 +30,7 @@ class UsersTable extends AbstractTableGateway
 {
 
     protected $table = 'users';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -40,9 +41,8 @@ class UsersTable extends AbstractTableGateway
     public function login($params, $configResult)
     {
         $container = new Container('alert');
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $username = $params['username'];
-        $password = sha1($params['password'] . $configResult["password"]["salt"]);
 
         $dbAdapter = $this->adapter;
         $gTable = new GlobalTable($dbAdapter);
@@ -55,8 +55,15 @@ class UsersTable extends AbstractTableGateway
             ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name', 'role_code'))
             ->where(array('login' => $username, 'u.status' => 'active'));
         $sQueryStr = $sql->buildSqlString($sQuery);
-        // die($sQueryStr);
+
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+
+        $passwordValidation = false;
+        if ($sResult) {
+            $passwordValidation = password_verify($params['password'], $sResult->password);
+        }
+
+
         $data = array(
             'last_login_datetime' => \Application\Service\CommonService::getDateTime()
         );
@@ -64,7 +71,7 @@ class UsersTable extends AbstractTableGateway
             $this->update($data, array('id' => $sResult->id));
         }
 
-        if ($sResult) {
+        if ($sResult && $passwordValidation) {
             $userCountryMapArray = array();
             $userCountryQuery = $sql->select()->from(array('u_c_map' => 'user_country_map'))
                 ->join(array('c' => 'countries'), "c.country_id=u_c_map.country_id", array('country_id', 'country_name', 'iso2'))
@@ -86,12 +93,12 @@ class UsersTable extends AbstractTableGateway
             foreach ($userTokenResult as $userToken) {
                 $token[] = $userToken['token'];
             }
-            $logincontainer->userId = $sResult->id;
-            $logincontainer->login = $sResult->login;
-            $logincontainer->roleCode = $sResult->role_code;
-            $logincontainer->token = $token;
-            $logincontainer->userCountryMap = $userCountryMapArray;
-            $logincontainer->userImage = $sResult->user_image;
+            $loginContainer->userId = $sResult->id;
+            $loginContainer->login = $sResult->login;
+            $loginContainer->roleCode = $sResult->role_code;
+            $loginContainer->token = $token;
+            $loginContainer->userCountryMap = $userCountryMapArray;
+            $loginContainer->userImage = $sResult->user_image;
             $subject = '';
             $eventType = 'login in';
             $action = $username . ' logged in';
@@ -119,6 +126,19 @@ class UsersTable extends AbstractTableGateway
         }
     }
 
+    public function passwordHash($password)
+    {
+        if (empty($password)) {
+            return null;
+        }
+
+        $options = [
+            'cost' => 14
+        ];
+
+        return password_hash($password, PASSWORD_BCRYPT, $options);
+    }
+
     public function addUserDetails($params, $configResult)
     {
         $dbAdapter = $this->adapter;
@@ -126,7 +146,7 @@ class UsersTable extends AbstractTableGateway
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
         $userCountryMap = new UserCountryMapTable($dbAdapter);
-        $password = sha1($params['password'] . $configResult["password"]["salt"]);
+        $password = $this->passwordHash($params['password']);
         $lastInsertId = 0;
         if (isset($params['userName']) && trim($params['userName']) != "") {
             $data = array(
@@ -186,7 +206,7 @@ class UsersTable extends AbstractTableGateway
         $userCountryMap = new UserCountryMapTable($dbAdapter);
         $userId = base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
-            $password = sha1($params['password'] . $configResult["password"]["salt"]);
+            $password = $this->passwordHash($params['password']);
             $data = array('password' => $password);
             $this->update($data, array('id' => $userId));
         }
@@ -407,7 +427,7 @@ class UsersTable extends AbstractTableGateway
         return $queryResult;
     }
 
-    function logout($username)
+    public function logout($username)
     {
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
@@ -458,14 +478,30 @@ class UsersTable extends AbstractTableGateway
         }
     }
 
-    public function updatePassword($params, $configResult)
+    public function updatePassword($params)
     {
-        $logincontainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $userId = $logincontainer->userId;
-        $password = sha1($params['newpassword'] . $configResult["password"]["salt"]);
+        $loginContainer = new Container('credo');
+        $userId = $loginContainer->userId;
+        $password = $this->passwordHash($params['newpassword']);
         $data = array('password' => $password);
         return $this->update($data, array('id' => $userId));
+    }
+
+    public function checkPassword($params)
+    {
+        $sql = new Sql($this->adapter);
+        $loginContainer = new Container('credo');
+        $sQuery = $sql->select()->from(array('u' => 'users'))
+            ->where(array('id' => $loginContainer->userId));
+        $sQueryStr = $sql->buildSqlString($sQuery);
+
+        $sResult = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
+
+        $passwordValidation = false;
+
+        if ($sResult) {
+            $passwordValidation = password_verify($params['password'], $sResult->password);
+        }
+        return $passwordValidation;
     }
 }

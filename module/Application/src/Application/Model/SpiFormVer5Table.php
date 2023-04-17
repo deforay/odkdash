@@ -382,7 +382,7 @@ class SpiFormVer5Table extends AbstractTableGateway
     public function getPerformanceV5($params)
     {
         //echo "ss";die;
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
@@ -449,8 +449,8 @@ class SpiFormVer5Table extends AbstractTableGateway
             }
         }
 
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -462,7 +462,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getPerformanceLast30DaysV5($params)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
 
@@ -493,8 +493,8 @@ class SpiFormVer5Table extends AbstractTableGateway
             ->where("spiv5.status='approved'")
             ->where("(`assesmentofaudit` BETWEEN '" . $startDate . "' - INTERVAL DATEDIFF('" . $startDate . "','" . $endDate . "') DAY AND '" . $startDate . "')");
         //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv5.auditroundno='" . $params['auditRndNo'] . "'");
@@ -559,7 +559,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getPerformanceLast180DaysV5()
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $today = date('Y-m-d');
@@ -577,8 +577,8 @@ class SpiFormVer5Table extends AbstractTableGateway
             ))
             ->where(array('status' => 'approved'))
             ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
@@ -589,14 +589,14 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getAllSubmissionsV5($sortOrder = 'DESC')
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
             ->where('spiv3.status != "deleted"')
             ->order(array("status DESC", "id $sortOrder"));
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
@@ -606,13 +606,13 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getAllApprovedTestingVolumeV5($params)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'));
         // ->order(array("avgMonthTesting DESC"));
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
         $endDate = '';
@@ -692,7 +692,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function fetchAllSubmissionsDetails($parameters, $acl)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -827,8 +827,8 @@ class SpiFormVer5Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
@@ -895,8 +895,8 @@ class SpiFormVer5Table extends AbstractTableGateway
                 $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -908,7 +908,7 @@ class SpiFormVer5Table extends AbstractTableGateway
             "aaData" => array()
         );
 
-        $role = $logincontainer->roleCode;
+        $role = $loginContainer->roleCode;
         if ($acl->isAllowed($role, 'Application\Controller\SpiV5Controller', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
@@ -1018,7 +1018,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function fetchAllSubmissionsDatas($parameters, $acl)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -1099,8 +1099,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
             ->where('spiv5.status != "deleted"');
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
@@ -1129,8 +1129,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         /* Total data set length */
         $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
             ->where('spiv5.status != "deleted"');
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -1141,7 +1141,7 @@ class SpiFormVer5Table extends AbstractTableGateway
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()
         );
-        $role = $logincontainer->roleCode;
+        $role = $loginContainer->roleCode;
         if ($acl->isAllowed($role, 'Application\Controller\SpiV5Controller', 'edit')) {
             $update = true;
         } else {
@@ -1203,8 +1203,8 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getFormData($id, $pdfDowload = 'no')
     {
-        $logincontainer = new Container('credo');
-        $username = $logincontainer->login;
+        $loginContainer = new Container('credo');
+        $username = $loginContainer->login;
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
         $sql = new Sql($this->adapter);
@@ -1240,7 +1240,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getAuditRoundWiseDataV5($params)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         //$rResult = $this->getAllSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
@@ -1249,8 +1249,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv5.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
         $endDate = '';
@@ -1341,7 +1341,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getZeroQuestionCountsV5($params)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         //$rResult = $this->fetchAllApprovedSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
@@ -1352,8 +1352,8 @@ class SpiFormVer5Table extends AbstractTableGateway
             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
 
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
         $endDate = '';
@@ -1535,14 +1535,14 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function fetchAllApprovedSubmissionsV5($sortOrder = 'DESC')
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
             ->where(array('status' => 'approved'))
             ->order(array("assesmentofaudit $sortOrder"));
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
@@ -1556,7 +1556,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         * you want to insert a non-database field (for example a counter or static image)
         */
         $queryContainer = new Container('query');
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $aColumns = array('facilityname', 'assesmentofaudit', 'testingpointname', 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE', 'FINAL_AUDIT_SCORE', 'AUDIT_SCORE_PERCENTAGE');
         $orderColumns = array('facilityname', 'assesmentofaudit', 'testingpointname', 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE', 'FINAL_AUDIT_SCORE', 'AUDIT_SCORE_PERCENTAGE');
 
@@ -1687,8 +1687,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
@@ -1775,8 +1775,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
@@ -1829,7 +1829,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         */
 
         $queryContainer = new Container('query');
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $aColumns = array('facilityname', 'assesmentofaudit', 'testingpointtype', 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE', 'RTRI_SCORE', 'FINAL_AUDIT_SCORE', 'AUDIT_SCORE_PERCENTAGE');
         $orderColumns = array('facilityname', 'assesmentofaudit', 'testingpointtype', 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE', 'RTRI_SCORE', 'FINAL_AUDIT_SCORE', 'AUDIT_SCORE_PERCENTAGE');
 
@@ -1938,8 +1938,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
@@ -2003,8 +2003,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
@@ -2052,7 +2052,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function fetchAllApprovedSubmissionLocationV5($params)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
@@ -2061,8 +2061,8 @@ class SpiFormVer5Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv5.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
         $endDate = '';
@@ -2313,15 +2313,15 @@ class SpiFormVer5Table extends AbstractTableGateway
     }
     public function fetchSpiV5FormAuditNo()
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
             ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
             ->group('auditroundno')
             ->order("auditroundno ASC");
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
@@ -2603,13 +2603,13 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function getSpiV5PendingCount()
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
             ->where('spiv3.status = "pending"');
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
@@ -2630,7 +2630,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function fetchAllApprovedSubmissionsDetailsBasedOnAuditDate($parameters, $acl)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -2721,9 +2721,9 @@ class SpiFormVer5Table extends AbstractTableGateway
             $sQuery = $sQuery->where("spiv3.assesmentofaudit='" . \Application\Service\CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
             $tQuery = $tQuery->where("spiv3.assesmentofaudit='" . \Application\Service\CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
         }
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
-            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
+            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
@@ -2761,7 +2761,7 @@ class SpiFormVer5Table extends AbstractTableGateway
             "aaData" => array()
         );
 
-        $role = $logincontainer->roleCode;
+        $role = $loginContainer->roleCode;
         if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
             $downloadPdfAction = true;
         } else {
@@ -2822,7 +2822,7 @@ class SpiFormVer5Table extends AbstractTableGateway
 
     public function fetchViewDataDetails($parameters)
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
@@ -3031,9 +3031,9 @@ class SpiFormVer5Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
         }
 
-        if (isset($logincontainer->token) && !empty($logincontainer->token)) {
-            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
-            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $logincontainer->token) . '")');
+        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
+            $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
 
         if (trim($startDate) != "" && trim($endDate) != "") {

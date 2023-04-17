@@ -33,8 +33,8 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
 
     public function addDownloadDataDetails($params)
     {
-        $logincontainer = new Container('credo');
-        $username = $logincontainer->login;
+        $loginContainer = new Container('credo');
+        $username = $loginContainer->login;
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
         $province = null;
@@ -42,7 +42,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             $province = implode(',', $params['province']);
         }
         $downloadData = array(
-            'user' => $logincontainer->userId,
+            'user' => $loginContainer->userId,
             'auditroundno' => (isset($params['auditRndNo']) && trim($params['auditRndNo']) != '') ? $params['auditRndNo'] : null,
             'assesmentofaudit' => (isset($params['dateRange']) && trim($params['dateRange']) != '') ? $params['dateRange'] : null,
             'testingpointtype' => (isset($params['testPoint']) && trim($params['testPoint']) != '') ? $params['testPoint'] : null,
@@ -129,10 +129,10 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
 
     public function fetchDownloadFilesRow()
     {
-        $logincontainer = new Container('credo');
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 1, 'user' => $logincontainer->userId))->order('r_download_id desc')->limit(5);
+        $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 1, 'user' => $loginContainer->userId))->order('r_download_id desc')->limit(5);
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }

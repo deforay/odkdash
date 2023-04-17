@@ -36,9 +36,9 @@ class CountriesTable extends AbstractTableGateway
 
     public function fetchMapedCountries()
     {
-        $logincontainer = new Container('credo');
-        if (isset($logincontainer->userCountryMap) && !empty($logincontainer->userCountryMap) && is_array($logincontainer->userCountryMap)) {
-            $result = $this->select(array('country_id IN(' . implode(",", $logincontainer->userCountryMap) . ')'))->toArray();
+        $loginContainer = new Container('credo');
+        if (isset($loginContainer->userCountryMap) && !empty($loginContainer->userCountryMap) && is_array($loginContainer->userCountryMap)) {
+            $result = $this->select(array('country_id IN(' . implode(",", $loginContainer->userCountryMap) . ')'))->toArray();
         } else {
             $result = $this->select()->toArray();
         }
