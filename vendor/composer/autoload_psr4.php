@@ -88,7 +88,6 @@ return array(
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Brick\\VarExporter\\' => array($vendorDir . '/brick/varexporter/src'),
-    'Box\\Spout\\' => array($vendorDir . '/box/spout/src/Spout'),
     'Application\\' => array($baseDir . '/module/Application/src'),
     'ApplicationTest\\' => array($baseDir . '/module/Application/test'),
 );

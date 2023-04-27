@@ -26,7 +26,6 @@
         "phpoffice/phpspreadsheet": "^1.18",
         "halaxa/json-machine": "^0.7.0",
         "laminas/laminas-permissions-acl": "^2.10",
-        "box/spout": "^3.3",
         "szymach/c-pchart": "^3.0",
         "tecnickcom/tcpdf": "^6.4",
         "saintsystems/odata-client": "^0.6.1",
@@ -34,7 +33,8 @@
         "laminas/laminas-mail": "^2.15",
         "laminas/laminas-cache": "^3.6",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.2",
-        "laminas/laminas-authentication": "^2.12"
+        "laminas/laminas-authentication": "^2.12",
+        "shuchkin/simplexlsxgen": "^1.3"
     },
     "autoload": {
         "psr-4": {

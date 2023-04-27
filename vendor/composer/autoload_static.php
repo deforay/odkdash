@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
+class ComposerStaticInit44ddbdad0443b724d30b821757523ad4
 {
     public static $files = array (
         'c9d07b32a2e02bc0fc582d4f0c1b56cc' => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src/autoload.php',
@@ -178,7 +178,6 @@ class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
         'B' => 
         array (
             'Brick\\VarExporter\\' => 18,
-            'Box\\Spout\\' => 10,
         ),
         'A' => 
         array (
@@ -520,10 +519,6 @@ class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
         array (
             0 => __DIR__ . '/..' . '/brick/varexporter/src',
         ),
-        'Box\\Spout\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/box/spout/src/Spout',
-        ),
         'Application\\' => 
         array (
             0 => __DIR__ . '/../..' . '/module/Application/src',
@@ -553,6 +548,7 @@ class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
+        'Shuchkin\\SimpleXLSXGen' => __DIR__ . '/..' . '/shuchkin/simplexlsxgen/src/SimpleXLSXGen.php',
         'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
         'TCPDF' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf.php',
         'TCPDF2DBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',
@@ -572,10 +568,10 @@ class ComposerStaticInit091fa542f07dccdc1257e2718ca8f699
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit091fa542f07dccdc1257e2718ca8f699::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit091fa542f07dccdc1257e2718ca8f699::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit091fa542f07dccdc1257e2718ca8f699::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit091fa542f07dccdc1257e2718ca8f699::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$classMap;
 
         }, null, ClassLoader::class);
     }

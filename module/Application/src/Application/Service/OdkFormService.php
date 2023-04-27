@@ -3,19 +3,7 @@
 namespace Application\Service;
 
 use Application\Service\CommonService;
-use Box\Spout\Common\Entity\Style\Border;
-use Box\Spout\Common\Entity\Style\Color;
-use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
-use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
-// use PHPExcel;
-// use PHPExcel_Cell;
-use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use CpChart\Chart\Pie;
-// use pData;
-// use pDraw;
-// use pRadar;
-// use pImage;
-// use pPie;
 use CpChart\Chart\Radar;
 use SaintSystems\OData\ODataClient;
 use CpChart\Data;
@@ -25,6 +13,7 @@ use Laminas\Filter\Exception;
 use Laminas\Session\Container;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use ZipArchive;
+use Shuchkin\SimpleXLSXGen;
 
 class OdkFormService
 {
@@ -3707,12 +3696,52 @@ class OdkFormService
     public function getV5DownloadFilesRow()
     {
         $db = $this->sm->get('SpiFormVer5DownloadTable');
-        return $db->fetchDownloadFilesRow();
+        $result = $db->fetchDownloadFilesRow();
+        $xlsx = new SimpleXLSXGen();
+        $output = array();
+        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type','Level', 'Affiliation', 'Audit Score'];
+        $output[] = $headerRow;
+        if(count($result) > 0){
+            foreach($result as $data){
+                $row = array();
+                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
+                $row[] = $data['assesmentofaudit'];
+                $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
+                $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
+                $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];
+                $row[] = trim($data['AUDIT_SCORE_PERCENTAGE']) == '' ? 'All' : $data['AUDIT_SCORE_PERCENTAGE'];
+                $output[] = $row;
+            }
+        }
+        $xlsx->addSheet($output);
+        $filename = 'Spi-v5.xlsx';
+        return $xlsx->downloadAs($filename);
     }
     public function getDownloadFilesRow()
     {
         $db = $this->sm->get('SpiFormVer3DownloadTable');
-        return $db->fetchDownloadFilesRow();
+        $result = $db->fetchDownloadFilesRow();
+        $xlsx = new SimpleXLSXGen();
+        $output = array();
+        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Level Name', 'Audit Score'];
+        $output[] = $headerRow;
+        if(count($result) > 0){
+            foreach($result as $data){
+                $row = array();
+                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
+                $row[] = $data['assesmentofaudit'];
+                $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
+                $row[] = trim($data['testingpointname']) == '' ? 'All' : $data['testingpointname'];
+                $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
+                $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];
+                $row[] = trim($data['level_name']) == '' ? 'All' : $data['level_name'];
+                $row[] = trim($data['AUDIT_SCORE_PERCANTAGE']) == '' ? 'All' : $data['AUDIT_SCORE_PERCANTAGE'];
+                $output[] = $row;
+            }
+        }
+        $xlsx->addSheet($output);
+        $filename = 'Spi-v3.xlsx';
+        return $xlsx->downloadAs($filename);
     }
 
     public function validateSPIV3File($params)
@@ -4046,7 +4075,26 @@ class OdkFormService
     public function getV6DownloadFilesRow()
     {
         $db = $this->sm->get('SpiFormVer6DownloadTable');
-        return $db->fetchDownloadFilesRow();
+        $result = $db->fetchDownloadFilesRow();
+        $xlsx = new SimpleXLSXGen();
+        $output = array();
+        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
+        $output[] = $headerRow;
+        if(count($result) > 0){
+            foreach($result as $data){
+                $row = array();
+                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
+                $row[] = $data['assesmentofaudit'];
+                $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
+                $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
+                $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];
+                $row[] = trim($data['AUDIT_SCORE_PERCENTAGE']) == '' ? 'All' : $data['AUDIT_SCORE_PERCENTAGE'];
+                $output[] = $row;
+            }
+        }
+        $xlsx->addSheet($output);
+        $filename = 'Spi-v6.xlsx';
+        return $xlsx->downloadAs($filename);
     }
 
     public function getAllV5DuplicateSubmissionsDetails()
