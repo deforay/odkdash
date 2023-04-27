@@ -3714,7 +3714,7 @@ class OdkFormService
             }
         }
         $xlsx->addSheet($output);
-        $filename = 'Spi-v5.xlsx';
+        $filename = 'Spi-v5-'.time().'.xlsx';
         return $xlsx->downloadAs($filename);
     }
     public function getDownloadFilesRow()
@@ -3740,7 +3740,7 @@ class OdkFormService
             }
         }
         $xlsx->addSheet($output);
-        $filename = 'Spi-v3.xlsx';
+        $filename = 'Spi-v3-'.time().'.xlsx';
         return $xlsx->downloadAs($filename);
     }
 
@@ -4093,7 +4093,7 @@ class OdkFormService
             }
         }
         $xlsx->addSheet($output);
-        $filename = 'Spi-v6.xlsx';
+        $filename = 'Spi-v6-'.time().'.xlsx';
         return $xlsx->downloadAs($filename);
     }
 
