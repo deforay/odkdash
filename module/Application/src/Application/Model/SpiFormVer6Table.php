@@ -3933,11 +3933,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointname', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv6.status' => 'approved'));
 
             $tQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointname', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv6.status' => 'approved'));
 
             if ($parameters['source'] == 'apl180') {
@@ -4174,7 +4174,7 @@ class SpiFormVer6Table extends AbstractTableGateway
          * you want to insert a non-database field (for example a counter or static image)
          */
         if ($parameters['source'] == 'hv') {
-            $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
+            $aColumns = array("DATE_FORMAT( ,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE');
         } else if ($parameters['source'] == 'la') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
