@@ -717,11 +717,11 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['info26'] = $submissionData['Summary_cont_a']['info26'];
                 $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['__id']]);
                 $data['sitephoto'] = $submissionData['sitephoto'];
-                $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1];
-                $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0];
-                $data['Altitude'] = $submissionData["lab_geopoint"]["coordinates"][2];
-                $data['Accuracy'] = $submissionData["lab_geopoint"]["properties"]['accuracy'];
-                $data['auditorSignature'] = $submissionData['auditorSignature'];
+                $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1] ?? null;
+                $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0] ?? null;
+                $data['Altitude'] = $submissionData["lab_geopoint"]["coordinates"][2] ?? null;
+                $data['Accuracy'] = $submissionData["lab_geopoint"]["properties"]['accuracy'] ?? null;
+                $data['auditorSignature'] = $submissionData['auditorSignature'] ?? null;
                 $data['instanceID'] = $submissionData['meta']['instanceID'];
                 $data['instanceName'] = $submissionData['meta']['instanceName'];
 
@@ -829,7 +829,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'client_recent_RTRI_PM' => $data['client_recent_RTRI_PM'],
                         'client_recent_RTRI_PQ' => $data['client_recent_RTRI_PQ'],
                         'name_auditor_lead' => $data['name_auditor_lead'],
-                        'name_auditor2' => $data['nameOfAuditor2'],
+                        'name_auditor2' => $data['nameOfAuditor2'] ?? null,
                         'info4' => $data['info4'],
                         'INSTANCE' => $data['INSTANCE'],
                         'PERSONAL_Q_1_1_HIV_TRAINING' => $data['PERSONAL_Q_1_1_HIV_TRAINING'],

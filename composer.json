@@ -9,7 +9,7 @@
         "spi-rrt"
     ],
     "require": {
-        "php": "^7.3 || ~8.0.0",
+        "php": "^7.4 || ~8.0.0",
         "laminas/laminas-component-installer": "^2.4",
         "laminas/laminas-development-mode": "^3.2",
         "laminas/laminas-mvc": "^3.1.1",
@@ -29,12 +29,12 @@
         "box/spout": "^3.3",
         "szymach/c-pchart": "^3.0",
         "tecnickcom/tcpdf": "^6.4",
-        "saintsystems/odata-client": "^0.6.1",
         "laminas/laminas-crypt": "^3.4",
         "laminas/laminas-mail": "^2.15",
         "laminas/laminas-cache": "^3.6",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.2",
-        "laminas/laminas-authentication": "^2.12"
+        "laminas/laminas-authentication": "^2.12",
+        "guzzlehttp/guzzle": "^7.5"
     },
     "autoload": {
         "psr-4": {
