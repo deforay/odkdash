@@ -5728,174 +5728,173 @@ class OdkFormService
     public function syncOdkCentralV3()
     {
         $configResult = $this->sm->get('Config');
-        $spirtURL = $configResult['odkcentral']['spirt']['url'];
-        $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
-        $email = $configResult['odkcentral']['spirt']['email'];
-        $password = $configResult['odkcentral']['spirt']['password'];
+        $spirrtURL = $configResult['odkcentral']['spirt']['url'];
+        $projectId = $configResult['odkcentral']['spirt']['projectId'];
+        $formId = $configResult['odkcentral']['spirt']['formId'];
+
         $spiV3db = $this->sm->get('SpiFormVer3Table');
         $lastDateQuery = $spiV3db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
+        $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
         if ($lastFormDate != '') {
-            $url = "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+            $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
         } else {
-            $url = "$spirrtURL.svc/Submissions";
+            $url = "$baseUrl.svc/Submissions";
         }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $spirtURL);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "{
-        \"email\": \"$email\",
-        \"password\": \"$password\"
-        }");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Content-Type: application/json",
-        ));
-        $response = curl_exec($ch);
-        curl_close($ch);
-        $ch = curl_init();
-        $token = base64_encode($email . ':' . $password);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
+        // $odataClient = new ODataClient($spirrtURL, function($request) {
+        $email = $configResult['odkcentral']['spirt']['email'];
+        $password = $configResult['odkcentral']['spirt']['password'];
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Basic $token",
-        ));
-        $instanceIdList = curl_exec($ch);
-        curl_close($ch);
-        $responseSubmission = $this->formatResponse($instanceIdList);
-        $instanceLists = array();
-        $correctiveActions = array();
-        foreach ($responseSubmission['value'] as $submission) {
-            foreach ($submission as $key => $listValue) {
-                if ($key === '__id') {
-                    $instanceLists[] = $listValue;
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, "$spirtURL/submissions/$listValue.xml");
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HEADER, false);
+        $httpClient = new Client([
+            'base_uri' => $baseUrl,
+            'cookies' => true,
+        ]);
 
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                        "Authorization: Basic $token",
-                        "Content-Type: application/xml",
-                    ));
-                    $response2 = curl_exec($ch);
-                    curl_close($ch);
-                    $xml = simplexml_load_string($response2);
-                    $json = json_encode($xml);
-                    $array = json_decode($json, true);
-                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+        // Authenticate and obtain session cookie
+        $response = $httpClient->post('/v1/sessions', [
+            'json' => [
+                'email' => $email,
+                'password' => $password,
+            ],
+        ]);
+
+        // Check if the request was successful
+        if ($response->getStatusCode() == 200) {
+            $authResponse = json_decode($response->getBody()->getContents(), true);
+            $authToken = $authResponse['token'];
+            // Fetch instanceIdList
+            $response = $httpClient->get($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $authToken,
+                ],
+            ]);
+            $instanceIdList = $response->getBody()->getContents();
+            $responseSubmission = $this->formatResponse($instanceIdList);
+
+            $instanceLists = [];
+            $correctiveActions = [];
+
+            foreach ($responseSubmission['value'] as $submission) {
+                foreach ($submission as $key => $listValue) {
+                    if ($key === '__id') {
+                        $instanceLists[] = $listValue;
+
+                        $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
+                            'headers' => [
+                                'Authorization' => 'Bearer ' . $authToken,
+                                'Content-Type' => 'application/xml',
+                            ],
+                        ]);
+                        $formXml = ($formInstanceResponse->getBody()->getContents());
+                        $xml = simplexml_load_string($formXml);
+                        $json = json_encode($xml);
+                        $array = json_decode($json, true);
+                        $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+                    }
                 }
             }
+
+            $formResponse = $httpClient->get($baseUrl, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $authToken,
+                ],
+            ]);
+            $formDetails = ($formResponse->getBody()->getContents());
+            $formDetails = $this->formatResponse($formDetails);
+
+
+            if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
+                $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
+            }
+        } else {
+            echo "Error authenticating: " . $response->getStatusCode();
         }
-        // \Zend\Debug\Debug::dump(count($correctiveActions['uuid:3d22edc7-bcc8-421c-a001-21bdd52699a5']));
-        //\Zend\Debug\Debug::dump($responseSubmission);die;
-        //getFormVersion
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "$spirtURL");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Basic $token",
-        ));
-        $formResponse = curl_exec($ch);
-        curl_close($ch);
-        $formDetails = $this->formatResponse($formResponse);
-
-        //\Zend\Debug\Debug::dump($formDetails);die;
-        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
     }
 
     public function syncOdkCentralV6()
     {
         $configResult = $this->sm->get('Config');
         $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
-        $spirtURL = $configResult['odkcentral']['spirt']['url'];
+        $projectId = $configResult['odkcentral']['spirrt']['projectId'];
+        $formId = $configResult['odkcentral']['spirrt']['formId'];
+
         $spiV6db = $this->sm->get('SpiFormVer6Table');
         $lastDateQuery = $spiV6db->getLatestFormDate();
         $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
+        $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
         if ($lastFormDate != '') {
-            $url = "$spirrtURL.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+            $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
         } else {
-            $url = "$spirrtURL.svc/Submissions";
+            $url = "$baseUrl.svc/Submissions";
         }
         // $odataClient = new ODataClient($spirrtURL, function($request) {
         $email = $configResult['odkcentral']['spirrt']['email'];
         $password = $configResult['odkcentral']['spirrt']['password'];
-        // $request->headers['Authorization'] = 'Basic '.base64_encode($email . ':' . $password);
-        // });
-        // $url = $odataClient->from('Submissions')->where('__system/submissionDate','>',$lastFormDate)->get();
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $spirtURL);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "{
-        \"email\": \"$email\",
-        \"password\": \"$password\"
-        }");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Content-Type: application/json",
-        ));
-        $response = curl_exec($ch);
-        curl_close($ch);
-        $ch = curl_init();
-        $token = base64_encode($email . ':' . $password);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Basic $token",
-        ));
-        $instanceIdList = curl_exec($ch);
-        curl_close($ch);
+        $httpClient = new Client([
+            'base_uri' => $baseUrl,
+            'cookies' => true,
+        ]);
 
-        $responseSubmission = $this->formatResponse($instanceIdList);
-        $instanceLists = array();
-        $correctiveActions = array();
-        foreach ($responseSubmission['value'] as $submission) {
-            foreach ($submission as $key => $listValue) {
-                if ($key === '__id') {
-                    $instanceLists[] = $listValue;
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, "$spirrtURL/submissions/$listValue.xml");
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HEADER, false);
+        // Authenticate and obtain session cookie
+        $response = $httpClient->post('/v1/sessions', [
+            'json' => [
+                'email' => $email,
+                'password' => $password,
+            ],
+        ]);
 
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                        "Authorization: Basic $token",
-                        "Content-Type: application/xml",
-                    ));
-                    $response2 = curl_exec($ch);
-                    curl_close($ch);
-                    $xml = simplexml_load_string($response2);
-                    $json = json_encode($xml);
-                    $array = json_decode($json, true);
-                    $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+        // Check if the request was successful
+        if ($response->getStatusCode() == 200) {
+            $authResponse = json_decode($response->getBody()->getContents(), true);
+            $authToken = $authResponse['token'];
+            // Fetch instanceIdList
+            $response = $httpClient->get($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $authToken,
+                ],
+            ]);
+            $instanceIdList = $response->getBody()->getContents();
+            $responseSubmission = $this->formatResponse($instanceIdList);
+
+            $instanceLists = [];
+            $correctiveActions = [];
+
+            foreach ($responseSubmission['value'] as $submission) {
+                foreach ($submission as $key => $listValue) {
+                    if ($key === '__id') {
+                        $instanceLists[] = $listValue;
+
+                        $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
+                            'headers' => [
+                                'Authorization' => 'Bearer ' . $authToken,
+                                'Content-Type' => 'application/xml',
+                            ],
+                        ]);
+                        $formXml = ($formInstanceResponse->getBody()->getContents());
+                        $xml = simplexml_load_string($formXml);
+                        $json = json_encode($xml);
+                        $array = json_decode($json, true);
+                        $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+                    }
                 }
             }
+
+            $formResponse = $httpClient->get($baseUrl, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $authToken,
+                ],
+            ]);
+            $formDetails = ($formResponse->getBody()->getContents());
+            $formDetails = $this->formatResponse($formDetails);
+
+
+            if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
+                $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
+            }
+        } else {
+            echo "Error authenticating: " . $response->getStatusCode();
         }
-        // \Zend\Debug\Debug::dump(count($correctiveActions['uuid:3d22edc7-bcc8-421c-a001-21bdd52699a5']));
-        //\Zend\Debug\Debug::dump($responseSubmission);die;
-        //getFormVersion
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "$spirrtURL");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Basic $token",
-        ));
-        $formResponse = curl_exec($ch);
-        curl_close($ch);
-        $formDetails = $this->formatResponse($formResponse);
-
-        //\Zend\Debug\Debug::dump($formDetails);die;
-        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
     }
 
     public function formatResponse($strResponse)

@@ -7,14 +7,18 @@ return [
 
     'odkcentral' => [
         'spirrt' => [
-            'url' => '',
-            'email' => '',
-            'password' => '',
+            'url' => 'https://your-odk-central-domain.com',
+            'projectId' => 'your_project_id',
+            'formId' => 'your_form_id',
+            'email' => 'your_email',
+            'password' => 'your_password',
         ],
         'spirt' => [
-            'url' => '',
-            'email' => '',
-            'password' => '',
+            'url' => 'https://your-odk-central-domain.com',
+            'projectId' => 'your_project_id',
+            'formId' => 'your_form_id',
+            'email' => 'your_email',
+            'password' => 'your_password',
         ],
     ],
     'email' => [
