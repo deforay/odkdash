@@ -27,35 +27,39 @@ class SpiRtFacilitiesTable extends AbstractTableGateway {
         $this->adapter = $adapter;
     }
     
-    public function addFacilityBasedOnForm($formId,$formVersion = 3){
+    public function addFacilityBasedOnForm($formId, $formVersion = 3)
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        if($formVersion == 3){
-        $query = $sql->select()->from('spi_form_v_3')
-                    ->columns(array('formId','facilityname','facilityid','Latitude','Longitude'))
-                    ->where(array('id'=>$formId));
-        }elseif($formVersion == 5){
-        $query = $sql->select()->from('spi_form_v_5')
-                    ->columns(array('formId','facilityname','facilityid','Latitude','Longitude'))
-                    ->where(array('id'=>$formId));
+        if ($formVersion == 3) {
+            $table = 'spi_form_v_3';
+        } elseif ($formVersion == 5) {
+            $table = 'spi_form_v_5';
+        } elseif ($formVersion == 6) {
+            $table = 'spi_form_v_6';
         }
+        
+        $query = $sql->select()->from($table)
+            ->columns(array('formId', 'facilityname', 'facilityid', 'Latitude', 'Longitude'))
+            ->where(array('id' => $formId));
+
         $queryStr = $sql->buildSqlString($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if($result!=""){
-            if($formVersion == 3){
-                $fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name'=>$result['facilityname']));
+        if ($result != "") {
+
+            $fQuery = $sql->select()->from('spi_rt_3_facilities')->where(array('facility_name' => $result['facilityname']));
+
+            $fQueryStr = $sql->buildSqlString($fQuery);
+            $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if ($fResult == "") {
+                $data = array(
+                    'facility_id' => $result['facilityid'],
+                    'facility_name' => $result['facilityname'],
+                    'latitude' => $result['Latitude'],
+                    'longitude' => $result['Longitude']
+                );
+                return $this->insert($data);
             }
-			$fQueryStr = $sql->buildSqlString($fQuery);
-			$fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if($fResult==""){
-				$data = array(
-					'facility_id' => $result['facilityid'],
-					'facility_name' => $result['facilityname'],
-					'latitude' => $result['Latitude'],
-					'longitude' => $result['Longitude']
-				);
-				return $this->insert($data);
-			}
         }
     }
     
