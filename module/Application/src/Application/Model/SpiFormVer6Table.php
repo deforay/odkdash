@@ -471,7 +471,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['end'] = $submissionData['end'];
                 $data['today'] = $submissionData['today'];
                 $data['deviceid'] = $submissionData['deviceid'];
-                $data['subscriberid'] = $submissionData['subscriberid'];
+                $data['subscriberid'] = $submissionData['subscriberid'] ?? null;
                 $data['text_image'] = $submissionData['text_image'];
                 $data['info1'] = $submissionData['info1'];
                 $data['info2'] = $submissionData['TESTSITE']['info2'];
@@ -481,6 +481,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['auditroundno'] = $submissionData['TESTSITE']['auditroundno'];
                 $data['facilityname'] = $submissionData['TESTSITE']['facilityname'];
                 $data['facilityid'] = $submissionData['TESTSITE']['facilityid'];
+                $data['testingpointname'] = $submissionData['TESTSITE']['testingpointname'] ?? null;
                 $data['testingpointtype'] = $submissionData['TESTSITE']['testingpointtype'];
                 $data['testingpointtype_other'] = $submissionData['TESTSITE']['testingpointtype_other'];
                 $data['physicaladdress'] = $submissionData['TESTSITE']['physicaladdress'];
@@ -771,8 +772,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $sql = new Sql($this->adapter);
 
                     $insert = $sql->insert('spi_form_v_6');
-                    if (isset($data['testingpointtype']) && trim($data['testingpointtype']) == "") {
-                        $data['testingpointtype'] = $data['testingpointtype'];
+                    if (isset($data['testingpointname']) && trim($data['testingpointname']) == "") {
+                        $data['testingpointname'] = $data['testingpointtype'];
                     }
 
                     $data['instanceID'] = isset($data['instanceID']) ? $data['instanceID'] : "";
@@ -804,6 +805,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'auditroundno' => $data['auditroundno'],
                         'facilityname' => $data['facilityname'],
                         'facilityid' => $data['facilityid'],
+                        'testingpointname' => $data['testingpointname'],
                         'testingpointtype' => $data['testingpointtype'],
                         'testingpointtype_other' => $data['testingpointtype_other'],
                         'physicaladdress' => $data['physicaladdress'],
@@ -1094,7 +1096,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                         ->where(array('spiv6.uuid' => $data["uuid"]));
                     $sQueryStr = $sql->buildSqlString($sQuery);
                     $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-                    if ($data["uuid"] != $sResult["uuid"]) {
+                    if (empty($sResult) || $data["uuid"] != $sResult["uuid"]) {
                         $insert->values($par);
                         $selectString = $sql->buildSqlString($insert);
                         $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
@@ -1104,7 +1106,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     if ($approveStatus == 'approved') {
                         //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
                         $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
-                        $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 5);
+                        $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 6);
                     }
                     // }
                 } catch (\Exception $e) {
