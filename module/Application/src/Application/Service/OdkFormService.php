@@ -78,20 +78,11 @@ class OdkFormService
     public function exportAllSubmissions($params)
     {
         try {
-            $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            // $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
-            // $excel = new \PHPExcel();
-            // $cacheMethod = \PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
-            // $cacheSettings = array('memoryCacheSize' => '1024MB');
-            // \PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
             $output = array();
             $outputScore = array();
-            $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($this->adapter);
+            $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -106,6 +97,8 @@ class OdkFormService
                 } else {
                     $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
                 }
+            } else {
+                $displayDate = "Date Range : ";
             }
             $auditRndNo = '';
             $levelData = '';
@@ -115,21 +108,33 @@ class OdkFormService
             $testPoint = '';
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
                 $auditRndNo = "Audit Round No. : " . $params['auditRndNo'];
+            } else {
+                $auditRndNo = "Audit Round No. : ";
             }
             if (isset($params['level']) && ($params['level'] != "")) {
                 $levelData = "Level : " . $params['level'];
+            } else {
+                $levelData = "Level : ";
             }
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
+            } else {
+                $affiliation = "Affiliation : ";
             }
             if (isset($params['province']) && ($params['province'] != "")) {
                 $province = "Province/District(s) : " . implode(',', $params['province']);
+            } else {
+                $province = "Province/District(s) : ";
             }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
+            } else {
+                $scoreLevel = "Score Level : ";
             }
             if (isset($params['testPoint']) && ($params['testPoint'] != "")) {
                 $testPoint = "Type of Testing Point : " . $params['testPoint'];
+            } else {
+                $testPoint = "Type of Testing Point : ";
             }
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
@@ -187,134 +192,48 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            $styleArray = array(
-                'font' => array(
-                    'bold' => true,
-                    'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                    ),
-                ),
-            );
-            $borderStyle = array(
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                    ),
-                ),
-            );
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('C2:D2');
-            $sheet->mergeCells('E2:F2');
-            $sheet->mergeCells('G2:H2');
-            $sheet->mergeCells('I2:J2');
-            $sheet->mergeCells('K2:L2');
-            $sheet->mergeCells('M2:N2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-            $sheet->mergeCells('I4:I5');
-
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report SPI-RT--CHECKLIST-version-3', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('C2', html_entity_decode($auditRndNo, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('E2', html_entity_decode($levelData, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('G2', html_entity_decode($affiliation, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('I2', html_entity_decode($province, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('K2', html_entity_decode($scoreLevel, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('M2', html_entity_decode($testPoint, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-
-            $colmnNo = 0;
-            $rowmnNo = 4;
-            $rowmnNo1 = 5;
+            $fieldNames = array();
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
-                    $cellName = $sheet->getCellByColumnAndRow($colmnNo, $rowmnNo)->getColumn();
-                    $sheet->mergeCells($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1);
-                    $sheet->setCellValue($cellName . $rowmnNo, html_entity_decode($key, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                    $sheet->getStyle($cellName . $rowmnNo . ':' . $cellName . $rowmnNo1)->applyFromArray($styleArray);
-                    $colmnNo++;
+                    $fieldNames[] = $key;
                 }
             }
-            $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
-            $sheet->getStyle('A2:B2')->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('C2:D2')->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('E2:F2')->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('G2:H2')->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('I2:J2')->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('K2:L2')->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('M2:N2')->getFont()->setBold(true)->setSize(13);
-
-            $start = 0;
+            $xlsx = new SimpleXLSXGen();
+            $outputData = array();
+            $headerRow = ['Facility Report SPI-RT--CHECKLIST-version-3'];
+            $outputData[] = $headerRow;
+            $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint];
+            $outputData[] = $data;
+            $outputData[] = $fieldNames;
             foreach ($output as $rowNo => $rowData) {
-                $colNo = 0;
+                $row = array();
+                $colNo = 1;
+                
                 foreach ($rowData as $field => $value) {
-                    if (!isset($value)) {
+                    if (!isset($value) || empty($value)) {
                         $value = "";
                     }
-                    if (is_numeric($value)) {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-                    } else {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-                    }
-                    $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
-                    $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                    $sheet->getDefaultRowDimension()->setRowHeight(18);
-                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+                    $row[] = $value;
                     $colNo++;
                 }
+                
+                $outputData[] = $row;
             }
-            $rCount = $rRowCount + 3;
 
-            $sheet->setCellValue('A' . $rCount, html_entity_decode('No.of Audit(s) : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('B' . $rCount, html_entity_decode(count($sResult) . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('A' . $rCount . ':B' . $rCount)->getFont()->setBold(true)->setSize(13);
-            $sheet->setCellValue('C' . $rCount, html_entity_decode('Avg. Audit Score : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('D' . $rCount, html_entity_decode($outputScore['avgAuditScore'] . " %", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('C' . $rCount . ':D' . $rCount)->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('E' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFF0000');
-            $sheet->setCellValue('E' . $rCount, html_entity_decode('Level 0(Below 40) : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('F' . $rCount, html_entity_decode($outputScore['levelZeroCount'] . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('E' . $rCount . ':F' . $rCount)->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('G' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF808000');
-            $sheet->setCellValue('G' . $rCount, html_entity_decode('Level 1(40-59) : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('H' . $rCount, html_entity_decode($outputScore['levelOneCount'] . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('G' . $rCount . ':H' . $rCount)->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('I' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFFFFF00');
-            $sheet->setCellValue('I' . $rCount, html_entity_decode('Level 2(60-79) : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('J' . $rCount, html_entity_decode($outputScore['levelTwoCount'] . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('I' . $rCount . ':J' . $rCount)->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('K' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF00FF00');
-            $sheet->setCellValue('K' . $rCount, html_entity_decode('Level 3(80-89) : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('L' . $rCount, html_entity_decode($outputScore['levelThreeCount'] . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('K' . $rCount . ':L' . $rCount)->getFont()->setBold(true)->setSize(13);
-            $sheet->getStyle('M' . $rCount)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF008000');
-            $sheet->setCellValue('M' . $rCount, html_entity_decode('Level 4(90) : ', ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('N' . $rCount, html_entity_decode($outputScore['levelFourCount'] . " ", ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC);
-            $sheet->getStyle('M' . $rCount . ':N' . $rCount)->getFont()->setBold(true)->setSize(13);
+            $outputData[] = ['No.of Audit(s)    : '.count($sResult)];
+            $outputData[] = ['Avg. Audit Score    : '.$outputScore['avgAuditScore']];
 
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $outputData[] = ['Level 0(Below 40) : '. $outputScore['levelZeroCount']];
+            $outputData[] = ['Level 1(40-59)    : '.$outputScore['levelOneCount']];
+            $outputData[] = ['Level 2(60-79)    : '.$outputScore['levelTwoCount']];
+            $outputData[] = ['Level 3(80-89)    : '.$outputScore['levelThreeCount']];
+            $outputData[] = ['Level 4(90)       : '.$outputScore['levelFourCount']];
+
+            $xlsx->addSheet($outputData);
             $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.xlsx';
-            // print_r(($filename));die;
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+            $xlsx->mergeCells('A1:Q1');
+            $xlsx->saveAs($TemporaryFolderPath);
             return $filename;
         } catch (\Exception $exc) {
             error_log("SPI-RT--CHECKLIST-version-3-REPORT-EXCEL--" . $exc->getMessage());
