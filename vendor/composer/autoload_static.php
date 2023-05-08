@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit44ddbdad0443b724d30b821757523ad4
+class ComposerStaticInit6a5b146080b398ce87c00202e4178656
 {
     public static $files = array (
         'c9d07b32a2e02bc0fc582d4f0c1b56cc' => __DIR__ . '/..' . '/laminas/laminas-servicemanager/src/autoload.php',
@@ -249,8 +249,8 @@ class ComposerStaticInit44ddbdad0443b724d30b821757523ad4
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -513,10 +513,10 @@ class ComposerStaticInit44ddbdad0443b724d30b821757523ad4
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit44ddbdad0443b724d30b821757523ad4::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6a5b146080b398ce87c00202e4178656::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6a5b146080b398ce87c00202e4178656::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit6a5b146080b398ce87c00202e4178656::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit6a5b146080b398ce87c00202e4178656::$classMap;
 
         }, null, ClassLoader::class);
     }
