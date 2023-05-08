@@ -80,6 +80,7 @@ return array(
     'CpChart\\' => array($vendorDir . '/szymach/c-pchart/src'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Brick\\VarExporter\\' => array($vendorDir . '/brick/varexporter/src'),
+    'Box\\Spout\\' => array($vendorDir . '/box/spout/src/Spout'),
     'Application\\' => array($baseDir . '/module/Application/src'),
     'ApplicationTest\\' => array($baseDir . '/module/Application/test'),
 );
