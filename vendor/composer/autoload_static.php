@@ -157,6 +157,7 @@ class ComposerStaticInit6a5b146080b398ce87c00202e4178656
         'B' => 
         array (
             'Brick\\VarExporter\\' => 18,
+            'Box\\Spout\\' => 10,
         ),
         'A' => 
         array (
@@ -463,6 +464,10 @@ class ComposerStaticInit6a5b146080b398ce87c00202e4178656
         'Brick\\VarExporter\\' => 
         array (
             0 => __DIR__ . '/..' . '/brick/varexporter/src',
+        ),
+        'Box\\Spout\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/box/spout/src/Spout',
         ),
         'Application\\' => 
         array (
