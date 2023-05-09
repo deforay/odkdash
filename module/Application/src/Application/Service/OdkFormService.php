@@ -245,18 +245,10 @@ class OdkFormService
 
     public function exportAllV5Submissions($params)
     {
-        // var_dump($params);die;
         try {
-            $writer = WriterEntityFactory::createXLSXWriter();
-            $customTempFolderPath = TEMP_UPLOAD_PATH;
-            $filename = 'SPI-RRT--CHECKLIST-version-5-' . time() . '.xlsx';
-            $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
-            $writer->setTempFolder($customTempFolderPath);
-            $writer->openToFile($TemporaryFolderPath);
-            $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($this->adapter);
+            $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -369,141 +361,42 @@ class OdkFormService
                     $fieldNames[] = $key;
                 }
             }
-            $mainheadingstyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->build();
-            $border = (new BorderBuilder())
-                ->setBorderBottom(Color::BLACK)
-                ->setBorderTop(Color::BLACK)
-                ->setBorderLeft(Color::BLACK)
-                ->setBorderRight(Color::BLACK)
-                ->build();
-            $headingstyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->setBorder($border)
-                ->build();
-            $style = (new StyleBuilder())
-                ->setBorder($border)
-                ->build();
-            $basicStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->build();
-            $heading = ['Facility Report SPI-RRT--CHECKLIST-version-5'];
-            $headingTitle = WriterEntityFactory::createRowFromArray($heading, $mainheadingstyle);
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow($headingTitle);
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint], $basicStyle)
-            );
-            $rowFromValues = WriterEntityFactory::createRowFromArray($fieldNames, $headingstyle);
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow($rowFromValues);
+            $xlsx = new SimpleXLSXGen();
+            $outputData = array();
+            $headerRow = ['Facility Report SPI-RRT--CHECKLIST-version-5'];
+            $outputData[] = $headerRow;
+            $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint];
+            $outputData[] = $data;
+            $outputData[] = $fieldNames;
             foreach ($output as $rowNo => $rowData) {
-                $rowValues = WriterEntityFactory::createRowFromArray($rowData, $style);
-                $writer->addRow($rowValues);
+                $row = array();
+                $colNo = 1;
+                
+                foreach ($rowData as $field => $value) {
+                    if (!isset($value) || empty($value)) {
+                        $value = "";
+                    }
+                    
+                    $row[] = $value;
+                    $colNo++;
+                }
+                
+                $outputData[] = $row;
             }
+            $outputData[] = ['No.of Audit(s)    : '.count($sResult)];
+            $outputData[] = ['Avg. Audit Score    : '.$outputScore['avgAuditScore']];
 
-            $levelZeroStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->setBackgroundColor(Color::RED)
-                ->build();
-            $levelOneStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->setBackgroundColor(Color::rgb(128, 128, 0))
-                ->build();
-            $levelTwoStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->setBackgroundColor(Color::YELLOW)
-                ->build();
-            $levelThreeStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->setBackgroundColor(Color::rgb(0, 255, 0))
-                ->build();
-            $levelFourStyle = (new StyleBuilder())
-                ->setFontBold()
-                ->setFontColor(Color::BLACK)
-                ->setBackgroundColor(Color::rgb(0, 128, 0))
-                ->build();
+            $outputData[] = ['Level 0(Below 40) : '.$outputScore['levelZeroCount']];
+            $outputData[] = ['Level 1(40-59)    : '.$outputScore['levelOneCount']];
+            $outputData[] = ['Level 2(60-79)    : '.$outputScore['levelTwoCount']];
+            $outputData[] = ['Level 3(80-89)    : '.$outputScore['levelThreeCount']];
+            $outputData[] = ['Level 4(90)       : '.$outputScore['levelFourCount']];
 
-            if ((int) $outputScore['avgAuditScore'] >= 0 && (int) $outputScore['avgAuditScore'] < 40) {
-                $avgStyle = (new StyleBuilder())
-                    ->setFontBold()
-                    ->setFontColor(Color::BLACK)
-                    ->setBackgroundColor(Color::RED)
-                    ->build();
-            } else if ((int) $outputScore['avgAuditScore'] >= 40 && (int) $outputScore['avgAuditScore'] <= 59) {
-                $avgStyle = (new StyleBuilder())
-                    ->setFontBold()
-                    ->setFontColor(Color::BLACK)
-                    ->setBackgroundColor(Color::rgb(128, 128, 0))
-                    ->build();
-            } else if ((int) $outputScore['avgAuditScore'] >= 60 && (int) $outputScore['avgAuditScore'] <= 79) {
-                $avgStyle = (new StyleBuilder())
-                    ->setFontBold()
-                    ->setFontColor(Color::BLACK)
-                    ->setBackgroundColor(Color::YELLOW)
-                    ->build();
-            } else if ((int) $outputScore['avgAuditScore'] >= 80 && (int) $outputScore['avgAuditScore'] <= 89) {
-                $avgStyle = (new StyleBuilder())
-                    ->setFontBold()
-                    ->setFontColor(Color::BLACK)
-                    ->setBackgroundColor(Color::rgb(0, 255, 0))
-                    ->build();
-            } else if ((int) $outputScore['avgAuditScore'] >= 90) {
-                $avgStyle = (new StyleBuilder())
-                    ->setFontBold()
-                    ->setFontColor(Color::BLACK)
-                    ->setBackgroundColor(Color::rgb(0, 128, 0))
-                    ->build();
-            }
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['No.of Audit(s)    : ', count($sResult)], $basicStyle)
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Avg. Audit Score    : ', $outputScore['avgAuditScore']], $avgStyle)
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray([''])
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Level 0(Below 40) : ', $outputScore['levelZeroCount']], $levelZeroStyle)
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Level 1(40-59)    : ', $outputScore['levelOneCount']], $levelOneStyle)
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Level 2(60-79)    : ', $outputScore['levelTwoCount']], $levelTwoStyle)
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Level 3(80-89)    : ', $outputScore['levelThreeCount']], $levelThreeStyle)
-            );
-            $writer->addRow(
-                WriterEntityFactory::createRowFromArray(['Level 4(90)       : ', $outputScore['levelFourCount']], $levelFourStyle)
-            );
-            $writer->close();
+            $xlsx->addSheet($outputData);
+            $filename = 'SPI-RRT--CHECKLIST-version-5-' . time() . '.xlsx';
+            $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+            $xlsx->mergeCells('A1:Q1');
+            $xlsx->saveAs($TemporaryFolderPath);
             return $filename;
         } catch (\Exception $exc) {
             error_log("SPI-RRT--CHECKLIST-version-5-REPORT-EXCEL--" . $exc->getMessage());
@@ -1071,9 +964,8 @@ class OdkFormService
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $filename = 'facility-report-v5' . date('d-M-Y-H-i-s') . '.xlsx';
-            //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
-            $sql = new Sql($this->adapter);
+            $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
@@ -1216,8 +1108,6 @@ class OdkFormService
                 }
             }
 
-            //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-            //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             return $filename;
