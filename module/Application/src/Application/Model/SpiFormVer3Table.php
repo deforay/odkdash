@@ -2840,7 +2840,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->where('spirt3.status != "deleted"');
+            ->where('spirt3.status != "deleted"')->order('spirt3.facility_name ASC');
         $aQueryStr = $sql->buildSqlString($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 

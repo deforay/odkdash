@@ -3398,7 +3398,8 @@ class SpiFormVer6Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")));
+        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))
+        ->order('spiv5.facilityname ASC');
         $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
