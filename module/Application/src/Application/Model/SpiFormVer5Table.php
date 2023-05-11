@@ -2409,13 +2409,13 @@ class SpiFormVer5Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")));
+        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))->order('facilityname ASC');
         $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         //$aQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
         $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->where('spirt3.status != "deleted"');
+            ->where('spirt3.status != "deleted"')->order('spirt3.facility_name ASC');
         $aQueryStr = $sql->buildSqlString($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
