@@ -463,6 +463,9 @@ return array(
         'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
         ),
+        'Application\\Controller\\EventController' => array(
+            'index' => 'allow',
+        ),
         'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),

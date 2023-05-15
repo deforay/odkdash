@@ -190,6 +190,16 @@ return array(
                     ),
                 ),
             ),
+            'event-log' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/event-log[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\EventController',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
             'audit-trail' => array(
                 'type' => 'segment',
                 'options' => array(

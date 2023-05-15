@@ -2675,3 +2675,7 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 
 -- Brindha 02-May-2023
 ALTER TABLE `spi_form_v_6` ADD `testingpointname` TEXT NULL DEFAULT NULL AFTER `facilityid`;
+
+-- Brindha 12-May-2023
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\EventController', 'index', 'Access');
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\EventController', 'Manage Event Log');

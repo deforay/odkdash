@@ -48,6 +48,7 @@ use Application\Service\RoleService;
 use Application\Service\UserLoginHistoryService;
 use Application\Service\TcpdfExtends;
 use Application\Service\AuditTrailService;
+use Application\Service\EventService;
 
 use Application\Model\Acl;
 use Laminas\Mvc\ModuleRouteListener;
@@ -363,6 +364,14 @@ class Module
                     {
                         $userLoginHistoryService = $diContainer->get('UserLoginHistoryService');
                         return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
+                    }
+                },
+                'Application\Controller\EventController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $eventService = $diContainer->get('EventService');
+                        return new \Application\Controller\EventController($eventService);
                     }
                 },
                 'Application\Controller\AuditTrailController' => new class
@@ -691,6 +700,13 @@ class Module
                     public function __invoke($diContainer)
                     {
                         return new UserLoginHistoryService($diContainer);
+                    }
+                },
+                'EventService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new EventService($diContainer);
                     }
                 },
                 'AuditTrailService' => new class

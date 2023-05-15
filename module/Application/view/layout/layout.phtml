@@ -34,7 +34,9 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\ConfigControll
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\UserLoginHistoryController", "index")) {
   $adminMenu .= "<li><a href=" . $this->url('user-login-history', array('action' => 'index')) . ">" . $this->translate('User Login History') . "</a></li>";
 }
-
+if (isset($acl) && $acl->isAllowed($role, "Application\Controller\EventController", "index")) {
+  $adminMenu .= "<li><a href=" . $this->url('event-log', array('action' => 'index')) . ">" . $this->translate('Event Log') . "</a></li>";
+}
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3Controller", "manage-facility") && preg_match("/v3/i", $config['web_version'])) {
   $configMenu .= "<li><a href=" . $this->url('spi-v3-form', array('action' => 'manage-facility')) . ">" . $this->translate('SPI-RT v3 Form Data') . "</a></li>";
 }
