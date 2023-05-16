@@ -455,6 +455,10 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     public function mapProvince($params)
     {
         $result = 0;
+        $loginContainer = new Container('credo');
+        $userName = $loginContainer->login;
+        $dbAdapter = $this->adapter;
+        $eventTable = new EventLogTable($dbAdapter);
         if (isset($params['province']) && trim($params['province']) != '') {
             if (isset($params['facility']) && count($params['facility']) > 0) {
                 $result = 1;
@@ -462,6 +466,11 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                     $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
                 }
             }
+            $subject = '';
+            $eventType = 'Map-Province';
+            $action = $userName . ' has mapped Province '.$params['province'];
+            $resourceName = 'Map-Province';
+            $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
         }
         return $result;
     }

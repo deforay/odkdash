@@ -27,6 +27,8 @@ class FacilityService
 
     public function addFacility($params)
     {
+        $loginContainer = new Container('credo');
+        $username = $loginContainer->login;
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -37,7 +39,7 @@ class FacilityService
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'facility-add';
-                $action = 'added a new facility ' . $params['facilityName'];
+                $action = $username.' has added a new facility ' . $params['facilityName'];
                 $resourceName = 'Facility';
                 $eventLogDb = $this->sm->get('EventLogTable');
                 $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
@@ -55,6 +57,8 @@ class FacilityService
 
     public function updateFacility($params)
     {
+        $loginContainer = new Container('credo');
+        $username = $loginContainer->login;
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -65,7 +69,7 @@ class FacilityService
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'facility-update';
-                $action = 'updated a facility ' . $params['facilityName'];
+                $action = $username.' has updated a facility ' . $params['facilityName'];
                 $resourceName = 'Facility';
                 $eventLogDb = $this->sm->get('EventLogTable');
                 $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);

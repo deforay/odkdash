@@ -13,6 +13,7 @@ use Laminas\Filter\Exception;
 use Laminas\Session\Container;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use GuzzleHttp\Client;
+use Application\Model\EventLogTable;
 
 class OdkFormService
 {
@@ -3873,6 +3874,10 @@ class OdkFormService
 
     public function getV6DownloadFilesRow()
     {
+        $loginContainer = new Container('credo');
+        $username = $loginContainer->login;
+        $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+        $trackTable = new EventLogTable($dbAdapter);
         $db = $this->sm->get('SpiFormVer6DownloadTable');
         $result = $db->fetchDownloadFilesRow();
         $xlsx = new SimpleXLSXGen();
@@ -3882,7 +3887,7 @@ class OdkFormService
         if(count($result) > 0){
             foreach($result as $data){
                 $row = array();
-                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
+                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
                 $row[] = $data['assesmentofaudit'];
                 $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
                 $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
@@ -3893,6 +3898,11 @@ class OdkFormService
         }
         $xlsx->addSheet($output);
         $filename = 'Spi-v6-'.time().'.xlsx';
+        $subject = '';
+        $eventType = 'Download-Audits';
+        $action = $username . ' has downloaded SPI RRT v6 Audits';
+        $resourceName = 'Download-SPI-RRT-Audits';
+        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
         return $xlsx->downloadAs($filename);
     }
 
@@ -3954,7 +3964,10 @@ class OdkFormService
     {
         try {
             $loginContainer = new Container('credo');
+            $queryContainer = new Container('query');
+            $username = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $trackTable = new EventLogTable($dbAdapter);
             $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -4165,6 +4178,11 @@ class OdkFormService
             $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
+            $subject = '';
+            $eventType = 'Export-D and S Data';
+            $action = $username . ' has exported D and S data SPI RRT v6';
+            $resourceName = 'Export-D and S-Data-SPI-RRT-v6';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             return $filename;
         } catch (\Exception $exc) {
             error_log("SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION-REPORT-EXCEL--" . $exc->getMessage());
@@ -4177,7 +4195,10 @@ class OdkFormService
     {
         try {
             $queryContainer = new Container('query');
+            $loginContainer = new Container('credo');
+            $username = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $trackTable = new EventLogTable($dbAdapter);
             $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -4428,6 +4449,11 @@ class OdkFormService
             $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
+            $subject = '';
+            $eventType = 'Export-All Data';
+            $action = $username . ' has exported all data SPI RRT v6 ';
+            $resourceName = 'Export-All-Data-SPI-RRT-v6';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             return $filename;
         } catch (\Exception $exc) {
             error_log("SPI-RRT--CHECKLIST-version-6-REPORT-EXCEL--" . $exc->getMessage());
@@ -5076,8 +5102,11 @@ class OdkFormService
         try {
             $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
-            $output = array();
+            $loginContainer = new Container('credo');
+            $userName = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $auditTable = new EventLogTable($dbAdapter);
+            $output = array();
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xlsx';
@@ -5230,6 +5259,11 @@ class OdkFormService
             //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $subject = '';
+            $eventType = 'Export-Facility';
+            $action = $userName . ' has exported the SPI-RRT Version 6 Facility Report';
+            $resourceName = 'Export-SPI-RRT Version 6 Facility Report';
+            $auditTable->addEventLog($subject, $eventType, $action, $resourceName);
             return $filename;
         } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());

@@ -140,6 +140,9 @@ class EventLogTable extends AbstractTableGateway
         if (trim($startDate) != "" && trim($endDate) != "") {
             $sQuery = $sQuery->where(array("date_time >='" . $startDate . "'", "date_time <='" . $endDate . "'"));
         }
+        if ($parameters['eventType'] != '') {
+            $sQuery = $sQuery->where("event_type like '%" . $parameters['eventType'] . "%'");
+        }
 
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);

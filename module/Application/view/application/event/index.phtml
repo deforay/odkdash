@@ -33,6 +33,10 @@ $acl = $this->layout()->acl;
                   <div class=" col-lg-4">
                     <input type="text" placeholder="Select Date Range" class="form-control" id="date" readonly>
                   </div>
+                  <label for="eventType" class="col-sm-2 control-label"><?= $this->translate('Event Type'); ?></label>
+                  <div class=" col-lg-4">
+                    <input type="text" placeholder="Select Event Type" class="form-control" name="eventType" id="eventType">
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -91,6 +95,10 @@ $acl = $this->layout()->acl;
               aoData.push({
                 "name": "dateRange",
                 "value": $("#date").val()
+              }),
+              aoData.push({
+                "name": "eventType",
+                "value": $("#eventType").val()
               }),
               $.ajax({
                   "dataType": 'json',

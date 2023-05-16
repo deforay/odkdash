@@ -2823,9 +2823,9 @@ class SpiFormVer3Table extends AbstractTableGateway
         }
         $result = (int) $result1 || (int) $result2;
         $subject = '';
-        $eventType = 'Merge-Facility-Name-SPI RT Form 3';
-        $action = $userName . ' has merged the facility name for SPI RT Form 3';
-        $resourceName = 'Merge-Facility-Name-SPI RT Form 3';
+        $eventType = 'Merge-Facility-Name';
+        $action = $userName . ' has merged the facility name '.$params['editFacilityName'];
+        $resourceName = 'Merge-Facility-Name';
         $auditTable->addEventLog($subject, $eventType, $action, $resourceName);
         return $result;
     }
