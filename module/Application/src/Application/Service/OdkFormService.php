@@ -6155,37 +6155,23 @@ class OdkFormService
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
                 //Close and output PDF document
                 $fileName = "SPI-RT-CHECKLIST-V6-" . date('d-M-Y-H-i-s') . ".pdf";
-                if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download")) {
-                    mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download");
+                if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf")) {
+                    mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf");
                 }
-                if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id)) {
-                    mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id);
+                $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
+                if (!file_exists($folderPath)) {
+                    mkdir($folderPath);
                 }
-                $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id . DIRECTORY_SEPARATOR . $fileName;
+                $filePath = $folderPath. DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
-                //============================================================+
-                // END OF FILE
-                //============================================================+
             }
-            //zip part
-            $zip = new ZipArchive();
-            $filename = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id . '.zip';
-            if ($zip->open($filename, ZipArchive::CREATE) == true) {
-                $file_list = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id);
-                if (count($file_list) > 2) {
-                    foreach ($file_list as $file) {
-                        if (in_array($file, array(".", ".."))) {
-                            continue;
-                        }
-
-                        $zip->addFile(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id . DIRECTORY_SEPARATOR . $file, $file);
-                    }
-                }
-            }
-            $zip->close();
-            //zip end
-            //remove source pdf(s)
-            $common->removeDirectory(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download" . DIRECTORY_SEPARATOR . 'v6_'.$result['downloadResult']->r_download_id);
+            $commonService = new \Application\Service\CommonService();
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $commonService->zipFolder($folderPath, $zipFileName);
+            // now we can remove the $folderPath
+            $commonService->rmdirRecursive($folderPath);
+            
         }
     }
+    
 }
