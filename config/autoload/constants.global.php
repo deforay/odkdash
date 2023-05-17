@@ -18,6 +18,8 @@ defined('FONT_PATH')
 defined('BACKUP_PATH')
     || define('BACKUP_PATH', APPLICATION_PATH . DIRECTORY_SEPARATOR . 'backup');
 
+defined('CONFIG_PATH') 
+    || define('CONFIG_PATH', APPLICATION_PATH . DIRECTORY_SEPARATOR . 'config');
 
 // returning this empty array to avoid error in config merging
 return [];

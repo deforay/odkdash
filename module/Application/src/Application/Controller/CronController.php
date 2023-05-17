@@ -31,5 +31,6 @@ class CronController extends AbstractActionController
     {
         $this->odkFormService->getDownloadDataList();
         $this->odkFormService->getV5DownloadDataList();
+        $this->odkFormService->getV6DownloadDataList();
     }
 }

@@ -335,6 +335,7 @@ return array(
             \Application\Command\SendAuditMail::class => \Application\Command\SendAuditMailFactory::class,
             \Application\Command\SyncCentralV3::class => \Application\Command\SyncCentralV3Factory::class,
             \Application\Command\SyncCentralV6::class => \Application\Command\SyncCentralV6Factory::class,
+            \Application\Command\GenerateBulkPdf::class => \Application\Command\GenerateBulkPdfFactory::class,
         ),
     ),
     'translator' => array(
@@ -369,6 +370,7 @@ return array(
             'send-audit-mail' => \Application\Command\SendAuditMail::class,
             'sync-central-v3' => \Application\Command\SyncCentralV3::class,
             'sync-central-v6' => \Application\Command\SyncCentralV6::class,
+            'generate-bulk-pdf' => \Application\Command\GenerateBulkPdf::class,
         ],
     ],
     // Placeholder for console routes
