@@ -183,7 +183,7 @@ $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
 
-$fileName = "SPI-V3.pdf";
+$fileName = "SPI-RT-Summary-".date('d-m-y-h-i-s');
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
 $pdf->Output($filePath, "F");
 echo $fileName;

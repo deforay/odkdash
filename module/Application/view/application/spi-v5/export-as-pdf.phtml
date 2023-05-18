@@ -48,8 +48,8 @@ $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('ODK DASHBOARD');
-$pdf->SetTitle('SPI-RT Checklist');
-$pdf->SetSubject('SPI-RT 5.0 Checklist');
+$pdf->SetTitle('SPI-RRT Checklist');
+$pdf->SetSubject('SPI-RRT 5.0 Checklist');
 
 // set default header data
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -182,7 +182,7 @@ $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
 // print_r($pdfContent);die;
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
-$fileName = "SPI-V5.pdf";
+$fileName = "SPI-RRT-Summary-".date('d-m-y-h-i-s');
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
 $pdf->Output($filePath, "F");
 echo $fileName;

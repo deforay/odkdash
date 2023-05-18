@@ -485,17 +485,13 @@ class SpiV6Controller extends AbstractActionController
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
 
-
             $configData = $this->commonService->getGlobalConfigDetails();
 
-            // $pieResult = $this->odkFormService->getSpiV6PerformancePieChart($param);
-            // $spiderResult = $this->odkFormService->getSpiV6AuditRoundWiseDataChart($param);
-            // $s0Result = $this->odkFormService->getSpiV6AuditRoundWiseS0DataChart($param);
-            // $d0Result = $this->odkFormService->getSpiV6AuditRoundWiseD0DataChart($param);
-            // var_dump($spiderResult);die;
-            //echo "<pre>";
-            //print_r(array('result' => $result, 'configData' => $configData, 'argument' => $param, 'spiderResult' => $spiderResult, 'pieResult' => $pieResult));
-            //die;
+            $pieResult = $this->odkFormService->getSpiV6PerformancePieChart($param);
+            $spiderResult = $this->odkFormService->getSpiV6AuditRoundWiseDataChart($param);
+            $s0Result = $this->odkFormService->getSpiV6AuditRoundWiseS0DataChart($param);
+            $d0Result = $this->odkFormService->getSpiV6AuditRoundWiseD0DataChart($param);
+
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result, 'configData' => $configData, 'argument' => $param))
                 ->setTerminal(true);
@@ -597,5 +593,11 @@ class SpiV6Controller extends AbstractActionController
             $viewModel->setTerminal(true);
             return $viewModel;
         }
+    }
+    public function viewBulkDownloadsAction()
+    {
+        $result = $this->odkFormService->getBulkDownloadsFiles();
+
+        return new ViewModel(array('result' => $result));
     }
 }

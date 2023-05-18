@@ -431,6 +431,7 @@ return array(
             'edit' => 'allow',
             'export' => 'allow',
             'view-data-v5' => 'allow',
+            'view-bulk-downloads' => 'allow',
         ),
         'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
@@ -447,6 +448,7 @@ return array(
             'view-data-v6' => 'allow',
             'view-data-section-zero-protocol-v6' => 'allow',
             'view-data-section-zero-v6' => 'allow',
+            'view-bulk-downloads' => 'allow',
         ),
         'Application\\Controller\\SpiV3Controller' => array(
             'index' => 'allow',
@@ -459,6 +461,7 @@ return array(
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
+            'view-bulk-downloads' => 'allow',
         ),
         'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',

@@ -1950,7 +1950,7 @@ class OdkFormService
                 $signBox2 .= '</table>';
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
                 //Close and output PDF document
-                $fileName = "SPI-RT-CHECKLIST-V3-" . date('d-M-Y-H-i-s') . ".pdf";
+                $fileName = "SPI-RT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
                 if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download")) {
                     mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download");
                 }
@@ -3451,7 +3451,7 @@ class OdkFormService
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
 
                 //Close and output PDF document
-                $fileName = "SPI-RRT-CHECKLIST-V5-" . date('d-M-Y-H-i-s') . ".pdf";
+                $fileName = "SPI-RRT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
                 if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download")) {
                     mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "download");
                 }
@@ -4523,7 +4523,7 @@ class OdkFormService
         $fileName = 'piechart-spiv6.png';
         $myPicture->drawText(540, 200, "Extended AA pass / Splitted", ["R" => 0, "G" => 0, "B" => 0, "Align" => TEXT_ALIGN_TOPMIDDLE]);
         $fileName = 'piechart-spiv6.png';
-        $PieChart->pChartObject->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $PieChart->pChartObject->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
 
         //header('Content-Type: text/plain');
         //var_dump($path);die;
@@ -6154,7 +6154,7 @@ class OdkFormService
                 $signBox2 .= '</table>';
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
                 //Close and output PDF document
-                $fileName = "SPI-RT-CHECKLIST-V6-" . date('d-M-Y-H-i-s') . ".pdf";
+                $fileName = "SPI-RRT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
                 if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf")) {
                     mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf");
                 }
@@ -6173,5 +6173,17 @@ class OdkFormService
             
         }
     }
+
+    public function getBulkDownloadsFiles()
+    {
+        $directory = TEMP_UPLOAD_PATH."/bulk-pdf/";
+        $files = scandir($directory);
+
+        // Remove . and .. from the list
+        $files = array_diff($files, array('.', '..'));
+
+        return $files;
+    }
+
     
 }

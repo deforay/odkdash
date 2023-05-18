@@ -2679,3 +2679,8 @@ ALTER TABLE `spi_form_v_6` ADD `testingpointname` TEXT NULL DEFAULT NULL AFTER `
 -- Brindha 12-May-2023
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\EventController', 'index', 'Access');
 INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\EventController', 'Manage Event Log');
+
+-- Brindha 18-May-2023
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3Controller', 'view-bulk-downloads', 'View Bulk Downloads');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5Controller', 'view-bulk-downloads', 'View Bulk Downloads');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6Controller', 'view-bulk-downloads', 'View Bulk Downloads');
