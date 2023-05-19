@@ -1967,7 +1967,7 @@ class OdkFormService
             //zip part
             $zip = new ZipArchive();
             $commonService = new \Application\Service\CommonService();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RT-audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
             $commonService->rmdirRecursive($folderPath);
@@ -3465,7 +3465,7 @@ class OdkFormService
             }
             //zip part
             $commonService = new \Application\Service\CommonService();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-v5-audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
             $commonService->rmdirRecursive($folderPath);
@@ -6143,7 +6143,7 @@ class OdkFormService
                 $pdf->Output($filePath, "F");
             }
             $commonService = new \Application\Service\CommonService();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
             $commonService->rmdirRecursive($folderPath);

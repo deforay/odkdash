@@ -144,6 +144,9 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                 <div class="form-group" style="text-align:center;">
                   <button type="button" onclick="search();" class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>&nbsp;
                   <button type="button" onclick="exportSearchPDFData();" class="btn btn-space btn-success"><?= $this->translate('Export as PDF'); ?></button>
+                  <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'view-bulk-downloads')) { ?>
+                    <a href="/spi-v3/view-bulk-downloads" class="btn btn-space btn-success">View Bulk Downloads </a>
+                  <?php } ?>
                 </div>
               </form>
             </div>
@@ -222,7 +225,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
     <div class="spacer col-lg-12">
       <!--<button type="button" onclick="window.location.href='< ?php echo $this->url('spi-v3-form',array('action'=>'export')); ?>'" class="btn btn-space btn-primary">Export All Data</button>-->
       <button type="button" onclick="exportData();" class="btn btn-space btn-primary"><?= $this->translate('Export All Data'); ?></button>
-      &nbsp;&nbsp;<button type="button" onclick="exportPDFData();" class="btn btn-space btn-primary"><?= $this->translate('Export as PDF'); ?></button>
+      &nbsp;&nbsp;<button type="button" onclick="exportPDFData();" class="btn btn-space btn-primary"><?= $this->translate('Export Summary Table as PDF'); ?></button>
     </div>
     <br>
     <br>

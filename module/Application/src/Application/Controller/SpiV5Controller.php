@@ -441,4 +441,10 @@ class SpiV5Controller extends AbstractActionController
             return $viewModel;
         }
     }
+    public function viewBulkDownloadsAction()
+    {
+        $result = $this->odkFormService->getBulkDownloadsFiles();
+
+        return new ViewModel(array('result' => $result));
+    }
 }
