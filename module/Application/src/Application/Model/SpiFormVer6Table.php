@@ -5298,4 +5298,16 @@ class SpiFormVer6Table extends AbstractTableGateway
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         return $rResult;
     }
+
+    public function updateSpiv6FacilityInfo($id, $params)
+    {
+        if ($id > 0) {
+            $data = array(
+                'facilityid' => $params['facilityId'],
+                'facilityname' => $params['facilityName'],
+            );
+            $this->update($data, array('facility' => $id));
+        }
+        return $id;
+    }
 }

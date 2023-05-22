@@ -91,6 +91,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $dbAdapter = $this->adapter;
             $spiv3Db = new SpiFormVer3Table($dbAdapter);
             $spiv5Db = new SpiFormVer5Table($dbAdapter);
+            $spiv6Db = new SpiFormVer6Table($dbAdapter);
             $rowId = base64_decode($params['rowId']);
             $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
             $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
@@ -108,6 +109,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             //update spiv3 & spiv5 table facility info
             $spiv3Db->updateSpiv3FacilityInfo($rowId, $params);
             $spiv5Db->updateSpiv5FacilityInfo($rowId, $params);
+            $spiv6Db->updateSpiv6FacilityInfo($rowId, $params);
             return $rowId;
         }
     }
