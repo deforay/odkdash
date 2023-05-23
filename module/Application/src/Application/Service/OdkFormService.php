@@ -5320,172 +5320,181 @@ class OdkFormService
     public function syncOdkCentralV3()
     {
         $configResult = $this->sm->get('Config');
-        $spirrtURL = $configResult['odkcentral']['spirt']['url'];
-        $projectId = $configResult['odkcentral']['spirt']['projectId'];
-        $formId = $configResult['odkcentral']['spirt']['formId'];
+        if (isset($configResult['odkcentral']['spirt'])) {
+            foreach ($configResult['odkcentral']['spirt'] as $item) {
+                $spirrtURL = $item['url'];
+                $projectId = $item['projectId'];
+                $formId = $item['formId'];
 
-        $spiV3db = $this->sm->get('SpiFormVer3Table');
-        $lastDateQuery = $spiV3db->getLatestFormDate();
-        $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-        $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
-        if ($lastFormDate != '') {
-            $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
-        } else {
-            $url = "$baseUrl.svc/Submissions";
-        }
-        // $odataClient = new ODataClient($spirrtURL, function($request) {
-        $email = $configResult['odkcentral']['spirt']['email'];
-        $password = $configResult['odkcentral']['spirt']['password'];
+                $spiV3db = $this->sm->get('SpiFormVer3Table');
+                $lastDateQuery = $spiV3db->getLatestFormDate($projectId,$formId);
+                $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
+                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
+                if ($lastFormDate != '') {
+                    $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+                } else {
+                    $url = "$baseUrl.svc/Submissions";
+                }
+                // $odataClient = new ODataClient($spirrtURL, function($request) {
+                $email = $item['email'];
+                $password = $item['password'];
 
-        $httpClient = new Client([
-            'base_uri' => $baseUrl,
-            'cookies' => true,
-        ]);
+                $httpClient = new Client([
+                    'base_uri' => $baseUrl,
+                    'cookies' => true,
+                ]);
 
-        // Authenticate and obtain session cookie
-        $response = $httpClient->post('/v1/sessions', [
-            'json' => [
-                'email' => $email,
-                'password' => $password,
-            ],
-        ]);
+                // Authenticate and obtain session cookie
+                $response = $httpClient->post('/v1/sessions', [
+                    'json' => [
+                        'email' => $email,
+                        'password' => $password,
+                    ],
+                ]);
 
-        // Check if the request was successful
-        if ($response->getStatusCode() == 200) {
-            $authResponse = json_decode($response->getBody()->getContents(), true);
-            $authToken = $authResponse['token'];
-            // Fetch instanceIdList
-            $response = $httpClient->get($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $authToken,
-                ],
-            ]);
-            $instanceIdList = $response->getBody()->getContents();
-            $responseSubmission = $this->formatResponse($instanceIdList);
+                // Check if the request was successful
+                if ($response->getStatusCode() == 200) {
+                    $authResponse = json_decode($response->getBody()->getContents(), true);
+                    $authToken = $authResponse['token'];
+                    // Fetch instanceIdList
+                    $response = $httpClient->get($url, [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $authToken,
+                        ],
+                    ]);
+                    $instanceIdList = $response->getBody()->getContents();
+                    $responseSubmission = $this->formatResponse($instanceIdList);
 
-            $instanceLists = [];
-            $correctiveActions = [];
+                    $instanceLists = [];
+                    $correctiveActions = [];
 
-            foreach ($responseSubmission['value'] as $submission) {
-                foreach ($submission as $key => $listValue) {
-                    if ($key === '__id') {
-                        $instanceLists[] = $listValue;
+                    foreach ($responseSubmission['value'] as $submission) {
+                        foreach ($submission as $key => $listValue) {
+                            if ($key === '__id') {
+                                $instanceLists[] = $listValue;
 
-                        $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . $authToken,
-                                'Content-Type' => 'application/xml',
-                            ],
-                        ]);
-                        $formXml = ($formInstanceResponse->getBody()->getContents());
-                        $xml = simplexml_load_string($formXml);
-                        $json = json_encode($xml);
-                        $array = json_decode($json, true);
-                        $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+                                $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
+                                    'headers' => [
+                                        'Authorization' => 'Bearer ' . $authToken,
+                                        'Content-Type' => 'application/xml',
+                                    ],
+                                ]);
+                                $formXml = ($formInstanceResponse->getBody()->getContents());
+                                $xml = simplexml_load_string($formXml);
+                                $json = json_encode($xml);
+                                $array = json_decode($json, true);
+                                $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+                            }
+                        }
                     }
+
+                    $formResponse = $httpClient->get($baseUrl, [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $authToken,
+                        ],
+                    ]);
+                    $formDetails = ($formResponse->getBody()->getContents());
+                    $formDetails = $this->formatResponse($formDetails);
+
+
+                    if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
+                        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions,$projectId,$formId);
+                    }
+                } else {
+                    echo "Error authenticating: " . $response->getStatusCode();
                 }
             }
-
-            $formResponse = $httpClient->get($baseUrl, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $authToken,
-                ],
-            ]);
-            $formDetails = ($formResponse->getBody()->getContents());
-            $formDetails = $this->formatResponse($formDetails);
-
-
-            if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
-                $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
-            }
-        } else {
-            echo "Error authenticating: " . $response->getStatusCode();
-        }
+        }        
     }
 
     public function syncOdkCentralV6()
     {
         $configResult = $this->sm->get('Config');
-        $spirrtURL = $configResult['odkcentral']['spirrt']['url'];
-        $projectId = $configResult['odkcentral']['spirrt']['projectId'];
-        $formId = $configResult['odkcentral']['spirrt']['formId'];
+        if (isset($configResult['odkcentral']['spirrt'])) {
+            foreach ($configResult['odkcentral']['spirrt'] as $item) {
+                $spirrtURL = $item['url'];
+                $projectId = $item['projectId'];
+                $formId = $item['formId'];
 
-        $spiV6db = $this->sm->get('SpiFormVer6Table');
-        $lastDateQuery = $spiV6db->getLatestFormDate();
-        $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-        $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
-        if ($lastFormDate != '') {
-            $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
-        } else {
-            $url = "$baseUrl.svc/Submissions";
-        }
-        // $odataClient = new ODataClient($spirrtURL, function($request) {
-        $email = $configResult['odkcentral']['spirrt']['email'];
-        $password = $configResult['odkcentral']['spirrt']['password'];
-
-        $httpClient = new Client([
-            'base_uri' => $baseUrl,
-            'cookies' => true,
-        ]);
-
-        // Authenticate and obtain session cookie
-        $response = $httpClient->post('/v1/sessions', [
-            'json' => [
-                'email' => $email,
-                'password' => $password,
-            ],
-        ]);
-
-        // Check if the request was successful
-        if ($response->getStatusCode() == 200) {
-            $authResponse = json_decode($response->getBody()->getContents(), true);
-            $authToken = $authResponse['token'];
-            // Fetch instanceIdList
-            $response = $httpClient->get($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $authToken,
-                ],
-            ]);
-            $instanceIdList = $response->getBody()->getContents();
-            $responseSubmission = $this->formatResponse($instanceIdList);
-
-            $instanceLists = [];
-            $correctiveActions = [];
-
-            foreach ($responseSubmission['value'] as $submission) {
-                foreach ($submission as $key => $listValue) {
-                    if ($key === '__id') {
-                        $instanceLists[] = $listValue;
-
-                        $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . $authToken,
-                                'Content-Type' => 'application/xml',
-                            ],
-                        ]);
-                        $formXml = ($formInstanceResponse->getBody()->getContents());
-                        $xml = simplexml_load_string($formXml);
-                        $json = json_encode($xml);
-                        $array = json_decode($json, true);
-                        $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
-                    }
+                $spiV6db = $this->sm->get('SpiFormVer6Table');
+                $lastDateQuery = $spiV6db->getLatestFormDate($projectId,$formId);
+                $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
+                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
+                if ($lastFormDate != '') {
+                    $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+                } else {
+                    $url = "$baseUrl.svc/Submissions";
                 }
+                // $odataClient = new ODataClient($spirrtURL, function($request) {
+                $email = $item['email'];
+                $password = $item['password'];
+
+                $httpClient = new Client([
+                    'base_uri' => $baseUrl,
+                    'cookies' => true,
+                ]);
+
+                // Authenticate and obtain session cookie
+                $response = $httpClient->post('/v1/sessions', [
+                    'json' => [
+                        'email' => $email,
+                        'password' => $password,
+                    ],
+                ]);
+
+                // Check if the request was successful
+                if ($response->getStatusCode() == 200) {
+                    $authResponse = json_decode($response->getBody()->getContents(), true);
+                    $authToken = $authResponse['token'];
+                    // Fetch instanceIdList
+                    $response = $httpClient->get($url, [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $authToken,
+                        ],
+                    ]);
+                    $instanceIdList = $response->getBody()->getContents();
+                    $responseSubmission = $this->formatResponse($instanceIdList);
+
+                    $instanceLists = [];
+                    $correctiveActions = [];
+
+                    foreach ($responseSubmission['value'] as $submission) {
+                        foreach ($submission as $key => $listValue) {
+                            if ($key === '__id') {
+                                $instanceLists[] = $listValue;
+
+                                $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
+                                    'headers' => [
+                                        'Authorization' => 'Bearer ' . $authToken,
+                                        'Content-Type' => 'application/xml',
+                                    ],
+                                ]);
+                                $formXml = ($formInstanceResponse->getBody()->getContents());
+                                $xml = simplexml_load_string($formXml);
+                                $json = json_encode($xml);
+                                $array = json_decode($json, true);
+                                $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
+                            }
+                        }
+                    }
+
+                    $formResponse = $httpClient->get($baseUrl, [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $authToken,
+                        ],
+                    ]);
+                    $formDetails = ($formResponse->getBody()->getContents());
+                    $formDetails = $this->formatResponse($formDetails);
+
+
+                    if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
+                        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions,$projectId,$formId);
+                    }
+                } else {
+                    echo "Error authenticating: " . $response->getStatusCode();
+                }
+
             }
-
-            $formResponse = $httpClient->get($baseUrl, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $authToken,
-                ],
-            ]);
-            $formDetails = ($formResponse->getBody()->getContents());
-            $formDetails = $this->formatResponse($formDetails);
-
-
-            if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
-                $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions);
-            }
-        } else {
-            echo "Error authenticating: " . $response->getStatusCode();
         }
     }
 

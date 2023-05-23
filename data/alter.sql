@@ -2684,3 +2684,10 @@ INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Co
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3Controller', 'view-bulk-downloads', 'View Bulk Downloads');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5Controller', 'view-bulk-downloads', 'View Bulk Downloads');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6Controller', 'view-bulk-downloads', 'View Bulk Downloads');
+
+-- Brindha 23-May-2023
+ALTER TABLE `spi_form_v_3` ADD `central_project_id` INT NULL DEFAULT NULL AFTER `token`;
+ALTER TABLE `spi_form_v_6` ADD `central_project_id` INT NULL DEFAULT NULL AFTER `uuid`;
+
+ALTER TABLE `spi_form_v_3` ADD `central_form_id` TEXT NULL DEFAULT NULL AFTER `central_project_id`;
+ALTER TABLE `spi_form_v_6` ADD `central_form_id` TEXT NULL DEFAULT NULL AFTER `central_project_id`;

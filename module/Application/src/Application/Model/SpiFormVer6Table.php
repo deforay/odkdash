@@ -426,7 +426,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
     }
 
-    public function saveOdkCentralData($params, $formDetails, $correctiveActions)
+    public function saveOdkCentralData($params, $formDetails, $correctiveActions,$projectId,$formId)
     {
         // print_r($formDetails);die;
         if ($params == null || $params == "" || (is_array($params) && count($params['value']) == 0)) {
@@ -1090,6 +1090,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $data['D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'],
                         'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $data['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'],
                         'status' => $approveStatus,
+                        'central_project_id' => $projectId,
+                        'central_form_id' => $formId,
                     );
                     $dbAdapter = $this->adapter;
                     $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
@@ -5279,12 +5281,12 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $id;
     }
 
-    public function getLatestFormDate()
+    public function getLatestFormDate($projectId,$formId)
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $rResult = $dbAdapter->query("SELECT MAX(today) as last_added_form_date FROM spi_form_v_6", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
+        $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_6 WHERE central_project_id = ? AND central_form_id = ?";
+        $rResult = $dbAdapter->query($query, [$projectId, $formId])->toArray();
         return $rResult;
     }
 
