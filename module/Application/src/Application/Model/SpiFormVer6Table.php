@@ -456,7 +456,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $par = array();
             $data = array();
             foreach ($submission as $key => $submissionData) {
-                $data['token'] = $formDetails["enketoId"];
+                //$data['token'] = $formDetails["enketoId"];
                 $data['uuid'] = $submissionData["__id"];
                 $data['content'] = 'record';
                 $data['formId'] = $formDetails["xmlFormId"];
@@ -780,7 +780,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $data['instanceName'] = isset($data['instanceName']) ? $data['instanceName'] : "";
 
                     $par = array(
-                        'token' => $data['token'],
+                        'token' => $projectId . ':' . $formId,
                         'uuid' => $data['uuid'],
                         'content' => $data['content'],
                         'formId' => $data['formId'],
