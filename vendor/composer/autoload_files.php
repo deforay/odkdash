@@ -34,7 +34,6 @@ return array(
     '0d59ee240a4cd96ddbb4ff164fccea4d' => $vendorDir . '/symfony/polyfill-php73/bootstrap.php',
     'b6b991a57620e2fb6b2f66f03fe9ddc2' => $vendorDir . '/symfony/string/Resources/functions.php',
     '2cffec82183ee1cea088009cef9a6fc3' => $vendorDir . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
-    'c964ee0ededf28c96ebd9db5099ef910' => $vendorDir . '/guzzlehttp/promises/src/functions_include.php',
     '3f8ee9969da604d0f15c841b77b11450' => $vendorDir . '/laminas/laminas-stratigility/src/functions/double-pass-middleware.php',
     'ee5523a5d51d6d51030227439db1ef74' => $vendorDir . '/laminas/laminas-stratigility/src/functions/host.php',
     '5f6e29ca023a0bdefa2476adb465d527' => $vendorDir . '/laminas/laminas-stratigility/src/functions/middleware.php',

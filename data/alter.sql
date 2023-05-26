@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `event_log` (
 
 ALTER TABLE `event_log`
   ADD CONSTRAINT `event_log_ibfk_1` FOREIGN KEY (`actor`) REFERENCES `users` (`id`);
-  
+
 --ilahir 10-MAY-2016
 
 CREATE TABLE IF NOT EXISTS `resources` (
@@ -198,10 +198,10 @@ CREATE TABLE `audit_mails` (
 
 ALTER TABLE `audit_mails`
   ADD PRIMARY KEY (`mail_id`);
-  
+
 ALTER TABLE `audit_mails`
   MODIFY `mail_id` int(11) NOT NULL AUTO_INCREMENT;
-  
+
 --Pal 25th-Aug-2016
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Header', 'header', NULL), (NULL, 'Logo', 'logo', NULL);
 
@@ -239,10 +239,10 @@ CREATE TABLE `r_spi_form_v_3_download` (
 
 ALTER TABLE `r_spi_form_v_3_download`
   ADD PRIMARY KEY (`r_download_id`);
-  
+
 ALTER TABLE `r_spi_form_v_3_download`
   MODIFY `r_download_id` int(11) NOT NULL AUTO_INCREMENT;
-  
+
 ALTER TABLE `r_spi_form_v_3_download` ADD `user` INT(11) NOT NULL AFTER `r_download_id`;
 
 -- saravanan 05-apr-2017
@@ -492,7 +492,7 @@ ALTER TABLE `spi_form_v_3_duplicate`
 
 ALTER TABLE `spi_form_v_3_duplicate`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-  
+
 
 --Pal 06-Apr-2017
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV3', 'download-files', 'Download Zipped Files');
@@ -2015,9 +2015,9 @@ ALTER TABLE `spi_form_v_6` ADD `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-v6', 'View Data');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'view-data-v5', 'View Data');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'email-v6', 'Email');
-INSERT INTO `privileges` 
-(`resource_id`, `privilege_name`, `display_name`) 
-VALUES 
+INSERT INTO `privileges`
+(`resource_id`, `privilege_name`, `display_name`)
+VALUES
 ('Application\\Controller\\SpiV6', 'view-data-section-zero-v6', 'View Section S0 Data');
 
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');
@@ -2363,7 +2363,7 @@ CREATE TABLE `spi_form_v_6` (
  `D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` text,
  `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI` text,
  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- Sakthivel 24-Nov-2021
 
@@ -2399,7 +2399,7 @@ CREATE TABLE `countries` (
   `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'inactive',
   PRIMARY KEY (`country_id`),
   UNIQUE KEY `country_id` (`country_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `countries` (`country_id`, `latitude`, `longitude`, `country_name`, `iso2`, `iso3`, `numeric_code`, `status`) VALUES
 (1, '33.93911', '67.709953', 'Afghanistan', 'AF', 'AFG', 4, 'inactive'),
