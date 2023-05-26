@@ -426,7 +426,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
     }
 
-    public function saveOdkCentralData($params, $formDetails, $correctiveActions)
+    public function saveOdkCentralData($params, $formDetails, $correctiveActions,$projectId,$formId)
     {
         // print_r($formDetails);die;
         if ($params == null || $params == "" || (is_array($params) && count($params['value']) == 0)) {
@@ -456,7 +456,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $par = array();
             $data = array();
             foreach ($submission as $key => $submissionData) {
-                $data['token'] = $formDetails["enketoId"];
+                //$data['token'] = $formDetails["enketoId"];
                 $data['uuid'] = $submissionData["__id"];
                 $data['content'] = 'record';
                 $data['formId'] = $formDetails["xmlFormId"];
@@ -780,7 +780,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $data['instanceName'] = isset($data['instanceName']) ? $data['instanceName'] : "";
 
                     $par = array(
-                        'token' => $data['token'],
+                        'token' => $projectId . ':' . $formId,
                         'uuid' => $data['uuid'],
                         'content' => $data['content'],
                         'formId' => $data['formId'],
@@ -1090,6 +1090,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $data['D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'],
                         'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI' => $data['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'],
                         'status' => $approveStatus,
+                        'central_project_id' => $projectId,
+                        'central_form_id' => $formId,
                     );
                     $dbAdapter = $this->adapter;
                     $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
@@ -5279,12 +5281,12 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $id;
     }
 
-    public function getLatestFormDate()
+    public function getLatestFormDate($projectId,$formId)
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $rResult = $dbAdapter->query("SELECT MAX(today) as last_added_form_date FROM spi_form_v_6", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
+        $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_6 WHERE central_project_id = ? AND central_form_id = ?";
+        $rResult = $dbAdapter->query($query, [$projectId, $formId])->toArray();
         return $rResult;
     }
 
@@ -5297,5 +5299,17 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         return $rResult;
+    }
+
+    public function updateSpiv6FacilityInfo($id, $params)
+    {
+        if ($id > 0) {
+            $data = array(
+                'facilityid' => $params['facilityId'],
+                'facilityname' => $params['facilityName'],
+            );
+            $this->update($data, array('facility' => $id));
+        }
+        return $id;
     }
 }
