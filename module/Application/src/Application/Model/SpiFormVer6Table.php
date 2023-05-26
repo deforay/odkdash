@@ -457,6 +457,9 @@ class SpiFormVer6Table extends AbstractTableGateway
         foreach ($params as $submission) {
             $par = array();
             $data = array();
+            if (empty($submission)) {
+                continue;
+            }
             foreach ($submission as $key => $submissionData) {
 
                 $submissionData['SPIRRT'] = $submissionData['SPIRRT'] ?? $submissionData['SPIRT'];
@@ -516,26 +519,26 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['INSTANCE'] = $submissionData['TESTSITE']['INSTANCE'];
 
 
-                $data['PERSONAL_Q_1_1_HIV_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_1_HIV_TRAINING'];
-                $data['PERSONAL_C_1_1_HIV_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_C_1_1_HIV_TRAINING'];
-                $data['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'] = $submissionData['SPIRRT']['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'];
-                $data['PERSONAL_C_1_2_HIV_TESTING_REGISTER'] = $submissionData['SPIRRT']['PERSONAL_C_1_2_HIV_TESTING_REGISTER'];
-                $data['PERSONAL_Q_1_3_EQA_PT'] = $submissionData['SPIRRT']['PERSONAL_Q_1_3_EQA_PT'];
-                $data['PERSONAL_C_1_3_EQA_PT'] = $submissionData['SPIRRT']['PERSONAL_C_1_3_EQA_PT'];
-                $data['PERSONAL_Q_1_4_QC_PROCESS'] = $submissionData['SPIRRT']['PERSONAL_Q_1_4_QC_PROCESS'];
-                $data['PERSONAL_C_1_4_QC_PROCESS'] = $submissionData['SPIRRT']['PERSONAL_C_1_4_QC_PROCESS'];
-                $data['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'] = $submissionData['SPIRRT']['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'];
-                $data['PERSONAL_C_1_5_SAFETY_MANAGEMENT'] = $submissionData['SPIRRT']['PERSONAL_C_1_5_SAFETY_MANAGEMENT'];
-                $data['PERSONAL_Q_1_6_REFRESHER_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_6_REFRESHER_TRAINING'];
-                $data['PERSONAL_C_1_6_REFRESHER_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_C_1_6_REFRESHER_TRAINING'];
-                $data['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'];
-                $data['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'] = $submissionData['SPIRRT']['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'];
-                $data['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'] = $submissionData['SPIRRT']['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'];
-                $data['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'] = $submissionData['SPIRRT']['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'];
-                $data['PERSONAL_Q_1_9_CERTIFIED_TESTERS'] = $submissionData['SPIRRT']['PERSONAL_Q_1_9_CERTIFIED_TESTERS'];
-                $data['PERSONAL_C_1_9_CERTIFIED_TESTERS'] = $submissionData['SPIRRT']['PERSONAL_C_1_9_CERTIFIED_TESTERS'];
-                $data['PERSONAL_Q_1_10_RECERTIFIED'] = $submissionData['SPIRRT']['PERSONAL_Q_1_10_RECERTIFIED'];
-                $data['PERSONAL_C_1_10_RECERTIFIED'] = $submissionData['SPIRRT']['PERSONAL_C_1_10_RECERTIFIED'];
+                $data['PERSONAL_Q_1_1_HIV_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_1_HIV_TRAINING'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_1'] ?? null;
+                $data['PERSONAL_C_1_1_HIV_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_C_1_1_HIV_TRAINING'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_1'] ?? null;
+                $data['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'] = $submissionData['SPIRRT']['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_2'] ?? null;
+                $data['PERSONAL_C_1_2_HIV_TESTING_REGISTER'] = $submissionData['SPIRRT']['PERSONAL_C_1_2_HIV_TESTING_REGISTER'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_2'] ?? null;
+                $data['PERSONAL_Q_1_3_EQA_PT'] = $submissionData['SPIRRT']['PERSONAL_Q_1_3_EQA_PT'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_3'] ?? null;
+                $data['PERSONAL_C_1_3_EQA_PT'] = $submissionData['SPIRRT']['PERSONAL_C_1_3_EQA_PT'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_3'] ?? null;
+                $data['PERSONAL_Q_1_4_QC_PROCESS'] = $submissionData['SPIRRT']['PERSONAL_Q_1_4_QC_PROCESS'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_4'] ?? null;
+                $data['PERSONAL_C_1_4_QC_PROCESS'] = $submissionData['SPIRRT']['PERSONAL_C_1_4_QC_PROCESS'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_4'] ?? null;
+                $data['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'] = $submissionData['SPIRRT']['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_5'] ?? null;
+                $data['PERSONAL_C_1_5_SAFETY_MANAGEMENT'] = $submissionData['SPIRRT']['PERSONAL_C_1_5_SAFETY_MANAGEMENT'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_5'] ?? null;
+                $data['PERSONAL_Q_1_6_REFRESHER_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_6_REFRESHER_TRAINING'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_6'] ?? null;
+                $data['PERSONAL_C_1_6_REFRESHER_TRAINING'] = $submissionData['SPIRRT']['PERSONAL_C_1_6_REFRESHER_TRAINING'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_6'] ?? null;
+                $data['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'] = $submissionData['SPIRRT']['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_7'] ?? null;
+                $data['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'] = $submissionData['SPIRRT']['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_7'] ?? null;
+                $data['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'] = $submissionData['SPIRRT']['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_8'] ?? null;
+                $data['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'] = $submissionData['SPIRRT']['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_8'] ?? null;
+                $data['PERSONAL_Q_1_9_CERTIFIED_TESTERS'] = $submissionData['SPIRRT']['PERSONAL_Q_1_9_CERTIFIED_TESTERS'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_9'] ?? null;
+                $data['PERSONAL_C_1_9_CERTIFIED_TESTERS'] = $submissionData['SPIRRT']['PERSONAL_C_1_9_CERTIFIED_TESTERS'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_9'] ?? null;
+                $data['PERSONAL_Q_1_10_RECERTIFIED'] = $submissionData['SPIRRT']['PERSONAL_Q_1_10_RECERTIFIED'] ?? $submissionData['SPIRRT']['PERSONAL_Q_1_10'] ?? null;
+                $data['PERSONAL_C_1_10_RECERTIFIED'] = $submissionData['SPIRRT']['PERSONAL_C_1_10_RECERTIFIED'] ?? $submissionData['SPIRRT']['PERSONAL_C_1_10'] ?? null;
                 $data['PERSONAL_SCORE'] = $submissionData['SPIRRT']['PERSONAL_SCORE'];
                 $data['PERSONAL_Display'] = $submissionData['SPIRRT']['PERSONAL_Display'];
                 $data['PERSONALPHOTO'] = $submissionData['SPIRRT']['PERSONALPHOTO'];
@@ -844,26 +847,26 @@ class SpiFormVer6Table extends AbstractTableGateway
                         'name_auditor2' => $data['nameOfAuditor2'] ?? null,
                         'info4' => $data['info4'],
                         'INSTANCE' => $data['INSTANCE'],
-                        'PERSONAL_Q_1_1_HIV_TRAINING' => $data['PERSONAL_Q_1_1_HIV_TRAINING'] ?? $data['PERSONAL_Q_1_1'] ?? null,
-                        'PERSONAL_C_1_1_HIV_TRAINING' => $data['PERSONAL_C_1_1_HIV_TRAINING'] ?? $data['PERSONAL_C_1_1'] ?? null,
-                        'PERSONAL_Q_1_2_HIV_TESTING_REGISTER' => $data['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'] ?? $data['PERSONAL_Q_1_2'] ?? null,
-                        'PERSONAL_C_1_2_HIV_TESTING_REGISTER' => $data['PERSONAL_C_1_2_HIV_TESTING_REGISTER'] ?? $data['PERSONAL_C_1_2'] ?? null,
-                        'PERSONAL_Q_1_3_EQA_PT' => $data['PERSONAL_Q_1_3_EQA_PT'] ?? $data['PERSONAL_Q_1_3'] ?? null,
-                        'PERSONAL_C_1_3_EQA_PT' => $data['PERSONAL_C_1_3_EQA_PT'] ?? $data['PERSONAL_C_1_3'] ?? null,
-                        'PERSONAL_Q_1_4_QC_PROCESS' => $data['PERSONAL_Q_1_4_QC_PROCESS'] ?? $data['PERSONAL_Q_1_4'] ?? null,
-                        'PERSONAL_C_1_4_QC_PROCESS' => $data['PERSONAL_C_1_4_QC_PROCESS'] ?? $data['PERSONAL_C_1_4'] ?? null,
-                        'PERSONAL_Q_1_5_SAFETY_MANAGEMENT' => $data['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'] ?? $data['PERSONAL_Q_1_5'] ?? null,
-                        'PERSONAL_C_1_5_SAFETY_MANAGEMENT' => $data['PERSONAL_C_1_5_SAFETY_MANAGEMENT'] ?? $data['PERSONAL_C_1_5'] ?? null,
-                        'PERSONAL_Q_1_6_REFRESHER_TRAINING' => $data['PERSONAL_Q_1_6_REFRESHER_TRAINING'] ?? $data['PERSONAL_Q_1_6'] ?? null,
-                        'PERSONAL_C_1_6_REFRESHER_TRAINING' => $data['PERSONAL_C_1_6_REFRESHER_TRAINING'] ?? $data['PERSONAL_C_1_6'] ?? null,
-                        'PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING' => $data['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'] ?? $data['PERSONAL_Q_1_7'] ?? null,
-                        'PERSONAL_C_1_7_HIV_COMPETENCY_TESTING' => $data['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'] ?? $data['PERSONAL_C_1_7'] ?? null,
-                        'PERSONAL_Q_1_8_NATIONAL_CERTIFICATION' => $data['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'] ?? $data['PERSONAL_Q_1_8'] ?? null,
-                        'PERSONAL_C_1_8_NATIONAL_CERTIFICATION' => $data['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'] ?? $data['PERSONAL_C_1_8'] ?? null,
-                        'PERSONAL_Q_1_9_CERTIFIED_TESTERS' => $data['PERSONAL_Q_1_9_CERTIFIED_TESTERS'] ?? $data['PERSONAL_Q_1_9'] ?? null,
-                        'PERSONAL_C_1_9_CERTIFIED_TESTERS' => $data['PERSONAL_C_1_9_CERTIFIED_TESTERS'] ?? $data['PERSONAL_C_1_9'] ?? null,
-                        'PERSONAL_Q_1_10_RECERTIFIED' => $data['PERSONAL_Q_1_10_RECERTIFIED'] ?? $data['PERSONAL_Q_1_10'] ?? null,
-                        'PERSONAL_C_1_10_RECERTIFIED' => $data['PERSONAL_C_1_10_RECERTIFIED'] ?? $data['PERSONAL_C_1_10'] ?? null,
+                        'PERSONAL_Q_1_1_HIV_TRAINING' => $data['PERSONAL_Q_1_1_HIV_TRAINING'],
+                        'PERSONAL_C_1_1_HIV_TRAINING' => $data['PERSONAL_C_1_1_HIV_TRAINING'],
+                        'PERSONAL_Q_1_2_HIV_TESTING_REGISTER' => $data['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'],
+                        'PERSONAL_C_1_2_HIV_TESTING_REGISTER' => $data['PERSONAL_C_1_2_HIV_TESTING_REGISTER'],
+                        'PERSONAL_Q_1_3_EQA_PT' => $data['PERSONAL_Q_1_3_EQA_PT'],
+                        'PERSONAL_C_1_3_EQA_PT' => $data['PERSONAL_C_1_3_EQA_PT'],
+                        'PERSONAL_Q_1_4_QC_PROCESS' => $data['PERSONAL_Q_1_4_QC_PROCESS'],
+                        'PERSONAL_C_1_4_QC_PROCESS' => $data['PERSONAL_C_1_4_QC_PROCESS'],
+                        'PERSONAL_Q_1_5_SAFETY_MANAGEMENT' => $data['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'],
+                        'PERSONAL_C_1_5_SAFETY_MANAGEMENT' => $data['PERSONAL_C_1_5_SAFETY_MANAGEMENT'],
+                        'PERSONAL_Q_1_6_REFRESHER_TRAINING' => $data['PERSONAL_Q_1_6_REFRESHER_TRAINING'],
+                        'PERSONAL_C_1_6_REFRESHER_TRAINING' => $data['PERSONAL_C_1_6_REFRESHER_TRAINING'],
+                        'PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING' => $data['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'],
+                        'PERSONAL_C_1_7_HIV_COMPETENCY_TESTING' => $data['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'],
+                        'PERSONAL_Q_1_8_NATIONAL_CERTIFICATION' => $data['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'],
+                        'PERSONAL_C_1_8_NATIONAL_CERTIFICATION' => $data['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'],
+                        'PERSONAL_Q_1_9_CERTIFIED_TESTERS' => $data['PERSONAL_Q_1_9_CERTIFIED_TESTERS'],
+                        'PERSONAL_C_1_9_CERTIFIED_TESTERS' => $data['PERSONAL_C_1_9_CERTIFIED_TESTERS'],
+                        'PERSONAL_Q_1_10_RECERTIFIED' => $data['PERSONAL_Q_1_10_RECERTIFIED'],
+                        'PERSONAL_C_1_10_RECERTIFIED' => $data['PERSONAL_C_1_10_RECERTIFIED'],
                         'PERSONAL_SCORE' => $data['PERSONAL_SCORE'],
                         'PERSONAL_Display' => $data['PERSONAL_Display'],
                         'PERSONALPHOTO' => $data['PERSONALPHOTO'],
