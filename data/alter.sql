@@ -2691,3 +2691,7 @@ ALTER TABLE `spi_form_v_6` ADD `central_project_id` INT NULL DEFAULT NULL AFTER 
 
 ALTER TABLE `spi_form_v_3` ADD `central_form_id` TEXT NULL DEFAULT NULL AFTER `central_project_id`;
 ALTER TABLE `spi_form_v_6` ADD `central_form_id` TEXT NULL DEFAULT NULL AFTER `central_project_id`;
+
+-- Amit 26-May-2023
+ALTER TABLE `spi_form_v_6` CHANGE `AUDIT_SCORE_PERCANTAGE_ROUNDED` `AUDIT_SCORE_PERCENTAGE_ROUNDED` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_dump` CHANGE `data_dump` `data_dump` JSON NULL DEFAULT NULL;

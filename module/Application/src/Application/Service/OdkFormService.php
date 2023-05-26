@@ -212,7 +212,7 @@ class OdkFormService
             foreach ($output as $rowNo => $rowData) {
                 $row = array();
                 $colNo = 1;
-                
+
                 foreach ($rowData as $field => $value) {
                     if (!isset($value) || empty($value)) {
                         $value = "";
@@ -220,18 +220,18 @@ class OdkFormService
                     $row[] = $value;
                     $colNo++;
                 }
-                
+
                 $outputData[] = $row;
             }
 
-            $outputData[] = ['No.of Audit(s)    : '.count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : '.$outputScore['avgAuditScore']];
+            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
+            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
 
-            $outputData[] = ['Level 0(Below 40) : '. $outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : '.$outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : '.$outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : '.$outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : '.$outputScore['levelFourCount']];
+            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
+            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
+            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
+            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
+            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
 
             $xlsx->addSheet($outputData);
             $filename = 'SPI-RT--CHECKLIST-version-3-' . time() . '.xlsx';
@@ -383,26 +383,26 @@ class OdkFormService
             foreach ($output as $rowNo => $rowData) {
                 $row = array();
                 $colNo = 1;
-                
+
                 foreach ($rowData as $field => $value) {
                     if (!isset($value) || empty($value)) {
                         $value = "";
                     }
-                    
+
                     $row[] = $value;
                     $colNo++;
                 }
-                
+
                 $outputData[] = $row;
             }
-            $outputData[] = ['No.of Audit(s)    : '.count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : '.$outputScore['avgAuditScore']];
+            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
+            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
 
-            $outputData[] = ['Level 0(Below 40) : '.$outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : '.$outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : '.$outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : '.$outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : '.$outputScore['levelFourCount']];
+            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
+            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
+            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
+            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
+            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
 
             $xlsx->addSheet($outputData);
             $filename = 'SPI-RRT--CHECKLIST-version-5-' . time() . '.xlsx';
@@ -1990,7 +1990,7 @@ class OdkFormService
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath);
                 }
-                $filePath = $folderPath. DIRECTORY_SEPARATOR . $fileName;
+                $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
                 //============================================================+
                 // END OF FILE
@@ -1999,7 +1999,7 @@ class OdkFormService
             //zip part
             $zip = new ZipArchive();
             $commonService = new \Application\Service\CommonService();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RT-audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
             $commonService->rmdirRecursive($folderPath);
@@ -3480,7 +3480,7 @@ class OdkFormService
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath);
                 }
-                $filePath = $folderPath. DIRECTORY_SEPARATOR . $fileName;
+                $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
                 /*if (isset($tempId)) {
                     $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $tempId . DIRECTORY_SEPARATOR . $fileName;
@@ -3497,7 +3497,7 @@ class OdkFormService
             }
             //zip part
             $commonService = new \Application\Service\CommonService();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-v5-audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-v5-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
             $commonService->rmdirRecursive($folderPath);
@@ -3520,10 +3520,10 @@ class OdkFormService
         $result = $db->fetchDownloadFilesRow();
         $xlsx = new SimpleXLSXGen();
         $output = array();
-        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type','Level', 'Affiliation', 'Audit Score'];
+        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
         $output[] = $headerRow;
-        if(count($result) > 0){
-            foreach($result as $data){
+        if (count($result) > 0) {
+            foreach ($result as $data) {
                 $row = array();
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
                 $row[] = $data['assesmentofaudit'];
@@ -3535,7 +3535,7 @@ class OdkFormService
             }
         }
         $xlsx->addSheet($output);
-        $filename = 'SPI-RRT-Audits'.time().'.xlsx';
+        $filename = 'SPI-RRT-Audits' . time() . '.xlsx';
         $subject = '';
         $eventType = 'Download-Audits';
         $action = $username . ' has downloaded SPI RRT v5 Audits';
@@ -3555,8 +3555,8 @@ class OdkFormService
         $output = array();
         $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Level Name', 'Audit Score'];
         $output[] = $headerRow;
-        if(count($result) > 0){
-            foreach($result as $data){
+        if (count($result) > 0) {
+            foreach ($result as $data) {
                 $row = array();
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
                 $row[] = $data['assesmentofaudit'];
@@ -3570,7 +3570,7 @@ class OdkFormService
             }
         }
         $xlsx->addSheet($output);
-        $filename = 'SPI-RT-Audits-'.time().'.xlsx';
+        $filename = 'SPI-RT-Audits-' . time() . '.xlsx';
         $subject = '';
         $eventType = 'Download-Audits';
         $action = $username . ' has downloaded SPI RT Audits';
@@ -3919,8 +3919,8 @@ class OdkFormService
         $output = array();
         $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
         $output[] = $headerRow;
-        if(count($result) > 0){
-            foreach($result as $data){
+        if (count($result) > 0) {
+            foreach ($result as $data) {
                 $row = array();
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
                 $row[] = $data['assesmentofaudit'];
@@ -3932,7 +3932,7 @@ class OdkFormService
             }
         }
         $xlsx->addSheet($output);
-        $filename = 'SPI-RRT-Audits-'.time().'.xlsx';
+        $filename = 'SPI-RRT-Audits-' . time() . '.xlsx';
         $subject = '';
         $eventType = 'Download-Audits';
         $action = $username . ' has downloaded SPI RRT v6 Audits';
@@ -4071,7 +4071,7 @@ class OdkFormService
             }
 
             $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array('formId', 'formVersion', 'meta-instance-id', 'meta-model-version', 'meta-ui-version', 'meta-submission-date', 'meta-is-complete', 'meta-date-marked-as-complete', 'start', 'end', 'today', 'deviceid', 'assesmentofaudit', 'auditEndTime', 'auditStartTime', 'auditroundno', 'facility', 'facilityname', 'testingpointtype', 'testingpointtype_other', 'physicaladdress', 'level', 'level_other', 'affiliation', 'affiliation_other', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCANTAGE_ROUNDED', 'DO_SURVEILLANCE', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_Q_3_TESTS_RECORDED_RECENCY', 'S0_C_3_TESTS_RECORDED_RECENCY', 'S0_Q_4_PROCESS_DOCUMENTED', 'S0_C_4_PROCESS_DOCUMENTED', 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS', 'S0_C_7_DOCUMENTING_PROTOCOL_ERRORS', 'D0_N_1_DIAGNOSED_HIV_ABOVE_15', 'D0_D_1_DIAGNOSED_HIV_ABOVE_15', 'D0_S_1_DIAGNOSED_HIV_ABOVE_15', 'D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_N_5_DOCUMENTED_AND_REFUSED', 'D0_D_5_DOCUMENTED_AND_REFUSED', 'D0_S_5_DOCUMENTED_AND_REFUSED', 'D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'))
+                ->columns(array('formId', 'formVersion', 'meta-instance-id', 'meta-model-version', 'meta-ui-version', 'meta-submission-date', 'meta-is-complete', 'meta-date-marked-as-complete', 'start', 'end', 'today', 'deviceid', 'assesmentofaudit', 'auditEndTime', 'auditStartTime', 'auditroundno', 'facility', 'facilityname', 'testingpointtype', 'testingpointtype_other', 'physicaladdress', 'level', 'level_other', 'affiliation', 'affiliation_other', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE_ROUNDED', 'DO_SURVEILLANCE', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_Q_3_TESTS_RECORDED_RECENCY', 'S0_C_3_TESTS_RECORDED_RECENCY', 'S0_Q_4_PROCESS_DOCUMENTED', 'S0_C_4_PROCESS_DOCUMENTED', 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS', 'S0_C_7_DOCUMENTING_PROTOCOL_ERRORS', 'D0_N_1_DIAGNOSED_HIV_ABOVE_15', 'D0_D_1_DIAGNOSED_HIV_ABOVE_15', 'D0_S_1_DIAGNOSED_HIV_ABOVE_15', 'D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_N_5_DOCUMENTED_AND_REFUSED', 'D0_D_5_DOCUMENTED_AND_REFUSED', 'D0_S_5_DOCUMENTED_AND_REFUSED', 'D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'))
                 ->where('spiv6.status != "deleted"');
 
             if ($params['auditRndNo'] != '') {
@@ -4186,7 +4186,7 @@ class OdkFormService
             foreach ($output as $rowNo => $rowData) {
                 $row = array();
                 $colNo = 1;
-                
+
                 foreach ($rowData as $field => $value) {
                     if (!isset($value) || empty($value)) {
                         $value = "";
@@ -4194,18 +4194,18 @@ class OdkFormService
                     $row[] = $value;
                     $colNo++;
                 }
-                
+
                 $outputData[] = $row;
             }
 
-            $outputData[] = ['No.of Audit(s)    : '.count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : '.$outputScore['avgAuditScore']];
+            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
+            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
 
-            $outputData[] = ['Level 0(Below 40) : '. $outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : '.$outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : '.$outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : '.$outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : '.$outputScore['levelFourCount']];
+            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
+            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
+            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
+            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
+            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
 
             $xlsx->addSheet($outputData);
             $customTempFolderPath = TEMP_UPLOAD_PATH;
@@ -4418,7 +4418,6 @@ class OdkFormService
                 $outputScore['levelTwoCount'] = count($levelTwo);
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
-
             }
             $fieldNames = array();
             $lastColumnArray = array();
@@ -4440,43 +4439,43 @@ class OdkFormService
             foreach ($output as $rowNo => $rowData) {
                 $row = array();
                 $colNo = 1;
-                
+
                 foreach ($rowData as $field => $value) {
                     if (!isset($value) || empty($value)) {
                         $value = "";
                     }
-                    
+
                     $row[] = $value;
                     $colNo++;
                 }
-                
+
                 $outputData[] = $row;
             }
-            $outputData[] = ['No.of Audit(s)    : '.count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : '.$outputScore['avgAuditScore']];
+            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
+            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
 
-            $outputData[] = ['Avg. S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY Score    : '.$outputScore['sQ1Score']];
-            $outputData[] = ['Avg. S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL Score    : '. $outputScore['sQ2Score']];
-            $outputData[] = ['Avg. S0_Q_3_TESTS_RECORDED_RECENCY Score    : '.$outputScore['sQ3Score']];
-            $outputData[] = ['Avg. S0_Q_4_PROCESS_DOCUMENTED Score    : '.$outputScore['sQ4Score']];
-            $outputData[] = ['Avg. S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS Score    : '.$outputScore['sQ5Score']];
-            $outputData[] = ['Avg. S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED Score    : '.$outputScore['sQ6Score']];
-            $outputData[] = ['Avg. S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS Score    : '.$outputScore['sQ7Score']];
+            $outputData[] = ['Avg. S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY Score    : ' . $outputScore['sQ1Score']];
+            $outputData[] = ['Avg. S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL Score    : ' . $outputScore['sQ2Score']];
+            $outputData[] = ['Avg. S0_Q_3_TESTS_RECORDED_RECENCY Score    : ' . $outputScore['sQ3Score']];
+            $outputData[] = ['Avg. S0_Q_4_PROCESS_DOCUMENTED Score    : ' . $outputScore['sQ4Score']];
+            $outputData[] = ['Avg. S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS Score    : ' . $outputScore['sQ5Score']];
+            $outputData[] = ['Avg. S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED Score    : ' . $outputScore['sQ6Score']];
+            $outputData[] = ['Avg. S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS Score    : ' . $outputScore['sQ7Score']];
 
-            $outputData[] = ['Avg. D0_S_1_DIAGNOSED_HIV_ABOVE_15 Score    : '.$outputScore['D0_S1_Score']];
-            $outputData[] = ['Avg. D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION Score    : '.$outputScore['D0_S2_Score']];
-            $outputData[] = ['Avg. D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD Score    : '.$outputScore['D0_S3_Score']];
-            $outputData[] = ['Avg. D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD Score    : '.$outputScore['D0_S4_Score']];
-            $outputData[] = ['Avg. D0_S_5_DOCUMENTED_AND_REFUSED Score    : '.$outputScore['D0_S5_Score']];
-            $outputData[] = ['Avg. D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI Score    : '.$outputScore['D0_S6_Score']];
-            $outputData[] = ['Avg. D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI Score    : '.$outputScore['D0_S7_Score']];
-            $outputData[] = ['Avg. D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI Score    : '.$outputScore['D0_S8_Score']];
+            $outputData[] = ['Avg. D0_S_1_DIAGNOSED_HIV_ABOVE_15 Score    : ' . $outputScore['D0_S1_Score']];
+            $outputData[] = ['Avg. D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION Score    : ' . $outputScore['D0_S2_Score']];
+            $outputData[] = ['Avg. D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD Score    : ' . $outputScore['D0_S3_Score']];
+            $outputData[] = ['Avg. D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD Score    : ' . $outputScore['D0_S4_Score']];
+            $outputData[] = ['Avg. D0_S_5_DOCUMENTED_AND_REFUSED Score    : ' . $outputScore['D0_S5_Score']];
+            $outputData[] = ['Avg. D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI Score    : ' . $outputScore['D0_S6_Score']];
+            $outputData[] = ['Avg. D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI Score    : ' . $outputScore['D0_S7_Score']];
+            $outputData[] = ['Avg. D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI Score    : ' . $outputScore['D0_S8_Score']];
 
-            $outputData[] = ['Level 0(Below 40) : '.$outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : '.$outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : '.$outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : '.$outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : '.$outputScore['levelFourCount']];
+            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
+            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
+            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
+            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
+            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
 
             $xlsx->addSheet($outputData);
             $customTempFolderPath = TEMP_UPLOAD_PATH;
@@ -5327,7 +5326,7 @@ class OdkFormService
                 $formId = $item['formId'];
 
                 $spiV3db = $this->sm->get('SpiFormVer3Table');
-                $lastDateQuery = $spiV3db->getLatestFormDate($projectId,$formId);
+                $lastDateQuery = $spiV3db->getLatestFormDate($projectId, $formId);
                 $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
                 $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
                 if ($lastFormDate != '') {
@@ -5398,13 +5397,13 @@ class OdkFormService
 
 
                     if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
-                        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions,$projectId,$formId);
+                        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions, $projectId, $formId);
                     }
                 } else {
                     echo "Error authenticating: " . $response->getStatusCode();
                 }
             }
-        }        
+        }
     }
 
     public function syncOdkCentralV6()
@@ -5417,7 +5416,7 @@ class OdkFormService
                 $formId = $item['formId'];
 
                 $spiV6db = $this->sm->get('SpiFormVer6Table');
-                $lastDateQuery = $spiV6db->getLatestFormDate($projectId,$formId);
+                $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
                 $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
                 $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
                 if ($lastFormDate != '') {
@@ -5488,12 +5487,11 @@ class OdkFormService
 
 
                     if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
-                        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions,$projectId,$formId);
+                        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions, $projectId, $formId);
                     }
                 } else {
                     echo "Error authenticating: " . $response->getStatusCode();
                 }
-
             }
         }
     }
@@ -6198,21 +6196,20 @@ class OdkFormService
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath);
                 }
-                $filePath = $folderPath. DIRECTORY_SEPARATOR . $fileName;
+                $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
             }
             $commonService = new \Application\Service\CommonService();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-audits-bulk-download-'. date('d-m-y-h-i-s') . ".zip";
+            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
             $commonService->rmdirRecursive($folderPath);
-            
         }
     }
 
     public function getBulkDownloadsFiles()
     {
-        $directory = TEMP_UPLOAD_PATH."/bulk-pdf/";
+        $directory = TEMP_UPLOAD_PATH . "/bulk-pdf/";
         $files = scandir($directory);
 
         // Remove . and .. from the list
@@ -6220,6 +6217,4 @@ class OdkFormService
 
         return $files;
     }
-
-    
 }
