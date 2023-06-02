@@ -4400,16 +4400,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.23",
+            "version": "v5.4.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "90f21e27d0d88ce38720556dd164d4a1e4c3934c"
+                "reference": "560fc3ed7a43e6d30ea94a07d77f9a60b8ed0fb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/90f21e27d0d88ce38720556dd164d4a1e4c3934c",
-                "reference": "90f21e27d0d88ce38720556dd164d4a1e4c3934c",
+                "url": "https://api.github.com/repos/symfony/console/zipball/560fc3ed7a43e6d30ea94a07d77f9a60b8ed0fb8",
+                "reference": "560fc3ed7a43e6d30ea94a07d77f9a60b8ed0fb8",
                 "shasum": ""
             },
             "require": {
@@ -4479,7 +4479,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.23"
+                "source": "https://github.com/symfony/console/tree/v5.4.24"
             },
             "funding": [
                 {
@@ -4495,7 +4495,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-24T18:47:29+00:00"
+            "time": "2023-05-26T05:13:16+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -5554,16 +5554,16 @@
         },
         {
             "name": "szymach/c-pchart",
-            "version": "v3.0.16",
+            "version": "v3.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/szymach/c-pchart.git",
-                "reference": "7cbaf0d9ec4622d3699c476c24c2ffb99816c8e3"
+                "reference": "c022568da78f73bb7acf7db7a974934a434d47d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/szymach/c-pchart/zipball/7cbaf0d9ec4622d3699c476c24c2ffb99816c8e3",
-                "reference": "7cbaf0d9ec4622d3699c476c24c2ffb99816c8e3",
+                "url": "https://api.github.com/repos/szymach/c-pchart/zipball/c022568da78f73bb7acf7db7a974934a434d47d7",
+                "reference": "c022568da78f73bb7acf7db7a974934a434d47d7",
                 "shasum": ""
             },
             "require": {
@@ -5619,9 +5619,9 @@
             ],
             "support": {
                 "issues": "https://github.com/szymach/c-pchart/issues",
-                "source": "https://github.com/szymach/c-pchart/tree/v3.0.16"
+                "source": "https://github.com/szymach/c-pchart/tree/v3.0.17"
             },
-            "time": "2022-12-12T10:58:52+00:00"
+            "time": "2023-05-27T11:12:02+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
