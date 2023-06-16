@@ -4131,15 +4131,16 @@ class OdkFormService
                                 }
 
                                 $auditScore += $sResult[$l][$key];
-                                if ($sResult[$l][$key] < 40) {
+                                $scorePer=round($sResult[$l][$key]);
+                                if ($scorePer < 40) {
                                     $levelZero[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                } else if ($scorePer >= 40 && $scorePer < 60) {
                                     $levelOne[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                } else if ($scorePer >= 60 && $scorePer < 80) {
                                     $levelTwo[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                } else if ($scorePer >= 80 && $scorePer < 90) {
                                     $levelThree[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 90) {
+                                } else if ($scorePer >= 90) {
                                     $levelFour[] = $sResult[$l][$key];
                                 }
                             }
@@ -4369,15 +4370,16 @@ class OdkFormService
                                 }
 
                                 $auditScore += $sResult[$l][$key];
-                                if ($sResult[$l][$key] < 40) {
+                                $scorePer = round($sResult[$l][$key]);
+                                if ($scorePer < 40) {
                                     $levelZero[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                } else if ($scorePer >= 40 && $scorePer < 60) {
                                     $levelOne[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                } else if ($scorePer >= 60 && $scorePer < 80) {
                                     $levelTwo[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                } else if ($scorePer >= 80 && $scorePer < 90) {
                                     $levelThree[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 90) {
+                                } else if ($scorePer >= 90) {
                                     $levelFour[] = $sResult[$l][$key];
                                 }
                             }

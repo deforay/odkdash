@@ -1570,13 +1570,13 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 59");
             } else if ($parameters['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
             } else if ($parameters['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE_ROUNDED) <= 89");
             } else if ($parameters['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
         if (isset($loginContainer->token) && !empty($loginContainer->token)) {
@@ -1638,13 +1638,13 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
-                $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 59");
             } else if ($parameters['scoreLevel'] == 2) {
-                $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
             } else if ($parameters['scoreLevel'] == 3) {
-                $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 89");
             } else if ($parameters['scoreLevel'] == 4) {
-                $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
         if (isset($loginContainer->token) && !empty($loginContainer->token)) {
@@ -1683,16 +1683,17 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row = array();
             $approve = '';
             $downloadPdf = "";
+            $scorePer=round($aRow['AUDIT_SCORE_PERCENTAGE']);
             $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
-            if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
+            if (isset($scorePer) && $scorePer < 40) {
                 $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
+            } else if (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
                 $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
+            } else if (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
                 $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
+            } else if (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
                 $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+            } else if (isset($scorePer) && $scorePer >= 90) {
                 $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
             }
             $row['DT_RowId'] = $aRow['id'];
@@ -1969,15 +1970,18 @@ class SpiFormVer6Table extends AbstractTableGateway
                     ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
                 if (isset($sResult->facility) && $sResult->facility > 0) {
                     $fQuery = $fQuery->where(array("spirt3.id" => $sResult->facility));
+                    $searchFacility = true;
                 } else if (isset($sResult->facilityid) && $sResult->facilityid != '') {
                     $fQuery = $fQuery->where(array("spirt3.facility_id" => $sResult->facilityid));
+                    $searchFacility = true;
                 } else if (isset($sResult->facilityname) && $sResult->facilityname != '') {
                     $fQuery = $fQuery->where(array("spirt3.facility_name" => $sResult->facilityname));
+                    $searchFacility = true;
                 }
-
-                $fQueryStr = $sql->buildSqlString($fQuery);
-
-                $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                if($searchFacility == true){
+                    $fQueryStr = $sql->buildSqlString($fQuery);
+                    $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                }
             }
             //if ($pdfDowload == 'yes') {
             $subject = '';
@@ -2914,13 +2918,13 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+                $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 59");
             } else if ($parameters['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+                $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 79");
             } else if ($parameters['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+                $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 89");
             } else if ($parameters['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+                $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -2979,13 +2983,13 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
             } else if ($parameters['scoreLevel'] == 1) {
-                $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
+                $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 59");
             } else if ($parameters['scoreLevel'] == 2) {
-                $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
+                $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 79");
             } else if ($parameters['scoreLevel'] == 3) {
-                $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
+                $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 89");
             } else if ($parameters['scoreLevel'] == 4) {
-                $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
+                $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
@@ -3993,17 +3997,17 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
                 } else if ($parameters['scoreLevel'] == 1) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
-                    $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
+                    $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 59");
+                    $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 59");
                 } else if ($parameters['scoreLevel'] == 2) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
-                    $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
+                    $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 79");
+                    $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 79");
                 } else if ($parameters['scoreLevel'] == 3) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
-                    $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
+                    $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 89");
+                    $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 89");
                 } else if ($parameters['scoreLevel'] == 4) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
-                    $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
+                    $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 90");
+                    $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 90");
                 }
             }
             if (isset($parameters['level']) && $parameters['level'] != '') {
@@ -4112,22 +4116,23 @@ class SpiFormVer6Table extends AbstractTableGateway
         $levelThree = array();
         $levelFour = array();
         foreach ($rResult as $aRow) {
+            $scorePer=round($aRow['AUDIT_SCORE_PERCENTAGE']);
             $row = array();
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
-                if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
+                if (isset($scorePer) && $scorePer < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
+                } else if (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
                     $level = 1;
                     $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
+                } else if (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
                     $level = 2;
                     $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
+                } else if (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
                     $level = 3;
                     $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+                } else if (isset($scorePer) && $scorePer >= 90) {
                     $level = 4;
                     $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                 }
