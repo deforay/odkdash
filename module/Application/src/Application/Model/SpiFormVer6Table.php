@@ -1574,7 +1574,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             } else if ($parameters['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
             } else if ($parameters['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE_ROUNDED) <= 89");
+                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 89");
             } else if ($parameters['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
