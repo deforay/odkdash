@@ -20,6 +20,6 @@ class SendTempMail extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->commonService->sendTempMail();
-        return 1;
+        return Command::SUCCESS;
     }
 }

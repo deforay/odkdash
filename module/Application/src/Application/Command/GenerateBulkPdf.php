@@ -22,6 +22,6 @@ class GenerateBulkPdf extends Command
         $this->odkFormService->getDownloadDataList();
         $this->odkFormService->getV5DownloadDataList();
         $this->odkFormService->getV6DownloadDataList();
-        return 1;
+        return Command::SUCCESS;
     }
 }

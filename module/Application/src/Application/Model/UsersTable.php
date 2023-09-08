@@ -2,16 +2,19 @@
 
 namespace Application\Model;
 
-use Laminas\Session\Container;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
+use Application\Model\GlobalTable;
+use Application\Model\EventLogTable;
+use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
-use Application\Model\EventLogTable;
-use Application\Model\UserLoginHistoryTable;
+use Application\Model\UserCountryMapTable;
 use \Application\Service\ImageResizeService;
+use Application\Model\UserLoginHistoryTable;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 
 
 
@@ -157,7 +160,7 @@ class UsersTable extends AbstractTableGateway
                 'email' => $params['email'],
                 'status' => $params['status'],
                 'contact_no' => $params['mobile_no'],
-                'created_on' => \Application\Service\CommonService::getDateTime()
+                'created_on' => CommonService::getDateTime()
             );
             $this->insert($data);
             $lastInsertId = $this->lastInsertValue;
@@ -361,7 +364,7 @@ class UsersTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 

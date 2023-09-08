@@ -20,6 +20,6 @@ class SyncCentralV6 extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->odkFormService->syncOdkCentralV6();
-        return 1;
+        return Command::SUCCESS;
     }
 }

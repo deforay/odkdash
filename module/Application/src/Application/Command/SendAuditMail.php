@@ -20,6 +20,6 @@ class SendAuditMail extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->commonService->sendAuditMail();
-        return 1;
+        return Command::SUCCESS;
     }
 }
