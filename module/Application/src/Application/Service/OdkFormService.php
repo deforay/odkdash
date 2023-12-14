@@ -96,11 +96,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date Range : " . $fromDate;
-                } else {
-                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date Range : " . $fromDate : "Date Range : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "Date Range : ";
             }
@@ -115,11 +111,7 @@ class OdkFormService
             } else {
                 $auditRndNo = "Audit Round No. : ";
             }
-            if (isset($params['level']) && ($params['level'] != "")) {
-                $levelData = "Level : " . $params['level'];
-            } else {
-                $levelData = "Level : ";
-            }
+            $levelData = isset($params['level']) && ($params['level'] != "") ? "Level : " . $params['level'] : "Level : ";
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             } else {
@@ -150,7 +142,8 @@ class OdkFormService
                 $levelTwo = array();
                 $levelThree = array();
                 $levelFour = array();
-                for ($l = 0; $l < count($sResult); $l++) {
+                $counter = count($sResult);
+                for ($l = 0; $l < $counter; $l++) {
                     $row = array();
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
@@ -163,25 +156,21 @@ class OdkFormService
                                 $auditScore += $sResult[$l][$key];
                                 if ($sResult[$l][$key] < 40) {
                                     $levelZero[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                } elseif ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
                                     $levelOne[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                } elseif ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
                                     $levelTwo[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                } elseif ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
                                     $levelThree[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 90) {
+                                } elseif ($sResult[$l][$key] >= 90) {
                                     $levelFour[] = $sResult[$l][$key];
                                 }
                             }
-                            if ($key == 'level_other') {
-                                $level = " - " . $sResult[$l][$key];
-                            } else {
-                                $level = '';
-                            }
+                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
                             if ($key == 'today') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                            } elseif ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -214,7 +203,7 @@ class OdkFormService
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
-                    if (!isset($value) || empty($value)) {
+                    if (!isset($value) || $value === '') {
                         $value = "";
                     }
                     $row[] = $value;
@@ -270,11 +259,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date Range : " . $fromDate;
-                } else {
-                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date Range : " . $fromDate : "Date Range : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "Date Range : ";
             }
@@ -289,11 +274,7 @@ class OdkFormService
             } else {
                 $auditRndNo = "Audit Round No. : ";
             }
-            if (isset($params['level']) && ($params['level'] != "")) {
-                $levelData = "Level : " . $params['level'];
-            } else {
-                $levelData = "Level : ";
-            }
+            $levelData = isset($params['level']) && ($params['level'] != "") ? "Level : " . $params['level'] : "Level : ";
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             } else {
@@ -322,7 +303,8 @@ class OdkFormService
                 $levelTwo = array();
                 $levelThree = array();
                 $levelFour = array();
-                for ($l = 0; $l < count($sResult); $l++) {
+                $counter = count($sResult);
+                for ($l = 0; $l < $counter; $l++) {
                     $row = array();
                     $cells = array();
                     foreach ($sResult[$l] as $key => $aRow) {
@@ -335,25 +317,21 @@ class OdkFormService
                                 $auditScore += $sResult[$l][$key];
                                 if ($sResult[$l][$key] < 40) {
                                     $levelZero[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
+                                } elseif ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
                                     $levelOne[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
+                                } elseif ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
                                     $levelTwo[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
+                                } elseif ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
                                     $levelThree[] = $sResult[$l][$key];
-                                } else if ($sResult[$l][$key] >= 90) {
+                                } elseif ($sResult[$l][$key] >= 90) {
                                     $levelFour[] = $sResult[$l][$key];
                                 }
                             }
-                            if ($key == 'level_other') {
-                                $level = " - " . $sResult[$l][$key];
-                            } else {
-                                $level = '';
-                            }
+                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
                             if ($key == 'today') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                            } elseif ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -385,7 +363,7 @@ class OdkFormService
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
-                    if (!isset($value) || empty($value)) {
+                    if (!isset($value) || $value === '') {
                         $value = "";
                     }
 
@@ -747,7 +725,8 @@ class OdkFormService
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer3Table');
             if (isset($params['idList']) && $params['idList'] != '') {
-                for ($i = 0; $i < count($params['idList']); $i++) {
+                $counter = count($params['idList']);
+                for ($i = 0; $i < $counter; $i++) {
                     $result = $db->updateFormStatus($params['idList'][$i], 'approved');
                     $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
                 }
@@ -777,7 +756,8 @@ class OdkFormService
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer5Table');
             if (isset($params['idList']) && $params['idList'] != '') {
-                for ($i = 0; $i < count($params['idList']); $i++) {
+                $counter = count($params['idList']);
+                for ($i = 0; $i < $counter; $i++) {
                     $result = $db->updateFormStatus($params['idList'][$i], 'approved');
                     $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
                 }
@@ -837,11 +817,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date : " . $fromDate;
-                } else {
-                    $displayDate = "Date : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date : " . $fromDate : "Date : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "";
             }
@@ -854,7 +830,7 @@ class OdkFormService
                 foreach ($sResult as $aRow) {
                     $auditDate = "";
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                        $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
                     $row = array();
                     $row[] = $aRow['facilityname'];
@@ -1002,11 +978,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date : " . $fromDate;
-                } else {
-                    $displayDate = "Date : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date : " . $fromDate : "Date : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "";
             }
@@ -1019,7 +991,7 @@ class OdkFormService
                 foreach ($sResult as $aRow) {
                     $auditDate = "";
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                        $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
                     $row = array();
                     $row[] = $aRow['facilityname'];
@@ -1314,7 +1286,7 @@ class OdkFormService
                 $pdf->SetAuthor('ODK DASHBOARD');
                 $pdf->SetTitle('SPI-RT Checklist');
                 $pdf->SetSubject('ODK DASHBOARD');
-                $pdf->SetKeywords('odk', 'odk dashboard');
+                $pdf->SetKeywords('odk');
 
                 // set default header data
                 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -1358,7 +1330,7 @@ class OdkFormService
                 $pdf->writeHTMLCell('', 12, '', '', '<p>' . $decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'] . '</p>', 0, 1, false, true, 'L', true);
                 if ($language == 'Portuguese') {
                     $langDateFormat = '(dd/mm/aaaa)';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $langDateFormat = '(dd/mm/aaaa)';
                 } else {
                     $langDateFormat = '(dd/mm/yyyy)';
@@ -1366,7 +1338,7 @@ class OdkFormService
                 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . \Application\Service\CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
                 $testingTab .= '</tr>';
 
@@ -1374,7 +1346,7 @@ class OdkFormService
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $formData['facilityname'] . '</td>';
                 if ($language == 'Portuguese') {
                     $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $formData['facilityid'] . '</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $formData['facilityid'] . '</td>';
                 } else {
                     $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $formData['facilityid'] . '</td>';
@@ -1687,7 +1659,7 @@ class OdkFormService
                 $partBTable .= '</table>';
                 if ($language == 'Portuguese') {
                     $partBTable .= '<p>*A area marcada com asteriscos so é aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partBTable .= '<p>*Lo que aparece marcado con un asterisco son solo aplicables a sitios donde la repetición de las pruebas se hace.</p>';
                 } else {
                     $partBTable .= '<p>*Those marked with an asterisk are only applicable to sites where sample retesting is performed.</p>';
@@ -1722,7 +1694,7 @@ class OdkFormService
                 $partCTable .= '<tr style="font-weight:bold;text-align:center;">';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td style="width:15%">NIVEL</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td style="width:15%">Nivel</td>';
                 } else {
                     $partCTable .= '<td style="width:15%">Levels</td>';
@@ -1731,7 +1703,7 @@ class OdkFormService
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td  style="width:25%">PONTUACAO EM %</td>';
                     $partCTable .= '<td  style="width:60%">DESCRIÇAO DOS RESULTADOS</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td  style="width:25%">% Puntaje</td>';
                     $partCTable .= '<td  style="width:60%">Descripción de los resultados</td>';
                 } else {
@@ -1770,7 +1742,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level0[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Necessidade de melhoria em todas as areas e remediaçoes imediatas</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Necesita mejorar en todas las áreas y es necesaria corrección inmediata</td>';
                 } else {
                     $partCTable .= '<td>Needs improvement in all areas and immediate remediation</td>';
@@ -1783,7 +1755,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level1[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Necessidade de melhorias em areas especificas</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Necesita mejorar en áreas específicas</td>';
                 } else {
                     $partCTable .= '<td>Needs improvement in specific areas</td>';
@@ -1795,7 +1767,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level2[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Parcialmente admissivel ou aceitavel</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Parcialmente elegible</td>';
                 } else {
                     $partCTable .= '<td>Partially eligible</td>';
@@ -1807,7 +1779,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level3[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Proximo da certificaçao nacional</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Cercano a sitio nacional certificado</td>';
                 } else {
                     $partCTable .= '<td>Close to national site certification</td>';
@@ -1819,7 +1791,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level4[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Admissivel a certificaçao nacional</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Elegible para ser certificado</td>';
                 } else {
                     $partCTable .= '<td>Eligible to national site certification</td>';
@@ -1863,7 +1835,7 @@ class OdkFormService
                 $partDtableBox1 .= "<tr><td>";
                 if ($language == 'Portuguese') {
                     $partDtableBox1 .= "Tipo de local:";
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partDtableBox1 .= "Tipo de sitio:";
                 } else {
                     $partDtableBox1 .= "Site Type:";
@@ -1974,7 +1946,7 @@ class OdkFormService
 
                 if ($language == 'Portuguese') {
                     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td></tr>";
                 } else {
                     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
@@ -2029,7 +2001,7 @@ class OdkFormService
                 $pdf->SetAuthor('ODK DASHBOARD');
                 $pdf->SetTitle('SPI-RT Checklist');
                 $pdf->SetSubject('ODK DASHBOARD');
-                $pdf->SetKeywords('odk', 'odk dashboard');
+                $pdf->SetKeywords('odk');
 
                 // set default header data
                 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -2073,7 +2045,7 @@ class OdkFormService
                 $pdf->writeHTMLCell('', 12, '', '', '<p>' . $decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'] . '</p>', 0, 1, false, true, 'L', true);
                 if ($language == 'Portuguese') {
                     $langDateFormat = '(dd/mm/aaaa)';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $langDateFormat = '(dd/mm/aaaa)';
                 } else {
                     $langDateFormat = '(dd/mm/yyyy)';
@@ -2083,7 +2055,7 @@ class OdkFormService
                 $fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facilityInfo']['fName']) : '';
                 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . \Application\Service\CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
                 $testingTab .= '</tr>';
 
@@ -2091,7 +2063,7 @@ class OdkFormService
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $fName . '</td>';
                 if ($language == 'Portuguese') {
                     $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $fId . '</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $fId . '</td>';
                 } else {
                     $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $fId . '</td>';
@@ -3175,7 +3147,7 @@ class OdkFormService
                 $partBTable .= '</table>';
                 if ($language == 'Portuguese') {
                     $partBTable .= '<p>*A area marcada com asteriscos so é aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partBTable .= '<p>*Lo que aparece marcado con un asterisco son solo aplicables a sitios donde la repetición de las pruebas se hace.</p>';
                 } else {
                     $partBTable .= '<p>*Those marked with an asterisk are only applicable to sites where sample retesting is performed.</p>';
@@ -3210,7 +3182,7 @@ class OdkFormService
                 $partCTable .= '<tr style="font-weight:bold;text-align:center;">';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td style="width:15%">NIVEL</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td style="width:15%">Nivel</td>';
                 } else {
                     $partCTable .= '<td style="width:15%">Levels</td>';
@@ -3219,7 +3191,7 @@ class OdkFormService
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td  style="width:25%">PONTUACAO EM %</td>';
                     $partCTable .= '<td  style="width:60%">DESCRIÇAO DOS RESULTADOS</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td  style="width:25%">% Puntaje</td>';
                     $partCTable .= '<td  style="width:60%">Descripción de los resultados</td>';
                 } else {
@@ -3258,7 +3230,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level0[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Necessidade de melhoria em todas as areas e remediaçoes imediatas</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Necesita mejorar en todas las áreas y es necesaria corrección inmediata</td>';
                 } else {
                     $partCTable .= '<td>Needs improvement in all areas and immediate remediation</td>';
@@ -3271,7 +3243,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level1[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Necessidade de melhorias em areas especificas</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Necesita mejorar en áreas específicas</td>';
                 } else {
                     $partCTable .= '<td>Needs improvement in specific areas</td>';
@@ -3283,7 +3255,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level2[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Parcialmente admissivel ou aceitavel</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Parcialmente elegible</td>';
                 } else {
                     $partCTable .= '<td>Partially eligible</td>';
@@ -3295,7 +3267,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level3[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Proximo da certificaçao nacional</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Cercano a sitio nacional certificado</td>';
                 } else {
                     $partCTable .= '<td>Close to national site certification</td>';
@@ -3307,7 +3279,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level4[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Admissivel a certificaçao nacional</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Elegible para ser certificado</td>';
                 } else {
                     $partCTable .= '<td>Eligible to national site certification</td>';
@@ -3352,7 +3324,7 @@ class OdkFormService
                 $partDtableBox1 .= "<tr><td>";
                 if ($language == 'Portuguese') {
                     $partDtableBox1 .= "Tipo de local:";
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partDtableBox1 .= "Tipo de sitio:";
                 } else {
                     $partDtableBox1 .= "Site Type:";
@@ -3463,7 +3435,7 @@ class OdkFormService
 
                 if ($language == 'Portuguese') {
                     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td></tr>";
                 } else {
                     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
@@ -3596,79 +3568,76 @@ class OdkFormService
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-file")) {
             mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files");
         }
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName)) {
-            if (move_uploaded_file($_FILES['fileName']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName)) {
-                $db->delete('1');
-                $objPHPExcel = \PHPExcel_IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName);
-                $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-                $highestColumm = $objPHPExcel->setActiveSheetIndex(0)->getHighestColumn();
-                $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumm);
-                $rownumber = 1;
-                $row = $objPHPExcel->getActiveSheet()->getRowIterator($rownumber)->current();
+        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName) && move_uploaded_file($_FILES['fileName']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName)) {
+            $db->delete('1');
+            $objPHPExcel = \PHPExcel_IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName);
+            $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+            $highestColumm = $objPHPExcel->setActiveSheetIndex(0)->getHighestColumn();
+            $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumm);
+            $rownumber = 1;
+            $row = $objPHPExcel->getActiveSheet()->getRowIterator($rownumber)->current();
+            $cellIterator = $row->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(false);
+            foreach ($cellIterator as $cell) {
+                $header = explode(":", $cell->getValue());
+                $headerName[] = end($header);
+            }
+            $count = count($sheetData);
+            $findInstancePosition = array_search('instanceID', $headerName);
+            $findStartPosition = array_search('start', $headerName);
+            $findEndPosition = array_search('end', $headerName);
+            $findAuditSignPosition = array_search('auditorSignature', $headerName);
+            $findAssesmentOfAuditPosition = array_search('assesmentofaudit', $headerName);
+            for ($i = 2; $i <= $count; $i++) {
+                $row = $objPHPExcel->getActiveSheet()->getRowIterator($i)->current();
                 $cellIterator = $row->getCellIterator();
                 $cellIterator->setIterateOnlyExistingCells(false);
+                $inc = 0;
+                $validateData = 0;
                 foreach ($cellIterator as $cell) {
-                    $header = explode(":", $cell->getValue());
-                    $headerName[] = end($header);
-                }
-                $count = count($sheetData);
-                $findInstancePosition = array_search('instanceID', $headerName);
-                $findStartPosition = array_search('start', $headerName);
-                $findEndPosition = array_search('end', $headerName);
-                $findAuditSignPosition = array_search('auditorSignature', $headerName);
-                $findAssesmentOfAuditPosition = array_search('assesmentofaudit', $headerName);
-
-                for ($i = 2; $i <= $count; $i++) {
-                    $row = $objPHPExcel->getActiveSheet()->getRowIterator($i)->current();
-                    $cellIterator = $row->getCellIterator();
-                    $cellIterator->setIterateOnlyExistingCells(false);
-                    $inc = 0;
-                    $validateData = 0;
-                    foreach ($cellIterator as $cell) {
-                        $value = $cell->getValue();
-                        if ($inc == $findStartPosition || $inc == $findEndPosition && trim($cell->getValue()) != '') {
+                    $value = $cell->getValue();
+                    if ($inc == $findStartPosition || $inc == $findEndPosition && trim($cell->getValue()) != '') {
+                        $dValue = explode(" ", trim($cell->getValue()));
+                        if (count($dValue) == 2) {
+                            $value = trim($cell->getValue());
+                        } else {
+                            $originalDate = $dValue[5] . "-" . $dValue[1] . "-" . $dValue[2];
+                            $newDate = date("Y-m-d", strtotime($originalDate));
+                            $value = $newDate . "T" . $dValue[3] . ".000+02";
+                        }
+                    }
+                    if ($inc == $findAssesmentOfAuditPosition) {
+                        if (trim($cell->getValue()) != '') {
                             $dValue = explode(" ", trim($cell->getValue()));
                             if (count($dValue) == 2) {
                                 $value = trim($cell->getValue());
                             } else {
                                 $originalDate = $dValue[5] . "-" . $dValue[1] . "-" . $dValue[2];
                                 $newDate = date("Y-m-d", strtotime($originalDate));
-                                $value = $newDate . "T" . $dValue[3] . ".000+02";
+                                $value = $newDate;
                             }
+                        } else {
+                            $value = '0000:00:00';
                         }
-                        if ($inc == $findAssesmentOfAuditPosition) {
-                            if (trim($cell->getValue()) != '') {
-                                $dValue = explode(" ", trim($cell->getValue()));
-                                if (count($dValue) == 2) {
-                                    $value = trim($cell->getValue());
-                                } else {
-                                    $originalDate = $dValue[5] . "-" . $dValue[1] . "-" . $dValue[2];
-                                    $newDate = date("Y-m-d", strtotime($originalDate));
-                                    $value = $newDate;
-                                }
-                            } else {
-                                $value = '0000:00:00';
-                            }
-                        } else if ($inc == $findAuditSignPosition && trim($cell->getValue() != '')) {
-                            $auditorSign = array('url' => $cell->getValue());
-                            $value = json_encode($auditorSign);
-                        }
-                        if ($inc == $findInstancePosition) {
-                            $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID' => trim($cell->getValue())));
-                            $validateQueryStr = $sql->buildSqlString($validateQuery);
-                            $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-                            if ($validateResult) {
-                                $validateData = 1; //exist meta instance id
-                            } else {
-                                $validateData = 0; //new meta instance id
-                            }
-                        }
-                        $spiv3FormData[$headerName[$inc]] = $value;
-                        $inc++;
+                    } elseif ($inc == $findAuditSignPosition && trim($cell->getValue() != '')) {
+                        $auditorSign = array('url' => $cell->getValue());
+                        $value = json_encode($auditorSign);
                     }
-                    $spiv3FormData['spi_data_status'] = $validateData;
-                    $db->insert($spiv3FormData);
+                    if ($inc == $findInstancePosition) {
+                        $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID' => trim($cell->getValue())));
+                        $validateQueryStr = $sql->buildSqlString($validateQuery);
+                        $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                        if ($validateResult) {
+                            $validateData = 1; //exist meta instance id
+                        } else {
+                            $validateData = 0; //new meta instance id
+                        }
+                    }
+                    $spiv3FormData[$headerName[$inc]] = $value;
+                    $inc++;
                 }
+                $spiv3FormData['spi_data_status'] = $validateData;
+                $db->insert($spiv3FormData);
             }
         }
     }
@@ -3969,7 +3938,8 @@ class OdkFormService
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer6Table');
             if (isset($params['idList']) && $params['idList'] != '') {
-                for ($i = 0; $i < count($params['idList']); $i++) {
+                $counter = count($params['idList']);
+                for ($i = 0; $i < $counter; $i++) {
                     $result = $db->updateFormStatus($params['idList'][$i], 'approved');
                     $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
                 }
@@ -4013,11 +3983,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date Range : " . $fromDate;
-                } else {
-                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date Range : " . $fromDate : "Date Range : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "Date Range : ";
             }
@@ -4032,11 +3998,7 @@ class OdkFormService
             } else {
                 $auditRndNo = "Audit Round No. : ";
             }
-            if (isset($params['level']) && ($params['level'] != "")) {
-                $levelData = "Level : " . $params['level'];
-            } else {
-                $levelData = "Level : ";
-            }
+            $levelData = isset($params['level']) && ($params['level'] != "") ? "Level : " . $params['level'] : "Level : ";
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             } else {
@@ -4063,10 +4025,10 @@ class OdkFormService
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateField = explode(" ", $params['dateRange']);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                    $startDate = CommonService::isoDateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                    $endDate = CommonService::isoDateFormat($dateField[2]);
                 }
             }
 
@@ -4090,17 +4052,17 @@ class OdkFormService
             if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
                 if ($params['scoreLevel'] == 0) {
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-                } else if ($params['scoreLevel'] == 1) {
+                } elseif ($params['scoreLevel'] == 1) {
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-                } else if ($params['scoreLevel'] == 2) {
+                } elseif ($params['scoreLevel'] == 2) {
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-                } else if ($params['scoreLevel'] == 3) {
+                } elseif ($params['scoreLevel'] == 3) {
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-                } else if ($params['scoreLevel'] == 4) {
+                } elseif ($params['scoreLevel'] == 4) {
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
-            if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+            if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
                 $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
             }
             if (isset($sWhere) && $sWhere != "") {
@@ -4120,7 +4082,8 @@ class OdkFormService
                 $levelTwo = array();
                 $levelThree = array();
                 $levelFour = array();
-                for ($l = 0; $l < count($sResult); $l++) {
+                $counter = count($sResult);
+                for ($l = 0; $l < $counter; $l++) {
                     $row = array();
                     $cells = array();
                     foreach ($sResult[$l] as $key => $aRow) {
@@ -4131,28 +4094,24 @@ class OdkFormService
                                 }
 
                                 $auditScore += $sResult[$l][$key];
-                                $scorePer=round($sResult[$l][$key]);
+                                $scorePer = round($sResult[$l][$key]);
                                 if ($scorePer < 40) {
                                     $levelZero[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 40 && $scorePer < 60) {
+                                } elseif ($scorePer >= 40 && $scorePer < 60) {
                                     $levelOne[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 60 && $scorePer < 80) {
+                                } elseif ($scorePer >= 60 && $scorePer < 80) {
                                     $levelTwo[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 80 && $scorePer < 90) {
+                                } elseif ($scorePer >= 80 && $scorePer < 90) {
                                     $levelThree[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 90) {
+                                } elseif ($scorePer >= 90) {
                                     $levelFour[] = $sResult[$l][$key];
                                 }
                             }
-                            if ($key == 'level_other') {
-                                $level = " - " . $sResult[$l][$key];
-                            } else {
-                                $level = '';
-                            }
+                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
                             if ($key == 'today') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                            } elseif ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -4169,9 +4128,7 @@ class OdkFormService
 
             $fieldNames = array();
             $lastColumnArray = array();
-            foreach ($outputScore as $key => $aRow) {
-                $lastColumnArray[] = $key;
-            }
+            $lastColumnArray = array_keys($outputScore);
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
                     $fieldNames[] = $key;
@@ -4189,7 +4146,7 @@ class OdkFormService
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
-                    if (!isset($value) || empty($value)) {
+                    if (!isset($value) || $value === '') {
                         $value = "";
                     }
                     $row[] = $value;
@@ -4245,11 +4202,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date Range : " . $fromDate;
-                } else {
-                    $displayDate = "Date Range : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date Range : " . $fromDate : "Date Range : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "Date Range : ";
             }
@@ -4264,11 +4217,7 @@ class OdkFormService
             } else {
                 $auditRndNo = "Audit Round No. : ";
             }
-            if (isset($params['level']) && ($params['level'] != "")) {
-                $levelData = "Level : " . $params['level'];
-            } else {
-                $levelData = "Level : ";
-            }
+            $levelData = isset($params['level']) && ($params['level'] != "") ? "Level : " . $params['level'] : "Level : ";
             if (isset($params['affiliation']) && ($params['affiliation'] != "")) {
                 $affiliation = "Affiliation : " . $params['affiliation'];
             } else {
@@ -4314,7 +4263,8 @@ class OdkFormService
                 $levelTwo = array();
                 $levelThree = array();
                 $levelFour = array();
-                for ($l = 0; $l < count($sResult); $l++) {
+                $counter = count($sResult);
+                for ($l = 0; $l < $counter; $l++) {
                     $row = array();
                     $cells = array();
                     foreach ($sResult[$l] as $key => $aRow) {
@@ -4373,25 +4323,21 @@ class OdkFormService
                                 $scorePer = round($sResult[$l][$key]);
                                 if ($scorePer < 40) {
                                     $levelZero[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 40 && $scorePer < 60) {
+                                } elseif ($scorePer >= 40 && $scorePer < 60) {
                                     $levelOne[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 60 && $scorePer < 80) {
+                                } elseif ($scorePer >= 60 && $scorePer < 80) {
                                     $levelTwo[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 80 && $scorePer < 90) {
+                                } elseif ($scorePer >= 80 && $scorePer < 90) {
                                     $levelThree[] = $sResult[$l][$key];
-                                } else if ($scorePer >= 90) {
+                                } elseif ($scorePer >= 90) {
                                     $levelFour[] = $sResult[$l][$key];
                                 }
                             }
-                            if ($key == 'level_other') {
-                                $level = " - " . $sResult[$l][$key];
-                            } else {
-                                $level = '';
-                            }
+                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
                             if ($key == 'today') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } else if ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = \Application\Service\CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
+                            } elseif ($key == 'assesmentofaudit') {
+                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
                             }
                             $row[] = $sResult[$l][$key] . $level;
                         }
@@ -4423,9 +4369,7 @@ class OdkFormService
             }
             $fieldNames = array();
             $lastColumnArray = array();
-            foreach ($outputScore as $key => $aRow) {
-                $lastColumnArray[] = $key;
-            }
+            $lastColumnArray = array_keys($outputScore);
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
                     $fieldNames[] = $key;
@@ -4443,7 +4387,7 @@ class OdkFormService
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
-                    if (!isset($value) || empty($value)) {
+                    if (!isset($value) || $value === '') {
                         $value = "";
                     }
 
@@ -5157,11 +5101,7 @@ class OdkFormService
                 if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
                     $toDate = $dateRangeDate[1];
                 }
-                if ($fromDate == $toDate) {
-                    $displayDate = "Date : " . $fromDate;
-                } else {
-                    $displayDate = "Date : " . $fromDate . " to " . $toDate;
-                }
+                $displayDate = $fromDate === $toDate ? "Date : " . $fromDate : "Date : " . $fromDate . " to " . $toDate;
             } else {
                 $displayDate = "";
             }
@@ -5174,7 +5114,7 @@ class OdkFormService
                 foreach ($sResult as $aRow) {
                     $auditDate = "";
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                        $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
                     $row = array();
                     $row[] = $aRow['facilityname'];
@@ -5501,8 +5441,7 @@ class OdkFormService
     public function formatResponse($strResponse)
     {
         $response = html_entity_decode(stripslashes($strResponse), ENT_QUOTES, 'UTF-8');
-        $obj = json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response), true);
-        return $obj;
+        return json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response), true);
     }
     public function getV6DownloadDataList()
     {
@@ -5527,7 +5466,7 @@ class OdkFormService
                 $pdf->SetAuthor('ODK DASHBOARD');
                 $pdf->SetTitle('SPI-RT Checklist');
                 $pdf->SetSubject('ODK DASHBOARD');
-                $pdf->SetKeywords('odk', 'odk dashboard');
+                $pdf->SetKeywords('odk');
 
                 // set default header data
                 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -5571,7 +5510,7 @@ class OdkFormService
                 $pdf->writeHTMLCell('', 12, '', '', '<p>' . $decoded[$language]['/SPI_RT/TESTSITE/FACILITY/info2:hint'] . '</p>', 0, 1, false, true, 'L', true);
                 if ($language == 'Portuguese') {
                     $langDateFormat = '(dd/mm/aaaa)';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $langDateFormat = '(dd/mm/aaaa)';
                 } else {
                     $langDateFormat = '(dd/mm/yyyy)';
@@ -5579,7 +5518,7 @@ class OdkFormService
                 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . \Application\Service\CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
                 $testingTab .= '</tr>';
 
@@ -5587,7 +5526,7 @@ class OdkFormService
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $formData['facilityname'] . '</td>';
                 if ($language == 'Portuguese') {
                     $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $formData['facilityid'] . '</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $formData['facilityid'] . '</td>';
                 } else {
                     $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $formData['facilityid'] . '</td>';
@@ -5900,7 +5839,7 @@ class OdkFormService
                 $partBTable .= '</table>';
                 if ($language == 'Portuguese') {
                     $partBTable .= '<p>*A area marcada com asteriscos so é aplicavel para os locais onde as amostras retestadas sao executadas.</p>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partBTable .= '<p>*Lo que aparece marcado con un asterisco son solo aplicables a sitios donde la repetición de las pruebas se hace.</p>';
                 } else {
                     $partBTable .= '<p>*Those marked with an asterisk are only applicable to sites where sample retesting is performed.</p>';
@@ -5935,7 +5874,7 @@ class OdkFormService
                 $partCTable .= '<tr style="font-weight:bold;text-align:center;">';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td style="width:15%">NIVEL</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td style="width:15%">Nivel</td>';
                 } else {
                     $partCTable .= '<td style="width:15%">Levels</td>';
@@ -5944,7 +5883,7 @@ class OdkFormService
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td  style="width:25%">PONTUACAO EM %</td>';
                     $partCTable .= '<td  style="width:60%">DESCRIÇAO DOS RESULTADOS</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td  style="width:25%">% Puntaje</td>';
                     $partCTable .= '<td  style="width:60%">Descripción de los resultados</td>';
                 } else {
@@ -5983,7 +5922,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level0[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Necessidade de melhoria em todas as areas e remediaçoes imediatas</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Necesita mejorar en todas las áreas y es necesaria corrección inmediata</td>';
                 } else {
                     $partCTable .= '<td>Needs improvement in all areas and immediate remediation</td>';
@@ -5996,7 +5935,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level1[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Necessidade de melhorias em areas especificas</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Necesita mejorar en áreas específicas</td>';
                 } else {
                     $partCTable .= '<td>Needs improvement in specific areas</td>';
@@ -6008,7 +5947,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level2[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Parcialmente admissivel ou aceitavel</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Parcialmente elegible</td>';
                 } else {
                     $partCTable .= '<td>Partially eligible</td>';
@@ -6020,7 +5959,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level3[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Proximo da certificaçao nacional</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Cercano a sitio nacional certificado</td>';
                 } else {
                     $partCTable .= '<td>Close to national site certification</td>';
@@ -6032,7 +5971,7 @@ class OdkFormService
                 $partCTable .= '<td>' . $level4[1] . '</td>';
                 if ($language == 'Portuguese') {
                     $partCTable .= '<td>Admissivel a certificaçao nacional</td>';
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partCTable .= '<td>Elegible para ser certificado</td>';
                 } else {
                     $partCTable .= '<td>Eligible to national site certification</td>';
@@ -6076,7 +6015,7 @@ class OdkFormService
                 $partDtableBox1 .= "<tr><td>";
                 if ($language == 'Portuguese') {
                     $partDtableBox1 .= "Tipo de local:";
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $partDtableBox1 .= "Tipo de sitio:";
                 } else {
                     $partDtableBox1 .= "Site Type:";
@@ -6182,7 +6121,7 @@ class OdkFormService
 
                 if ($language == 'Portuguese') {
                     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
-                } else if ($language == 'Spanish') {
+                } elseif ($language == 'Spanish') {
                     $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td></tr>";
                 } else {
                     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";

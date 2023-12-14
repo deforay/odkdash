@@ -21,6 +21,7 @@ class TempMailTable extends AbstractTableGateway
 {
 
     protected $table = 'temp_mail';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {

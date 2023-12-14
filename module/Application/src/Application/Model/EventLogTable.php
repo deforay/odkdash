@@ -23,6 +23,7 @@ class EventLogTable extends AbstractTableGateway
 {
 
     protected $table = 'event_log';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -33,7 +34,7 @@ class EventLogTable extends AbstractTableGateway
     {
         $loginContainer = new Container('credo');
         $actorId = $loginContainer->userId;
-        $currentDateTime = \Application\Service\CommonService::getDateTime();
+        $currentDateTime = CommonService::getDateTime();
 
         $data = array(
             'actor' => $actorId,
@@ -68,9 +69,9 @@ class EventLogTable extends AbstractTableGateway
          */
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $aColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -105,9 +106,11 @@ class EventLogTable extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -125,16 +128,16 @@ class EventLogTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('event_log');
         $sQueryStr = $sql->buildSqlString($sQuery);
-        
+
         $startDate = '';
         $endDate = '';
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode("to", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[1]) && trim($dateField[1]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[1]);
+                $endDate = CommonService::isoDateFormat($dateField[1]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -157,7 +160,7 @@ class EventLogTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
@@ -171,7 +174,7 @@ class EventLogTable extends AbstractTableGateway
         $iTotal = $this->select()->count();
 
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()

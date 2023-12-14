@@ -2,10 +2,11 @@
 
 namespace Application\Model;
 
-use Laminas\Session\Container;
-use Laminas\Db\Adapter\Adapter;
-
 use Laminas\Db\Sql\Sql;
+use Laminas\Session\Container;
+
+use Laminas\Db\Adapter\Adapter;
+use Application\Service\CommonService;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 
 
@@ -16,15 +17,12 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  * and open the template in the editor.
  */
 
-/**
- * Description of Countries
- *
- * @author ilahir
- */
+
 class UserLoginHistoryTable extends AbstractTableGateway
 {
 
     protected $table = 'user_login_history';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -55,9 +53,9 @@ class UserLoginHistoryTable extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $aColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -93,9 +91,11 @@ class UserLoginHistoryTable extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -119,10 +119,10 @@ class UserLoginHistoryTable extends AbstractTableGateway
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode("to", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[1]) && trim($dateField[1]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[1]);
+                $endDate = CommonService::isoDateFormat($dateField[1]);
             }
         }
         //echo $startDate.' '.$endDate; die;
@@ -146,7 +146,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //error_log($sQueryForm);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
@@ -161,7 +161,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
         $iTotal = $this->select()->count();
 
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()
@@ -188,15 +188,15 @@ class UserLoginHistoryTable extends AbstractTableGateway
         $os = PHP_OS;
         if (isset($_SERVER['HTTP_CLIENT_IP'])) {
             $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
             $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
             $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+        } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
             $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        } else if (isset($_SERVER['REMOTE_ADDR'])) {
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
             $ipaddress = $_SERVER['REMOTE_ADDR'];
         } else {
             $ipaddress = 'UNKNOWN';
@@ -204,7 +204,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
 
         $data = array(
             'login_id' => $userName,
-            'login_attempted_datetime' => \Application\Service\CommonService::getDateTime(),
+            'login_attempted_datetime' => CommonService::getDateTime(),
             'login_status' => $loginStatus,
             'ip_address' => $ipaddress,
             'browser'    => $browserAgent,
@@ -212,5 +212,4 @@ class UserLoginHistoryTable extends AbstractTableGateway
         );
         $this->insert($data);
     }
-
 }

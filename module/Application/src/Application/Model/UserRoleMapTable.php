@@ -14,18 +14,15 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  * and open the template in the editor.
  */
 
-/**
- * Description of Countries
- *
- * @author ilahir
- */
-class UserRoleMapTable extends AbstractTableGateway {
+
+class UserRoleMapTable extends AbstractTableGateway
+{
 
     protected $table = 'user_role_map';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-    
 }

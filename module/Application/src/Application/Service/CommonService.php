@@ -80,7 +80,7 @@ class CommonService
                 }
             }
             return $data;
-        } catch (\Exception $exc) {
+        } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -91,7 +91,7 @@ class CommonService
         $date = trim($date);
         $response = false;
 
-        if (empty($date) || 'undefined' === $date || 'null' === $date) {
+        if ($date === '' || 'undefined' === $date || 'null' === $date) {
             $response = false;
         } else {
             try {
@@ -121,7 +121,7 @@ class CommonService
         } else {
             $format = "Y-m-d";
             if ($includeTime === true) {
-                $format = $format . " H:i:s";
+                $format .= " H:i:s";
             }
             return (new DateTimeImmutable($date))->format($format);
         }
@@ -138,7 +138,7 @@ class CommonService
         } else {
 
             if ($includeTime === true) {
-                $format = $format . " H:i";
+                $format .= " H:i";
             }
 
             return (new DateTimeImmutable($date))->format($format);
@@ -493,7 +493,7 @@ class CommonService
 
         $source = str_replace('\\', '/', realpath($source));
 
-        if (is_dir($source) === true) {
+        if (is_dir($source)) {
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($files as $file) {
@@ -506,13 +506,13 @@ class CommonService
 
                 $file = realpath($file);
 
-                if (is_dir($file) === true) {
+                if (is_dir($file)) {
                     $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
-                } elseif (is_file($file) === true) {
+                } elseif (is_file($file)) {
                     $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
                 }
             }
-        } elseif (is_file($source) === true) {
+        } elseif (is_file($source)) {
             $zip->addFromString(basename($source), file_get_contents($source));
         }
 
@@ -521,7 +521,9 @@ class CommonService
     public function rmdirRecursive($dir)
     {
         foreach (scandir($dir) as $file) {
-            if ('.' === $file || '..' === $file) continue;
+            if ('.' === $file || '..' === $file) {
+                continue;
+            }
             if (is_dir("$dir/$file")) {
                 $this->rmdirRecursive("$dir/$file");
             } else {

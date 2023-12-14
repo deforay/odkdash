@@ -13,18 +13,15 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  * and open the template in the editor.
  */
 
-/**
- * Description of Countries
- *
- * @author ilahir
- */
-class UserTokenMapTable extends AbstractTableGateway {
+
+class UserTokenMapTable extends AbstractTableGateway
+{
 
     protected $table = 'user_token_map';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-    
 }

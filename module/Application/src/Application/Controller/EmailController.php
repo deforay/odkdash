@@ -34,7 +34,8 @@ class EmailController extends AbstractActionController
                 $ids = '';
                 if (isset($params['audits']) && !empty($params['audits'])) {
                     $idArray = array();
-                    for ($au = 0; $au < count($params['audits']); $au++) {
+                    $counter = count($params['audits']);
+                    for ($au = 0; $au < $counter; $au++) {
                         $idArray[] = $params['audits'][$au];
                     }
                     $auditIds = implode("#", $idArray);
@@ -75,7 +76,8 @@ class EmailController extends AbstractActionController
                 $ids = '';
                 if (isset($params['audits']) && !empty($params['audits'])) {
                     $idArray = array();
-                    for ($au = 0; $au < count($params['audits']); $au++) {
+                    $counter = count($params['audits']);
+                    for ($au = 0; $au < $counter; $au++) {
                         $idArray[] = $params['audits'][$au];
                     }
                     $auditIds = implode("#", $idArray);
@@ -117,7 +119,8 @@ class EmailController extends AbstractActionController
                 $ids = '';
                 if (isset($params['audits']) && !empty($params['audits'])) {
                     $idArray = array();
-                    for ($au = 0; $au < count($params['audits']); $au++) {
+                    $counter = count($params['audits']);
+                    for ($au = 0; $au < $counter; $au++) {
                         $idArray[] = $params['audits'][$au];
                     }
                     $auditIds = implode("#", $idArray);

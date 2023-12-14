@@ -14,15 +14,12 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  * and open the template in the editor.
  */
 
-/**
- * Description of Countries
- *
- * @author ilahir
- */
+
 class SpiRtFacilitiesTable extends AbstractTableGateway
 {
 
     protected $table = 'spi_rt_3_facilities';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -40,7 +37,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         } elseif ($formVersion == 6) {
             $table = 'spi_form_v_6';
         }
-        
+
         $query = $sql->select()->from($table)
             ->columns(array('formId', 'facilityname', 'facilityid', 'Latitude', 'Longitude'))
             ->where(array('id' => $formId));
@@ -139,9 +136,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -177,9 +174,11 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -214,7 +213,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         }
 
         $queryContainer->exportAllFacilityQuery = $sQuery;
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
@@ -232,7 +231,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()
@@ -240,11 +239,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit')) {
-            $update = true;
-        } else {
-            $update = false;
-        }
+        $update = (bool) $acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit');
 
         foreach ($rResult as $aRow) {
             $row = array();
@@ -264,8 +259,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function fetchFacility($id)
     {
-        $row = $this->select(array('id' => (int) $id))->current();
-        return $row;
+        return $this->select(array('id' => (int) $id))->current();
     }
 
     public function fetchFacilityList($strSearch)
@@ -464,13 +458,14 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         if (isset($params['province']) && trim($params['province']) != '') {
             if (isset($params['facility']) && count($params['facility']) > 0) {
                 $result = 1;
-                for ($f = 0; $f < count($params['facility']); $f++) {
+                $counter = count($params['facility']);
+                for ($f = 0; $f < $counter; $f++) {
                     $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
                 }
             }
             $subject = '';
             $eventType = 'Map-Province';
-            $action = $userName . ' has mapped Province '.$params['province'];
+            $action = $userName . ' has mapped Province ' . $params['province'];
             $resourceName = 'Map-Province';
             $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
         }

@@ -2,15 +2,16 @@
 
 namespace Application\Model;
 
-use Application\Model\GlobalTable;
-use Application\Model\SpiRtFacilitiesTable;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
-//use Application\Model\SpiRt5FacilitiesTable;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Laminas\Db\Sql\Expression;
 use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
+use Application\Model\GlobalTable;
+//use Application\Model\SpiRt5FacilitiesTable;
 use Application\Model\EventLogTable;
+use Application\Service\CommonService;
+use Application\Model\SpiRtFacilitiesTable;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -27,6 +28,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 {
 
     protected $table = 'spi_form_v_6';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -57,7 +59,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params), 'received_on' => new \Laminas\Db\Sql\Expression("NOW()"));
+        $d = array('data_dump' => json_encode($params), 'received_on' => new Expression("NOW()"));
         $dbAdapter = $this->adapter;
         $insert->values($d);
         $selectString = $sql->buildSqlString($insert);
@@ -66,11 +68,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         //get global values
         $globalDB = new GlobalTable($dbAdapter);
         $globalValue = $globalDB->getGlobalValue('approve_status');
-        if ($globalValue == 'yes') {
-            $approveStatus = 'approved';
-        } else {
-            $approveStatus = 'pending';
-        }
+        $approveStatus = $globalValue == 'yes' ? 'approved' : 'pending';
 
         //error_log(json_encode($params, true));
 
@@ -437,7 +435,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sql = new Sql($this->adapter);
         $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params), 'received_on' => new \Laminas\Db\Sql\Expression("NOW()"));
+        $d = array('data_dump' => json_encode($params), 'received_on' => new Expression("NOW()"));
         $dbAdapter = $this->adapter;
         $insert->values($d);
         $selectString = $sql->buildSqlString($insert);
@@ -446,11 +444,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         //get global values
         $globalDB = new GlobalTable($dbAdapter);
         $globalValue = $globalDB->getGlobalValue('approve_status');
-        if ($globalValue == 'yes') {
-            $approveStatus = 'approved';
-        } else {
-            $approveStatus = 'pending';
-        }
+        $approveStatus = $globalValue == 'yes' ? 'approved' : 'pending';
 
         //error_log(json_encode($params,true));
 
@@ -1114,6 +1108,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     if (empty($sResult) || $data["uuid"] != $sResult["uuid"]) {
                         $insert->values($par);
                         $selectString = $sql->buildSqlString($insert);
+                        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
                         $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
                     } else {
                         $this->update($par, array('uuid' => $data["uuid"]));
@@ -1140,14 +1135,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->columns(array(
-                'oldestDate' => new \Laminas\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
-                'newestDate' => new \Laminas\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
-                'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),
-                'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
-                'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
-                'level2' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
-                'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
-                'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
+                'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
+                'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
+                'totalDataPoints' => new Expression("COUNT(*)"),
+                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
+                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
+                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
+                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
+                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
             ))
             ->where(array('spiv6.status' => 'approved'));
         if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
@@ -1163,10 +1158,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -1191,18 +1186,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
 
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
 
@@ -1224,28 +1219,28 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $startDate = CommonService::isoDateFormat($dateField[2]);
             }
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $endDate = CommonService::isoDateFormat($dateField[0]);
             }
         }
 
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->columns(array(
-                'newestDate' => new \Laminas\Db\Sql\Expression("'$startDate'"),
-                'oldestDate' => new \Laminas\Db\Sql\Expression("'$endDate'"),
-                'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),
-                'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
-                'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
-                'level2' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
-                'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
-                'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
+                'newestDate' => new Expression("'$startDate'"),
+                'oldestDate' => new Expression("'$endDate'"),
+                'totalDataPoints' => new Expression("COUNT(*)"),
+                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
+                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
+                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
+                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
+                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
             ))
             ->where("spiv6.status='approved'")
             ->where("(`assesmentofaudit` BETWEEN '" . $startDate . "' - INTERVAL DATEDIFF('" . $startDate . "','" . $endDate . "') DAY AND '" . $startDate . "')");
         //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
@@ -1291,13 +1286,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -1318,18 +1313,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->columns(array(
-                'newestDate' => new \Laminas\Db\Sql\Expression("'$today'"),
-                'oldestDate' => new \Laminas\Db\Sql\Expression("'$last180Date'"),
-                'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)"),
-                'level0' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
-                'level1' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
-                'level2' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
-                'level3' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
-                'level4' => new \Laminas\Db\Sql\Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
+                'newestDate' => new Expression("'$today'"),
+                'oldestDate' => new Expression("'$last180Date'"),
+                'totalDataPoints' => new Expression("COUNT(*)"),
+                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
+                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
+                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
+                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
+                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
             ))
             ->where(array('status' => 'approved'))
             ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -1348,7 +1343,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where('spiv6.status != "deleted"')
             ->limit($limit)
             ->order(array("status DESC", "id $sortOrder"));
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -1364,7 +1359,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'));
         // ->order(array("client_tested_HIV_PM DESC"));
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
@@ -1372,10 +1367,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -1427,13 +1422,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -1468,9 +1463,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -1506,9 +1501,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -1530,10 +1527,10 @@ class SpiFormVer6Table extends AbstractTableGateway
             $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
 
@@ -1569,17 +1566,17 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($parameters['scoreLevel'] == 1) {
+            } elseif ($parameters['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 59");
-            } else if ($parameters['scoreLevel'] == 2) {
+            } elseif ($parameters['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
-            } else if ($parameters['scoreLevel'] == 3) {
+            } elseif ($parameters['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 89");
-            } else if ($parameters['scoreLevel'] == 4) {
+            } elseif ($parameters['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -1637,41 +1634,33 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($parameters['scoreLevel'] == 1) {
+            } elseif ($parameters['scoreLevel'] == 1) {
                 $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 59");
-            } else if ($parameters['scoreLevel'] == 2) {
+            } elseif ($parameters['scoreLevel'] == 2) {
                 $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
-            } else if ($parameters['scoreLevel'] == 3) {
+            } elseif ($parameters['scoreLevel'] == 3) {
                 $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 89");
-            } else if ($parameters['scoreLevel'] == 4) {
+            } elseif ($parameters['scoreLevel'] == 4) {
                 $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $tQuery = $tQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
         );
 
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf')) {
-            $downloadPdfAction = true;
-        } else {
-            $downloadPdfAction = false;
-        }
+        $downloadPdfAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf');
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status')) {
-            $approveStatusAction = true;
-        } else {
-            $approveStatusAction = false;
-        }
+        $approveStatusAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status');
 
         $auditScore = 0;
         $levelZero = array();
@@ -1683,30 +1672,26 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row = array();
             $approve = '';
             $downloadPdf = "";
-            $scorePer=round($aRow['AUDIT_SCORE_PERCENTAGE']);
+            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
             $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
             if (isset($scorePer) && $scorePer < 40) {
                 $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+            } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
                 $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+            } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
                 $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+            } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
                 $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-            } else if (isset($scorePer) && $scorePer >= 90) {
+            } elseif (isset($scorePer) && $scorePer >= 90) {
                 $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
             }
             $row['DT_RowId'] = $aRow['id'];
-            if (isset($aRow['level_other']) && $aRow['level_other'] != "") {
-                $level = " - " . $aRow['level_other'];
-            } else {
-                $level = '';
-            }
+            $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
             $row[] = '';
             $row[] = $aRow['facilityname'];
 
             $row[] = $aRow['auditroundno'];
-            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             //$row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'] . $level;
@@ -1714,10 +1699,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             $row[] = ucwords($aRow['status']);
             //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
-            if ($aRow['status'] == 'pending') {
-                if ($approveStatusAction) {
-                    $approve = '<br><a href="javascript:void(0);" onclick="approveStatus(' . $aRow['id'] . ')"  style="white-space:nowrap;"><i class="fa fa-check"></i>  Approve</a>';
-                }
+            if ($aRow['status'] == 'pending' && $approveStatusAction) {
+                $approve = '<br><a href="javascript:void(0);" onclick="approveStatus(' . $aRow['id'] . ')"  style="white-space:nowrap;"><i class="fa fa-check"></i>  Approve</a>';
             }
 
             if ($downloadPdfAction) {
@@ -1764,8 +1747,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         // echo "sj";die;
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $rResult = $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $rResult;
+        return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function fetchAllSubmissionsDatas($parameters, $acl)
@@ -1793,9 +1775,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -1831,9 +1813,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -1851,7 +1835,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where('spiv6.status != "deleted"');
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -1881,36 +1865,24 @@ class SpiFormVer6Table extends AbstractTableGateway
         /* Total data set length */
         $tQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where('spiv6.status != "deleted"');
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $tQuery = $tQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
         );
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit')) {
-            $update = true;
-        } else {
-            $update = false;
-        }
+        $update = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit');
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'delete')) {
-            $delete = true;
-        } else {
-            $delete = false;
-        }
+        $delete = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'delete');
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf')) {
-            $downloadPdfAction = true;
-        } else {
-            $downloadPdfAction = false;
-        }
+        $downloadPdfAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf');
 
         foreach ($rResult as $aRow) {
             $row = array();
@@ -1920,7 +1892,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row['DT_RowId'] = $aRow['id'];
             $row[] = $aRow['facilityname'];
             $row[] = $aRow['auditroundno'];
-            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'];
             $row[] = $aRow['affiliation'];
@@ -1948,8 +1920,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where(array('spiv6.status' => 'pending'));
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $rResult;
+        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function getFormData($id, $pdfDowload = 'no')
@@ -1971,14 +1942,14 @@ class SpiFormVer6Table extends AbstractTableGateway
                 if (isset($sResult->facility) && $sResult->facility > 0) {
                     $fQuery = $fQuery->where(array("spirt3.id" => $sResult->facility));
                     $searchFacility = true;
-                } else if (isset($sResult->facilityid) && $sResult->facilityid != '') {
+                } elseif (isset($sResult->facilityid) && $sResult->facilityid != '') {
                     $fQuery = $fQuery->where(array("spirt3.facility_id" => $sResult->facilityid));
                     $searchFacility = true;
-                } else if (isset($sResult->facilityname) && $sResult->facilityname != '') {
+                } elseif (isset($sResult->facilityname) && $sResult->facilityname != '') {
                     $fQuery = $fQuery->where(array("spirt3.facility_name" => $sResult->facilityname));
                     $searchFacility = true;
                 }
-                if($searchFacility == true){
+                if ($searchFacility) {
                     $fQueryStr = $sql->buildSqlString($fQuery);
                     $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 }
@@ -2005,7 +1976,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
@@ -2013,10 +1984,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -2044,13 +2015,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -2108,7 +2079,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
@@ -2116,10 +2087,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -2147,13 +2118,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -2212,7 +2183,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
@@ -2220,10 +2191,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -2251,13 +2222,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -2313,7 +2284,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
 
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
@@ -2321,10 +2292,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -2376,13 +2347,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -2467,14 +2438,8 @@ class SpiFormVer6Table extends AbstractTableGateway
         );
         foreach ($rResult as $row) {
             foreach ($row as $col => $val) {
-                if (in_array($col, $questionColums)) {
-                    if ($val == "0") {
-                        if (isset($response[$col])) {
-                            $response[$col] = $response[$col] + 1;
-                        } else {
-                            $response[$col] = 1;
-                        }
-                    }
+                if (in_array($col, $questionColums) && $val == "0") {
+                    $response[$col] = isset($response[$col]) ? $response[$col] + 1 : 1;
                 }
             }
         }
@@ -2499,7 +2464,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where(array('status' => 'approved'))
             ->order(array("assesmentofaudit $sortOrder"));
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -2517,7 +2482,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(array('status' => 'approved'))
             ->order(array("client_tested_HIV_PM DESC"))
             ->limit(10);
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -2550,9 +2515,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -2588,9 +2553,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -2611,10 +2578,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode(" ", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
@@ -2636,45 +2603,41 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['level'] != '') {
             $sQuery = $sQuery->where("spiv3.level='" . $parameters['level'] . "'");
         }
-        if (is_array($parameters['province']) && count($parameters['province']) > 0) {
+        if (is_array($parameters['province']) && $parameters['province'] !== []) {
             $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
                 ->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-            if (is_array($parameters['district']) && count($parameters['district']) > 0) {
+            if (is_array($parameters['district']) && $parameters['district'] !== []) {
                 $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
             }
-        } else {
-            if ($parameters['province'] != '') {
-                $provinces = explode(",", $parameters['province']);
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                    ->where('f.province IN ("' . implode('", "', $provinces) . '")');
-            }
+        } elseif ($parameters['province'] != '') {
+            $provinces = explode(",", $parameters['province']);
+            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
+                ->where('f.province IN ("' . implode('", "', $provinces) . '")');
         }
         if ($parameters['province'] != '') {
-            if (is_array($parameters['district']) && count($parameters['district']) > 0) {
+            if (is_array($parameters['district']) && $parameters['district'] !== []) {
                 $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
-            } else {
-                if ($parameters['district'] != '') {
-                    $provinces = explode(",", $parameters['district']);
-                    $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
-                }
+            } elseif ($parameters['district'] != '') {
+                $provinces = explode(",", $parameters['district']);
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $provinces) . '")');
             }
         }
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($parameters['scoreLevel'] == 1) {
+            } elseif ($parameters['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($parameters['scoreLevel'] == 2) {
+            } elseif ($parameters['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($parameters['scoreLevel'] == 3) {
+            } elseif ($parameters['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($parameters['scoreLevel'] == 4) {
+            } elseif ($parameters['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -2750,19 +2713,19 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($parameters['scoreLevel'] == 1) {
+            } elseif ($parameters['scoreLevel'] == 1) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($parameters['scoreLevel'] == 2) {
+            } elseif ($parameters['scoreLevel'] == 2) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($parameters['scoreLevel'] == 3) {
+            } elseif ($parameters['scoreLevel'] == 3) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($parameters['scoreLevel'] == 4) {
+            } elseif ($parameters['scoreLevel'] == 4) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -2770,7 +2733,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
@@ -2779,7 +2742,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = array();
             $row[] = $aRow['facilityname'];
-            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = $aRow['testingpointname'] . " - " . $aRow['testingpointtype'];
             $row[] = $aRow['PERSONAL_SCORE'];
             $row[] = $aRow['PHYSICAL_SCORE'];
@@ -2821,9 +2784,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -2859,9 +2822,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -2882,10 +2847,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
             $dateField = explode(" ", $parameters['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
@@ -2911,19 +2876,19 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($parameters['scoreLevel'] == 1) {
+            } elseif ($parameters['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 59");
-            } else if ($parameters['scoreLevel'] == 2) {
+            } elseif ($parameters['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 79");
-            } else if ($parameters['scoreLevel'] == 3) {
+            } elseif ($parameters['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 89");
-            } else if ($parameters['scoreLevel'] == 4) {
+            } elseif ($parameters['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
@@ -2962,11 +2927,8 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
             $tQuery = $tQuery->where("spiv5.testingpointtype='" . $parameters['testPoint'] . "'");
-            if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '') {
-                if (trim($parameters['testPoint']) == 'other' && trim($parameters['testPointName']) != '') {
-
-                    $tQuery = $tQuery->where("spiv5.testingpointtype_other='" . $parameters['testPointName'] . "'");
-                }
+            if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '' && (trim($parameters['testPoint']) == 'other' && trim($parameters['testPointName']) != '')) {
+                $tQuery = $tQuery->where("spiv5.testingpointtype_other='" . $parameters['testPointName'] . "'");
             }
         }
         if ($parameters['level'] != '') {
@@ -2976,19 +2938,19 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($parameters['scoreLevel'] == 1) {
+            } elseif ($parameters['scoreLevel'] == 1) {
                 $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 59");
-            } else if ($parameters['scoreLevel'] == 2) {
+            } elseif ($parameters['scoreLevel'] == 2) {
                 $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 79");
-            } else if ($parameters['scoreLevel'] == 3) {
+            } elseif ($parameters['scoreLevel'] == 3) {
                 $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 89");
-            } else if ($parameters['scoreLevel'] == 4) {
+            } elseif ($parameters['scoreLevel'] == 4) {
                 $tQuery = $tQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
@@ -2996,7 +2958,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
@@ -3006,7 +2968,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = array();
             $row[] = $aRow['facilityname'];
-            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['PERSONAL_SCORE'];
             $row[] = $aRow['PHYSICAL_SCORE'];
@@ -3034,7 +2996,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $startDate = '';
@@ -3042,10 +3004,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
             $dateField = explode(" ", $params['dateRange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
@@ -3097,13 +3059,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } else if ($params['scoreLevel'] == 1) {
+            } elseif ($params['scoreLevel'] == 1) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
-            } else if ($params['scoreLevel'] == 2) {
+            } elseif ($params['scoreLevel'] == 2) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
-            } else if ($params['scoreLevel'] == 3) {
+            } elseif ($params['scoreLevel'] == 3) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
-            } else if ($params['scoreLevel'] == 4) {
+            } elseif ($params['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
             }
         }
@@ -3153,7 +3115,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             if (trim($params['testingFacility']) != '') {
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id, $params);
-            } else if (trim($params['testingFacilityName']) != '') {
+            } elseif (trim($params['testingFacilityName']) != '') {
                 //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                     ->columns(array('id'))
@@ -3169,7 +3131,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
 
             $data = array(
-                //'assesmentofaudit' => \Application\Service\CommonService::isoDateFormat($params['auditDate']),
+                //'assesmentofaudit' => CommonService::isoDateFormat($params['auditDate']),
                 'auditroundno' => $params['auditRound'],
                 'facility' => ($id > 0) ? $id : null,
                 'facilityid' => $params['testingFacilityId'],
@@ -3328,7 +3290,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->columns(array('assesmentofaudit', 'auditroundno', 'rowCount' => new Expression("COUNT('auditroundno')")))
             ->group('auditroundno')
             ->order("auditroundno ASC");
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -3392,7 +3354,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
             if (count($aResult) > 0) {
-                for ($k = 0; $k < count($aResult); $k++) {
+                $counter = count($aResult);
+                for ($k = 0; $k < $counter; $k++) {
                     $data = array(
                         'facilityid' => $params['facilityId'],
                         'facilityname' => $params['editFacilityName'],
@@ -3455,9 +3418,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -3493,9 +3456,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -3517,7 +3482,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityId') {
             $sQuery = $sQuery->where(array('facilityid' => $parameters['val']));
-        } else if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityName') {
+        } elseif (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityName') {
             $sQuery = $sQuery->where(array('facilityname' => $parameters['val']));
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -3548,7 +3513,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tQuery = $sql->select()->from('spi_form_v_3');
         if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityId') {
             $tQuery = $tQuery->where(array('facilityid' => $parameters['val']));
-        } else if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityName') {
+        } elseif (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityName') {
             $tQuery = $tQuery->where(array('facilityname' => $parameters['val']));
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
@@ -3556,18 +3521,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
         );
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
-            $downloadPdfAction = true;
-        } else {
-            $downloadPdfAction = false;
-        }
+        $downloadPdfAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf');
 
         foreach ($rResult as $aRow) {
             $row = array();
@@ -3576,7 +3537,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = $aRow['facilityid'];
             $row[] = ucwords($aRow['facilityname']);
             $row[] = $aRow['testingpointtype'];
-            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             if ($downloadPdfAction) {
                 $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
@@ -3617,7 +3578,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where('spiv6.status = "pending"');
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
@@ -3670,9 +3631,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -3708,9 +3669,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -3735,10 +3698,10 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where('spiv3.status != "deleted"');
 
         if (isset($parameters['assesmentOfAuditDate']) && $parameters['assesmentOfAuditDate'] != '') {
-            $sQuery = $sQuery->where("spiv3.assesmentofaudit='" . \Application\Service\CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
-            $tQuery = $tQuery->where("spiv3.assesmentofaudit='" . \Application\Service\CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
+            $sQuery = $sQuery->where("spiv3.assesmentofaudit='" . CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
+            $tQuery = $tQuery->where("spiv3.assesmentofaudit='" . CommonService::isoDateFormat($parameters['assesmentOfAuditDate']) . "'");
         }
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
@@ -3772,39 +3735,27 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
         );
 
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) {
-            $downloadPdfAction = true;
-        } else {
-            $downloadPdfAction = false;
-        }
+        $downloadPdfAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf');
 
-        if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) {
-            $approveStatusAction = true;
-        } else {
-            $approveStatusAction = false;
-        }
+        $approveStatusAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status');
 
 
         foreach ($rResult as $aRow) {
             $row = array();
             $downloadPdf = "";
 
-            if (isset($aRow['level_other']) && $aRow['level_other'] != "") {
-                $level = " - " . $aRow['level_other'];
-            } else {
-                $level = '';
-            }
+            $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
 
             $row[] = $aRow['facilityname'];
             $row[] = $aRow['auditroundno'];
-            $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'] . $level;
@@ -3844,16 +3795,16 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
-        } else if ($parameters['source'] == 'la') {
+        } elseif ($parameters['source'] == 'la') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'testingpointname', 'AUDIT_SCORE_PERCENTAGE', 'client_tested_HIV_PM');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'testingpointname', 'AUDIT_SCORE_PERCENTAGE', 'client_tested_HIV_PM');
-        } else if ($parameters['source'] == 'ad') {
+        } elseif ($parameters['source'] == 'ad') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
             $orderColumns = array('assesmentofaudit', 'assesmentofaudit');
-        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             $aColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
             $orderColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'apspi') {
+        } elseif ($parameters['source'] == 'apspi') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE');
             $orderColumns = array('assesmentofaudit', 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE');
         }
@@ -3873,9 +3824,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -3911,9 +3862,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -3934,43 +3887,41 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['drange']) && ($parameters['drange'] != "")) {
             $dateField = explode(" ", $parameters['drange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
 
         if ($parameters['source'] == 'ad') {
             //For Audit Dates
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
+                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
+                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
-        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             if (isset($parameters['date']) && ($parameters['date'] != "")) {
                 $dateField = explode(" ", $parameters['date']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                    $startDate = CommonService::isoDateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                    $endDate = CommonService::isoDateFormat($dateField[2]);
                 }
             }
             //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-
             if ($parameters['source'] == 'apl180') {
                 $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
                 $tQuery = $tQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -3996,16 +3947,16 @@ class SpiFormVer6Table extends AbstractTableGateway
                 if ($parameters['scoreLevel'] == 0) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
-                } else if ($parameters['scoreLevel'] == 1) {
+                } elseif ($parameters['scoreLevel'] == 1) {
                     $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 59");
                     $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 59");
-                } else if ($parameters['scoreLevel'] == 2) {
+                } elseif ($parameters['scoreLevel'] == 2) {
                     $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 79");
                     $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 79");
-                } else if ($parameters['scoreLevel'] == 3) {
+                } elseif ($parameters['scoreLevel'] == 3) {
                     $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 89");
                     $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 89");
-                } else if ($parameters['scoreLevel'] == 4) {
+                } elseif ($parameters['scoreLevel'] == 4) {
                     $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 90");
                     $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 90");
                 }
@@ -4023,7 +3974,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
                 $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
             }
-        } else if ($parameters['source'] == 'apspi') {
+        } elseif ($parameters['source'] == 'apspi') {
             //For Audit Performance
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
@@ -4031,7 +3982,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
                 ->group('spiv3.assesmentofaudit');
-
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
                 $xplodRoundNo = explode(",", $parameters['roundno']);
                 $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $xplodRoundNo) . '")');
@@ -4046,7 +3996,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'client_tested_HIV_PM', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
         }
 
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
@@ -4088,7 +4038,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
@@ -4116,56 +4066,56 @@ class SpiFormVer6Table extends AbstractTableGateway
         $levelThree = array();
         $levelFour = array();
         foreach ($rResult as $aRow) {
-            $scorePer=round($aRow['AUDIT_SCORE_PERCENTAGE']);
+            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
             $row = array();
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
                 if (isset($scorePer) && $scorePer < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+                } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
                     $level = 1;
                     $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+                } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
                     $level = 2;
                     $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+                } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
                     $level = 3;
                     $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($scorePer) && $scorePer >= 90) {
+                } elseif (isset($scorePer) && $scorePer >= 90) {
                     $level = 4;
                     $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                 }
             }
             if ($parameters['source'] == 'hv') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
-            } else if ($parameters['source'] == 'la') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'la') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
-            } else if ($parameters['source'] == 'ad') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'ad') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
-            } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+            } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $row[] = $aRow['facilityid'];
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = $aRow['auditroundno'];
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['testingpointtype']);
                 $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
                 $row[] = ucwords($aRow['level']);
                 $row[] = ucwords($aRow['affiliation']);
                 $row[] = $level;
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-            } else if ($parameters['source'] == 'apspi') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'apspi') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = round($aRow['PERSONAL_SCORE'], 2);
                 $row[] = round($aRow['PHYSICAL_SCORE'], 2);
                 $row[] = round($aRow['SAFETY_SCORE'], 2);
@@ -4208,16 +4158,16 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'la') {
+        } elseif ($parameters['source'] == 'la') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'ad') {
+        } elseif ($parameters['source'] == 'ad') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
             $orderColumns = array('assesmentofaudit', 'assesmentofaudit');
-        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             $aColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
             $orderColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'apspi') {
+        } elseif ($parameters['source'] == 'apspi') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE');
             $orderColumns = array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_Q_3_TESTS_RECORDED_RECENCY', 'S0_Q_4_PROCESS_DOCUMENTED', 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS');
         }
@@ -4237,9 +4187,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -4275,9 +4225,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -4298,43 +4250,41 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['drange']) && ($parameters['drange'] != "")) {
             $dateField = explode(" ", $parameters['drange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
 
         if ($parameters['source'] == 'ad') {
             //For Audit Dates
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
+                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
+                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
-        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             if (isset($parameters['date']) && ($parameters['date'] != "")) {
                 $dateField = explode(" ", $parameters['date']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                    $startDate = CommonService::isoDateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                    $endDate = CommonService::isoDateFormat($dateField[2]);
                 }
             }
             //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-
             if ($parameters['source'] == 'apl180') {
                 $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
                 $tQuery = $tQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -4360,16 +4310,16 @@ class SpiFormVer6Table extends AbstractTableGateway
                 if ($parameters['scoreLevel'] == 0) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
-                } else if ($parameters['scoreLevel'] == 1) {
+                } elseif ($parameters['scoreLevel'] == 1) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
-                } else if ($parameters['scoreLevel'] == 2) {
+                } elseif ($parameters['scoreLevel'] == 2) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
-                } else if ($parameters['scoreLevel'] == 3) {
+                } elseif ($parameters['scoreLevel'] == 3) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
-                } else if ($parameters['scoreLevel'] == 4) {
+                } elseif ($parameters['scoreLevel'] == 4) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
@@ -4387,7 +4337,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
                 $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
             }
-        } else if ($parameters['source'] == 'apspi') {
+        } elseif ($parameters['source'] == 'apspi') {
             //For Audit Performance
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => new Expression('AVG(S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY)'), 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL' => new Expression('AVG(S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL)'), 'S0_Q_3_TESTS_RECORDED_RECENCY' => new Expression('AVG(S0_Q_3_TESTS_RECORDED_RECENCY)'), 'S0_Q_4_PROCESS_DOCUMENTED' => new Expression('AVG(S0_Q_4_PROCESS_DOCUMENTED)'), 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS' => new Expression('AVG(S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS)'), 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED' => new Expression('AVG(S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED)'), 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS' => new Expression('AVG(S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS)')))
@@ -4395,7 +4345,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => new Expression('AVG(S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY)'), 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL' => new Expression('AVG(S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL)'), 'S0_Q_3_TESTS_RECORDED_RECENCY' => new Expression('AVG(S0_Q_3_TESTS_RECORDED_RECENCY)'), 'S0_Q_4_PROCESS_DOCUMENTED' => new Expression('AVG(S0_Q_4_PROCESS_DOCUMENTED)'), 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS' => new Expression('AVG(S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS)'), 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED' => new Expression('AVG(S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED)'), 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS' => new Expression('AVG(S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS)')))
                 ->group('spiv3.assesmentofaudit');
-
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
                 $xplodRoundNo = explode(",", $parameters['roundno']);
                 $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $xplodRoundNo) . '")');
@@ -4410,7 +4359,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
         }
 
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
@@ -4452,7 +4401,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
@@ -4485,49 +4434,49 @@ class SpiFormVer6Table extends AbstractTableGateway
                 if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
                     $level = 1;
                     $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
                     $level = 2;
                     $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
                     $level = 3;
                     $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
                     $level = 4;
                     $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                 }
             }
             if ($parameters['source'] == 'hv') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
-            } else if ($parameters['source'] == 'la') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'la') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
-            } else if ($parameters['source'] == 'ad') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'ad') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
-            } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+            } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $row[] = $aRow['facilityid'];
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = $aRow['auditroundno'];
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['testingpointtype']);
                 $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
                 $row[] = ucwords($aRow['level']);
                 $row[] = ucwords($aRow['affiliation']);
                 $row[] = $level;
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-            } else if ($parameters['source'] == 'apspi') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'apspi') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'];
                 $row[] = $aRow['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL'];
                 $row[] = $aRow['S0_Q_3_TESTS_RECORDED_RECENCY'];
@@ -4570,16 +4519,16 @@ class SpiFormVer6Table extends AbstractTableGateway
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'la') {
+        } elseif ($parameters['source'] == 'la') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'ad') {
+        } elseif ($parameters['source'] == 'ad') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
             $orderColumns = array('assesmentofaudit', 'assesmentofaudit');
-        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             $aColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
             $orderColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
-        } else if ($parameters['source'] == 'apspi') {
+        } elseif ($parameters['source'] == 'apspi') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE');
             $orderColumns = array('assesmentofaudit', 'D0_S_1_DIAGNOSED_HIV_ABOVE_15', 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_S_5_DOCUMENTED_AND_REFUSED', 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI');
         }
@@ -4599,9 +4548,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -4637,9 +4586,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -4660,43 +4611,41 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($parameters['drange']) && ($parameters['drange'] != "")) {
             $dateField = explode(" ", $parameters['drange']);
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
 
         if ($parameters['source'] == 'ad') {
             //For Audit Dates
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
+                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
+                ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
-        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             if (isset($parameters['date']) && ($parameters['date'] != "")) {
                 $dateField = explode(" ", $parameters['date']);
                 //print_r($proceed_date);die;
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);
+                    $startDate = CommonService::isoDateFormat($dateField[0]);
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                    $endDate = CommonService::isoDateFormat($dateField[2]);
                 }
             }
             //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-
             if ($parameters['source'] == 'apl180') {
                 $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
                 $tQuery = $tQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -4722,16 +4671,16 @@ class SpiFormVer6Table extends AbstractTableGateway
                 if ($parameters['scoreLevel'] == 0) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
-                } else if ($parameters['scoreLevel'] == 1) {
+                } elseif ($parameters['scoreLevel'] == 1) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 59");
-                } else if ($parameters['scoreLevel'] == 2) {
+                } elseif ($parameters['scoreLevel'] == 2) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 79");
-                } else if ($parameters['scoreLevel'] == 3) {
+                } elseif ($parameters['scoreLevel'] == 3) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCENTAGE <= 89");
-                } else if ($parameters['scoreLevel'] == 4) {
+                } elseif ($parameters['scoreLevel'] == 4) {
                     $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
                     $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
@@ -4749,7 +4698,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
                 $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
             }
-        } else if ($parameters['source'] == 'apspi') {
+        } elseif ($parameters['source'] == 'apspi') {
             //For Audit Performance
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array(
@@ -4767,7 +4716,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => new Expression('AVG(S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY)'), 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL' => new Expression('AVG(S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL)'), 'S0_Q_3_TESTS_RECORDED_RECENCY' => new Expression('AVG(S0_Q_3_TESTS_RECORDED_RECENCY)'), 'S0_Q_4_PROCESS_DOCUMENTED' => new Expression('AVG(S0_Q_4_PROCESS_DOCUMENTED)'), 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS' => new Expression('AVG(S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS)'), 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED' => new Expression('AVG(S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED)'), 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS' => new Expression('AVG(S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS)')))
                 ->group('spiv3.assesmentofaudit');
-
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
                 $xplodRoundNo = explode(",", $parameters['roundno']);
                 $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $xplodRoundNo) . '")');
@@ -4782,7 +4730,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
         }
 
-        if (isset($loginContainer->token) && !empty($loginContainer->token)) {
+        if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
             $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
@@ -4824,7 +4772,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array(),
@@ -4857,49 +4805,49 @@ class SpiFormVer6Table extends AbstractTableGateway
                 if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
                     $level = 1;
                     $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
                     $level = 2;
                     $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
                     $level = 3;
                     $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } else if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
                     $level = 4;
                     $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                 }
             }
             if ($parameters['source'] == 'hv') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
                 $row[] = $level;
-            } else if ($parameters['source'] == 'la') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'la') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
-            } else if ($parameters['source'] == 'ad') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'ad') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['totalDataPoints'];
-            } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+            } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $row[] = $aRow['facilityid'];
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = $aRow['auditroundno'];
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['testingpointtype']);
                 $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
                 $row[] = ucwords($aRow['level']);
                 $row[] = ucwords($aRow['affiliation']);
                 $row[] = $level;
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-            } else if ($parameters['source'] == 'apspi') {
-                $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            } elseif ($parameters['source'] == 'apspi') {
+                $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = $aRow['D0_S_1_DIAGNOSED_HIV_ABOVE_15'];
                 $row[] = $aRow['D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
                 $row[] = $aRow['D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD'];
@@ -5012,7 +4960,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->columns(array('district'));
         if (!empty($params['province']) && is_array($params['province'])) {
             $query = $query->where('f.province IN ("' . implode('", "', $params['province']) . '") AND f.district!=""');
-        } else if (!empty($params['province']) && !is_array($params['province'])) {
+        } elseif (!empty($params['province']) && !is_array($params['province'])) {
             $query = $query->where('f.province="' . $params['province'] . '" AND f.district!=""');
         } else {
             $query = $query->where('f.district!=""');
@@ -5304,8 +5252,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_6 WHERE central_project_id = ? AND central_form_id = ?";
-        $rResult = $dbAdapter->query($query, [$projectId, $formId])->toArray();
-        return $rResult;
+        return $dbAdapter->query($query, [$projectId, $formId])->toArray();
     }
 
     public function fetchV6DetailsByMetaInstanceId($metaInstantId)

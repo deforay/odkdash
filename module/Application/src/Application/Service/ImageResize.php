@@ -54,7 +54,7 @@ Class ImageResize {
 
         // *** Resample - create image canvas of x, y size
         $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
-        if (imagetypes() & IMG_PNG) {
+        if ((imagetypes() & IMG_PNG) !== 0) {
             imagesavealpha($this->imageResized, true);
             imagealphablending($this->imageResized, false);
         }
@@ -70,7 +70,7 @@ Class ImageResize {
     ## --------------------------------------------------------
 
     private function getDimensions($newWidth, $newHeight, $option) {
-        
+
         if($newHeight > $this->height && $newWidth > $this->width ){
             return array('optimalWidth' => $this->width, 'optimalHeight' => $this->height);
         }
@@ -105,14 +105,12 @@ Class ImageResize {
 
     private function getSizeByFixedHeight($newHeight) {
         $ratio = $this->width / $this->height;
-        $newWidth = $newHeight * $ratio;
-        return $newWidth;
+        return $newHeight * $ratio;
     }
 
     private function getSizeByFixedWidth($newWidth) {
         $ratio = $this->height / $this->width;
-        $newHeight = $newWidth * $ratio;
-        return $newHeight;
+        return $newWidth * $ratio;
     }
 
     private function getSizeByAuto($newWidth, $newHeight) {
@@ -124,19 +122,17 @@ Class ImageResize {
             // *** Image to be resized is taller (portrait)
             $optimalWidth = $this->getSizeByFixedHeight($newHeight);
             $optimalHeight = $newHeight;
-        } else {
+        } elseif ($newHeight < $newWidth) {
             // *** Image to be resizerd is a square
-            if ($newHeight < $newWidth) {
-                $optimalWidth = $newWidth;
-                $optimalHeight = $this->getSizeByFixedWidth($newWidth);
-            } else if ($newHeight > $newWidth) {
-                $optimalWidth = $this->getSizeByFixedHeight($newHeight);
-                $optimalHeight = $newHeight;
-            } else {
-                // *** Sqaure being resized to a square
-                $optimalWidth = $newWidth;
-                $optimalHeight = $newHeight;
-            }
+            $optimalWidth = $newWidth;
+            $optimalHeight = $this->getSizeByFixedWidth($newWidth);
+        } elseif ($newHeight > $newWidth) {
+            $optimalWidth = $this->getSizeByFixedHeight($newHeight);
+            $optimalHeight = $newHeight;
+        } else {
+            // *** Sqaure being resized to a square
+            $optimalWidth = $newWidth;
+            $optimalHeight = $newHeight;
         }
 
         return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
@@ -149,11 +145,7 @@ Class ImageResize {
         $heightRatio = $this->height / $newHeight;
         $widthRatio = $this->width / $newWidth;
 
-        if ($heightRatio < $widthRatio) {
-            $optimalRatio = $heightRatio;
-        } else {
-            $optimalRatio = $widthRatio;
-        }
+        $optimalRatio = $heightRatio < $widthRatio ? $heightRatio : $widthRatio;
 
         $optimalHeight = $this->height / $optimalRatio;
         $optimalWidth = $this->width / $optimalRatio;
@@ -185,13 +177,13 @@ Class ImageResize {
         switch ($extension) {
             case '.jpg':
             case '.jpeg':
-                if (imagetypes() & IMG_JPG) {
+                if ((imagetypes() & IMG_JPG) !== 0) {
                     imagejpeg($this->imageResized, $savePath, $imageQuality);
                 }
                 break;
 
             case '.gif':
-                if (imagetypes() & IMG_GIF) {
+                if ((imagetypes() & IMG_GIF) !== 0) {
                     imagegif($this->imageResized, $savePath);
                 }
                 break;
@@ -203,7 +195,7 @@ Class ImageResize {
                 // *** Invert quality setting as 0 is best, not 9
                 $invertScaleQuality = 9 - $scaleQuality;
 
-                if (imagetypes() & IMG_PNG) {
+                if ((imagetypes() & IMG_PNG) !== 0) {
                     imagepng($this->imageResized, $savePath, $invertScaleQuality);
                 }
                 break;

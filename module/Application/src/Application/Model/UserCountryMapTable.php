@@ -19,17 +19,19 @@ use Application\Service\CommonService;
  *
  * @author amit
  */
-class UserCountryMapTable extends AbstractTableGateway {
+class UserCountryMapTable extends AbstractTableGateway
+{
 
     protected $table = 'user_country_map';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function fetchSelectedCountry($id){
+    public function fetchSelectedCountry($id)
+    {
         return $this->select(array('user_id' => $id))->toArray();
     }
-    
 }
-?>

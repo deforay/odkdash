@@ -2,13 +2,14 @@
 
 namespace Application\Model;
 
-use Laminas\Session\Container;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Application\Model\SpiRtFacilitiesTable;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
+use Application\Service\CommonService;
+use Application\Model\SpiRtFacilitiesTable;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -21,22 +22,26 @@ use Application\Model\GlobalTable;
  *
  * @author amit
  */
-class SpiFormVer3TempTable extends AbstractTableGateway {
+class SpiFormVer3TempTable extends AbstractTableGateway
+{
 
     protected $table = 'spi_form_v_3_temp';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function fetchAllValidateSpiv3Details($parameters){
+    public function fetchAllValidateSpiv3Details($parameters)
+    {
         $loginContainer = new Container('credo');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
-	$queryContainer = new Container('query');
-        $aColumns = array('id','facilityname','auditroundno',"DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')",'testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
-        $orderColumns = array('id','facilityname','auditroundno','assesmentofaudit','testingpointname' ,'testingpointtype','level','affiliation','AUDIT_SCORE_PERCANTAGE','status');
+        $queryContainer = new Container('query');
+        $aColumns = array('id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
+        $orderColumns = array('id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
 
         /*
         * Paging
@@ -53,9 +58,9 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ( $parameters['sSortDir_' . $i] ) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -79,21 +84,23 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
                     $sWhereSub .= " AND (";
                 }
                 $colSize = count($aColumns);
- 
+
                 for ($i = 0; $i < $colSize; $i++) {
                     if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' OR ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                     } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                     }
                 }
                 $sWhereSub .= ")";
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -115,14 +122,14 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
             $dateField = explode(" ", $parameters['dateRange']);
             //print_r($proceed_date);die;
             if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = \Application\Service\CommonService::isoDateFormat($dateField[0]);                
+                $startDate = CommonService::isoDateFormat($dateField[0]);
             }
             if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = \Application\Service\CommonService::isoDateFormat($dateField[2]);
+                $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
-                                ->where('spiv3.status != "deleted" and spiv3.spi_data_status=0');
+            ->where('spiv3.status != "deleted" and spiv3.spi_data_status=0');
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
         }
@@ -135,7 +142,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
-        
+
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         $queryContainer->exportAllDataQuery = $sQuery;
         //echo $sQueryStr;die;
@@ -150,37 +157,33 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
 
         /* Total data set length */
         $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
-                                 ->where('spiv3.status != "deleted" and spiv3.spi_data_status=0');
+            ->where('spiv3.status != "deleted" and spiv3.spi_data_status=0');
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-               "sEcho" => intval($parameters['sEcho']),
-               "iTotalRecords" => $iTotal,
-               "iTotalDisplayRecords" => $iFilteredTotal,
-               "aaData" => array()
+            "sEcho" => (int) $parameters['sEcho'],
+            "iTotalRecords" => $iTotal,
+            "iTotalDisplayRecords" => $iFilteredTotal,
+            "aaData" => array()
         );
-        
+
         $role = $loginContainer->roleCode;
         $commonService = new \Application\Service\CommonService();
         foreach ($rResult as $aRow) {
-         $row = array();
-         if(isset($aRow['level_other']) && $aRow['level_other'] != ""){
-            $level = " - " .$aRow['level_other'];
-         }else{
-            $level = '';
-         }
-         $row[] = '<input type="checkbox" class="checkSpiv3Data" name="chk[]" id="chk' . $aRow['id'] . '"  value="' . $aRow['id'] . '" onclick="getValidateId(this);"  />';
-         $row[] = $aRow['facilityname'];
-         $row[] = $aRow['auditroundno'];
-         $row[] = \Application\Service\CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-         $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-         $row[] = $aRow['testingpointtype'];
-         $row[] = $aRow['level'].$level;
-         $row[] = $aRow['affiliation'];
-         $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'],2);
-         $row[] = ucwords($aRow['status']);
-         $output['aaData'][] = $row;
+            $row = array();
+            $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
+            $row[] = '<input type="checkbox" class="checkSpiv3Data" name="chk[]" id="chk' . $aRow['id'] . '"  value="' . $aRow['id'] . '" onclick="getValidateId(this);"  />';
+            $row[] = $aRow['facilityname'];
+            $row[] = $aRow['auditroundno'];
+            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+            $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+            $row[] = $aRow['testingpointtype'];
+            $row[] = $aRow['level'] . $level;
+            $row[] = $aRow['affiliation'];
+            $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'], 2);
+            $row[] = ucwords($aRow['status']);
+            $output['aaData'][] = $row;
         }
         //get count of exist data
         $totalQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('totalData' => new \Laminas\Db\Sql\Expression("COUNT(*)")))->where('spiv3.status != "deleted"');
@@ -190,7 +193,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway {
         $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Laminas\Db\Sql\Expression("COUNT(id)")));
         $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
         $newResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        
+
         $output['totalData'] = $totalResult['totalData'];
         $output['newData'] = $newResult['newData'];
         return $output;

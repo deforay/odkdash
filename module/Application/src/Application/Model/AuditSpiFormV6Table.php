@@ -17,14 +17,16 @@ use Laminas\Db\Sql\Sql;
  *
  * @author amit
  */
-class AuditSpiFormV6Table extends AbstractTableGateway {
+class AuditSpiFormV6Table extends AbstractTableGateway
+{
 
     protected $table = 'audit_spi_form_v_6';
-
-    public function __construct(Adapter $adapter) {
+    protected $adapter;
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
+
     public function fetchAllDetails($parameters)
     {
         $dbAdapter = $this->adapter;
@@ -39,25 +41,25 @@ class AuditSpiFormV6Table extends AbstractTableGateway {
 
         $metaInstance = trim($parameters['metaInstance']);
         $response['currentRecord'] = $spiV6Db->fetchV6DetailsByMetaInstanceId($metaInstance);
-        if(isset($metaInstance) && $metaInstance!=''){
-                $sQuery = $sql->select()->from(array('a' => 'audit_spi_form_v_6'))
-                            ->where("`meta-instance-id` = '$metaInstance'");
-                $sQueryStr = $sql->buildSqlString($sQuery);
-                $response['auditInfo'] = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            }
-            else
-            {
-                $response["status"] = "fail";
-                $response["message"] = "Please select valid Sample Code!";
-            }
+        if (isset($metaInstance) && $metaInstance != '') {
+            $sQuery = $sql->select()->from(array('a' => 'audit_spi_form_v_6'))
+                ->where("`meta-instance-id` = '$metaInstance'");
+            $sQueryStr = $sql->buildSqlString($sQuery);
+            $response['auditInfo'] = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        } else {
+            $response["status"] = "fail";
+            $response["message"] = "Please select valid Sample Code!";
+        }
         return $response;
     }
-    
-    public function updateInitialAuditMailStatus($id){
-        return $this->update(array('status'=>'not-sent'),array('mail_id'=>$id));
+
+    public function updateInitialAuditMailStatus($id)
+    {
+        return $this->update(array('status' => 'not-sent'), array('mail_id' => $id));
     }
-    
-    public function updateAuditMailStatus($id){
-        return $this->update(array('status'=>'sent'),array('mail_id'=>$id));
+
+    public function updateAuditMailStatus($id)
+    {
+        return $this->update(array('status' => 'sent'), array('mail_id' => $id));
     }
 }

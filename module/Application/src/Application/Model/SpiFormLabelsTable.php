@@ -19,16 +19,20 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  *
  * @author amit
  */
-class SpiFormLabelsTable extends AbstractTableGateway {
+class SpiFormLabelsTable extends AbstractTableGateway
+{
 
     protected $table = 'spi_v3_form_labels';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-      
-    public function getAllLabels(){
+
+
+    public function getAllLabels()
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_v3_form_labels'));
@@ -36,10 +40,9 @@ class SpiFormLabelsTable extends AbstractTableGateway {
         //echo $sQueryStr;//die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $response = array();
-        foreach($rResult as $row){
-            $response[$row['field']] = array($row['short_label'],$row['label']);
+        foreach ($rResult as $row) {
+            $response[$row['field']] = array($row['short_label'], $row['label']);
         }
         return $response;
     }
-    
 }

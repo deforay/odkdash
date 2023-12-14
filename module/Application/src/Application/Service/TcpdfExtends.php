@@ -7,6 +7,8 @@ use TCPDF;
 class TcpdfExtends extends TCPDF
 {
 
+    public $header;
+    public $logo;
     public function setSchemeName($header, $logo)
     {
         $this->header = $header;

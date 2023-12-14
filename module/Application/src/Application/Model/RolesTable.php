@@ -15,21 +15,21 @@ use Laminas\Config\Writer\PhpArray;
  * and open the template in the editor.
  */
 
-/**
- * Description of Countries
- *
- * @author ilahir
- */
-class RolesTable extends AbstractTableGateway  {
+
+class RolesTable extends AbstractTableGateway
+{
 
     protected $table = 'roles';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function addRolesDetails($params) {
-        
+    public function addRolesDetails($params)
+    {
+
         if (trim($params['roleName']) != "") {
             $rolesdata = array(
                 'category_id' => 1,
@@ -38,33 +38,34 @@ class RolesTable extends AbstractTableGateway  {
                 'description' => $params['description'],
                 'status' => 'active'
             );
-            
+
             $this->insert($rolesdata);
-            $lastInsertId=$this->lastInsertValue;
-            return $lastInsertId;
+            return $this->lastInsertValue;
         }
     }
-    
-    public function updateRolesDetails($params) {
+
+    public function updateRolesDetails($params)
+    {
         if (trim($params['roleName']) != "" && trim($params['roleId']) != "") {
-            $roleId=base64_decode($params['roleId']);
+            $roleId = base64_decode($params['roleId']);
             $rolesdata = array(
                 'role_name' => $params['roleName'],
                 'role_code' => $params['roleCode'],
                 'description' => $params['description'],
                 'status' => $params['status']
             );
-            $this->update($rolesdata,array('role_id='.$roleId));
+            $this->update($rolesdata, array('role_id=' . $roleId));
             return $roleId;
         }
     }
-    
-    public function fetchAllRoleDetails($parameters,$acl) {
+
+    public function fetchAllRoleDetails($parameters, $acl)
+    {
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
         */
 
-        $aColumns = array('role_name','role_code','status');
+        $aColumns = array('role_name', 'role_code', 'status');
 
         /*
          * Paging
@@ -81,9 +82,9 @@ class RolesTable extends AbstractTableGateway  {
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $aColumns[intval($parameters['iSortCol_' . $i])] . " " . ( $parameters['sSortDir_' . $i] ) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -110,18 +111,20 @@ class RolesTable extends AbstractTableGateway  {
 
                 for ($i = 0; $i < $colSize; $i++) {
                     if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' OR ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
                     } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search ) . "%' ";
+                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
                     }
                 }
                 $sWhereSub .= ")";
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -152,7 +155,7 @@ class RolesTable extends AbstractTableGateway  {
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //error_log($sQueryForm);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
@@ -167,52 +170,50 @@ class RolesTable extends AbstractTableGateway  {
         $iTotal = $this->select("role_code !='daemon'")->count();
 
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()
         );
-        
+
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\RolesController', 'edit')) {
-            $update = true;
-        } else {
-            $update = false;
-        }
+        $update = (bool) $acl->isAllowed($role, 'Application\Controller\RolesController', 'edit');
         foreach ($rResult as $aRow) {
             $row = array();
             $row[] = ucwords($aRow['role_name']);
             $row[] = $aRow['role_code'];
             $row[] = ucwords($aRow['status']);
-            if($update){
-            $row[] = '<a href="/roles/edit/' . base64_encode($aRow['role_id']) . '" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+            if ($update) {
+                $row[] = '<a href="/roles/edit/' . base64_encode($aRow['role_id']) . '" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
             }
             $output['aaData'][] = $row;
         }
         return $output;
     }
 
-    public function getRolesDetails($id) {
-        $row = $this->select(array('role_id' => (int) $id))->current();
-        return $row;
+    public function getRolesDetails($id)
+    {
+        return $this->select(array('role_id' => (int) $id))->current();
     }
 
-    public function fecthAllActiveRoles() {
+    public function fecthAllActiveRoles()
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('roles')->order('role_name')->where(array('status'=>'active'));
+        $query = $sql->select()->from('roles')->order('role_name')->where(array('status' => 'active'));
         $roleQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
         return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
-    
-    public function fetchAllRoles() {
+
+    public function fetchAllRoles()
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $resourceQuery = $sql->select()->from('resources')->order('display_name');
         $resourceQueryStr = $sql->buildSqlString($resourceQuery); // Get the string of the Sql, instead of the Select-instance
         $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        $n = sizeof($resourceResult);
+        $n = count($resourceResult);
         for ($i = 0; $i < $n; $i++) {
             $privilageQuery = $sql->select()->from('privileges')->where(array('resource_id' => $resourceResult[$i]['resource_id']))->order('display_name');
             $privilageQueryStr = $sql->buildSqlString($privilageQuery); // Get the string of the Sql, instead of the Select-instance
@@ -220,25 +221,25 @@ class RolesTable extends AbstractTableGateway  {
         }
         return $resourceResult;
     }
-    
-    public function mapRolesPrivileges($params) {    
+
+    public function mapRolesPrivileges($params)
+    {
         try {
-                $roleCode=$params['roleCode'];
-                $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
-                $config = new \Laminas\Config\Config(include($configFile), true);
-                $config->$roleCode = array();
-                
-                foreach ($params['resource'] as $resourceName => $privilege) {
-                    $config->$roleCode->$resourceName = $privilege;
-                }
-        
-                $writer = new PhpArray();
-                $writer->toFile($configFile, $config);
-                
-            } catch (\Exception $exc) {
-        
-                error_log($exc->getMessage());
-                error_log($exc->getTraceAsString());
-           }
+            $roleCode = $params['roleCode'];
+            $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
+            $config = new \Laminas\Config\Config(include($configFile), true);
+            $config->$roleCode = array();
+
+            foreach ($params['resource'] as $resourceName => $privilege) {
+                $config->$roleCode->$resourceName = $privilege;
+            }
+
+            $writer = new PhpArray();
+            $writer->toFile($configFile, $config);
+        } catch (\Exception $exc) {
+
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
     }
 }

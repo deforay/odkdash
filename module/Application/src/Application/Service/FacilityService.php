@@ -39,7 +39,7 @@ class FacilityService
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'facility-add';
-                $action = $username.' has added a new facility ' . $params['facilityName'];
+                $action = $username . ' has added a new facility ' . $params['facilityName'];
                 $resourceName = 'Facility';
                 $eventLogDb = $this->sm->get('EventLogTable');
                 $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
@@ -69,7 +69,7 @@ class FacilityService
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'facility-update';
-                $action = $username.' has updated a facility ' . $params['facilityName'];
+                $action = $username . ' has updated a facility ' . $params['facilityName'];
                 $resourceName = 'Facility';
                 $eventLogDb = $this->sm->get('EventLogTable');
                 $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
@@ -145,10 +145,11 @@ class FacilityService
                     //Move Attachement File(s)
                     $errorAttachement = 0;
                     if (isset($_FILES['attchement']['name']) && count($_FILES['attchement']['name']) > 0) {
-                        for ($attch = 0; $attch < count($_FILES['attchement']['name']); $attch++) {
+                        $counter = count($_FILES['attchement']['name']);
+                        for ($attch = 0; $attch < $counter; $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
-                                $fileName = \Application\Service\CommonService::generateRandomString(5) . "." . $extension;
+                                $fileName = CommonService::generateRandomString(5) . "." . $extension;
                                 if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;
@@ -222,10 +223,11 @@ class FacilityService
                     //Move Attachement File(s)
                     $errorAttachement = 0;
                     if (isset($_FILES['attchement']['name']) && count($_FILES['attchement']['name']) > 0) {
-                        for ($attch = 0; $attch < count($_FILES['attchement']['name']); $attch++) {
+                        $counter = count($_FILES['attchement']['name']);
+                        for ($attch = 0; $attch < $counter; $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
-                                $fileName = \Application\Service\CommonService::generateRandomString(5) . "." . $extension;
+                                $fileName = CommonService::generateRandomString(5) . "." . $extension;
                                 if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;
@@ -299,10 +301,11 @@ class FacilityService
                     //Move Attachement File(s)
                     $errorAttachement = 0;
                     if (isset($_FILES['attchement']['name']) && count($_FILES['attchement']['name']) > 0) {
-                        for ($attch = 0; $attch < count($_FILES['attchement']['name']); $attch++) {
+                        $counter = count($_FILES['attchement']['name']);
+                        for ($attch = 0; $attch < $counter; $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
                                 $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
-                                $fileName = \Application\Service\CommonService::generateRandomString(5) . "." . $extension;
+                                $fileName = CommonService::generateRandomString(5) . "." . $extension;
                                 if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;

@@ -68,7 +68,7 @@ class UsersTable extends AbstractTableGateway
 
 
         $data = array(
-            'last_login_datetime' => \Application\Service\CommonService::getDateTime()
+            'last_login_datetime' => CommonService::getDateTime()
         );
         if ($sResult !== false && !empty($sResult)) {
             $this->update($data, array('id' => $sResult->id));
@@ -175,7 +175,8 @@ class UsersTable extends AbstractTableGateway
                 //Add User-Token
                 if (isset($params['token']) && trim($params['token']) != '') {
                     $splitToken = explode(",", $params['token']);
-                    for ($t = 0; $t < count($splitToken); $t++) {
+                    $counter = count($splitToken);
+                    for ($t = 0; $t < $counter; $t++) {
                         $userTokenMap->insert(array('user_id' => $lastInsertId, 'token' => trim($splitToken[$t])));
                     }
                 }
@@ -235,17 +236,16 @@ class UsersTable extends AbstractTableGateway
                 $userTokenMap->delete(array('user_id' => $userId));
                 if (isset($params['token']) && trim($params['token']) != '') {
                     $splitToken = explode(",", $params['token']);
-                    for ($t = 0; $t < count($splitToken); $t++) {
+                    $counter = count($splitToken);
+                    for ($t = 0; $t < $counter; $t++) {
                         $userTokenMap->insert(array('user_id' => $userId, 'token' => trim($splitToken[$t])));
                     }
                 }
             }
-            if (isset($params['existImage']) && $params['existImage'] == '') {
-                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
-                    unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
-                    $imageData = array('user_image' => '');
-                    $result = $this->update($imageData, array("id" => $userId));
-                }
+            if (isset($params['existImage']) && $params['existImage'] == '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
+                $imageData = array('user_image' => '');
+                $result = $this->update($imageData, array("id" => $userId));
             }
             if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
                 if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
@@ -292,9 +292,9 @@ class UsersTable extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $orderColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -330,9 +330,11 @@ class UsersTable extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -381,7 +383,7 @@ class UsersTable extends AbstractTableGateway
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()
@@ -389,11 +391,7 @@ class UsersTable extends AbstractTableGateway
 
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
-        if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) {
-            $update = true;
-        } else {
-            $update = false;
-        }
+        $update = (bool) $acl->isAllowed($role, 'Application\Controller\UsersController', 'edit');
 
         foreach ($rResult as $aRow) {
             $row = array();
@@ -454,12 +452,10 @@ class UsersTable extends AbstractTableGateway
                 'contact_no' => $params['mobile_no']
             );
             $this->update($data, array('id' => $userId));
-            if (isset($params['existImage']) && $params['existImage'] == '') {
-                if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
-                    unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
-                    $imageData = array('user_image' => '');
-                    $result = $this->update($imageData, array("id" => $userId));
-                }
+            if (isset($params['existImage']) && $params['existImage'] == '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
+                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
+                $imageData = array('user_image' => '');
+                $result = $this->update($imageData, array("id" => $userId));
             }
             if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
                 if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {

@@ -29,7 +29,7 @@ class LoginController extends AbstractActionController
             $route = $this->userService->login($params);
             return $this->redirect()->toRoute($route);
         }
-        if (isset($loginContainer->userId) && $loginContainer->userId != "") {
+        if (property_exists($loginContainer, 'userId') && $loginContainer->userId !== null && $loginContainer->userId != "") {
             return $this->redirect()->toRoute("dashboard");
         } else {
             $vm = new ViewModel();

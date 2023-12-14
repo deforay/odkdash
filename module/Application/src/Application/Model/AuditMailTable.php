@@ -17,15 +17,19 @@ use Laminas\Db\Sql\Sql;
  *
  * @author amit
  */
-class AuditMailTable extends AbstractTableGateway {
+class AuditMailTable extends AbstractTableGateway
+{
 
     protected $table = 'audit_mails';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
-    
-    public function insertAuditMailDetails($toEmailAddress,$cc,$subject,$message,$fromName,$fromEmailAddress){
+
+    public function insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress)
+    {
         $data = array(
             'from_full_name' => $fromName,
             'from_mail' => $fromEmailAddress,
@@ -37,12 +41,14 @@ class AuditMailTable extends AbstractTableGateway {
         $this->insert($data);
         return $this->lastInsertValue;
     }
-    
-    public function updateInitialAuditMailStatus($id){
-        return $this->update(array('status'=>'not-sent'),array('mail_id'=>$id));
+
+    public function updateInitialAuditMailStatus($id)
+    {
+        return $this->update(array('status' => 'not-sent'), array('mail_id' => $id));
     }
-    
-    public function updateAuditMailStatus($id){
-        return $this->update(array('status'=>'sent'),array('mail_id'=>$id));
+
+    public function updateAuditMailStatus($id)
+    {
+        return $this->update(array('status' => 'sent'), array('mail_id' => $id));
     }
 }

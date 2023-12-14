@@ -70,7 +70,9 @@ class Module
         //$languagecontainer = new Container('language');
 
         if (php_sapi_name() != 'cli') {
-            $eventManager->attach('dispatch', array($this, 'preSetter'), 100);
+            $eventManager->attach('dispatch', function (\Laminas\Mvc\MvcEvent $e) {
+                return $this->preSetter($e);
+            }, 100);
         }
 
         // //Attach render errors
@@ -101,23 +103,20 @@ class Module
         $diContainer = $application->getServiceManager();
         $commonService = $diContainer->get('CommonService');
 
-        if (!isset($session->countryName) || empty($session->countryName)) {
+        if (!property_exists($session, 'countryName') || $session->countryName === null || empty($session->countryName)) {
             $config = $commonService->getGlobalConfigDetails();
             $session->countryName = $config['country-name'];
         }
         /** @var \Laminas\Http\Request $request */
         $request = $e->getRequest();
 
-        if (
-            !$request->isXmlHttpRequest()
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5Controller'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
-        ) {
-
-            if (empty($session) || !isset($session->userId) || empty($session->userId)) {
+        if (!$request->isXmlHttpRequest()
+        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
+        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
+        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
+        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5Controller'
+        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller') {
+            if (empty($session) || (!property_exists($session, 'userId') || $session->userId === null) || empty($session->userId)) {
                 $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
                 /** @var \Laminas\Http\Response $response */
                 $response = $e->getResponse();
@@ -177,14 +176,12 @@ class Module
                     return $response;
                 }
             }
-        } else {
-            if (isset($session->userId)) {
-                $diContainer = $application->getServiceManager();
-                $viewModel = $application->getMvcEvent()->getViewModel();
-                $acl = $diContainer->get('AppAcl');
-                $viewModel->acl = $acl;
-                $session->acl = serialize($acl);
-            }
+        } elseif (property_exists($session, 'userId') && $session->userId !== null) {
+            $diContainer = $application->getServiceManager();
+            $viewModel = $application->getMvcEvent()->getViewModel();
+            $acl = $diContainer->get('AppAcl');
+            $viewModel->acl = $acl;
+            $session->acl = serialize($acl);
         }
     }
 

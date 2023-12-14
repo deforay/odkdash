@@ -2702,7 +2702,7 @@ ALTER TABLE `global_config` ADD UNIQUE(`global_name`);
 
 -- Amit 07-Sep-2023
 ALTER TABLE `global_config` CHANGE `global_name` `global_name` VARCHAR(199) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-DROP TABLE spi_form_v_3_duplicate;
+DROP TABLE IF EXISTS spi_form_v_3_duplicate;
 CREATE TABLE `spi_form_v_3_duplicate` SELECT * from `spi_form_v_3` WHERE 1=0;
-DROP TABLE spi_form_v_6_duplicate;
+DROP TABLE IF EXISTS spi_form_v_6_duplicate;
 CREATE TABLE `spi_form_v_6_duplicate` SELECT * from `spi_form_v_6` WHERE 1=0;

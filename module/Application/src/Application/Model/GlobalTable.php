@@ -22,6 +22,7 @@ class GlobalTable extends AbstractTableGateway
 {
 
     protected $table = 'global_config';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -49,9 +50,9 @@ class GlobalTable extends AbstractTableGateway
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < intval($parameters['iSortingCols']); $i++) {
-                if ($parameters['bSortable_' . intval($parameters['iSortCol_' . $i])] == "true") {
-                    $sOrder .= $aColumns[intval($parameters['iSortCol_' . $i])] . " " . ($parameters['sSortDir_' . $i]) . ",";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
                 }
             }
             $sOrder = substr_replace($sOrder, "", -1);
@@ -87,9 +88,11 @@ class GlobalTable extends AbstractTableGateway
             }
             $sWhere .= $sWhereSub;
         }
+        /* Individual column filtering */
+        $counter = count($aColumns);
 
         /* Individual column filtering */
-        for ($i = 0; $i < count($aColumns); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
                 if ($sWhere == "") {
                     $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
@@ -119,7 +122,7 @@ class GlobalTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance 
+        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //error_log($sQueryForm);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
@@ -135,7 +138,7 @@ class GlobalTable extends AbstractTableGateway
 
 
         $output = array(
-            "sEcho" => intval($parameters['sEcho']),
+            "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
             "aaData" => array()
@@ -155,7 +158,7 @@ class GlobalTable extends AbstractTableGateway
         $sQuery = $sql->select()->from('global_config');
         $sQueryStr = $sql->buildSqlString($sQuery);
         $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        $size = sizeof($configValues);
+        $size = count($configValues);
         $arr = array();
         // now we create an associative array so that we can easily create view variables
         for ($i = 0; $i < $size; $i++) {
@@ -179,7 +182,7 @@ class GlobalTable extends AbstractTableGateway
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-            $string = \Application\Service\CommonService::generateRandomString(6) . ".";
+            $string = CommonService::generateRandomString(6) . ".";
             $imageName = "logo" . $string . $extension;
             if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
                 $this->update(array('global_value' => $imageName), array('global_name' => 'logo'));
@@ -189,7 +192,7 @@ class GlobalTable extends AbstractTableGateway
         foreach ($params as $fieldName => $fieldValue) {
             if ($fieldName != 'removedLogoImage' && $fieldName != 'web_version') {
                 $result = $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
-            } else if ($fieldName == 'web_version') {
+            } elseif ($fieldName == 'web_version') {
                 foreach ($fieldValue as $ver) {
                     $out = $ver . ',' . $out;
                 }

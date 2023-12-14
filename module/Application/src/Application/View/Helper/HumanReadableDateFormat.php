@@ -2,6 +2,7 @@
 
 namespace Application\View\Helper;
 
+use Application\Service\CommonService;
 use Laminas\View\Helper\AbstractHelper;
 
 class HumanReadableDateFormat extends AbstractHelper
@@ -16,7 +17,7 @@ class HumanReadableDateFormat extends AbstractHelper
             // $dateObj = new \DateTime($dateIn);
             // $formatDate = 'd-M-Y';
             // return $dateObj->format($formatDate);
-            return \Application\Service\CommonService::humanReadableDateFormat($dateIn);
+            return CommonService::humanReadableDateFormat($dateIn);
         }
     }
 }

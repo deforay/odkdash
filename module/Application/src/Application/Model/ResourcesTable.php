@@ -13,27 +13,25 @@ use Zend\Debug\Debug;
  * and open the template in the editor.
  */
 
-/**
- * Description of Countries
- *
- * @author ilahir
- */
-class ResourcesTable extends AbstractTableGateway {
+
+class ResourcesTable extends AbstractTableGateway
+{
 
     protected $table = 'resources';
+    protected $adapter;
 
-    public function __construct(Adapter $adapter) {
+    public function __construct(Adapter $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function fetchAllResourceMap() {
+    public function fetchAllResourceMap()
+    {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $resourceQuery = $sql->select()->from('resources')
-                                       ->order('display_name');
+            ->order('display_name');
         $resourceQueryStr = $sql->buildSqlString($resourceQuery);
-        $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $resourceResult;
+        return $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
-
 }

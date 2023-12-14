@@ -1,11 +1,14 @@
 <?php
 
 use TCPDF;
+use Application\Service\CommonService;
 
-$common = new \Application\Service\CommonService();
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF
 {
+
+    public ?string $header;
+    public ?string $logo;
 
     public function setSchemeName($header, $logo)
     {
@@ -72,12 +75,7 @@ $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-// set some language-dependent strings (optional)
-if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-    require_once(dirname(__FILE__) . '/lang/eng.php');
-    $pdf->setLanguageArray($l);
-}
-// ---------------------------------------------------------
+
 
 // set font
 $pdf->SetFont('times', '', 10);
@@ -87,7 +85,7 @@ $pdf->SetFont('times', '', 10);
 $pdf->AddPage('L');
 
 if ($argument['dateRange'] == '') {
-    $argument['dateRange'] = \Application\Service\CommonService::humanReadableDateFormat($result['eDate']) . " - " . date('d-M-Y');
+    $argument['dateRange'] = CommonService::humanReadableDateFormat($result['eDate']) . " - " . date('d-M-Y');
 }
 if ($argument['auditRndNo'] == '') {
     $argument['auditRndNo'] = "All";
@@ -182,7 +180,7 @@ $testingResultAvg .= '</tr>';
 $testingResultAvg .= '</table>';
 // print_r($pdfContent);die;
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
-$fileName = "SPI-RRT-Summary-".date('d-m-y-h-i-s');
+$fileName = "SPI-RRT-Summary-" . date('d-m-y-h-i-s');
 $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
 $pdf->Output($filePath, "F");
 echo $fileName;

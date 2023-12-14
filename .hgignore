@@ -29,3 +29,4 @@ Thumbs.db.orig
 .gitignore
 custom.global.php
 config/autoload/custom.global.php
+rector.php

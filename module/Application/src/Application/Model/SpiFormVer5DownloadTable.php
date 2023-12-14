@@ -2,12 +2,13 @@
 
 namespace Application\Model;
 
-use Laminas\Session\Container;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Laminas\Session\Container;
+use Laminas\Db\Adapter\Adapter;
 use Application\Model\EventLogTable;
+use Application\Service\CommonService;
+use Laminas\Db\TableGateway\AbstractTableGateway;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,6 +25,7 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
 {
 
     protected $table = 'r_spi_form_v_5_download';
+    protected $adapter;
 
     public function __construct(Adapter $adapter)
     {
@@ -32,12 +34,12 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
 
     public function addDownloadDataDetails($params)
     {
-            $loginContainer = new Container('credo');
-            $username = $loginContainer->login;
-            $dbAdapter = $this->adapter;
-            $trackTable = new EventLogTable($dbAdapter);
+        $loginContainer = new Container('credo');
+        $username = $loginContainer->login;
+        $dbAdapter = $this->adapter;
+        $trackTable = new EventLogTable($dbAdapter);
         $province = null;
-        
+
         $downloadData = array(
             'user' => $loginContainer->userId,
             'auditroundno' => (isset($params['auditRndNo']) && trim($params['auditRndNo']) != '') ? $params['auditRndNo'] : null,
@@ -49,11 +51,11 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
             'level_name' => '',
             'AUDIT_SCORE_PERCENTAGE' => (isset($params['scoreLevel']) && trim($params['scoreLevel']) != '') ? $params['scoreLevel'] : null
         );
-            $subject = '';
-            $eventType = 'Export-SPI RT Form 5-PDF';
-            $action = $username . ' has exported the SPI RT Form 5 PDF';
-            $resourceName = 'SPI-RT-Form-5-PDF';
-            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+        $subject = '';
+        $eventType = 'Export-SPI RT Form 5-PDF';
+        $action = $username . ' has exported the SPI RT Form 5 PDF';
+        $resourceName = 'SPI-RT-Form-5-PDF';
+        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
         $this->insert($downloadData);
         return $this->lastInsertValue;
     }
@@ -75,22 +77,21 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                    $startDate = \Application\Service\CommonService::isoDateFormat(trim($dateField[0]));
+                    $startDate = CommonService::isoDateFormat(trim($dateField[0]));
                 }
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                    $endDate = \Application\Service\CommonService::isoDateFormat(trim($dateField[2]));
+                    $endDate = CommonService::isoDateFormat(trim($dateField[2]));
                 }
                 $sQuery = $sQuery->where(array("spiv5.assesmentofaudit >='" . $startDate . "'", "spiv5.assesmentofaudit <='" . $endDate . "'"));
             }
             if (isset($queryResult->testingpointtype) && $queryResult->testingpointtype != '') {
-                
-                
-                    if (strtolower(trim($queryResult->testingpointtype)) != 'other') {
-                        $sQuery = $sQuery->where("spiv5.testingpointtype='" . $queryResult->testingpointtype . "'");
-                    } else {
-                        $sQuery = $sQuery->where("spiv5.testingpointtype_other='" . $queryResult->testingpointtype . "'");
-                    }
-                
+
+
+                if (strtolower(trim($queryResult->testingpointtype)) != 'other') {
+                    $sQuery = $sQuery->where("spiv5.testingpointtype='" . $queryResult->testingpointtype . "'");
+                } else {
+                    $sQuery = $sQuery->where("spiv5.testingpointtype_other='" . $queryResult->testingpointtype . "'");
+                }
             }
             if (isset($queryResult->level) && $queryResult->level != '') {
                 $sQuery = $sQuery->where("spiv5.level='" . $queryResult->level . "'");
@@ -105,13 +106,13 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
             if (isset($queryResult->AUDIT_SCORE_PERCENTAGE) && $queryResult->AUDIT_SCORE_PERCENTAGE != '') {
                 if ($queryResult->AUDIT_SCORE_PERCENTAGE == 0) {
                     $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE < 40");
-                } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 1) {
+                } elseif ($queryResult->AUDIT_SCORE_PERCENTAGE == 1) {
                     $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 59");
-                } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 2) {
+                } elseif ($queryResult->AUDIT_SCORE_PERCENTAGE == 2) {
                     $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 79");
-                } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 3) {
+                } elseif ($queryResult->AUDIT_SCORE_PERCENTAGE == 3) {
                     $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv5.AUDIT_SCORE_PERCENTAGE <= 89");
-                } else if ($queryResult->AUDIT_SCORE_PERCENTAGE == 4) {
+                } elseif ($queryResult->AUDIT_SCORE_PERCENTAGE == 4) {
                     $sQuery = $sQuery->where("spiv5.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
