@@ -1,14 +1,17 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Application;
+
+use Application\Command\SendTempMail;
+use Application\Command\SendAuditMail;
+use Application\Command\SyncCentralV3;
+use Application\Command\SyncCentralV6;
+use Application\Command\GenerateBulkPdf;
+use Application\Command\SendTempMailFactory;
+use Application\Command\SendAuditMailFactory;
+use Application\Command\SyncCentralV3Factory;
+use Application\Command\SyncCentralV6Factory;
+use Application\Command\GenerateBulkPdfFactory;
 
 return array(
     'router' => array(
@@ -331,11 +334,11 @@ return array(
         ),
         'factories' => array(
             'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
-            \Application\Command\SendTempMail::class => \Application\Command\SendTempMailFactory::class,
-            \Application\Command\SendAuditMail::class => \Application\Command\SendAuditMailFactory::class,
-            \Application\Command\SyncCentralV3::class => \Application\Command\SyncCentralV3Factory::class,
-            \Application\Command\SyncCentralV6::class => \Application\Command\SyncCentralV6Factory::class,
-            \Application\Command\GenerateBulkPdf::class => \Application\Command\GenerateBulkPdfFactory::class,
+            SendTempMail::class => SendTempMailFactory::class,
+            SendAuditMail::class => SendAuditMailFactory::class,
+            SyncCentralV3::class => SyncCentralV3Factory::class,
+            SyncCentralV6::class => SyncCentralV6Factory::class,
+            GenerateBulkPdf::class => GenerateBulkPdfFactory::class,
         ),
     ),
     'translator' => array(
@@ -366,11 +369,11 @@ return array(
     ),
     'laminas-cli' => [
         'commands' => [
-            'send-mail' => \Application\Command\SendTempMail::class,
-            'send-audit-mail' => \Application\Command\SendAuditMail::class,
-            'sync-central-v3' => \Application\Command\SyncCentralV3::class,
-            'sync-central-v6' => \Application\Command\SyncCentralV6::class,
-            'generate-bulk-pdf' => \Application\Command\GenerateBulkPdf::class,
+            'send-mail' => SendTempMail::class,
+            'send-audit-mail' => SendAuditMail::class,
+            'sync-central-v3' => SyncCentralV3::class,
+            'sync-central-v6' => SyncCentralV6::class,
+            'generate-bulk-pdf' => GenerateBulkPdf::class,
         ],
     ],
 );

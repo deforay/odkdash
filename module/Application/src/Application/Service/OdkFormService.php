@@ -5353,9 +5353,9 @@ class OdkFormService
         $configResult = $this->sm->get('Config');
         if (isset($configResult['odkcentral']['spirrt'])) {
             foreach ($configResult['odkcentral']['spirrt'] as $item) {
-                $spirrtURL = $item['url'];
-                $projectId = $item['projectId'];
-                $formId = $item['formId'];
+                $spirrtURL = rtrim((string) $item['url'], "/");
+                $projectId = CommonService::smartUrlEncode($item['projectId']);
+                $formId = CommonService::smartUrlEncode($item['formId']);
 
                 $spiV6db = $this->sm->get('SpiFormVer6Table');
                 $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);

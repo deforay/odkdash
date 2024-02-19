@@ -532,4 +532,16 @@ class CommonService
         }
         rmdir($dir);
     }
+
+    public static function smartUrlEncode($string)
+    {
+        // Check if the string is already URL-encoded.
+        if (urlencode(urldecode($string)) === $string) {
+            // The string is already URL-encoded, return as is.
+            return $string;
+        } else {
+            // The string is not URL-encoded, encode it.
+            return urlencode($string);
+        }
+    }
 }

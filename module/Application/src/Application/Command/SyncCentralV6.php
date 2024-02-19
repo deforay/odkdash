@@ -2,6 +2,7 @@
 
 namespace Application\Command;
 
+use Application\Service\OdkFormService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -9,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncCentralV6 extends Command
 {
 
-    public \Application\Service\OdkFormService  $odkFormService;
+    protected OdkFormService  $odkFormService;
 
     public function __construct($odkFormService)
     {

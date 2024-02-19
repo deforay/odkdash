@@ -463,7 +463,7 @@ class HeadScript extends AbstractStandalone
             $type = $this->autoEscape ? $this->escapeAttribute($item->type) : $item->type;
             $html = '<script type="' . $type . '"' . $attrString . '>';
         }
-        if (! empty($item->source)) {
+        if (is_string($item->source) && $item->source !== '') {
             $html .= PHP_EOL;
 
             if ($addScriptEscape) {
@@ -556,12 +556,12 @@ class HeadScript extends AbstractStandalone
     /**
      * Override offsetSet
      *
-     * @param int $index Set script of file offset
+     * @param int $offset Set script of file offset
      * @param ObjectShape $value
-     * @throws Exception\InvalidArgumentException
      * @return void
+     * @throws Exception\InvalidArgumentException
      */
-    public function offsetSet($index, $value)
+    public function offsetSet($offset, $value)
     {
         if (! $this->isValid($value)) {
             throw new Exception\InvalidArgumentException(
@@ -570,7 +570,7 @@ class HeadScript extends AbstractStandalone
             );
         }
 
-        $this->getContainer()->offsetSet($index, $value);
+        $this->getContainer()->offsetSet($offset, $value);
     }
 
     /**
