@@ -1670,6 +1670,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row = array();
             $approve = '';
             $downloadPdf = "";
+            $aRow['AUDIT_SCORE_PERCENTAGE'] = (float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0);
             $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
             $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
             if (isset($scorePer) && $scorePer < 40) {
@@ -1694,7 +1695,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'] . $level;
             $row[] = $aRow['affiliation'];
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0, 2);
             $row[] = ucwords($aRow['status']);
             //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
             if ($aRow['status'] == 'pending' && $approveStatusAction) {
@@ -1715,7 +1716,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = $aRow['EQA_SCORE'];
             $row[] = $aRow['RTRI_SCORE'];
 
-            $t = $aRow['PERSONAL_SCORE'] + $aRow['PHYSICAL_SCORE'] + $aRow['SAFETY_SCORE'] + $aRow['PRETEST_SCORE'] + $aRow['TEST_SCORE'] + $aRow['POST_SCORE'] + $aRow['EQA_SCORE'];
+            $t = (float) $aRow['PERSONAL_SCORE'] + (float) $aRow['PHYSICAL_SCORE'] + (float) $aRow['SAFETY_SCORE'] + (float) $aRow['PRETEST_SCORE'] + (float) $aRow['TEST_SCORE'] + (float) $aRow['POST_SCORE'] + (float) $aRow['EQA_SCORE'];
             if (trim($aRow['performrtritesting']) == 'Yes') {
                 $t += (float) $aRow['RTRI_SCORE'];
             }
