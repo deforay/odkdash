@@ -17,7 +17,7 @@ class SendAuditMail extends Command
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commonService->sendAuditMail();
         return Command::SUCCESS;

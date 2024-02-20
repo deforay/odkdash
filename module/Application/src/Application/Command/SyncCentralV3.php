@@ -17,7 +17,7 @@ class SyncCentralV3 extends Command
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->odkFormService->syncOdkCentralV3();
         return Command::SUCCESS;

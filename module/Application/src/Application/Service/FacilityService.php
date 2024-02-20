@@ -4,9 +4,7 @@ namespace Application\Service;
 
 use Laminas\Session\Container;
 use Application\Service\CommonService;
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
-use PHPExcel;
 
 class FacilityService
 {
@@ -430,12 +428,12 @@ class FacilityService
             $sheet->mergeCells('C4:C5');
             $sheet->mergeCells('D4:D5');
 
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'));
 
-            $sheet->setCellValue('A4', html_entity_decode('Facility Id', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('B4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('C4', html_entity_decode('Email', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
-            $sheet->setCellValue('D4', html_entity_decode('Contact Person', ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+            $sheet->setCellValue('A4', html_entity_decode('Facility Id', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('B4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('C4', html_entity_decode('Email', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('D4', html_entity_decode('Contact Person', ENT_QUOTES, 'UTF-8'));
 
             $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
 
@@ -453,9 +451,9 @@ class FacilityService
                         $value = "";
                     }
                     if (is_numeric($value)) {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_NUMERIC);
+                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
                     } else {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), \PHPExcel_Cell_DataType::TYPE_STRING);
+                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
                     }
                     $rRowCount = $rowNo + 6;
                     $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();

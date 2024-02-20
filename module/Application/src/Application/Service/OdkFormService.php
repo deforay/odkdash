@@ -6,14 +6,18 @@ use ZipArchive;
 use CpChart\Data;
 use CpChart\Image;
 use CpChart\Chart\Pie;
+use GuzzleHttp\Client;
 use Laminas\Db\Sql\Sql;
 use CpChart\Chart\Radar;
 use Shuchkin\SimpleXLSXGen;
-use Laminas\Filter\Exception;
 use Laminas\Session\Container;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use GuzzleHttp\Client;
 use Application\Model\EventLogTable;
+use Application\Service\CommonService;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class OdkFormService
 {
@@ -748,7 +752,6 @@ class OdkFormService
 
     public function approveSpiV5FormStatus($params)
     {
-        //\Zend\Debug\Debug::dump(count($params['idList']));die;
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
         try {
@@ -797,14 +800,13 @@ class OdkFormService
     public function exportFacilityReport($params)
     {
         try {
-            $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
             $userName = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $trackTable = new EventLogTable($dbAdapter);
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $spreadsheet = new Spreadsheet();
+            $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xlsx';
             $output = array();
             $sheet = $spreadsheet->getActiveSheet();
@@ -939,8 +941,6 @@ class OdkFormService
                 }
             }
 
-            //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-            //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xlsx';
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $subject = '';
             $eventType = 'Export-Facility';
@@ -3570,12 +3570,14 @@ class OdkFormService
         }
         if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName) && move_uploaded_file($_FILES['fileName']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName)) {
             $db->delete('1');
-            $objPHPExcel = \PHPExcel_IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName);
-            $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-            $highestColumm = $objPHPExcel->setActiveSheetIndex(0)->getHighestColumn();
-            $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumm);
+            $spreadsheet = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+            $highestColumm = $spreadsheet->getActiveSheet()->getHighestColumn();
+            //$highestColumnIndex = Coordinate::columnIndexFromString($highestColumm);
+
             $rownumber = 1;
-            $row = $objPHPExcel->getActiveSheet()->getRowIterator($rownumber)->current();
+            $rowIterator = $spreadsheet->getActiveSheet()->getRowIterator($rownumber);
+            $row = $rowIterator->current();
             $cellIterator = $row->getCellIterator();
             $cellIterator->setIterateOnlyExistingCells(false);
             foreach ($cellIterator as $cell) {
@@ -3589,7 +3591,7 @@ class OdkFormService
             $findAuditSignPosition = array_search('auditorSignature', $headerName);
             $findAssesmentOfAuditPosition = array_search('assesmentofaudit', $headerName);
             for ($i = 2; $i <= $count; $i++) {
-                $row = $objPHPExcel->getActiveSheet()->getRowIterator($i)->current();
+                $row = $spreadsheet->getActiveSheet()->getRowIterator($i)->current();
                 $cellIterator = $row->getCellIterator();
                 $cellIterator->setIterateOnlyExistingCells(false);
                 $inc = 0;
@@ -5141,23 +5143,23 @@ class OdkFormService
                     'size' => 12,
                 ),
                 'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
                 ),
                 'borders' => array(
                     'outline' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                        'borderStyle' => Border::BORDER_THICK,
                     ),
                 ),
             );
 
             $borderStyle = array(
                 'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
                 ),
                 'borders' => array(
                     'outline' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                        'borderStyle' => Border::BORDER_MEDIUM,
                     ),
                 ),
             );
@@ -5231,9 +5233,7 @@ class OdkFormService
                 }
             }
 
-            //$writer = \PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-            //$filename = 'facility-report-' . date('d-M-Y-H-i-s') . '.xls';
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer = new Xlsx($spreadsheet);
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $subject = '';
             $eventType = 'Export-Facility';
@@ -5270,11 +5270,13 @@ class OdkFormService
                 $spiV3db = $this->sm->get('SpiFormVer3Table');
                 $lastDateQuery = $spiV3db->getLatestFormDate($projectId, $formId);
                 $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
-                if ($lastFormDate != '') {
-                    $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+
+                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId/submissions";
+                if (!empty($lastFormDate)) {
+                    $formattedDate = urlencode($lastFormDate); // Ensure the date is URL-encoded if necessary
+                    $url = "$baseUrl?%24filter=__system%2FsubmissionDate%20gt%20$formattedDate";
                 } else {
-                    $url = "$baseUrl.svc/Submissions";
+                    $url = $baseUrl;
                 }
                 // $odataClient = new ODataClient($spirrtURL, function($request) {
                 $email = $item['email'];
@@ -5306,40 +5308,35 @@ class OdkFormService
                     $instanceIdList = $response->getBody()->getContents();
                     $responseSubmission = $this->formatResponse($instanceIdList);
 
-                    $instanceLists = [];
+                    //$instanceLists = [];
                     $correctiveActions = [];
 
-                    foreach ($responseSubmission['value'] as $submission) {
-                        foreach ($submission as $key => $listValue) {
-                            if ($key === '__id') {
-                                $instanceLists[] = $listValue;
-
-                                $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
-                                    'headers' => [
-                                        'Authorization' => 'Bearer ' . $authToken,
-                                        'Content-Type' => 'application/xml',
-                                    ],
-                                ]);
-                                $formXml = ($formInstanceResponse->getBody()->getContents());
-                                $xml = simplexml_load_string($formXml);
-                                $json = json_encode($xml);
-                                $array = json_decode($json, true);
-                                $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
-                            }
-                        }
+                    foreach ($responseSubmission as $submission) {
+                        $formInstanceResponse = $httpClient->get("$baseUrl/{$submission['instanceId']}.xml", [
+                            'headers' => [
+                                'Authorization' => 'Bearer ' . $authToken,
+                                'Content-Type' => 'application/xml',
+                            ],
+                        ]);
+                        $formXml = ($formInstanceResponse->getBody()->getContents());
+                        $xml = simplexml_load_string($formXml);
+                        $json = json_encode($xml);
+                        $array = json_decode($json, true);
+                        $params['instanceId'] = [...$array, ...$submission];
+                        $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                     }
 
-                    $formResponse = $httpClient->get($baseUrl, [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $authToken,
-                        ],
-                    ]);
-                    $formDetails = ($formResponse->getBody()->getContents());
-                    $formDetails = $this->formatResponse($formDetails);
+                    // $formResponse = $httpClient->get($baseUrl, [
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $authToken,
+                    //     ],
+                    // ]);
+                    // $formDetails = ($formResponse->getBody()->getContents());
+                    // $formDetails = $this->formatResponse($formDetails);
 
 
-                    if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
-                        $spiV3db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions, $projectId, $formId);
+                    if (isset($params) && !empty($params)) {
+                        $spiV3db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
                     }
                 } else {
                     echo "Error authenticating: " . $response->getStatusCode();
@@ -5354,17 +5351,19 @@ class OdkFormService
         if (isset($configResult['odkcentral']['spirrt'])) {
             foreach ($configResult['odkcentral']['spirrt'] as $item) {
                 $spirrtURL = rtrim((string) $item['url'], "/");
-                $projectId = CommonService::smartUrlEncode($item['projectId']);
-                $formId = CommonService::smartUrlEncode($item['formId']);
+                $projectId = $item['projectId'];
+                $formId = $item['formId'];
 
                 $spiV6db = $this->sm->get('SpiFormVer6Table');
                 $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
                 $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
-                if ($lastFormDate != '') {
-                    $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20$lastFormDate";
+
+                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId/submissions";
+                if (!empty($lastFormDate)) {
+                    $formattedDate = urlencode($lastFormDate); // Ensure the date is URL-encoded if necessary
+                    $url = "$baseUrl?%24filter=__system%2FsubmissionDate%20gt%20$formattedDate";
                 } else {
-                    $url = "$baseUrl.svc/Submissions";
+                    $url = $baseUrl;
                 }
                 // $odataClient = new ODataClient($spirrtURL, function($request) {
                 $email = $item['email'];
@@ -5394,42 +5393,40 @@ class OdkFormService
                         ],
                     ]);
                     $instanceIdList = $response->getBody()->getContents();
-                    $responseSubmission = $this->formatResponse($instanceIdList);
 
-                    $instanceLists = [];
+                    $responseSubmission = $this->formatResponse($instanceIdList);
+                    //$instanceLists = [];
                     $correctiveActions = [];
 
-                    foreach ($responseSubmission['value'] as $submission) {
-                        foreach ($submission as $key => $listValue) {
-                            if ($key === '__id') {
-                                $instanceLists[] = $listValue;
-
-                                $formInstanceResponse = $httpClient->get("$baseUrl/submissions/$listValue.xml", [
-                                    'headers' => [
-                                        'Authorization' => 'Bearer ' . $authToken,
-                                        'Content-Type' => 'application/xml',
-                                    ],
-                                ]);
-                                $formXml = ($formInstanceResponse->getBody()->getContents());
-                                $xml = simplexml_load_string($formXml);
-                                $json = json_encode($xml);
-                                $array = json_decode($json, true);
-                                $correctiveActions[$listValue] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
-                            }
-                        }
+                    $params = [];
+                    foreach ($responseSubmission as $submission) {
+                        $formInstanceResponse = $httpClient->get("$baseUrl/{$submission['instanceId']}.xml", [
+                            'headers' => [
+                                'Authorization' => 'Bearer ' . $authToken,
+                                'Content-Type' => 'application/xml',
+                            ],
+                        ]);
+                        $formXml = ($formInstanceResponse->getBody()->getContents());
+                        $xml = simplexml_load_string($formXml);
+                        $json = json_encode($xml);
+                        $array = json_decode($json, true);
+                        $params['instanceId'] = [...$array, ...$submission];
+                        $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                     }
 
-                    $formResponse = $httpClient->get($baseUrl, [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $authToken,
-                        ],
-                    ]);
-                    $formDetails = ($formResponse->getBody()->getContents());
-                    $formDetails = $this->formatResponse($formDetails);
+                    // $formResponse = $httpClient->get($baseUrl, [
+                    //     'headers' => [
+                    //         'Authorization' => 'Bearer ' . $authToken,
+                    //     ],
+                    // ]);
+                    // $formDetails = $formResponse->getBody()->getContents();
+                    // $formDetails = $this->formatResponse($formDetails);
 
+                    // dump($formDetails);
+                    // die;
 
-                    if (isset($responseSubmission['value']) && !empty($responseSubmission['value'])) {
-                        $spiV6db->saveOdkCentralData($responseSubmission, $formDetails, $correctiveActions, $projectId, $formId);
+                    if (isset($params) && !empty($params)) {
+                        $spiV6db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
                     }
                 } else {
                     echo "Error authenticating: " . $response->getStatusCode();
