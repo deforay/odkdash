@@ -238,7 +238,7 @@ for ($i = 1; $i < 11; $i++) {
         || (isset($formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS'] == 1)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 1)
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0.5)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 0.5)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 0.5)
@@ -250,7 +250,7 @@ for ($i = 1; $i < 11; $i++) {
         || (isset($formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS'] == 0.5)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 0)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 0)
@@ -262,7 +262,7 @@ for ($i = 1; $i < 11; $i++) {
         || (isset($formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS'] == 0)
         || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 0)
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['PERSONAL_C_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_C_1_' . $i . '_HIV_TRAINING'] !== ''))
@@ -335,21 +335,21 @@ for ($i = 1; $i < 6; $i++) {
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 1)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 1)
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0)
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA'] !== ''))
@@ -418,7 +418,7 @@ for ($i = 1; $i < 11; $i++) {
         || (isset($formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE'] == 1)
         || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 1)
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 0.5)
         || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 0.5)
         || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 0.5)
@@ -430,7 +430,7 @@ for ($i = 1; $i < 11; $i++) {
         || (isset($formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE'] == 0.5)
         || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'] == 0)
         || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 0)
         || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 0)
@@ -442,7 +442,7 @@ for ($i = 1; $i < 11; $i++) {
         || (isset($formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE'] == 0)
         || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 0)
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['SAFETY_C_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_C_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'] !== ''))
@@ -520,7 +520,7 @@ for ($i = 1; $i < 14; $i++) {
         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION'] == 1)
         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 1)
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0.5)
         || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 0.5)
         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 0.5)
@@ -535,7 +535,7 @@ for ($i = 1; $i < 14; $i++) {
         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION'] == 0.5)
         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0)
         || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 0)
         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 0)
@@ -550,7 +550,7 @@ for ($i = 1; $i < 14; $i++) {
         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION'] == 0)
         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 0)
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['PRE_C_4' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_C_4' . $i . '_NATIONAL_GUIDELINES'] !== ''))
@@ -633,7 +633,7 @@ for ($i = 1; $i < 10; $i++) {
         || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 1)
 
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0.5)
         || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 0.5)
         || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 0.5)
@@ -644,7 +644,7 @@ for ($i = 1; $i < 10; $i++) {
         || (isset($formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 0.5)
         || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0)
         || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 0)
         || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 0)
@@ -656,7 +656,7 @@ for ($i = 1; $i < 10; $i++) {
         || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 0)
 
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['TEST_C_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_C_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] !== ''))
@@ -732,7 +732,7 @@ for ($i = 1; $i < 10; $i++) {
         || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 1)
 
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0.5)
         || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 0.5)
         || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 0.5)
@@ -743,7 +743,7 @@ for ($i = 1; $i < 10; $i++) {
         || (isset($formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION']) && $formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION'] == 0.5)
         || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0)
         || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 0)
         || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 0)
@@ -755,7 +755,7 @@ for ($i = 1; $i < 10; $i++) {
         || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 0)
 
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['POST_C_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_C_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] !== ''))
@@ -828,7 +828,7 @@ for ($i = 1; $i < 9; $i++) {
         || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 1)
 
     ) {
-        $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0.5)
         || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 0.5)
         || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 0.5)
@@ -838,7 +838,7 @@ for ($i = 1; $i < 9; $i++) {
         || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'] == 0.5)
         || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 0.5)
     ) {
-        $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0)
         || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 0)
         || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 0)
@@ -848,7 +848,7 @@ for ($i = 1; $i < 9; $i++) {
         || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'] == 0)
         || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 0)
     ) {
-        $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     }
 
     if ((isset($formData['EQA_C_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_C_7_' . $i . '_PT_ENROLLMENT'] !== ''))
@@ -931,7 +931,7 @@ if (strtolower($formData['performrtritesting']) == 'yes') {
             || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 1)
 
         ) {
-            $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+            $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         } elseif ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0.5)
             || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 0.5)
             || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 0.5)
@@ -944,7 +944,7 @@ if (strtolower($formData['performrtritesting']) == 'yes') {
             || (isset($formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED'] == 0.5)
             || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 0.5)
         ) {
-            $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+            $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         } elseif ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0)
             || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 0)
             || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 0)
@@ -957,7 +957,7 @@ if (strtolower($formData['performrtritesting']) == 'yes') {
             || (isset($formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED'] == 0)
             || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 0)
         ) {
-            $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+            $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         }
 
         if ((isset($formData['RTRI_C_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_C_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] !== ''))
@@ -1059,7 +1059,7 @@ if (strtolower($formData['DO_SURVEILLANCE']) == 'yes') {
             || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
 
         ) {
-            $yes = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+            $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         }
 
         if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5)
@@ -1071,7 +1071,7 @@ if (strtolower($formData['DO_SURVEILLANCE']) == 'yes') {
             || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
 
         ) {
-            $partial = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+            $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         }
 
         if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0)
@@ -1083,7 +1083,7 @@ if (strtolower($formData['DO_SURVEILLANCE']) == 'yes') {
             || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
 
         ) {
-            $no = '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">';
+            $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         }
         if ((isset($formData['S0_C_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_C_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] !== ''))
             $comments = $formData['S0_C_6_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'];
@@ -1503,10 +1503,10 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
         $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
         $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
         $partDTable .= '<td style="text-align:center;">';
-        $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "");
+        $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
         $partDTable .= '</td>';
         $partDTable .= '<td style="text-align:center;">';
-        $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "");
+        $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
         $partDTable .= '</td>';
         $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
         $partDTable .= '<td>' . $ca['action'] . '</td>';
