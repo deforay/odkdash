@@ -13,6 +13,7 @@ use Shuchkin\SimpleXLSXGen;
 use Laminas\Session\Container;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
+use Application\Model\SpiFormVer6Table;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -5322,7 +5323,7 @@ class OdkFormService
                         $xml = simplexml_load_string($formXml);
                         $json = json_encode($xml);
                         $array = json_decode($json, true);
-                        $params['instanceId'] = [...$array, ...$submission];
+                        $params[$submission['instanceId']] = [...$array, ...$submission];
                         $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                     }
 
@@ -5354,6 +5355,7 @@ class OdkFormService
                 $projectId = $item['projectId'];
                 $formId = $item['formId'];
 
+                /** @var SpiFormVer6Table $spiV6db */
                 $spiV6db = $this->sm->get('SpiFormVer6Table');
                 $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
                 $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
@@ -5410,7 +5412,7 @@ class OdkFormService
                         $xml = simplexml_load_string($formXml);
                         $json = json_encode($xml);
                         $array = json_decode($json, true);
-                        $params['instanceId'] = [...$array, ...$submission];
+                        $params[$submission['instanceId']] = [...$array, ...$submission];
                         $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                     }
 

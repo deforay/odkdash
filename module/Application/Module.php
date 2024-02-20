@@ -103,20 +103,22 @@ class Module
         $diContainer = $application->getServiceManager();
         $commonService = $diContainer->get('CommonService');
 
-        if (!property_exists($session, 'countryName') || $session->countryName === null || empty($session->countryName)) {
+        if (empty($session->countryName)) {
             $config = $commonService->getGlobalConfigDetails();
             $session->countryName = $config['country-name'];
         }
         /** @var \Laminas\Http\Request $request */
         $request = $e->getRequest();
 
-        if (!$request->isXmlHttpRequest()
-        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
-        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
-        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
-        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5Controller'
-        && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller') {
-            if (empty($session) || (!property_exists($session, 'userId') || $session->userId === null) || empty($session->userId)) {
+        if (
+            !$request->isXmlHttpRequest()
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5Controller'
+            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
+        ) {
+            if (empty($session) || empty($session->userId)) {
                 $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
                 /** @var \Laminas\Http\Response $response */
                 $response = $e->getResponse();

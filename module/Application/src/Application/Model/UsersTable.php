@@ -3,7 +3,6 @@
 namespace Application\Model;
 
 use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Expression;
 use Laminas\Session\Container;
 use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
@@ -59,6 +58,7 @@ class UsersTable extends AbstractTableGateway
             ->where(array('login' => $username, 'u.status' => 'active'));
         $sQueryStr = $sql->buildSqlString($sQuery);
 
+        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
 
         $passwordValidation = false;
@@ -67,9 +67,9 @@ class UsersTable extends AbstractTableGateway
         }
 
 
-        $data = array(
+        $data = [
             'last_login_datetime' => CommonService::getDateTime()
-        );
+        ];
         if ($sResult !== false && !empty($sResult)) {
             $this->update($data, array('id' => $sResult->id));
         }
@@ -494,6 +494,7 @@ class UsersTable extends AbstractTableGateway
             ->where(array('id' => $loginContainer->userId));
         $sQueryStr = $sql->buildSqlString($sQuery);
 
+        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
         $sResult = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
 
         $passwordValidation = false;
