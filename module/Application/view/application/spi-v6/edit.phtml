@@ -1875,11 +1875,11 @@ tr.shown th.details-control {
                       ?>
                       <tr>
                        <td style="text-align:center;">
-                        <input type="text" name="sectionNo[]" class="form-control" value="<?php echo $ca['sectionno']; ?>">
+                        <input type="text" name="sectionNo[]" class="form-control" value="<?php if(empty($ca['sectionno'])){ ''; }else{ echo $ca['sectionno']; } ?>">
                         <input type="hidden" name="rowId[]" class="form-control" value="<?php echo $i; ?>">
                        </td>
                        <td>
-                        <input type="text" name="deficiency[]" class="form-control" value="<?php echo $ca['deficiency']; ?>">
+                        <input type="text" name="deficiency[]" class="form-control" value="<?php if(empty($ca['deficiency'])){ ''; }else{ echo $ca['deficiency']; } ?>">
                        </td>
                        <td align="center">
 						   <input type="radio" class="isRequired" name="correction<?php echo $i; ?>" value="Immediate" <?php if($ca['correction']=='Immediate'){ echo "checked"; } ?> title="Please select the corrective action">
@@ -1887,10 +1887,10 @@ tr.shown th.details-control {
                        <td align="center">
 						   <input type="radio" class="isRequired" name="correction<?php echo $i; ?>" value="Followup" <?php if($ca['correction']=='Followup'){ echo "checked"; } ?> title="Please select the corrective action">
 						</td>
-                       <td><textarea class="form-control" name="auditorComment[]"><?php echo $ca['auditorcomment']; ?></textarea></td>
-                       <td><textarea class="form-control" name="action[]"><?php echo $ca['action']; ?></textarea></td>
+                       <td><textarea class="form-control" name="auditorComment[]"><?php if(empty($ca['auditorcomment'])){ ''; }else{ echo $ca['auditorcomment']; } ?></textarea></td>
+                       <td><textarea class="form-control" name="action[]"><?php if(empty($ca['action'])){ ''; }else{ echo $ca['action']; } ?></textarea></td>
                        <td>
-                        <input type="text" name="timeline[]" class="form-control" value="<?php echo $ca['timeline']; ?>">
+                        <input type="text" name="timeline[]" class="form-control" value="<?php if(empty($ca['timeline'])){ ''; }else{ echo $ca['timeline']; } ?>">
                        </td>
                        <td align="center">
 							<a class="btn btn-xs btn-success" href="javascript:void(0);" onclick="insRow();"><i class="fa fa-plus"></i></a>

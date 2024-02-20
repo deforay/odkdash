@@ -5413,6 +5413,30 @@ class OdkFormService
                         $json = json_encode($xml);
                         $array = json_decode($json, true);
                         $params[$submission['instanceId']] = [...$array, ...$submission];
+                        
+                        /*
+                        if(isset($array['correctiveaction'])){
+                            $c=count($array['correctiveaction']);
+                            if(isset($array['correctiveaction'][0])){
+                                for($i=0;$i<$c;$i++){
+                                    foreach($array['correctiveaction'][$i] as $key=>$val){
+                                        if(empty($val)){
+                                            $val=""; 
+                                        }
+                                        $array['correctiveaction'][$i][$key]=$val;
+                                    }
+                                }
+                            }else{
+                                foreach($array['correctiveaction'] as $key=>$val){
+                                    if(empty($val)){
+                                        $val=""; 
+                                    }
+                                    $array['correctiveaction'][$key]=$val;
+                                }
+                            }
+                        }
+                        */
+                        
                         $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                     }
 
@@ -5426,7 +5450,6 @@ class OdkFormService
 
                     // dump($formDetails);
                     // die;
-
                     if (isset($params) && !empty($params)) {
                         $spiV6db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
                     }

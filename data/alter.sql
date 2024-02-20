@@ -2706,3 +2706,9 @@ DROP TABLE IF EXISTS spi_form_v_3_duplicate;
 CREATE TABLE `spi_form_v_3_duplicate` SELECT * from `spi_form_v_3` WHERE 1=0;
 DROP TABLE IF EXISTS spi_form_v_6_duplicate;
 CREATE TABLE `spi_form_v_6_duplicate` SELECT * from `spi_form_v_6` WHERE 1=0;
+
+--ilahir 20-Feb-2023
+UPDATE `privileges`
+SET `resource_id` = CONCAT(`resource_id`, 'Controller')
+WHERE `resource_id` NOT LIKE '%Controller';
+
