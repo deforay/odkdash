@@ -1,12 +1,6 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
+
 
 namespace Application\Controller;
 
@@ -39,7 +33,7 @@ class DashboardV5Controller extends AbstractActionController
         $spiV5auditRoundNo = $this->odkFormService->getSpiV5FormAuditNo();
         $levelNamesResult = $this->odkFormService->getSpiV5FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV5();
-        
+
         // print_r($perflast30);die;
         return new ViewModel(array(
             'perf1' => $perf1,
@@ -56,5 +50,4 @@ class DashboardV5Controller extends AbstractActionController
             'levelNamesResult' => $levelNamesResult
         ));
     }
-
 }

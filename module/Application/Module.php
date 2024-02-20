@@ -1,61 +1,52 @@
 <?php
 
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Application;
 
+use Laminas\Mvc\MvcEvent;
+use Application\Model\Acl;
+use Laminas\Session\Container;
+use Application\Model\RolesTable;
+use Application\Model\UsersTable;
+use Application\Model\GlobalTable;
+use Application\Model\EventLogTable;
+use Application\Model\TempMailTable;
+use Application\Service\RoleService;
+use Application\Service\UserService;
+use Laminas\Mvc\ModuleRouteListener;
+use Application\Model\AuditMailTable;
+use Application\Model\CountriesTable;
+use Application\Model\ResourcesTable;
+use Application\Service\EventService;
+use Application\Service\TcpdfExtends;
+use Application\Service\CommonService;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer5Table;
 use Application\Model\SpiFormVer6Table;
-use Application\Model\SpiFormVer3DuplicateTable;
-use Application\Model\SpiFormVer5DuplicateTable;
-use Application\Model\SpiFormVer6DuplicateTable;
-use Application\Model\UsersTable;
+use Application\Model\UserRoleMapTable;
+use Application\Service\OdkFormService;
+use Application\Model\UserTokenMapTable;
+use Application\Service\FacilityService;
 use Application\Model\SpiFormLabelsTable;
+use Application\Model\AuditSpiFormV3Table;
+use Application\Model\AuditSpiFormV6Table;
+
+
 use Application\Model\SpiForm5LabelsTable;
 use Application\Model\SpiForm6LabelsTable;
+use Application\Model\UserCountryMapTable;
+use Application\Service\AuditTrailService;
+use Application\Model\SpiFormVer3TempTable;
 use Application\Model\SpiRtFacilitiesTable;
-use Application\Model\RolesTable;
 use Application\Model\UserLoginHistoryTable;
-use Application\Model\UserRoleMapTable;
-use Application\Model\GlobalTable;
-use Application\Model\EventLogTable;
-use Application\Model\ResourcesTable;
-use Application\Model\TempMailTable;
-use Application\Model\UserTokenMapTable;
-use Application\Model\AuditMailTable;
 use Application\Model\SpiFormVer3DownloadTable;
 use Application\Model\SpiFormVer5DownloadTable;
+
 use Application\Model\SpiFormVer6DownloadTable;
-use Application\Model\SpiFormVer3TempTable;
-use Application\Model\CountriesTable;
-use Application\Model\UserCountryMapTable;
-use Application\Model\AuditSpiFormV6Table;
-use Application\Model\AuditSpiFormV3Table;
+use Application\Model\SpiFormVer3DuplicateTable;
+use Application\Model\SpiFormVer5DuplicateTable;
 
-
-use Application\Service\OdkFormService;
-use Application\Service\UserService;
-use Application\Service\FacilityService;
-use Application\Service\CommonService;
-use Application\Service\RoleService;
+use Application\Model\SpiFormVer6DuplicateTable;
 use Application\Service\UserLoginHistoryService;
-use Application\Service\TcpdfExtends;
-use Application\Service\AuditTrailService;
-use Application\Service\EventService;
-
-use Application\Model\Acl;
-use Laminas\Mvc\ModuleRouteListener;
-use Laminas\Mvc\MvcEvent;
-
-use Laminas\Session\Container;
-use Laminas\View\Model\ViewModel;
 
 class Module
 {
