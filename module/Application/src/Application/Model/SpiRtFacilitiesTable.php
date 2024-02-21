@@ -518,4 +518,35 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     {
         return $this->select(array('id' => (int) base64_decode($params['id'])))->current();
     }
+
+    public function fetchAllProvince()
+    {
+        $adapter = $this->adapter;
+        $sql = new Sql($adapter);
+        $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('province' => new Expression("DISTINCT province")))
+                    ->where('spirt3.province not like "" AND spirt3.province is not null')
+                    ->order('spirt3.province ASC');
+        $sQueryStr = $sql->buildSqlString($sQuery);
+        return $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
+    public function fetchDistrictByProvince($params)
+    {
+        if(isset($params['province']) && is_array($params['province'])){
+            $adapter = $this->adapter;
+            $sql = new Sql($adapter);
+            $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('district' => new Expression("DISTINCT district")))
+                        ->where('spirt3.district not like "" AND spirt3.district is not null')
+                        ->order('spirt3.district ASC');
+            
+            if (!empty($params['province']) && is_array($params['province'])) {
+                $sQuery = $sQuery->where('spirt3.province IN ("' . implode('", "', $params['province']) . '") AND spirt3.district not like "" AND spirt3.district is not null');
+            } elseif (!empty($params['province']) && !is_array($params['province'])) {
+                $sQuery = $sQuery->where('spirt3.province="' . $params['province'] . '" AND spirt3.district not like "" AND spirt3.district is not null');
+            }
+            
+            $sQueryStr = $sql->buildSqlString($sQuery);
+            return $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+        }
+    }
 }

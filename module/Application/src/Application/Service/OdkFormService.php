@@ -6180,4 +6180,16 @@ class OdkFormService
 
         return $files;
     }
+
+    public function getAllProvince()
+    {
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchAllProvince();
+    }
+
+    public function getDistrictByProvince($params)
+    {
+        $db = $this->sm->get('SpiRtFacilitiesTable');
+        return $db->fetchDistrictByProvince($params);
+    }
 }

@@ -1110,7 +1110,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
                     $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
                 } else {
-                    //User edits are lost
+                    //Lost manually updated data for auto syn update
                     //$this->update($par, array('uuid' => $data["uuid"]));
                 }
                 if ($approveStatus == 'approved') {
@@ -1575,6 +1575,20 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
+        
+        if(isset($parameters['province']) && trim($parameters['province'])!=''){
+            $parameters['province']=explode(",",$parameters['province']);
+            $sQuery =$sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.facility_id=spiv6.facilityid',array('province','district'),'left');
+                        
+            $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+            
+            if(isset($parameters['district']) && trim($parameters['district'])!=''){
+                $parameters['district']=explode(",",$parameters['district']);
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
+            }
+        }
+        
+
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }

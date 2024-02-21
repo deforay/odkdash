@@ -1,0 +1,9 @@
+
+    <option value="">All</option>
+    <?php
+    foreach($result as $val){
+    ?>
+    <option value="<?php echo $val['district']; ?>"><?php echo ucwords($val['district']); ?></option>
+    <?php
+        }
+    ?>
