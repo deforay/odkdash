@@ -1110,7 +1110,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                     /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
                     $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
                 } else {
-                    $this->update($par, array('uuid' => $data["uuid"]));
+                    //User edits are lost
+                    //$this->update($par, array('uuid' => $data["uuid"]));
                 }
                 if ($approveStatus == 'approved') {
                     //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
