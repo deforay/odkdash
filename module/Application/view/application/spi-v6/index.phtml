@@ -554,13 +554,12 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
   }
 
   function getDistrictList(){
-    //$.blockUI();
-    
+    $.blockUI();
     $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
         province: $("#province").val()
     },
     function(data) {
-      //$.unblockUI();
+      $.unblockUI();
       $('#district').html(data);
     });
   }
