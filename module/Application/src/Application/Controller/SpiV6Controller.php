@@ -24,18 +24,20 @@ class SpiV6Controller extends AbstractActionController
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
+        $provinceResult = $this->odkFormService->getAllProvince();
         //echo "ww";die;
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
         //var_dump($levelNamesResult);die;
         if ($request->isPost()) {
-
+            
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
-            'levelNamesResult' => $levelNamesResult
+            'levelNamesResult' => $levelNamesResult,
+            'provinceResult' => $provinceResult
         ));
     }
 
@@ -599,5 +601,18 @@ class SpiV6Controller extends AbstractActionController
         $result = $this->odkFormService->getBulkDownloadsFiles();
 
         return new ViewModel(array('result' => $result));
+    }
+
+    public function getDistrictBasedProvinceAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $this->odkFormService->getDistrictByProvince($params);
+            $viewModel = new ViewModel();
+            $viewModel->setVariables(array('result' => $result))
+                ->setTerminal(true);
+            return $viewModel;
+        }
     }
 }
