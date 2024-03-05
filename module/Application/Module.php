@@ -42,11 +42,13 @@ use Application\Model\SpiFormVer3DownloadTable;
 use Application\Model\SpiFormVer5DownloadTable;
 
 use Application\Model\SpiFormVer6DownloadTable;
+use Application\View\Helper\GlobalConfigHelper;
 use Application\Model\SpiFormVer3DuplicateTable;
-use Application\Model\SpiFormVer5DuplicateTable;
 
+use Application\Model\SpiFormVer5DuplicateTable;
 use Application\Model\SpiFormVer6DuplicateTable;
 use Application\Service\UserLoginHistoryService;
+use Application\View\Helper\GetCountryDetailsByIdHelper;
 
 class Module
 {
@@ -722,15 +724,16 @@ class Module
     public function getViewHelperConfig()
     {
         return array(
-            'invokables' => array(
+            'invokables' => [
                 'humanReadableDateFormat' => 'Application\View\Helper\HumanReadableDateFormat',
-            ), 'factories' => array(
+            ],
+            'factories' => [
                 'GlobalConfigHelper' => new class
                 {
                     public function __invoke($diContainer)
                     {
                         $globalTable = $diContainer->get('GlobalTable');
-                        return new \Application\View\Helper\GlobalConfigHelper($globalTable);
+                        return new GlobalConfigHelper($globalTable);
                     }
                 },
                 'GetCountryDetailsByIdHelper' => new class
@@ -738,11 +741,12 @@ class Module
                     public function __invoke($diContainer)
                     {
                         $countriesTable = $diContainer->get('CountriesTable');
-                        return new \Application\View\Helper\GetCountryDetailsByIdHelper($countriesTable);
+                        return new GetCountryDetailsByIdHelper($countriesTable);
                     }
-                },
+                }
+            ]
 
-            )
+
         );
     }
 

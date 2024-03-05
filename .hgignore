@@ -1,17 +1,3 @@
-syntax: regexp
-^application/cache/(?!index.php)
-^backup/(?!index.php)
-^public/uploads/(?!index.php)
-^public/temporary/(?!index.php)
-^vendor/(?!autoload.php)
-error_log
-Thumbs.db
-Thumbs.db.orig
-.DS_Store
-.DS_Store.orig
-^custom.global.php
-
-
 syntax: glob
 error_log
 error.log
@@ -30,3 +16,21 @@ Thumbs.db.orig
 custom.global.php
 config/autoload/custom.global.php
 rector.php
+vendor/
+
+
+syntax: regexp
+^application/cache/(?!index.php)
+^backup/(?!index.php)
+^public/uploads/(?!index.php)
+^public/temporary/(?!index.php)
+^vendor/(?!autoload.php)
+error_log
+Thumbs.db
+Thumbs.db.orig
+.DS_Store
+.DS_Store.orig
+^custom.global.php
+^vendor/*
+
+

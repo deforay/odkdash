@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "69857ef7df44ce911441be6432207514",
+    "content-hash": "b2bc7eaaeac706ef3a1b53b51118aa95",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -3583,16 +3583,16 @@
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "2.47.0",
+            "version": "2.48.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "5c3fc8c4f1263cda5c5f14aed874fdadd5b90bbd"
+                "reference": "fac99d71b5eaec1f2eba1a8d8d9c81adfd59dd58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/5c3fc8c4f1263cda5c5f14aed874fdadd5b90bbd",
-                "reference": "5c3fc8c4f1263cda5c5f14aed874fdadd5b90bbd",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/fac99d71b5eaec1f2eba1a8d8d9c81adfd59dd58",
+                "reference": "fac99d71b5eaec1f2eba1a8d8d9c81adfd59dd58",
                 "shasum": ""
             },
             "require": {
@@ -3663,7 +3663,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2024-01-17T11:31:50+00:00"
+            "time": "2024-02-22T10:26:58+00:00"
         },
         {
             "name": "laminas/laminas-view",

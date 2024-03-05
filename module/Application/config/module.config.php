@@ -327,20 +327,20 @@ return array(
             ),
         ),
     ),
-    'service_manager' => array(
-        'abstract_factories' => array(
+    'service_manager' => [
+        'abstract_factories' => [
             'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
             'Laminas\Log\LoggerAbstractServiceFactory',
-        ),
-        'factories' => array(
+        ],
+        'factories' => [
             'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
             SendTempMail::class => SendTempMailFactory::class,
             SendAuditMail::class => SendAuditMailFactory::class,
             SyncCentralV3::class => SyncCentralV3Factory::class,
             SyncCentralV6::class => SyncCentralV6Factory::class,
             GenerateBulkPdf::class => GenerateBulkPdfFactory::class,
-        ),
-    ),
+        ]
+    ],
     'translator' => array(
         'locale' => 'en_US',
         'translation_file_patterns' => array(
