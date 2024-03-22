@@ -2,8 +2,10 @@
 
 namespace Application\Service;
 
+use DateTime;
 use ZipArchive;
 use CpChart\Data;
+use DateTimeZone;
 use CpChart\Image;
 use CpChart\Chart\Pie;
 use GuzzleHttp\Client;
@@ -5360,13 +5362,16 @@ class OdkFormService
                 $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
                 $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
 
-                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId/submissions";
+                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
+                $url = "$baseUrl.svc/Submissions";
                 if (!empty($lastFormDate)) {
-                    $formattedDate = urlencode($lastFormDate); // Ensure the date is URL-encoded if necessary
-                    $url = "$baseUrl?%24filter=__system%2FsubmissionDate%20gt%20$formattedDate";
-                } else {
-                    $url = $baseUrl;
+                    $lastFormDate = DateTime::createFromFormat('Y-m-d H:i:s.u', $lastFormDate, new DateTimeZone('UTC'));
+                    if (!empty($lastFormDate) && $lastFormDate !== false) {
+                        $lastFormDate = $lastFormDate->format('Y-m-d\TH:i:s.v\Z');
+                        $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20" . urlencode($lastFormDate);
+                    }
                 }
+
                 // $odataClient = new ODataClient($spirrtURL, function($request) {
                 $email = $item['email'];
                 $password = $item['password'];
@@ -5374,6 +5379,7 @@ class OdkFormService
                 $httpClient = new Client([
                     'base_uri' => $baseUrl,
                     'cookies' => true,
+                    'timeout'  => 300
                 ]);
 
                 // Authenticate and obtain session cookie
@@ -5388,68 +5394,43 @@ class OdkFormService
                 if ($response->getStatusCode() == 200) {
                     $authResponse = json_decode($response->getBody()->getContents(), true);
                     $authToken = $authResponse['token'];
-                    // Fetch instanceIdList
+
                     $response = $httpClient->get($url, [
                         'headers' => [
                             'Authorization' => 'Bearer ' . $authToken,
                         ],
                     ]);
-                    $instanceIdList = $response->getBody()->getContents();
+                    $responseSubmission = $response->getBody()->getContents();
+                    $responseSubmission = !empty($responseSubmission) ? json_decode($responseSubmission, true) : [];
+                    $params = $responseSubmission['value'] ?? [];
 
-                    $responseSubmission = $this->formatResponse($instanceIdList);
-                    //$instanceLists = [];
+                    var_dump($params);
+                    die;
+
                     $correctiveActions = [];
+                    foreach ($params as $submission) {
 
-                    $params = [];
-                    foreach ($responseSubmission as $submission) {
-                        $formInstanceResponse = $httpClient->get("$baseUrl/{$submission['instanceId']}.xml", [
+                        $correctiveActionUrl = $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'];
+
+                        // Now, fetch the corrective actions
+                        $correctiveActionResponse = $httpClient->get($correctiveActionUrl, [
                             'headers' => [
                                 'Authorization' => 'Bearer ' . $authToken,
-                                'Content-Type' => 'application/xml',
                             ],
                         ]);
-                        $formXml = ($formInstanceResponse->getBody()->getContents());
-                        $xml = simplexml_load_string($formXml);
-                        $json = json_encode($xml);
-                        $array = json_decode($json, true);
-                        $params[$submission['instanceId']] = [...$array, ...$submission];
-                        
-                        /*
-                        if(isset($array['correctiveaction'])){
-                            $c=count($array['correctiveaction']);
-                            if(isset($array['correctiveaction'][0])){
-                                for($i=0;$i<$c;$i++){
-                                    foreach($array['correctiveaction'][$i] as $key=>$val){
-                                        if(empty($val)){
-                                            $val=""; 
-                                        }
-                                        $array['correctiveaction'][$i][$key]=$val;
-                                    }
-                                }
-                            }else{
-                                foreach($array['correctiveaction'] as $key=>$val){
-                                    if(empty($val)){
-                                        $val=""; 
-                                    }
-                                    $array['correctiveaction'][$key]=$val;
-                                }
+
+                        if ($correctiveActionResponse->getStatusCode() == 200) {
+                            $correctiveActionsData = $correctiveActionResponse->getBody()->getContents();
+
+                            if (!empty($correctiveActionsData)) {
+                                $correctiveAction = json_decode($correctiveActionsData, true);
+                            } else {
+                                $correctiveAction = [];
                             }
+
+                            $correctiveActions[$submission['__id']] = $correctiveAction["value"] ?? [];
                         }
-                        */
-                        
-                        $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0]) ? $array['correctiveaction'] : array($array['correctiveaction']);
                     }
-
-                    // $formResponse = $httpClient->get($baseUrl, [
-                    //     'headers' => [
-                    //         'Authorization' => 'Bearer ' . $authToken,
-                    //     ],
-                    // ]);
-                    // $formDetails = $formResponse->getBody()->getContents();
-                    // $formDetails = $this->formatResponse($formDetails);
-
-                    // dump($formDetails);
-                    // die;
                     if (isset($params) && !empty($params)) {
                         $spiV6db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
                     }

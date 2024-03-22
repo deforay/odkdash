@@ -459,12 +459,12 @@ class SpiFormVer6Table extends AbstractTableGateway
 
             $data['uuid'] = $submissionData['meta']['instanceID'];
             $data['content'] = 'record';
-            $data['formId'] = $submissionData['@attributes']['id'];
-            $data['formVersion'] = $submissionData['@attributes']['version'];
+            $data['formId'] = $formId;
+            $data['formVersion'] = $submissionData['__system']["formVersion"];
             $data['meta-instance-id'] = $submissionData['meta']['instanceID'];
-            $data['meta-model-version'] = $submissionData['@attributes']['version'];
-            $data['meta-ui-version'] = $submissionData['@attributes']['version'];
-            $data['meta-submission-date'] = explode("T", $submissionData["createdAt"])[0];
+            $data['meta-model-version'] = '';
+            $data['meta-ui-version'] = '';
+            $data['meta-submission-date'] = $submissionData['__system']["submissionDate"];
             $data['meta-is-complete'] = '1';
             $data['meta-date-marked-as-complete'] =  explode("T", $submissionData["end"])[0];
             $data['start'] = $submissionData['start'];
@@ -1575,19 +1575,19 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
-        
-        if(isset($parameters['province']) && trim($parameters['province'])!=''){
-            $parameters['province']=explode(",",$parameters['province']);
-            $sQuery =$sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.facility_id=spiv6.facilityid',array('province','district'),'left');
-                        
+
+        if (isset($parameters['province']) && trim($parameters['province']) != '') {
+            $parameters['province'] = explode(",", $parameters['province']);
+            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_id=spiv6.facilityid', array('province', 'district'), 'left');
+
             $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-            
-            if(isset($parameters['district']) && trim($parameters['district'])!=''){
-                $parameters['district']=explode(",",$parameters['district']);
+
+            if (isset($parameters['district']) && trim($parameters['district']) != '') {
+                $parameters['district'] = explode(",", $parameters['district']);
                 $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
             }
         }
-        
+
 
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
@@ -3136,9 +3136,10 @@ class SpiFormVer6Table extends AbstractTableGateway
                     ->columns(array('id'))
                     ->where(array('spirt3.facility_name' => $params['testingFacilityName']));
                 $fQueryStr = $sql->buildSqlString($fQuery);
+                /** @var \Laminas\Db\Adapter\Driver\ResultInterface $fResult */
                 $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 if ($fResult) {
-                    $id = $fResult->id;
+                    $id = $fResult['id'];
                     $facilityDb->updateFacilityInfo($id, $params);
                 } else {
                     $id = $facilityDb->addFacilityInfo($params);
@@ -5267,7 +5268,7 @@ class SpiFormVer6Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_6 WHERE central_project_id = ? AND central_form_id = ?";
+        $query = "SELECT MAX(`meta-submission-date`) as last_added_form_date FROM spi_form_v_6 WHERE central_project_id = ? AND central_form_id = ?";
         return $dbAdapter->query($query, [$projectId, $formId])->toArray();
     }
 
