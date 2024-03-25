@@ -125,9 +125,11 @@ class FacilityController extends AbstractActionController
         
         $result = $this->odkFormService->getAllFacilityNames();
         $provinceResult = $this->facilityService->getProvinceList();
+        $districtResult = $this->facilityService->getDistrictList();
         return new ViewModel(array(
             'facilityName' => $result,
-            'provinces' => $provinceResult
+            'provinces' => $provinceResult,
+            'districts' => $districtResult
         ));
     }
 

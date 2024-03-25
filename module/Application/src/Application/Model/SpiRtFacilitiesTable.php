@@ -438,6 +438,16 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         return $dbAdapter->query($provinceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
+    public function fetchDistrictList()
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $districtQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+            ->columns(array('name' => new Expression("DISTINCT district")));
+        $districtQueryStr = $sql->buildSqlString($districtQuery);
+        return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
     public function getSpiV3FormUniqueDistrict()
     {
         $dbAdapter = $this->adapter;
@@ -459,8 +469,14 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             if (isset($params['facility']) && count($params['facility']) > 0) {
                 $result = 1;
                 $counter = count($params['facility']);
-                for ($f = 0; $f < $counter; $f++) {
-                    $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
+                if (isset($params['district']) && trim($params['district']) != '') {
+                    for ($f = 0; $f < $counter; $f++) {
+                        $this->update(array('province' => $params['province'],'district' => $params['district']), array('facility_name' => $params['facility'][$f]));
+                    }
+                }else{
+                    for ($f = 0; $f < $counter; $f++) {
+                        $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
+                    }
                 }
             }
             $subject = '';

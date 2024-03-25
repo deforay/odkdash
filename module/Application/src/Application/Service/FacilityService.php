@@ -366,6 +366,11 @@ class FacilityService
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchProvinceList();
     }
+    public function getDistrictList()
+    {
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->fetchDistrictList();
+    }
 
     public function mapProvince($params)
     {

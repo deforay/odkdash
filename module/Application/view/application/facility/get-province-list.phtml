@@ -68,6 +68,30 @@
 							</tr>
 							<tr>
 								<td class="col-lg-4">
+									<b><?= $this->translate('District'); ?></b>
+								</td>
+								<td class="col-lg-8" align="center">
+									<input type="text" class="form-control" id="textDistrict" name="textDistrict" placeholder="Enter District" style="width:300px;display:none;" />
+									<select id="listDistrict" name="listDistrict" class="form-control">
+										<option value=""> -- Select -- </option>
+										<?php
+										foreach ($districts as $district) {
+											if (isset($district['name']) && trim($district['name']) != '') {
+										?>
+												<option value="<?php echo $district['name']; ?>"><?php echo ucwords($district['name']); ?></option>
+										<?php }
+										} ?>
+										<option value="other"><?= $this->translate('Other'); ?></option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<hr>
+								</td>
+							</tr>
+							<tr>
+								<td class="col-lg-4">
 									<b><?= $this->translate('Facility List'); ?></b><span class="mandatory">*</span>
 								</td>
 								<td class="col-lg-8">
@@ -94,6 +118,7 @@
 							<tr>
 								<td colspan="2">
 									<input type="hidden" class="form-control" id="province" name="province" />
+									<input type="hidden" class="form-control" id="district" name="district" />
 									<button type="button" onclick="mapProvinceFacility()" class="btn btn-space btn-primary"><?= $this->translate('Map Province to Facility'); ?></button>
 								</td>
 							</tr>
@@ -150,16 +175,52 @@
 		}
 	});
 
+	districts = [];
+	<?php
+	foreach ($districts as $district) {
+		if (isset($district['name']) && trim($district['name']) != '') {
+	?>
+			districts.push('<?php echo $district['name']; ?>');
+			districts.push('<?php echo strtolower($district['name']); ?>');
+	<?php }
+	} ?>
+
+	$('#listDistrict').on('change', function() {
+		if (this.value == 'other') {
+			$('#district').val('');
+			$('#listDistrict').css('display', 'none');
+			$('#textDistrict').css('display', 'block');
+		} else {
+			$('#district').val(this.value);
+			$('#listDistrict').css('display', 'block');
+			$('#textDistrict').css('display', 'none');
+		}
+	});
+
+	$('#textDistrict').change(function() {
+		$('#district').val(this.value);
+		if (this.value != '') {
+			if ($.inArray(this.value, districts) != -1) {
+				alert("<?= $this->translate('This District name already exists. Please enter a different name'); ?>");
+				$('#district').val('');
+				$('#textDistrict').val('');
+				$('#textDistrict').focus();
+			}
+		}
+	});
+
 	function mapProvinceFacility() {
 		var facility = $("#facility").val();
 		var province = $("#province").val();
+		var district = $("#district").val();
 		if (facility != null && facility != '' && province != '') {
 			var cnfm = confirm("<?= $this->translate('Do you wish to merge the selected province with the selected facility?'); ?>");
 			if (cnfm) {
 				$.blockUI();
 				$.post("<?php echo $this->url('spi-facility', array('action' => 'map-province')); ?>", {
 						province: province,
-						facility: facility
+						district: district,
+						facility: facility	
 					},
 					function(data) {
 						$.unblockUI();
