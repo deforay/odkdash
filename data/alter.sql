@@ -2712,3 +2712,8 @@ UPDATE `privileges`
 SET `resource_id` = CONCAT(`resource_id`, 'Controller')
 WHERE `resource_id` NOT LIKE '%Controller';
 
+
+
+-- Amit 05-Mar-2024
+ALTER TABLE `spi_form_v_6` CHANGE `meta-submission-date` `meta-submission-date` DATETIME(3) NOT NULL;
+ALTER TABLE `spi_form_v_3` CHANGE `meta-submission-date` `meta-submission-date` DATETIME(3) NOT NULL;
