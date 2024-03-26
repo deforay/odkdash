@@ -58,7 +58,7 @@ if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit'))
 				<?php } ?>
 				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'get-province-list')) { ?>
 					<a href="javascript:void(0);" class="btn btn-success pull-right" onclick="showModal('/facility/get-province-list',800,450);" style="margin-right:6px;"><i class="fa fa-link" aria-hidden="true"></i> &nbsp;<?= $this->translate('Map Province to Facility'); ?></a>
-				<?php } ?>
+				<?php } ?>	
 			</div>
 		</div>
 	</div>

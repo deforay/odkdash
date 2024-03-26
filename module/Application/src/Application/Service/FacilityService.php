@@ -387,7 +387,7 @@ class FacilityService
             $output = array();
             $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($this->adapter);
+            $sql = new Sql($dbAdapter);
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllFacilityQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
@@ -447,19 +447,14 @@ class FacilityService
             $sheet->getStyle('C4:C5')->applyFromArray($styleArray);
             $sheet->getStyle('D4:D5')->applyFromArray($styleArray);
 
-
             $start = 0;
             foreach ($output as $rowNo => $rowData) {
-                $colNo = 0;
+                $colNo = 1;
                 foreach ($rowData as $field => $value) {
                     if (!isset($value)) {
                         $value = "";
                     }
-                    if (is_numeric($value)) {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                    } else {
-                        $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                    }
+                    $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
                     $rRowCount = $rowNo + 6;
                     $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
                     $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);

@@ -77,6 +77,7 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'export-facility' => 'allow',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
         ),
