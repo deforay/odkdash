@@ -1,0 +1,105 @@
+<?php 
+	if (isset($_GET['total'])) {
+		$addedRecords = $_GET['total'] - $_GET['notAdded'];
+	}
+?>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
+<style>
+	.select2-container .select2-selection--single {
+		height: 40px;
+	}
+
+	.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b:after {
+		content: ""
+	}
+
+	.select2-container--default .select2-selection--single .select2-selection__arrow b:after {
+		content: ""
+	}
+
+	.select2-container--default .select2-selection--single .select2-selection__arrow b:before {
+		content: ""
+	}
+
+	.select2-container--default .select2-selection--single .select2-selection__arrow b {
+		margin-top: 8px;
+	}
+</style>
+<div class="am-content">
+	<div class="page-head">
+		<h2>Upload Facility</h2>
+	</div>
+
+	<div class="main-content">
+		<div class="widget widget-fullwidth widget-small" style="padding:5px;">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<form role="form" name="UploadFacilityInfo" id="UploadFacilityInfo" method="post" action="<?php echo $this->url('spi-facility', array('action' => 'upload-facility')); ?>" autocomplete="off" enctype="multipart/form-data">
+							
+                            <div class="col-md-12">
+								<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
+									<h3 style="margin-left:100px; color:green;">Total number of records in file : <?= $_GET['total']; ?> | Number of Facilities added : <?= $addedRecords; ?> | Number of Facilities not added : <?= $_GET['notAdded']; ?></h3>
+									<?php if ($_GET['notAdded'] > 0) { ?>
+										<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel Sheet with not uploaded facilities</a><br><br>
+									<?php } ?>
+								<?php } ?>	
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">Upload Options <span class="mandatory">*</span></label>
+                                        <div class="col-lg-5">
+                                            <select name="uploadOption" id="uploadOption" class="form-control">
+                                                <option value="default" <?php echo ($_GET['option'] ?? '') == 'default' ? 'selected="selected"' : ''; ?>>Don't update duplicates (default)</option>
+                                                <option value="facility_name_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_match' ? 'selected="selected"' : ''; ?>>Update if Facility Name matches</option>
+                                                <option value="facility_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_id_match' ? 'selected="selected"' : ''; ?>>Update if Facility Id matches</option>
+												<option value="facility_name_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_id_match' ? 'selected="selected"' : ''; ?>>Update if Facility Name and Facility Id match</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div><br>
+
+								<input type="hidden" name="option" value="<?php echo $_GET['option']; ?>" >
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label class="col-lg-2 control-label">Upload File <span class="mandatory">*</span></label>
+                                        <div class="col-lg-8">
+                                            <input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" title="Click to upload file" />
+                                            <a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download>Click here to download the Excel format for uploading facilities in bulk</a>
+                                        </div>
+                                    </div>
+                                </div><br>
+                                
+								<div class="spacer  col-lg-12">
+									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
+									<a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+								</div>
+                            </div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<br>
+	</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	duplicateName = true;
+	$(document).ready(function() {
+
+	});
+
+	function validateNow() {
+		flag = deforayValidator.init({
+			formId: 'UploadFacilityInfo'
+		});
+		if (flag) {
+			if (duplicateName) {
+				document.getElementById('UploadFacilityInfo').submit();
+			}
+		}
+	}
+</script>
