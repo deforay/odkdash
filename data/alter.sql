@@ -2720,3 +2720,4 @@ ALTER TABLE `spi_form_v_3` CHANGE `meta-submission-date` `meta-submission-date` 
 
 -- Brindha 25-Mar-2024
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\FacilityController', 'export-facility', 'Export Facilities');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\FacilityController', 'upload-facility', 'Upload Facilities');

@@ -544,4 +544,22 @@ class CommonService
             return urlencode($string);
         }
     }
+
+    public static function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $sm = null)
+    {
+        return once(function () use ($tablename, $fieldname, $fieldValue, $sm) {
+            $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+            $sql = new Sql($dbAdapter);
+            $select = $sql->select()->from($tablename);
+            $select->where($fieldname . "=" . "'" . $fieldValue . "'");
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $result = $statement->execute();
+            if ($result->count() > 0) {
+                $currentRow = $result->current(); // Get the current row's data as an array
+                return $currentRow;
+            } else {
+                return null; // Return null or handle the case when no rows are found
+            }
+        });
+    }
 }

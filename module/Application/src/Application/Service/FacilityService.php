@@ -5,6 +5,7 @@ namespace Application\Service;
 use Laminas\Session\Container;
 use Application\Service\CommonService;
 use Laminas\Db\Sql\Sql;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class FacilityService
 {
@@ -397,6 +398,10 @@ class FacilityService
                     $row[] = $aRow['facility_name'];
                     $row[] = $aRow['email'];
                     $row[] = $aRow['contact_person'];
+                    $row[] = $aRow['province'];
+                    $row[] = $aRow['district'];
+                    $row[] = $aRow['latitude'];
+                    $row[] = $aRow['longitude'];
                     $output[] = $row;
                 }
             }
@@ -432,6 +437,10 @@ class FacilityService
             $sheet->mergeCells('B4:B5');
             $sheet->mergeCells('C4:C5');
             $sheet->mergeCells('D4:D5');
+            $sheet->mergeCells('E4:E5');
+            $sheet->mergeCells('F4:F5');
+            $sheet->mergeCells('G4:G5');
+            $sheet->mergeCells('H4:H5');
 
             $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'));
 
@@ -439,6 +448,10 @@ class FacilityService
             $sheet->setCellValue('B4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'));
             $sheet->setCellValue('C4', html_entity_decode('Email', ENT_QUOTES, 'UTF-8'));
             $sheet->setCellValue('D4', html_entity_decode('Contact Person', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('E4', html_entity_decode('Province', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('F4', html_entity_decode('District', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('G4', html_entity_decode('Latitude', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('H4', html_entity_decode('Longitude', ENT_QUOTES, 'UTF-8'));
 
             $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
 
@@ -446,6 +459,10 @@ class FacilityService
             $sheet->getStyle('B4:B5')->applyFromArray($styleArray);
             $sheet->getStyle('C4:C5')->applyFromArray($styleArray);
             $sheet->getStyle('D4:D5')->applyFromArray($styleArray);
+            $sheet->getStyle('E4:E5')->applyFromArray($styleArray);
+            $sheet->getStyle('F4:F5')->applyFromArray($styleArray);
+            $sheet->getStyle('G4:G5')->applyFromArray($styleArray);
+            $sheet->getStyle('H4:H5')->applyFromArray($styleArray);
 
             $start = 0;
             foreach ($output as $rowNo => $rowData) {
@@ -490,5 +507,122 @@ class FacilityService
     {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchFacilityDetails($params);
+    }
+
+    public function uploadFacility($params)
+    {
+        try {
+            $container = new Container('alert');
+            $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+            $uploadOption = $params['uploadOption'];
+            
+            if (isset($_FILES['facilitiesInfo']['name']) && !empty($_FILES['facilitiesInfo']['name'])){
+                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {
+                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities");
+                }
+                
+                $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['facilitiesInfo']['name'], PATHINFO_EXTENSION));
+                $fileName = CommonService::generateRandomString(5) . "." . $extension;
+
+                if (move_uploaded_file($_FILES["facilitiesInfo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities" . DIRECTORY_SEPARATOR . $fileName)) {
+                    $uploadedFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities" . DIRECTORY_SEPARATOR . $fileName;
+                    $spreadsheet = IOFactory::load($uploadedFilePath);
+                    $sheetData = $spreadsheet->getActiveSheet();
+
+                    $dataArray = $sheetData->toArray(null, true, true, true);
+                    $resultArray = array_slice($dataArray, 1);
+                    $filteredArray = array_filter($resultArray, function ($row) {
+                        return !empty(array_filter($row)); // Remove empty rows
+                    });
+                    $total = count($filteredArray);
+                    $facilityNotAdded = [];
+
+                    if ($total == 0) {
+                        $container->alertMsg = 'Please enter all the mandatory fields in the excel sheet';
+                        return "";
+                    }
+
+                    foreach ($filteredArray as $rowIndex => $rowData) {
+
+                        if (empty($rowData['A']) || empty($rowData['B'])) {
+                            $container->alertMsg = 'Please enter all the mandatory fields in the excel sheett';
+                            return "";
+                        }
+                        $facilityIdCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_id', $rowData['A'],$this->sm);
+                        $facilityCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_name', $rowData['B'],$this->sm);
+                        $data = [
+                            'facility_id' => trim($rowData['A']) ?? null,
+                            'facility_name' => trim($rowData['B']) ?? null,
+                            'email' => trim($rowData['C']) ?? null,
+                            'contact_person' => trim($rowData['D']) ?? null,
+                            'province' => trim($rowData['E']) ?? null,
+                            'district' => trim($rowData['F']) ?? null,
+                            'latitude' => trim($rowData['G']) ?? null,
+                            'longitude' => trim($rowData['H']) ?? null,
+                            'status' => 'active'
+                        ];
+
+                        try {
+                            if ($uploadOption == "facility_name_match") {
+                                if (!empty($facilityCheck)) {
+                                    $facilityDb->update($data,array('id' => $facilityCheck['id']));
+                                } else {
+                                    $facilityNotAdded[] = $rowData;
+                                }
+                            } elseif ($uploadOption == "facility_id_match") {
+                                if (!empty($facilityIdCheck)) {
+                                    $facilityDb->update($data,array('id' => $facilityCheck['id']));
+                                } else {
+                                    $facilityNotAdded[] = $rowData;
+                                }
+                            } elseif ($uploadOption == "facility_name_id_match") {
+                                if (!empty($facilityIdCheck) && !empty($facilityCheck)) {
+                                    $facilityDb->update($data,array('id' => $facilityCheck['id']));
+                                } else {
+                                    $facilityNotAdded[] = $rowData;
+                                }
+                            } else {
+                                if (empty($facilityIdCheck) && empty($facilityCheck)) {
+                                    $facilityDb->insert($data);
+                                } else {
+                                    $facilityNotAdded[] = $rowData;
+                                }
+                            }
+                        } catch (Throwable $e) {
+                            $facilityNotAdded[] = $rowData;
+                            error_log($db->getLastError());
+                            error_log($db->getLastQuery());
+                        }
+                    }
+
+                    $notAdded = count($facilityNotAdded);
+                    if ($notAdded > 0) {
+                        $spreadsheet = IOFactory::load(WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx');
+                        $sheet = $spreadsheet->getActiveSheet();
+                        foreach ($facilityNotAdded as $rowNo => $dataValue) {
+                            $rRowCount = $rowNo + 2;
+                            $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
+                        }
+                        $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
+                        $filename = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-FACILITY-ROWS.xlsx';
+                        $writer->save($filename);
+                    }
+
+                    $container->alertMsg = 'Facilities added successfully';
+                }else{
+                    $container->alertMsg = 'Bulk Facility Import Failed';
+                    return "";
+                }
+            }
+            $result = [];
+            $result['total'] = $total;
+            $result['notAdded'] = $notAdded;
+            $result['option'] = $uploadOption;
+            return $result;
+        }catch (\Exception $exc) {
+            error_log("UPLOAD-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
+            error_log($exc->getTraceAsString());
+            return "";
+        }
     }
 }

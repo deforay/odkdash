@@ -132,6 +132,17 @@ return array(
                     ),
                 ),
             ),
+
+            'upload-facility' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/facility/upload-facility',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\FacilityController',
+                        'action' => 'upload-facility',
+                    ),
+                ),
+            ),
             'spi-v3-reports' => array(
                 'type' => 'segment',
                 'options' => array(

@@ -200,4 +200,27 @@ class FacilityController extends AbstractActionController
             return $this->getResponse()->setContent(Json::encode($result));
         }
     }
+
+    public function uploadFacilityAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $this->facilityService->uploadFacility($params);
+            if(empty($result)){
+                return $this->redirect()->toRoute("upload-facility");
+            }else{
+                // Build query string for the result parameters
+                $query = http_build_query([
+                    'total' => $result['total'],
+                    'notAdded' => $result['notAdded'],
+                    'option' => $result['option']
+                ]);
+                $url = '/facility/upload-facility?' . $query;
+                // Redirect to the generated URL
+                return $this->redirect()->toUrl($url);
+            }
+        }    
+    }
 }

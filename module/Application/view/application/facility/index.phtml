@@ -43,12 +43,12 @@ if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit'))
 <div class="am-content">
 	<div class="page-head">
 		<div class="row">
-			<div class="col-sm-6">
+			<div class="col-sm-5">
 				<h2><?= $this->translate('Facilities'); ?></h2>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-7">
 				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'export-facility')) { ?>
-					<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;<?= $this->translate('Export All Facilities to Excel'); ?></a>
+					<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;<?= $this->translate('Export Facilities to Excel'); ?></a>
 				<?php }
 				if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'add')) { ?>
 					<a href="<?php echo $this->url('spi-facility', array('action' => 'add')); ?>" class="btn btn-dark pull-right" style="margin-left: 5px;"><i class="fa fa-plus"></i>&nbsp;<?= $this->translate('Add Facility'); ?></a>
@@ -58,7 +58,10 @@ if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit'))
 				<?php } ?>
 				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'get-province-list')) { ?>
 					<a href="javascript:void(0);" class="btn btn-success pull-right" onclick="showModal('/facility/get-province-list',800,450);" style="margin-right:6px;"><i class="fa fa-link" aria-hidden="true"></i> &nbsp;<?= $this->translate('Map Province to Facility'); ?></a>
-				<?php } ?>	
+				<?php } ?>
+				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'upload-facility')) { ?>
+					<a href="<?php echo $this->url('spi-facility', array('action' => 'upload-facility')); ?>" class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-hospital-o"></i>&nbsp;<?= $this->translate('Bulk Upload Facilities'); ?></a>
+				<?php } ?>
 			</div>
 		</div>
 	</div>

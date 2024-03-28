@@ -73,6 +73,9 @@ return array(
             'email-v5' => 'allow',
             'email-v6' => 'allow',
         ),
+        'Application\\Controller\\EventController' => array(
+            'index' => 'deny',
+        ),
         'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
@@ -80,6 +83,7 @@ return array(
             'export-facility' => 'allow',
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
+            'upload-facility' => 'allow',
         ),
         'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
@@ -97,6 +101,7 @@ return array(
             'duplicate' => 'allow',
             'edit' => 'allow',
             'export' => 'allow',
+            'view-bulk-downloads' => 'deny',
             'view-data-v5' => 'allow',
         ),
         'Application\\Controller\\SpiV6Controller' => array(
@@ -110,6 +115,7 @@ return array(
             'duplicate' => 'allow',
             'edit' => 'allow',
             'export' => 'allow',
+            'view-bulk-downloads' => 'deny',
             'view-data-v6' => 'allow',
             'view-data-section-zero-protocol-v6' => 'allow',
             'view-data-section-zero-v6' => 'allow',
@@ -125,13 +131,15 @@ return array(
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
+            'view-bulk-downloads' => 'deny',
+        ),
+        'Application\\Controller\\UserLoginHistoryController' => array(
+            'index' => 'allow',
         ),
         'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-            'change-password' => 'allow',
-            'check-password' => 'allow',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
@@ -141,12 +149,6 @@ return array(
         ),
         'Application\\Controller\\SpiV6ReportsController' => array(
             'facility-report' => 'allow',
-        ),
-        'Application\\Controller\\UserLoginHistoryController' => array(
-            'index' => 'allow',
-        ),
-        'Application\\Controller\\AuditTrailController' => array(
-            'index' => 'allow',
         ),
     ),
     'US' => array(
