@@ -2727,4 +2727,6 @@ ALTER TABLE `spi_form_v_3` ADD `district` VARCHAR(32) NULL DEFAULT NULL AFTER `f
 ALTER TABLE `spi_form_v_6` ADD `district` VARCHAR(32) NULL DEFAULT NULL AFTER `facilityid`;
 
 -- Amit 23-Apr-2024
-ALTER TABLE form_dump ADD COLUMN file_path VARCHAR(1024) NULL DEFAULT NULL AFTER 'data_dump';
+ALTER TABLE `form_dump` ADD `file_path` VARCHAR(128) NULL DEFAULT NULL AFTER `data_dump`;
+
+
