@@ -7,7 +7,6 @@ use Laminas\Db\Sql\Expression;
 use Laminas\Session\Container;
 use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
-//use Application\Model\SpiRt5FacilitiesTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
 use Application\Model\SpiRtFacilitiesTable;
@@ -57,13 +56,9 @@ class SpiFormVer6Table extends AbstractTableGateway
             exit;
         }
 
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params), 'received_on' => new Expression("NOW()"));
         $dbAdapter = $this->adapter;
-        $insert->values($d);
-        $selectString = $sql->buildSqlString($insert);
-        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+
+        CommonService::saveFormDump($dbAdapter, $params);
 
         //get global values
         $globalDB = new GlobalTable($dbAdapter);
@@ -123,6 +118,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     'auditroundno' => $data['auditroundno'],
                     'facilityname' => $data['facilityname'],
                     'facilityid' => $data['facilityid'],
+                    'district' => $data['district'],
                     'testingpointtype' => $data['testingpointtype'],
                     'testingpointtype_other' => $data['testingpointtype_other'] ?? null,
                     'physicaladdress' => $data['physicaladdress'],
@@ -432,13 +428,9 @@ class SpiFormVer6Table extends AbstractTableGateway
             exit;
         }
 
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert('form_dump');
-        $d = ['data_dump' => json_encode($params), 'received_on' => new Expression("NOW()")];
         $dbAdapter = $this->adapter;
-        $insert->values($d);
-        $selectString = $sql->buildSqlString($insert);
-        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+
+        CommonService::saveFormDump($dbAdapter, $params);
 
         //get global values
         $globalDB = new GlobalTable($dbAdapter);
@@ -467,34 +459,35 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data['meta-submission-date'] = $submissionData['__system']["submissionDate"];
             $data['meta-is-complete'] = '1';
             $data['meta-date-marked-as-complete'] =  explode("T", $submissionData["end"])[0];
-            $data['start'] = $submissionData['start'];
-            $data['end'] = $submissionData['end'];
-            $data['today'] = $submissionData['today'];
-            $data['deviceid'] = $submissionData['deviceid'];
+            $data['start'] = $submissionData['start'] ?? null;
+            $data['end'] = $submissionData['end'] ?? null;
+            $data['today'] = $submissionData['today'] ?? null;
+            $data['deviceid'] = $submissionData['deviceid'] ?? null;
             $data['subscriberid'] = $submissionData['subscriberid'] ?? null;
-            $data['text_image'] = $submissionData['text_image'];
-            $data['info1'] = $submissionData['info1'];
-            $data['info2'] = $submissionData['TESTSITE']['info2'];
-            $data['assesmentofaudit'] = $submissionData['TESTSITE']['assesmentofaudit'];
-            $data['auditEndTime'] = $submissionData['preclosure_questions']['auditEndTime'];
-            $data['auditStartTime'] = $submissionData['TESTSITE']['auditStartTime'];
-            $data['auditroundno'] = $submissionData['TESTSITE']['auditroundno'];
-            $data['facilityname'] = $submissionData['TESTSITE']['facilityname'];
-            $data['facilityid'] = $submissionData['TESTSITE']['facilityid'];
+            $data['text_image'] = $submissionData['text_image'] ?? null;
+            $data['info1'] = $submissionData['info1'] ?? null;
+            $data['info2'] = $submissionData['TESTSITE']['info2'] ?? null;
+            $data['assesmentofaudit'] = $submissionData['TESTSITE']['assesmentofaudit'] ?? null;
+            $data['auditEndTime'] = $submissionData['preclosure_questions']['auditEndTime'] ?? null;
+            $data['auditStartTime'] = $submissionData['TESTSITE']['auditStartTime'] ?? null;
+            $data['auditroundno'] = $submissionData['TESTSITE']['auditroundno'] ?? null;
+            $data['facilityname'] = $submissionData['TESTSITE']['facilityname'] ?? null;
+            $data['facilityid'] = $submissionData['TESTSITE']['facilityid'] ?? null;
+            $data['district'] = $submissionData['TESTSITE']['district'] ?? null;
             $data['testingpointname'] = $submissionData['TESTSITE']['testingpointname'] ?? null;
             $data['testingpointtype'] = $submissionData['TESTSITE']['testingpointtype'];
             $data['testingpointtype_other'] = $submissionData['TESTSITE']['testingpointtype_other'] ?? null;
             $data['physicaladdress'] = $submissionData['TESTSITE']['physicaladdress'];
-            $data['level'] = $submissionData['TESTSITE']['level'];
+            $data['level'] = $submissionData['TESTSITE']['level'] ?? null;
             $data['level_other'] = $submissionData['TESTSITE']['level_other'] ?? null;
 
-            $data['affiliation'] = $submissionData['TESTSITE']['affiliation'];
+            $data['affiliation'] = $submissionData['TESTSITE']['affiliation'] ?? null;
             $data['affiliation_other'] = $submissionData['TESTSITE']['affiliation_other'] ?? null;
             $data['NumberofTester'] = (isset($submissionData['TESTSITE']['NumberofTester']) && $submissionData['TESTSITE']['NumberofTester'] > 0 ? $submissionData['TESTSITE']['NumberofTester'] : 0);
-            $data['client_tested_HIV'] = $submissionData['TESTSITE']['client_tested_HIV'];
-            $data['client_tested_HIV_PM'] = $submissionData['TESTSITE']['client_tested_HIV_PM'];
-            $data['client_tested_HIV_PQ'] = $submissionData['TESTSITE']['client_tested_HIV_PQ'];
-            $data['client_newly_HIV'] = $submissionData['TESTSITE']['client_newly_HIV'];
+            $data['client_tested_HIV'] = $submissionData['TESTSITE']['client_tested_HIV'] ?? null;
+            $data['client_tested_HIV_PM'] = $submissionData['TESTSITE']['client_tested_HIV_PM'] ?? null;
+            $data['client_tested_HIV_PQ'] = $submissionData['TESTSITE']['client_tested_HIV_PQ'] ?? null;
+            $data['client_newly_HIV'] = $submissionData['TESTSITE']['client_newly_HIV'] ?? null;
             $data['client_newly_HIV_PM'] = $submissionData['TESTSITE']['client_newly_HIV_PM'];
             $data['client_newly_HIV_PQ'] = $submissionData['TESTSITE']['client_newly_HIV_PQ'];
             $data['client_negative_HIV'] = $submissionData['TESTSITE']['client_negative_HIV'];
@@ -811,6 +804,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     'auditroundno' => $data['auditroundno'] ?? null,
                     'facilityname' => $data['facilityname'] ?? null,
                     'facilityid' => $data['facilityid'] ?? null,
+                    'district' => $data['district'] ?? null,
                     'testingpointname' => $data['testingpointname'] ?? null,
                     'testingpointtype' => $data['testingpointtype'] ?? null,
                     'testingpointtype_other' => $data['testingpointtype_other'] ?? null,
@@ -1114,9 +1108,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                     //$this->update($par, array('uuid' => $data["uuid"]));
                 }
                 if ($approveStatus == 'approved') {
-                    //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
                     $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
-                    $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 6);
+                    $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue(), 6);
                 }
                 // }
             } catch (\Exception $e) {

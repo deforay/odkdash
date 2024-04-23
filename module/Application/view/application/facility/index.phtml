@@ -43,10 +43,10 @@ if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit'))
 <div class="am-content">
 	<div class="page-head">
 		<div class="row">
-			<div class="col-sm-5">
+			<div class="col-sm-12">
 				<h2><?= $this->translate('Facilities'); ?></h2>
 			</div>
-			<div class="col-sm-7">
+			<div class="col-sm-12">
 				<?php if ($acl->isAllowed($role, 'Application\Controller\FacilityController', 'export-facility')) { ?>
 					<a href="javascript:void(0)" class="btn btn-primary pull-right" style="margin-left: 5px;" onclick="downloadFacility();"><i class="fa fa-download"></i>&nbsp;<?= $this->translate('Export Facilities to Excel'); ?></a>
 				<?php }

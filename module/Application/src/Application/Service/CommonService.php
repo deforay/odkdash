@@ -2,19 +2,21 @@
 
 namespace Application\Service;
 
-use DateTimeImmutable;
-use Laminas\Session\Container;
 use Exception;
-use Laminas\Db\Sql\Sql;
-use Laminas\Mail\Transport\Smtp as SmtpTransport;
-use Laminas\Mail\Transport\SmtpOptions;
-use Laminas\Mail;
-use Laminas\Mime\Message as MimeMessage;
-use Laminas\Mime\Part as MimePart;
-use Laminas\Mime\Mime;
 use ZipArchive;
+use Laminas\Mail;
+use Ramsey\Uuid\Uuid;
+use DateTimeImmutable;
+use Laminas\Mime\Mime;
+use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Expression;
+use Laminas\Session\Container;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use Laminas\Mime\Part as MimePart;
+use Laminas\Mail\Transport\SmtpOptions;
+use Laminas\Mime\Message as MimeMessage;
+use Laminas\Mail\Transport\Smtp as SmtpTransport;
 
 class CommonService
 {
@@ -561,5 +563,38 @@ class CommonService
                 return null; // Return null or handle the case when no rows are found
             }
         });
+    }
+
+    public static function saveFormDump($dbAdapter, $params)
+    {
+        // Generate UUIDv4 for filename
+        $filename = Uuid::uuid4()->toString() . '.json.gz';
+
+        // Define the storage path
+        $storagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'form_dump';
+        $fullPath = $storagePath . DIRECTORY_SEPARATOR . $filename;
+
+        // Ensure directory exists
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, 0777, true);
+        }
+
+        // Encode JSON and gzip it
+        $jsonContent = json_encode($params);
+        $gzData = gzencode($jsonContent, 9);
+        file_put_contents($fullPath, $gzData);
+
+
+        // SQL Insertion
+        $sql = new Sql($dbAdapter);
+        $insert = $sql->insert('form_dump');
+        $d = array(
+            'file_path' => $fullPath, // Storing the path instead of the JSON data
+            'received_on' => new Expression("NOW()")
+        );
+
+        $insert->values($d);
+        $selectString = $sql->buildSqlString($insert);
+        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
     }
 }

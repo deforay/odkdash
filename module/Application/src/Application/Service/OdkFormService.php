@@ -5404,9 +5404,6 @@ class OdkFormService
                     $responseSubmission = !empty($responseSubmission) ? json_decode($responseSubmission, true) : [];
                     $params = $responseSubmission['value'] ?? [];
 
-                    var_dump($params);
-                    die;
-
                     $correctiveActions = [];
                     foreach ($params as $submission) {
 

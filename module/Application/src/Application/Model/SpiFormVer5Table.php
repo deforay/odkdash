@@ -43,13 +43,9 @@ class SpiFormVer5Table extends AbstractTableGateway
             exit;
         }
 
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params), 'received_on' => new \Laminas\Db\Sql\Expression("NOW()"));
         $dbAdapter = $this->adapter;
-        $insert->values($d);
-        $selectString = $sql->buildSqlString($insert);
-        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+
+        CommonService::saveFormDump($dbAdapter, $params);
 
         //get global values
         $globalDB = new GlobalTable($dbAdapter);

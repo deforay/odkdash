@@ -39,7 +39,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         }
 
         $query = $sql->select()->from($table)
-            ->columns(array('formId', 'facilityname', 'facilityid', 'Latitude', 'Longitude'))
+            ->columns(['formId', 'facilityname', 'facilityid', 'district', 'Latitude', 'Longitude'])
             ->where(array('id' => $formId));
 
         $queryStr = $sql->buildSqlString($query);
@@ -52,12 +52,14 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $fQueryStr = $sql->buildSqlString($fQuery);
             $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if ($fResult == "") {
-                $data = array(
-                    'facility_id' => $result['facilityid'],
-                    'facility_name' => $result['facilityname'],
-                    'latitude' => $result['Latitude'],
-                    'longitude' => $result['Longitude']
-                );
+                $data = [
+                    'facility_id' => $result['facilityid'] ?? null,
+                    'facility_name' => $result['facilityname'] ?? null,
+                    'province' => 'Unknown',
+                    'district' => $result['district'] ?? null,
+                    'latitude' => $result['Latitude'] ?? null,
+                    'longitude' => $result['Longitude'] ?? null
+                ];
                 return $this->insert($data);
             }
         }
@@ -472,9 +474,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 $counter = count($params['facility']);
                 if (isset($params['district']) && trim($params['district']) != '') {
                     for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $params['province'],'district' => $params['district']), array('facility_name' => $params['facility'][$f]));
+                        $this->update(array('province' => $params['province'], 'district' => $params['district']), array('facility_name' => $params['facility'][$f]));
                     }
-                }else{
+                } else {
                     for ($f = 0; $f < $counter; $f++) {
                         $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
                     }

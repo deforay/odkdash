@@ -43,13 +43,9 @@ class SpiFormVer3Table extends AbstractTableGateway
             exit;
         }
 
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params), 'received_on' => new Expression("NOW()"));
         $dbAdapter = $this->adapter;
-        $insert->values($d);
-        $selectString = $sql->buildSqlString($insert);
-        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+
+        CommonService::saveFormDump($dbAdapter, $params);
 
         //get global values
         $globalDB = new GlobalTable($dbAdapter);
@@ -343,13 +339,9 @@ class SpiFormVer3Table extends AbstractTableGateway
             exit;
         }
 
-        $sql = new Sql($this->adapter);
-        $insert = $sql->insert('form_dump');
-        $d = array('data_dump' => json_encode($params), 'received_on' => new Expression("NOW()"));
         $dbAdapter = $this->adapter;
-        $insert->values($d);
-        $selectString = $sql->buildSqlString($insert);
-        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+
+        CommonService::saveFormDump($dbAdapter, $params);
 
         //get global values
         $globalDB = new GlobalTable($dbAdapter);
@@ -363,16 +355,16 @@ class SpiFormVer3Table extends AbstractTableGateway
             $data = array();
 
             //$data['token'] = $formDetails["enketoId"];
+
             $data['content'] = 'record';
-            $data['formId'] = $submissionData['@attributes']['id'];
-            $data['formVersion'] = $submissionData['@attributes']['version'];
+            $data['formId'] = $formId;
+            $data['formVersion'] = $submissionData['__system']["formVersion"];
             $data['meta-instance-id'] = $submissionData['meta']['instanceID'];
-            $data['meta-model-version'] = $submissionData['@attributes']['version'];
-            $data['meta-ui-version'] = $submissionData['@attributes']['version'];
-            $data['meta-submission-date'] = explode("T", $submissionData["createdAt"])[0];
+            $data['meta-model-version'] = '';
+            $data['meta-ui-version'] = '';
+            $data['meta-submission-date'] = $submissionData['__system']["submissionDate"];
             $data['meta-is-complete'] = '1';
             $data['meta-date-marked-as-complete'] =  explode("T", $submissionData["end"])[0];
-
 
             $data['start'] = $submissionData['start'];
             $data['end'] = $submissionData['end'];
@@ -386,6 +378,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $data['auditroundno'] = $submissionData['TESTSITE']['auditroundno'];
             $data['facilityname'] = $submissionData['TESTSITE']['facilityname'];
             $data['facilityid'] = $submissionData['TESTSITE']['facilityid'];
+            $data['district'] = $submissionData['TESTSITE']['district'] ?? null;
             $data['testingpointname'] = $submissionData['TESTSITE']['testingpointname'];
             $data['testingpointtype'] = $submissionData['TESTSITE']['testingpointtype'];
             $data['testingpointtype_other'] = $submissionData['TESTSITE']['testingpointtype_other'];
@@ -568,33 +561,33 @@ class SpiFormVer3Table extends AbstractTableGateway
             $data['EQAPHOTO'] = $submissionData['EQA']['EQAPHOTO'];
             $data['FINAL_AUDIT_SCORE'] = $submissionData['FINAL_AUDIT_SCORE'];
             $data['MAX_AUDIT_SCORE'] = $submissionData['MAX_AUDIT_SCORE'];
-            $data['AUDIT_SCORE_PERCANTAGE'] = $submissionData['AUDIT_SCORE_PERCANTAGE'];
-            $data['staffaudited'] = $submissionData['staffaudited'];
-            $data['durationaudit'] = $submissionData['durationaudit'];
-            $data['personincharge'] = $submissionData['personincharge'];
-            $data['endofsurvey'] = $submissionData['endofsurvey'];
-            $data['info5'] = $submissionData['scoring']['info5'];
-            $data['info6'] = $submissionData['scoring']['info6'];
-            $data['info10'] = $submissionData['scoring']['info10'];
-            $data['info11'] = $submissionData['scoring']['info11'];
-            $data['summarypage'] = $submissionData['summarypage'];
-            $data['SUMMARY_NOT_AVL'] = $submissionData['SUMMARY_NOT_AVL'];
-            $data['info12'] = $submissionData['SUMMARY']['info12'];
-            $data['info17'] = $submissionData['SUMMARY']['info17'];
-            $data['info21'] = $submissionData['SUMMARY']['info21'];
-            $data['info22'] = $submissionData['SUMMARY']['info22'];
-            $data['info23'] = $submissionData['SUMMARY']['info23'];
-            $data['info24'] = $submissionData['SUMMARY']['info24'];
-            $data['info25'] = $submissionData['SUMMARY']['info25'];
-            $data['info26'] = $submissionData['SUMMARY']['info26'];
-            $data['info27'] = $submissionData['info27'];
+            $data['AUDIT_SCORE_PERCANTAGE'] = $submissionData['AUDIT_SCORE_PERCANTAGE'] ?? null;
+            $data['staffaudited'] = $submissionData['staffaudited'] ?? null;
+            $data['durationaudit'] = $submissionData['durationaudit'] ?? null;
+            $data['personincharge'] = $submissionData['personincharge'] ?? null;
+            $data['endofsurvey'] = $submissionData['endofsurvey'] ?? null;
+            $data['info5'] = $submissionData['scoring']['info5'] ?? null;
+            $data['info6'] = $submissionData['scoring']['info6'] ?? null;
+            $data['info10'] = $submissionData['scoring']['info10'] ?? null;
+            $data['info11'] = $submissionData['scoring']['info11'] ?? null;
+            $data['summarypage'] = $submissionData['summarypage'] ?? null;
+            $data['SUMMARY_NOT_AVL'] = $submissionData['SUMMARY_NOT_AVL'] ?? null;
+            $data['info12'] = $submissionData['SUMMARY']['info12'] ?? null;
+            $data['info17'] = $submissionData['SUMMARY']['info17'] ?? null;
+            $data['info21'] = $submissionData['SUMMARY']['info21'] ?? null;
+            $data['info22'] = $submissionData['SUMMARY']['info22'] ?? null;
+            $data['info23'] = $submissionData['SUMMARY']['info23'] ?? null;
+            $data['info24'] = $submissionData['SUMMARY']['info24'] ?? null;
+            $data['info25'] = $submissionData['SUMMARY']['info25'] ?? null;
+            $data['info26'] = $submissionData['SUMMARY']['info26'] ?? null;
+            $data['info27'] = $submissionData['info27'] ?? null;
             $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['__id']]);
-            $data['sitephoto'] = $submissionData['sitephoto'];
-            $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1];
-            $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0];
-            $data['Altitude'] = $submissionData["lab_geopoint"]["coordinates"][2];
-            $data['Accuracy'] = $submissionData["lab_geopoint"]["properties"]['accuracy'];
-            $data['auditorSignature'] = $submissionData['auditorSignature'];
+            $data['sitephoto'] = $submissionData['sitephoto'] ?? null;
+            $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1] ?? null;
+            $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0] ?? null;
+            $data['Altitude'] = $submissionData["lab_geopoint"]["coordinates"][2] ?? null;
+            $data['Accuracy'] = $submissionData["lab_geopoint"]["properties"]['accuracy'] ?? null;
+            $data['auditorSignature'] = $submissionData['auditorSignature'] ?? null;
             $data['instanceID'] = $submissionData['meta']['instanceID'];
             $data['instanceName'] = $submissionData['meta']['instanceName'];
             $data['status'] = $approveStatus;
