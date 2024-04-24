@@ -2728,3 +2728,27 @@ ALTER TABLE `spi_form_v_6` ADD `district` VARCHAR(32) NULL DEFAULT NULL AFTER `f
 
 -- Amit 23-Apr-2024
 ALTER TABLE form_dump ADD COLUMN file_path VARCHAR(1024) NULL DEFAULT NULL AFTER 'data_dump';
+
+-- ilahir 24-Apr-2024
+CREATE TABLE `geographical_divisions` (
+  `geo_id` int NOT NULL AUTO_INCREMENT,
+  `geo_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `geo_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `geo_parent` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
+  `geo_status` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_by` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data_sync` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`geo_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'Manage Provinces');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'index', 'Access');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'add', 'Add');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'edit', 'Edit');
+
+INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'Manage Districts');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'index', 'Access');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'add', 'Add');
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'edit', 'Edit');

@@ -50,6 +50,9 @@ use Application\Model\SpiFormVer6DuplicateTable;
 use Application\Service\UserLoginHistoryService;
 use Application\View\Helper\GetCountryDetailsByIdHelper;
 
+use Application\Service\ProvinceService;
+use Application\Model\GeographicalDivisionsTable;
+
 class Module
 {
     public function onBootstrap(MvcEvent $e)
@@ -398,6 +401,22 @@ class Module
                         return new \Application\Controller\DashboardV6Controller($odkFormService);
                     }
                 },
+                'Application\Controller\ProvincesController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\ProvincesController($provinceService);
+                    }
+                },
+                'Application\Controller\DistrictController' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\DistrictController($provinceService);
+                    }
+                },
             ),
         );
     }
@@ -643,6 +662,14 @@ class Module
                         return new AuditSpiFormV6Table($dbAdapter);
                     }
                 },
+                'GeographicalDivisionsTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new GeographicalDivisionsTable($dbAdapter);
+                    }
+                },
 
                 'OdkFormService' => new class
                 {
@@ -714,7 +741,14 @@ class Module
                     {
                         return new TcpdfExtends($diContainer);
                     }
-                }
+                },
+                'ProvinceService' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new ProvinceService($diContainer);
+                    }
+                },
             ),
 
         );

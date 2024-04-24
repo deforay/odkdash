@@ -1,0 +1,96 @@
+<div class="am-content">
+	<div class="page-head">
+		<h2>Edit District</h2>
+		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+	</div>
+
+	<div class="main-content">
+		<div class="widget widget-fullwidth widget-small" style="padding:5px;">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<form role="form" name="addProvinceInformation" id="addProvinceInformation" method="post" action="<?php echo $this->url('district', array('action' => 'edit')); ?>" autocomplete="off">
+								<div class="form-group col-lg-6">
+									<label>District Name <span class="mandatory">*</span> </label>
+									<input type="text" class="form-control isRequired" id="districtName" name="districtName" placeholder="District Name" title="Please enter district name" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The district name that you entered already exists.Enter another name')" value="<?php echo $result->geo_name; ?>"/>
+									<input type="hidden" class="form-control isRequired" id="districtId" name="districtId" value="<?php echo base64_encode($result->geo_id); ?>"/>
+								</div>
+								<div class="form-group col-lg-6">
+									<label for="districtCode">District Code <span class="mandatory">*</span></label>
+									<input type="text" class="form-control isRequired" id="districtCode" name="districtCode" placeholder="District code" title="Please enter district code" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The district code that you entered already exists.Enter another code')" value="<?php echo $result->geo_code; ?>"/>
+								</div>
+								<div class="form-group col-lg-6">
+									<label for="province">Province <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="province" id="province" title="Please select province">
+										<option value="">--Select--</option>
+										<?php
+										foreach ($provinceResult as $val) {
+										?>
+										<option value="<?php echo base64_encode($val['geo_id']) ?>" <?php if($result->geo_parent==$val['geo_id']){echo 'selected=selected';}?>><?php echo $val['geo_name'] ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+								<div class="form-group col-lg-6">
+									<label for="status">Status <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="status" id="status">
+										<option value="active" <?php if($result->geo_status=='active'){echo 'selected=selected';}?>>Active</option>
+										<option value="inactive" <?php if($result->geo_status=='inactive'){echo 'selected=selected';}?>>Inactive</option>
+									</select>
+								</div>
+
+								<div class="spacer  col-lg-12">
+									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
+									<a href="<?php echo $this->url('district', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+								</div>
+								
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<br>
+		<br>
+
+	</div>
+</div>
+
+<script type="text/javascript">
+	duplicateName = true;
+
+	function validateNow() {
+		flag = deforayValidator.init({
+			formId: 'addProvinceInformation'
+		});
+		if (flag) {
+			if (duplicateName) {
+				document.getElementById('addProvinceInformation').submit();
+			}
+		}
+	}
+
+	function checkNameValidation(tableName, fieldName, obj, fnct, msg) {
+		checkValue = document.getElementById(obj.id).value;
+		$.post("<?php echo $this->url('common', array('action' => 'index')); ?>", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: checkValue,
+				fnct: fnct
+			},
+			function(data) {
+				if (data > 0) {
+					alert(msg);
+					duplicateName = false;
+					document.getElementById(obj.id).value = "";
+				} else {
+					duplicateName = true;
+				}
+			});
+	}
+	
+</script>
