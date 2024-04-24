@@ -86,7 +86,6 @@ class ProvinceService {
         return $db->fetchAllActiveProvinces();
     }
 
-
     public function addDistrict($params) {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();
@@ -142,6 +141,16 @@ class ProvinceService {
         $db = $this->sm->get('GeographicalDivisionsTable');
         $acl = $this->sm->get('AppAcl');
         return $db->fetchAllDistrictDetails($params,$acl);
+    }
+
+    public function getAllActiveDistricts(){
+        $db = $this->sm->get('GeographicalDivisionsTable');
+        return $db->fetchAllActiveDistricts();
+    }
+
+    public function getAllDistrictByProvince($provinceId){
+        $db = $this->sm->get('GeographicalDivisionsTable');
+        return $db->fetchAllDistrictByProvince($provinceId);
     }
 }
 

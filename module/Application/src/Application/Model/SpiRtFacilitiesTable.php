@@ -7,6 +7,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
+use Application\Model\GeographicalDivisionsTable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -68,15 +69,36 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     public function addFacilityDetails($params)
     {
         if (isset($params['facilityId']) && trim($params['facilityId']) != "") {
-            $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
-            $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
+            $dbAdapter = $this->adapter;
+            $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            //Add Province
+            if(isset($params['province']) && trim($params['province'])=='other'){
+                if(trim($params['provinceName'])!=""){
+                    $provinceId=$geoTable->addProvinceByFacility(trim($params['provinceName']));
+                }
+            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
+                $provinceId=base64_decode($params['province']);
+            }
+
+            //Add District
+            if(isset($params['district']) && trim($params['district'])=='other'){
+                if(trim($params['districtName'])!=""){
+                    $districtId=$geoTable->addDistrictByFacility($provinceId,trim($params['districtName']));
+                }
+            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
+                $districtId=base64_decode($params['district']);
+            }
+
+            //$province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
+            //$district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
+
             $data = array(
                 'facility_id' => $params['facilityId'],
                 'facility_name' => $params['facilityName'],
                 'email' => $params['email'],
                 'contact_person' => $params['contactPerson'],
-                'district' => $district,
-                'province' => $province,
+                'district' => $districtId,
+                'province' => $provinceId,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );
@@ -93,6 +115,25 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $spiv5Db = new SpiFormVer5Table($dbAdapter);
             $spiv6Db = new SpiFormVer6Table($dbAdapter);
             $rowId = base64_decode($params['rowId']);
+
+            $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            //Add Province
+            if(isset($params['province']) && trim($params['province'])=='other'){
+                if(trim($params['provinceName'])!=""){
+                    $params['province']=$geoTable->addProvinceByFacility(trim($params['provinceName']));
+                }
+            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
+                $params['province']=base64_decode($params['province']);
+            }
+
+            //Add District
+            if(isset($params['district']) && trim($params['district'])=='other'){
+                if(trim($params['districtName'])!=""){
+                    $params['district']=$geoTable->addDistrictByFacility($params['province'],trim($params['districtName']));
+                }
+            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
+                $params['district']=base64_decode($params['district']);
+            }
             $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
             $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
             $data = array(

@@ -34,7 +34,6 @@ class ProvincesController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
-
         if ($request->isPost()) {
             $params = $request->getPost();
             $this->provinceService->addProvince($params);
@@ -46,19 +45,31 @@ class ProvincesController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
-
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->provinceService->updateProvince($params);
             return $this->redirect()->toRoute("provinces");
         } else {
-           
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->provinceService->getProvince($id);
-
             return new ViewModel(array(
                 'result' => $result
             ));
         }
+    }
+
+    public function getDistrictByProvinceAction(){
+        $result = "";
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $provinceId=base64_decode($params['provinceId']);
+            $result = $this->provinceService->getAllDistrictByProvince($provinceId);
+        }
+        $viewModel = new ViewModel();
+        $viewModel->setVariables(array('result' => $result))
+            ->setTerminal(true);
+        return $viewModel;
     }
 }

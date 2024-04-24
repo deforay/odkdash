@@ -321,7 +321,8 @@ class Module
                     {
                         $facilityService = $diContainer->get('FacilityService');
                         $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\FacilityController($facilityService, $odkFormService);
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\FacilityController($facilityService, $odkFormService,$provinceService);
                     }
                 },
                 'Application\Controller\UsersController' => new class

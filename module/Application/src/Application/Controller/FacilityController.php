@@ -12,11 +12,13 @@ class FacilityController extends AbstractActionController
 
     private $facilityService = null;
     private $odkFormService = null;
+    private $provinceService = null;
 
-    public function __construct($facilityService, $odkFormService)
+    public function __construct($facilityService, $odkFormService,$provinceService)
     {
         $this->facilityService = $facilityService;
         $this->odkFormService = $odkFormService;
+        $this->provinceService = $provinceService;
     }
 
     public function indexAction()
@@ -37,9 +39,13 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
             $result = $this->facilityService->addFacility($params);
             return $this->redirect()->toRoute("spi-facility");
+        }else{
+            $provinceResult = $this->provinceService->getAllActiveProvinces();
+            return new ViewModel(array(
+                'provinceResult' => $provinceResult,
+            ));
         }
     }
 
@@ -55,10 +61,10 @@ class FacilityController extends AbstractActionController
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->facilityService->getFacility($id);
-            //\Zend\Debug\Debug::dump($result);
-            //die;
+            $provinceResult = $this->provinceService->getAllActiveProvinces();
             return new ViewModel(array(
                 'result' => $result,
+                'provinceResult' => $provinceResult,
             ));
         }
     }
