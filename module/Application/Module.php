@@ -286,7 +286,8 @@ class Module
                     {
                         $commonService = $diContainer->get('CommonService');
                         $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\SpiV6Controller($odkFormService, $commonService);
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\SpiV6Controller($odkFormService, $commonService,$provinceService);
                     }
                 },
                 'Application\Controller\CommonController' => new class
