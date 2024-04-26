@@ -152,6 +152,11 @@ class ProvinceService {
         $db = $this->sm->get('GeographicalDivisionsTable');
         return $db->fetchAllDistrictByProvince($provinceId);
     }
+
+    public function getAllDistrictByProvinceAsMuliple($provinceId){
+        $db = $this->sm->get('GeographicalDivisionsTable');
+        return $db->fetchAllDistrictByProvinceAsMultiple($provinceId);
+    }
 }
 
 ?>
