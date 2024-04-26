@@ -397,8 +397,8 @@ class GeographicalDivisionsTable extends AbstractTableGateway
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
             $query = $sql->select()->from('geographical_divisions')
-                        ->where(array('geo_parent'=>$provinceId,'geo_status' => 'active'));
-            $queryStr = $sql->buildSqlString($query);
+                    ->where('geo_parent IN ("' . implode('", "', $provinceId) . '")');
+                    $queryStr = $sql->buildSqlString($query);
             return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         }
     }

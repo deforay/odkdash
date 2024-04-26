@@ -554,13 +554,47 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
   }
 
   function getDistrictList(){
-    $.blockUI();
+    // $.blockUI();
     $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
-        province: $("#province").val()
+      provinceId: $("#province").val()
     },
     function(data) {
       $.unblockUI();
       $('#district').html(data);
     });
   }
+
+
+
+  //sample
+  function getDistrict(){
+		province=$("#province").val();
+		if(province!=""){
+			if(province=='other'){
+				$("#provinceName").show();
+				$("#provinceName").addClass("isRequired");
+				$('#district').html('<option value="">--Select--</option><option value="other">Other</option>');
+			}else{
+				$("#provinceName").hide();
+				$("#provinceName").val('');
+				$("#provinceName").removeClass("isRequired");
+				$.blockUI();
+				$.post("<?php echo $this->url('provinces', array('action' => 'getDistrictByProvince')); ?>", {
+					provinceId: province,
+				},
+				function(data) {
+					$('#district').html(data);
+					$("#districtName").hide();
+					$("#districtName").val('');
+					$("#districtName").removeClass("isRequired");
+					$.unblockUI();
+				});
+			}
+		}else{
+			$("#provinceName").hide();
+			$("#provinceName").val('');
+			$("#provinceName").removeClass("isRequired");
+			$('#district').html('<option value="">--Select--</option>');
+		}
+	}
 </script>

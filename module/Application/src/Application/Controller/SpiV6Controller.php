@@ -610,7 +610,10 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getDistrictByProvince($params);
+            $provinceId = $params['provinceId'];
+            $result = $this->provinceService->getAllDistrictByProvince($provinceId);
+            // print_r($result); die();
+            // $result = $this->odkFormService->getDistrictByProvince($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
