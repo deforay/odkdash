@@ -464,4 +464,13 @@ class GeographicalDivisionsTable extends AbstractTableGateway
             return $this->lastInsertValue;
         }
     }
+
+    public function getProvinceDistrict($params) {
+       $res = $this->select(array('geo_name' => $params['geo_name']))->current();
+       if($res) {
+        return 1;
+       }
+       return 0;
+    }
+
 }

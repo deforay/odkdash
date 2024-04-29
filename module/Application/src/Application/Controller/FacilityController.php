@@ -228,4 +228,16 @@ class FacilityController extends AbstractActionController
             }
         }    
     }
+
+    public function checkProvinceDistrictAction()
+    {
+       $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $provinceResult = $this->provinceService->checkProvinceDistrict($params);
+            return $this->getResponse()->setContent(Json::encode($provinceResult));
+
+        }   
+    }
 }
