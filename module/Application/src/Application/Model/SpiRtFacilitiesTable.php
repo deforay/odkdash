@@ -505,7 +505,6 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function mapProvince($params)
     {
-        // print_r($params); die;
         $result = 0;
         $loginContainer = new Container('credo');
         $userName = $loginContainer->login;
@@ -536,11 +535,11 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 $counter = count($params['facility']);
                 if (isset($params['district']) && trim($params['district']) != '') {
                     for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $params['province'], 'district' => $params['district']), array('facility_name' => $params['facility'][$f]));
+                        $this->update(array('province' => $provinceId, 'district' => $districtId), array('facility_name' => $params['facility'][$f]));
                     }
                 } else {
                     for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
+                        $this->update(array('province' => $provinceId), array('facility_name' => $params['facility'][$f]));
                     }
                 }
             
