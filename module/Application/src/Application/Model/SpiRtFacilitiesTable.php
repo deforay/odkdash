@@ -8,6 +8,7 @@ use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\GeographicalDivisionsTable;
+use Application\Service\CommonService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -504,12 +505,32 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function mapProvince($params)
     {
+        // print_r($params); die;
         $result = 0;
         $loginContainer = new Container('credo');
         $userName = $loginContainer->login;
         $dbAdapter = $this->adapter;
         $eventTable = new EventLogTable($dbAdapter);
-        if (isset($params['province']) && trim($params['province']) != '') {
+        $currentDateTime = CommonService::getDateTime();
+          
+            $geographicalDivisionsTable = new GeographicalDivisionsTable($dbAdapter);
+            if(isset($params['province']) && trim($params['province'])=='other'){
+                if(trim($params['provinceName'])!=""){
+                    $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($params['provinceName']));
+                }
+            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
+                $provinceId=base64_decode($params['province']);
+            }
+
+            //Add District
+            if(isset($params['district']) && trim($params['district'])=='other'){
+                if(trim($params['districtName'])!=""){
+                    $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($params['districtName']));
+                }
+            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
+                $districtId=base64_decode($params['district']);
+            }
+
             if (isset($params['facility']) && count($params['facility']) > 0) {
                 $result = 1;
                 $counter = count($params['facility']);
@@ -522,13 +543,44 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                         $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
                     }
                 }
+            
+
+            // if(isset($params['provinceName']) && $params['provinceName'] != '') {
+            //     $data = array(
+            //         'geo_name' => $params['provinceName'],
+            //         'geo_code' => $params['provinceName'],
+            //         'geo_parent' => 0,
+            //         'geo_status' => 'active',
+            //         'created_by' => $loginContainer->userId,
+            //         'created_on'	=> $currentDateTime,
+            //         'updated_datetime'	=> $currentDateTime
+            //     );
+            //     $geographicalDivisionsTable->insert($data);
+            //     $insertedId = $geographicalDivisionsTable->lastInsertValue;
+            // }
+
+            // if(isset($params['districtName']) && $params['districtName'] != '') {
+            //     $geo_parent = 0;
+            //     if(isset($params['provinceName']) && $params['provinceName'] != '') {
+            //         $geo_parent = $insertedId;
+            //     }
+            //     $data = array(
+            //         'geo_name' => $params['districtName'],
+            //         'geo_code' => $params['districtName'],
+            //         'geo_parent' => $geo_parent,
+            //         'geo_status' => 'active',
+            //         'created_by' => $loginContainer->userId,
+            //         'created_on'	=> $currentDateTime,
+            //         'updated_datetime'	=> $currentDateTime
+            //     );
+            //     $geographicalDivisionsTable->insert($data);
+            // }
+                $subject = '';
+                $eventType = 'Map-Province';
+                $action = $userName . ' has mapped Province ' . $params['province'];
+                $resourceName = 'Map-Province';
+                $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
             }
-            $subject = '';
-            $eventType = 'Map-Province';
-            $action = $userName . ' has mapped Province ' . $params['province'];
-            $resourceName = 'Map-Province';
-            $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
-        }
         return $result;
     }
 

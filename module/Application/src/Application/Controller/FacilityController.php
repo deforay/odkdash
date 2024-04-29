@@ -39,6 +39,7 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
+            print_r($params); die;
             $result = $this->facilityService->addFacility($params);
             return $this->redirect()->toRoute("spi-facility");
         }else{
@@ -130,22 +131,20 @@ class FacilityController extends AbstractActionController
         
         
         $result = $this->odkFormService->getAllFacilityNames();
-        $provinceResult = $this->facilityService->getProvinceList();
-        $districtResult = $this->facilityService->getDistrictList();
+        $provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
             'facilityName' => $result,
-            'provinces' => $provinceResult,
-            'districts' => $districtResult
+            'provinces' => $provinceResult
         ));
     }
 
     public function mapProvinceAction()
     {
         /** @var \Laminas\Http\Request $request */
+      
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
             $result = $this->facilityService->mapProvince($params);
             $viewModel = new ViewModel(array(
                 'result' => $result

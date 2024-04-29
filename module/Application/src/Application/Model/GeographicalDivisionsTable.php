@@ -464,4 +464,8 @@ class GeographicalDivisionsTable extends AbstractTableGateway
             return $this->lastInsertValue;
         }
     }
+
+    public function mapProvince($params) {
+        print_r($params); die;
+    }
 }
