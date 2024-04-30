@@ -50,14 +50,14 @@
 							?>
 							<option value="other">Other</option>
 						</select>
-						<input type="text" placeholder="Enter Province Name" class="form-control" name="provinceName" id="provinceName" style="display:none;" title="Please enter the province name">
+						<input type="text" placeholder="Enter Province Name" class="form-control" name="provinceName" id="provinceName" data-type="Province" onblur="checkExistName(this)" style="display:none;" title="Please enter the province name">
                     </div>
 					<div class="form-group col-lg-6">
                       	<label>District</label>
 					  	<select class="form-control" name="district" id="district" title="Please select district" onchange="checkDistrict()">
 							<option value="">--Select--</option>
 						</select>
-						<input type="text" placeholder="Enter District Name" class="form-control" name="districtName" id="districtName" style="display:none;" title="Please enter the district name">
+						<input type="text" placeholder="Enter District Name" class="form-control" name="districtName" id="districtName" data-type="District" onblur="checkExistName(this)" style="display:none;" title="Please enter the district name">
                     </div>
 					<div class="form-group col-lg-6">
                       <label>Latitude</label>
@@ -170,6 +170,22 @@
 				tags: false
 			});
 			$.unblockUI();
+		});
+	}
+
+	function checkExistName(inputElement) {
+		var geo_name = inputElement.value;
+		var type = $(inputElement).data('type');
+		$.post("<?php echo $this->url('spi-facility', array('action' => 'check-province-district')); ?>", {
+			geo_name: geo_name
+		},
+		function(result) {
+			if (result == 1) {
+				alert("<?= $this->translate('" + type + " already exists. please type another one.'); ?>");
+				inputElement.value = '';
+				inputElement.focus();
+				return false;
+			}
 		});
 	}
 </script>

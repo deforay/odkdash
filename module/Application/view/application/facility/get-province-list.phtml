@@ -222,15 +222,16 @@
 	function checkExistName(inputElement) {
 		var geo_name = inputElement.value;
 		var type = $(inputElement).data('type');
-    		$.post("<?php echo $this->url('spi-facility', array('action' => 'check-province-district')); ?>", {
-				geo_name: geo_name
-			},
-			function(result) {
-				if (result == 1) {
-					alert("<?= $this->translate('" + type + " already exists. please type another one.'); ?>");
-					parent.closeModal();
-					parent.window.location.href = window.parent.location.href;
-				}
-			});
+		$.post("<?php echo $this->url('spi-facility', array('action' => 'check-province-district')); ?>", {
+			geo_name: geo_name
+		},
+		function(result) {
+			if (result == 1) {
+				alert("<?= $this->translate('" + type + " already exists. please type another one.'); ?>");
+				inputElement.value = '';
+				inputElement.focus();
+				return false;
+			}
+		});
 	}
 </script>
