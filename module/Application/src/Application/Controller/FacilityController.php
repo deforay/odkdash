@@ -39,7 +39,6 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            print_r($params); die;
             $result = $this->facilityService->addFacility($params);
             return $this->redirect()->toRoute("spi-facility");
         }else{

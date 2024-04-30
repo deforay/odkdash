@@ -165,12 +165,18 @@
 					});
 			}
 		} else {
-			if ($.trim(facility) == '') {
+			if ($.trim(province) == '') {
+				alert("<?= $this->translate('Province can not be empty'); ?>");
+				return false;
+			} else if(district == "other" && districtName == '') {
+				alert("<?= $this->translate('District name can not be empty'); ?>");
+				return false;
+			} else if(province == "other" && provinceName == '') {
+				alert("<?= $this->translate('Province name can not be empty'); ?>");
+				return false;
+			} else if ($.trim(facility) == '') {
 				alert("<?= $this->translate('Please choose atleast one facility to continue'); ?>");
 				$("#facility").focus();
-				return false;
-			} else if ($.trim(province) == '') {
-				alert("<?= $this->translate('Province can not be empty'); ?>");
 				return false;
 			}
 		}
