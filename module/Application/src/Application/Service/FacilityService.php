@@ -2,6 +2,7 @@
 
 namespace Application\Service;
 
+use Application\Model\GeographicalDivisionsTable;
 use Laminas\Session\Container;
 use Application\Service\CommonService;
 use Laminas\Db\Sql\Sql;
@@ -511,13 +512,13 @@ class FacilityService
 
     public function uploadFacility($params)
     {
-        try {
+            try {
             $container = new Container('alert');
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $uploadOption = $params['uploadOption'];
             
             if (isset($_FILES['facilitiesInfo']['name']) && !empty($_FILES['facilitiesInfo']['name'])){
-                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {
                     mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities");
                 }
                 
@@ -525,6 +526,7 @@ class FacilityService
                 $fileName = CommonService::generateRandomString(5) . "." . $extension;
 
                 if (move_uploaded_file($_FILES["facilitiesInfo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities" . DIRECTORY_SEPARATOR . $fileName)) {
+
                     $uploadedFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities" . DIRECTORY_SEPARATOR . $fileName;
                     $spreadsheet = IOFactory::load($uploadedFilePath);
                     $sheetData = $spreadsheet->getActiveSheet();
@@ -543,28 +545,58 @@ class FacilityService
                     }
 
                     foreach ($filteredArray as $rowIndex => $rowData) {
-
+                        // dd($rowData);
                         if (empty($rowData['A']) || empty($rowData['B'])) {
                             $container->alertMsg = 'Please enter all the mandatory fields in the excel sheett';
                             return "";
                         }
+
+                        $provinceCheck = CommonService::getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['E'],$this->sm);
+                        $districtCheck = CommonService::getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['F'],$this->sm);
+                        $geographicalDivisionsTable = $this->sm->get('GeographicalDivisionsTable');
+                       
+                        $provinceId = 0;
+                        if(isset($rowData['E']) && $rowData['E'] != '' && $provinceCheck == null){
+                            $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($rowData['E']));
+                        }
+                        
+                        $districtId = 0;
+                        if(isset($rowData['F']) && $rowData['F'] != '' && $districtCheck == null){
+                            $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($rowData['F']));
+                        }
                         $facilityIdCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_id', $rowData['A'],$this->sm);
                         $facilityCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_name', $rowData['B'],$this->sm);
+                        
+                        if($provinceId != 0 || $provinceId != null) {
+                            $province = $provinceId;
+                        } else if(trim($rowData['E']) != '') {
+                            $province = trim($rowData['E']);
+                        } else {
+                            $province = null;
+                        }
+
+                        if($districtId != 0 || $districtId != null) {
+                            $district = $districtId;
+                        } else if(trim($rowData['F']) != '') {
+                            $district = trim($rowData['F']);
+                        } else {
+                            $district = null;
+                        }
+
                         $data = [
                             'facility_id' => trim($rowData['A']) ?? null,
                             'facility_name' => trim($rowData['B']) ?? null,
                             'email' => trim($rowData['C']) ?? null,
                             'contact_person' => trim($rowData['D']) ?? null,
-                            'province' => trim($rowData['E']) ?? null,
-                            'district' => trim($rowData['F']) ?? null,
+                            'province' => $province,
+                            'district' => $district,
                             'latitude' => trim($rowData['G']) ?? null,
                             'longitude' => trim($rowData['H']) ?? null,
                             'status' => 'active'
                         ];
-
                         try {
                             if ($uploadOption == "facility_name_match") {
-                                if (!empty($facilityCheck)) {
+                               if (!empty($facilityCheck)) {
                                     $facilityDb->update($data,array('id' => $facilityCheck['id']));
                                 } else {
                                     $facilityNotAdded[] = $rowData;
@@ -583,9 +615,10 @@ class FacilityService
                                 }
                             } else {
                                 if (empty($facilityIdCheck) && empty($facilityCheck)) {
-                                    $facilityDb->insert($data);
+                                $facilityDb->insert($data);
                                 } else {
                                     $facilityNotAdded[] = $rowData;
+                                    die;
                                 }
                             }
                         } catch (Throwable $e) {
