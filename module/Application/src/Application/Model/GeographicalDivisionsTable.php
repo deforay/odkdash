@@ -421,6 +421,7 @@ class GeographicalDivisionsTable extends AbstractTableGateway
                     ->where("geo_name  like '%".$provinceName."%'");
         $queryStr = $sql->buildSqlString($query);
         $result=$dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        // print_r($result); die;
         if($result){
             return $result['geo_id'];
         }else{

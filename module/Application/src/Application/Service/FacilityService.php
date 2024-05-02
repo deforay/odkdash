@@ -545,51 +545,25 @@ class FacilityService
                     }
 
                     foreach ($filteredArray as $rowIndex => $rowData) {
-                        // dd($rowData);
                         if (empty($rowData['A']) || empty($rowData['B'])) {
                             $container->alertMsg = 'Please enter all the mandatory fields in the excel sheett';
                             return "";
                         }
-
-                        $provinceCheck = CommonService::getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['E'],$this->sm);
-                        $districtCheck = CommonService::getDataFromOneFieldAndValue('geographical_divisions', 'geo_name', $rowData['F'],$this->sm);
                         $geographicalDivisionsTable = $this->sm->get('GeographicalDivisionsTable');
                        
-                        $provinceId = 0;
-                        if(isset($rowData['E']) && $rowData['E'] != '' && $provinceCheck == null){
-                            $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($rowData['E']));
-                        }
-                        
-                        $districtId = 0;
-                        if(isset($rowData['F']) && $rowData['F'] != '' && $districtCheck == null){
-                            $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($rowData['F']));
-                        }
+                        $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($rowData['E']));
+                        $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($rowData['F']));
+                      
                         $facilityIdCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_id', $rowData['A'],$this->sm);
                         $facilityCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_name', $rowData['B'],$this->sm);
                         
-                        if($provinceId != 0 || $provinceId != null) {
-                            $province = $provinceId;
-                        } else if(trim($rowData['E']) != '') {
-                            $province = trim($rowData['E']);
-                        } else {
-                            $province = null;
-                        }
-
-                        if($districtId != 0 || $districtId != null) {
-                            $district = $districtId;
-                        } else if(trim($rowData['F']) != '') {
-                            $district = trim($rowData['F']);
-                        } else {
-                            $district = null;
-                        }
-
                         $data = [
                             'facility_id' => trim($rowData['A']) ?? null,
                             'facility_name' => trim($rowData['B']) ?? null,
                             'email' => trim($rowData['C']) ?? null,
                             'contact_person' => trim($rowData['D']) ?? null,
-                            'province' => $province,
-                            'district' => $district,
+                            'province' => $provinceId,
+                            'district' => $districtId,
                             'latitude' => trim($rowData['G']) ?? null,
                             'longitude' => trim($rowData['H']) ?? null,
                             'status' => 'active'
