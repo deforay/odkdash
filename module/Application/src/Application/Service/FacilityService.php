@@ -556,7 +556,7 @@ class FacilityService
                       
                         $facilityIdCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_id', $rowData['A'],$this->sm);
                         $facilityCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_name', $rowData['B'],$this->sm);
-                        
+                    //  print_r($facilityCheck); echo "___"; print_r($facilityCheck); die;   
                         $data = [
                             'facility_id' => trim($rowData['A']) ?? null,
                             'facility_name' => trim($rowData['B']) ?? null,
@@ -581,11 +581,17 @@ class FacilityService
                                 } else {
                                     $facilityNotAdded[] = $rowData;
                                 }
-                            } elseif ($uploadOption == "facility_name_id_match") {
-                                if (!empty($facilityIdCheck) && !empty($facilityCheck)) {
+                            } elseif ($uploadOption == "skip_facility_name_code") {
+                                if (empty($facilityIdCheck) || empty($facilityCheck)) {
+                                    $facilityDb->insert($data);
+                                } else {
+                                   $facilityNotAdded[] = $rowData;
+                                }
+                            }  elseif ($uploadOption == "update_duplicate_facility_name_code") {
+                                if (!empty($facilityIdCheck) || !empty($facilityCheck)) {
                                     $facilityDb->update($data,array('id' => $facilityCheck['id']));
                                 } else {
-                                    $facilityNotAdded[] = $rowData;
+                                  $facilityNotAdded[] = $rowData;
                                 }
                             } else {
                                 if (empty($facilityIdCheck) && empty($facilityCheck)) {
@@ -603,8 +609,9 @@ class FacilityService
                     }
 
                     $notAdded = count($facilityNotAdded);
+                    // print_r($notAdded); die;
                     if ($notAdded > 0) {
-                        $spreadsheet = IOFactory::load(WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx');
+                    $spreadsheet = IOFactory::load(WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx');
                         $sheet = $spreadsheet->getActiveSheet();
                         foreach ($facilityNotAdded as $rowNo => $dataValue) {
                             $rRowCount = $rowNo + 2;

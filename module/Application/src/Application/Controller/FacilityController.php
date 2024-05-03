@@ -211,12 +211,11 @@ class FacilityController extends AbstractActionController
 
         if ($request->isPost()) {
             $params = $request->getPost();
-            // print_r($params); die;
             $result = $this->facilityService->uploadFacility($params);
             if(empty($result)){
-                return $this->redirect()->toRoute("upload-facility");
+               return $this->redirect()->toRoute("upload-facility");
             }else{
-                // Build query string for the result parameters
+            // Build query string for the result parameters
                 $query = http_build_query([
                     'total' => $result['total'],
                     'notAdded' => $result['notAdded'],
