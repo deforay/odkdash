@@ -12,11 +12,13 @@ class FacilityController extends AbstractActionController
 
     private $facilityService = null;
     private $odkFormService = null;
+    private $provinceService = null;
 
-    public function __construct($facilityService, $odkFormService)
+    public function __construct($facilityService, $odkFormService,$provinceService)
     {
         $this->facilityService = $facilityService;
         $this->odkFormService = $odkFormService;
+        $this->provinceService = $provinceService;
     }
 
     public function indexAction()
@@ -37,9 +39,13 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
             $result = $this->facilityService->addFacility($params);
             return $this->redirect()->toRoute("spi-facility");
+        }else{
+            $provinceResult = $this->provinceService->getAllActiveProvinces();
+            return new ViewModel(array(
+                'provinceResult' => $provinceResult,
+            ));
         }
     }
 
@@ -55,10 +61,10 @@ class FacilityController extends AbstractActionController
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->facilityService->getFacility($id);
-            //\Zend\Debug\Debug::dump($result);
-            //die;
+            $provinceResult = $this->provinceService->getAllActiveProvinces();
             return new ViewModel(array(
                 'result' => $result,
+                'provinceResult' => $provinceResult,
             ));
         }
     }
@@ -124,22 +130,20 @@ class FacilityController extends AbstractActionController
         
         
         $result = $this->odkFormService->getAllFacilityNames();
-        $provinceResult = $this->facilityService->getProvinceList();
-        $districtResult = $this->facilityService->getDistrictList();
+        $provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
             'facilityName' => $result,
-            'provinces' => $provinceResult,
-            'districts' => $districtResult
+            'provinces' => $provinceResult
         ));
     }
 
     public function mapProvinceAction()
     {
         /** @var \Laminas\Http\Request $request */
+      
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
             $result = $this->facilityService->mapProvince($params);
             $viewModel = new ViewModel(array(
                 'result' => $result
@@ -209,9 +213,9 @@ class FacilityController extends AbstractActionController
             $params = $request->getPost();
             $result = $this->facilityService->uploadFacility($params);
             if(empty($result)){
-                return $this->redirect()->toRoute("upload-facility");
+               return $this->redirect()->toRoute("upload-facility");
             }else{
-                // Build query string for the result parameters
+            // Build query string for the result parameters
                 $query = http_build_query([
                     'total' => $result['total'],
                     'notAdded' => $result['notAdded'],
@@ -222,5 +226,17 @@ class FacilityController extends AbstractActionController
                 return $this->redirect()->toUrl($url);
             }
         }    
+    }
+
+    public function checkProvinceDistrictAction()
+    {
+       $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $provinceResult = $this->provinceService->checkProvinceDistrict($params);
+            return $this->getResponse()->setContent(Json::encode($provinceResult));
+
+        }   
     }
 }

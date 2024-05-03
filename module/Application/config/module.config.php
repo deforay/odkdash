@@ -336,6 +336,27 @@ return array(
                     ),
                 ),
             ),
+
+            'provinces' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/provinces[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\ProvincesController',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'district' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/district[/:action][/][:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\DistrictController',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => [

@@ -2,6 +2,7 @@
 
 namespace Application\Service;
 
+use Application\Model\GeographicalDivisionsTable;
 use Exception;
 use ZipArchive;
 use Laminas\Mail;
@@ -596,5 +597,22 @@ class CommonService
         $insert->values($d);
         $selectString = $sql->buildSqlString($insert);
         $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+    }
+
+    public static function checkProvinceDistrict($geo_name, $sm = null) {
+        $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
+        $sql = new Sql($dbAdapter);
+        $select = $sql->select()->from('geographical_divisions');
+        $select->where(array('geo_name' => $geo_name));
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        print_r($result); die;
+        if ($result->count() > 0) {
+            print_r(1); die;
+            $currentRow = $result->current(); // Get the current row's data as an array
+            return $currentRow;
+        } 
+        print_r(2); die;
+        return 0;
     }
 }

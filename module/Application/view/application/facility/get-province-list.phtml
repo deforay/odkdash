@@ -12,7 +12,7 @@
 		width: 100%;
 	}
 
-	#listProvince {
+	#province {
 		width: 300px !important;
 	}
 
@@ -47,19 +47,19 @@
 									<b><?= $this->translate('Province'); ?></b><span class="mandatory">*</span>
 								</td>
 								<td class="col-lg-8" align="center">
-									<input type="text" class="form-control" id="textProvince" name="textProvince" placeholder="Enter Province" style="width:300px;display:none;" />
-									<select id="listProvince" name="listProvince" class="form-control">
-										<option value=""> -- Select -- </option>
+									<select class="form-control" name="province" id="province" title="Please select province" onchange="getDistrict()">
+										<option value="">--Select--</option>
 										<?php
-										foreach ($provinces as $province) {
-											if (isset($province['name']) && trim($province['name']) != '') {
+										foreach ($provinces as $val) {
 										?>
-												<option value="<?php echo $province['name']; ?>"><?php echo ucwords($province['name']); ?></option>
-										<?php }
-										} ?>
-										<option value="other"><?= $this->translate('Other'); ?></option>
+										<option value="<?php echo base64_encode($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
+										<?php
+										}
+										?>
+										<option value="other">Other</option>
 									</select>
-								</td>
+									<input type="text" placeholder="Enter Province Name" class="form-control" name="provinceName" id="provinceName" style="display:none;" data-type="Province" onblur="checkExistName(this)" title="Please enter the province name">
+									</td>
 							</tr>
 							<tr>
 								<td colspan="2">
@@ -71,19 +71,11 @@
 									<b><?= $this->translate('District'); ?></b>
 								</td>
 								<td class="col-lg-8" align="center">
-									<input type="text" class="form-control" id="textDistrict" name="textDistrict" placeholder="Enter District" style="width:300px;display:none;" />
-									<select id="listDistrict" name="listDistrict" class="form-control">
-										<option value=""> -- Select -- </option>
-										<?php
-										foreach ($districts as $district) {
-											if (isset($district['name']) && trim($district['name']) != '') {
-										?>
-												<option value="<?php echo $district['name']; ?>"><?php echo ucwords($district['name']); ?></option>
-										<?php }
-										} ?>
-										<option value="other"><?= $this->translate('Other'); ?></option>
+									<select class="form-control" name="district" id="district" title="Please select district" onchange="checkDistrict()">
+										<option value="">--Select--</option>
 									</select>
-								</td>
+									<input type="text" placeholder="Enter District Name" class="form-control" name="districtName" id="districtName"  data-type="District" onblur="checkExistName(this)" style="display:none;" title="Please enter the district name">
+									</td>
 							</tr>
 							<tr>
 								<td colspan="2">
@@ -133,6 +125,7 @@
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
 <script>
 	$(document).ready(function() {
+	
 		$('#facility').multipleSelect({
 			filter: true,
 			minimumCountSelected: '1',
@@ -141,78 +134,12 @@
 		});
 	});
 
-	provinces = [];
-	<?php
-	foreach ($provinces as $province) {
-		if (isset($province['name']) && trim($province['name']) != '') {
-	?>
-			provinces.push('<?php echo $province['name']; ?>');
-			provinces.push('<?php echo strtolower($province['name']); ?>');
-	<?php }
-	} ?>
-
-	$('#listProvince').on('change', function() {
-		if (this.value == 'other') {
-			$('#province').val('');
-			$('#listProvince').css('display', 'none');
-			$('#textProvince').css('display', 'block');
-		} else {
-			$('#province').val(this.value);
-			$('#listProvince').css('display', 'block');
-			$('#textProvince').css('display', 'none');
-		}
-	});
-
-	$('#textProvince').change(function() {
-		$('#province').val(this.value);
-		if (this.value != '') {
-			if ($.inArray(this.value, provinces) != -1) {
-				alert("<?= $this->translate('This province name already exists. Please enter a different name'); ?>");
-				$('#province').val('');
-				$('#textProvince').val('');
-				$('#textProvince').focus();
-			}
-		}
-	});
-
-	districts = [];
-	<?php
-	foreach ($districts as $district) {
-		if (isset($district['name']) && trim($district['name']) != '') {
-	?>
-			districts.push('<?php echo $district['name']; ?>');
-			districts.push('<?php echo strtolower($district['name']); ?>');
-	<?php }
-	} ?>
-
-	$('#listDistrict').on('change', function() {
-		if (this.value == 'other') {
-			$('#district').val('');
-			$('#listDistrict').css('display', 'none');
-			$('#textDistrict').css('display', 'block');
-		} else {
-			$('#district').val(this.value);
-			$('#listDistrict').css('display', 'block');
-			$('#textDistrict').css('display', 'none');
-		}
-	});
-
-	$('#textDistrict').change(function() {
-		$('#district').val(this.value);
-		if (this.value != '') {
-			if ($.inArray(this.value, districts) != -1) {
-				alert("<?= $this->translate('This District name already exists. Please enter a different name'); ?>");
-				$('#district').val('');
-				$('#textDistrict').val('');
-				$('#textDistrict').focus();
-			}
-		}
-	});
-
 	function mapProvinceFacility() {
 		var facility = $("#facility").val();
 		var province = $("#province").val();
 		var district = $("#district").val();
+		var provinceName = $("#provinceName").val();
+		var districtName = $("#districtName").val();
 		if (facility != null && facility != '' && province != '') {
 			var cnfm = confirm("<?= $this->translate('Do you wish to merge the selected province with the selected facility?'); ?>");
 			if (cnfm) {
@@ -220,7 +147,9 @@
 				$.post("<?php echo $this->url('spi-facility', array('action' => 'map-province')); ?>", {
 						province: province,
 						district: district,
-						facility: facility	
+						facility: facility,
+						provinceName: provinceName,
+						districtName: districtName	
 					},
 					function(data) {
 						$.unblockUI();
@@ -236,14 +165,79 @@
 					});
 			}
 		} else {
-			if ($.trim(facility) == '') {
+			if ($.trim(province) == '') {
+				alert("<?= $this->translate('Province can not be empty'); ?>");
+				return false;
+			} else if(district == "other" && districtName == '') {
+				alert("<?= $this->translate('District name can not be empty'); ?>");
+				return false;
+			} else if(province == "other" && provinceName == '') {
+				alert("<?= $this->translate('Province name can not be empty'); ?>");
+				return false;
+			} else if ($.trim(facility) == '') {
 				alert("<?= $this->translate('Please choose atleast one facility to continue'); ?>");
 				$("#facility").focus();
 				return false;
-			} else if ($.trim(province) == '') {
-				alert("<?= $this->translate('Province can not be empty'); ?>");
-				return false;
 			}
 		}
+	}
+
+	function getDistrict(){
+		province=$("#province").val();
+		if(province!=""){
+			if(province=='other'){
+				$("#provinceName").show();
+				$("#provinceName").addClass("isRequired");
+				$('#district').html('<option value="">--Select--</option><option value="other">Other</option>');
+			}else{
+				$("#provinceName").hide();
+				$("#provinceName").val('');
+				$("#provinceName").removeClass("isRequired");
+				$.blockUI();
+				$.post("<?php echo $this->url('provinces', array('action' => 'getDistrictByProvince')); ?>", {
+					provinceId: province,
+				},
+				function(data) {
+					$('#district').html(data);
+					$("#districtName").hide();
+					$("#districtName").val('');
+					$("#districtName").removeClass("isRequired");
+					$.unblockUI();
+				});
+			}
+		}else{
+			$("#provinceName").hide();
+			$("#provinceName").val('');
+			$("#provinceName").removeClass("isRequired");
+			$('#district').html('<option value="">--Select--</option>');
+		}
+	}
+
+	function checkDistrict(){
+		district=$("#district").val();
+		if(district=='other'){
+			$("#districtName").show();
+			$("#districtName").addClass("isRequired");
+		}else{
+			$("#districtName").hide();
+			$("#districtName").val('');
+			$("#districtName").removeClass("isRequired");
+		}
+	}
+
+	function checkExistName(inputElement) {
+		var geo_name = inputElement.value;
+		var type = $(inputElement).data('type');
+		$.post("<?php echo $this->url('spi-facility', array('action' => 'check-province-district')); ?>", {
+			geo_name: geo_name
+		},
+		function(result) {
+			if (result == 1) {
+				alert("<?= $this->translate('" + type + " already exists. please type another one.'); ?>");
+				inputElement.value = '';
+				inputElement.focus();
+				return false;
+			}
+		});
 	}
 </script>

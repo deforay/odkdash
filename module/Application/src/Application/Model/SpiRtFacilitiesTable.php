@@ -7,6 +7,8 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
+use Application\Model\GeographicalDivisionsTable;
+use Application\Service\CommonService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -68,15 +70,36 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     public function addFacilityDetails($params)
     {
         if (isset($params['facilityId']) && trim($params['facilityId']) != "") {
-            $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
-            $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
+            $dbAdapter = $this->adapter;
+            $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            //Add Province
+            if(isset($params['province']) && trim($params['province'])=='other'){
+                if(trim($params['provinceName'])!=""){
+                    $provinceId=$geoTable->addProvinceByFacility(trim($params['provinceName']));
+                }
+            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
+                $provinceId=base64_decode($params['province']);
+            }
+
+            //Add District
+            if(isset($params['district']) && trim($params['district'])=='other'){
+                if(trim($params['districtName'])!=""){
+                    $districtId=$geoTable->addDistrictByFacility($provinceId,trim($params['districtName']));
+                }
+            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
+                $districtId=base64_decode($params['district']);
+            }
+
+            //$province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
+            //$district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
+
             $data = array(
                 'facility_id' => $params['facilityId'],
                 'facility_name' => $params['facilityName'],
                 'email' => $params['email'],
                 'contact_person' => $params['contactPerson'],
-                'district' => $district,
-                'province' => $province,
+                'district' => $districtId,
+                'province' => $provinceId,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );
@@ -93,6 +116,25 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $spiv5Db = new SpiFormVer5Table($dbAdapter);
             $spiv6Db = new SpiFormVer6Table($dbAdapter);
             $rowId = base64_decode($params['rowId']);
+
+            $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            //Add Province
+            if(isset($params['province']) && trim($params['province'])=='other'){
+                if(trim($params['provinceName'])!=""){
+                    $params['province']=$geoTable->addProvinceByFacility(trim($params['provinceName']));
+                }
+            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
+                $params['province']=base64_decode($params['province']);
+            }
+
+            //Add District
+            if(isset($params['district']) && trim($params['district'])=='other'){
+                if(trim($params['districtName'])!=""){
+                    $params['district']=$geoTable->addDistrictByFacility($params['province'],trim($params['districtName']));
+                }
+            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
+                $params['district']=base64_decode($params['district']);
+            }
             $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
             $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
             $data = array(
@@ -200,6 +242,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $startDate = "";
         $endDate = "";
         $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
+            ->columns(['facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude','status'])
+            ->join(array('g' => 'geographical_divisions'), 'spirt3.province=g.geo_id', array('province'=>'geo_name'), 'left')
+            ->join(array('gd' => 'geographical_divisions'), 'spirt3.district=gd.geo_id', array('district'=>'geo_name'), 'left')
             ->where('spirt3.status != "deleted"');
 
         if (isset($sWhere) && $sWhere != "") {
@@ -468,26 +513,76 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $userName = $loginContainer->login;
         $dbAdapter = $this->adapter;
         $eventTable = new EventLogTable($dbAdapter);
-        if (isset($params['province']) && trim($params['province']) != '') {
+        $currentDateTime = CommonService::getDateTime();
+          
+            $geographicalDivisionsTable = new GeographicalDivisionsTable($dbAdapter);
+            if(isset($params['province']) && trim($params['province'])=='other'){
+                if(trim($params['provinceName'])!=""){
+                    $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($params['provinceName']));
+                }
+            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
+                $provinceId=base64_decode($params['province']);
+            }
+
+            //Add District
+            if(isset($params['district']) && trim($params['district'])=='other'){
+                if(trim($params['districtName'])!=""){
+                    $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($params['districtName']));
+                }
+            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
+                $districtId=base64_decode($params['district']);
+            }
+
             if (isset($params['facility']) && count($params['facility']) > 0) {
                 $result = 1;
                 $counter = count($params['facility']);
                 if (isset($params['district']) && trim($params['district']) != '') {
                     for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $params['province'], 'district' => $params['district']), array('facility_name' => $params['facility'][$f]));
+                        $this->update(array('province' => $provinceId, 'district' => $districtId), array('facility_name' => $params['facility'][$f]));
                     }
                 } else {
                     for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $params['province']), array('facility_name' => $params['facility'][$f]));
+                        $this->update(array('province' => $provinceId), array('facility_name' => $params['facility'][$f]));
                     }
                 }
+            
+
+            // if(isset($params['provinceName']) && $params['provinceName'] != '') {
+            //     $data = array(
+            //         'geo_name' => $params['provinceName'],
+            //         'geo_code' => $params['provinceName'],
+            //         'geo_parent' => 0,
+            //         'geo_status' => 'active',
+            //         'created_by' => $loginContainer->userId,
+            //         'created_on'	=> $currentDateTime,
+            //         'updated_datetime'	=> $currentDateTime
+            //     );
+            //     $geographicalDivisionsTable->insert($data);
+            //     $insertedId = $geographicalDivisionsTable->lastInsertValue;
+            // }
+
+            // if(isset($params['districtName']) && $params['districtName'] != '') {
+            //     $geo_parent = 0;
+            //     if(isset($params['provinceName']) && $params['provinceName'] != '') {
+            //         $geo_parent = $insertedId;
+            //     }
+            //     $data = array(
+            //         'geo_name' => $params['districtName'],
+            //         'geo_code' => $params['districtName'],
+            //         'geo_parent' => $geo_parent,
+            //         'geo_status' => 'active',
+            //         'created_by' => $loginContainer->userId,
+            //         'created_on'	=> $currentDateTime,
+            //         'updated_datetime'	=> $currentDateTime
+            //     );
+            //     $geographicalDivisionsTable->insert($data);
+            // }
+                $subject = '';
+                $eventType = 'Map-Province';
+                $action = $userName . ' has mapped Province ' . $params['province'];
+                $resourceName = 'Map-Province';
+                $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
             }
-            $subject = '';
-            $eventType = 'Map-Province';
-            $action = $userName . ' has mapped Province ' . $params['province'];
-            $resourceName = 'Map-Province';
-            $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
-        }
         return $result;
     }
 

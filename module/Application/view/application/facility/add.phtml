@@ -49,14 +49,29 @@
 									<input type="text" placeholder="Name of the Contact Person" class="form-control" name="contactPerson" id="contactPerson" value="">
 								</div>
 								<div class="form-group col-lg-6">
+									<label>Province</label>
+									<select class="form-control" name="province" id="province" title="Please select province" onchange="getDistrict()">
+										<option value="">--Select--</option>
+										<?php
+										foreach ($provinceResult as $val) {
+										?>
+										<option value="<?php echo base64_encode($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
+										<?php
+										}
+										?>
+										<option value="other">Other</option>
+									</select>
+									<input type="text" placeholder="Enter Province Name" class="form-control" name="provinceName" id="provinceName" style="display:none;" data-type="Province" onblur="checkExistName(this)" title="Please enter the province name">
+								</div>
+								<div class="form-group col-lg-6">
 									<label>District</label>
-									<input type="text" placeholder="District" class="form-control" name="district" id="district" value="">
+									<select class="form-control" name="district" id="district" title="Please select district" onchange="checkDistrict()">
+										<option value="">--Select--</option>
+									</select>
+									<input type="text" placeholder="Enter District Name" class="form-control" name="districtName" id="districtName" data-type="District" onblur="checkExistName(this)" style="display:none;" title="Please enter the district name">
 								</div>
 
-								<div class="form-group col-lg-6">
-									<label>Province</label>
-									<input type="text" placeholder="Province" class="form-control" name="province" id="province" value="">
-								</div>
+								
 								<div class="form-group col-lg-6">
 									<label>Latitude</label>
 									<input type="text" placeholder="Latitude" class="form-control" name="latitude" id="latitude" value="">
@@ -80,74 +95,24 @@
 	</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
 <script type="text/javascript">
 	duplicateName = true;
 	$(document).ready(function() {
-		$("#province").select2({
-			width: '100%',
-			placeholder: "Enter Province Name",
-			minimumInputLength: 2,
-			allowClear: true,
-			//multiple:true,
-			ajax: {
-				url: "<?php echo $this->url('spi-facility', array('action' => 'search-province-list')); ?>",
-				dataType: 'json',
-				delay: 250,
-				data: function(params) {
-					return {
-						q: params.term, // search term
-						//q12: $("#searchDate").val(), // search term
-						page: params.page
-					};
-				},
-				processResults: function(data, params) {
-					params.page = params.page || 1;
-					return {
-						results: data.result,
-						pagination: {
-							more: (params.page * 30) < data.total_count
-						}
-					};
-				},
-				cache: true
-			},
-			escapeMarkup: function(markup) {
-				return markup;
-			}
-		});
+        //initialize the javascript
+        $("#province").select2({
+            width: '100%',
+            placeholder: '--Select--',
+            allowClear: true,
+            tags: false
+        });
 
 		$("#district").select2({
-			width: '100%',
-			placeholder: "Enter District Name",
-			minimumInputLength: 2,
-			allowClear: true,
-			//multiple:true,
-			ajax: {
-				url: "<?php echo $this->url('spi-facility', array('action' => 'search-district-list')); ?>",
-				dataType: 'json',
-				delay: 150,
-				data: function(params) {
-					return {
-						q: params.term, // search term
-						//q12: $("#searchDate").val(), // search term
-						page: params.page
-					};
-				},
-				processResults: function(data, params) {
-					params.page = params.page || 1;
-					return {
-						results: data.result,
-						pagination: {
-							more: (params.page * 30) < data.total_count
-						}
-					};
-				},
-				cache: true
-			},
-			escapeMarkup: function(markup) {
-				return markup;
-			}
-		});
+            width: '100%',
+            placeholder: '--Select--',
+            allowClear: true,
+            tags: false
+        });
 	});
 
 	function validateNow() {
@@ -159,5 +124,87 @@
 				document.getElementById('addFacilityInfo').submit();
 			}
 		}
+	}
+
+	function getDistrict(){
+		province=$("#province").val();
+		if(province!=""){
+			if(province=='other'){
+				$("#provinceName").show();
+				$("#provinceName").addClass("isRequired");
+				$('#district').html('<option value="">--Select--</option><option value="other">Other</option>');
+			}else{
+				$("#provinceName").hide();
+				$("#provinceName").val('');
+				$("#provinceName").removeClass("isRequired");
+				$.blockUI();
+				$.post("<?php echo $this->url('provinces', array('action' => 'getDistrictByProvince')); ?>", {
+					provinceId: province,
+				},
+				function(data) {
+					$('#district').html(data);
+					$("#districtName").hide();
+					$("#districtName").val('');
+					$("#districtName").removeClass("isRequired");
+					$.unblockUI();
+				});
+			}
+		}else{
+			$("#provinceName").hide();
+			$("#provinceName").val('');
+			$("#provinceName").removeClass("isRequired");
+			$('#district').html('<option value="">--Select--</option>');
+		}
+	}
+
+	function checkDistrict(){
+		district=$("#district").val();
+		if(district=='other'){
+			$("#districtName").show();
+			$("#districtName").addClass("isRequired");
+		}else{
+			$("#districtName").hide();
+			$("#districtName").val('');
+			$("#districtName").removeClass("isRequired");
+		}
+	}
+
+	// function checkExistName(inputElement) {
+	// 	var geo_name = inputElement.value;
+	// 	var type = $(inputElement).data('type');
+	// 	if(geo_name != '') {
+	// 			$.post("<?php echo $this->url('spi-facility', array('action' => 'check-province-district')); ?>", {
+	// 				geo_name: geo_name
+	// 			},
+	// 			function(result) {
+	// 				if (result == 1) {
+	// 					alert("<?= $this->translate('" + type + " already exists. please type another one.'); ?>");
+	// 					inputElement.value = '';
+	// 					inputElement.focus();
+	// 					return false;
+	// 				}
+	// 			});
+	// 	} else {
+	// 		alert("<?= $this->translate('" + type + " can not be empty'); ?>");
+	// 		inputElement.value = '';
+	// 		inputElement.focus();
+	// 		return false;
+	// 	}
+	// }
+	
+	function checkExistName(inputElement) {
+		var geo_name = inputElement.value;
+		var type = $(inputElement).data('type');
+		$.post("<?php echo $this->url('spi-facility', array('action' => 'check-province-district')); ?>", {
+			geo_name: geo_name
+		},
+		function(result) {
+			if (result == 1) {
+				alert("<?= $this->translate('" + type + " already exists. please type another one.'); ?>");
+				inputElement.value = '';
+				inputElement.focus();
+				return false;
+			}
+		});
 	}
 </script>

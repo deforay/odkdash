@@ -128,7 +128,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
                       <?php
                       foreach ($provinceResult as $val) {
                       ?>
-                        <option value="<?php echo $val['province']; ?>"><?php echo ucwords($val['province']); ?></option>
+                        <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
                       <?php
                       }
                       ?>
@@ -556,7 +556,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
   function getDistrictList(){
     $.blockUI();
     $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
-        province: $("#province").val()
+      provinceId: $("#province").val()
     },
     function(data) {
       $.unblockUI();

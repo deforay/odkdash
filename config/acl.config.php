@@ -68,10 +68,14 @@ return array(
         'Application\\Controller\\DashboardV5Controller' => array(
             'index' => 'allow',
         ),
+        'Application\\Controller\\DistrictController' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
         'Application\\Controller\\EmailController' => array(
             'index' => 'allow',
             'email-v5' => 'allow',
-            'email-v6' => 'allow',
         ),
         'Application\\Controller\\EventController' => array(
             'index' => 'deny',
@@ -84,6 +88,11 @@ return array(
             'get-province-list' => 'allow',
             'get-facility-name' => 'allow',
             'upload-facility' => 'allow',
+        ),
+        'Application\\Controller\\ProvincesController' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
         ),
         'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
@@ -114,10 +123,10 @@ return array(
             'download-files' => 'allow',
             'duplicate' => 'allow',
             'edit' => 'allow',
+            'email-v6' => 'deny',
             'export' => 'allow',
             'view-bulk-downloads' => 'deny',
             'view-data-v6' => 'allow',
-            'view-data-section-zero-protocol-v6' => 'allow',
             'view-data-section-zero-v6' => 'allow',
         ),
         'Application\\Controller\\SpiV3Controller' => array(
@@ -139,6 +148,7 @@ return array(
         'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
+            'change-password' => 'deny',
             'edit' => 'allow',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
@@ -306,14 +316,22 @@ return array(
         'Application\\Controller\\EmailController' => array(
             'index' => 'allow',
             'email-v5' => 'deny',
-            'email-v6' => 'deny',
+        ),
+        'Application\\Controller\\EventController' => array(
+            'index' => 'deny',
         ),
         'Application\\Controller\\FacilityController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'export-facility' => 'deny',
             'get-province-list' => 'deny',
             'get-facility-name' => 'allow',
+            'upload-facility' => 'deny',
+        ),
+        'Application\\Controller\\ProvincesController' => array(
+            'index' => 'allow',
+            'add' => 'deny',
         ),
         'Application\\Controller\\RolesController' => array(
             'index' => 'allow',
@@ -331,6 +349,7 @@ return array(
             'duplicate' => 'deny',
             'edit' => 'deny',
             'export' => 'deny',
+            'view-bulk-downloads' => 'deny',
             'view-data-v5' => 'deny',
         ),
         'Application\\Controller\\SpiV6Controller' => array(
@@ -343,9 +362,10 @@ return array(
             'download-files' => 'deny',
             'duplicate' => 'deny',
             'edit' => 'deny',
+            'email-v6' => 'deny',
             'export' => 'deny',
+            'view-bulk-downloads' => 'deny',
             'view-data-v6' => 'deny',
-            'view-data-section-zero-protocol-v6' => 'deny',
             'view-data-section-zero-v6' => 'deny',
         ),
         'Application\\Controller\\SpiV3Controller' => array(
@@ -359,20 +379,16 @@ return array(
             'edit' => 'allow',
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
+            'view-bulk-downloads' => 'deny',
         ),
         'Application\\Controller\\UserLoginHistoryController' => array(
-            'index' => 'allow',
-        ),
-        'Application\\Controller\\AuditTrailController' => array(
             'index' => 'allow',
         ),
         'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'add' => 'allow',
             'change-password' => 'allow',
-            'check-password' => 'allow',
             'edit' => 'allow',
-            'profile' => 'deny',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
@@ -480,6 +496,114 @@ return array(
             'add' => 'allow',
             'change-password' => 'allow',
             'check-password' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Application\\Controller\\SpiV3ReportsController' => array(
+            'facility-report' => 'allow',
+        ),
+        'Application\\Controller\\SpiV5ReportsController' => array(
+            'facility-report' => 'allow',
+        ),
+        'Application\\Controller\\SpiV6ReportsController' => array(
+            'facility-report' => 'allow',
+        ),
+    ),
+    'daemon' => array(
+        'Application\\Controller\\CommonController' => array(
+            'audit-locations' => 'allow',
+        ),
+        'Application\\Controller\\ConfigController' => array(
+            'index' => 'allow',
+            'edit-global' => 'allow',
+        ),
+        'Application\\Controller\\IndexController' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\DashboardController' => array(
+            'index' => 'allow',
+            'audit-details' => 'allow',
+        ),
+        'Application\\Controller\\DashboardV6Controller' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\DashboardV5Controller' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\EmailController' => array(
+            'index' => 'allow',
+            'email-v5' => 'allow',
+        ),
+        'Application\\Controller\\EventController' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\FacilityController' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+            'export-facility' => 'allow',
+            'get-province-list' => 'allow',
+            'get-facility-name' => 'allow',
+            'upload-facility' => 'allow',
+        ),
+        'Application\\Controller\\ProvincesController' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+        ),
+        'Application\\Controller\\RolesController' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'edit' => 'allow',
+        ),
+        'Application\\Controller\\SpiV5Controller' => array(
+            'index' => 'allow',
+            'manage-facility' => 'allow',
+            'approve-status' => 'allow',
+            'corrective-action-pdf' => 'allow',
+            'delete' => 'allow',
+            'download-pdf' => 'allow',
+            'download-files' => 'allow',
+            'duplicate' => 'allow',
+            'edit' => 'allow',
+            'export' => 'allow',
+            'view-bulk-downloads' => 'allow',
+            'view-data-v5' => 'allow',
+        ),
+        'Application\\Controller\\SpiV6Controller' => array(
+            'index' => 'allow',
+            'manage-facility' => 'allow',
+            'approve-status' => 'allow',
+            'corrective-action-pdf' => 'allow',
+            'delete' => 'allow',
+            'download-pdf' => 'allow',
+            'download-files' => 'allow',
+            'duplicate' => 'allow',
+            'edit' => 'allow',
+            'email-v6' => 'allow',
+            'export' => 'allow',
+            'view-bulk-downloads' => 'allow',
+            'view-data-v6' => 'allow',
+            'view-data-section-zero-v6' => 'allow',
+        ),
+        'Application\\Controller\\SpiV3Controller' => array(
+            'index' => 'allow',
+            'approve-status' => 'allow',
+            'corrective-action-pdf' => 'allow',
+            'view-data' => 'allow',
+            'delete' => 'allow',
+            'download-files' => 'allow',
+            'duplicate' => 'allow',
+            'edit' => 'allow',
+            'manage-facility' => 'allow',
+            'download-pdf' => 'allow',
+            'view-bulk-downloads' => 'allow',
+        ),
+        'Application\\Controller\\UserLoginHistoryController' => array(
+            'index' => 'allow',
+        ),
+        'Application\\Controller\\UsersController' => array(
+            'index' => 'allow',
+            'add' => 'allow',
+            'change-password' => 'allow',
             'edit' => 'allow',
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(

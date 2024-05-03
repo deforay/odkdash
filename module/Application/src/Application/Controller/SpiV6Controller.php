@@ -12,11 +12,13 @@ class SpiV6Controller extends AbstractActionController
 
     private $commonService = null;
     private $odkFormService = null;
+    private $provinceService = null;
 
-    public function __construct($odkFormService, $commonService)
+    public function __construct($odkFormService, $commonService,$provinceService)
     {
         $this->odkFormService = $odkFormService;
         $this->commonService = $commonService;
+        $this->provinceService = $provinceService;
     }
 
     public function indexAction()
@@ -24,7 +26,7 @@ class SpiV6Controller extends AbstractActionController
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
-        $provinceResult = $this->odkFormService->getAllProvince();
+        $provinceResult = $this->provinceService->getAllActiveProvinces();
         //echo "ww";die;
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
         //var_dump($levelNamesResult);die;
@@ -608,7 +610,8 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->odkFormService->getDistrictByProvince($params);
+            $provinceId = $params['provinceId'];
+            $result = $this->provinceService->getAllDistrictByProvinceAsMuliple($provinceId);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);

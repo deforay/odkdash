@@ -1,0 +1,9 @@
+<?php
+$district='<option value="">--Select--</option>';
+foreach($result as $val){
+    $district.='<option value="'.base64_encode($val['geo_id']).'">'.$val['geo_name'].'</option>';
+}
+$district.='<option value="other">Other</option>';
+
+echo $district;
+?>
