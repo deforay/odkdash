@@ -316,13 +316,14 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->odkFormService->getViewDataDetailsV6($params);
+            // print_r($result); die;
             return $this->getResponse()->setContent(Json::encode($result));
         }
         $source = '';
         $roundno = '';
         $drange = '';
         $level = '';
-        if ($this->params()->fromQuery('source')) {
+        if ($this->params()->fromQuery('source')) { 
             $source = $this->params()->fromQuery('source');
         }
         if ($this->params()->fromQuery('level')) {
@@ -335,14 +336,14 @@ class SpiV6Controller extends AbstractActionController
             $drange = $this->params()->fromQuery('drange');
         }
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
-        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
+        $provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
             'source' => $source,
             'roundno' => $roundno,
             'drange' => $drange,
             'level' => $level,
             'testingPointResult' => $testingPointResult,
-            'levelNamesResult' => $levelNamesResult
+            'provinceResult' => $provinceResult
         ));
     }
 

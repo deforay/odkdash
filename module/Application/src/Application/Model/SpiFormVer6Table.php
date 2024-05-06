@@ -3975,9 +3975,16 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $tQuery = $tQuery->where("spiv3.level='" . $parameters['level'] . "'");
             }
             if (isset($parameters['province']) && $parameters['province'] != '') {
-                $provinces = explode(",", $parameters['province']);
-                $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
-                $tQuery = $tQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
+                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
+                ->where("f.province='" . $parameters['province'] . "'");
+                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
+                ->where("f.province='" . $parameters['province'] . "'");
+            }
+            if (isset($parameters['district']) && $parameters['district'] != '') {
+                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
+                ->where("f.district='" . $parameters['district'] . "'");
+                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
+                ->where("f.district='" . $parameters['district'] . "'");
             }
             if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
                 $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
@@ -4045,6 +4052,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        // print_r($rResult); die;
         $iTotal = count($tResult);
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
