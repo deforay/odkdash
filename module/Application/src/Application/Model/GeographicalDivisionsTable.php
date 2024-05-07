@@ -404,7 +404,7 @@ class GeographicalDivisionsTable extends AbstractTableGateway
     }
 
     public function fetchAllDistrictByProvinceAsMultiple($provinceId){
-         if($provinceId!=""){
+        if($provinceId!=""){
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
             $query = $sql->select()->from('geographical_divisions')

@@ -93,12 +93,12 @@
                   <div class="form-group">
                     <label for="province" class="col-sm-2 control-label"><?= $this->translate('Province'); ?></label>
                     <div class=" col-lg-4">
-                      <select class="form-control" name="province" id="province" title="Please select province" onchange="getDistrict()">
+                      <select class="form-control" name="province" multiple="multiple" id="province" title="Please select province" onchange="getDistrictList()">
                         <option value="">--Select--</option>
                         <?php
                         foreach ($provinceResult as $val) {
                         ?>
-                        <option value="<?php echo base64_encode($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                        <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
                         <?php
                         }
                         ?>
@@ -106,7 +106,7 @@
                     </div>
                     <label for="district" class="col-sm-2 control-label"><?= $this->translate('District'); ?></label>
                     <div class="col-lg-4">
-                      <select class="form-control" name="district" id="district" title="Please select district">
+                      <select class="form-control" multiple="multiple" name="district" id="district" title="Please select district">
                         <option value="">--Select--</option>
                       </select>
                     </div>
@@ -315,10 +315,20 @@
   $(document).ready(function() {
     var startDate = "";
     var endDate = "";
-    // $("#province").multipleSelect({
-    //   placeholder: 'Select Province/District(s)',
-    //   width: '100%'
-    // });
+    $("#district").select2({
+          width: '100%',
+          placeholder: 'All',
+          allowClear: true,
+          tags: false
+    });
+
+    $("#province").select2({
+          width: '100%',
+          placeholder: 'All',
+          allowClear: true,
+          tags: false
+    });
+
     $('#date').daterangepicker({
         format: 'DD-MMM-YYYY',
         startDate: moment().subtract('days', 29),
@@ -460,19 +470,16 @@
       });
   }
 
-  function getDistrict(){
-   	province=$("#province").val();
-		if(province!=""){
-     		$.blockUI();
-				$.post("<?php echo $this->url('provinces', array('action' => 'getDistrictByProvince')); ?>", {
-					provinceId: province,
-				},
-				function(data) {
-          data = data.replace('<option value="other">Other</option>', '');
-          $('#district').html(data);
-					$.unblockUI();
-				});
-	  }
-	}
+  function getDistrictList(){
+    $.blockUI();
+    $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
+      provinceId: $("#province").val()
+    },
+    function(data) {
+      $.unblockUI();
+      // console.log(data); return false;
+      $('#district').html(data);
+    });
+  }
 
 </script>
