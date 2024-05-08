@@ -474,4 +474,39 @@ class GeographicalDivisionsTable extends AbstractTableGateway
        return 0;
     }
 
+    public function checkDistrict($district) {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from('geographical_divisions')
+                    ->where("geo_name  like '%".$district."%'");
+        $queryStr = $sql->buildSqlString($query);
+        $result=$dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        if($result){
+            $res['district'] = $result['geo_id'];
+            $res['province'] = $result['geo_parent'];
+            return $res;
+        }else{
+            $loginContainer = new Container('credo');
+            $currentDateTime = CommonService::getDateTime();
+            $data = array(
+                'geo_name' => $district,
+                'geo_code' => $district,
+                'geo_parent' => $district,
+                'geo_status' => 'active',
+                'created_by' => $loginContainer->userId,
+                'created_on'	=> $currentDateTime,
+                'updated_datetime'	=> $currentDateTime
+            );
+            $this->insert($data);
+            $insertId = $this->lastInsertValue;
+            $query = $sql->select()->from('geographical_divisions')
+                    ->where("id =$insertId");
+            $queryStr = $sql->buildSqlString($query);
+            $result=$dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $res['district'] = $result['geo_id'];
+            $res['province'] = $result['geo_parent'];
+            return $res;
+        }
+    }
+
 }

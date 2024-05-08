@@ -379,6 +379,12 @@ class FacilityService
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->mapProvince($params);
     }
+
+    public function addFacilityBasedOnForm()
+    {
+        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
+        return $facilityDb->addFacilityBasedOnForm(802,6);
+    }
     public function exportFacility()
     {
         try {

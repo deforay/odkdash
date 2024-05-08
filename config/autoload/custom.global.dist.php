@@ -4,31 +4,33 @@ return [
     'settings' => [
         'locale' => 'en_US',
     ],
-
     'odkcentral' => [
         'spirrt' => [
-            'url' => '',
-            'projectId' => 'your_project_id',
-            'formId' => 'your_form_id',
-            'email' => 'your_email',
-            'password' => 'your_password',
+            // [
+            //     'url' => 'https://bw-odk.labsinformatics.com',
+            //     'projectId' => '1',
+            //     'formId' => 'SPI-RRT-Apr-2023',
+            //     'email' => 'admin@botswana.org',
+            //     'password' => 'bnmko)(*&^',
+            // ],
+            [
+                'url' => 'https://odk-central.malawi.rt-qi.com',
+                'projectId' => '3',
+                'formId' => 'SPI_RRT%20Checklist',
+                'email' => 'KLipenga@mgic.umaryland.edu',
+                'password' => 'KLipenga@12345',
+            ]
         ],
-        'spirt' => [
-            'url' => '',
-            'projectId' => 'your_project_id',
-            'formId' => 'your_form_id',
-            'email' => 'your_email',
-            'password' => 'your_password',
-        ],
+        'spirt' => [],
     ],
     'email' => [
-        'host' => '',
+        'host' => 'smtp.gmail.com',
         'config' => [
-            'port' => '',
+            'port' => 587,
             'username' => '',
             'password' => '',
-            'ssl' => '',
-            'auth' => '',
+            'ssl' => 'tls',
+            'auth' => 'login',
         ],
     ],
     'admin' => [

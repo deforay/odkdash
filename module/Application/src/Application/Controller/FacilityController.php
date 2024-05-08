@@ -2,6 +2,7 @@
 
 namespace Application\Controller;
 
+use Application\Model\SpiRtFacilitiesTable;
 use Laminas\Config\Config;
 use Laminas\Json\Json;
 use Laminas\Mvc\Controller\AbstractActionController;
@@ -23,6 +24,8 @@ class FacilityController extends AbstractActionController
 
     public function indexAction()
     {
+        // $a = $this->facilityService->addFacilityBasedOnForm();
+        // die;
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {

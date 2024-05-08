@@ -54,14 +54,26 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $fQueryStr = $sql->buildSqlString($fQuery);
             $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if ($fResult == "") {
+                $district = $result['district'];
+                $province = 'Unknown';
+                if(isset($result['district']) && $result['district'] != '') {
+                    $dbAdapter = $this->adapter;
+                    $geoTable = new GeographicalDivisionsTable($dbAdapter);
+                    $res=$geoTable->checkDistrict(trim($result['district']));
+                    if($res) {
+                        $district = $res['district'];
+                        $province = $res['province'];
+                    }
+                }
                 $data = [
                     'facility_id' => $result['facilityid'] ?? null,
                     'facility_name' => $result['facilityname'] ?? null,
-                    'province' => 'Unknown',
-                    'district' => $result['district'] ?? null,
+                    'province' => $province,
+                    'district' => $district,
                     'latitude' => $result['Latitude'] ?? null,
                     'longitude' => $result['Longitude'] ?? null
                 ];
+                // print_r($data); die;
                 return $this->insert($data);
             }
         }
