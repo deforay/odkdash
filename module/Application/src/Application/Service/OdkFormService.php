@@ -3902,7 +3902,7 @@ class OdkFormService
                 $row = array();
                 $row[] = $data['facilityname'];
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
-                $row[] = $data['assesmentofaudit'];
+                $row[] = CommonService::humanReadableDateFormat($data['assesmentofaudit']);
                 $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
                 $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
                 $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];
