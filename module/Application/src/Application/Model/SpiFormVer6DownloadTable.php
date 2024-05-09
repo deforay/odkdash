@@ -131,7 +131,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('r_spi_form_v_6_download')->where(array('download_status' => 1, 'user' => $loginContainer->userId))->order('r_download_id desc')->limit(5);
+        $query = $sql->select()->from('spi_form_v_6')->order('r_download_id desc')->limit(5);
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
