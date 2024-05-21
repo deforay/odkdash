@@ -554,7 +554,7 @@ class CommonService
             $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
             $select = $sql->select()->from($tablename);
-            $select->where($fieldname . "=" . "'" . $fieldValue . "'");
+            $select->where([$fieldname => $fieldValue]);
             $statement = $sql->prepareStatementForSqlObject($select);
             $result = $statement->execute();
             if ($result->count() > 0) {
