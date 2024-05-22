@@ -1571,7 +1571,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if (isset($parameters['province']) && trim($parameters['province']) != '') {
             $parameters['province'] = explode(",", $parameters['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_id=spiv6.facilityid', array('province', 'district'), 'left');
+            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_id=spiv6.facilityid OR f.facility_name=spiv6.facilityname', array('province', 'district'), 'left');
 
             $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
 
@@ -3976,15 +3976,15 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             if (isset($parameters['province']) && $parameters['province'] != '') {
                 $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                ->where("f.province='" . $parameters['province'] . "'");
+                    ->where("f.province='" . $parameters['province'] . "'");
                 $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                ->where("f.province='" . $parameters['province'] . "'");
+                    ->where("f.province='" . $parameters['province'] . "'");
             }
             if (isset($parameters['district']) && $parameters['district'] != '') {
                 $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                ->where("f.district='" . $parameters['district'] . "'");
+                    ->where("f.district='" . $parameters['district'] . "'");
                 $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                ->where("f.district='" . $parameters['district'] . "'");
+                    ->where("f.district='" . $parameters['district'] . "'");
             }
             if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
                 $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");

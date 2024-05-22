@@ -2,6 +2,8 @@
 
 namespace Application\Controller;
 
+use Application\Service\CommonService;
+use Application\Service\OdkFormService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\Json\Json;
@@ -14,7 +16,7 @@ class SpiV6Controller extends AbstractActionController
     private $odkFormService = null;
     private $provinceService = null;
 
-    public function __construct($odkFormService, $commonService,$provinceService)
+    public function __construct(OdkFormService $odkFormService, CommonService $commonService, $provinceService)
     {
         $this->odkFormService = $odkFormService;
         $this->commonService = $commonService;
@@ -31,7 +33,7 @@ class SpiV6Controller extends AbstractActionController
         $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
         //var_dump($levelNamesResult);die;
         if ($request->isPost()) {
-            
+
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
@@ -323,7 +325,7 @@ class SpiV6Controller extends AbstractActionController
         $roundno = '';
         $drange = '';
         $level = '';
-        if ($this->params()->fromQuery('source')) { 
+        if ($this->params()->fromQuery('source')) {
             $source = $this->params()->fromQuery('source');
         }
         if ($this->params()->fromQuery('level')) {
