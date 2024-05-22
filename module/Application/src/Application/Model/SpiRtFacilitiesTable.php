@@ -254,7 +254,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $startDate = "";
         $endDate = "";
         $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->columns(['facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude','status'])
+            ->columns(['id','facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude','status'])
             ->join(array('g' => 'geographical_divisions'), 'spirt3.province=g.geo_id', array('province'=>'geo_name'), 'left')
             ->join(array('gd' => 'geographical_divisions'), 'spirt3.district=gd.geo_id', array('district'=>'geo_name'), 'left')
             ->where('spirt3.status != "deleted"');

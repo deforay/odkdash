@@ -5295,4 +5295,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         return $id;
     }
+
+    public function fetchSpiV6FormUniqueLevels()
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('level'=>new Expression("DISTINCT level")))->where("level!=''")
+                ->order("level ASC");
+        $queryStr = $sql->buildSqlString($query);
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
 }

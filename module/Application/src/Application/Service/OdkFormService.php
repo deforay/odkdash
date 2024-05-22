@@ -6175,4 +6175,10 @@ class OdkFormService
         $db = $this->sm->get('SpiRtFacilitiesTable');
         return $db->fetchDistrictByProvince($params);
     }
+
+    public function getSpiV6FormUniqueLevels()
+    {
+        $db = $this->sm->get('SpiFormVer6Table');
+        return $db->fetchSpiV6FormUniqueLevels();
+    }
 }

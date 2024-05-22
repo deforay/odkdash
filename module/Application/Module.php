@@ -111,7 +111,6 @@ class Module
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV5Controller'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
         ) {
             if (empty($session) || empty($session->userId)) {
@@ -214,14 +213,6 @@ class Module
                         return new \Application\Controller\ReceiverController($odkFormService);
                     }
                 },
-                'Application\Controller\ReceiverSpiV5Controller' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\ReceiverSpiV5Controller($odkFormService);
-                    }
-                },
                 'Application\Controller\ReceiverSpiV6Controller' => new class
                 {
                     public function __invoke($diContainer)
@@ -246,14 +237,6 @@ class Module
                         return new \Application\Controller\SpiV3ReportsController($odkFormService);
                     }
                 },
-                'Application\Controller\SpiV5ReportsController' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\SpiV5ReportsController($odkFormService);
-                    }
-                },
                 'Application\Controller\SpiV6ReportsController' => new class
                 {
                     public function __invoke($diContainer)
@@ -269,15 +252,6 @@ class Module
                         $commonService = $diContainer->get('CommonService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\SpiV3Controller($odkFormService, $commonService);
-                    }
-                },
-                'Application\Controller\SpiV5Controller' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $commonService = $diContainer->get('CommonService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\SpiV5Controller($odkFormService, $commonService);
                     }
                 },
                 'Application\Controller\SpiV6Controller' => new class
