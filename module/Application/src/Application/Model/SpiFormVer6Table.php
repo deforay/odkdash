@@ -1571,7 +1571,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if (isset($parameters['province']) && trim($parameters['province']) != '') {
             $parameters['province'] = explode(",", $parameters['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_id=spiv6.facilityid', array('province', 'district'), 'left');
+            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_name=spiv6.facilityname', array('province', 'district'), 'left');
 
             $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
 
