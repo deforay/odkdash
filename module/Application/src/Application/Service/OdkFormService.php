@@ -3884,20 +3884,25 @@ class OdkFormService
     public function getV6DownloadFilesRow()
     {
         $loginContainer = new Container('credo');
+        $queryContainer = new Container('query');
         $username = $loginContainer->login;
         $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
         $trackTable = new EventLogTable($dbAdapter);
-        $db = $this->sm->get('SpiFormVer6DownloadTable');
-        $result = $db->fetchDownloadFilesRow();
+        //$db = $this->sm->get('SpiFormVer6DownloadTable');
+        //$result = $db->fetchDownloadFilesRow();
+        $sql = new Sql($dbAdapter);
+        $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
+        $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $xlsx = new SimpleXLSXGen();
         $output = array();
-        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
+        $headerRow = ['Facility Name','Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
         $output[] = $headerRow;
         if (count($result) > 0) {
-            foreach ($result as $data) {
+        foreach ($result as $data) {
                 $row = array();
+                $row[] = $data['facilityname'];
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
-                $row[] = $data['assesmentofaudit'];
+                $row[] = CommonService::humanReadableDateFormat($data['assesmentofaudit']);
                 $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
                 $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
                 $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];

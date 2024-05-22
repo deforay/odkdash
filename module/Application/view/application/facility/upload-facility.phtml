@@ -54,6 +54,8 @@
                                                 <option value="facility_name_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_match' ? 'selected="selected"' : ''; ?>>Update if Facility Name matches</option>
                                                 <option value="facility_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_id_match' ? 'selected="selected"' : ''; ?>>Update if Facility Id matches</option>
 												<option value="facility_name_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_id_match' ? 'selected="selected"' : ''; ?>>Update if Facility Name and Facility Id match</option>
+												<option value="skip_facility_name_code" <?php echo ($_GET['option'] ?? '') == 'skip_facility_name_code' ? 'selected="selected"' : ''; ?>>Skip Duplicate Facility Name or Code</option>
+												<option value="update_duplicate_facility_name_code" <?php echo ($_GET['option'] ?? '') == 'update_duplicate_facility_name_code' ? 'selected="selected"' : ''; ?>>Update Duplicate Facility Name or Code</option>
                                             </select>
                                         </div>
                                     </div>
