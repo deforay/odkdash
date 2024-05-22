@@ -61,6 +61,7 @@ return array(
                     ),
                 ),
             ),
+            /*
             'odk-receiver-v5' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -71,7 +72,7 @@ return array(
                     ),
                 ),
             ),
-
+            */
             'odk-receiver-v6' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -102,7 +103,7 @@ return array(
                     ),
                 ),
             ),
-            'spi-v5-form' => array(
+            /*'spi-v5-form' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/spi-v5[/:action][/][:id]',
@@ -111,7 +112,7 @@ return array(
                         'action' => 'index',
                     ),
                 ),
-            ),
+            ),*/
             'spi-v6-form' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -153,7 +154,7 @@ return array(
                     ),
                 ),
             ),
-
+            /*
             'spi-v5-reports' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -164,6 +165,7 @@ return array(
                     ),
                 ),
             ),
+            */
             'spi-v6-reports' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -326,6 +328,7 @@ return array(
                     ),
                 ),
             ),
+            /*
             'view-data-v5' => array(
                 'type' => 'literal',
                 'options' => array(
@@ -336,7 +339,7 @@ return array(
                     ),
                 ),
             ),
-
+            */
             'provinces' => array(
                 'type' => 'segment',
                 'options' => array(

@@ -28,7 +28,7 @@ class SpiV6Controller extends AbstractActionController
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
         $provinceResult = $this->provinceService->getAllActiveProvinces();
         //echo "ww";die;
-        $levelNamesResult = $this->odkFormService->getSpiV3FormUniqueLevelNames();
+        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevels();
         //var_dump($levelNamesResult);die;
         if ($request->isPost()) {
             

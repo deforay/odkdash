@@ -71,13 +71,14 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
                   <label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" id="level">
-                      <option value=""><?= $this->translate('All'); ?></option>
-                      <option value="Level1"><?= $this->translate('Sub-national 1'); ?></option>
-                      <option value="Level2"><?= $this->translate('Sub-national 2'); ?></option>
-                      <option value="Level3"><?= $this->translate('Sub-national 3'); ?></option>
-                      <option value="Level4"><?= $this->translate('Sub-national 4'); ?></option>
-                      <option value="Other"><?= $this->translate('Other'); ?></option>
-
+                    <option value=""><?= $this->translate('All'); ?></option>
+                    <?php
+                      foreach ($levelNamesResult as $val) {
+                      ?>
+                        <option value="<?php echo $val['level']; ?>"><?php echo $this->translate(ucwords($val['level'])); ?></option>
+                      <?php
+                      }
+                      ?>
                     </select>
                   </div>
                   <label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
