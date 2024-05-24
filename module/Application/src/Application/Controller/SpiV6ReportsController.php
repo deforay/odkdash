@@ -10,10 +10,12 @@ class SpiV6ReportsController extends AbstractActionController
 {
 
     private $odkFormService = null;
+    private $provinceService = null;
 
-    public function __construct($odkFormService)
+    public function __construct($odkFormService, $provinceService)
     {
         $this->odkFormService = $odkFormService;
+        $this->provinceService = $provinceService;
     }
 
 
@@ -21,7 +23,6 @@ class SpiV6ReportsController extends AbstractActionController
     {
         return new ViewModel();
     }
-
     public function facilityReportAction()
     {
         /** @var \Laminas\Http\Request $request */
@@ -34,13 +35,14 @@ class SpiV6ReportsController extends AbstractActionController
         $spiV3auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
         
         $pendingCount = $this->odkFormService->getSpiV6PendingCount();
-        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
+        //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
+        $provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
             'pendingCount' => $pendingCount,
             'spiV3auditRoundNo' => $spiV3auditRoundNo,
-            'levelNamesResult' => $levelNamesResult
+            'provinceResult' => $provinceResult
         ));
     }
 

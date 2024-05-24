@@ -29,18 +29,14 @@ class SpiV6Controller extends AbstractActionController
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
         $provinceResult = $this->provinceService->getAllActiveProvinces();
-        //echo "ww";die;
-        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevels();
-        //var_dump($levelNamesResult);die;
+        //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevels();
         if ($request->isPost()) {
-
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
             return $this->getResponse()->setContent(Json::encode($result));
         }
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
-            'levelNamesResult' => $levelNamesResult,
             'provinceResult' => $provinceResult
         ));
     }

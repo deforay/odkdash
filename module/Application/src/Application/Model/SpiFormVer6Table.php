@@ -1437,8 +1437,8 @@ class SpiFormVer6Table extends AbstractTableGateway
          * you want to insert a non-database field (for example a counter or static image)
          */
         $queryContainer = new Container('query');
-        $aColumns = array('spiv6.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
-        $orderColumns = array('spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv3.status');
+        $aColumns = array('spiv6.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
+        $orderColumns = array('spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv3.status');
 
         /*
          * Paging
@@ -1548,8 +1548,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         //          }
         //     }
         // }
-        if ($parameters['level'] != '') {
-            $sQuery = $sQuery->where("spiv6.level='" . $parameters['level'] . "'");
+        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
+
+            if (trim($parameters['testPoint']) != 'other') {
+                $sQuery = $sQuery->where("spiv6.testingpointtype='" . $parameters['testPoint'] . "'");
+            } else {
+                $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $parameters['testPointName'] . "'");
+            }
         }
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv6.affiliation='" . $parameters['affiliation'] . "'");
@@ -1599,8 +1604,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-
-        //echo $sQueryStr;die;
+        //echo $sQueryStr;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
 
         /* Data set length after filtering */
@@ -1622,16 +1626,20 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (trim($startDate) != "" && trim($endDate) != "") {
             $tQuery = $tQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
         }
-        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '' && strtolower(trim($parameters['testPoint'])) == 'other') {
+        /*if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '' && strtolower(trim($parameters['testPoint'])) == 'other') {
             $tQuery = $tQuery->where("spiv6.testingpointtype='" . $parameters['testPoint'] . "'");
         }
 
         if (strtolower(trim($parameters['testPoint'])) == 'other') {
             $tQuery = $tQuery->where("spiv6.testingpointtype_other='" . $parameters['testPointName'] . "'");
-        }
+        }*/
+        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
 
-        if ($parameters['level'] != '') {
-            $tQuery = $tQuery->where("spiv6.level='" . $parameters['level'] . "'");
+            if (trim($parameters['testPoint']) != 'other') {
+                $tQuery = $tQuery->where("spiv6.testingpointtype='" . $parameters['testPoint'] . "'");
+            } else {
+                $tQuery = $tQuery->where("spiv6.testingpointtype_other='" . $parameters['testPointName'] . "'");
+            }
         }
         if ($parameters['affiliation'] != '') {
             $tQuery = $tQuery->where("spiv6.affiliation='" . $parameters['affiliation'] . "'");
@@ -1701,7 +1709,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             //$row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = $aRow['testingpointtype'];
-            $row[] = $aRow['level'] . $level;
             $row[] = $aRow['affiliation'];
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0, 2);
             $row[] = ucwords($aRow['status']);
@@ -2877,9 +2884,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv5.testingpointtype_other='" . $parameters['testPointName'] . "'");
             }
         }
-        if ($parameters['level'] != '') {
-            $sQuery = $sQuery->where("spiv5.level='" . $parameters['level'] . "'");
-        }
 
         if ($parameters['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv5.affiliation='" . $parameters['affiliation'] . "'");
@@ -2898,6 +2902,17 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) <= 89");
             } elseif ($parameters['scoreLevel'] == 4) {
                 $sQuery = $sQuery->where("ROUND(spiv5.AUDIT_SCORE_PERCENTAGE) >= 90");
+            }
+        }
+        if (isset($parameters['province']) && trim($parameters['province']) != '') {
+            $parameters['province'] = explode(",", $parameters['province']);
+            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_id=spiv5.facilityid OR f.facility_name=spiv5.facilityname', array('province', 'district'), 'left');
+    
+            $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
+    
+            if (isset($parameters['district']) && trim($parameters['district']) != '') {
+                $parameters['district'] = explode(",", $parameters['district']);
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
             }
         }
         if (isset($sWhere) && $sWhere != "") {
@@ -2934,13 +2949,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             $tQuery = $tQuery->where(array("spiv5.assesmentofaudit >='" . $startDate . "'", "spiv5.assesmentofaudit <='" . $endDate . "'"));
         }
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
-            $tQuery = $tQuery->where("spiv5.testingpointtype='" . $parameters['testPoint'] . "'");
-            if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '' && (trim($parameters['testPoint']) == 'other' && trim($parameters['testPointName']) != '')) {
+            if (trim($parameters['testPoint']) != 'other') {
+                $tQuery = $tQuery->where("spiv5.testingpointtype='" . $parameters['testPoint'] . "'");
+            } else {
                 $tQuery = $tQuery->where("spiv5.testingpointtype_other='" . $parameters['testPointName'] . "'");
             }
-        }
-        if ($parameters['level'] != '') {
-            $tQuery = $tQuery->where("spiv5.level='" . $parameters['level'] . "'");
         }
 
         if ($parameters['affiliation'] != '') {

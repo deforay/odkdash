@@ -6,9 +6,9 @@ $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
 if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status')) {
-  $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
+  $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
 } else {
-  $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+  $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
 }
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
@@ -58,29 +58,13 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
                   <div class=" col-lg-4">
                     <select class="form-control" id="auditRndNo">
                       <option value=''><?= $this->translate('All'); ?></option>
-                      <?php
-                      for ($i = 1; $i <= 100; $i++) {
+                      <?php for ($i = 1; $i <= 100; $i++) {
                         echo "<option value='" . $i . "'>" . $i . "</option>";
-                      }
-                      ?>
+                      } ?>
                     </select>
                   </div>
                 </div>
-
                 <div class="form-group">
-                  <label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
-                  <div class=" col-lg-4">
-                    <select class="form-control" id="level">
-                    <option value=""><?= $this->translate('All'); ?></option>
-                    <?php
-                      foreach ($levelNamesResult as $val) {
-                      ?>
-                        <option value="<?php echo $val['level']; ?>"><?php echo $this->translate(ucwords($val['level'])); ?></option>
-                      <?php
-                      }
-                      ?>
-                    </select>
-                  </div>
                   <label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" id="affiliation">
@@ -92,9 +76,6 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
                       <option value="Other"><?= $this->translate('Other'); ?></option>
                     </select>
                   </div>
-                </div>
-
-                <div class="form-group">
                   <label for="scoreLevel" class="col-sm-2 control-label"><?= $this->translate('Score Level'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" id="scoreLevel">
@@ -106,46 +87,37 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
                       <option value="4">4</option>
                     </select>
                   </div>
-                  <label for="testPoint" class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
-                  <div class=" col-lg-4">
-                    <select class="form-control" id="testPoint">
-                      <option value=""><?= $this->translate('All'); ?></option>
-                      <?php
-                      foreach ($testingPointResult as $val) {
-                      ?>
-                        <option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
-                      <?php
-                      }
-                      ?>
-                    </select>
-                  </div>
                 </div>
                 <div class="form-group">
-                  
                   <label for="province" class="col-sm-2 control-label"><?= $this->translate('Province'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" multiple="multiple" id="province" onchange="getDistrictList()">
                       <option value=""><?= $this->translate('All'); ?></option>
-                      <?php
-                      foreach ($provinceResult as $val) {
-                      ?>
+                      <?php foreach ($provinceResult as $val) { ?>
                         <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
-                      <?php
-                      }
-                      ?>
+                      <?php } ?>
                     </select>
                   </div>
                   <label for="district" class="col-sm-2 control-label"><?= $this->translate('District'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" id="district" multiple="multiple">
                       <option value=""><?= $this->translate('All'); ?></option>
-                      
                     </select>
                   </div>
                 </div>
-
                 <div class="form-group">
-                  <div class="testPointNameSection"></div>
+                  <label for="testPoint" class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
+                  <div class=" col-lg-4">
+                    <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
+                      <option value=""><?= $this->translate('All'); ?></option>
+                      <?php foreach ($testingPointResult as $val) { ?>
+                        <option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <div class="testPointNameSection"></div>
+                  </div>
                 </div>
                 <div class="form-group" style="text-align:center;">
                   <button type="button" onclick="search();" class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>&nbsp;
@@ -174,7 +146,6 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
             <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
 
             <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>
-            <th style="width:8%;"><?= $this->translate('Level'); ?></th>
             <th><?= $this->translate('Affiliation'); ?></th>
             <th style="width:5%;"><?= $this->translate('Audit Score %'); ?></th>
             <th style="width:8%;"><?= $this->translate('Status'); ?></th>
@@ -185,7 +156,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
         </thead>
         <tbody>
           <tr>
-            <td colspan="12" class="dataTables_empty"><?= $this->translate('Loading data from server'); ?></td>
+            <td colspan="11" class="dataTables_empty"><?= $this->translate('Loading data from server'); ?></td>
           </tr>
         </tbody>
       </table>
@@ -308,11 +279,10 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
           "name": "testPoint",
           "value": $("#testPoint").val()
         });
-
         aoData.push({
-          "name": "level",
-          "value": $("#level").val()
-        });
+					"name": "testPointName",
+					"value": $("#testPointName").val()
+				});
         aoData.push({
           "name": "affiliation",
           "value": $("#affiliation").val()
@@ -416,17 +386,17 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
     table.draw();
   }
 
-  // function getTestingPointTypeNames() {
-  //   $.blockUI();
-  //   var testingPointType = $('#testPoint').val();
-  //   $.post("< ?php echo $this->url('spi-v3-form', array('action' => 'get-testing-point-type-names')); ?>", {
-  //       testingPointType: testingPointType
-  //     },
-  //     function(data) {
-  //       $('.testPointNameSection').html(data);
-  //       $.unblockUI();
-  //     });
-  // }
+   function getTestingPointTypeNames() {
+     $.blockUI();
+     var testingPointType = $('#testPoint').val();
+       $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
+         testingPointType: testingPointType
+       },
+       function(data) {
+         $('.testPointNameSection').html(data);
+         $.unblockUI();
+       });
+   }
 
   function exportData() {
     $.blockUI();

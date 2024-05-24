@@ -242,7 +242,8 @@ class Module
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\SpiV6ReportsController($odkFormService);
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\SpiV6ReportsController($odkFormService, $provinceService);
                     }
                 },
                 'Application\Controller\SpiV3Controller' => new class
