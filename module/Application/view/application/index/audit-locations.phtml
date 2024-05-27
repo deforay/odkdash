@@ -1,60 +1,65 @@
 <?php
-
-use Laminas\Session\Container;
-
-$loginContainer = new Container('credo');
-$countryConfig = $this->GetCountryDetailsByIdHelper();
-
-if (isset($loginContainer->userCountryMap[0]) && $loginContainer->userCountryMap[0] != "") {
-	$lat = $countryConfig[$loginContainer->userCountryMap[0]]['latitude'];
-	$lng = $countryConfig[$loginContainer->userCountryMap[0]]['longitude'];
-} else {
-	$lat = $configData['latitude'];
-	$lng = $configData['longitude'];
-}
+$icon = $this->basePath('assets/img/map-points/dark-green.png');
 ?>
-<div class="gmap" id="gmap" style="height: 100%;width:100%;"></div>
+<div class="map" id="map" style="height: 100%;width:100%;"></div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 <script>
-	var LocsA = [
-		<?php foreach ($allSubmissions as $row) {
-
-			$percentage = $row['AUDIT_SCORE_PERCANTAGE'] ?? $row['AUDIT_SCORE_PERCENTAGE'];
-
-			if (isset($row['Latitude']) && $row['Latitude'] != "") {
-				$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				if ($percentage >= 90) {
-					$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				} else if ($percentage >= 80 && $percentage <= 89) {
-					$icon = $this->basePath('assets/img/map-points/light-green.png');
-				} else if ($percentage >= 60 && $percentage <= 79) {
-					$icon = $this->basePath('assets/img/map-points/yellow.png');
-				} else if ($percentage >= 40 && $percentage <= 599) {
-					$icon = $this->basePath('assets/img/map-points/orange.png');
-				} else {
-					$icon = $this->basePath('assets/img/map-points/red.png');
-				}
-
-		?> {
-					lat: "<?php echo $row['Latitude'] ?>",
-					lon: "<?php echo $row['Longitude'] ?>",
-					animation: google.maps.Animation.DROP,
-					icon: "<?php echo $icon; ?>"
-				},
-		<?php }
-		} ?>
-	];
-
+	
 	$(document).ready(function() {
-		new Maplace({
-			locations: LocsA,
-			map_div: '#gmap',
-			controls_on_map: true,
-			map_options: {
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				zoom: 6,
-				set_center: [<?php echo $lat; ?>, <?php echo $lng; ?>],
-				scrollwheel: false
-			}
-		}).Load();
+			var lat = "<?php echo $configData['latitude']; ?>";
+			var log = "<?php echo $configData['longitude']; ?>";
+			var zoomLevel = '8';
+			
+			var LeafIcon = L.Icon.extend({
+			});
+			var map = L.map('map', {
+				zoomControl: false,
+				scrollWheelZoom: true,
+				inertia: false,
+				zoomAnimation: false,
+				minZoom: 3,
+				maxBounds: [
+					[-90.0, -180.0],
+					[90.0, 180.0]
+				]
+			}).setView([lat, log], zoomLevel);
+			new L.Control.Zoom({
+				position: 'topleft'
+			}).addTo(map);
+			map._onResize();
+
+			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+			
+			// visualize the markers on the map
+			<?php foreach ($allSubmissions as $row) {
+				if (isset($row['Latitude']) && $row['Latitude'] != "") {
+					$icon = $this->basePath('assets/img/map-points/dark-green.png');
+					if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+						$icon = $this->basePath('assets/img/map-points/dark-green.png');
+					} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] <= 89) {
+						$icon = $this->basePath('assets/img/map-points/light-green.png');
+					} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] <= 79) {
+						$icon = $this->basePath('assets/img/map-points/yellow.png');
+					} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] <= 599) {
+						$icon = $this->basePath('assets/img/map-points/orange.png');
+					} else {
+						$icon = $this->basePath('assets/img/map-points/red.png');
+					}
+			?>
+				var marker= L.marker(["<?php echo $row['Latitude'] ?>", "<?php echo $row['Longitude'] ?>"], {
+						icon: new LeafIcon({iconUrl: "<?php echo $icon; ?>"})
+					}).bindPopup("<?php echo addslashes($row['facilityname']); ?>")
+					.addTo(map).on('mouseover', function(e) {
+					this.openPopup();
+				})
+				.on('mouseout', function(e) {
+					this.closePopup();
+				});
+				
+			<?php } } ?>
+
 	});
 </script>

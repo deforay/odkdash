@@ -27,6 +27,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
 <div class="am-content">
 	<div class="main-content">
 		<div class="row">
@@ -42,9 +43,6 @@ $isV6 = preg_match("/v6/i", $web_version);
 							<select class="" name="chooseFormVersion" id="chooseFormVersion" onchange="getAuditLocationsByForm(this.value)">
 								<?php if ($isV6) { ?>
 									<option value="v6">SPI-RRT Version 6</option>
-								<?php } ?>
-								<?php if ($isV5) { ?>
-									<option value="v5">SPI-RRT Version 5</option>
 								<?php } ?>
 								<?php if ($isV3) { ?>
 									<option value="v3">SPI-RT Version 3</option>
@@ -63,7 +61,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 							<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()"><?= $this->translate('OK'); ?></a>
 						</span>
 					</div>
-					<div class="map-container" id="auditLocations">
+					<div id="auditLocations" style="height:1135px;max-height:1500px;">
 
 					</div>
 				</div>
@@ -73,11 +71,9 @@ $isV6 = preg_match("/v6/i", $web_version);
 </div>
 
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?php echo $config['map_key']; ?>&libraries=drawing,geometry,places">
-</script>
-
 <script src="<?php echo $this->basePath('assets/js/maplace.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 <script type="text/javascript">
 	function getAuditLocationDetails() {
 		var formVersionId = $("#chooseFormVersion").val();
@@ -93,15 +89,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 				});
 		}
 
-		if (formVersionId == 'v5') {
-			$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-locations')); ?>", {
-					roundno: value,
-					dateRange: dateRange
-				},
-				function(data) {
-					$("#auditLocations").html(data);
-				});
-		}
+		
 		if (formVersionId == 'v6') {
 			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-locations')); ?>", {
 					roundno: value,
