@@ -2010,14 +2010,14 @@ $config = $this->GlobalConfigHelper();
 			message: '<h1>Loading...</h1>'
 		});
 		$("#spiRTv3,#testingVolumeDate,#audiPerformanceDate,#locationDateRange,#worstDate").val($("#dateRange").val());
-		//getspiRTv6();
-		//getTestingVolumeValue();
-		//getAuditDetails();
+		getspiRTv6();
+		getTestingVolumeValue();
+		getAuditDetails();
 		getAuditLocationDetails();
-		//getAuditWorstDetails();
+		getAuditWorstDetails();
 		if ($('#rtriStuffDiv').is(":visible")) {
-			//getAuditSectionZeroDetails();
-			//getAuditSectionZeroProtocolDetails();
+			getAuditSectionZeroDetails();
+			getAuditSectionZeroProtocolDetails();
 		}
 		$.unblockUI();
 	}
