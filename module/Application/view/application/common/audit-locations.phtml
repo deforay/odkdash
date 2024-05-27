@@ -93,15 +93,6 @@ $isV6 = preg_match("/v6/i", $web_version);
 				});
 		}
 
-		if (formVersionId == 'v5') {
-			$.post("<?php echo $this->url('spi-v5-form', array('action' => 'audit-locations')); ?>", {
-					roundno: value,
-					dateRange: dateRange
-				},
-				function(data) {
-					$("#auditLocations").html(data);
-				});
-		}
 		if (formVersionId == 'v6') {
 			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-locations')); ?>", {
 					roundno: value,
@@ -111,7 +102,6 @@ $isV6 = preg_match("/v6/i", $web_version);
 					$("#auditLocations").html(data);
 				});
 		}
-
 
 	}
 

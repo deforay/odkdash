@@ -15,6 +15,7 @@ use Shuchkin\SimpleXLSXGen;
 use Laminas\Session\Container;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
+use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer6Table;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -43,6 +44,7 @@ class OdkFormService
 
     public function saveSpiFormVer3($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->saveData($params);
     }
@@ -61,24 +63,28 @@ class OdkFormService
 
     public function getPerformance($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getPerformance($params);
     }
 
     public function getPerformanceLast30Days($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getPerformanceLast30Days($params);
     }
 
     public function getPerformanceLast180Days($params = null)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getPerformanceLast180Days();
     }
 
     public function getAllSubmissions($sortOrder = 'DESC')
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getAllSubmissions($sortOrder);
     }
@@ -410,26 +416,22 @@ class OdkFormService
 
     public function getAllSubmissionsDetails($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
-        $acl = $this->sm->get('AppAcl');
-        return $db->fetchAllSubmissionsDetails($params, $acl);
-    }
-
-    public function getAllSpiV5SubmissionsDetails($params)
-    {
-        $db = $this->sm->get('SpiFormVer5Table');
         $acl = $this->sm->get('AppAcl');
         return $db->fetchAllSubmissionsDetails($params, $acl);
     }
 
     public function getAllDuplicateSubmissionsDetails()
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchAllDuplicateSubmissionsDetails();
     }
 
     public function getAllSubmissionsDatas($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         $acl = $this->sm->get('AppAcl');
         return $db->fetchAllSubmissionsDatas($params, $acl);
@@ -437,36 +439,35 @@ class OdkFormService
     //get pending facility names
     public function getPendingFacilityNames()
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchPendingFacilityNames();
     }
     //get all facility names
     public function getAllFacilityNames()
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fetchAllFacilityNames();
     }
     //merge all facility name
     public function mergeFacilityName($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->mergeFacilityName($params);
-    }
-
-    public function mergeFacilityNameV5($params)
-    {
-        $db = $this->sm->get('SpiFormVer5Table');
         return $db->mergeFacilityName($params);
     }
 
     public function getAuditRoundWiseData($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getAuditRoundWiseData($params);
     }
     //download pie chart
     public function getPerformancePieChart($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         $result = $db->getPerformance($params);
         $MyData = new Data();
@@ -518,69 +519,10 @@ class OdkFormService
         return $fileName;
     }
 
-    public function getSpiV5PerformancePieChart($params)
-    {
-        $db = $this->sm->get('SpiFormVer5Table');
-        $result = $db->getPerformanceV5($params);
-        // echo "Prasath";die;
-        $MyData = new Data();
-        if (count($result) > 0) {
-            foreach ($result as $key => $data) {
-                $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
-                $MyData->setSerieDescription("Level" . $key);
-                $rgbColor = array();
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Level" . $key, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
-            }
-        }
-
-        $percentage = $result[0]['level0'] + $result[0]['level1'] + $result[0]['level2'] + $result[0]['level3'] + $result[0]['level4'];
-
-        /* Define the absissa serie */
-        $MyData->addPoints(
-            array(
-                $this->translator->translate('Level 0 (Below 40)') . "&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level0'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level0'] . ")",
-                $this->translator->translate('Level 1 (40-59)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level1'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level1'] . ")",
-                $this->translator->translate('Level 2 (60-79)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level2'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level2'] . ")",
-                $this->translator->translate('Level 3 (80-89)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level3'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level3'] . ")",
-                $this->translator->translate('Level 4 (90 and above)') . "&nbsp;" . round(($result[0]['level4'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level4'] . ")",
-            ),
-            "Labels"
-        );
-        $MyData->setAbscissa("Labels");
-
-        /* Create the pChart object */
-        $myPicture = new Image(400, 510, $MyData);
-        $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
-
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
-
-        $PieChart = new Pie($myPicture, $MyData);
-        $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => true));
-        $PieChart->drawPieLegend(5, 390);
-        $fileName = 'piechart-spiv5.png';
-        $myPicture->drawText(540, 200, "Extended AA pass / Splitted", ["R" => 0, "G" => 0, "B" => 0, "Align" => TEXT_ALIGN_TOPMIDDLE]);
-        $fileName = 'piechart-spiv5.png';
-        $PieChart->pChartObject->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
-
-        //header('Content-Type: text/plain');
-        //var_dump($path);die;
-        //$result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart-spiv5.png");
-        return $fileName;
-    }
-
     //download spider chart pdf
     public function getAuditRoundWiseDataChart($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         $result = $db->getAuditRoundWiseData($params);
         $MyData = new Data();
@@ -642,83 +584,17 @@ class OdkFormService
         return $fileName;
     }
 
-    public function getSpiV5AuditRoundWiseDataChart($params)
-    {
-
-        $db = $this->sm->get('SpiFormVer5Table');
-        $result = $db->getAuditRoundWiseDataV5($params);
-        $MyData = new Data();
-        $filename = '';
-        if (count($result) > 0) {
-            foreach ($result as $auditNo => $adata) {
-                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
-                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2), round($adata['RTRI_SCORE'], 2)), "Audit Performance");
-                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
-            }
-        }
-        /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit", "RTRT Surveillance"), "Label");
-        $MyData->setAbscissa("Label");
-
-        /* Create the pChart object */
-        $myPicture = new Image(600, 690, $MyData);
-        //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
-        //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
-        //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
-        //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
-
-        /* Add a border to the picture */
-        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
-
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-        /* Write the picture title */
-        //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
-        //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-
-        /* Create the pRadar object */
-        $SplitChart = new Radar();
-        /* Draw a radar chart */
-        $myPicture->setGraphArea(15, 15, 590, 590);
-        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
-        $SplitChart->drawRadar($myPicture, $MyData, $Options);
-
-        /* Write the chart legend */
-        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
-        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
-
-        /* Render the picture (choose the best way) */
-        $fileName = 'radar-spiv5.png';
-        //print_r($fileName);die;
-        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
-        return $fileName;
-    }
 
     public function getFormData($id, $pdf = 'no')
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
-        return $db->getFormData($id, $pdf);
-    }
-
-    public function getSpiV5FormData($id, $pdf = 'no')
-    {
-        $db = $this->sm->get('SpiFormVer5Table');
         return $db->getFormData($id, $pdf);
     }
 
     public function getSpiV3FormLabels()
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormLabelsTable');
         return $db->getAllLabels();
     }
@@ -790,14 +666,9 @@ class OdkFormService
 
     public function getAllApprovedSubmissionsTable($params)
     {
+        /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->fecthAllApprovedSubmissionsTable($params);
-    }
-
-    public function getAllApprovedV5FormSubmissionsTable($params)
-    {
-        $db = $this->sm->get('SpiFormVer5Table');
-        return $db->fetchAllApprovedV5FormSubmissionsTable($params);
     }
     //export facilty report
     public function exportFacilityReport($params)
@@ -1990,7 +1861,7 @@ class OdkFormService
             //get config details
             $globalDb = $this->sm->get('GlobalTable');
             $configData = $globalDb->getGlobalConfig();
-            $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "label-spi-v5.php";
+            $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "label-spi-v6.php";
             $fileContents = file_get_contents($configFile);
             //Convert the JSON string back into an array.
             $decoded = json_decode($fileContents, true);
@@ -3895,10 +3766,10 @@ class OdkFormService
         $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $xlsx = new SimpleXLSXGen();
         $output = array();
-        $headerRow = ['Facility Name','Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
+        $headerRow = ['Facility Name', 'Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
         $output[] = $headerRow;
         if (count($result) > 0) {
-        foreach ($result as $data) {
+            foreach ($result as $data) {
                 $row = array();
                 $row[] = $data['facilityname'];
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
@@ -5044,45 +4915,43 @@ class OdkFormService
 
     public function getViewDataS0DetailsV6($params)
     {
-        //echo "ss";die;
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchViewDataS0Details($params);
     }
 
     public function getViewDataD0DetailsV6($params)
     {
-        //echo "ss";die;
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchViewDataD0Details($params);
-    }
-
-    public function getViewDataDetailsV5($params)
-    {
-        $db = $this->sm->get('SpiFormVer5Table');
-        return $db->fetchViewDataDetails($params);
     }
 
     //get all facility names v6
     public function getAllFacilityNamesV6()
     {
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchAllFacilityNames();
     }
 
     public function getFacilitiesAuditsV6($params)
     {
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchFacilitiesAudits($params);
     }
 
     public function getAllApprovedV6FormSubmissionsTable($params)
     {
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchAllApprovedV6FormSubmissionsTable($params);
     }
 
     public function getSpiV6PendingCount()
     {
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->getSpiV6PendingCount();
     }
@@ -5090,15 +4959,14 @@ class OdkFormService
     public function exportV6FacilityReport($params)
     {
         try {
-            $common = new \Application\Service\CommonService();
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
             $userName = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $auditTable = new EventLogTable($dbAdapter);
             $output = array();
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $spreadsheet = new Spreadsheet();
+            $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xlsx';
             //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
@@ -5260,6 +5128,7 @@ class OdkFormService
     //get pending facility names v6
     public function getPendingFacilityNamesV6()
     {
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchPendingFacilityNames();
     }
@@ -6145,7 +6014,7 @@ class OdkFormService
                 $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
             }
-            $commonService = new \Application\Service\CommonService();
+            $commonService = new CommonService();
             $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
             $commonService->zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
@@ -6178,6 +6047,7 @@ class OdkFormService
 
     public function getSpiV6FormUniqueLevels()
     {
+        /** @var SpiFormVer6Table  $db */
         $db = $this->sm->get('SpiFormVer6Table');
         return $db->fetchSpiV6FormUniqueLevels();
     }

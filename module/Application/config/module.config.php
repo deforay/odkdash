@@ -61,18 +61,6 @@ return array(
                     ),
                 ),
             ),
-            /*
-            'odk-receiver-v5' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/receiver-spi-v5[/]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ReceiverSpiV5Controller',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            */
             'odk-receiver-v6' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -103,16 +91,6 @@ return array(
                     ),
                 ),
             ),
-            /*'spi-v5-form' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v5[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV5Controller',
-                        'action' => 'index',
-                    ),
-                ),
-            ),*/
             'spi-v6-form' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -154,18 +132,6 @@ return array(
                     ),
                 ),
             ),
-            /*
-            'spi-v5-reports' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v5-reports[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV5ReportsController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            */
             'spi-v6-reports' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -328,18 +294,6 @@ return array(
                     ),
                 ),
             ),
-            /*
-            'view-data-v5' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/view-data-v5',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV5Controller',
-                        'action' => 'view-data-v5',
-                    ),
-                ),
-            ),
-            */
             'provinces' => array(
                 'type' => 'segment',
                 'options' => array(

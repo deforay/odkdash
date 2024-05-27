@@ -35,7 +35,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         if ($formVersion == 3) {
             $table = 'spi_form_v_3';
         } elseif ($formVersion == 5) {
-            $table = 'spi_form_v_5';
+            $table = 'spi_form_v_6';
         } elseif ($formVersion == 6) {
             $table = 'spi_form_v_6';
         }
@@ -56,11 +56,11 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             if ($fResult == "") {
                 $district = $result['district'];
                 $province = 'Unknown';
-                if(isset($result['district']) && $result['district'] != '') {
+                if (isset($result['district']) && $result['district'] != '') {
                     $dbAdapter = $this->adapter;
                     $geoTable = new GeographicalDivisionsTable($dbAdapter);
-                    $res=$geoTable->checkDistrict(trim($result['district']));
-                    if($res) {
+                    $res = $geoTable->checkDistrict(trim($result['district']));
+                    if ($res) {
                         $district = $res['district'];
                         $province = $res['province'];
                     }
@@ -85,21 +85,21 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $dbAdapter = $this->adapter;
             $geoTable = new GeographicalDivisionsTable($dbAdapter);
             //Add Province
-            if(isset($params['province']) && trim($params['province'])=='other'){
-                if(trim($params['provinceName'])!=""){
-                    $provinceId=$geoTable->addProvinceByFacility(trim($params['provinceName']));
+            if (isset($params['province']) && trim($params['province']) == 'other') {
+                if (trim($params['provinceName']) != "") {
+                    $provinceId = $geoTable->addProvinceByFacility(trim($params['provinceName']));
                 }
-            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
-                $provinceId=base64_decode($params['province']);
+            } else if (trim($params['province']) != '' && trim($params['province']) != 'other') {
+                $provinceId = base64_decode($params['province']);
             }
 
             //Add District
-            if(isset($params['district']) && trim($params['district'])=='other'){
-                if(trim($params['districtName'])!=""){
-                    $districtId=$geoTable->addDistrictByFacility($provinceId,trim($params['districtName']));
+            if (isset($params['district']) && trim($params['district']) == 'other') {
+                if (trim($params['districtName']) != "") {
+                    $districtId = $geoTable->addDistrictByFacility($provinceId, trim($params['districtName']));
                 }
-            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
-                $districtId=base64_decode($params['district']);
+            } else if (trim($params['district']) != '' && trim($params['district']) != 'other') {
+                $districtId = base64_decode($params['district']);
             }
 
             //$province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
@@ -131,21 +131,21 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
             $geoTable = new GeographicalDivisionsTable($dbAdapter);
             //Add Province
-            if(isset($params['province']) && trim($params['province'])=='other'){
-                if(trim($params['provinceName'])!=""){
-                    $params['province']=$geoTable->addProvinceByFacility(trim($params['provinceName']));
+            if (isset($params['province']) && trim($params['province']) == 'other') {
+                if (trim($params['provinceName']) != "") {
+                    $params['province'] = $geoTable->addProvinceByFacility(trim($params['provinceName']));
                 }
-            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
-                $params['province']=base64_decode($params['province']);
+            } else if (trim($params['province']) != '' && trim($params['province']) != 'other') {
+                $params['province'] = base64_decode($params['province']);
             }
 
             //Add District
-            if(isset($params['district']) && trim($params['district'])=='other'){
-                if(trim($params['districtName'])!=""){
-                    $params['district']=$geoTable->addDistrictByFacility($params['province'],trim($params['districtName']));
+            if (isset($params['district']) && trim($params['district']) == 'other') {
+                if (trim($params['districtName']) != "") {
+                    $params['district'] = $geoTable->addDistrictByFacility($params['province'], trim($params['districtName']));
                 }
-            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
-                $params['district']=base64_decode($params['district']);
+            } else if (trim($params['district']) != '' && trim($params['district']) != 'other') {
+                $params['district'] = base64_decode($params['district']);
             }
             $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
             $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
@@ -254,9 +254,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $startDate = "";
         $endDate = "";
         $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->columns(['id','facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude','status'])
-            ->join(array('g' => 'geographical_divisions'), 'spirt3.province=g.geo_id', array('province'=>'geo_name'), 'left')
-            ->join(array('gd' => 'geographical_divisions'), 'spirt3.district=gd.geo_id', array('district'=>'geo_name'), 'left')
+            ->columns(['id', 'facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude', 'status'])
+            ->join(array('g' => 'geographical_divisions'), 'spirt3.province=g.geo_id', array('province' => 'geo_name'), 'left')
+            ->join(array('gd' => 'geographical_divisions'), 'spirt3.district=gd.geo_id', array('district' => 'geo_name'), 'left')
             ->where('spirt3.status != "deleted"');
 
         if (isset($sWhere) && $sWhere != "") {
@@ -433,13 +433,13 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         if (isset($ids) && trim($ids) != '') {
             $auditId = base64_decode($ids);
-            $auditQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+            $auditQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                 ->columns(array('facilityname'))
                 ->where(array('spiv5.id' => $auditId));
             $auditQueryStr = $sql->buildSqlString($auditQuery);
             $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if ($auditResult) {
-                $auditsQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+                $auditsQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                     ->columns(array('id', 'assesmentofaudit'))
                     ->where(array('spiv5.facilityname' => $auditResult->facilityname, 'spiv5.status' => 'approved'));
                 $auditsQueryStr = $sql->buildSqlString($auditsQuery);
@@ -526,38 +526,38 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $eventTable = new EventLogTable($dbAdapter);
         $currentDateTime = CommonService::getDateTime();
-          
-            $geographicalDivisionsTable = new GeographicalDivisionsTable($dbAdapter);
-            if(isset($params['province']) && trim($params['province'])=='other'){
-                if(trim($params['provinceName'])!=""){
-                    $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($params['provinceName']));
+
+        $geographicalDivisionsTable = new GeographicalDivisionsTable($dbAdapter);
+        if (isset($params['province']) && trim($params['province']) == 'other') {
+            if (trim($params['provinceName']) != "") {
+                $provinceId = $geographicalDivisionsTable->addProvinceByFacility(trim($params['provinceName']));
+            }
+        } else if (trim($params['province']) != '' && trim($params['province']) != 'other') {
+            $provinceId = base64_decode($params['province']);
+        }
+
+        //Add District
+        if (isset($params['district']) && trim($params['district']) == 'other') {
+            if (trim($params['districtName']) != "") {
+                $districtId = $geographicalDivisionsTable->addDistrictByFacility($provinceId, trim($params['districtName']));
+            }
+        } else if (trim($params['district']) != '' && trim($params['district']) != 'other') {
+            $districtId = base64_decode($params['district']);
+        }
+
+        if (isset($params['facility']) && count($params['facility']) > 0) {
+            $result = 1;
+            $counter = count($params['facility']);
+            if (isset($params['district']) && trim($params['district']) != '') {
+                for ($f = 0; $f < $counter; $f++) {
+                    $this->update(array('province' => $provinceId, 'district' => $districtId), array('facility_name' => $params['facility'][$f]));
                 }
-            }else if(trim($params['province'])!= '' && trim($params['province'])!='other'){
-                $provinceId=base64_decode($params['province']);
+            } else {
+                for ($f = 0; $f < $counter; $f++) {
+                    $this->update(array('province' => $provinceId), array('facility_name' => $params['facility'][$f]));
+                }
             }
 
-            //Add District
-            if(isset($params['district']) && trim($params['district'])=='other'){
-                if(trim($params['districtName'])!=""){
-                    $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($params['districtName']));
-                }
-            }else if(trim($params['district'])!= '' && trim($params['district'])!='other'){
-                $districtId=base64_decode($params['district']);
-            }
-
-            if (isset($params['facility']) && count($params['facility']) > 0) {
-                $result = 1;
-                $counter = count($params['facility']);
-                if (isset($params['district']) && trim($params['district']) != '') {
-                    for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $provinceId, 'district' => $districtId), array('facility_name' => $params['facility'][$f]));
-                    }
-                } else {
-                    for ($f = 0; $f < $counter; $f++) {
-                        $this->update(array('province' => $provinceId), array('facility_name' => $params['facility'][$f]));
-                    }
-                }
-            
 
             // if(isset($params['provinceName']) && $params['provinceName'] != '') {
             //     $data = array(
@@ -589,12 +589,12 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             //     );
             //     $geographicalDivisionsTable->insert($data);
             // }
-                $subject = '';
-                $eventType = 'Map-Province';
-                $action = $userName . ' has mapped Province ' . $params['province'];
-                $resourceName = 'Map-Province';
-                $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
-            }
+            $subject = '';
+            $eventType = 'Map-Province';
+            $action = $userName . ' has mapped Province ' . $params['province'];
+            $resourceName = 'Map-Province';
+            $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
+        }
         return $result;
     }
 

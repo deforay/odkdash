@@ -398,7 +398,7 @@ class CommonService
             $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
             $adapter->commit();
             $container->alertMsg = "Global Config Updated Successfully.";
-        } catch (\Exception $exc) {
+        } catch (Exception $exc) {
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -599,20 +599,24 @@ class CommonService
         $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
     }
 
-    public static function checkProvinceDistrict($geo_name, $sm = null) {
+    public static function checkProvinceDistrict($geo_name, $sm = null)
+    {
         $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
         $sql = new Sql($dbAdapter);
         $select = $sql->select()->from('geographical_divisions');
         $select->where(array('geo_name' => $geo_name));
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        print_r($result); die;
+        print_r($result);
+        die;
         if ($result->count() > 0) {
-            print_r(1); die;
+            print_r(1);
+            die;
             $currentRow = $result->current(); // Get the current row's data as an array
             return $currentRow;
-        } 
-        print_r(2); die;
+        }
+        print_r(2);
+        die;
         return 0;
     }
 }

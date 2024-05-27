@@ -26,19 +26,13 @@ return array(
             'edit' => 'allow',
             'audit-locations' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Controller' => array(
-            'index' => 'allow',
-            'approve-status' => 'allow',
-            'download-pdf' => 'allow',
-            'edit' => 'allow',
-            'audit-locations' => 'allow',
-        ),
         'Application\\Controller\\UsersController' => array(
             'index' => 'allow',
             'change-password' => 'allow',
             'check-password' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
+            'profile' => 'allow'
         ),
         'Application\\Controller\\UserLoginHistoryController' => array(
             'index' => 'allow',
@@ -99,20 +93,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Controller' => array(
-            'index' => 'allow',
-            'manage-facility' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'delete' => 'allow',
-            'download-pdf' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
-            'edit' => 'allow',
-            'export' => 'allow',
-            'view-bulk-downloads' => 'deny',
-            'view-data-v5' => 'allow',
-        ),
         'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
@@ -150,11 +130,9 @@ return array(
             'add' => 'allow',
             'change-password' => 'deny',
             'edit' => 'allow',
+            'profile' => 'allow'
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
-            'facility-report' => 'allow',
-        ),
-        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
         'Application\\Controller\\SpiV6ReportsController' => array(
@@ -194,6 +172,7 @@ return array(
             'edit' => 'deny',
             'change-password' => 'allow',
             'check-password' => 'allow',
+            'profile' => 'allow',
         ),
     ),
     'VIEWER' => array(
@@ -233,18 +212,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Controller' => array(
-            'index' => 'allow',
-            'manage-facility' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'delete' => 'allow',
-            'download-pdf' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
-            'edit' => 'allow',
-            'export' => 'allow',
-        ),
         'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
@@ -275,11 +242,9 @@ return array(
             'edit' => 'allow',
             'change-password' => 'allow',
             'check-password' => 'allow',
+            'profile' => 'allow'
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
-            'facility-report' => 'allow',
-        ),
-        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
         'Application\\Controller\\SpiV6ReportsController' => array(
@@ -338,20 +303,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Controller' => array(
-            'index' => 'deny',
-            'manage-facility' => 'deny',
-            'approve-status' => 'deny',
-            'corrective-action-pdf' => 'deny',
-            'delete' => 'deny',
-            'download-pdf' => 'deny',
-            'download-files' => 'deny',
-            'duplicate' => 'deny',
-            'edit' => 'deny',
-            'export' => 'deny',
-            'view-bulk-downloads' => 'deny',
-            'view-data-v5' => 'deny',
-        ),
         'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'deny',
             'manage-facility' => 'deny',
@@ -389,12 +340,10 @@ return array(
             'add' => 'allow',
             'change-password' => 'allow',
             'edit' => 'allow',
+            'profile' => 'allow'
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
             'facility-report' => 'allow',
-        ),
-        'Application\\Controller\\SpiV5ReportsController' => array(
-            'facility-report' => 'deny',
         ),
         'Application\\Controller\\SpiV6ReportsController' => array(
             'facility-report' => 'deny',
@@ -437,20 +386,6 @@ return array(
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-        ),
-        'Application\\Controller\\SpiV5Controller' => array(
-            'index' => 'allow',
-            'manage-facility' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'delete' => 'allow',
-            'download-pdf' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
-            'edit' => 'allow',
-            'export' => 'allow',
-            'view-data-v5' => 'allow',
-            'view-bulk-downloads' => 'allow',
         ),
         'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
@@ -497,11 +432,9 @@ return array(
             'change-password' => 'allow',
             'check-password' => 'allow',
             'edit' => 'allow',
+            'profile' => 'allow'
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
-            'facility-report' => 'allow',
-        ),
-        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
         'Application\\Controller\\SpiV6ReportsController' => array(
@@ -554,20 +487,6 @@ return array(
             'add' => 'allow',
             'edit' => 'allow',
         ),
-        'Application\\Controller\\SpiV5Controller' => array(
-            'index' => 'allow',
-            'manage-facility' => 'allow',
-            'approve-status' => 'allow',
-            'corrective-action-pdf' => 'allow',
-            'delete' => 'allow',
-            'download-pdf' => 'allow',
-            'download-files' => 'allow',
-            'duplicate' => 'allow',
-            'edit' => 'allow',
-            'export' => 'allow',
-            'view-bulk-downloads' => 'allow',
-            'view-data-v5' => 'allow',
-        ),
         'Application\\Controller\\SpiV6Controller' => array(
             'index' => 'allow',
             'manage-facility' => 'allow',
@@ -605,11 +524,9 @@ return array(
             'add' => 'allow',
             'change-password' => 'allow',
             'edit' => 'allow',
+            'profile' => 'allow'
         ),
         'Application\\Controller\\SpiV3ReportsController' => array(
-            'facility-report' => 'allow',
-        ),
-        'Application\\Controller\\SpiV5ReportsController' => array(
             'facility-report' => 'allow',
         ),
         'Application\\Controller\\SpiV6ReportsController' => array(

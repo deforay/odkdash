@@ -24,7 +24,7 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
 class SpiFormVer5DownloadTable extends AbstractTableGateway
 {
 
-    protected $table = 'r_spi_form_v_5_download';
+    protected $table = 'r_spi_form_v_6_download';
     protected $adapter;
 
     public function __construct(Adapter $adapter)
@@ -65,11 +65,11 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
         $result = array();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('r_spi_form_v_5_download')->where(array('download_status' => 0));
+        $query = $sql->select()->from('r_spi_form_v_6_download')->where(array('download_status' => 0));
         $queryStr = $sql->buildSqlString($query);
         $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($queryResult) {
-            $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+            $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                 ->where('spiv5.status != "deleted"');
             if (isset($queryResult->auditroundno) && $queryResult->auditroundno != '') {
                 $sQuery = $sQuery->where("spiv5.auditroundno='" . $queryResult->auditroundno . "'");
@@ -130,7 +130,7 @@ class SpiFormVer5DownloadTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('r_spi_form_v_5_download')->where(array('download_status' => 1, 'user' => $loginContainer->userId))->order('r_download_id desc')->limit(5);
+        $query = $sql->select()->from('r_spi_form_v_6_download')->where(array('download_status' => 1, 'user' => $loginContainer->userId))->order('r_download_id desc')->limit(5);
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }

@@ -28,7 +28,7 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
 class SpiFormVer5Table extends AbstractTableGateway
 {
 
-    protected $table = 'spi_form_v_5';
+    protected $table = 'spi_form_v_6';
     protected $adapter;
 
     public function __construct(Adapter $adapter)
@@ -73,7 +73,7 @@ class SpiFormVer5Table extends AbstractTableGateway
                 $sql = new Sql($this->adapter);
 
 
-                $insert = $sql->insert('spi_form_v_5');
+                $insert = $sql->insert('spi_form_v_6');
                 if (isset($data['testingpointtype']) && trim($data['testingpointtype']) == "") {
                     $data['testingpointtype'] = $data['testingpointtype'];
                 }
@@ -380,7 +380,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->columns(array(
                 'oldestDate' => new \Laminas\Db\Sql\Expression("MIN(`assesmentofaudit`)"),
                 'newestDate' => new \Laminas\Db\Sql\Expression("MAX(`assesmentofaudit`)"),
@@ -474,7 +474,7 @@ class SpiFormVer5Table extends AbstractTableGateway
             }
         }
 
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->columns(array(
                 'newestDate' => new \Laminas\Db\Sql\Expression("'$startDate'"),
                 'oldestDate' => new \Laminas\Db\Sql\Expression("'$endDate'"),
@@ -559,7 +559,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $today = date('Y-m-d');
         $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->columns(array(
                 'newestDate' => new \Laminas\Db\Sql\Expression("'$today'"),
                 'oldestDate' => new \Laminas\Db\Sql\Expression("'$last180Date'"),
@@ -587,7 +587,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->where('spiv3.status != "deleted"')
             ->order(array("status DESC", "id $sortOrder"));
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
@@ -604,7 +604,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'));
         // ->order(array("avgMonthTesting DESC"));
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
@@ -782,7 +782,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         }
 
 
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where('spiv5.status != "deleted"');
         // ->join(array('f'=>'spi_rt_3_facilities'),
         //                 'f.id=spiv3.facility',
@@ -853,7 +853,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where('spiv5.status != "deleted"');
         //  ->join(array('f'=>'spi_rt_3_facilities'),
         //                 'f.id=spiv3.facility',
@@ -973,11 +973,11 @@ class SpiFormVer5Table extends AbstractTableGateway
             $output['aaData'][] = $row;
         }
         //get earliest date
-        $eQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
+        $eQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_6'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
         $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
         $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get duplicate value
-        $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_5 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
         $output['levelZeroCount'] = count($levelZero);
@@ -994,7 +994,7 @@ class SpiFormVer5Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`, COUNT(*) c FROM spi_form_v_5 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
 
@@ -1081,7 +1081,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         */
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where('spiv5.status != "deleted"');
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
@@ -1111,7 +1111,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $tQuery =  $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where('spiv5.status != "deleted"');
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $tQuery = $tQuery->where('spiv5.token IN ("' . implode('", "', $loginContainer->token) . '")');
@@ -1151,7 +1151,7 @@ class SpiFormVer5Table extends AbstractTableGateway
                 //$downloadPdf = '<a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
             }
             if ($update) {
-                $edit = '&nbsp;<a href="/spi-v5/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+                $edit = '&nbsp;<a href="/spi-v6/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
             }
             if ($delete) {
                 $remove = '&nbsp;<a href="javascript:void(0);" onclick="deleteAudit(' . $aRow['id'] . ');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
@@ -1166,7 +1166,7 @@ class SpiFormVer5Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where(array('spiv5.status' => 'pending'));
         $sQueryStr = $sql->buildSqlString($sQuery);
         return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -1179,7 +1179,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $trackTable = new EventLogTable($dbAdapter);
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where(array('spiv5.id' => $id));
         $sQueryStr = $sql->buildSqlString($sQuery);
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -1215,7 +1215,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         //$rResult = $this->getAllSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->order(array("id DESC"));
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv5.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
@@ -1316,7 +1316,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         //$rResult = $this->fetchAllApprovedSubmissions();
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->where(array('spiv3.status' => 'approved'))
             ->order(array("assesmentofaudit DESC"));
         if (isset($params['roundno']) && $params['roundno'] != '') {
@@ -1503,7 +1503,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->where(array('status' => 'approved'))
             ->order(array("assesmentofaudit $sortOrder"));
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
@@ -1880,7 +1880,7 @@ class SpiFormVer5Table extends AbstractTableGateway
                 $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where(array('spiv5.status' => 'approved'));
         if ($parameters['auditRndNo'] != '') {
             $sQuery = $sQuery->where("spiv5.auditroundno='" . $parameters['auditRndNo'] . "'");
@@ -2017,7 +2017,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where(array('spiv5.status' => 'approved'))
             ->order(array("assesmentofaudit DESC"));
         if (isset($params['roundno']) && $params['roundno'] != '') {
@@ -2278,7 +2278,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
             ->group('auditroundno')
             ->order("auditroundno ASC");
@@ -2326,7 +2326,7 @@ class SpiFormVer5Table extends AbstractTableGateway
                 $facilityDb->update($data, array('facility_name' => $params['defaultFacilityName']));
             }
 
-            $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname'))
+            $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))->columns(array('facilityname'))
                 ->where(array('spiv5.facilityname' => $params['defaultFacilityName']));
             $aQueryStr = $sql->buildSqlString($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -2340,7 +2340,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         }
         $c = count($params['upFaciltyName']);
         for ($i = 0; $i < $c; $i++) {
-            $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname', 'id'))
+            $aQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))->columns(array('facilityname', 'id'))
                 ->where(array('spiv5.facilityname' => $params['upFaciltyName'][$i]));
             $aQueryStr = $sql->buildSqlString($aQuery);
             $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -2372,7 +2372,7 @@ class SpiFormVer5Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))->order('facilityname ASC');
+        $uQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))->order('facilityname ASC');
         $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
@@ -2546,7 +2546,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         if (isset($params['facilityName']) && trim($params['facilityName']) != '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
-            $query = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+            $query = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                 ->columns(array('id', 'assesmentofaudit'))
                 ->where(array('spiv5.facilityname' => $params['facilityName'], 'spiv5.status' => 'approved'));
             $queryStr = $sql->buildSqlString($query);
@@ -2567,7 +2567,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->where('spiv3.status = "pending"');
         if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
@@ -2881,11 +2881,11 @@ class SpiFormVer5Table extends AbstractTableGateway
 
         if ($parameters['source'] == 'ad') {
             //For Audit Dates
-            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
-            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new \Laminas\Db\Sql\Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
@@ -2901,10 +2901,10 @@ class SpiFormVer5Table extends AbstractTableGateway
                 }
             }
             //For Audit Performance Row
-            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
-            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
                 ->where(array('spiv3.status' => 'approved'));
             if ($parameters['source'] == 'apl180') {
@@ -2961,10 +2961,10 @@ class SpiFormVer5Table extends AbstractTableGateway
             }
         } elseif ($parameters['source'] == 'apspi') {
             //For Audit Performance
-            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
                 ->group('spiv3.assesmentofaudit');
-            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
                 ->group('spiv3.assesmentofaudit');
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
@@ -2974,10 +2974,10 @@ class SpiFormVer5Table extends AbstractTableGateway
             }
         } else {
             //For Others
-            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
 
-            $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_5'))
+            $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
                 ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
         }
 
@@ -3138,7 +3138,7 @@ class SpiFormVer5Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+        $query = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->columns(array(new Expression('DISTINCT(testingpointtype) as testingPointType')))
             ->group('testingpointtype')
             ->order("testingpointtype ASC");
@@ -3158,7 +3158,7 @@ class SpiFormVer5Table extends AbstractTableGateway
             }
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
-            $query = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+            $query = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                 ->columns(array(new Expression($column)));
             if (isset($params['testingPointType']) && trim($params['testingPointType']) != '' && $params['testingPointType'] == 'other') {
                 $query = $query->where('testingpointtype_other IS NOT NULL');
@@ -3176,7 +3176,7 @@ class SpiFormVer5Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_5'))->columns(array('facilityname'))
+        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))->columns(array('facilityname'))
             ->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility');
         //    ->group("province")
         //    ->order("province ASC");

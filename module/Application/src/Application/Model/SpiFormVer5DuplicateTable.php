@@ -24,7 +24,7 @@ use Application\Model\GlobalTable;
 class SpiFormVer5DuplicateTable extends AbstractTableGateway
 {
 
-    protected $table = 'spi_form_v_5_duplicate';
+    protected $table = 'spi_form_v_6_duplicate';
     protected $adapter;
 
     public function __construct(Adapter $adapter)
@@ -38,9 +38,9 @@ class SpiFormVer5DuplicateTable extends AbstractTableGateway
         $result = false;
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $dResult = $dbAdapter->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'spi_form_v_5_duplicate'", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $dResult = $dbAdapter->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'spi_form_v_6_duplicate'", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         if (count($dResult) > 0) {
-            $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_5'))
+            $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
                 ->where('spiv5.id = "' . $params['id'] . '"');
             $sQueryStr = $sql->buildSqlString($sQuery);
             $aResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
@@ -49,7 +49,7 @@ class SpiFormVer5DuplicateTable extends AbstractTableGateway
             }
 
             $sql = new Sql($this->adapter);
-            $insert = $sql->insert('spi_form_v_5_duplicate');
+            $insert = $sql->insert('spi_form_v_6_duplicate');
             $dbAdapter = $this->adapter;
             $result = $insert->values($data);
             $selectString = $sql->buildSqlString($insert);
