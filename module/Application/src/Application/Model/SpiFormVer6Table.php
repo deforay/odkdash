@@ -1415,6 +1415,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         //         }
         //     }
         // }
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                         ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(isset($params['district']) && is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
+        }
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
@@ -1429,7 +1436,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
-        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         return $rResult;
     }
@@ -2045,6 +2051,14 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
 
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                         ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
+        }
+
         if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
             $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
         }
@@ -2133,7 +2147,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv6.affiliation='" . $params['affiliation'] . "'");
         }
-
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                         ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
+        }
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
@@ -2236,6 +2256,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv6.affiliation='" . $params['affiliation'] . "'");
+        }
+
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                         ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
         }
 
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
@@ -2363,6 +2391,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         //         }
         //     }
         // }
+
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                         ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
+        }
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
@@ -3081,6 +3117,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         //         }
         //     }
         // }
+
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                        ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
+        }
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
