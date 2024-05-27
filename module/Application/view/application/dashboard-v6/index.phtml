@@ -136,32 +136,28 @@ $config = $this->GlobalConfigHelper();
 									</select>
 								</div>
 							</div>
-							<!-- <div class="form-group">
+							 <div class="form-group">
 								<label for="province" class="col-sm-2 control-label">Province</label>
 								<div class=" col-lg-4">
-									<select class="" id="provinceDistrict" multiple="multiple" onchange="getAllDistrict();">
+									<select class="" id="province" multiple="multiple" onchange="getDistrictList();">
 										<?php
-										foreach ($levelNamesResult as $levelName) {
+										foreach ($provinceResult as $val) {
 										?>
-											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+										<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
 										<?php
 										}
 										?>
+										
 									</select>
 								</div>
+								
 								<label for="district" class="col-sm-2 control-label">District</label>
-								<div class=" col-lg-4 districtFilter">
-									<select class="form-control" id="district">
-										<?php
-										foreach ($levelNamesResult as $levelName) {
-										?>
-											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
-										<?php
-										}
-										?>
+								<div class=" col-lg-4">
+									<select class="form-control" id="district" multiple="multiple">
+										<option value="">All</option>
 									</select>
 								</div>
-							</div> -->
+							</div> 
 							<div class="form-group">
 								<label for="scoreLevel" class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
 								<div class=" col-lg-4">
@@ -1157,7 +1153,7 @@ $config = $this->GlobalConfigHelper();
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
-				province: $("#provinceDistrict").val(),
+				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
 			},
@@ -1558,10 +1554,12 @@ $config = $this->GlobalConfigHelper();
 		//getAuditSectionZeroProtocolDetails();
 
 
-		$("#provinceDistrict").multipleSelect({
-			placeholder: 'Select Province',
-			width: '100%'
-		});
+		$("#province").select2({
+          width: '100%',
+          placeholder: 'All',
+          allowClear: true,
+          tags: false
+    	});
 		$("#auditRndNo,#auditRndNoSectionZero,#auditRndNoSectionZeroProtocol").multipleSelect({
 			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
 			width: '31%',
@@ -1577,7 +1575,12 @@ $config = $this->GlobalConfigHelper();
 			width: '30%',
 			minimumCountSelected: '2'
 		});
-
+		$("#district").select2({
+          width: '100%',
+          placeholder: 'All',
+          allowClear: true,
+          tags: false
+    	});
 	});
 
 
@@ -2026,4 +2029,16 @@ $config = $this->GlobalConfigHelper();
 			$('#district').html('');
 		}
 	}
+
+	function getDistrictList(){
+		$.blockUI();
+		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
+		provinceId: $("#province").val()
+		},
+		function(data) {
+		$.unblockUI();
+		// console.log(data); return false;
+		$('#district').html(data);
+		});
+  	}
 </script>

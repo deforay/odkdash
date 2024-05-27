@@ -12,10 +12,12 @@ class DashboardV6Controller extends AbstractActionController
 {
 
     private $odkFormService = null;
+    private $provinceService = null;
 
-    public function __construct($odkFormService)
+    public function __construct($odkFormService,$provinceService)
     {
         $this->odkFormService = $odkFormService;
+        $this->provinceService = $provinceService;
     }
 
     public function indexAction()
@@ -32,8 +34,9 @@ class DashboardV6Controller extends AbstractActionController
         //$zeroCounts = $this->odkFormService->getZeroQuestionCounts();
         //$spiV3Labels = $this->odkFormService->getSpiV3FormLabels();
         $spiV6auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
-        $levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
+        //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
+        $provinceResult = $this->provinceService->getAllActiveProvinces();
 
         return new ViewModel(array(
             'perf1' => $perf1,
@@ -48,7 +51,7 @@ class DashboardV6Controller extends AbstractActionController
             //'zeroCounts' => $zeroCounts,
             'spiV6auditRoundNo' => $spiV6auditRoundNo,
             'testingPointResult' => $testingPointResult,
-            'levelNamesResult' => $levelNamesResult
+            'provinceResult' => $provinceResult
         ));
     }
 }

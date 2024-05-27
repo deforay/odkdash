@@ -1252,13 +1252,15 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['affiliation']) && $params['affiliation'] != '') {
             $sQuery = $sQuery->where("spiv6.affiliation='" . $params['affiliation'] . "'");
         }
-        // if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
-        // $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
-        //                 ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-        // if(is_array($params['district']) && count($params['district'])>0 ){
-        //     $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $params['province']) . '")');
-        // }
-        // }else{
+        
+        if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
+            $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
+                         ->where('f.province IN ("' . implode('", "', $params['province']) . '")');
+            if(is_array($params['district']) && count($params['district'])>0 ){
+                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $params['district']) . '")');
+            }
+        }
+        //else{
         //     if(isset($params['province']) && $params['province']!=''){
         //         $provinces = explode(",",$params['province']);
         //         $sQuery = $sQuery->join(array('f'=>'spi_rt_3_facilities'),'f.id=spiv6.facility',array('province','district'))
@@ -1275,6 +1277,8 @@ class SpiFormVer6Table extends AbstractTableGateway
         //         }
         //     }
         // }
+        
+
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             if ($params['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
@@ -1290,7 +1294,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery);
-        // die($sQueryStr);
+        //die($sQueryStr);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         return $rResult;

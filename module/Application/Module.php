@@ -375,7 +375,8 @@ class Module
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\DashboardV6Controller($odkFormService);
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\DashboardV6Controller($odkFormService,$provinceService);
                     }
                 },
                 'Application\Controller\ProvincesController' => new class
