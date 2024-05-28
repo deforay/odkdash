@@ -74,6 +74,16 @@
 									</div>
 								</div>
 								<div class="form-group">
+									<label for="dashboard_map_display" class="col-sm-2 control-label">Dashboard Map Display<span class="mandatory">*</span></label>
+									<div class="col-lg-4">
+										<select name="dashboard_map_display" id="dashboard_map_display" class="form-control isRequired" title="Please select dashboard map display">
+											<option value="">--select</option>
+											<option value="horizontal" <?php echo ($config['dashboard_map_display'] == 'horizontal' ? " selected='selected'" : ""); ?>>Horizontal</option>
+											<option value="vertical" <?php echo ($config['dashboard_map_display'] == 'vertical' ? " selected='selected'" : ""); ?>>Vertical</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
 									<label for="approve_status" class="col-sm-2 control-label">Language <span class="mandatory">*</span></label>
 									<div class="col-lg-4">
 										<select name="language" id="language" class="form-control isRequired" title="Please select language">

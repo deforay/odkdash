@@ -2752,3 +2752,6 @@ INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Co
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'index', 'Access');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'add', 'Add');
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'edit', 'Edit');
+
+-- Brindha 28-May-2024
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Dashboard Map Display', 'dashboard_map_display', 'horizontal');
