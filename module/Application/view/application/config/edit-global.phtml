@@ -76,11 +76,12 @@
 								<div class="form-group">
 									<label for="dashboard_map_display" class="col-sm-2 control-label">Dashboard Map Display<span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="dashboard_map_display" id="dashboard_map_display" class="form-control isRequired" title="Please select dashboard map display">
+										<select name="dashboard_map_display" id="dashboard_map_display" class="form-control isRequired" title="Please select dashboard map display" onchange="checkMapDisplay()">
 											<option value="">--select</option>
 											<option value="horizontal" <?php echo ($config['dashboard_map_display'] == 'horizontal' ? " selected='selected'" : ""); ?>>Horizontal</option>
 											<option value="vertical" <?php echo ($config['dashboard_map_display'] == 'vertical' ? " selected='selected'" : ""); ?>>Vertical</option>
 										</select>
+										<input type="text" value="<?php echo $config['dashboard_map_height']; ?>" placeholder="Enter map display height" class="form-control" name="dashboard_map_height" id="dashboard_map_height" style="<?php echo ($config['dashboard_map_display'] == 'vertical' ?  'display:none;' : '')?>" title="Please enter the map display height">
 									</div>
 								</div>
 								<div class="form-group">
@@ -165,5 +166,16 @@
 	function getNewImage(img) {
 		$('#clearImage').hide();
 		$("#removedLogoImage").val(img);
+	}
+
+	function checkMapDisplay(){
+		dashboardMapDisplay=$("#dashboard_map_display").val();
+		if(dashboardMapDisplay=='horizontal'){
+			$("#dashboard_map_height").show();
+			$("#dashboard_map_height").addClass("isRequired");
+		}else{
+			$("#dashboard_map_height").hide();
+			$("#dashboard_map_height").removeClass("isRequired");
+		}
 	}
 </script>
