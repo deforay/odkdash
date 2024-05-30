@@ -9,7 +9,7 @@ $mapDisplay = $config['dashboard_map_display'];
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/leaflet.css'); ?>" type="text/css" />
 <style>
 	.auditPointName {
 		color: #fff;
@@ -86,7 +86,7 @@ $mapDisplay = $config['dashboard_map_display'];
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/leaflet.js'); ?>"></script>
 <div class="am-content">
 	<div class="page-head">
 		<span style="">
@@ -764,8 +764,6 @@ $mapDisplay = $config['dashboard_map_display'];
 <script src="<?php echo $this->basePath('assets/js/highcharts-more.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/highchart-exporting.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/highchart-offline-exporting.js'); ?>"></script>
-<!--<script src="https://code.highcharts.com/modules/exporting.js"></script>-->
-<!--<script src="https://code.highcharts.com/modules/offline-exporting.js"></script>-->
 <script src="<?php echo $this->basePath('assets/js/pattern-fill.js'); ?>"></script>
 
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.dataTables.min.js'); ?>"></script>
