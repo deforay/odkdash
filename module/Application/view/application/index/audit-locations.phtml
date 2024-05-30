@@ -5,61 +5,62 @@ $icon = $this->basePath('assets/img/map-points/dark-green.png');
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/leaflet.css'); ?>" type="text/css" />
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/leaflet.js'); ?>"></script>
 <script>
-	
 	$(document).ready(function() {
-			var lat = "<?php echo $configData['latitude']; ?>";
-			var log = "<?php echo $configData['longitude']; ?>";
-			var zoomLevel = '8';
-			
-			var LeafIcon = L.Icon.extend({
-			});
-			var map = L.map('map', {
-				zoomControl: false,
-				scrollWheelZoom: true,
-				inertia: false,
-				zoomAnimation: false,
-				minZoom: 3,
-				maxBounds: [
-					[-90.0, -180.0],
-					[90.0, 180.0]
-				]
-			}).setView([lat, log], zoomLevel);
-			new L.Control.Zoom({
-				position: 'topleft'
-			}).addTo(map);
-			map._onResize();
+		var lat = "<?php echo $configData['latitude']; ?>";
+		var log = "<?php echo $configData['longitude']; ?>";
+		var zoomLevel = "<?php echo $configData['dashboard_map_zoomlevel'] ?? '4'; ?>";
 
-			L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-			}).addTo(map);
-			
-			// visualize the markers on the map
-			<?php foreach ($allSubmissions as $row) {
-				if (isset($row['Latitude']) && $row['Latitude'] != "") {
+		var LeafIcon = L.Icon.extend({});
+		var map = L.map('map', {
+			zoomControl: false,
+			scrollWheelZoom: true,
+			inertia: false,
+			zoomAnimation: false,
+			minZoom: 3,
+			maxBounds: [
+				[-90.0, -180.0],
+				[90.0, 180.0]
+			]
+		}).setView([lat, log], zoomLevel);
+		new L.Control.Zoom({
+			position: 'topleft'
+		}).addTo(map);
+		map._onResize();
+
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+
+		// visualize the markers on the map
+		<?php foreach ($allSubmissions as $row) {
+			if (isset($row['Latitude']) && $row['Latitude'] != "") {
+				$icon = $this->basePath('assets/img/map-points/dark-green.png');
+				if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
 					$icon = $this->basePath('assets/img/map-points/dark-green.png');
-					if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
-						$icon = $this->basePath('assets/img/map-points/dark-green.png');
-					} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] <= 89) {
-						$icon = $this->basePath('assets/img/map-points/light-green.png');
-					} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] <= 79) {
-						$icon = $this->basePath('assets/img/map-points/yellow.png');
-					} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] <= 599) {
-						$icon = $this->basePath('assets/img/map-points/orange.png');
-					} else {
-						$icon = $this->basePath('assets/img/map-points/red.png');
-					}
-			?>
-				var marker= L.marker(["<?php echo $row['Latitude'] ?>", "<?php echo $row['Longitude'] ?>"], {
-						icon: new LeafIcon({iconUrl: "<?php echo $icon; ?>"})
+				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] <= 89) {
+					$icon = $this->basePath('assets/img/map-points/light-green.png');
+				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] <= 79) {
+					$icon = $this->basePath('assets/img/map-points/yellow.png');
+				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] <= 599) {
+					$icon = $this->basePath('assets/img/map-points/orange.png');
+				} else {
+					$icon = $this->basePath('assets/img/map-points/red.png');
+				}
+		?>
+				var marker = L.marker(["<?php echo $row['Latitude'] ?>", "<?php echo $row['Longitude'] ?>"], {
+						icon: new LeafIcon({
+							iconUrl: "<?php echo $icon; ?>"
+						})
 					}).bindPopup("<?php echo addslashes($row['facilityname']); ?>")
 					.addTo(map).on('mouseover', function(e) {
-					this.openPopup();
-				})
-				.on('mouseout', function(e) {
-					this.closePopup();
-				});
-				
-			<?php } } ?>
+						this.openPopup();
+					})
+					.on('mouseout', function(e) {
+						this.closePopup();
+					});
+
+		<?php }
+		} ?>
 
 	});
 </script>
