@@ -2756,3 +2756,6 @@ INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUE
 -- Brindha 28-May-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Dashboard Map Display', 'dashboard_map_display', 'horizontal');
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Dashboard Map Height', 'dashboard_map_height', '1000');
+
+-- Brindha 30-May-2024
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Dashboard Map Zoom Level', 'dashboard_map_zoomlevel', '8');
