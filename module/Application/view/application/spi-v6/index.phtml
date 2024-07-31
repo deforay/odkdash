@@ -14,10 +14,21 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
 <style>
-.select2-container--default .select2-selection--single .select2-selection__arrow b:after{content:""}
-.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b:after {content:""}
-.select2-container .select2-selection--single{height:40px;}
-.select2-container--default .select2-selection--single .select2-selection__rendered{ line-height:7px !important; }
+  .select2-container--default .select2-selection--single .select2-selection__arrow b:after {
+    content: ""
+  }
+
+  .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b:after {
+    content: ""
+  }
+
+  .select2-container .select2-selection--single {
+    height: 40px;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 7px !important;
+  }
 </style>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
@@ -263,7 +274,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
       "iDisplayLength": 50,
       "pageLength": 50,
       "aaSorting": [
-        [5, "desc"]
+        [3, "desc"]
       ],
       "sAjaxSource": "<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>",
       "fnServerData": function(sSource, aoData, fnCallback) {
@@ -280,9 +291,9 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
           "value": $("#testPoint").val()
         });
         aoData.push({
-					"name": "testPointName",
-					"value": $("#testPointName").val()
-				});
+          "name": "testPointName",
+          "value": $("#testPointName").val()
+        });
         aoData.push({
           "name": "affiliation",
           "value": $("#affiliation").val()
@@ -340,17 +351,17 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
     });
 
     $("#district").select2({
-          width: '100%',
-          placeholder: 'All',
-          allowClear: true,
-          tags: false
+      width: '100%',
+      placeholder: 'All',
+      allowClear: true,
+      tags: false
     });
 
     $("#province").select2({
-          width: '100%',
-          placeholder: 'All',
-          allowClear: true,
-          tags: false
+      width: '100%',
+      placeholder: 'All',
+      allowClear: true,
+      tags: false
     });
   });
 
@@ -386,17 +397,17 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
     table.draw();
   }
 
-   function getTestingPointTypeNames() {
-     $.blockUI();
-     var testingPointType = $('#testPoint').val();
-       $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
-         testingPointType: testingPointType
-       },
-       function(data) {
-         $('.testPointNameSection').html(data);
-         $.unblockUI();
-       });
-   }
+  function getTestingPointTypeNames() {
+    $.blockUI();
+    var testingPointType = $('#testPoint').val();
+    $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
+        testingPointType: testingPointType
+      },
+      function(data) {
+        $('.testPointNameSection').html(data);
+        $.unblockUI();
+      });
+  }
 
   function exportData() {
     $.blockUI();
@@ -524,14 +535,14 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
       });
   }
 
-  function getDistrictList(){
+  function getDistrictList() {
     $.blockUI();
     $.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
-      provinceId: $("#province").val()
-    },
-    function(data) {
-      $.unblockUI();
-      $('#district').html(data);
-    });
+        provinceId: $("#province").val()
+      },
+      function(data) {
+        $.unblockUI();
+        $('#district').html(data);
+      });
   }
 </script>
