@@ -192,9 +192,9 @@ $config = $this->GlobalConfigHelper();
 		<?php
 
 		$counter = 0;
-		$barData = array();
-		$volumeData = array();
-		$labNameData = array();
+		$barData = [];
+		$volumeData = [];
+		$labNameData = [];
 		foreach ($allSubmissions as $row) {
 			if ($counter == 20) break;
 			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
@@ -400,8 +400,8 @@ $config = $this->GlobalConfigHelper();
 
 			<?php
 
-			$eventDatesArray = array();
-			$eventCount = array();
+			$eventDatesArray = [];
+			$eventCount = [];
 			foreach ($allSubmissions as $row) {
 				$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 				$eventDatesArray[] = "'" . $humanDate . "'";
@@ -591,7 +591,7 @@ $config = $this->GlobalConfigHelper();
 	function approveStatus(id) {
 		conf = confirm("Are you sure you want to approve this audit ?");
 		if (conf) {
-			$.post("<?php echo $this->url('spi-v3-form', array('action' => 'approve-status')); ?>", {
+			$.post("<?php echo $this->url('spi-v3-form', ['action' => 'approve-status']); ?>", {
 					id: id
 				},
 				function(data) {
@@ -605,14 +605,14 @@ $config = $this->GlobalConfigHelper();
 	}
 
 	$(function() {
-
-
 		<?php
 
 		$counter = 0;
-		$barData = array();
-		$volumeData = array();
-		$labNameData = array();
+		$barData = [];
+		$volumeData = [];
+		$labNameData = [];
+		$testerData = [];
+		$levelData = [];
 
 		foreach ($testingVolume as $row) {
 			if ($counter == 10) {
@@ -636,10 +636,10 @@ $config = $this->GlobalConfigHelper();
 				$level = 4;
 			}
 
-			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
-			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
-			$testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>'");
+			$levelData[] = "{ y : $level, color : '$color' }";
+			$volumeData[] = $row['avgMonthTesting'] ?? 0;
+			$testerData[] = $row['NumberofTester'] ?? 0;
+			$labNameData[] = "'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>'";
 			$counter++;
 		}
 		?>
@@ -757,8 +757,8 @@ $config = $this->GlobalConfigHelper();
 			}]
 		});
 		<?php
-		$eventDatesArray = array();
-		$eventCount = array();
+		$eventDatesArray = [];
+		$eventCount = [];
 		foreach ($allSubmissions as $row) {
 			$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 			$eventDatesArray[] = "'" . $humanDate . "'";

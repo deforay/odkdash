@@ -66,7 +66,7 @@ class Module
         //$languagecontainer = new Container('language');
 
         if (php_sapi_name() != 'cli') {
-            $eventManager->attach('dispatch', function (\Laminas\Mvc\MvcEvent $e) {
+            $eventManager->attach('dispatch', function (MvcEvent $e) {
                 return $this->preSetter($e);
             }, 100);
         }
@@ -194,10 +194,9 @@ class Module
 
     public function getControllerConfig()
     {
-        return array(
-            'factories' => array(
-                'Application\Controller\IndexController' => new class
-                {
+        return [
+            'factories' => [
+                'Application\Controller\IndexController' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
@@ -205,40 +204,35 @@ class Module
                         return new \Application\Controller\IndexController($odkFormService, $commonService);
                     }
                 },
-                'Application\Controller\ReceiverController' => new class
-                {
+                'Application\Controller\ReceiverController' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\ReceiverController($odkFormService);
                     }
                 },
-                'Application\Controller\ReceiverSpiV6Controller' => new class
-                {
+                'Application\Controller\ReceiverSpiV6Controller' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\ReceiverSpiV6Controller($odkFormService);
                     }
                 },
-                'Application\Controller\LoginController' => new class
-                {
+                'Application\Controller\LoginController' => new class {
                     public function __invoke($diContainer)
                     {
                         $userService = $diContainer->get('UserService');
                         return new \Application\Controller\LoginController($userService);
                     }
                 },
-                'Application\Controller\SpiV3ReportsController' => new class
-                {
+                'Application\Controller\SpiV3ReportsController' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\SpiV3ReportsController($odkFormService);
                     }
                 },
-                'Application\Controller\SpiV6ReportsController' => new class
-                {
+                'Application\Controller\SpiV6ReportsController' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
@@ -246,8 +240,7 @@ class Module
                         return new \Application\Controller\SpiV6ReportsController($odkFormService, $provinceService);
                     }
                 },
-                'Application\Controller\SpiV3Controller' => new class
-                {
+                'Application\Controller\SpiV3Controller' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
@@ -255,18 +248,16 @@ class Module
                         return new \Application\Controller\SpiV3Controller($odkFormService, $commonService);
                     }
                 },
-                'Application\Controller\SpiV6Controller' => new class
-                {
+                'Application\Controller\SpiV6Controller' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\SpiV6Controller($odkFormService, $commonService,$provinceService);
+                        return new \Application\Controller\SpiV6Controller($odkFormService, $commonService, $provinceService);
                     }
                 },
-                'Application\Controller\CommonController' => new class
-                {
+                'Application\Controller\CommonController' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
@@ -274,8 +265,7 @@ class Module
                         return new \Application\Controller\CommonController($commonService, $odkFormService);
                     }
                 },
-                'Application\Controller\CronController' => new class
-                {
+                'Application\Controller\CronController' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
@@ -283,26 +273,23 @@ class Module
                         return new \Application\Controller\CronController($commonService, $odkFormService);
                     }
                 },
-                'Application\Controller\ConfigController' => new class
-                {
+                'Application\Controller\ConfigController' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
                         return new \Application\Controller\ConfigController($commonService);
                     }
                 },
-                'Application\Controller\FacilityController' => new class
-                {
+                'Application\Controller\FacilityController' => new class {
                     public function __invoke($diContainer)
                     {
                         $facilityService = $diContainer->get('FacilityService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\FacilityController($facilityService, $odkFormService,$provinceService);
+                        return new \Application\Controller\FacilityController($facilityService, $odkFormService, $provinceService);
                     }
                 },
-                'Application\Controller\UsersController' => new class
-                {
+                'Application\Controller\UsersController' => new class {
                     public function __invoke($diContainer)
                     {
                         $userService = $diContainer->get('UserService');
@@ -312,8 +299,7 @@ class Module
                         return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService);
                     }
                 },
-                'Application\Controller\EmailController' => new class
-                {
+                'Application\Controller\EmailController' => new class {
                     public function __invoke($diContainer)
                     {
                         $facilityService = $diContainer->get('FacilityService');
@@ -322,81 +308,72 @@ class Module
                         return new \Application\Controller\EmailController($facilityService, $odkFormService, $commonService);
                     }
                 },
-                'Application\Controller\RolesController' => new class
-                {
+                'Application\Controller\RolesController' => new class {
                     public function __invoke($diContainer)
                     {
                         $roleService = $diContainer->get('RoleService');
                         return new \Application\Controller\RolesController($roleService);
                     }
                 },
-                'Application\Controller\UserLoginHistoryController' => new class
-                {
+                'Application\Controller\UserLoginHistoryController' => new class {
                     public function __invoke($diContainer)
                     {
                         $userLoginHistoryService = $diContainer->get('UserLoginHistoryService');
                         return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
                     }
                 },
-                'Application\Controller\EventController' => new class
-                {
+                'Application\Controller\EventController' => new class {
                     public function __invoke($diContainer)
                     {
                         $eventService = $diContainer->get('EventService');
                         return new \Application\Controller\EventController($eventService);
                     }
                 },
-                'Application\Controller\AuditTrailController' => new class
-                {
+                'Application\Controller\AuditTrailController' => new class {
                     public function __invoke($diContainer)
                     {
                         $auditTrailService = $diContainer->get('AuditTrailService');
                         return new \Application\Controller\AuditTrailController($auditTrailService);
                     }
                 },
-                'Application\Controller\DashboardController' => new class
-                {
+                'Application\Controller\DashboardController' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\DashboardController($odkFormService);
                     }
                 },
-                'Application\Controller\DashboardV5Controller' => new class
-                {
+                'Application\Controller\DashboardV5Controller' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\DashboardV5Controller($odkFormService);
                     }
                 },
-                'Application\Controller\DashboardV6Controller' => new class
-                {
+                'Application\Controller\DashboardV6Controller' => new class {
                     public function __invoke($diContainer)
                     {
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\DashboardV6Controller($odkFormService,$provinceService);
+                        return new \Application\Controller\DashboardV6Controller($odkFormService, $provinceService);
                     }
                 },
-                'Application\Controller\ProvincesController' => new class
-                {
+                'Application\Controller\ProvincesController' => new class {
                     public function __invoke($diContainer)
                     {
                         $provinceService = $diContainer->get('ProvinceService');
                         return new \Application\Controller\ProvincesController($provinceService);
                     }
                 },
-                'Application\Controller\DistrictController' => new class
-                {
+                'Application\Controller\DistrictController' => new class {
                     public function __invoke($diContainer)
                     {
                         $provinceService = $diContainer->get('ProvinceService');
                         return new \Application\Controller\DistrictController($provinceService);
                     }
                 },
-            ),
-        );
+            ],
+        ];
     }
 
 
@@ -538,21 +515,24 @@ class Module
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new TempMailTable($dbAdapter);
                     }
-                }, 'UserTokenMapTable' => new class
+                },
+                'UserTokenMapTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new UserTokenMapTable($dbAdapter);
                     }
-                }, 'AuditMailTable' => new class
+                },
+                'AuditMailTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new AuditMailTable($dbAdapter);
                     }
-                }, 'SpiFormVer3DownloadTable' => new class
+                },
+                'SpiFormVer3DownloadTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
