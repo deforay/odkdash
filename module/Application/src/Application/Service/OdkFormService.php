@@ -4985,8 +4985,8 @@ class OdkFormService
             }
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
-
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            // print_r(count($sResult)); die;
             if (count($sResult) > 0) {
 
                 foreach ($sResult as $aRow) {
@@ -5007,12 +5007,12 @@ class OdkFormService
                     $row[] = $aRow['EQA_SCORE'];
                     $row[] = $aRow['RTRI_SCORE'];
                     $row[] = $aRow['FINAL_AUDIT_SCORE'];
-                    $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                    $row[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                     $output[] = $row;
                 }
             }
             //echo "<pre>";
-            //print_r($output);die;
+            // print_r($output);die;
             $styleArray = array(
                 'font' => array(
                     'bold' => true,
@@ -6045,6 +6045,177 @@ class OdkFormService
         return $db->fetchDistrictByProvince($params);
     }
 
+    public function exportViewDataV6($params)
+    {
+       try {
+            $params = $params->data;
+            $queryContainer = new Container('query');
+            $loginContainer = new Container('credo');
+            $output = array();
+            $outputScore = array();
+            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $username = $loginContainer->login;
+            $trackTable = new EventLogTable($dbAdapter);
+            $sql = new Sql($dbAdapter);
+            $displayDate = "";
+            if (isset($params[4]['value']) && ($params[4]['value'] != "")) {
+                $dateRangeDate = explode(" - ", $params[4]['value']);
+                if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
+                    $fromDate = $dateRangeDate[0];
+                }
+                if (isset($dateRangeDate[1]) && trim($dateRangeDate[1]) != "") {
+                    $toDate = $dateRangeDate[1];
+                }
+                $displayDate = $fromDate === $toDate ? "Date Range : " . $fromDate : "Date Range : " . $fromDate . " to " . $toDate;
+            } else {
+                $displayDate = "Date Range : ";
+            }
+            $auditRndNo = isset($params[3]['value']) && ($params[3]['value'] != "") ? "Audit Round No. : " . $params[3]['value'] : "Audit Round No. : ";
+            $levelData = isset($params[7]['value']) && ($params[7]['value'] != "") ? "Level : " . $params[7]['value'] : "Level : ";
+            $affiliation = isset($params[10]['value']) && ($params[10]['value'] != "") ? "Affiliation : " . $params[10]['value'] : "Affiliation : ";
+            $province = isset($params[8]['value']) && ($params[8]['value'] != "") ? "Province : " . $params[8]['value'] : "Province : ";
+            $scoreLevel = isset($params[7]['value']) && ($params[7]['value'] != "") ? "Score Level : " . $params[7]['value'] : "Score Level : ";
+            $testPoint = isset($params[5]['value']) && ($params[5]['value'] != "") ? "Type of Testing Point : " . $params[5]['value'] : "Type of Testing Point : ";
+            $source = $params[0]['value'];
+          
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportViewDataV6Query);
+            $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+            $auditScore = 0;
+            $levelZero = array();
+            $levelOne = array();
+            $levelTwo = array();
+            $levelThree = array();
+            $levelFour = array();
+
+            $headerRow = ['View Data v6'];
+            if ($source == 'apall') { // source
+                $headerRow = ['Overall Audit Performance'];
+            } else if($source == 'apl180'){
+                $headerRow = ['Performance - Last 180 days'];
+            }else if($source == 'ap'){
+                $headerRow = ['Audit Performance'];
+            }else if($source == 'hv'){
+                $headerRow = ['Performance of High Volume Sites'];
+                $fieldNames = ['Date of Audit', 'Facility Name','Testing Point Name', 'Monthly Test Volume', 'Testers', 'Level'];
+            }else if($source == 'la'){
+                $headerRow = ['Latest Audits'];
+                $fieldNames = ['Date of Audit', 'Facility Name','Testing Point Name', 'Audit Score Percentage', 'Testing Volume'];
+            }else if($source == 'ad'){
+                $headerRow = ['Audit Date'];
+                $fieldNames = ['Audit Date', 'Audit Count'];
+            }else if($source == 'apspi'){
+                $headerRow = ['Audit Performance'];
+                $fieldNames = ['Audit Date', 'Personal Training and Certifications','Physical Facility', 'Saftey', 'Pre-Testing Phase', 'Testing Phase', 'Post-Testing Phase', 'External Quality Assessment'];
+            }
+
+            $outputData[] = $headerRow;
+            if ($source == 'apl180' || $source == 'apall' || $source == 'ap') {
+                $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint];
+                $fieldNames = ['Facility Id', 'Facility Name', 'Audit Round No.', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Score Level', 'Percentage'];
+                $outputData[] = $data;
+            }
+           
+            $outputData[] = $fieldNames;
+            foreach ($rResult as $aRow) {
+                $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+                $row = array();
+                if ($source == 'hv' || $source == 'la' || $source == 'apall' || $source == 'apl180' || $source == 'ap') {
+                    $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    if (isset($scorePer) && $scorePer < 40) {
+                        $level = 0;
+                        $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+                        $level = 1;
+                        $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+                        $level = 2;
+                        $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+                        $level = 3;
+                        $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    } elseif (isset($scorePer) && $scorePer >= 90) {
+                        $level = 4;
+                        $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    }
+                }
+                if ($source == 'hv') {
+                    $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                    $row[] = ucwords($aRow['facilityname']);
+                    $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                    $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+                    $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
+                    $row[] = $level;
+                } elseif ($source == 'la') {
+                    $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                    $row[] = ucwords($aRow['facilityname']);
+                    $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                    $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                    $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+                } elseif ($source == 'ad') {
+                    $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                    $row[] = $aRow['totalDataPoints'];
+                } elseif ($source == 'apall' || $source == 'apl180' || $source == 'ap') {
+                    $row[] = $aRow['facilityid'];
+                    $row[] = ucwords($aRow['facilityname']);
+                    $row[] = $aRow['auditroundno'];
+                    $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                    $row[] = ucwords($aRow['testingpointtype']);
+                    $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
+                    $row[] = ucwords($aRow['level']);
+                    $row[] = ucwords($aRow['affiliation']);
+                    $row[] = $level;
+                    $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                } elseif ($source == 'apspi') {
+                    $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+                    $row[] = round($aRow['PERSONAL_SCORE'], 2);
+                    $row[] = round($aRow['PHYSICAL_SCORE'], 2);
+                    $row[] = round($aRow['SAFETY_SCORE'], 2);
+                    $row[] = round($aRow['PRETEST_SCORE'], 2);
+                    $row[] = round($aRow['TEST_SCORE'], 2);
+                    $row[] = round($aRow['POST_SCORE'], 2);
+                    $row[] = round($aRow['EQA_SCORE'], 2);
+                }
+                $outputData[] = $row;
+            }
+            $outputScore['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
+            $outputScore['levelZeroCount'] = count($levelZero);
+            $outputScore['levelOneCount'] = count($levelOne);
+            $outputScore['levelTwoCount'] = count($levelTwo);
+            $outputScore['levelThreeCount'] = count($levelThree);
+            $outputScore['levelFourCount'] = count($levelFour);
+
+            if ($source == 'apl180' || $source == 'apall' || $source == 'ap') { 
+                $outputData[] = ['No.of Audit(s)    : ' . count($rResult)];
+                $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
+
+                $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
+                $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
+                $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
+                $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
+                $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
+                // $xlsx->addSheet($outputData);
+            }
+            $xlsx = new SimpleXLSXGen();
+            $xlsx->addSheet($outputData);
+            $filename = 'Export-view-data-v6-' . time() . '.xlsx';
+            $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+            $xlsx->mergeCells('A1:Q1');
+            $xlsx->saveAs($TemporaryFolderPath);
+            $subject = '';
+            $eventType = 'Export-All Data';
+            $action = $username . ' has exported all data SPI RT v3 ';
+            $resourceName = 'Export-view-data-v6';
+            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+            return $filename;            
+        } catch (\Exception $exc) {
+            error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
+            error_log($exc->getTraceAsString());
+
+            return "";
+        }
+    }
+    
     public function getSpiV6FormUniqueLevels()
     {
         /** @var SpiFormVer6Table  $db */

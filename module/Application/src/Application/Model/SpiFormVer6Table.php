@@ -3861,6 +3861,7 @@ class SpiFormVer6Table extends AbstractTableGateway
     public function fetchViewDataDetails($parameters)
     {
         $loginContainer = new Container('credo');
+        $queryContainer = new Container('query');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
@@ -4100,7 +4101,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
-
+        $queryContainer->exportViewDataV6Query = $sQuery;
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);

@@ -292,20 +292,21 @@
 	});
 
 	function exportFacility() {
-		$.blockUI({
-			message: '<h1>Loading...</h1>'
-		});
+		// $.blockUI({
+		// 	message: '<h1>Loading...</h1>'
+		// });
 		var dateRange = $("#dateRange").val();
 		$.post("<?php echo $this->url('spi-v6-reports', array('action' => 'export-facility-report')); ?>", {
 				dateRange: dateRange
 			},
 			function(data) {
+				console.log(data); return false;
 				if (data == "" || data == null || data == undefined) {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
 					document.location.href = '/temporary/' + data;
 				}
-				$.unblockUI();
+				// $.unblockUI();
 			});
 
 	}
