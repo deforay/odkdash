@@ -1121,24 +1121,102 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
     }
 
+    // public function getPerformanceV6($params)
+    // {
+    //     //echo "ss";die;
+    //     $loginContainer = new Container('credo');
+    //     $dbAdapter = $this->adapter;
+    //     $sql = new Sql($this->adapter);
+    //     $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+    //         ->columns(array(
+    //             'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
+    //             'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
+    //             'totalDataPoints' => new Expression("COUNT(*)"),
+    //             'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
+    //             'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
+    //             'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
+    //             'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
+    //             'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
+    //         ))
+    //         ->where(array('spiv6.status' => 'approved'));
+    //     if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
+    //         $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
+    //     }
+
+    //     if (isset($params['roundno']) && $params['roundno'] != '') {
+    //         $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+    //     }
+    //     // die("ss");
+    //     $startDate = '';
+    //     $endDate = '';
+    //     if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+    //         $dateField = explode(" ", $params['dateRange']);
+    //         if (isset($dateField[0]) && trim($dateField[0]) != "") {
+    //             $startDate = CommonService::isoDateFormat($dateField[0]);
+    //         }
+    //         if (isset($dateField[2]) && trim($dateField[2]) != "") {
+    //             $endDate = CommonService::isoDateFormat($dateField[2]);
+    //         }
+    //     }
+    //     if (trim($startDate) != "" && trim($endDate) != "") {
+    //         $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
+    //     }
+
+    //     if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
+
+    //         if (trim($params['testPoint']) != 'other') {
+    //             $sQuery = $sQuery->where("spiv6.testingpointtype='" . $params['testPoint'] . "'");
+    //         } else {
+    //             $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
+    //         }
+    //     }
+    //     if (isset($params['level']) && $params['level'] != '') {
+    //         $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
+    //     }
+    //     if (isset($params['affiliation']) && $params['affiliation'] != '') {
+    //         $sQuery = $sQuery->where("spiv6.affiliation='" . $params['affiliation'] . "'");
+    //     }
+
+    //     if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
+    //         if ($params['scoreLevel'] == 0) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
+    //         } elseif ($params['scoreLevel'] == 1) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+    //         } elseif ($params['scoreLevel'] == 2) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+    //         } elseif ($params['scoreLevel'] == 3) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+    //         } elseif ($params['scoreLevel'] == 4) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+    //         }
+    //     }
+
+    //     if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
+    //         $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
+    //     }
+
+    //     $sQueryStr = $sql->buildSqlString($sQuery);
+    //     //echo $sQueryStr;die;
+    //     $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    //     return $rResult;
+    // }
+
     public function getPerformanceV6($params)
     {
         //echo "ss";die;
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->columns(array(
-                'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
-                'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
-                'totalDataPoints' => new Expression("COUNT(*)"),
-                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
-                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
-                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
-                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
-                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
-            ))
-            ->where(array('spiv6.status' => 'approved'));
+        // $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+        //     ->columns(array(
+        //         'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
+        //         'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
+        //         'totalDataPoints' => new Expression("COUNT(*)"), 'AUDIT_SCORE_PERCENTAGE'
+        //     ))
+        //     ->where(array('spiv6.status' => 'approved'));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+            ->columns(array('assesmentofaudit', 'AUDIT_SCORE_PERCENTAGE'))
+            ->where(array('spiv3.status' => 'approved'));
         if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
             $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
         }
@@ -1196,9 +1274,58 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $rResult;
+        $auditScore = 0;
+        $levelZero = array();
+        $levelOne = array();
+        $levelTwo = array();
+        $levelThree = array();
+        $levelFour = array();
+        $minDate = null;
+        $maxDate = null;
+        foreach ($rResult as $aRow) {
+            $auditDate = $aRow['assesmentofaudit'];
+             // If $minDate is null or the current $auditDate is smaller, update $minDate
+            if ($minDate === null || $auditDate < $minDate) {
+                $minDate = $auditDate;
+            }
+
+            // If $maxDate is null or the current $auditDate is larger, update $maxDate
+            if ($maxDate === null || $auditDate > $maxDate) {
+                $maxDate = $auditDate;
+            }
+            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+            $row = array();
+            $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+            if (isset($scorePer) && $scorePer < 40) {
+                $level = 0;
+                $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+                $level = 1;
+                $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+                $level = 2;
+                $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+                $level = 3;
+                $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 90) {
+                $level = 4;
+                $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            }
+            $row[] = $level;
+        }
+        $output['totalDataPoints'] = count($rResult);
+        $output['oldestDate'] = $minDate;
+        $output['newestDate'] = $maxDate;
+        $output['level0'] = count($levelZero);
+        $output['level1'] = count($levelOne);
+        $output['level2'] = count($levelTwo);
+        $output['level3'] = count($levelThree);
+        $output['level4'] = count($levelFour);
+        $result[] = $output;
+        return $result;
     }
 
     public function getPerformanceLast30DaysV6($params)
