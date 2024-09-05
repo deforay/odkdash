@@ -6051,7 +6051,6 @@ class OdkFormService
             $params = $params->data;
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
-            $output = array();
             $outputScore = array();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $username = $loginContainer->login;
@@ -6088,23 +6087,29 @@ class OdkFormService
             $levelThree = array();
             $levelFour = array();
 
-            $headerRow = ['View Data v6'];
             if ($source == 'apall') { // source
                 $headerRow = ['Overall Audit Performance'];
+                $excelName = 'overall-audit-performance';
             } else if($source == 'apl180'){
+                $excelName = 'performance-last-180-days';
                 $headerRow = ['Performance - Last 180 days'];
             }else if($source == 'ap'){
+                $excelName = 'audit-performance';
                 $headerRow = ['Audit Performance'];
             }else if($source == 'hv'){
                 $headerRow = ['Performance of High Volume Sites'];
+                $excelName = 'performance-of-high-volume-sites';
                 $fieldNames = ['Date of Audit', 'Facility Name','Testing Point Name', 'Monthly Test Volume', 'Testers', 'Level'];
             }else if($source == 'la'){
+                $excelName = 'latest-audits';
                 $headerRow = ['Latest Audits'];
                 $fieldNames = ['Date of Audit', 'Facility Name','Testing Point Name', 'Audit Score Percentage', 'Testing Volume'];
             }else if($source == 'ad'){
-                $headerRow = ['Audit Date'];
+                $excelName = 'audit-dates';
+                $headerRow = ['Audit Dates'];
                 $fieldNames = ['Audit Date', 'Audit Count'];
             }else if($source == 'apspi'){
+                $excelName = 'audit-performance';
                 $headerRow = ['Audit Performance'];
                 $fieldNames = ['Audit Date', 'Personal Training and Certifications','Physical Facility', 'Saftey', 'Pre-Testing Phase', 'Testing Phase', 'Post-Testing Phase', 'External Quality Assessment'];
             }
@@ -6198,13 +6203,13 @@ class OdkFormService
             }
             $xlsx = new SimpleXLSXGen();
             $xlsx->addSheet($outputData);
-            $filename = 'Export-view-data-v6-' . time() . '.xlsx';
+            $filename = $excelName . ' - '. time() . '.xlsx';
             $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
             $subject = '';
-            $eventType = 'Export-All Data';
-            $action = $username . ' has exported all data SPI RT v3 ';
+            $eventType = 'Export-'. $headerRow;
+            $action = $username . ' has exported '. $headerRow;
             $resourceName = 'Export-view-data-v6';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             return $filename;            
