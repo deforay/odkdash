@@ -617,4 +617,19 @@ class SpiV6Controller extends AbstractActionController
             return $viewModel;
         }
     }
+
+    public function exportViewDataV6Action()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+
+            $result = $this->odkFormService->exportViewDataV6($params);
+            // print_r($result); die;
+            $viewModel = new ViewModel(array('result' => $result));
+
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        }
+    }
 }

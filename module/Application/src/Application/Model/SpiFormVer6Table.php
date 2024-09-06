@@ -1121,24 +1121,102 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
     }
 
+    // public function getPerformanceV6($params)
+    // {
+    //     //echo "ss";die;
+    //     $loginContainer = new Container('credo');
+    //     $dbAdapter = $this->adapter;
+    //     $sql = new Sql($this->adapter);
+    //     $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+    //         ->columns(array(
+    //             'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
+    //             'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
+    //             'totalDataPoints' => new Expression("COUNT(*)"),
+    //             'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
+    //             'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
+    //             'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
+    //             'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
+    //             'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
+    //         ))
+    //         ->where(array('spiv6.status' => 'approved'));
+    //     if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
+    //         $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
+    //     }
+
+    //     if (isset($params['roundno']) && $params['roundno'] != '') {
+    //         $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
+    //     }
+    //     // die("ss");
+    //     $startDate = '';
+    //     $endDate = '';
+    //     if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+    //         $dateField = explode(" ", $params['dateRange']);
+    //         if (isset($dateField[0]) && trim($dateField[0]) != "") {
+    //             $startDate = CommonService::isoDateFormat($dateField[0]);
+    //         }
+    //         if (isset($dateField[2]) && trim($dateField[2]) != "") {
+    //             $endDate = CommonService::isoDateFormat($dateField[2]);
+    //         }
+    //     }
+    //     if (trim($startDate) != "" && trim($endDate) != "") {
+    //         $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
+    //     }
+
+    //     if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
+
+    //         if (trim($params['testPoint']) != 'other') {
+    //             $sQuery = $sQuery->where("spiv6.testingpointtype='" . $params['testPoint'] . "'");
+    //         } else {
+    //             $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $params['testPointName'] . "'");
+    //         }
+    //     }
+    //     if (isset($params['level']) && $params['level'] != '') {
+    //         $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
+    //     }
+    //     if (isset($params['affiliation']) && $params['affiliation'] != '') {
+    //         $sQuery = $sQuery->where("spiv6.affiliation='" . $params['affiliation'] . "'");
+    //     }
+
+    //     if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
+    //         if ($params['scoreLevel'] == 0) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
+    //         } elseif ($params['scoreLevel'] == 1) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+    //         } elseif ($params['scoreLevel'] == 2) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+    //         } elseif ($params['scoreLevel'] == 3) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+    //         } elseif ($params['scoreLevel'] == 4) {
+    //             $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+    //         }
+    //     }
+
+    //     if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
+    //         $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
+    //     }
+
+    //     $sQueryStr = $sql->buildSqlString($sQuery);
+    //     //echo $sQueryStr;die;
+    //     $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    //     return $rResult;
+    // }
+
     public function getPerformanceV6($params)
     {
         //echo "ss";die;
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->columns(array(
-                'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
-                'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
-                'totalDataPoints' => new Expression("COUNT(*)"),
-                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0))"),
-                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0))"),
-                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0))"),
-                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0))"),
-                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0))"),
-            ))
-            ->where(array('spiv6.status' => 'approved'));
+        // $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
+        //     ->columns(array(
+        //         'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
+        //         'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
+        //         'totalDataPoints' => new Expression("COUNT(*)"), 'AUDIT_SCORE_PERCENTAGE'
+        //     ))
+        //     ->where(array('spiv6.status' => 'approved'));
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+            ->columns(array('assesmentofaudit', 'AUDIT_SCORE_PERCENTAGE'))
+            ->where(array('spiv3.status' => 'approved'));
         if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
             $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
         }
@@ -1196,9 +1274,58 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
+        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $rResult;
+        $auditScore = 0;
+        $levelZero = array();
+        $levelOne = array();
+        $levelTwo = array();
+        $levelThree = array();
+        $levelFour = array();
+        $minDate = null;
+        $maxDate = null;
+        foreach ($rResult as $aRow) {
+            $auditDate = $aRow['assesmentofaudit'];
+             // If $minDate is null or the current $auditDate is smaller, update $minDate
+            if ($minDate === null || $auditDate < $minDate) {
+                $minDate = $auditDate;
+            }
+
+            // If $maxDate is null or the current $auditDate is larger, update $maxDate
+            if ($maxDate === null || $auditDate > $maxDate) {
+                $maxDate = $auditDate;
+            }
+            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+            $row = array();
+            $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+            if (isset($scorePer) && $scorePer < 40) {
+                $level = 0;
+                $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+                $level = 1;
+                $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+                $level = 2;
+                $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+                $level = 3;
+                $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            } elseif (isset($scorePer) && $scorePer >= 90) {
+                $level = 4;
+                $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            }
+            $row[] = $level;
+        }
+        $output['totalDataPoints'] = count($rResult);
+        $output['oldestDate'] = $minDate;
+        $output['newestDate'] = $maxDate;
+        $output['level0'] = count($levelZero);
+        $output['level1'] = count($levelOne);
+        $output['level2'] = count($levelTwo);
+        $output['level3'] = count($levelThree);
+        $output['level4'] = count($levelFour);
+        $result[] = $output;
+        return $result;
     }
 
     public function getPerformanceLast30DaysV6($params)
@@ -3858,9 +3985,382 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $dbAdapter->query($tokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
+    // public function fetchViewDataDetails($parameters)
+    // {
+    //     $loginContainer = new Container('credo');
+    //     $queryContainer = new Container('query');
+    //     /* Array of database columns which should be read and sent back to DataTables. Use a space where
+    //      * you want to insert a non-database field (for example a counter or static image)
+    //      */
+    //     if ($parameters['source'] == 'hv') {
+    //         $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
+    //         $orderColumns = array('assesmentofaudit', 'facilityname', 'testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
+    //     } elseif ($parameters['source'] == 'la') {
+    //         $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'testingpointname', 'AUDIT_SCORE_PERCENTAGE', 'client_tested_HIV_PM');
+    //         $orderColumns = array('assesmentofaudit', 'facilityname', 'testingpointname', 'AUDIT_SCORE_PERCENTAGE', 'client_tested_HIV_PM');
+    //     } elseif ($parameters['source'] == 'ad') {
+    //         $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')");
+    //         $orderColumns = array('assesmentofaudit', 'assesmentofaudit');
+    //     } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+    //         $aColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
+    //         $orderColumns = array('facilityid', 'facilityname', 'AUDIT_SCORE_PERCENTAGE', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE');
+    //     } elseif ($parameters['source'] == 'apspi') {
+    //         $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE');
+    //         $orderColumns = array('assesmentofaudit', 'PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE');
+    //     }
+
+    //     /*
+    //      * Paging
+    //      */
+    //     $sLimit = "";
+    //     if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
+    //         $sOffset = $parameters['iDisplayStart'];
+    //         $sLimit = $parameters['iDisplayLength'];
+    //     }
+
+    //     /*
+    //      * Ordering
+    //      */
+
+    //     $sOrder = "";
+    //     if (isset($parameters['iSortCol_0'])) {
+    //         for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+    //             if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+    //                 $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
+    //             }
+    //         }
+    //         $sOrder = substr_replace($sOrder, "", -1);
+    //     }
+
+    //     /*
+    //      * Filtering
+    //      * NOTE this does not match the built-in DataTables filtering which does it
+    //      * word by word on any field. It's possible to do here, but concerned about efficiency
+    //      * on very large tables, and MySQL's regex functionality is very limited
+    //      */
+
+    //     $sWhere = "";
+    //     if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
+    //         $searchArray = explode(" ", $parameters['sSearch']);
+    //         $sWhereSub = "";
+    //         foreach ($searchArray as $search) {
+    //             if ($sWhereSub == "") {
+    //                 $sWhereSub .= "(";
+    //             } else {
+    //                 $sWhereSub .= " AND (";
+    //             }
+    //             $colSize = count($aColumns);
+
+    //             for ($i = 0; $i < $colSize; $i++) {
+    //                 if ($i < $colSize - 1) {
+    //                     $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+    //                 } else {
+    //                     $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+    //                 }
+    //             }
+    //             $sWhereSub .= ")";
+    //         }
+    //         $sWhere .= $sWhereSub;
+    //     }
+    //     /* Individual column filtering */
+    //     $counter = count($aColumns);
+
+    //     /* Individual column filtering */
+    //     for ($i = 0; $i < $counter; $i++) {
+    //         if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
+    //             if ($sWhere == "") {
+    //                 $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
+    //             } else {
+    //                 $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
+    //             }
+    //         }
+    //     }
+
+    //     /*
+    //      * SQL queries
+    //      * Get data to display
+    //      */
+    //     $dbAdapter = $this->adapter;
+    //     $sql = new Sql($this->adapter);
+    //     $startDate = "";
+    //     $endDate = "";
+    //     if (isset($parameters['drange']) && ($parameters['drange'] != "")) {
+    //         $dateField = explode(" ", $parameters['drange']);
+    //         if (isset($dateField[0]) && trim($dateField[0]) != "") {
+    //             $startDate = CommonService::isoDateFormat($dateField[0]);
+    //         }
+    //         if (isset($dateField[2]) && trim($dateField[2]) != "") {
+    //             $endDate = CommonService::isoDateFormat($dateField[2]);
+    //         }
+    //     }
+
+    //     if ($parameters['source'] == 'ad') {
+    //         //For Audit Dates
+    //         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
+    //             ->where(array('spiv3.status' => 'approved'))
+    //             ->group('spiv3.assesmentofaudit');
+    //         $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
+    //             ->where(array('spiv3.status' => 'approved'))
+    //             ->group('spiv3.assesmentofaudit');
+    //     } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+    //         if (isset($parameters['date']) && ($parameters['date'] != "")) {
+    //             $dateField = explode(" ", $parameters['date']);
+    //             //print_r($proceed_date);die;
+    //             if (isset($dateField[0]) && trim($dateField[0]) != "") {
+    //                 $startDate = CommonService::isoDateFormat($dateField[0]);
+    //             }
+    //             if (isset($dateField[2]) && trim($dateField[2]) != "") {
+    //                 $endDate = CommonService::isoDateFormat($dateField[2]);
+    //             }
+    //         }
+    //         //For Audit Performance Row
+    //         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+    //             ->where(array('spiv3.status' => 'approved'));
+    //         $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+    //             ->where(array('spiv3.status' => 'approved'));
+    //         if ($parameters['source'] == 'apl180') {
+    //             $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
+    //             $tQuery = $tQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
+    //         }
+    //         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
+    //             $sQuery = $sQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
+    //             $tQuery = $tQuery->where("spiv3.testingpointtype='" . $parameters['testPoint'] . "'");
+    //             if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '') {
+    //                 if (trim($parameters['testPoint']) != 'other') {
+    //                     $sQuery = $sQuery->where("spiv3.testingpointname='" . $parameters['testPointName'] . "'");
+    //                     $tQuery = $tQuery->where("spiv3.testingpointname='" . $parameters['testPointName'] . "'");
+    //                 } else {
+    //                     $sQuery = $sQuery->where("spiv3.testingpointtype_other='" . $parameters['testPointName'] . "'");
+    //                     $tQuery = $tQuery->where("spiv3.testingpointtype_other='" . $parameters['testPointName'] . "'");
+    //                 }
+    //             }
+    //         }
+    //         if (isset($parameters['auditRndNo']) && $parameters['auditRndNo'] != '') {
+    //             $sQuery = $sQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
+    //             $tQuery = $tQuery->where("spiv3.auditroundno='" . $parameters['auditRndNo'] . "'");
+    //         }
+    //         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
+    //             if ($parameters['scoreLevel'] == 0) {
+    //                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
+    //                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCENTAGE < 40");
+    //             } elseif ($parameters['scoreLevel'] == 1) {
+    //                 $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 59");
+    //                 $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 59");
+    //             } elseif ($parameters['scoreLevel'] == 2) {
+    //                 $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 79");
+    //                 $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 79");
+    //             } elseif ($parameters['scoreLevel'] == 3) {
+    //                 $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 89");
+    //                 $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) <= 89");
+    //             } elseif ($parameters['scoreLevel'] == 4) {
+    //                 $sQuery = $sQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 90");
+    //                 $tQuery = $tQuery->where("ROUND(spiv3.AUDIT_SCORE_PERCENTAGE) >= 90");
+    //             }
+    //         }
+    //         if (isset($parameters['level']) && $parameters['level'] != '') {
+    //             $sQuery = $sQuery->where("spiv3.level='" . $parameters['level'] . "'");
+    //             $tQuery = $tQuery->where("spiv3.level='" . $parameters['level'] . "'");
+    //         }
+    //         if (isset($parameters['province']) && $parameters['province'] != '') {
+    //             $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
+    //                 ->where("f.province='" . $parameters['province'] . "'");
+    //             $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
+    //                 ->where("f.province='" . $parameters['province'] . "'");
+    //         }
+    //         if (isset($parameters['district']) && $parameters['district'] != '') {
+    //             $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
+    //                 ->where("f.district='" . $parameters['district'] . "'");
+    //             $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
+    //                 ->where("f.district='" . $parameters['district'] . "'");
+    //         }
+    //         if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
+    //             $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
+    //             $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
+    //         }
+    //     } elseif ($parameters['source'] == 'apspi') {
+    //         //For Audit Performance
+    //         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array('assesmentofaudit', 'client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
+    //             ->group('spiv3.assesmentofaudit');
+    //         $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array('assesmentofaudit', 'client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
+    //             ->group('spiv3.assesmentofaudit');
+    //         if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
+    //             $xplodRoundNo = explode(",", $parameters['roundno']);
+    //             $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $xplodRoundNo) . '")');
+    //             $tQuery = $tQuery->where('spiv3.auditroundno IN ("' . implode('", "', $xplodRoundNo) . '")');
+    //         }
+    //     } else {
+    //         //For Others
+    //         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'client_tested_HIV_PM', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
+
+    //         $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
+    //             ->columns(array('assesmentofaudit', 'facilityname', 'testingpointtype', 'client_tested_HIV_PM', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE'));
+    //     }
+
+    //     if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
+    //         $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
+    //         $tQuery = $tQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
+    //     }
+
+    //     if (trim($startDate) != "" && trim($endDate) != "") {
+    //         $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
+    //         $tQuery = $tQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
+    //     }
+
+    //     if (isset($sWhere) && $sWhere != "") {
+    //         $sQuery->where($sWhere);
+    //     }
+
+    //     if (trim($sOrder) === 'desc') {
+    //         $sOrder = '';
+    //     }
+    //     if (isset($sOrder) && $sOrder != "") {
+    //         $sQuery->order($sOrder);
+    //     }
+
+    //     if (isset($sLimit) && isset($sOffset)) {
+    //         $sQuery->limit($sLimit);
+    //         $sQuery->offset($sOffset);
+    //     }
+    //     $queryContainer->exportViewDataV6Query = $sQuery;
+    //     $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
+    //     // echo $sQueryStr;die;
+    //     $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+    //     /* Data set length after filtering */
+    //     $sQuery->reset('limit');
+    //     $sQuery->reset('offset');
+    //     $fQuery = $sql->buildSqlString($sQuery);
+    //     $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
+    //     $iFilteredTotal = count($aResultFilterTotal);
+
+    //     /* Total data set length */
+
+    //     $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
+    //     $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+    //     // print_r($rResult); die;
+    //     $iTotal = count($tResult);
+    //     $output = array(
+    //         "sEcho" => (int) $parameters['sEcho'],
+    //         "iTotalRecords" => $iTotal,
+    //         "iTotalDisplayRecords" => $iFilteredTotal,
+    //         "aaData" => array(),
+    //     );
+
+
+    //     //$personalScoreArray = array();
+    //     //$physicalScoreArray = array();
+    //     //$safetyScoreArray = array();
+    //     //$preTestScoreArray = array();
+    //     //$testScoreArray = array();
+    //     //$postTestScoreArray = array();
+    //     //$eqaScoreArray = array();
+    //     //$personalScore = 0;
+    //     //$physicalScore = 0;
+    //     //$safetyScore = 0;
+    //     //$preTestScore = 0;
+    //     //$testScore = 0;
+    //     //$postTestScore = 0;
+    //     //$eqaScore = 0;
+    //     $auditScore = 0;
+    //     $levelZero = array();
+    //     $levelOne = array();
+    //     $levelTwo = array();
+    //     $levelThree = array();
+    //     $levelFour = array();
+    //     foreach ($rResult as $aRow) {
+    //         $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+    //         $row = array();
+    //         if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+    //             $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+    //             if (isset($scorePer) && $scorePer < 40) {
+    //                 $level = 0;
+    //                 $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+    //             } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+    //                 $level = 1;
+    //                 $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+    //             } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+    //                 $level = 2;
+    //                 $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+    //             } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+    //                 $level = 3;
+    //                 $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+    //             } elseif (isset($scorePer) && $scorePer >= 90) {
+    //                 $level = 4;
+    //                 $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+    //             }
+    //         }
+    //         if ($parameters['source'] == 'hv') {
+    //             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+    //             $row[] = ucwords($aRow['facilityname']);
+    //             $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+    //             $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+    //             $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
+    //             $row[] = $level;
+    //         } elseif ($parameters['source'] == 'la') {
+    //             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+    //             $row[] = ucwords($aRow['facilityname']);
+    //             $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+    //             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+    //             $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+    //         } elseif ($parameters['source'] == 'ad') {
+    //             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+    //             $row[] = $aRow['totalDataPoints'];
+    //         } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+    //             $row[] = $aRow['facilityid'];
+    //             $row[] = ucwords($aRow['facilityname']);
+    //             $row[] = $aRow['auditroundno'];
+    //             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+    //             $row[] = ucwords($aRow['testingpointtype']);
+    //             $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
+    //             $row[] = ucwords($aRow['level']);
+    //             $row[] = ucwords($aRow['affiliation']);
+    //             $row[] = $level;
+    //             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+    //         } elseif ($parameters['source'] == 'apspi') {
+    //             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
+    //             $row[] = round($aRow['PERSONAL_SCORE'], 2);
+    //             $row[] = round($aRow['PHYSICAL_SCORE'], 2);
+    //             $row[] = round($aRow['SAFETY_SCORE'], 2);
+    //             $row[] = round($aRow['PRETEST_SCORE'], 2);
+    //             $row[] = round($aRow['TEST_SCORE'], 2);
+    //             $row[] = round($aRow['POST_SCORE'], 2);
+    //             $row[] = round($aRow['EQA_SCORE'], 2);
+    //             //$personalScoreArray[] = $aRow['PERSONAL_SCORE'];
+    //             //$physicalScoreArray[] = $aRow['PHYSICAL_SCORE'];
+    //             //$safetyScoreArray[] = $aRow['SAFETY_SCORE'];
+    //             //$preTestScoreArray[] = $aRow['PRETEST_SCORE'];
+    //             //$testScoreArray[] = $aRow['TEST_SCORE'];
+    //             //$postTestScoreArray[] = $aRow['POST_SCORE'];
+    //             //$eqaScoreArray[] = $aRow['EQA_SCORE'];
+    //             //$personalScore+=$aRow['PERSONAL_SCORE'];
+    //             //$physicalScore+=$aRow['PHYSICAL_SCORE'];
+    //             //$safetyScore+=$aRow['SAFETY_SCORE'];
+    //             //$preTestScore+=$aRow['PRETEST_SCORE'];
+    //             //$testScore+=$aRow['TEST_SCORE'];
+    //             //$postTestScore+=$aRow['POST_SCORE'];
+    //             //$eqaScore+=$aRow['EQA_SCORE'];
+    //         }
+    //         $output['aaData'][] = $row;
+    //     }
+    //     $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
+    //     $output['levelZeroCount'] = count($levelZero);
+    //     $output['levelOneCount'] = count($levelOne);
+    //     $output['levelTwoCount'] = count($levelTwo);
+    //     $output['levelThreeCount'] = count($levelThree);
+    //     $output['levelFourCount'] = count($levelFour);
+    //     return $output;
+    // }
+
     public function fetchViewDataDetails($parameters)
     {
         $loginContainer = new Container('credo');
+        $queryContainer = new Container('query');
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
@@ -3965,7 +4465,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $endDate = CommonService::isoDateFormat($dateField[2]);
             }
         }
-
         if ($parameters['source'] == 'ad') {
             //For Audit Dates
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
@@ -3976,7 +4475,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array(new Expression('DISTINCT(assesmentofaudit) as assesmentofaudit'), 'totalDataPoints' => new Expression("COUNT(*)")))
                 ->where(array('spiv3.status' => 'approved'))
                 ->group('spiv3.assesmentofaudit');
-        } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+        } else if ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
             if (isset($parameters['date']) && ($parameters['date'] != "")) {
                 $dateField = explode(" ", $parameters['date']);
                 //print_r($proceed_date);die;
@@ -3987,12 +4486,11 @@ class SpiFormVer6Table extends AbstractTableGateway
                     $endDate = CommonService::isoDateFormat($dateField[2]);
                 }
             }
-            //For Audit Performance Row
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE' => new Expression('ROUND(AUDIT_SCORE_PERCENTAGE)')))
                 ->where(array('spiv3.status' => 'approved'));
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE'))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE' => new Expression('ROUND(AUDIT_SCORE_PERCENTAGE)')))
                 ->where(array('spiv3.status' => 'approved'));
             if ($parameters['source'] == 'apl180') {
                 $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -4096,15 +4594,14 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery->order($sOrder);
         }
 
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
-        }
+        // if (isset($sLimit) && isset($sOffset)) {
+        //     $sQuery->limit($sLimit);
+        //     $sQuery->offset($sOffset);
+        // }
 
+        $queryContainer->exportViewDataV6Query = $sQuery;
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        // echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
@@ -4124,56 +4621,46 @@ class SpiFormVer6Table extends AbstractTableGateway
             "aaData" => array(),
         );
 
+        /* Data set length after filtering */
 
-        //$personalScoreArray = array();
-        //$physicalScoreArray = array();
-        //$safetyScoreArray = array();
-        //$preTestScoreArray = array();
-        //$testScoreArray = array();
-        //$postTestScoreArray = array();
-        //$eqaScoreArray = array();
-        //$personalScore = 0;
-        //$physicalScore = 0;
-        //$safetyScore = 0;
-        //$preTestScore = 0;
-        //$testScore = 0;
-        //$postTestScore = 0;
-        //$eqaScore = 0;
         $auditScore = 0;
-        $levelZero = array();
-        $levelOne = array();
-        $levelTwo = array();
-        $levelThree = array();
-        $levelFour = array();
+        $levelZero = 0;
+        $levelOne = 0;
+        $levelTwo = 0;
+        $levelThree = 0;
+        $levelFour = 0;
+
         foreach ($rResult as $aRow) {
-            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+            $scorePer = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            $auditScore += $scorePer;
             $row = array();
+
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
-                if (isset($scorePer) && $scorePer < 40) {
+                if ($scorePer < 40) {
                     $level = 0;
-                    $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
+                    $levelZero++;
+                } elseif ($scorePer >= 40 && $scorePer < 60) {
                     $level = 1;
-                    $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($scorePer) && $scorePer >= 60 && $scorePer < 80) {
+                    $levelOne++;
+                } elseif ($scorePer >= 60 && $scorePer < 80) {
                     $level = 2;
-                    $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($scorePer) && $scorePer >= 80 && $scorePer < 90) {
+                    $levelTwo++;
+                } elseif ($scorePer >= 80 && $scorePer < 90) {
                     $level = 3;
-                    $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($scorePer) && $scorePer >= 90) {
+                    $levelThree++;
+                } elseif ($scorePer >= 90) {
                     $level = 4;
-                    $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    $levelFour++;
                 }
             }
+
             if ($parameters['source'] == 'hv') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
                 $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
-                $row[] = $level;
+                $row[] = $level; //level
             } elseif ($parameters['source'] == 'la') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = ucwords($aRow['facilityname']);
@@ -4192,7 +4679,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
                 $row[] = ucwords($aRow['level']);
                 $row[] = ucwords($aRow['affiliation']);
-                $row[] = $level;
+                $row[] = $level; //level
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
@@ -4203,29 +4690,18 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = round($aRow['TEST_SCORE'], 2);
                 $row[] = round($aRow['POST_SCORE'], 2);
                 $row[] = round($aRow['EQA_SCORE'], 2);
-                //$personalScoreArray[] = $aRow['PERSONAL_SCORE'];
-                //$physicalScoreArray[] = $aRow['PHYSICAL_SCORE'];
-                //$safetyScoreArray[] = $aRow['SAFETY_SCORE'];
-                //$preTestScoreArray[] = $aRow['PRETEST_SCORE'];
-                //$testScoreArray[] = $aRow['TEST_SCORE'];
-                //$postTestScoreArray[] = $aRow['POST_SCORE'];
-                //$eqaScoreArray[] = $aRow['EQA_SCORE'];
-                //$personalScore+=$aRow['PERSONAL_SCORE'];
-                //$physicalScore+=$aRow['PHYSICAL_SCORE'];
-                //$safetyScore+=$aRow['SAFETY_SCORE'];
-                //$preTestScore+=$aRow['PRETEST_SCORE'];
-                //$testScore+=$aRow['TEST_SCORE'];
-                //$postTestScore+=$aRow['POST_SCORE'];
-                //$eqaScore+=$aRow['EQA_SCORE'];
             }
+            // Add more data to the row as needed
             $output['aaData'][] = $row;
         }
+
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
-        $output['levelZeroCount'] = count($levelZero);
-        $output['levelOneCount'] = count($levelOne);
-        $output['levelTwoCount'] = count($levelTwo);
-        $output['levelThreeCount'] = count($levelThree);
-        $output['levelFourCount'] = count($levelFour);
+        $output['levelZeroCount'] = $levelZero;
+        $output['levelOneCount'] = $levelOne;
+        $output['levelTwoCount'] = $levelTwo;
+        $output['levelThreeCount'] = $levelThree;
+        $output['levelFourCount'] = $levelFour;
+
         return $output;
     }
 
