@@ -10,6 +10,7 @@ use Application\Command\GenerateBulkPdf;
 use Application\Command\SendTempMailFactory;
 use Application\Command\SendAuditMailFactory;
 use Application\Command\SyncCentralV3Factory;
+use Laminas\Db\Adapter\Adapter;
 use Application\Command\SyncCentralV6Factory;
 use Application\Command\GenerateBulkPdfFactory;
 
@@ -322,6 +323,12 @@ return array(
             'Laminas\Log\LoggerAbstractServiceFactory',
         ],
         'factories' => [
+             'DbAdapter' => function ($container) {
+                // Configuration for the database connection
+                $config = $container->get('Config');
+                $dbConfig = $config['db'];                
+                return new Adapter($dbConfig);
+            },
             'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
             SendTempMail::class => SendTempMailFactory::class,
             SendAuditMail::class => SendAuditMailFactory::class,

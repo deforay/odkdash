@@ -1,6 +1,3 @@
-<?php
-$resourceResult = $resourceResult->{$result->role_code};
-?>
 <div class="am-content">
         <div class="page-head">
           <h2>Edit Role</h2>
@@ -54,18 +51,30 @@ $resourceResult = $resourceResult->{$result->role_code};
 echo "<tr class=''>";
 echo "<td><strong>" . ucwords($value['display_name']) . "</strong></td>";
 
-foreach ($value['privileges'] as $privilege) {
-if(isset($resourceResult[$value['resource_id']][$privilege['privilege_name']]) && $resourceResult[$value['resource_id']][$privilege['privilege_name']] == 'allow'){
-                       $allowActive = ' active ';
-                       $allowChecked = " checked='' ";
-                       $denyActive = "";
-                       $denyChecked = "";
-                   }else{
-                       $denyActive = ' active ';
-                       $denyChecked = " checked='' ";
-                       $allowActive = "";
-                       $allowChecked = "";
-                   }
+foreach ($value['privileges'] as $privilege) { 
+	$isPrivilegeMatched = false;
+
+    // Check if resourceResult is not empty
+    if (!empty($resourceResult)) {
+        // Loop through resourceResult to check for matching privilege_id
+        foreach ($resourceResult as $result) {
+            if (isset($result['privilege_id']) && $result['privilege_id'] == $privilege['privilege_id']) {
+                $isPrivilegeMatched = true;
+                break; // Exit loop as we found a match
+            }
+        }
+    }
+	if ($isPrivilegeMatched) {
+        $allowActive = ' active ';
+        $allowChecked = " checked='' ";
+        $denyActive = "";
+        $denyChecked = "";
+    } else {
+        $denyActive = ' active ';
+        $denyChecked = " checked='' ";
+        $allowActive = "";
+        $allowChecked = "";
+    }
 echo "<td>"
 . "<label class='labelName'>" . ucwords($privilege['display_name']) . "</label> <br>
 		

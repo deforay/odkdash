@@ -224,22 +224,80 @@ class RolesTable extends AbstractTableGateway
 
     public function mapRolesPrivileges($params)
     {
-        try {
+        try {           
             $roleCode = $params['roleCode'];
-            $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
-            $config = new \Laminas\Config\Config(include($configFile), true);
-            $config->$roleCode = array();
+            $sql = new Sql($this->adapter);
+            $dbAdapter = $this->adapter;
 
-            foreach ($params['resource'] as $resourceName => $privilege) {
-                $config->$roleCode->$resourceName = $privilege;
+            // Get or insert role    
+            $query = $sql->select()->from('roles')->where(array('role_code' => $roleCode));
+            $roleQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
+            $role = $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $roleId = $role[0]['role_id'];
+
+            //  delete records before insert
+            $delete = $sql->delete('roles_privileges_map');
+            $delete->where(array('role_id' => $roleId));
+
+            // Execute the delete statement
+            $statement = $sql->prepareStatementForSqlObject($delete);
+            $statement->execute();
+            foreach ($params['resource'] as $resourceName => $privileges) {
+                foreach ($privileges as $key => $privilege) {
+                    if ($privilege === 'allow') {
+                        $query = $sql->select()->from('privileges')->where(array('resource_id' => $resourceName, 'privilege_name' => $key));
+                        $privilegeQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
+                        $privilegeRes = $dbAdapter->query($privilegeQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+                        $privilegeId = $privilegeRes[0]['privilege_id'];
+
+                        $sql = new Sql($dbAdapter);
+                       
+                        $insert = $sql->insert('roles_privileges_map');
+                        $data = array(
+                            'role_id' => $roleId,
+                            'privilege_id' => $privilegeId
+                        );
+                        $insert->values($data);
+                        $statement = $sql->prepareStatementForSqlObject($insert);
+                        $result = $statement->execute();
+                    }
+                }
             }
-
-            $writer = new PhpArray();
-            $writer->toFile($configFile, $config);
         } catch (\Exception $exc) {
-
+      
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
+
+    public function fetchPrivilegesMap($roleId) {
+        $sql = new Sql($this->adapter);
+        $dbAdapter = $this->adapter;
+
+        $query = $sql->select()->from('roles_privileges_map')->where(array('role_id' => $roleId));
+        $privMapQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
+        $rolePrivmaps = $dbAdapter->query($privMapQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $rolePrivmaps;
+    }
+
+    public function getAllPrivilegesMap(){
+        $sql = new Sql($this->adapter);
+        $dbAdapter = $this->adapter;
+
+        $selectRolePrivileges = $sql->select()->from('roles_privileges_map')->columns(['role_id', 'privilege_id']);
+        $rolePrivilegesQueryStr = $sql->buildSqlString($selectRolePrivileges);
+        $rolePrivileges = $dbAdapter->query($rolePrivilegesQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $rolePrivileges;
+    }
+
+    public function getAllPrivileges(){
+        $sql = new Sql($this->adapter);
+        $dbAdapter = $this->adapter;
+
+        $selectPrivileges = $sql->select()->from('privileges')->columns(['privilege_id', 'resource_id', 'privilege_name']);
+        $privilegesQueryStr = $sql->buildSqlString($selectPrivileges);
+        $privileges = $dbAdapter->query($privilegesQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $privileges;
+    }
 }
+// 

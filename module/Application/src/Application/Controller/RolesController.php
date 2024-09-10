@@ -58,13 +58,14 @@ class RolesController extends AbstractActionController
             $result = $this->roleService->updateRoles($params);
             return $this->redirect()->toRoute("roles");
         } else {
-            $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
+            // $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
 
-            $config = \Laminas\Config\Factory::fromFile($configFile, true);
+            // $config = \Laminas\Config\Factory::fromFile($configFile, true);
+
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->roleService->getRole($id);
-            $rolesResult = $this->roleService->getAllRoles();
-
+            $rolesResult = $this->roleService->getAllRoles(); //privileges
+            $config = $this->roleService->getPrivilegesMap($id);
             return new ViewModel(array(
                 'result' => $result,
                 'rolesresult' => $rolesResult,

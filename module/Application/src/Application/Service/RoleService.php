@@ -51,6 +51,7 @@ class RoleService {
             $rolesResult = $rolesDb->updateRolesDetails($params);
             if ($rolesResult > 0) {
                 $rolesDb->mapRolesPrivileges($params);
+                // die;
                 $adapter->commit();
                 $subject = $rolesResult;
                 //<-- Event log
@@ -89,6 +90,11 @@ class RoleService {
     public function getAllRoles() {
         $rolesDb = $this->sm->get('RolesTable');
         return $rolesDb->fetchAllRoles();
+    }
+
+    public function getPrivilegesMap($roleId) {
+        $rolesDb = $this->sm->get('RolesTable');
+        return $rolesDb->fetchPrivilegesMap($roleId);
     }
 }
 

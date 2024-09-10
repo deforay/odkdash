@@ -393,7 +393,8 @@ class Module
                     {
                         $resourcesTable = $diContainer->get('ResourcesTable');
                         $rolesTable = $diContainer->get('RolesTable');
-                        return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles());
+                        // return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles());
+                        return new Acl($resourcesTable->fetchAllResourceMap(), $rolesTable->fecthAllActiveRoles(), $rolesTable->getAllPrivilegesMap(), $rolesTable->getAllPrivileges());
                     }
                 },
                 'SpiFormVer3Table' => new class

@@ -1203,17 +1203,9 @@ class SpiFormVer6Table extends AbstractTableGateway
 
     public function getPerformanceV6($params)
     {
-        //echo "ss";die;
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        // $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-        //     ->columns(array(
-        //         'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
-        //         'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
-        //         'totalDataPoints' => new Expression("COUNT(*)"), 'AUDIT_SCORE_PERCENTAGE'
-        //     ))
-        //     ->where(array('spiv6.status' => 'approved'));
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
             ->columns(array('assesmentofaudit', 'AUDIT_SCORE_PERCENTAGE'))
             ->where(array('spiv3.status' => 'approved'));
@@ -1224,7 +1216,6 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where('spiv6.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
         }
-        // die("ss");
         $startDate = '';
         $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -1314,7 +1305,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $level = 4;
                 $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
             }
-            $row[] = $level;
         }
         $output['totalDataPoints'] = count($rResult);
         $output['oldestDate'] = $minDate;
