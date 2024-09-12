@@ -99,6 +99,7 @@ class UsersTable extends AbstractTableGateway
             $loginContainer->userId = $sResult->id;
             $loginContainer->login = $sResult->login;
             $loginContainer->roleCode = $sResult->role_code;
+            $loginContainer->roleId = $sResult->role_id;
             $loginContainer->token = $token;
             $loginContainer->userCountryMap = $userCountryMapArray;
             $loginContainer->userImage = $sResult->user_image;

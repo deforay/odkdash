@@ -65,7 +65,7 @@ class RolesController extends AbstractActionController
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->roleService->getRole($id);
             $rolesResult = $this->roleService->getAllRoles(); //privileges
-            $config = $this->roleService->getPrivilegesMap($id);
+            $config = $this->roleService->getPrivilegesMap();
             return new ViewModel(array(
                 'result' => $result,
                 'rolesresult' => $rolesResult,

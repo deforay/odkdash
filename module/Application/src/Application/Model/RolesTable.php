@@ -270,13 +270,17 @@ class RolesTable extends AbstractTableGateway
         }
     }
 
-    public function fetchPrivilegesMap($roleId) {
+    public function fetchPrivilegesMap() {
         $sql = new Sql($this->adapter);
         $dbAdapter = $this->adapter;
-
-        $query = $sql->select()->from('roles_privileges_map')->where(array('role_id' => $roleId));
-        $privMapQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
-        $rolePrivmaps = $dbAdapter->query($privMapQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $loginContainer = new Container('credo');
+        $roleId = $loginContainer->roleId;
+        $rolePrivmaps = [];
+        if($roleId != '') {
+            $query = $sql->select()->from('roles_privileges_map')->where(array('role_id' => $roleId));
+            $privMapQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
+            $rolePrivmaps = $dbAdapter->query($privMapQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        }
         return $rolePrivmaps;
     }
 

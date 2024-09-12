@@ -92,9 +92,9 @@ class RoleService {
         return $rolesDb->fetchAllRoles();
     }
 
-    public function getPrivilegesMap($roleId) {
+    public function getPrivilegesMap() {
         $rolesDb = $this->sm->get('RolesTable');
-        return $rolesDb->fetchPrivilegesMap($roleId);
+        return $rolesDb->fetchPrivilegesMap();
     }
 }
 

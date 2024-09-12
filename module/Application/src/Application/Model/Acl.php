@@ -82,6 +82,7 @@ class Acl extends LaminasAcl
         }
 
         $result = [];
+
         // Initialize all roles and resources
         foreach ($rolesList as $role) {
             $roleCode = $role['role_code'];
@@ -92,11 +93,11 @@ class Acl extends LaminasAcl
                 $result[$roleCode][$resourceId] = [];
 
                 // Initialize only with privileges that exist for this resource
-                foreach ($privilegeMap as $privId => $privDetails) {
-                    if ($privDetails['resource_id'] === $resourceId) {
-                        $result[$roleCode][$resourceId][$privDetails['privilege_name']] = 'deny';
-                    }
-                }
+                // foreach ($privilegeMap as $privId => $privDetails) {
+                //     if ($privDetails['resource_id'] === $resourceId) {
+                //         $result[$roleCode][$resourceId][$privDetails['privilege_name']] = 'deny';
+                //     }
+                // }
             }
         }
 
@@ -113,6 +114,7 @@ class Acl extends LaminasAcl
                     break;
                 }
             }
+
             // If role code and privilege mapping is found, update the result
             if ($roleCode && isset($privilegeMap[$privilegeId])) {
                 $resourceId = $privilegeMap[$privilegeId]['resource_id'];
@@ -135,6 +137,7 @@ class Acl extends LaminasAcl
                 $this->addRole(new GenericRole($role));
             }
             foreach ($resources as $resource => $permissions) {
+                // $resource = stripcslashes($resource);
                 foreach ($permissions as $privilege => $permission) {
                     $this->$permission($role, $resource, $privilege);
                 }
