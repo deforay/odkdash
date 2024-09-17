@@ -1,3 +1,73 @@
+<style>
+	.privilege-switch {
+		display: flex;
+		overflow: hidden;
+	}
+
+	.privilege-switch input {
+		position: absolute !important;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		width: 1px;
+		border: 0;
+		overflow: hidden;
+	}
+
+	.privilege-switch label {
+		background-color: #e4e4e4;
+		color: rgba(0, 0, 0, 0.6);
+		font-size: 14px;
+		line-height: 1;
+		text-align: center;
+		padding: 8px 16px;
+		margin-right: -1px;
+		border: 1px solid rgba(0, 0, 0, 0.2);
+		box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+		transition: all 0.1s ease-in-out;
+	}
+
+	.privilege-switch label:hover {
+		cursor: pointer;
+	}
+
+	.privilege-switch input:checked+label {
+		box-shadow: none;
+	}
+
+	.privilege-switch label:first-of-type {
+		border-radius: 4px 0 0 4px;
+	}
+
+	.privilege-switch label:last-of-type {
+		border-radius: 0 4px 4px 0;
+	}
+
+	.deny-label {
+		background-color: #d9534f !important;
+		color: white !important;
+	}
+
+	.allow-label {
+		background-color: #398439 !important;
+		color: white !important;
+	}
+
+	.normal-label {
+		background-color: #e4e4e4 !important;
+		color: black !important;
+	}
+
+	h2 {
+		font-size: 18px;
+		margin-bottom: 8px;
+	}
+
+	.privilege-div {
+		margin-top: 5px;
+		border: 1px solid #eee;
+		padding: 10px;
+	}
+</style>
 <div class="am-content">
 	<div class="page-head">
 		<h2>Add Role</h2>
@@ -32,32 +102,63 @@
 										</div>
 									</div>
 									<div class="form-group col-sm-12" style="padding-left:14px;">
-										<strong>Select All</strong>
-										<a style="color: #333;" href="javascript:void(0);" id="cekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' /> <i class='fa fa-check'></i></a>
-										&nbsp<strong>
-											Unselect All</strong> <a style="color: #333;" href="javascript:void(0);" id="unCekAllPrivileges"><input type='radio' class='layCek' name='cekUnCekAll' checked='checked' /> <i class='fa fa-times'></i></a>
+										<div class="privilege-switch super-switch">
+											<input type="radio" class='' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
+											<label for="allowAllPrivileges">Select All</label>
+											<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" checked/></a>
+											<label for="denyAllPrivileges">Unselect All</label>
+										</div>
 									</div>
-									<table class="table table-striped table-hover table-bordered" style="width:90%;margin:0 auto;">
+									<table aria-describedby="table" class="table table-striped responsive-utilities">
+										<tbody>
 										<?php
-										foreach ($rolesresult as $value) {
-
-											echo "<tr class=''>";
-											echo "<td><strong>" . ucwords($value['display_name']) . "</strong></td>";
-											foreach ($value['privileges'] as $privilege) {
-
-												echo "<td>"
-													. "<label class='labelName'>" . ucwords($privilege['display_name']) . "</label> <br>
-															<label>
-																<input type='radio' class='cekAll' name='resource[" . $value['resource_id'] . "][" . $privilege['privilege_name'] . "]" . "' value='allow'> <i class='fa fa-check'></i>
-															</label> &nbsp; 
-															<label>
-																<input type='radio' class='unCekAll' name='resource[" . $value['resource_id'] . "][" . $privilege['privilege_name'] . "]" . "' value='deny' checked=''>  <i class='fa fa-times'></i>
-															</label>
-													  </td>";
-											}
-											echo "</tr>";
-										}
-										?>
+										foreach ($rolesresult as $value) { ?>
+											<tr class="togglerTr">
+												<th style="background-color:#eee;">
+													<div class="card-header">
+														<h4 class="card-title" style="font-weight: bold;"><?php echo ucwords($value['display_name'])  ?></h4>
+														<div class="card-actions">
+															<div class="super-switch privilege-switch pull-right">
+																<?php 
+																	 $displayName = str_replace(' ', '', $value['display_name']);
+																	 echo '<input type="radio" class="" id="all' . $displayName . '" 
+																			name="' . $displayName . '" 
+																			onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', true);">
+																		   <label for="all' . $displayName . '">All</label>';
+																 
+																	 echo '<input type="radio" class="" id="none' . $displayName . '" 
+																			name="' . $displayName . '" 
+																			onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', false);">
+																		   <label for="none' . $displayName . '">None</label>';
+																?>
+															</div>
+														</div>
+													</div>
+												</th>
+											</tr>
+											<tr>
+												<td style="text-align:center;vertical-align:middle;" class="privilegesNode" id="<?php echo $displayName; ?>">
+													<div class="row ">
+													<?php foreach ($value['privileges'] as $privilege) { ?>
+														<div class="col-md-3 privilege-div">
+															<strong class="privilege-label"><?php echo ucwords($privilege['display_name'])  ?></strong>
+															<br>
+															<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
+																<?php
+																	echo '<input type="radio" class="selectPrivilege" name="resource[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']">';
+																	echo '<label for="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="normal-label">Yes</label>';
+																	
+																	echo '<input type="radio" class="unselectPrivilege" name="resource[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']">';
+																	echo '<label for="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="deny-label">No</label>';
+																?>
+															</div>
+														</div>
+													<?php } ?>
+													</div>
+												</td>
+											</tr>
+											<?php } ?>
+										</tbody>
 									</table>
 								</div>
 
@@ -112,13 +213,78 @@
 				}
 			});
 	}
-	$("#cekAllPrivileges").click(function() {
-		$('.unCekAll').prop('checked', false);
-		$(".cekAll").prop("checked", true);
+
+    $("#allowAllPrivileges").click(function() {
+		$('.unselectPrivilege').prop('checked', false);
+		$('.selectPrivilege').prop('checked', true);
+		$('.unselectPrivilege').next('label').addClass('normal-label');
+		$('.selectPrivilege').next('label').addClass('allow-label');
+		$(this).next('label').addClass('allow-label');
+		$("#denyAllPrivileges").next('label').addClass('normal-label');
+
+		$('.unselectPrivilege').next('label').removeClass('deny-label');
+		$('.selectPrivilege').next('label').removeClass('normal-label');
+		$(this).next('label').removeClass('deny-label');
+		$("#allowAllPrivileges").next('label').removeClass('normal-label');
 	});
 
-	$("#unCekAllPrivileges").click(function() {
-		$('.unCekAll').prop('checked', true);
-		$(".cekAll").prop("checked", false);
+	$("#denyAllPrivileges").click(function() {
+		$('.selectPrivilege').prop('checked', false);
+		$('.unselectPrivilege').prop('checked', true);
+		$('.unselectPrivilege').next('label').addClass('deny-label');
+		$('.selectPrivilege').next('label').addClass('normal-label');
+		$(this).next('label').addClass('deny-label');
+		$("#allowAllPrivileges").next('label').addClass('normal-label');
+
+		$('.unselectPrivilege').next('label').removeClass('normal-label');
+		$('.selectPrivilege').next('label').removeClass('allow-label');
+		$(this).next('label').removeClass('allow-label');
+		$("#denyAllPrivileges").next('label').removeClass('normal-label');
+
 	});
+
+    $('.privilege-switch input').click(function() {
+		val = $(this).val();
+		if (val == "deny") {
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').addClass('deny-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').addClass('normal-label');
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').removeClass('normal-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').removeClass('allow-label');
+		} else if (val == "allow") {
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').addClass('normal-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').addClass('allow-label');
+			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').removeClass('deny-label');
+			$(this).closest('.privilege-switch').find('.selectPrivilege').next('label').removeClass('normal-label');
+		}
+	});
+
+    function togglePrivilegesForThisResource(obj, checked) {
+		console.log(obj);
+		if (checked == true) {
+			$("#" + obj).find('.selectPrivilege').prop('checked', true);
+			$("#" + obj).find('.unselectPrivilege').prop('checked', false);
+			$("#" + obj).find('.unselectPrivilege').next('label').addClass('normal-label');
+			$("#" + obj).find('.selectPrivilege').next('label').addClass('allow-label');
+			$("#all" + obj).next('label').addClass('allow-label');
+			$("#none" + obj).next('label').addClass('normal-label');
+
+			$("#" + obj).find('.unselectPrivilege').next('label').removeClass('deny-label');
+			$("#" + obj).find('.selectPrivilege').next('label').removeClass('normal-label');
+			$("#all" + obj).next('label').removeClass('normal-label');
+			$("#none" + obj).next('label').removeClass('deny-label');
+
+		} else if (checked == false) {
+			$("#" + obj).find('.selectPrivilege').prop('checked', false);
+			$("#" + obj).find('.unselectPrivilege').prop('checked', true);
+			$("#" + obj).find('.unselectPrivilege').next('label').addClass('deny-label');
+			$("#" + obj).find('.selectPrivilege').next('label').addClass('normal-label');
+			$("#all" + obj).next('label').addClass('normal-label');
+			$("#none" + obj).next('label').addClass('deny-label');
+
+			$("#" + obj).find('.unselectPrivilege').next('label').removeClass('normal-label');
+			$("#" + obj).find('.selectPrivilege').next('label').removeClass('allow-label');
+			$("#all" + obj).next('label').removeClass('allow-label');
+			$("#none" + obj).next('label').removeClass('normal-label');
+		}
+	}
 </script>
