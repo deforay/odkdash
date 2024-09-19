@@ -37,7 +37,6 @@ class DashboardV6Controller extends AbstractActionController
         //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
         $provinceResult = $this->provinceService->getAllActiveProvinces();
-
         return new ViewModel(array(
             'perf1' => $perf1,
             'perflast30' => $perflast30,
