@@ -188,9 +188,26 @@ class GlobalTable extends AbstractTableGateway
                 $this->update(array('global_value' => $imageName), array('global_name' => 'logo'));
             }
         }
+
+        if (isset($_POST['removedTempFile']) && trim($_POST['removedTempFile']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $_POST['removedTempFile'])) {
+            unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $_POST['removedTempFile']);
+            $this->update(array('global_value' => ''), array('global_name' => 'template_file'));
+        }
+
+        if (isset($_FILES['template_file']['name']) && $_FILES['template_file']['name'] != "") {
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template")) {
+               mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template");
+            }
+            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['template_file']['name'], PATHINFO_EXTENSION));
+            $string = CommonService::generateRandomString(6) . ".";
+            $tempName = "template" . $string . $extension;
+            if (move_uploaded_file($_FILES["template_file"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $tempName)) {
+                $this->update(array('global_value' => $tempName), array('global_name' => 'template_file'));
+            }
+        }
         $out = '';
         foreach ($params as $fieldName => $fieldValue) {
-            if ($fieldName != 'removedLogoImage' && $fieldName != 'web_version') {
+            if ($fieldName != 'removedLogoImage' && $fieldName != 'web_version' && $fieldName != 'removedTempFile') {
                 $result = $this->update(array('global_value' => $fieldValue), array('global_name' => $fieldName));
             } elseif ($fieldName == 'web_version') {
                 foreach ($fieldValue as $ver) {

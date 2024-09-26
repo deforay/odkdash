@@ -48,6 +48,34 @@
 									</div>
 								</div>
 								<div class="form-group">
+									<label for="" class="col-sm-2 control-label">Template File</label>
+									<div class="col-lg-4">
+										<div class="tempfileinput fileinput-new" data-provides="fileinput">
+											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
+												<?php
+												if (isset($config['template_file']) && trim($config['template_file']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $config['template_file'])) {
+												?>
+												<?php echo "template file present"; ?>
+													<!-- <img src="/uploads/template/<?php echo $config['template_file']; ?>" alt="Template File" /> -->
+												<?php } else { ?>
+													<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image" />
+												<?php } ?>
+											</div>
+											<div>
+												<span class="btn btn-default btn-file"><span class="fileinput-new">Select File</span><span class="fileinput-exists">Change</span>
+													<input type="file" id="template_file" name="template_file" accept=".pdf" title="Please select Template File" onchange="getNewTempFile('<?php echo $config['template_file']; ?>');">
+												</span>
+												<?php
+												if (isset($config['template_file']) && trim($config['template_file']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $config['template_file'])) {
+												?>
+													<a id="clearTempFile" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearTempFile('<?php echo $config['template_file']; ?>')">Clear</a>
+												<?php } ?>
+												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
 									<label for="country-name" class="col-sm-2 control-label">Country or Instance Name<span class="mandatory">*</span></label>
 									<div class="col-lg-4">
 										<input name="country-name" id="country-name" class="form-control isRequired" placeholder="Country/Instance Name" title="Please enter country/instance name" value="<?php echo $config['country-name']; ?>" />
@@ -132,6 +160,7 @@
 								<hr>
 								<div class="spacer col-lg-5" align="center">
 									<input type="hidden" name="removedLogoImage" id="removedLogoImage" />
+									<input type="hidden" name="removedTempFile" id="removedTempFile" />
 									<button type="button" onclick="validateNow();" class="btn btn-space btn-primary">Update</button>
 									<a href="<?php echo $this->url('config', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
 								</div>
@@ -172,6 +201,17 @@
 	function getNewImage(img) {
 		$('#clearImage').hide();
 		$("#removedLogoImage").val(img);
+	}
+
+	function clearTempFile(img) {
+		$('.tempfileinput').fileinput('clear');
+		$('#clearTempFile').hide();
+		$("#removedTempFile").val(img);
+	}
+
+	function getNewTempFile(img) {
+		$('#clearTempFile').hide();
+		$("#removedTempFile").val(img);
 	}
 
 	function checkMapDisplay(){

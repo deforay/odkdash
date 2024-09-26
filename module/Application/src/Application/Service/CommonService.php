@@ -27,6 +27,9 @@ class CommonService
 
     public function __construct($sm = null)
     {
+        if ($sm === null) {
+            throw new \Exception("Service Manager cannot be null");
+        }
         $this->sm = $sm;
     }
 
@@ -380,6 +383,12 @@ class CommonService
     {
         $globalDb = $this->sm->get('GlobalTable');
         return $globalDb->getGlobalConfig();
+    }
+
+    public function getGlobalValue($name)
+    {
+        $globalDb = $this->sm->get('GlobalTable');
+        return $globalDb->getGlobalValue($name);
     }
 
     public function updateConfig($params)

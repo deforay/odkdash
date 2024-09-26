@@ -228,7 +228,7 @@ class UsersTable extends AbstractTableGateway
             if ($userId > 0) {
                 $userCountryMap->delete(array('user_id' => $userId));
                 $userRoleMap->update(array('role_id' => $params['roleId']), array('user_id' => $userId));
-                if (count($params['country']) > 0) {
+                if (isset($params['country']) && count($params['country']) > 0) {
                     foreach ($params['country'] as $country) {
                         $userCountryMap->insert(array('user_id' => $userId, 'country_id' => $country));
                     }

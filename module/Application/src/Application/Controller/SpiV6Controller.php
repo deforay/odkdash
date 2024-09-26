@@ -99,7 +99,7 @@ class SpiV6Controller extends AbstractActionController
         }
     }
 
-    public function downloadPdfAction()
+    public function downloadPdfAction()//
     {
 
         $configData = $this->commonService->getGlobalConfigDetails();
@@ -489,7 +489,6 @@ class SpiV6Controller extends AbstractActionController
             $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
 
             $configData = $this->commonService->getGlobalConfigDetails();
-
             $pieResult = $this->odkFormService->getSpiV6PerformancePieChart($param);
             $spiderResult = $this->odkFormService->getSpiV6AuditRoundWiseDataChart($param);
             $s0Result = $this->odkFormService->getSpiV6AuditRoundWiseS0DataChart($param);
