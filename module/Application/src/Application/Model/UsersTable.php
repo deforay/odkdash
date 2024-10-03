@@ -244,7 +244,10 @@ class UsersTable extends AbstractTableGateway
                 }
             }
             if (isset($params['existImage']) && $params['existImage'] == '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
-                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR . $params['removedImage']);
+		        $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $params['existImage']);
+                $cleanedFileName = CommonService::cleanFileName($fileName);
+                $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR, []);
+                unlink($cleanedFilePath . $cleanedFileName);
                 $imageData = array('user_image' => '');
                 $result = $this->update($imageData, array("id" => $userId));
             }

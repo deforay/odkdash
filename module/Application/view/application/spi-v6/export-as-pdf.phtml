@@ -6,8 +6,8 @@ use Application\Service\CommonService;
 // Check if the template_file is set in $configData
 if (isset($configData['template_file']) && !empty($configData['template_file'])) {
     // Use FpdiExtends if the template_file is provided
-    $pdf = new FpdiExtends('P', 'mm', 'A3', true, 'UTF-8', false, false);
-    $pdf->setParams($configData['template_file']);
+    $pdf = new FpdiExtends('P', 'mm', 'A4', true, 'UTF-8', false, false);
+    $pdf->setParams($configData['template_file'], $configData['template_top_margin']);
 } else {
     // Use TCPDF as a fallback when template_file is not provided
     $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

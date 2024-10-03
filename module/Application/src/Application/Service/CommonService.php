@@ -628,4 +628,57 @@ class CommonService
         die;
         return 0;
     }
+
+    public static function buildSafePath($baseDirectory, array $pathComponents)
+    {
+        if (!is_dir($baseDirectory) && !self::makeDirectory($baseDirectory)) {
+            return false; // Failed to create the directory
+        }
+
+        // Normalize the base directory
+        $baseDirectory = realpath($baseDirectory);
+
+        // Clean and sanitize each component of the path
+        $cleanComponents = [];
+        foreach ($pathComponents as $component) {
+            // Remove dangerous characters from user-supplied components
+            $cleanComponent = preg_replace('/[^a-zA-Z0-9-_]/', '', $component);
+            $cleanComponents[] = $cleanComponent;
+        }
+
+        // Join the base directory with the cleaned components to create the full path
+        $fullPath = $baseDirectory . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $cleanComponents);
+
+        // Check if the directory exists, if not, create it recursively
+        if (!is_dir($fullPath) && !self::makeDirectory($fullPath)) {
+            return false; // Failed to create the directory
+        }
+
+        return realpath($fullPath); // Clean and validated path
+    }
+
+    public static function cleanFileName($filePath)
+    {
+        // Extract the base file name (removes the path if provided)
+        $baseFileName = basename($filePath);
+
+        // Separate the file name from its extension
+        $extension = strtolower(pathinfo($baseFileName, PATHINFO_EXTENSION));
+        $fileNameWithoutExtension = pathinfo($baseFileName, PATHINFO_FILENAME);
+
+        // Clean the file name, keeping only alphanumeric characters, dashes, and underscores
+        $cleanFileName = preg_replace('/[^a-zA-Z0-9-_]/', '', $fileNameWithoutExtension);
+
+        // Reconstruct the file name with its extension
+        return $cleanFileName . ($extension ? '.' . $extension : '');
+    }
+
+    public static function makeDirectory($path, $mode = 0755, $recursive = true): bool
+    {
+        if (is_dir($path)) {
+            return true;
+        }
+
+        return mkdir($path, $mode, $recursive);
+    }
 }

@@ -172,8 +172,11 @@ class GlobalTable extends AbstractTableGateway
     public function updateConfigDetails($params)
     {
         $result = 0;
-        if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage'])) {
-            unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
+		$fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedLogoImage']);
+        $cleanedFileName = CommonService::cleanFileName($fileName);
+        $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR , []);
+        if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists($cleanedFilePath .$cleanedFileName)) {
+            unlink($cleanedFilePath .$cleanedFileName);
             $this->update(array('global_value' => ''), array('global_name' => 'logo'));
         }
 

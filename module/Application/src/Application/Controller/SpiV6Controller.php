@@ -99,7 +99,7 @@ class SpiV6Controller extends AbstractActionController
         }
     }
 
-    public function downloadPdfAction()//
+    public function downloadPdfAction()
     {
 
         $configData = $this->commonService->getGlobalConfigDetails();

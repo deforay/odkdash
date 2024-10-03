@@ -7,6 +7,7 @@ use setasign\Fpdi\TcpdfFpdi;
 class FpdiExtends extends TcpdfFpdi // Extend TcpdfFpdi, which includes TCPDF methods
 {
     public $tempFile;
+    public $tempTopMargin;
     public $template = "";
 
     public function __construct($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false)
@@ -14,11 +15,17 @@ class FpdiExtends extends TcpdfFpdi // Extend TcpdfFpdi, which includes TCPDF me
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
     }
 
-    public function setParams($tempFile)
+    public function setParams($tempFile, $tempTopMargin)
     {
         $this->tempFile = $tempFile; // template file
+        $this->tempTopMargin = $tempTopMargin; // tempTopMargin
         if (!empty($tempFile) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $tempFile)) {
             $this->template = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $tempFile;
+        }
+        if (isset($this->tempTopMargin) && !empty($this->tempTopMargin)) {
+            $this->SetY($this->tempTopMargin - 10);
+        } else {
+            $this->SetY(32);
         }
     }
 

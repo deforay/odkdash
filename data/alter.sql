@@ -2777,3 +2777,6 @@ CREATE TABLE roles_privileges_map (
 
 --sakthi 25-sep-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Template File', 'template_file', NULL);
+
+-- sakthi 30-sep-2024
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Template Top Margin', 'template_top_margin', NULL);
