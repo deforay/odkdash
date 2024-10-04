@@ -173,7 +173,7 @@ class Module
                     return $response;
                 }
             }
-        } elseif (property_exists($session, 'userId') && $session->userId !== null) {
+        } elseif (!empty($session->userId)) {
             $diContainer = $application->getServiceManager();
             $viewModel = $application->getMvcEvent()->getViewModel();
             $acl = $diContainer->get('AppAcl');

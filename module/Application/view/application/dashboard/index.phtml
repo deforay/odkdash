@@ -951,9 +951,9 @@ $config = $this->GlobalConfigHelper();
 		<?php
 
 		$counter = 0;
-		$barData = array();
-		$volumeData = array();
-		$labNameData = array();
+		$barData = [];
+		$volumeData = [];
+		$labNameData = [];
 		foreach ($allSubmissions as $row) {
 			if ($counter == 20) {
 				break;
@@ -1479,9 +1479,11 @@ $config = $this->GlobalConfigHelper();
 	$(function() {
 		<?php
 		$counter = 0;
-		$barData = array();
-		$volumeData = array();
-		$labNameData = array();
+		$barData = [];
+		$volumeData = [];
+		$labNameData = [];
+		$testerData = [];
+		$levelData = [];
 
 		foreach ($testingVolume as $row) {
 			if ($counter == 10) {

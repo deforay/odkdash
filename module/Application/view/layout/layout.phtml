@@ -167,10 +167,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\EmailControlle
           <a href="#" class="am-toggle-left-sidebar navbar-toggle collapsed">
             <span class="icon-bar"><span></span><span></span><span></span></span>
           </a>
-          <a href="/" class="navbar-brand">
+          <a href="#" class="navbar-brand">
             <?php
             // $config = $this->GlobalConfigHelper();
-            if (isset($config) && count($config) > 0 && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
+            if (!empty($config) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
             ?>
               <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
             <?php

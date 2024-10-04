@@ -101,7 +101,8 @@ return [
         'Application\\Controller\\UsersController' => [
             'index' => 'allow',
             'add' => 'allow',
-            'change-password' => 'deny',
+            'change-password' => 'allow',
+            'profile' => 'allow',
             'edit' => 'allow',
         ],
         'Application\\Controller\\SpiV3ReportsController' => [
@@ -213,10 +214,11 @@ return [
             'index' => 'allow',
         ],
         'Application\\Controller\\UsersController' => [
-            'index' => 'allow',
-            'add' => 'allow',
+            'index' => 'deny',
+            'add' => 'deny',
             'change-password' => 'allow',
-            'edit' => 'allow',
+            'profile' => 'allow',
+            'edit' => 'deny',
         ],
         'Application\\Controller\\SpiV3ReportsController' => [
             'facility-report' => 'allow',
@@ -330,6 +332,7 @@ return [
             'index' => 'allow',
             'add' => 'allow',
             'change-password' => 'allow',
+            'profile' => 'allow',
             'edit' => 'allow',
         ],
         'Application\\Controller\\SpiV3ReportsController' => [

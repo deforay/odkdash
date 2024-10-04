@@ -3943,7 +3943,7 @@ class OdkFormService
                     $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
                 }
             }
-            if (property_exists($loginContainer, 'token') && $loginContainer->token !== null && !empty($loginContainer->token)) {
+            if (!empty($loginContainer->token)) {
                 $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
             }
             if (isset($sWhere) && $sWhere != "") {
@@ -6047,7 +6047,7 @@ class OdkFormService
 
     public function exportViewDataV6($params)
     {
-       try {
+        try {
             $params = $params->data;
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
@@ -6076,7 +6076,7 @@ class OdkFormService
             $scoreLevel = isset($params[7]['value']) && ($params[7]['value'] != "") ? "Score Level : " . $params[7]['value'] : "Score Level : ";
             $testPoint = isset($params[5]['value']) && ($params[5]['value'] != "") ? "Type of Testing Point : " . $params[5]['value'] : "Type of Testing Point : ";
             $source = $params[0]['value'];
-          
+
             $sQueryStr = $sql->buildSqlString($queryContainer->exportViewDataV6Query);
             $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
@@ -6090,28 +6090,28 @@ class OdkFormService
             if ($source == 'apall') { // source
                 $headerRow = ['Overall Audit Performance'];
                 $excelName = 'overall-audit-performance';
-            } else if($source == 'apl180'){
+            } else if ($source == 'apl180') {
                 $excelName = 'performance-last-180-days';
                 $headerRow = ['Performance - Last 180 days'];
-            }else if($source == 'ap'){
+            } else if ($source == 'ap') {
                 $excelName = 'audit-performance';
                 $headerRow = ['Audit Performance'];
-            }else if($source == 'hv'){
+            } else if ($source == 'hv') {
                 $headerRow = ['Performance of High Volume Sites'];
                 $excelName = 'performance-of-high-volume-sites';
-                $fieldNames = ['Date of Audit', 'Facility Name','Testing Point Name', 'Monthly Test Volume', 'Testers', 'Level'];
-            }else if($source == 'la'){
+                $fieldNames = ['Date of Audit', 'Facility Name', 'Testing Point Name', 'Monthly Test Volume', 'Testers', 'Level'];
+            } else if ($source == 'la') {
                 $excelName = 'latest-audits';
                 $headerRow = ['Latest Audits'];
-                $fieldNames = ['Date of Audit', 'Facility Name','Testing Point Name', 'Audit Score Percentage', 'Testing Volume'];
-            }else if($source == 'ad'){
+                $fieldNames = ['Date of Audit', 'Facility Name', 'Testing Point Name', 'Audit Score Percentage', 'Testing Volume'];
+            } else if ($source == 'ad') {
                 $excelName = 'audit-dates';
                 $headerRow = ['Audit Dates'];
                 $fieldNames = ['Audit Date', 'Audit Count'];
-            }else if($source == 'apspi'){
+            } else if ($source == 'apspi') {
                 $excelName = 'audit-performance';
                 $headerRow = ['Audit Performance'];
-                $fieldNames = ['Audit Date', 'Personal Training and Certifications','Physical Facility', 'Saftey', 'Pre-Testing Phase', 'Testing Phase', 'Post-Testing Phase', 'External Quality Assessment'];
+                $fieldNames = ['Audit Date', 'Personal Training and Certifications', 'Physical Facility', 'Saftey', 'Pre-Testing Phase', 'Testing Phase', 'Post-Testing Phase', 'External Quality Assessment'];
             }
 
             $outputData[] = $headerRow;
@@ -6120,7 +6120,7 @@ class OdkFormService
                 $fieldNames = ['Facility Id', 'Facility Name', 'Audit Round No.', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Score Level', 'Percentage'];
                 $outputData[] = $data;
             }
-           
+
             $outputData[] = $fieldNames;
             foreach ($rResult as $aRow) {
                 $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
@@ -6190,7 +6190,7 @@ class OdkFormService
             $outputScore['levelThreeCount'] = count($levelThree);
             $outputScore['levelFourCount'] = count($levelFour);
 
-            if ($source == 'apl180' || $source == 'apall' || $source == 'ap') { 
+            if ($source == 'apl180' || $source == 'apall' || $source == 'ap') {
                 $outputData[] = ['No.of Audit(s)    : ' . count($rResult)];
                 $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
 
@@ -6203,16 +6203,16 @@ class OdkFormService
             }
             $xlsx = new SimpleXLSXGen();
             $xlsx->addSheet($outputData);
-            $filename = $excelName . ' - '. time() . '.xlsx';
+            $filename = $excelName . ' - ' . time() . '.xlsx';
             $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
             $subject = '';
-            $eventType = 'Export-'. $headerRow;
-            $action = $username . ' has exported '. $headerRow;
+            $eventType = 'Export-' . $headerRow;
+            $action = $username . ' has exported ' . $headerRow;
             $resourceName = 'Export-view-data-v6';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-            return $filename;            
+            return $filename;
         } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
@@ -6220,7 +6220,7 @@ class OdkFormService
             return "";
         }
     }
-    
+
     public function getSpiV6FormUniqueLevels()
     {
         /** @var SpiFormVer6Table  $db */
