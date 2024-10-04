@@ -552,7 +552,7 @@ class FacilityService
 
                     foreach ($filteredArray as $rowIndex => $rowData) {
                         if (empty($rowData['A']) || empty($rowData['B'])) {
-                            $container->alertMsg = 'Please enter all the mandatory fields in the excel sheett';
+                            $container->alertMsg = 'Please enter all the mandatory fields in the excel sheet';
                             return "";
                         }
                         $geographicalDivisionsTable = $this->sm->get('GeographicalDivisionsTable');
