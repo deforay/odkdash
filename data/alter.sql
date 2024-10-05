@@ -2046,7 +2046,7 @@ ALTER TABLE  `users` ADD  `last_login_datetime` DATETIME NULL DEFAULT NULL;
 CREATE TABLE `spi_form_v_6` (
  `id` int NOT NULL AUTO_INCREMENT,
  `token` TEXT NOT NULL,
- `uuid` TEXT NOT NULL,
+ `uuid` TEXT NULL,
  `content` TEXT NOT NULL,
  `formId` TEXT NOT NULL,
  `formVersion` TEXT NOT NULL,
@@ -2707,7 +2707,7 @@ CREATE TABLE `spi_form_v_3_duplicate` SELECT * from `spi_form_v_3` WHERE 1=0;
 DROP TABLE IF EXISTS spi_form_v_6_duplicate;
 CREATE TABLE `spi_form_v_6_duplicate` SELECT * from `spi_form_v_6` WHERE 1=0;
 
---ilahir 20-Feb-2023
+-- ilahir 20-Feb-2023
 UPDATE `privileges`
 SET `resource_id` = CONCAT(`resource_id`, 'Controller')
 WHERE `resource_id` NOT LIKE '%Controller';
@@ -2727,7 +2727,8 @@ ALTER TABLE `spi_form_v_3` ADD `district` VARCHAR(32) NULL DEFAULT NULL AFTER `f
 ALTER TABLE `spi_form_v_6` ADD `district` VARCHAR(32) NULL DEFAULT NULL AFTER `facilityid`;
 
 -- Amit 23-Apr-2024
-ALTER TABLE form_dump ADD COLUMN file_path VARCHAR(1024) NULL DEFAULT NULL AFTER 'data_dump';
+ALTER TABLE `form_dump` ADD `file_path` TEXT NULL DEFAULT NULL AFTER `data_dump`;
+
 
 -- ilahir 24-Apr-2024
 CREATE TABLE `geographical_divisions` (
@@ -2775,8 +2776,13 @@ CREATE TABLE roles_privileges_map (
 --sakthi 19-sep-2024
 -- ALTER TABLE `users` ADD `template_file` VARCHAR(255) NULL AFTER `user_image`;
 
---sakthi 25-sep-2024
+-- sakthi 25-sep-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Template File', 'template_file', NULL);
 
 -- sakthi 30-sep-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Template Top Margin', 'template_top_margin', NULL);
+
+-- Amit 06-Oct-2024
+UPDATE `resources`
+SET `resource_id` = CONCAT(`resource_id`, 'Controller')
+WHERE `resource_id` NOT LIKE '%Controller';
