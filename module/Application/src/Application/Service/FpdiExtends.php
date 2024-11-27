@@ -15,18 +15,16 @@ class FpdiExtends extends TcpdfFpdi // Extend TcpdfFpdi, which includes TCPDF me
         parent::__construct($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
     }
 
-    public function setParams($tempFile, $tempTopMargin)
+    public function setParams($tempFile = '', $tempTopMargin = 32)
     {
         $this->tempFile = $tempFile; // template file
         $this->tempTopMargin = $tempTopMargin; // tempTopMargin
+        // Ensure $tempTopMargin is an integer
+        $this->tempTopMargin = intval($this->tempTopMargin);
         if (!empty($tempFile) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $tempFile)) {
             $this->template = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $tempFile;
         }
-        if (isset($this->tempTopMargin) && !empty($this->tempTopMargin)) {
-            $this->SetY($this->tempTopMargin - 10);
-        } else {
-            $this->SetY(32);
-        }
+        $this->SetY($this->tempTopMargin - 10);
     }
 
     public function Header()

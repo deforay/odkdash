@@ -5301,6 +5301,8 @@ class OdkFormService
 
                             $correctiveActions[$submission['__id']] = $correctiveAction["value"] ?? [];
                         }
+                        // Handle media download
+                        $this->downloadMediaFiles($submission, $httpClient, $authToken, $baseUrl);
                     }
                     if (isset($params) && !empty($params)) {
                         $spiV6db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
@@ -5309,6 +5311,85 @@ class OdkFormService
                     echo "Error authenticating: " . $response->getStatusCode();
                 }
             }
+        }
+    }
+
+    public function downloadMediaFiles($submission, $httpClient, $authToken, $baseUrl)
+    {
+        // Check if the submission contains media URLs (e.g., images, audio, video)
+        $mediaFields = [
+            'PERSONALPHOTO' => 'SPIRRT',      // First column from SPIRRT
+            'PHYSICALPHOTO' => 'PHYSICAL',    // Second column from PHYSICAL
+            'SAFETYPHOTO'   => 'SAFETY',      // Third column from SAFETY
+            'PRETESTPHOTO'  => 'PRETEST',     // Add more fields if needed
+            'TESTPHOTO'     => 'TEST',        // and so on...
+            'POSTTESTPHOTO' => 'POSTTEST',
+            'EQAPHOTO'      => 'EQA',
+            'RTRIPHOTO'     => 'INFECTIONSUR'
+        ];
+
+        // Loop through each field defined in $mediaFields and process the download.
+        foreach ($mediaFields as $mediaField => $section) {
+            $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section);
+        }
+
+        // Handle 'sitephoto' separately as it doesn't have a section.
+        if (isset($submission['sitephoto'])) {
+            $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, 'sitephoto');
+        }
+    }
+
+    public function downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section = null)
+    {
+        $submission['SPIRRT'] = $submission['SPIRRT'] ?? $submission['SPIRT'];
+        $fileName = '';
+        if ($section && isset($submission[$section][$mediaField])) {
+            $fileName = $submission[$section][$mediaField];
+        }
+
+        if ($mediaField === 'sitephoto' && isset($submission['sitephoto'])) {
+            $fileName = $submission['sitephoto'];
+        }
+
+        if($fileName != ''){
+            $mediaUrl = $baseUrl . '/submissions/'.$submission['__id'].'/attachments/'.$fileName;
+
+            $mediaResponse = $httpClient->get($mediaUrl, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $authToken,
+                ],
+            ]);
+    
+            if ($mediaResponse->getStatusCode() == 200) {
+                $mediaContent = $mediaResponse->getBody()->getContents();
+    
+                if (!file_exists(UPLOAD_PATH) && !is_dir(UPLOAD_PATH)) {
+                    mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads");
+                }
+                $filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments';
+                if (!file_exists($filePath) && !is_dir($filePath)) {
+                    mkdir($filePath);
+                }
+
+                $submissionId = $submission['__id'];
+                $uuid = str_replace('uuid:', '', $submissionId);
+                $subDirPath = $filePath . DIRECTORY_SEPARATOR . $uuid;
+
+                if (!file_exists($subDirPath) && !is_dir($subDirPath)) {
+                    mkdir($subDirPath, 0777, true);
+                    //chmod($subDirPath, 0777);
+                }
+
+                $uploadMediaFilePath =  $subDirPath . DIRECTORY_SEPARATOR . $fileName;  // Change this to your desired directory
+                // Save the media file locally
+                file_put_contents($uploadMediaFilePath, $mediaContent);
+    
+                //echo "Media file saved: " . $uploadMediaFilePath;
+            } else {
+                echo "Failed to download media for field $mediaField: " . $mediaResponse->getStatusCode();
+            }
+        } else {
+            echo "Media field $mediaField not found in the submission data.";
         }
     }
 
