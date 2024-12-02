@@ -448,6 +448,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $par = $data = [];
 
             $submissionData['SPIRRT'] = $submissionData['SPIRRT'] ?? $submissionData['SPIRT'];
+            $submissionData['EQA'] = $submissionData['EQA'] ?? $submissionData['EXTERNALQA'];
 
             $data['uuid'] = $submissionData['meta']['instanceID'];
             $data['content'] = 'record';
@@ -651,7 +652,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data['EQA_C_7_7_FEEDBACK_PROVIDED_DOCUMENTED'] = $submissionData['EQA']['EQA_C_7_7_FEEDBACK_PROVIDED_DOCUMENTED'] ?? $submissionData['EQA']['EQA_C_7_7'] ?? null;
             $data['EQA_Q_7_8_TESTERS_RETRAINED_IN_VISITS'] = $submissionData['EQA']['EQA_Q_7_8_TESTERS_RETRAINED_IN_VISITS'] ?? $submissionData['EQA']['EQA_Q_7_8'] ?? null;
             $data['EQA_C_7_8_TESTERS_RETRAINED_IN_VISITS'] = $submissionData['EQA']['EQA_C_7_8_TESTERS_RETRAINED_IN_VISITS'] ?? $submissionData['EQA']['EQA_C_7_8'] ?? null;
-            $data['performrtritesting'] = $submissionData['performrtritesting'];
+            $data['performrtritesting'] = $submissionData['performrtritesting'] ?? $submissionData['TESTSITE']['isRTRIPerformed'] ?? null;
             $data['EQA_SCORE'] = $submissionData['EQA']['EQA_SCORE'];
             $data['EQA_DISPLAY'] = $submissionData['EQA']['EQA_DISPLAY'];
             $data['EQAPHOTO'] = $submissionData['EQA']['EQAPHOTO'];

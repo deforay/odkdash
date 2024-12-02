@@ -613,7 +613,8 @@
     "/SPI_RT/INFECTIONSUR/RTRI_8_9/RTRI_Q_8_9:label": "8.9 Les résultats du CQ pour RTRI sont-ils correctement enregistrés (par exemple, nom du kit, numéro de lot, dates d 'expiration, nom du testeur, résultats visuels RTRI et interprétation de la récence pour chaque niveau de CQ) et examinés par le responsable? ",
     "/SPI_RT/INFECTIONSUR/RTRI_8_10/RTRI_Q_8_10:label": "8.10 Des mesures appropriées sont-elles prises et documentées lorsque les résultats RTRI QC sont incorrects?",
     "/SPI_RT/INFECTIONSUR/RTRI_8_11/RTRI_Q_8_11:label": "8.11 Des mesures appropriées ont-elles été prises et documentées conformément aux PON ou aux lignes directrices pour les résultats de tests RTRI invalides? Si oui, combien au cours des 3 derniers mois ………… (utilisez les commentaires ) ",
-    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 SURVEILLANCE DES INFECTIONS RÉCENTES DU VIH-1 À L 'AIDE DU TEST RAPIDE D 'INFECTION RÉCENTE"
+    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 SURVEILLANCE DES INFECTIONS RÉCENTES DU VIH-1 À L 'AIDE DU TEST RAPIDE D 'INFECTION RÉCENTE",
+    "/SPI_RT/INFECTIONSUR/RTRIPHOTO:label": "Photo-RTRI"
 
   },                                          
   "Spanish": {
@@ -1224,7 +1225,8 @@
     "/SPI_RT/INFECTIONSUR/RTRI_8_9/RTRI_Q_8_9:label": "8.9 ¿Se registran y revisan los resultados de CC para RTRI (por ejemplo, nombre del kit, número de lote, fechas de vencimiento, nombre del probador, resultados visuales de RTRI e interpretación de la actualidad para cada nivel de CC)? por responsable? ",
     "/SPI_RT/INFECTIONSUR/RTRI_8_10/RTRI_Q_8_10:label": "8.10 ¿Se toman y documentan los pasos adecuados cuando los resultados de RTRI QC son incorrectos?",
     "/SPI_RT/INFECTIONSUR/RTRI_8_11/RTRI_Q_8_11:label": "8.11 ¿Se toman y documentan los pasos apropiados de acuerdo con el SOP o las pautas para los resultados de la prueba RTRI no válidos? ) ",
-    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 VIGILANCIA DE LA INFECCIÓN RECIENTE DEL VIH-1 USANDO LA PRUEBA RÁPIDA PARA LA PUNTUACIÓN DE INFECCIÓN RECIENTE"
+    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 VIGILANCIA DE LA INFECCIÓN RECIENTE DEL VIH-1 USANDO LA PRUEBA RÁPIDA PARA LA PUNTUACIÓN DE INFECCIÓN RECIENTE",
+    "/SPI_RT/INFECTIONSUR/RTRIPHOTO:label": "Foto -RTRI"
          
     
       
@@ -1841,7 +1843,8 @@
     "/SPI_RT/INFECTIONSUR/RTRI_8_9/RTRI_Q_8_9:label": "8.9 Os resultados de QC para RTRI são registrados corretamente (por exemplo, nome do kit, número de lote, datas de validade, nome do testador, resultados visuais RTRI e interpretação de recência para cada nível de QC) e revisados pelo responsável? ",
     "/SPI_RT/INFECTIONSUR/RTRI_8_10/RTRI_Q_8_10:label": "8.10 As etapas apropriadas são tomadas e documentadas quando os resultados do RTRI QC estão incorretos?",
     "/SPI_RT/INFECTIONSUR/RTRI_8_11/RTRI_Q_8_11:label": "8.11 As etapas apropriadas foram tomadas e documentadas de acordo com o SOP ou diretrizes para resultados de teste RTRI inválidos? Se sim, quantos nos últimos 3 meses ………… (usar comentários ) ",
-    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 VIGILÂNCIA DE INFECÇÃO RECENTE DE HIV-1 USANDO O TESTE RÁPIDO PARA PONTUAÇÃO DE INFECÇÃO RECENTE"
+    "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 VIGILÂNCIA DE INFECÇÃO RECENTE DE HIV-1 USANDO O TESTE RÁPIDO PARA PONTUAÇÃO DE INFECÇÃO RECENTE",
+    "/SPI_RT/INFECTIONSUR/RTRIPHOTO:label": "Foto -RTRI"
     
 
     
@@ -2448,6 +2451,7 @@
     "/SPI_RT/INFECTIONSUR/RTRI_8_10/RTRI_Q_8_10:label": "8.10 Are appropriate steps taken and documented when RTRI QC results are incorrect?",                                          
     "/SPI_RT/INFECTIONSUR/RTRI_8_11/RTRI_Q_8_11:label": "8.11 Are appropriate steps taken and documented according to the SOP or guidelines for invalid RTRI test results? If yes,                                           how many in the last 3 months…………(use comments)",                                          
     "/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label": "8.0 HIV-1 RECENT INFECTION SURVEILLANCE USING THE RAPID TEST FOR RECENT INFECTION SCORE",
+    "/SPI_RT/INFECTIONSUR/RTRIPHOTO:label": "Photo -RTRI",
 
     "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL:label": "S.0 HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL",
     "/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_1/S0_Q_1:label": "S.1 Are counselors adhering to the study protocol for eligibility, consent, and counseling?",

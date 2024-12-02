@@ -153,6 +153,9 @@ $testingTab .= '</table>';
 
 $pdf->writeHTML($testingTab, true, 0, true, 0);
 
+$uuid = str_replace('uuid:', '', $formData['uuid']);
+$mediaFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments' . DIRECTORY_SEPARATOR . $uuid;
+
 $partBHeading = '<b>' . $decoded[$language]['/SPI_RT/SPIRT/info4:label'] . '</b>';
 
 $pdf->writeHTML($partBHeading, true, 0, true, 0);
@@ -287,6 +290,13 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
+if($formData['PERSONALPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONALPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/PHYSICAL:label'] . '</td>';
@@ -364,6 +374,13 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
+if($formData['PHYSICALPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PHYSICALPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICALPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SAFETY:label'] . '</td>';
@@ -464,6 +481,14 @@ $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETY_DISPLAY:label'] . '</td>';
 $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
 $partBTable .= '</tr>';
+
+if($formData['SAFETYPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['SAFETYPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETYPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/PRETEST:label'] . '</td>';
@@ -579,6 +604,13 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
+if($formData['PRETESTPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PRETESTPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETESTPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/TEST:label'] . '</td>';
@@ -678,6 +710,13 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
+if($formData['TESTPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['TESTPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TESTPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/POSTTEST:label'] . '</td>';
@@ -777,6 +816,14 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
+if($formData['POSTTESTPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['POSTTESTPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POSTTESTPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
+
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/EQA:label'] . '</td>';
 $partBTable .= '</tr>';
@@ -866,6 +913,14 @@ $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQA_DISPLAY:label'] . '</td>';
 $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
 $partBTable .= '</tr>';
+
+if($formData['EQAPHOTO'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['EQAPHOTO'];
+    $partBTable .= '<tr>';
+    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQAPHOTO:label'] . '</td>';
+    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $partBTable .= '</tr>';
+}
 
 $partBTable .= '<tr>';
 if (strtolower($formData['performrtritesting']) == 'yes')
@@ -984,7 +1039,16 @@ if (strtolower($formData['performrtritesting']) == 'yes') {
     $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label'] . '</td>';
     $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
     $partBTable .= '</tr>';
+
+    if($formData['RTRIPHOTO'] != ''){
+        $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['RTRIPHOTO'];
+        $partBTable .= '<tr>';
+        $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRIPHOTO:label'] . '</td>';
+        $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+        $partBTable .= '</tr>';
+    }
 }
+
 
 
 if (strtolower($formData['DO_SURVEILLANCE']) == 'yes') {
@@ -1491,10 +1555,18 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
 
-
+if($formData['sitephoto'] != ''){
+    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto'];
+    $siteTable = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
+    $siteTable .= '<tr>';
+    $siteTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/sitephoto:label'] . '</td>';
+    $siteTable .= '<td style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+    $siteTable .= '</tr></table>';
+    $pdf->writeHTML($siteTable, true, 0, true, 0);
+}
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>(' . $formData['staffaudited'] . ')</td></tr>';
+$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>' . $formData['staffaudited'] . '</td></tr>';
 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
@@ -1504,22 +1576,17 @@ $signBox2 = '<table cellspacing="0" cellpadding="4">';
 if ($language == 'Spanish') {
     $signBox2 .= '<tr><td>Nombre y firma del auditor:</td>';
 } else {
-    $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td>';
+    $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/auditorSignature:label'] . '</td>';
 }
 
 
 $signImg = "";
-$signArr = !empty($formData['auditorSignature']) ? json_decode($formData['auditorSignature']) : null;
-
-if (
-    !empty($configData['embed_signatures_in_pdf']) &&
-    $configData['embed_signatures_in_pdf'] == "yes" &&
-    (!empty($signArr) && isset($signArr->url) && !empty($signArr->url))
-) {
-    $signImg = '<img src="' . $signArr->url . '" width="90" />';
+if(!empty($configData['embed_signatures_in_pdf']) && $configData['embed_signatures_in_pdf'] == "yes" && $formData['auditorSignature'] != ''){
+    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['auditorSignature'];
+    $signImg = CommonService::embedImage($imagePath);
 }
 
-$signBox2 .= '<td>' . $signImg . '</td></tr>';
+$signBox2 .= '<td style="text-align:center;">' . $signImg . '</td></tr>';
 
 $dateValue = "<td>" . $this->humanReadableDateFormat($formData['assesmentofaudit']) . "</td>";
 if ($language == 'Portuguese') {
@@ -1530,7 +1597,7 @@ if ($language == 'Portuguese') {
     $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td>" . $dateValue . "</tr>";
 }
 $signBox2 .= '</table>';
-$pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
+$pdf->writeHTMLCell(85, 18, 110, '', $signBox2, 1, 1, 0, true, 'L');
 
 
 //Close and output PDF document

@@ -5333,22 +5333,25 @@ class OdkFormService
             $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section);
         }
 
-        // Handle 'sitephoto' separately as it doesn't have a section.
-        if (isset($submission['sitephoto'])) {
-            $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, 'sitephoto');
+        $mediaFieldsWithoutSection = ['sitephoto', 'auditorSignature'];
+
+        foreach ($mediaFieldsWithoutSection as $mediaField) {
+            if (isset($submission[$mediaField])) {
+                $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField);
+            }
         }
     }
 
     public function downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section = null)
     {
         $submission['SPIRRT'] = $submission['SPIRRT'] ?? $submission['SPIRT'];
+        $submission['EQA'] = $submission['EQA'] ?? $submission['EXTERNALQA'];
+        
         $fileName = '';
         if ($section && isset($submission[$section][$mediaField])) {
             $fileName = $submission[$section][$mediaField];
-        }
-
-        if ($mediaField === 'sitephoto' && isset($submission['sitephoto'])) {
-            $fileName = $submission['sitephoto'];
+        } else {
+            $fileName = $submission[$mediaField];
         }
 
         if($fileName != ''){
@@ -5388,8 +5391,6 @@ class OdkFormService
             } else {
                 echo "Failed to download media for field $mediaField: " . $mediaResponse->getStatusCode();
             }
-        } else {
-            echo "Media field $mediaField not found in the submission data.";
         }
     }
 
