@@ -55,6 +55,8 @@ use Application\Model\GeographicalDivisionsTable;
 
 class Module
 {
+
+
     public function onBootstrap(MvcEvent $e)
     {
         /** @var $application \Laminas\Mvc\Application */
@@ -389,6 +391,7 @@ class Module
             'factories' => array(
                 'AppAcl' => new class
                 {
+
                     public function __invoke($diContainer)
                     {
                         $resourcesTable = $diContainer->get('ResourcesTable');

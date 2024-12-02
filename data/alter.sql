@@ -2277,7 +2277,7 @@ CREATE TABLE `spi_form_v_6` (
  `FINAL_AUDIT_SCORE` TEXT DEFAULT NULL,
  `MAX_AUDIT_SCORE` TEXT DEFAULT NULL,
  `AUDIT_SCORE_PERCENTAGE` TEXT DEFAULT NULL,
- `AUDIT_SCORE_PERCANTAGE_ROUNDED` TEXT DEFAULT NULL,
+ `AUDIT_SCORE_PERCENTAGE_ROUNDED` TEXT DEFAULT NULL,
  `staffaudited` TEXT DEFAULT NULL,
  `durationaudit` TEXT DEFAULT NULL,
  `personincharge` TEXT DEFAULT NULL,
@@ -2731,7 +2731,7 @@ ALTER TABLE `form_dump` ADD `file_path` TEXT NULL DEFAULT NULL AFTER `data_dump`
 
 
 -- ilahir 24-Apr-2024
-CREATE TABLE `geographical_divisions` (
+CREATE TABLE IF NOT EXISTS `geographical_divisions` (
   `geo_id` int NOT NULL AUTO_INCREMENT,
   `geo_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `geo_code` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -2761,10 +2761,10 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 -- Brindha 30-May-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Dashboard Map Zoom Level', 'dashboard_map_zoomlevel', '8');
 
---sakthi 06-sep-2024
+-- Sakthi 06-sep-2024
 ALTER TABLE privileges ADD COLUMN privilege_id INT AUTO_INCREMENT UNIQUE FIRST;
 
-CREATE TABLE roles_privileges_map (
+CREATE TABLE IF NOT EXISTS roles_privileges_map (
     role_id INT NOT NULL,
     privilege_id INT NOT NULL,
     PRIMARY KEY (role_id, privilege_id)
@@ -2773,7 +2773,7 @@ CREATE TABLE roles_privileges_map (
 -- INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'Application\\Controller\\AuditTrailController', 'index', 'access');
 
 
---sakthi 19-sep-2024
+-- sakthi 19-sep-2024
 -- ALTER TABLE `users` ADD `template_file` VARCHAR(255) NULL AFTER `user_image`;
 
 -- sakthi 25-sep-2024
@@ -2786,3 +2786,8 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 UPDATE `resources`
 SET `resource_id` = CONCAT(`resource_id`, 'Controller')
 WHERE `resource_id` NOT LIKE '%Controller';
+
+-- Amit 02-Dec-2024
+INSERT INTO `roles_privileges_map` (`role_id`, `privilege_id`) SELECT '1', `privileges`.`privilege_id` FROM `privileges`;
+UPDATE `privileges` SET `resource_id` = 'Application\\Controller\\UsersController' WHERE `privileges`.`resource_id` = 'ApplicationControllerUsersController' AND `privileges`.`privilege_name` = 'profile';
+
