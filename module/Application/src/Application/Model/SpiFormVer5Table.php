@@ -314,7 +314,7 @@ class SpiFormVer5Table extends AbstractTableGateway
                     'FINAL_AUDIT_SCORE' => $data['FINAL_AUDIT_SCORE'],
                     'MAX_AUDIT_SCORE' => $data['MAX_AUDIT_SCORE'],
                     'AUDIT_SCORE_PERCENTAGE' => $data['AUDIT_SCORE_PERCENTAGE'],
-                    'AUDIT_SCORE_PERCANTAGE_ROUNDED' => $data['AUDIT_SCORE_PERCANTAGE_ROUNDED'],
+                    'AUDIT_SCORE_PERCENTAGE_ROUNDED' => $data['AUDIT_SCORE_PERCANTAGE_ROUNDED'],
                     'staffaudited' => $data['staffaudited'],
                     'durationaudit' => $data['durationaudit'],
                     'personincharge' => $data['personincharge'],

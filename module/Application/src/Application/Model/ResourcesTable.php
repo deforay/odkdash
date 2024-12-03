@@ -2,10 +2,9 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
+use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\TableGateway\AbstractTableGateway;
-use Zend\Debug\Debug;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

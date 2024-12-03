@@ -2601,8 +2601,6 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function fetchSpiV3FormAuditNo()
     {
         $loginContainer = new Container('credo');
-        /** @var $dbAdapter \Laminas\Db\Adapter\AdapterInterface */
-        $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array('assesmentofaudit', 'auditroundno', 'rowCount' => new Expression("COUNT('auditroundno')")))
@@ -2612,14 +2610,12 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
-        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function fetchLatestSpiV3FormAuditNo()
     {
         $loginContainer = new Container('credo');
-        /** @var $dbAdapter \Laminas\Db\Adapter\AdapterInterface */
-        $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array('auditroundno'))
@@ -2630,7 +2626,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery = $sQuery->where('spiv3.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $res = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $res = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
         return $res->auditroundno;
     }
 
