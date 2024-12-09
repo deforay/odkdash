@@ -2788,6 +2788,13 @@ SET `resource_id` = CONCAT(`resource_id`, 'Controller')
 WHERE `resource_id` NOT LIKE '%Controller';
 
 -- Amit 02-Dec-2024
-INSERT INTO `roles_privileges_map` (`role_id`, `privilege_id`) SELECT '1', `privileges`.`privilege_id` FROM `privileges`;
+INSERT IGNORE INTO `roles_privileges_map` (`role_id`, `privilege_id`) SELECT '1', `privileges`.`privilege_id` FROM `privileges`;
 UPDATE `privileges` SET `resource_id` = 'Application\\Controller\\UsersController' WHERE `privileges`.`resource_id` = 'ApplicationControllerUsersController' AND `privileges`.`privilege_name` = 'profile';
 
+-- Amit 09-Dec-2024
+
+INSERT IGNORE INTO `resources` (`resource_id`, `display_name`) VALUES
+('Application\\Controller\\EmailController', 'Manage Email');
+
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES
+('Application\\Controller\\EmailController', 'email-v6', 'Email Audit');
