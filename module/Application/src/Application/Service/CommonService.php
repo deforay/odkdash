@@ -325,8 +325,12 @@ class CommonService
 
                     $alertMail->setBody($body);
 
-                    if ($transport->send($alertMail)) {
+                    try {
+                        $transport->send($alertMail);
                         $auditMailDb->updateAuditMailStatus($id);
+                    } catch (\Exception $e) {
+                        error_log($e->getMessage());
+                        error_log("Email failed for ID: " . $id);
                     }
                 }
             }
