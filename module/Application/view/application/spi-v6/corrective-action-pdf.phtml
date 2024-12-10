@@ -271,7 +271,7 @@ $partDTable .= '</tr>';
 if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  && $formData['correctiveaction'] != "[]") {
   $correctiveActions = json_decode($formData['correctiveaction'], true);
   foreach ($correctiveActions as $ca) {
-    $partDTable .= '<tr>';
+    $partDTable .= '<tr nobr="true">';
     $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
     $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
     $partDTable .= '<td style="text-align:center;">';
@@ -307,13 +307,13 @@ if (
 }
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= '<tr><td>Staff Audited Signature: <br>(' . $formData['staffaudited'] . ')</td></tr>';
-$signBox1 .= "<tr><td>Person in Charge Name and Signature : " . $formData['personincharge'] . "</td></tr>";
+$signBox1 .= '<tr><td>Staff Audited Name: <br>' . $formData['staffaudited'] . '</td></tr>';
+$signBox1 .= "<tr><td>Person in Charge Name: " . $formData['personincharge'] . "</td></tr>";
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 
 $signBox2 = '<table cellspacing="0" cellpadding="4">';
-$signBox2 .= "<tr><td>Auditor Name and Signature:</td><td>" . $signImg . "</td></tr>";
+$signBox2 .= "<tr><td>Auditor Signature:</td><td>" . $signImg . "</td></tr>";
 $signBox2 .= "<tr><td>Date (dd/mm/yyyy):</td><td>" . $this->humanReadableDateFormat($formData['assesmentofaudit']) . "</td></tr>";
 $signBox2 .= '</table>';
 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');

@@ -2791,3 +2791,4 @@ WHERE `resource_id` NOT LIKE '%Controller';
 INSERT INTO `roles_privileges_map` (`role_id`, `privilege_id`) SELECT '1', `privileges`.`privilege_id` FROM `privileges`;
 UPDATE `privileges` SET `resource_id` = 'Application\\Controller\\UsersController' WHERE `privileges`.`resource_id` = 'ApplicationControllerUsersController' AND `privileges`.`privilege_name` = 'profile';
 
+ALTER TABLE `spi_form_v_6` ADD `submitterId` INT NOT NULL AFTER `formVersion`, ADD `reviewState` VARCHAR(100) NULL DEFAULT NULL AFTER `submitterId`;

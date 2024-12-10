@@ -5401,7 +5401,6 @@ class OdkFormService
     }
     public function getV6DownloadDataList()
     {
-        $common = new CommonService();
         $db = $this->sm->get('SpiFormVer6DownloadTable');
         $result = $db->fetchDownloadDataList();
         if (count($result['formResult']) > 0) {
@@ -5438,9 +5437,9 @@ class OdkFormService
                 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
                 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
                 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
+                $autoPageBreakValue = PDF_MARGIN_BOTTOM;
                 // set auto page breaks
-                $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
+                $pdf->SetAutoPageBreak(true, $autoPageBreakValue);
 
                 // set image scale factor
                 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -5490,8 +5489,8 @@ class OdkFormService
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . $formData['testingpointtype'];
+                //$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
+                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . $formData['testingpointtype'];
                 $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
                 $testingTab .= '</tr>';
 
@@ -5509,8 +5508,8 @@ class OdkFormService
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . $formData['NumberofTester'] . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . $formData['avgMonthTesting'] . '</td>';
+                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . $formData['NumberofTester'] . '</td>';
+                //$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . $formData['avgMonthTesting'] . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
@@ -5518,9 +5517,42 @@ class OdkFormService
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . $formData['name_auditor2'] . '</td>';
                 $testingTab .= '</tr>';
 
+                $testingTab .= '<tr>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/clients_tested_hiv:label'] . '</b></td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_tested_HIV_PM'] . '<br/>';
+                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . $formData['client_tested_HIV_PQ'] . '</td>';
+                $testingTab .= '</tr>';
+
+                $testingTab .= '<tr>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/new_hiv:label'] . '</b></td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_newly_HIV_PM'] . '<br/>';
+                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . $formData['client_newly_HIV_PQ'] . '</td>';
+                $testingTab .= '</tr>';
+
+                $testingTab .= '<tr>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/hiv_negative:label'] . '</b></td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_negative_HIV_PM'] . '<br/>';
+                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_negative_HIV_PQ'] . '</td>';
+                $testingTab .= '</tr>';
+                if (strtolower($formData['performrtritesting']) == 'yes') {
+                    $testingTab .= '<tr>';
+                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/newly_identified_positives:label'] . '</b></td>';
+                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_positive_HIV_RTRI_PM'] . '<br/>';
+                    $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_positive_HIV_RTRI_PQ'] . '</td>';
+                    $testingTab .= '</tr>';
+
+                    $testingTab .= '<tr>';
+                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/recent_identified_positives:label'] . '</b></td>';
+                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_recent_RTRI_PM'] . '<br/>';
+                    $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_recent_RTRI_PQ'] . '</td>';
+                    $testingTab .= '</tr>';
+                }
                 $testingTab .= '</table>';
 
                 $pdf->writeHTML($testingTab, true, 0, true, 0);
+
+                $uuid = str_replace('uuid:', '', $formData['uuid']);
+                $mediaFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments' . DIRECTORY_SEPARATOR . $uuid;
 
                 $partBHeading = '<b>' . $decoded[$language]['/SPI_RT/SPIRT/info4:label'] . '</b>';
 
@@ -5559,23 +5591,93 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 for ($i = 1; $i < 11; $i++) {
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_SAFETY_MANAGEMENT']) && $formData['PERSONAL_Q_1_' . $i . '_SAFETY_MANAGEMENT'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_REFRESHER_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_REFRESHER_TRAINING'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_COMPETENCY_TESTING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_COMPETENCY_TESTING'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_NATIONAL_CERTIFICATION']) && $formData['PERSONAL_Q_1_' . $i . '_NATIONAL_CERTIFICATION'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS'] == 1)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 1)
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_SAFETY_MANAGEMENT']) && $formData['PERSONAL_Q_1_' . $i . '_SAFETY_MANAGEMENT'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_REFRESHER_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_REFRESHER_TRAINING'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_COMPETENCY_TESTING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_COMPETENCY_TESTING'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_NATIONAL_CERTIFICATION']) && $formData['PERSONAL_Q_1_' . $i . '_NATIONAL_CERTIFICATION'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS'] == 0.5)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_SAFETY_MANAGEMENT']) && $formData['PERSONAL_Q_1_' . $i . '_SAFETY_MANAGEMENT'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_REFRESHER_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_REFRESHER_TRAINING'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_COMPETENCY_TESTING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_COMPETENCY_TESTING'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_NATIONAL_CERTIFICATION']) && $formData['PERSONAL_Q_1_' . $i . '_NATIONAL_CERTIFICATION'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_' . $i . '_CERTIFIED_TESTERS'] == 0)
+                        || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 0)
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_C_1_' . $i . '_HIV_TRAINING'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_HIV_TRAINING'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_C_1_' . $i . '_HIV_TESTING_REGISTER'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_HIV_TESTING_REGISTER'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_C_1_' . $i . '_EQA_PT'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_EQA_PT'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_C_1_' . $i . '_QC_PROCESS'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_QC_PROCESS'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_SAFETY_MANAGEMENT']) && $formData['PERSONAL_C_1_' . $i . '_SAFETY_MANAGEMENT'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_SAFETY_MANAGEMENT'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_REFRESHER_TRAINING']) && $formData['PERSONAL_C_1_' . $i . '_REFRESHER_TRAINING'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_REFRESHER_TRAINING'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_HIV_COMPETENCY_TESTING']) && $formData['PERSONAL_C_1_' . $i . '_HIV_COMPETENCY_TESTING'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_HIV_COMPETENCY_TESTING'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_NATIONAL_CERTIFICATION']) && $formData['PERSONAL_C_1_' . $i . '_NATIONAL_CERTIFICATION'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_NATIONAL_CERTIFICATION'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_CERTIFIED_TESTERS']) && $formData['PERSONAL_C_1_' . $i . '_CERTIFIED_TESTERS'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_CERTIFIED_TESTERS'];
+                    if ((isset($formData['PERSONAL_C_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_C_1_' . $i . '_RECERTIFIED'] !== ''))
+                        $comments = $formData['PERSONAL_C_1_' . $i . '_RECERTIFIED'];
+
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td style="width:52%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_' . $i . '/PERSONAL_Q_1_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PERSONAL_Q_1_' . $i]) && $formData['PERSONAL_Q_1_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PERSONAL_Q_1_' . $i]) && $formData['PERSONAL_Q_1_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PERSONAL_Q_1_' . $i]) && $formData['PERSONAL_Q_1_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['PERSONAL_C_1_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
+
                     $partBTable .= '</tr>';
                 }
 
@@ -5583,6 +5685,13 @@ class OdkFormService
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONAL_Display:label'] . '</td>';
                 $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
+                if($formData['PERSONALPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONALPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/PHYSICAL:label'] . '</td>';
@@ -5591,23 +5700,68 @@ class OdkFormService
 
                 for ($i = 1; $i < 6; $i++) {
 
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 1)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA'] == 1)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 1)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 1)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 1)
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0.5)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER'] == 0.5)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0.5)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0.5)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER'] == 0)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0)
+                        || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0)
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA'] !== ''))
+                        $comments = $formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA'];
+                    if ((isset($formData['PHYSICAL_C_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_C_2_' . $i . '_HIV_TESTING_REGISTER'] !== ''))
+                        $comments = $formData['PHYSICAL_C_2_' . $i . '_HIV_TESTING_REGISTER'];
+                    if ((isset($formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] !== ''))
+                        $comments = $formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'];
+                    if ((isset($formData['PHYSICAL_C_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_C_2_' . $i . '_TEST_KIT_STORAGE'] !== ''))
+                        $comments = $formData['PHYSICAL_C_2_' . $i . '_TEST_KIT_STORAGE'];
+                    if ((isset($formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] !== ''))
+                        $comments = $formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'];
+
+
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/PHYSICAL/PHY_G_2_' . $i . '/PHYSICAL_Q_2_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PHYSICAL_Q_2_' . $i]) && $formData['PHYSICAL_Q_2_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PHYSICAL_Q_2_' . $i]) && $formData['PHYSICAL_Q_2_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PHYSICAL_Q_2_' . $i]) && $formData['PHYSICAL_Q_2_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
                     $partBTable .= '</tr>';
                 }
 
@@ -5616,29 +5770,106 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
+                if($formData['PHYSICALPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PHYSICALPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICALPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
+
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SAFETY:label'] . '</td>';
                 //$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">11</td>';
                 $partBTable .= '</tr>';
 
                 for ($i = 1; $i < 12; $i++) {
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_USED_PROPERLY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_USED_PROPERLY'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_WATER_SOAP_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_WATER_SOAP_AVAILABILITY'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_AVAILABLE']) && $formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_AVAILABLE'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY']) && $formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE'] == 1)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 1)
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_USED_PROPERLY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_USED_PROPERLY'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_WATER_SOAP_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_WATER_SOAP_AVAILABILITY'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_AVAILABLE']) && $formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_AVAILABLE'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY']) && $formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE'] == 0.5)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_USED_PROPERLY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_USED_PROPERLY'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_WATER_SOAP_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_WATER_SOAP_AVAILABILITY'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_AVAILABLE']) && $formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_AVAILABLE'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY']) && $formData['SAFETY_Q_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_' . $i . '_SEGREGATION_OF_WASTE'] == 0)
+                        || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 0)
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['SAFETY_C_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_C_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_C_3_' . $i . '_ACCIDENTAL_EXPOSURE'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_ACCIDENTAL_EXPOSURE'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_C_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_C_3_' . $i . '_PPE_AVAILABILITY'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_PPE_AVAILABILITY'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_PPE_USED_PROPERLY']) && $formData['SAFETY_C_3_' . $i . '_PPE_USED_PROPERLY'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_PPE_USED_PROPERLY'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_WATER_SOAP_AVAILABILITY']) && $formData['SAFETY_C_3_' . $i . '_WATER_SOAP_AVAILABILITY'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_WATER_SOAP_AVAILABILITY'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_DISINFECTANT_AVAILABLE']) && $formData['SAFETY_C_3_' . $i . '_DISINFECTANT_AVAILABLE'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_DISINFECTANT_AVAILABLE'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY']) && $formData['SAFETY_C_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_DISINFECTANT_LABELED_PROPERLY'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_SEGREGATION_OF_WASTE']) && $formData['SAFETY_C_3_' . $i . '_SEGREGATION_OF_WASTE'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_SEGREGATION_OF_WASTE'];
+                    if ((isset($formData['SAFETY_C_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_C_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] !== ''))
+                        $comments = $formData['SAFETY_C_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'];
+
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/SAFETY/SAF_3_' . $i . '/SAFETY_Q_3_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['SAFETY_Q_3_' . $i]) && $formData['SAFETY_Q_3_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['SAFETY_Q_3_' . $i]) && $formData['SAFETY_Q_3_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['SAFETY_Q_3_' . $i]) && $formData['SAFETY_Q_3_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['SAFETY_C_3_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
@@ -5646,29 +5877,120 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
+                if($formData['SAFETYPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['SAFETYPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETYPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
+
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/PRETEST:label'] . '</td>';
                 //$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">12</td>';
                 $partBTable .= '</tr>';
 
                 for ($i = 1; $i < 13; $i++) {
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_APPROVED_KITS_AVAILABLE']) && $formData['PRE_Q_4_' . $i . '_APPROVED_KITS_AVAILABLE'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_HIV_KITS_EXPIRATION']) && $formData['PRE_Q_4_' . $i . '_HIV_KITS_EXPIRATION'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_KIT_SUPPLIES_AVAILABILITY']) && $formData['PRE_Q_4_' . $i . '_KIT_SUPPLIES_AVAILABILITY'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_STOCK_MANAGEMENT']) && $formData['PRE_Q_4_' . $i . '_STOCK_MANAGEMENT'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_DOCUMENTED_INVENTORY']) && $formData['PRE_Q_4_' . $i . '_DOCUMENTED_INVENTORY'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_SOPS_BLOOD_COLLECTION']) && $formData['PRE_Q_4_' . $i . '_SOPS_BLOOD_COLLECTION'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_BLOOD_COLLECTION_SUPPLIES']) && $formData['PRE_Q_4_' . $i . '_BLOOD_COLLECTION_SUPPLIES'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION'] == 1)
+                        || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 1)
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_APPROVED_KITS_AVAILABLE']) && $formData['PRE_Q_4_' . $i . '_APPROVED_KITS_AVAILABLE'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_HIV_KITS_EXPIRATION']) && $formData['PRE_Q_4_' . $i . '_HIV_KITS_EXPIRATION'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_KIT_SUPPLIES_AVAILABILITY']) && $formData['PRE_Q_4_' . $i . '_KIT_SUPPLIES_AVAILABILITY'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_STOCK_MANAGEMENT']) && $formData['PRE_Q_4_' . $i . '_STOCK_MANAGEMENT'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_DOCUMENTED_INVENTORY']) && $formData['PRE_Q_4_' . $i . '_DOCUMENTED_INVENTORY'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_SOPS_BLOOD_COLLECTION']) && $formData['PRE_Q_4_' . $i . '_SOPS_BLOOD_COLLECTION'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_BLOOD_COLLECTION_SUPPLIES']) && $formData['PRE_Q_4_' . $i . '_BLOOD_COLLECTION_SUPPLIES'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION'] == 0.5)
+                        || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_APPROVED_KITS_AVAILABLE']) && $formData['PRE_Q_4_' . $i . '_APPROVED_KITS_AVAILABLE'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_HIV_KITS_EXPIRATION']) && $formData['PRE_Q_4_' . $i . '_HIV_KITS_EXPIRATION'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_KIT_SUPPLIES_AVAILABILITY']) && $formData['PRE_Q_4_' . $i . '_KIT_SUPPLIES_AVAILABILITY'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_STOCK_MANAGEMENT']) && $formData['PRE_Q_4_' . $i . '_STOCK_MANAGEMENT'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_DOCUMENTED_INVENTORY']) && $formData['PRE_Q_4_' . $i . '_DOCUMENTED_INVENTORY'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_SOPS_BLOOD_COLLECTION']) && $formData['PRE_Q_4_' . $i . '_SOPS_BLOOD_COLLECTION'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_BLOOD_COLLECTION_SUPPLIES']) && $formData['PRE_Q_4_' . $i . '_BLOOD_COLLECTION_SUPPLIES'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_' . $i . '_CLIENT_IDENTIFICATION'] == 0)
+                        || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 0)
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['PRE_C_4' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_C_4' . $i . '_NATIONAL_GUIDELINES'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_NATIONAL_GUIDELINES'];
+                    if ((isset($formData['PRE_C_4' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_C_4' . $i . '_HIV_TESTING_ALGORITHM'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_HIV_TESTING_ALGORITHM'];
+                    if ((isset($formData['PRE_C_4' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_C_4' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_TEST_PROCEDURES_ACCESSIBLE'];
+                    if ((isset($formData['PRE_C_4' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_C_4' . $i . '_TEST_PROCEDURES_ACCURATE'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_TEST_PROCEDURES_ACCURATE'];
+                    if ((isset($formData['PRE_C_4' . $i . '_APPROVED_KITS_AVAILABLE']) && $formData['PRE_C_4' . $i . '_APPROVED_KITS_AVAILABLE'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_APPROVED_KITS_AVAILABLE'];
+                    if ((isset($formData['PRE_C_4' . $i . '_HIV_KITS_EXPIRATION']) && $formData['PRE_C_4' . $i . '_HIV_KITS_EXPIRATION'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_HIV_KITS_EXPIRATION'];
+                    if ((isset($formData['PRE_C_4' . $i . '_KIT_SUPPLIES_AVAILABILITY']) && $formData['PRE_C_4' . $i . '_KIT_SUPPLIES_AVAILABILITY'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_KIT_SUPPLIES_AVAILABILITY'];
+                    if ((isset($formData['PRE_C_4' . $i . '_STOCK_MANAGEMENT']) && $formData['PRE_C_4' . $i . '_STOCK_MANAGEMENT'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_STOCK_MANAGEMENT'];
+                    if ((isset($formData['PRE_C_4' . $i . '_DOCUMENTED_INVENTORY']) && $formData['PRE_C_4' . $i . '_DOCUMENTED_INVENTORY'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_DOCUMENTED_INVENTORY'];
+                    if ((isset($formData['PRE_C_4' . $i . '_SOPS_BLOOD_COLLECTION']) && $formData['PRE_C_4' . $i . '_SOPS_BLOOD_COLLECTION'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_SOPS_BLOOD_COLLECTION'];
+                    if ((isset($formData['PRE_C_4' . $i . '_BLOOD_COLLECTION_SUPPLIES']) && $formData['PRE_C_4' . $i . '_BLOOD_COLLECTION_SUPPLIES'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_BLOOD_COLLECTION_SUPPLIES'];
+                    if ((isset($formData['PRE_C_4' . $i . '_CLIENT_IDENTIFICATION']) && $formData['PRE_C_4' . $i . '_CLIENT_IDENTIFICATION'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_CLIENT_IDENTIFICATION'];
+                    if ((isset($formData['PRE_C_4' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_C_4' . $i . '_CLIENT_ID_RECORDED'] !== ''))
+                        $comments = $formData['PRE_C_4' . $i . '_CLIENT_ID_RECORDED'];
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/PRETEST/PRE_4_' . $i . '/PRE_Q_4_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PRE_Q_4_' . $i]) && $formData['PRE_Q_4_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PRE_Q_4_' . $i]) && $formData['PRE_Q_4_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['PRE_Q_4_' . $i]) && $formData['PRE_Q_4_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['PRE_C_4_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
                     $partBTable .= '</tr>';
                 }
 
@@ -5677,29 +5999,104 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
+                if($formData['PRETESTPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PRETESTPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETESTPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
+
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/TEST:label'] . '</td>';
                 //$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
                 $partBTable .= '</tr>';
 
                 for ($i = 1; $i < 10; $i++) {
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_QUALITY_CONTROL']) && $formData['TEST_Q_5_' . $i . '_QUALITY_CONTROL'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_QC_RESULTS_RECORDED']) && $formData['TEST_Q_5_' . $i . '_QC_RESULTS_RECORDED'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_INCORRECT_QC_RESULTS']) && $formData['TEST_Q_5_' . $i . '_INCORRECT_QC_RESULTS'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 1)
+                        || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 1)
+
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_QUALITY_CONTROL']) && $formData['TEST_Q_5_' . $i . '_QUALITY_CONTROL'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_QC_RESULTS_RECORDED']) && $formData['TEST_Q_5_' . $i . '_QC_RESULTS_RECORDED'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_INCORRECT_QC_RESULTS']) && $formData['TEST_Q_5_' . $i . '_INCORRECT_QC_RESULTS'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 0.5)
+                        || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_QUALITY_CONTROL']) && $formData['TEST_Q_5_' . $i . '_QUALITY_CONTROL'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_QC_RESULTS_RECORDED']) && $formData['TEST_Q_5_' . $i . '_QC_RESULTS_RECORDED'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_INCORRECT_QC_RESULTS']) && $formData['TEST_Q_5_' . $i . '_INCORRECT_QC_RESULTS'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['TEST_Q_5_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 0)
+                        || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 0)
+
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['TEST_C_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_C_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_C_5_' . $i . '_TIMERS_AVAILABILITY'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_TIMERS_AVAILABILITY'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_C_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_C_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_QUALITY_CONTROL']) && $formData['TEST_C_5_' . $i . '_QUALITY_CONTROL'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_QUALITY_CONTROL'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_QC_RESULTS_RECORDED']) && $formData['TEST_C_5_' . $i . '_QC_RESULTS_RECORDED'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_QC_RESULTS_RECORDED'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_INCORRECT_QC_RESULTS']) && $formData['TEST_C_5_' . $i . '_INCORRECT_QC_RESULTS'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_INCORRECT_QC_RESULTS'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_C_5_' . $i . '_REVIEW_QC_RECORDS'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_REVIEW_QC_RECORDS'];
+                    if ((isset($formData['TEST_C_5_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['TEST_C_5_' . $i . '_APPROPRIATE_STEPS_TAKEN'] !== ''))
+                        $comments = $formData['TEST_C_5_' . $i . '_APPROPRIATE_STEPS_TAKEN'];
+
+
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/TEST/TEST_5_' . $i . '/TEST_Q_5_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['TEST_Q_5_' . $i]) && $formData['TEST_Q_5_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['TEST_Q_5_' . $i]) && $formData['TEST_Q_5_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['TEST_Q_5_' . $i]) && $formData['TEST_Q_5_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['TEST_C_5_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_1']) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
@@ -5707,29 +6104,104 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
+                if($formData['TESTPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['TESTPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TESTPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
+
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/POSTTEST:label'] . '</td>';
                 //$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
                 $partBTable .= '</tr>';
 
                 for ($i = 1; $i < 10; $i++) {
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['POST_Q_6_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_REVIEWED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_REVIEWED'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_DOCUMENTS_SECURELY_KEPT']) && $formData['POST_Q_6_' . $i . '_DOCUMENTS_SECURELY_KEPT'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION']) && $formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION'] == 1)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 1)
+
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['POST_Q_6_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_REVIEWED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_REVIEWED'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_DOCUMENTS_SECURELY_KEPT']) && $formData['POST_Q_6_' . $i . '_DOCUMENTS_SECURELY_KEPT'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION']) && $formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION'] == 0.5)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['POST_Q_6_' . $i . '_APPROPRIATE_STEPS_TAKEN'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_REVIEWED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_REVIEWED'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_DOCUMENTS_SECURELY_KEPT']) && $formData['POST_Q_6_' . $i . '_DOCUMENTS_SECURELY_KEPT'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION']) && $formData['POST_Q_6_' . $i . '_REGISTER_SECURE_LOCATION'] == 0)
+                        || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 0)
+
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['POST_C_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_C_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_STANDARDIZED_HIV_REGISTER'];
+                    if ((isset($formData['POST_C_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_C_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'];
+                    if ((isset($formData['POST_C_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_C_6_' . $i . '_PAGE_TOTAL_SUMMARY'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_PAGE_TOTAL_SUMMARY'];
+                    if ((isset($formData['POST_C_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_C_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'];
+                    if ((isset($formData['POST_C_6_' . $i . '_APPROPRIATE_STEPS_TAKEN']) && $formData['POST_C_6_' . $i . '_APPROPRIATE_STEPS_TAKEN'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_APPROPRIATE_STEPS_TAKEN'];
+                    if ((isset($formData['POST_C_6_' . $i . '_REGISTERS_REVIEWED']) && $formData['POST_C_6_' . $i . '_REGISTERS_REVIEWED'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_REGISTERS_REVIEWED'];
+                    if ((isset($formData['POST_C_6_' . $i . '_DOCUMENTS_SECURELY_KEPT']) && $formData['POST_C_6_' . $i . '_DOCUMENTS_SECURELY_KEPT'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_DOCUMENTS_SECURELY_KEPT'];
+                    if ((isset($formData['POST_C_6_' . $i . '_REGISTER_SECURE_LOCATION']) && $formData['POST_C_6_' . $i . '_REGISTER_SECURE_LOCATION'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_REGISTER_SECURE_LOCATION'];
+                    if ((isset($formData['POST_C_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_C_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] !== ''))
+                        $comments = $formData['POST_C_6_' . $i . '_REGISTERS_PROPERLY_LABELED'];
+
+
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/POSTTEST/POST_6_' . $i . '/POST_Q_6_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['POST_Q_6_' . $i]) && $formData['POST_Q_6_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['POST_Q_6_' . $i]) && $formData['POST_Q_6_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['POST_Q_6_' . $i]) && $formData['POST_Q_6_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['POST_C_6_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
@@ -5737,60 +6209,463 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
+                if($formData['POSTTESTPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['POSTTESTPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POSTTESTPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
+
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/EQA:label'] . '</td>';
                 //$partBTable.='<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">8/14</td>';
                 $partBTable .= '</tr>';
 
                 for ($i = 1; $i < 9; $i++) {
-                    $partBTable .= '<tr>';
+                    $yes = "";
+                    $no = "";
+                    $partial = "";
+                    $comments = "";
+
+                    if ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION']) && $formData['EQA_Q_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_RECEIVE_PERIODIC_VISITS']) && $formData['EQA_Q_7_' . $i . '_RECEIVE_PERIODIC_VISITS'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'] == 1)
+                        || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 1)
+
+                    ) {
+                        $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION']) && $formData['EQA_Q_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_RECEIVE_PERIODIC_VISITS']) && $formData['EQA_Q_7_' . $i . '_RECEIVE_PERIODIC_VISITS'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'] == 0.5)
+                        || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 0.5)
+                    ) {
+                        $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    } elseif ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION']) && $formData['EQA_Q_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_RECEIVE_PERIODIC_VISITS']) && $formData['EQA_Q_7_' . $i . '_RECEIVE_PERIODIC_VISITS'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'] == 0)
+                        || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 0)
+                    ) {
+                        $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                    }
+
+                    if ((isset($formData['EQA_C_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_C_7_' . $i . '_PT_ENROLLMENT'] !== ''))
+                        $comments = $formData['EQA_C_6_' . $i . '_PT_ENROLLMENT'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_C_7_' . $i . '_TESTING_EQAPT_SAMPLES'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_TESTING_EQAPT_SAMPLES'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_C_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_C_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION']) && $formData['EQA_C_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_IMPLEMENT_CORRECTIVE_ACTION'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_RECEIVE_PERIODIC_VISITS']) && $formData['EQA_C_7_' . $i . '_RECEIVE_PERIODIC_VISITS'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_RECEIVE_PERIODIC_VISITS'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_C_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_FEEDBACK_PROVIDED_DOCUMENTED'];
+                    if ((isset($formData['EQA_C_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_C_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] !== ''))
+                        $comments = $formData['EQA_C_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'];
+
+                    $partBTable .= '<tr nobr="true">';
 
                     $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/EQA/EQA_7_' . $i . '/EQA_Q_7_' . $i . ':label'] . '</td>';
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $yes;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $partial;
                     $partBTable .= '</td>';
 
                     $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
+                    $partBTable .= $no;
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['EQA_C_7_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_' . $i]) . '</td>';
-                    $partBTable .= '</tr>';
-                }
-
-                $partBTable .= '<tr>';
-                $partBTable .= '<td colspan="6" style="text-align:center;font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/EQA/sampleretesting:label'] . '</td>';
-                $partBTable .= '</tr>';
-
-                for ($i = 9; $i < 15; $i++) {
-                    $partBTable .= '<tr>';
-
-                    $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/EQA/SAMPLEREF/EQA_7_' . $i . '/EQA_Q_7_' . $i . ':label'] . '</td>';
-                    $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == 1) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
-                    $partBTable .= '</td>';
-
-                    $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == 0.5) ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
-                    $partBTable .= '</td>';
-
-                    $partBTable .= '<td style="text-align:center;">';
-                    $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
-                    $partBTable .= '</td>';
-
-                    $partBTable .= '<td>' . ($formData['EQA_C_7_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . ($comments) . '</td>';
+                    if (trim($yes) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                    if (trim($partial) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                    if (trim($no) != "")
+                        $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQA_DISPLAY:label'] . '</td>';
                 $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
+
+                if($formData['EQAPHOTO'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['EQAPHOTO'];
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQAPHOTO:label'] . '</td>';
+                    $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $partBTable .= '</tr>';
+                }
+
+                $partBTable .= '<tr nobr="true">';
+                if (strtolower($formData['performrtritesting']) == 'yes')
+                    $partBTable .= '<td colspan="6" style="text-align:center;font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/EQA/sampleretesting:label'] . ' - Yes </td>';
+                else
+                    $partBTable .= '<td colspan="6" style="text-align:center;font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/EQA/sampleretesting:label'] . '- No</td>';
+
+                $partBTable .= '</tr>';
+
+                if (strtolower($formData['performrtritesting']) == 'yes') {
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR:label'] . '</td>';
+                    $partBTable .= '</tr>';
+
+                    for ($i = 1; $i < 12; $i++) {
+
+                        $yes = "";
+                        $no = "";
+                        $partial = "";
+                        $comments = "";
+
+                        if ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_KIT_STORAGE']) && $formData['RTRI_Q_8_' . $i . '_RTRI_KIT_STORAGE'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED']) && $formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_QC_ROUTINELY_USED']) && $formData['RTRI_Q_8_' . $i . '_QC_ROUTINELY_USED'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_QC_RESULTS_RECORDED']) && $formData['RTRI_Q_8_' . $i . '_QC_RESULTS_RECORDED'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED'] == 1)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 1)
+
+                        ) {
+                            $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                        } elseif ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_KIT_STORAGE']) && $formData['RTRI_Q_8_' . $i . '_RTRI_KIT_STORAGE'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED']) && $formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_QC_ROUTINELY_USED']) && $formData['RTRI_Q_8_' . $i . '_QC_ROUTINELY_USED'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_QC_RESULTS_RECORDED']) && $formData['RTRI_Q_8_' . $i . '_QC_RESULTS_RECORDED'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED'] == 0.5)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 0.5)
+                        ) {
+                            $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                        } elseif ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_KIT_STORAGE']) && $formData['RTRI_Q_8_' . $i . '_RTRI_KIT_STORAGE'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED']) && $formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_QC_ROUTINELY_USED']) && $formData['RTRI_Q_8_' . $i . '_QC_ROUTINELY_USED'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_QC_RESULTS_RECORDED']) && $formData['RTRI_Q_8_' . $i . '_QC_RESULTS_RECORDED'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_Q_8_' . $i . '_INCORRECT_QC_DOCUMENTED'] == 0)
+                            || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 0)
+                        ) {
+                            $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                        }
+
+                        if ((isset($formData['RTRI_C_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_C_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_C_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_C_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_C_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_RTRI_KIT_STORAGE']) && $formData['RTRI_C_8_' . $i . '_RTRI_KIT_STORAGE'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_RTRI_KIT_STORAGE'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED']) && $formData['RTRI_C_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_RTRI_TESTING_PROCEDURE_FOLLOWED'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED']) && $formData['RTRI_C_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_RTRI_TESTING_RESULTS_DOCUMENTED'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_QC_ROUTINELY_USED']) && $formData['RTRI_C_8_' . $i . '_QC_ROUTINELY_USED'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_QC_ROUTINELY_USED'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_QC_RESULTS_RECORDED']) && $formData['RTRI_C_8_' . $i . '_QC_RESULTS_RECORDED'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_QC_RESULTS_RECORDED'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_C_8_' . $i . '_INCORRECT_QC_DOCUMENTED'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_INCORRECT_QC_DOCUMENTED'];
+                        if ((isset($formData['RTRI_C_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_C_8_' . $i . '_INVALID_RTRI_RESULTS'] !== ''))
+                            $comments = $formData['RTRI_C_8_' . $i . '_INVALID_RTRI_RESULTS'];
+
+
+
+
+                        $partBTable .= '<tr nobr="true">';
+
+                        $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRI_8_' . $i . '/RTRI_Q_8_' . $i . ':label'] . '</td>';
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $yes;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $partial;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $no;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td>' . ($comments) . '</td>';
+                        if (trim($yes) != "")
+                            $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                        if (trim($partial) != "")
+                            $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                        if (trim($no) != "")
+                            $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
+                        $partBTable .= '</tr>';
+                    }
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label'] . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
+                    $partBTable .= '</tr>';
+
+                    if($formData['RTRIPHOTO'] != ''){
+                        $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['RTRIPHOTO'];
+                        $partBTable .= '<tr nobr="true">';
+                        $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRIPHOTO:label'] . '</td>';
+                        $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                        $partBTable .= '</tr>';
+                    }
+                }
+
+
+
+                if (strtolower($formData['DO_SURVEILLANCE']) == 'yes') {
+                    $partBTable .= '<tr nobr="true">';
+                    $language;
+                    if ($language == 'Portuguese') {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECÇÃO</td>';
+                    } else {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
+                    }
+
+                    $partBTable .= '<td style="text-align:center;font-weight:bold;width:7%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_10/PERSONAL_Q_1_10/1:label'] . '</td>';
+                    $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_3/PERSONAL_Q_1_3/0.5:label'] . '</td>';
+                    $partBTable .= '<td style="text-align:center;font-weight:bold;width:7%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_8/PERSONAL_Q_1_8/0:label'] . '</td>';
+                    $partBTable .= '<td style="text-align:center;font-weight:bold;width:18%;">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_5/PERSONAL_C_1_5:label'] . '</td>';
+                    if ($language == 'Portuguese') {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">Pontuação</td>';
+                    } elseif ($language == 'Spanish') {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">Punteo</td>';
+                    } else {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:8%;">Score</td>';
+                    }
+
+                    $partBTable .= '</tr>';
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL:label'] . '</td>';
+                    $partBTable .= '</tr>';
+
+                    for ($i = 1; $i < 8; $i++) {
+
+                        $yes = "";
+                        $no = "";
+                        $partial = "";
+                        $comments = "";
+
+                        if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+
+                        ) {
+                            $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                        }
+
+                        if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5)
+                            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+
+                        ) {
+                            $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                        }
+
+                        if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0)
+                            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
+                            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+
+                        ) {
+                            $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
+                        }
+                        if ((isset($formData['S0_C_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_C_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] !== ''))
+                            $comments = $formData['S0_C_6_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'];
+                        if ((isset($formData['S0_C_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_C_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] !== ''))
+                            $comments = $formData['S0_C_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'];
+                        if ((isset($formData['S0_C_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_C_' . $i . '_TESTS_RECORDED_RECENCY'] !== ''))
+                            $comments = $formData['S0_C_' . $i . '_TESTS_RECORDED_RECENCY'];
+                        if ((isset($formData['S0_C_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_C_' . $i . '_PROCESS_DOCUMENTED'] !== ''))
+                            $comments = $formData['S0_C_' . $i . '_PROCESS_DOCUMENTED'];
+                        if ((isset($formData['S0_C_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_C_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] !== ''))
+                            $comments = $formData['S0_C_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'];
+                        if ((isset($formData['S0_C_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_C_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] !== ''))
+                            $comments = $formData['S0_C_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'];
+                        if ((isset($formData['S0_C_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_C_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] !== ''))
+                            $comments = $formData['S0_C_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'];
+
+
+                        $partBTable .= '<tr nobr="true">';
+
+                        $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_' . $i . '/S0_Q_' . $i . ':label'] . '</td>';
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $yes;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $partial;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $no;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td>' . ($comments) . '</td>';
+                        $partBTable .= '<td></td>';
+                        // if(trim($yes) !="")
+                        //     $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                        // if(trim($partial) !="")
+                        //     $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                        // if(trim($no) !="")
+                        //     $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
+                        $partBTable .= '</tr>';
+                    }
+
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td colspan="6" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL/S0_DISPLAY:label'] . '</td>';
+                    // $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
+                    $partBTable .= '</tr>';
+                    $partBTable .= '<tr nobr="true">';
+                    $language;
+                    if ($language == 'Portuguese') {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECÇÃO</td>';
+                    } else {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:52%;">SECTION</td>';
+                    }
+
+                    $partBTable .= '<td colspan="2" style="text-align:center;font-weight:bold;width:16%;">' . $decoded[$language]['/SPI_RT/Numerator:label'] . '</td>';
+                    $partBTable .= '<td colspan="2" style="text-align:center;font-weight:bold;width:16%;">' . $decoded[$language]['/SPI_RT/Denominator:label'] . '</td>';
+                    if ($language == 'Portuguese') {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:16%;">Pontuação</td>';
+                    } elseif ($language == 'Spanish') {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:16%;">Punteo</td>';
+                    } else {
+                        $partBTable .= '<td style="text-align:center;font-weight:bold;width:16%;">Score</td>';
+                    }
+
+                    $partBTable .= '</tr>';
+                    $partBTable .= '<tr nobr="true">';
+                    $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS:label'] . '</td>';
+                    $partBTable .= '</tr>';
+
+                    for ($i = 1; $i < 9; $i++) {
+
+                        $yes = "";
+                        $no = "";
+                        $partial = "";
+                        $numerator = "";
+                        $denominator = "";
+                        $scoreVal = "";
+
+                        if ((isset($formData['D0_N_' . $i . '_DIAGNOSED_HIV_ABOVE_15']) && $formData['D0_N_' . $i . '_DIAGNOSED_HIV_ABOVE_15'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_DIAGNOSED_HIV_ABOVE_15'];
+                        if ((isset($formData['D0_N_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION']) && $formData['D0_N_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
+                        if ((isset($formData['D0_N_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD']) && $formData['D0_N_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD'];
+                        if ((isset($formData['D0_N_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']) && $formData['D0_N_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
+                        if ((isset($formData['D0_N_' . $i . '_DOCUMENTED_AND_REFUSED']) && $formData['D0_N_' . $i . '_DOCUMENTED_AND_REFUSED'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_DOCUMENTED_AND_REFUSED'];
+                        if ((isset($formData['D0_N_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI']) && $formData['D0_N_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI'];
+                        if ((isset($formData['D0_N_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_N_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
+                        if ((isset($formData['D0_N_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_N_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+                            $numerator = $formData['D0_N_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+
+                        if ((isset($formData['D0_D_' . $i . '_DIAGNOSED_HIV_ABOVE_15']) && $formData['D0_D_' . $i . '_DIAGNOSED_HIV_ABOVE_15'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_DIAGNOSED_HIV_ABOVE_15'];
+                        if ((isset($formData['D0_D_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION']) && $formData['D0_D_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
+                        if ((isset($formData['D0_D_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD']) && $formData['D0_D_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD'];
+                        if ((isset($formData['D0_D_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']) && $formData['D0_D_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
+                        if ((isset($formData['D0_D_' . $i . '_DOCUMENTED_AND_REFUSED']) && $formData['D0_D_' . $i . '_DOCUMENTED_AND_REFUSED'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_DOCUMENTED_AND_REFUSED'];
+                        if ((isset($formData['D0_D_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI']) && $formData['D0_D_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI'];
+                        if ((isset($formData['D0_D_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_D_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
+                        if ((isset($formData['D0_D_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_D_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+                            $denominator = $formData['D0_D_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+
+                        if ((isset($formData['D0_S_' . $i . '_DIAGNOSED_HIV_ABOVE_15']) && $formData['D0_S_' . $i . '_DIAGNOSED_HIV_ABOVE_15'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_DIAGNOSED_HIV_ABOVE_15'];
+                        if ((isset($formData['D0_S_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION']) && $formData['D0_S_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
+                        if ((isset($formData['D0_S_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD']) && $formData['D0_S_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_ELIGIBLE_DURING_REVIEW_PERIOD'];
+                        if ((isset($formData['D0_S_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']) && $formData['D0_S_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
+                        if ((isset($formData['D0_S_' . $i . '_DOCUMENTED_AND_REFUSED']) && $formData['D0_S_' . $i . '_DOCUMENTED_AND_REFUSED'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_DOCUMENTED_AND_REFUSED'];
+                        if ((isset($formData['D0_S_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI']) && $formData['D0_S_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_PARTICIAPANTS_ENROLLED_IN_RTRI'];
+                        if ((isset($formData['D0_S_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_S_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
+                        if ((isset($formData['D0_S_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']) && $formData['D0_S_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'] !== ''))
+                            $scoreVal = $formData['D0_S_' . $i . '_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+
+                        $partBTable .= '<tr nobr="true">';
+
+                        $partBTable .= '<td>' . $decoded[$language]['/SPI_RT/SURVEILLANCE_STUDY_PROTOCOL_INDICATORS/D0_' . $i . '/D0_Q_' . $i . ':label'] . '</td>';
+                        $partBTable .= '<td colspan="2" style="text-align:center;">';
+                        $partBTable .= $numerator;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td colspan="2" style="text-align:center;">';
+                        $partBTable .= $denominator;
+                        $partBTable .= '</td>';
+
+                        $partBTable .= '<td style="text-align:center;">';
+                        $partBTable .= $scoreVal;
+                        $partBTable .= '</td>';
+
+                        // $partBTable .= '<td>' . ($comments) . '</td>';
+                        // $partBTable .= '<td></td>';
+                        // if(trim($yes) !="")
+                        //     $partBTable .= '<td style="text-align:center;">' . 1 . '</td>';
+                        // if(trim($partial) !="")
+                        //     $partBTable .= '<td style="text-align:center;">' . 0.5 . '</td>';
+                        // if(trim($no) !="")
+                        //     $partBTable .= '<td style="text-align:center;">' . 0 . '</td>';
+                        $partBTable .= '</tr>';
+                    }
+                }
 
                 $partBTable .= '</table>';
                 if ($language == 'Portuguese') {
@@ -5965,6 +6840,7 @@ class OdkFormService
                 $partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $heading . '</p>';
                 $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
+                $pdf->SetAutoPageBreak(false, 0);
                 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
                 $partDtableBox1 .= "<tr><td>" . $facilityName . $formData['facilityname'] . "</td></tr>";
 
@@ -5990,7 +6866,7 @@ class OdkFormService
 
                 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
 
-                $scorePer = round($formData['AUDIT_SCORE_PERCANTAGE']);
+                $scorePer = round($formData['AUDIT_SCORE_PERCENTAGE']);
                 $level = '';
                 $colorCode = '';
                 if ($scorePer < 40) {
@@ -6013,17 +6889,17 @@ class OdkFormService
                 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
                 $partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
                 $partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
-                $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
+                $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
                 $partDtableBox3 .= '</table>';
 
                 $pdf->writeHTMLCell(70, 26, 125, '', $partDtableBox3, 1, 1, 0, true, 'L', true);
-
+                $pdf->SetAutoPageBreak(true, $autoPageBreakValue);
                 // set recommend
                 $recommend = explode("-", $decoded[$language]['/SPI_RT/correctiveaction/action:label']);
                 $timeLine = explode("-", $decoded[$language]['/SPI_RT/correctiveaction/timeline:label']);
 
                 $partDTable = '<br/><br/><table border="1" cellspacing="0" cellpadding="5" style="width:100%">';
-                $partDTable .= '<tr>';
+                $partDTable .= '<tr nobr="true">';
                 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/sectionno:label'] . '</td>';
                 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/deficiency:label'] . '</td>';
                 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">' . $decoded[$language]['/SPI_RT/correctiveaction/correction:label'] . '</td>';
@@ -6039,14 +6915,14 @@ class OdkFormService
                 if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" && $formData['correctiveaction'] != "[]") {
                     $correctiveActions = json_decode($formData['correctiveaction'], true);
                     foreach ($correctiveActions as $ca) {
-                        $partDTable .= '<tr>';
+                        $partDTable .= '<tr nobr="true">';
                         $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
                         $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
                         $partDTable .= '<td style="text-align:center;">';
-                        $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "");
+                        $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
                         $partDTable .= '</td>';
                         $partDTable .= '<td style="text-align:center;">';
-                        $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "");
+                        $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
                         $partDTable .= '</td>';
                         $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
                         $partDTable .= '<td>' . $ca['action'] . '</td>';
@@ -6054,15 +6930,25 @@ class OdkFormService
                         $partDTable .= '</tr>';
                     }
                 } else {
-                    $partDTable .= '<tr>';
+                    $partDTable .= '<tr nobr="true">';
                     $partDTable .= '<td colspan="7">' . $decoded[$language]['/SPI_RT/PERSONAL/PER_G_1_8/PERSONAL_Q_1_8/0:label'] . ' ' . $decoded[$language]['SPI_RT/correctiveaction:label'] . '</td>';
                     $partDTable .= '</tr>';
                 }
                 $partDTable .= '</table><br/><br/><br/>';
                 $pdf->writeHTML($partDTable, true, 0, true, 0);
 
+                if($formData['sitephoto'] != ''){
+                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto'];
+                    $siteTable = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
+                    $siteTable .= '<tr nobr="true">';
+                    $siteTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/sitephoto:label'] . '</td>';
+                    $siteTable .= '<td style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
+                    $siteTable .= '</tr></table>';
+                    $pdf->writeHTML($siteTable, true, 0, true, 0);
+                }
+
                 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '</td></tr>';
+                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>' . $formData['staffaudited'] . '</td></tr>';
                 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
                 $signBox1 .= '</table>';
                 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
@@ -6070,17 +6956,25 @@ class OdkFormService
                 $signBox2 = '<table cellspacing="0" cellpadding="4">';
 
                 if ($language == 'Spanish') {
-                    $signBox2 .= '<tr><td>Nombre y firma del auditor:</td></tr>';
+                    $signBox2 .= '<tr><td>Nombre y firma del auditor:</td>';
                 } else {
-                    $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/SUMMARY/info26:label'] . '</td></tr>';
+                    $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/auditorSignature:label'] . '</td>';
+                }
+                $signImg = "";
+                if(!empty($configData['embed_signatures_in_pdf']) && $configData['embed_signatures_in_pdf'] == "yes" && $formData['auditorSignature'] != ''){
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['auditorSignature'];
+                    $signImg = CommonService::embedImage($imagePath);
                 }
 
+                $signBox2 .= '<td style="text-align:center;">' . $signImg . '</td></tr>';
+
+                $dateValue = "<td>" . CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . "</td>";
                 if ($language == 'Portuguese') {
-                    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
+                    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td> " . $dateValue . "</tr>";
                 } elseif ($language == 'Spanish') {
-                    $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td></tr>";
+                    $signBox2 .= "<tr><td>Fecha " . $langDateFormat . ":</td> " . $dateValue . "</tr>";
                 } else {
-                    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td></tr>";
+                    $signBox2 .= "<tr><td>Date " . $langDateFormat . ":</td> " . $dateValue . "</tr>";
                 }
                 $signBox2 .= '</table>';
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
@@ -6096,11 +6990,10 @@ class OdkFormService
                 $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
             }
-            $commonService = new CommonService();
             $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
-            $commonService->zipFolder($folderPath, $zipFileName);
+            CommonService::zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
-            $commonService->rmdirRecursive($folderPath);
+            CommonService::rmdirRecursive($folderPath);
         }
     }
 

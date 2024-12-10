@@ -492,7 +492,7 @@ class CommonService
         $db = $this->sm->get('UserCountryMapTable');
         return $db->fetchSelectedCountry($id);
     }
-    public function zipFolder($source, $destination)
+    public static function zipFolder($source, $destination)
     {
         if (!extension_loaded('zip') || !file_exists($source)) {
             return false;
@@ -530,7 +530,7 @@ class CommonService
 
         return $zip->close();
     }
-    public function rmdirRecursive($dir)
+    public static function rmdirRecursive($dir)
     {
         foreach (scandir($dir) as $file) {
             if ('.' === $file || '..' === $file) {

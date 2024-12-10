@@ -1581,7 +1581,6 @@ if ($language == 'Spanish') {
     $signBox2 .= '<tr nobr="true"><td>' . $decoded[$language]['/SPI_RT/auditorSignature:label'] . '</td>';
 }
 
-
 $signImg = "";
 if(!empty($configData['embed_signatures_in_pdf']) && $configData['embed_signatures_in_pdf'] == "yes" && $formData['auditorSignature'] != ''){
     $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['auditorSignature'];
