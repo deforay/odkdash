@@ -42,10 +42,10 @@ $isV6 = preg_match("/v6/i", $web_version);
 							<label><?= $this->translate('Form Version'); ?></label>
 							<select class="" name="chooseFormVersion" id="chooseFormVersion" onchange="getAuditLocationsByForm(this.value)">
 								<?php if ($isV6) { ?>
-									<option value="v6">SPI-RRT Version 6</option>
+									<option value="v6">SPI-RRT</option>
 								<?php } ?>
 								<?php if ($isV3) { ?>
-									<option value="v3">SPI-RT Version 3</option>
+									<option value="v3">SPI-RT v3</option>
 								<?php } ?>
 							</select>
 

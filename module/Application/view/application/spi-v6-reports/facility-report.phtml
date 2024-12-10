@@ -6,7 +6,7 @@
 	<div class="page-head">
 		<div class="row">
 			<div class="col-sm-8">
-				<h2><?= $this->translate('SPI-RRT Version 6 Facility Report'); ?></h2>
+				<h2><?= $this->translate('SPI-RRT Facility Report'); ?></h2>
 			</div>
 		</div>
 	</div>
@@ -67,16 +67,16 @@
 									<label for="province" class="col-sm-2 control-label"><?= $this->translate('Province'); ?></label>
 									<div class=" col-lg-4">
 										<select class="form-control" multiple="multiple" id="province" onchange="getDistrictList()">
-										<option value=""><?= $this->translate('All'); ?></option>
-										<?php foreach ($provinceResult as $val) { ?>
-											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
-										<?php } ?>
+											<option value=""><?= $this->translate('All'); ?></option>
+											<?php foreach ($provinceResult as $val) { ?>
+												<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+											<?php } ?>
 										</select>
 									</div>
 									<label for="district" class="col-sm-2 control-label"><?= $this->translate('District'); ?></label>
 									<div class=" col-lg-4">
 										<select class="form-control" id="district" multiple="multiple">
-										<option value=""><?= $this->translate('All'); ?></option>
+											<option value=""><?= $this->translate('All'); ?></option>
 										</select>
 									</div>
 								</div>
@@ -86,16 +86,16 @@
 										<select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
 											<option value=""><?= $this->translate('All'); ?></option>
 											<?php foreach ($testingPointResult as $val) { ?>
-													<option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+												<option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
 											<?php } ?>
 										</select>
 									</div>
 									<div class="form-group ">
-										 <div class="testPointNameSection">
+										<div class="testPointNameSection">
+										</div>
 									</div>
 								</div>
-								</div>
-								
+
 								<div class="form-group" style="text-align:center;">
 									<button type="button" onclick="getReport()" class="btn btn-sm btn-success"><?= $this->translate('Get Report'); ?></button>
 									&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -104,7 +104,7 @@
 						</div>
 					</div>
 
-					
+
 					<div class="widget-head">
 
 						<br>
@@ -135,7 +135,7 @@
 									<th style="width:5%;"><?= $this->translate('External QA'); ?></th>
 									<th style="width:5%;"><?= $this->translate('RTRI'); ?></th>
 									<th style="width:5%;"><?= $this->translate('Total'); ?></th>
-								<th style="width:5%;"><?= $this->translate('% Scores'); ?></th>
+									<th style="width:5%;"><?= $this->translate('% Scores'); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -169,40 +169,40 @@
 	var oTable = null;
 
 	$(document).ready(function() {
-		
+
 		oTable = $('.datatables').dataTable({
 			"bScrollCollapse": true,
 			"bRetrieve": true,
 			"pageLength": 50,
 			"aoColumns": [{
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, {
-				"sClass": "center"
-			}, 
-			{
-				"sClass": "center"
-			},
-			{
-				"sClass": "center"
-			}
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				}, {
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				}
 			],
 			"aaSorting": [
 				[1, "desc"]
@@ -300,7 +300,8 @@
 				dateRange: dateRange
 			},
 			function(data) {
-				console.log(data); return false;
+				console.log(data);
+				return false;
 				if (data == "" || data == null || data == undefined) {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
@@ -321,7 +322,7 @@
 	function getTestingPointTypeNames() {
 		$.blockUI();
 		let testingPointType = $('#testPoint').val();
-		
+
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
 				testingPointType: testingPointType
 			},
@@ -331,16 +332,14 @@
 			});
 	}
 
-	function getDistrictList(){
+	function getDistrictList() {
 		$.blockUI();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
-			provinceId: $("#province").val()
-		},
-		function(data) {
-			$.unblockUI();
-			$('#district').html(data);
-		});
+				provinceId: $("#province").val()
+			},
+			function(data) {
+				$.unblockUI();
+				$('#district').html(data);
+			});
 	}
-
-	
 </script>

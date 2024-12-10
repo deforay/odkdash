@@ -5056,7 +5056,7 @@ class OdkFormService
             $sheet->mergeCells('L4:L5');
             $sheet->mergeCells('M4:M5');
 
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report Version 6', ENT_QUOTES, 'UTF-8'));
+            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'));
             $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'));
 
             $sheet->setCellValue('A4', html_entity_decode('Facility name', ENT_QUOTES, 'UTF-8'));
@@ -5113,8 +5113,8 @@ class OdkFormService
             $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $subject = '';
             $eventType = 'Export-Facility';
-            $action = $userName . ' has exported V6 Facility Report';
-            $resourceName = 'Export-SPI-RRT Version 6 Facility Report';
+            $action = $userName . ' has exported SPI-RRT Facility Report';
+            $resourceName = 'Export-SPI-RRT Facility Report';
             $auditTable->addEventLog($subject, $eventType, $action, $resourceName);
             return $filename;
         } catch (\Exception $exc) {
@@ -5346,7 +5346,7 @@ class OdkFormService
     {
         $submission['SPIRRT'] = $submission['SPIRRT'] ?? $submission['SPIRT'];
         $submission['EQA'] = $submission['EQA'] ?? $submission['EXTERNALQA'];
-        
+
         $fileName = '';
         if ($section && isset($submission[$section][$mediaField])) {
             $fileName = $submission[$section][$mediaField];
@@ -5354,18 +5354,18 @@ class OdkFormService
             $fileName = $submission[$mediaField];
         }
 
-        if($fileName != ''){
-            $mediaUrl = $baseUrl . '/submissions/'.$submission['__id'].'/attachments/'.$fileName;
+        if ($fileName != '') {
+            $mediaUrl = $baseUrl . '/submissions/' . $submission['__id'] . '/attachments/' . $fileName;
 
             $mediaResponse = $httpClient->get($mediaUrl, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $authToken,
                 ],
             ]);
-    
+
             if ($mediaResponse->getStatusCode() == 200) {
                 $mediaContent = $mediaResponse->getBody()->getContents();
-    
+
                 if (!file_exists(UPLOAD_PATH) && !is_dir(UPLOAD_PATH)) {
                     mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads");
                 }
@@ -5386,7 +5386,7 @@ class OdkFormService
                 $uploadMediaFilePath =  $subDirPath . DIRECTORY_SEPARATOR . $fileName;  // Change this to your desired directory
                 // Save the media file locally
                 file_put_contents($uploadMediaFilePath, $mediaContent);
-    
+
                 //echo "Media file saved: " . $uploadMediaFilePath;
             } else {
                 echo "Failed to download media for field $mediaField: " . $mediaResponse->getStatusCode();

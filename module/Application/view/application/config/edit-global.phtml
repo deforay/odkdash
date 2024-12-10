@@ -55,8 +55,8 @@
 												<?php
 												if (isset($config['template_file']) && trim($config['template_file']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $config['template_file'])) {
 												?>
-												<?php echo $config['template_file']; 
-											    } else { ?>
+												<?php echo $config['template_file'];
+												} else { ?>
 													<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image" />
 												<?php } ?>
 											</div>
@@ -114,7 +114,7 @@
 											<option value="horizontal" <?php echo ($config['dashboard_map_display'] == 'horizontal' ? " selected='selected'" : ""); ?>>Horizontal</option>
 											<option value="vertical" <?php echo ($config['dashboard_map_display'] == 'vertical' ? " selected='selected'" : ""); ?>>Vertical</option>
 										</select>
-										<input type="text" value="<?php echo $config['dashboard_map_height']; ?>" placeholder="Enter map display height" class="form-control" name="dashboard_map_height" id="dashboard_map_height" style="<?php echo ($config['dashboard_map_display'] == 'vertical' ?  'display:none;' : '')?>" title="Please enter the map display height">
+										<input type="text" value="<?php echo $config['dashboard_map_height']; ?>" placeholder="Enter map display height" class="form-control" name="dashboard_map_height" id="dashboard_map_height" style="<?php echo ($config['dashboard_map_display'] == 'vertical' ?  'display:none;' : '') ?>" title="Please enter the map display height">
 									</div>
 								</div>
 								<div class="form-group">
@@ -152,13 +152,13 @@
 										<select name="web_version[]" id="web_version" class=" " title="Please select web version" multiple="multiple">
 											<option value="v3" <?php if (preg_match("/v3/i", $config['web_version'])) {
 																	echo "selected='selected'";
-																}  ?>>Version 3 (SPI-RT)</option>
+																}  ?>>SPI-RT v3</option>
 											<!-- <option value="v5" <?php if (preg_match("/v5/i", $config['web_version'])) {
 																		echo "selected='selected'";
 																	}  ?>>Version 5 (SPI-RRT)</option> -->
 											<option value="v6" <?php if (preg_match("/v6/i", $config['web_version'])) {
 																	echo "selected='selected'";
-																}  ?>>Version 6 (SPI-RRT)</option>
+																}  ?>>SPI-RRT</option>
 										</select>
 									</div>
 								</div>
@@ -219,12 +219,12 @@
 		$("#removedTempFile").val(img);
 	}
 
-	function checkMapDisplay(){
-		dashboardMapDisplay=$("#dashboard_map_display").val();
-		if(dashboardMapDisplay=='horizontal'){
+	function checkMapDisplay() {
+		dashboardMapDisplay = $("#dashboard_map_display").val();
+		if (dashboardMapDisplay == 'horizontal') {
 			$("#dashboard_map_height").show();
 			$("#dashboard_map_height").addClass("isRequired");
-		}else{
+		} else {
 			$("#dashboard_map_height").hide();
 			$("#dashboard_map_height").removeClass("isRequired");
 		}
