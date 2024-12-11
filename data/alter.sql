@@ -2801,3 +2801,6 @@ INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`
 
 -- Brindha 10-Dec-2024
 ALTER TABLE `spi_form_v_6` ADD `submitterId` INT NOT NULL AFTER `formVersion`, ADD `reviewState` VARCHAR(100) NULL DEFAULT NULL AFTER `submitterId`;
+
+-- Brindha 11-Dec-2024
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Embed Images in Audit PDF', 'embed_images_in_audit_pdf', 'no');

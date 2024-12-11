@@ -291,7 +291,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['PERSONALPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PERSONALPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONALPHOTO:label'] . '</td>';
@@ -375,7 +375,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['PHYSICALPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PHYSICALPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PHYSICALPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICALPHOTO:label'] . '</td>';
@@ -483,7 +483,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['SAFETYPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" &&  $formData['SAFETYPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['SAFETYPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETYPHOTO:label'] . '</td>';
@@ -605,7 +605,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['PRETESTPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PRETESTPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PRETESTPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETESTPHOTO:label'] . '</td>';
@@ -711,7 +711,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['TESTPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['TESTPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['TESTPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TESTPHOTO:label'] . '</td>';
@@ -817,7 +817,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['POSTTESTPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['POSTTESTPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['POSTTESTPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POSTTESTPHOTO:label'] . '</td>';
@@ -915,7 +915,7 @@ $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language
 $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
 $partBTable .= '</tr>';
 
-if($formData['EQAPHOTO'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['EQAPHOTO'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['EQAPHOTO'];
     $partBTable .= '<tr nobr="true">';
     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQAPHOTO:label'] . '</td>';
@@ -1041,7 +1041,7 @@ if (strtolower($formData['performrtritesting']) == 'yes') {
     $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
     $partBTable .= '</tr>';
 
-    if($formData['RTRIPHOTO'] != ''){
+    if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['RTRIPHOTO'] != ''){
         $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['RTRIPHOTO'];
         $partBTable .= '<tr nobr="true">';
         $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRIPHOTO:label'] . '</td>';
@@ -1557,7 +1557,7 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
 $partDTable .= '</table><br/><br/><br/>';
 $pdf->writeHTML($partDTable, true, 0, true, 0);
 
-if($formData['sitephoto'] != ''){
+if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto'] != ''){
     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto'];
     $siteTable = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
     $siteTable .= '<tr nobr="true">';
