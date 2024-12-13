@@ -31,6 +31,16 @@
                             <form role="form" name="addEailInformation" id="addEailInformation" method="post" enctype="multipart/form-data" action="<?php echo $this->url('email', array('action' => 'email-v6')); ?>" autocomplete="off">
                                 <div class="row">
                                     <div class="form-group col-lg-6">
+                                        <label for="showEmailAudits"><?= $this->translate('Show Audits'); ?></label>
+                                        <select class="form-control" id="showEmailAudits" title="Please select the show emailed audits" onchange="getEmailAudits();">
+                                            <option value=""><?= $this->translate('All'); ?></option>
+                                            <option value="yes"><?= $this->translate('Already emailed'); ?></option>
+                                            <option value="no"><?= $this->translate('Not yet emailed'); ?></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-lg-6">
                                         <label><?= $this->translate('Facility'); ?> <span class="mandatory">*</span></label>
                                         <select class="form-control isRequired select2" name="facility" id="facility" title="Please select the facility" onchange="getSelectedFacilitesAudits(this.value);">
                                             <option value="">-- <?= $this->translate('Select Facility'); ?> --</option>
@@ -137,8 +147,12 @@
     }
 
     function getSelectedFacilitesAudits(objValue) {
+
+        var showEmailAudits = $("#showEmailAudits").val();
+
         $.post("<?php echo $this->url('email', array('action' => 'get-facilities-v6-audits')); ?>", {
-                facilityName: objValue
+                facilityName : objValue,
+                showEmailAudits : showEmailAudits
             },
             function(data) {
                 splitData = data.split("##");
@@ -161,6 +175,11 @@
                     width: '100%'
                 });
             });
+    }
+
+    function getEmailAudits() {
+        $("#facility").val("");
+        $("#facility").trigger('change');
     }
 
     function generatePdf(tId, auId) {

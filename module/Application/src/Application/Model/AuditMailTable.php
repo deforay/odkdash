@@ -28,7 +28,7 @@ class AuditMailTable extends AbstractTableGateway
         $this->adapter = $adapter;
     }
 
-    public function insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress)
+    public function insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress, $auditIds)
     {
         $data = array(
             'from_full_name' => $fromName,
@@ -36,7 +36,8 @@ class AuditMailTable extends AbstractTableGateway
             'to_email' => $toEmailAddress,
             'cc' => $cc,
             'subject' => $subject,
-            'message' => $message
+            'message' => $message,
+            'audit_ids' => $auditIds
         );
         $this->insert($data);
         return $this->lastInsertValue;

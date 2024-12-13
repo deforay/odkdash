@@ -130,7 +130,11 @@ class FacilityService
             $message .= '</table>';
             $message .= '</tr></td>';
             $message .= '</table>';
-            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress);
+            $auditIds = '';
+            if (isset($params['audits']) && !empty($params['audits'])) {
+                $auditIds = implode(",", $params['audits']);
+            }
+            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress, $auditIds);
             if ($mailId > 0) {
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if ($result > 0) {
@@ -208,7 +212,11 @@ class FacilityService
             $message .= '</table>';
             $message .= '</tr></td>';
             $message .= '</table>';
-            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress);
+            $auditIds = '';
+            if (isset($params['audits']) && !empty($params['audits'])) {
+                $auditIds = implode(",", $params['audits']);
+            }
+            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress, $auditIds);
             if ($mailId > 0) {
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if ($result > 0) {
@@ -286,7 +294,11 @@ class FacilityService
             $message .= '</table>';
             $message .= '</tr></td>';
             $message .= '</table>';
-            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress);
+            $auditIds = '';
+            if (isset($params['audits']) && !empty($params['audits'])) {
+                $auditIds = implode(",", $params['audits']);
+            }
+            $mailId = $auditMailDb->insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress, $auditIds);
             if ($mailId > 0) {
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if ($result > 0) {

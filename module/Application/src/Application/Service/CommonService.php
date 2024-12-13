@@ -247,6 +247,7 @@ class CommonService
     {
         try {
             $auditMailDb = $this->sm->get('AuditMailTable');
+            $spiFormV6Db = $this->sm->get('SpiFormVer6Table');
             $configResult = $this->sm->get('Config');
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
@@ -328,6 +329,10 @@ class CommonService
                     try {
                         $transport->send($alertMail);
                         $auditMailDb->updateAuditMailStatus($id);
+                        if (isset($result['audit_ids']) && !empty($result['audit_ids'])) {
+                            $spiFormV6Db->updateAuditMailSentStatus($result['audit_ids']);
+                        }
+                        
                     } catch (\Exception $e) {
                         error_log($e->getMessage());
                         error_log("Email failed for ID: " . $id);

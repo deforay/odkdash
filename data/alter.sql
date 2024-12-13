@@ -2804,3 +2804,7 @@ ALTER TABLE `spi_form_v_6` ADD `submitterId` INT NOT NULL AFTER `formVersion`, A
 
 -- Brindha 11-Dec-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Embed Images in Audit PDF', 'embed_images_in_audit_pdf', 'no');
+
+-- Brindha 11-Dec-2024
+ALTER TABLE `spi_form_v_6` ADD `form_metadata` JSON NULL DEFAULT NULL AFTER `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`;
+ALTER TABLE `audit_mails` ADD `audit_ids` TEXT NULL DEFAULT NULL AFTER `message`;

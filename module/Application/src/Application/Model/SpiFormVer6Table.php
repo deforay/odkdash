@@ -1690,6 +1690,21 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery = $sQuery->where("spiv6.affiliation='" . $parameters['affiliation'] . "'");
         }
 
+        if (isset($parameters['showAudits']) && $parameters['showAudits'] != '') {
+            if ($parameters['showAudits'] == 'yes') {
+                // Query where 'audit_printed' is set to 'yes'
+                $sQuery = $sQuery->where("JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed')) = 'yes'");
+            } elseif ($parameters['showAudits'] == 'no') {
+                // Query where 'audit_printed' is not 'yes' or not set
+                $sQuery = $sQuery->where(
+                    "(
+                        JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed')) != 'yes' 
+                        OR JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed') IS NULL
+                    )"
+                );
+            }
+        }
+
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
@@ -2080,6 +2095,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($sResult) {
+            $searchFacility = false; 
             if (trim($sResult->facility) != '' || trim($sResult->facilityid) != '' || trim($sResult->facilityname) != '') {
                 //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
@@ -2106,8 +2122,46 @@ class SpiFormVer6Table extends AbstractTableGateway
             $resourceName = 'Print-SPI-RRT-PDF';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             //}
+            if ($pdfDowload == 'yes') {
+                $this->updateFormMetadata($id, 'audit_printed', 'yes', $sResult['form_metadata']);
+            }
         }
         return $sResult;
+    }
+
+    public function updateFormMetadata($id, $key, $value, $formMetaData)
+    {
+        $existingMetadata = !empty($formMetaData)
+                ? json_decode($formMetaData, true)
+                : [];
+
+        if (isset($existingMetadata[$key]) && $existingMetadata[$key] === $value) {
+            return; // Skip if already set
+        }
+
+        $existingMetadata[$key] = $value;
+        $updateData = ['form_metadata' => json_encode($existingMetadata)];
+
+        $this->update($updateData, ['id' => $id]);
+    }
+
+    public function updateAuditMailSentStatus($auditIds)
+    {
+        $auditIdArray = explode(",", $auditIds);
+
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()
+                    ->from('spi_form_v_6')
+                    ->columns(['id', 'form_metadata'])
+                    ->where(['id' => $auditIdArray]);
+
+        $queryStr = $sql->buildSqlString($query);
+        $results = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        foreach ($results as $row) {
+            $this->updateFormMetadata($row['id'], 'audit_email_sent', 'yes', $row['form_metadata']);
+        }
     }
 
     public function getAuditRoundWiseDataV6($params)
@@ -3746,8 +3800,23 @@ class SpiFormVer6Table extends AbstractTableGateway
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
             $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array('id', 'assesmentofaudit'))
+                ->columns(array('id', 'assesmentofaudit', 'form_metadata'))
                 ->where(array('spiv6.facilityname' => $params['facilityName'], 'spiv6.status' => 'approved'));
+            if (isset($params['showEmailAudits']) && $params['showEmailAudits'] != '') {
+                if ($params['showEmailAudits'] == 'yes') {
+                    // Query where 'audit_printed' is set to 'yes'
+                    $query = $query->where("JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_email_sent')) = 'yes'");
+                } elseif ($params['showEmailAudits'] == 'no') {
+                    // Query where 'audit_email_sent' is not 'yes' or not set (grouping with parentheses)
+                    $query = $query->where(
+                        "(
+                            JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_email_sent')) != 'yes' 
+                            OR JSON_EXTRACT(spiv6.form_metadata, '$.audit_email_sent') IS NULL
+                        )"
+                    );
+                }
+            }
+            $query->order("id DESC");
             $queryStr = $sql->buildSqlString($query);
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 

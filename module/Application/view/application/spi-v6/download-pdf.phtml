@@ -318,14 +318,14 @@ for ($i = 1; $i < 6; $i++) {
     ) {
         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0.5)
-        || (isset($formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER'] == 0.5)
+        || (isset($formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0.5)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0.5)
     ) {
         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
     } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0)
-        || (isset($formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_Q_2_' . $i . '_HIV_TESTING_REGISTER'] == 0)
+        || (isset($formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0)
         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0)
@@ -335,8 +335,8 @@ for ($i = 1; $i < 6; $i++) {
 
     if ((isset($formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA'] !== ''))
         $comments = $formData['PHYSICAL_C_2_' . $i . '_DESIGNATED_HIV_AREA'];
-    if ((isset($formData['PHYSICAL_C_2_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PHYSICAL_C_2_' . $i . '_HIV_TESTING_REGISTER'] !== ''))
-        $comments = $formData['PHYSICAL_C_2_' . $i . '_HIV_TESTING_REGISTER'];
+    if ((isset($formData['PHYSICAL_C_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_C_2_' . $i . '_CLEAN_TESTING_AREA'] !== ''))
+        $comments = $formData['PHYSICAL_C_2_' . $i . '_CLEAN_TESTING_AREA'];
     if ((isset($formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] !== ''))
         $comments = $formData['PHYSICAL_C_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'];
     if ((isset($formData['PHYSICAL_C_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_C_2_' . $i . '_TEST_KIT_STORAGE'] !== ''))
@@ -1098,24 +1098,24 @@ if (strtolower($formData['DO_SURVEILLANCE']) == 'yes') {
         }
 
         if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5)
-            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 0.5)
+            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 0.5)
+            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 0.5)
+            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 0.5)
+            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 0.5)
+            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 0.5)
 
         ) {
             $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
         }
 
         if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0)
-            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 1)
-            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 1)
+            || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 0)
+            || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 0)
+            || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 0)
+            || (isset($formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_' . $i . '_RESULTS_RETURNED_IN_TWO_WEEKS'] == 0)
+            || (isset($formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROTOCOL_VIOLATION_DOCUMENTED'] == 0)
+            || (isset($formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_' . $i . '_DOCUMENTING_PROTOCOL_ERRORS'] == 0)
 
         ) {
             $no = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
