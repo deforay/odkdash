@@ -79,12 +79,43 @@ foreach ($tokenResults as $token) {
 									</select>
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Countries</label>
-									<select class="form-control select2" multiple="multiple" name="country[]" id="country" title="Please select the country">
-										<?php foreach($countries as $row){ ?>
-											<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
-										<?php } ?>
+									<label>Mapping Type <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="mappingType" id="mappingType" title="Please select the mappingType" onchange="getLocations()">
+										<option value="">--Select--</option>	
+										<option value="country">Country</option>
+										<option value="province">Province</option>
+										<option value="district">District</option>
 									</select>
+								</div>
+								<div class="form-group col-lg-6 country" style="display:none">
+									<label>Countries <span class="mandatory">*</span></label>
+									<div class="form-control">
+										<select multiple="multiple" name="country[]" id="country" title="Please select the country">
+											<?php foreach($countries as $row){ ?>
+												<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-lg-6 province" style="display:none">
+									<label>Provinces <span class="mandatory">*</span></label>
+									<div class="form-control">
+										<select multiple="multiple" name="province[]" id="province" title="Please select the province">
+											<?php foreach($provinces as $row){ ?>
+												<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-lg-6 district" style="display:none">
+									<label>Districts <span class="mandatory">*</span></label>
+									<div class="form-control">
+										<select multiple="multiple" name="district[]" id="district" title="Please select the district">
+											<?php foreach($districts as $row){ ?>
+												<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
+											<?php } ?>
+										</select>
+									</div>
 								</div>
 								<div class="form-group col-lg-6">
 									<label>User Image</label>
@@ -123,6 +154,18 @@ foreach ($tokenResults as $token) {
 	$(document).ready(function() {
 		$("#country").multipleSelect({
 			placeholder: '<?= $this->translate('Please select country.'); ?>',
+			width: '100%',
+			minimumCountSelected: '2'
+		});
+
+		$("#province").multipleSelect({
+			placeholder: '<?= $this->translate('Please select province.'); ?>',
+			width: '100%',
+			minimumCountSelected: '2'
+		});
+
+		$("#district").multipleSelect({
+			placeholder: '<?= $this->translate('Please select district.'); ?>',
 			width: '100%',
 			minimumCountSelected: '2'
 		});
@@ -182,5 +225,19 @@ foreach ($tokenResults as $token) {
 					duplicateName = true;
 				}
 			});
+	}
+
+	function getLocations() {
+		var mappingType = $("#mappingType").val();
+		var types = ['country', 'province', 'district'];
+		
+		types.forEach(function(type) {
+			if (mappingType === type) {
+				$("." + type).show();
+			} else {
+				$("." + type).hide();
+				$("." + type + " select").val([]).multipleSelect("refresh");
+			}
+		});
 	}
 </script>

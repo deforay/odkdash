@@ -52,6 +52,7 @@ use Application\View\Helper\GetCountryDetailsByIdHelper;
 
 use Application\Service\ProvinceService;
 use Application\Model\GeographicalDivisionsTable;
+use Application\Model\UserLocationMapTable;
 
 class Module
 {
@@ -298,7 +299,8 @@ class Module
                         $roleService = $diContainer->get('RoleService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         $commonService = $diContainer->get('CommonService');
-                        return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService);
+                        $provinceService = $diContainer->get('ProvinceService');
+                        return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService, $provinceService);
                     }
                 },
                 'Application\Controller\EmailController' => new class {
@@ -632,7 +634,14 @@ class Module
                         return new GeographicalDivisionsTable($dbAdapter);
                     }
                 },
-
+                'UserLocationMapTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new UserLocationMapTable($dbAdapter);
+                    }
+                },
                 'OdkFormService' => new class
                 {
                     public function __invoke($diContainer)

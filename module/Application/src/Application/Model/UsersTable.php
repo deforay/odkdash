@@ -10,10 +10,10 @@ use Application\Model\EventLogTable;
 use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
-use Application\Model\UserCountryMapTable;
 use \Application\Service\ImageResizeService;
 use Application\Model\UserLoginHistoryTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
+use Application\Model\UserLocationMapTable;
 
 
 
@@ -50,7 +50,7 @@ class UsersTable extends AbstractTableGateway
         $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
-        $userCountryMap = new UserCountryMapTable($dbAdapter);
+        $userLocationMap = new UserLocationMapTable($dbAdapter);
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
             ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
@@ -75,15 +75,15 @@ class UsersTable extends AbstractTableGateway
         }
 
         if ($sResult && $passwordValidation) {
-            $userCountryMapArray = array();
-            $userCountryQuery = $sql->select()->from(array('u_c_map' => 'user_country_map'))
-                ->join(array('c' => 'countries'), "c.country_id=u_c_map.country_id", array('country_id', 'country_name', 'iso2'))
-                ->where(array('u_c_map.user_id' => $sResult->id))
-                ->order("country_name ASC");
-            $userCountryQueryStr = $sql->buildSqlString($userCountryQuery);
-            $userCountryMapResult = $dbAdapter->query($userCountryQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            foreach ($userCountryMapResult as $ucMap) {
-                $userCountryMapArray[] = $ucMap['country_id'];
+            $userMappedIdsArray = array();
+            $userMappingType = '';
+            $userLocationQuery = $sql->select()->from(array('u_l_map' => 'user_location_map'))
+                ->where(array('u_l_map.user_id' => $sResult->id));
+            $userLocationQueryStr = $sql->buildSqlString($userLocationQuery);
+            $userLocationMapResult = $dbAdapter->query($userLocationQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            foreach ($userLocationMapResult as $ulMap) {
+                $userMappedIdsArray[] = $ulMap['location_id'];
+                $userMappingType = $ulMap['mapping_type'];
             }
 
             $token = array();
@@ -101,7 +101,8 @@ class UsersTable extends AbstractTableGateway
             $loginContainer->roleCode = $sResult->role_code;
             $loginContainer->roleId = $sResult->role_id;
             $loginContainer->token = $token;
-            $loginContainer->userCountryMap = $userCountryMapArray;
+            $loginContainer->userMappedIds = $userMappedIdsArray;
+            $loginContainer->userMappingType = $userMappingType;
             $loginContainer->userImage = $sResult->user_image;
             $subject = '';
             $eventType = 'login in';
@@ -149,7 +150,7 @@ class UsersTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
-        $userCountryMap = new UserCountryMapTable($dbAdapter);
+        $userLocationMap = new UserLocationMapTable($dbAdapter);
         $password = $this->passwordHash($params['password']);
         $lastInsertId = 0;
         if (isset($params['userName']) && trim($params['userName']) != "") {
@@ -168,11 +169,26 @@ class UsersTable extends AbstractTableGateway
             if ($lastInsertId > 0) {
 
                 $userRoleMap->insert(array('user_id' => $lastInsertId, 'role_id' => $params['roleId']));
-                if (!empty($params['country'])) {
-                    foreach ($params['country'] as $country) {
-                        $userCountryMap->insert(array('user_id' => $lastInsertId, 'country_id' => $country));
+
+                //Add User-Location
+                if(!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
+                    $locationKey = $params['mappingType'];
+                    if (!empty($params[$locationKey])) {
+                        $data = array_map(function ($location) use ($lastInsertId, $params) {
+                            return [
+                                'user_id' => $lastInsertId,
+                                'location_id' => $location,
+                                'mapping_type' => $params['mappingType']
+                            ];
+                        }, $params[$locationKey]);
+                        if (!empty($data)) {
+                            foreach ($data as $row) {
+                                $userLocationMap->insert($row); // Single row insert
+                            }
+                        }
                     }
                 }
+
                 //Add User-Token
                 if (isset($params['token']) && trim($params['token']) != '') {
                     $splitToken = explode(",", $params['token']);
@@ -229,7 +245,7 @@ class UsersTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
         $userTokenMap = new UserTokenMapTable($dbAdapter);
-        $userCountryMap = new UserCountryMapTable($dbAdapter);
+        $userLocationMap = new UserLocationMapTable($dbAdapter);
         $userId = base64_decode($params['userId']);
         if (isset($params['password']) && $params['password'] != '') {
             $password = $this->passwordHash($params['password']);
@@ -247,13 +263,28 @@ class UsersTable extends AbstractTableGateway
             );
             $this->update($data, array('id' => $userId));
             if ($userId > 0) {
-                $userCountryMap->delete(array('user_id' => $userId));
                 $userRoleMap->update(array('role_id' => $params['roleId']), array('user_id' => $userId));
-                if (isset($params['country']) && count($params['country']) > 0) {
-                    foreach ($params['country'] as $country) {
-                        $userCountryMap->insert(array('user_id' => $userId, 'country_id' => $country));
+
+                //Update User-Location
+                $userLocationMap->delete(array('user_id' => $userId));
+                if(!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
+                    $locationKey = $params['mappingType'];
+                    if (!empty($params[$locationKey])) {
+                        $data = array_map(function ($location) use ($userId, $params) {
+                            return [
+                                'user_id' => $userId,
+                                'location_id' => $location,
+                                'mapping_type' => $params['mappingType']
+                            ];
+                        }, $params[$locationKey]);
+                        if (!empty($data)) {
+                            foreach ($data as $row) {
+                                $userLocationMap->insert($row); // Single row insert
+                            }
+                        }
                     }
                 }
+                
                 //Update User-Token
                 $userTokenMap->delete(array('user_id' => $userId));
                 if (isset($params['token']) && trim($params['token']) != '') {

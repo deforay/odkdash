@@ -5,9 +5,28 @@ foreach ($tokenResults as $token) {
 }
 
 $userCountryMapArray = array();
-foreach ($userCountryMapResult as $ucMap) {
-	$userCountryMapArray[] = $ucMap['country_id'];
+foreach ($userLocationMapResult as $ulMap) {
+	if ($ulMap['mapping_type'] == 'country') {
+		$userCountryMapArray[] = $ulMap['location_id'];
+	}
 }
+
+$userProvinceMapArray = array();
+foreach ($userLocationMapResult as $ulMap) {
+	if ($ulMap['mapping_type'] == 'province') {
+		$userProvinceMapArray[] = $ulMap['location_id'];
+	}
+}
+//print_r($userProvinceMapArray);die;
+
+$userDistrictMapArray = array();
+foreach ($userLocationMapResult as $ulMap) {
+	if ($ulMap['mapping_type'] == 'district') {
+		$userDistrictMapArray[] = $ulMap['location_id'];
+	}
+}
+
+$existMappingType = $userLocationMapResult[0]['mapping_type'];
 
 $selectedTokenList = '';
 if (isset($result->userToken) && count($result->userToken) > 0) {
@@ -98,14 +117,47 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 																	} ?>>Inactive</option>
 									</select>
 								</div>
+
 								<div class="form-group col-lg-6">
-									<label>Countries </label>
-									<select class="form-control select2" multiple="multiple" name="country[]" id="country" title="Please select the country">
-										<?php foreach($countries as $row){ ?>
-											<option value="<?php echo $row['country_id'];?>" <?php echo (in_array($row['country_id'], $userCountryMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['country_name']);?></option>
-										<?php } ?>
+									<label>Mapping Type <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="mappingType" id="mappingType" title="Please select the mappingType" onchange="getLocations()">
+										<option value="">--Select--</option>	
+										<option value="country" <?php echo $existMappingType == 'country' ? "selected=selected" : ""; ?>>Country</option>
+										<option value="province" <?php echo $existMappingType == 'province' ? "selected=selected" : ""; ?>>Province</option>
+										<option value="district" <?php echo $existMappingType == 'district' ? "selected=selected" : ""; ?>>District</option>
 									</select>
 								</div>
+								<div class="form-group col-lg-6 country" style="display:none">
+									<label>Countries <span class="mandatory">*</span></label>
+									<div class="form-control">
+										<select multiple="multiple" name="country[]" id="country" title="Please select the country">
+											<?php foreach($countries as $row){ ?>
+												<option value="<?php echo $row['country_id'];?>" <?php echo (in_array($row['country_id'], $userCountryMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['country_name']);?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-lg-6 province" style="display:none">
+									<label>Provinces <span class="mandatory">*</span></label>
+									<div class="form-control">
+										<select multiple="multiple" name="province[]" id="province" title="Please select the province">
+											<?php foreach($provinces as $row){ ?>
+												<option value="<?php echo $row['geo_id'];?>" <?php echo (in_array($row['geo_id'], $userProvinceMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['geo_name']);?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+								<div class="form-group col-lg-6 district" style="display:none">
+									<label>Districts <span class="mandatory">*</span></label>
+									<div class="form-control">
+										<select multiple="multiple" name="district[]" id="district" title="Please select the district">
+											<?php foreach($districts as $row){ ?>
+												<option value="<?php echo $row['geo_id'];?>" <?php echo (in_array($row['geo_id'], $userDistrictMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['geo_name']);?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
+
 								<div class="form-group col-lg-6" style="margin-right:50%;">
 									<label>User Image</label>
 									<div class="input-group col-sm-6" style="padding-left: 14px;width:66%;">
@@ -173,6 +225,18 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 			minimumCountSelected: '2'
 		});
 
+		$("#province").multipleSelect({
+			placeholder: '<?= $this->translate('Please select province.'); ?>',
+			width: '100%',
+			minimumCountSelected: '2'
+		});
+
+		$("#district").multipleSelect({
+			placeholder: '<?= $this->translate('Please select district.'); ?>',
+			width: '100%',
+			minimumCountSelected: '2'
+		});
+
 		$('#token').tokenfield({
 			autocomplete: {
 				source: <?php echo json_encode($tokenArray); ?>,
@@ -188,6 +252,8 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 					event.preventDefault();
 			});
 		});
+
+		getLocations();
 	});
 
 	function isNumberKey(evt) {
@@ -237,5 +303,19 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 					duplicateName = true;
 				}
 			});
+	}
+
+	function getLocations() {
+		var mappingType = $("#mappingType").val();
+		var types = ['country', 'province', 'district'];
+		
+		types.forEach(function(type) {
+			if (mappingType === type) {
+				$("." + type).show();
+			} else {
+				$("." + type).hide();
+				$("." + type + " select").val([]).multipleSelect("refresh");
+			}
+		});
 	}
 </script>

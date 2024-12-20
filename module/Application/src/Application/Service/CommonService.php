@@ -496,11 +496,12 @@ class CommonService
         return $db->fetchAllCountries();
     }
 
-    public function getSelectedCountry($id)
+    public function getSelectedLocation($id)
     {
-        $db = $this->sm->get('UserCountryMapTable');
-        return $db->fetchSelectedCountry($id);
+        $db = $this->sm->get('UserLocationMapTable');
+        return $db->fetchSelectedLocation($id);
     }
+
     public static function zipFolder($source, $destination)
     {
         if (!extension_loaded('zip') || !file_exists($source)) {

@@ -14,13 +14,15 @@ class UsersController extends AbstractActionController
     public \Application\Service\UserService $userService;
     public \Application\Service\RoleService $roleService;
     public \Application\Service\CommonService $commonService;
+    public \Application\Service\ProvinceService $provinceService;
 
-    public function __construct($userService, $roleService, $odkFormService, $commonService)
+    public function __construct($userService, $roleService, $odkFormService, $commonService, $provinceService)
     {
         $this->userService = $userService;
         $this->roleService = $roleService;
         $this->odkFormService = $odkFormService;
         $this->commonService = $commonService;
+        $this->provinceService = $provinceService;
     }
 
     public function indexAction()
@@ -47,7 +49,9 @@ class UsersController extends AbstractActionController
         $roleResult = $this->roleService->getAllActiveRoles();
         $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
         $countries = $this->commonService->getAllCountries();
-        return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult, 'countries' => $countries));
+        $provinces = $this->provinceService->getAllActiveProvinces();
+        $districts = $this->provinceService->getAllActiveDistricts();
+        return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult, 'countries' => $countries, 'provinces' => $provinces, 'districts' => $districts));
     }
 
     public function editAction()
@@ -62,17 +66,21 @@ class UsersController extends AbstractActionController
         } else {
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->userService->getUser($id);
-            $userCountryMapResult = $this->commonService->getSelectedCountry($id);
+            $userLocationMapResult = $this->commonService->getSelectedLocation($id);
 
-            $countries = $this->commonService->getAllCountries();
             $roleResult = $this->roleService->getAllActiveRoles();
             $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
+            $countries = $this->commonService->getAllCountries();
+            $provinces = $this->provinceService->getAllActiveProvinces();
+            $districts = $this->provinceService->getAllActiveDistricts();
             return new ViewModel(array(
                 'result' => $result,
                 'roleResults' => $roleResult,
                 'tokenResults' => $tokenResult,
-                'userCountryMapResult' => $userCountryMapResult,
-                'countries' => $countries
+                'userLocationMapResult' => $userLocationMapResult,
+                'countries' => $countries,
+                'provinces' => $provinces,
+                'districts' => $districts
             ));
         }
     }

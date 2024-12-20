@@ -2808,3 +2808,12 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 -- Brindha 11-Dec-2024
 ALTER TABLE `spi_form_v_6` ADD `form_metadata` JSON NULL DEFAULT NULL AFTER `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`;
 ALTER TABLE `audit_mails` ADD `audit_ids` TEXT NULL DEFAULT NULL AFTER `message`;
+
+-- Brindha 19-Dec-2024
+CREATE TABLE `user_location_map` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `location_id` int NOT NULL,
+  `mapping_type` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
