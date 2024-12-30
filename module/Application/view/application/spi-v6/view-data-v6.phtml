@@ -23,6 +23,9 @@
 <div class="am-content">
   <div class="page-head">
     <?php
+    use Laminas\Session\Container;
+    $loginContainer = new Container('credo');
+    $userMappingType = $loginContainer->userMappingType;
     if ($source == 'hv') {
     ?>
       <h2><?= $this->translate('Performance of High Volume Sites'); ?></h2>
@@ -92,23 +95,32 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="province" class="col-sm-2 control-label"><?= $this->translate('Province'); ?></label>
-                    <div class=" col-lg-4">
-                      <select class="form-control" name="province" multiple="multiple" id="province" title="Please select province" onchange="getDistrictList()">
-                        <option value="">--Select--</option>
-                        <?php
-                        foreach ($provinceResult as $val) {
-                        ?>
-                          <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
-                        <?php
-                        }
-                        ?>
+                    <label for="country" class="col-sm-2 control-label country"><?= $this->translate('Countries'); ?></label>
+                    <div class=" col-lg-4 country">
+                      <select class="form-control" multiple="multiple" name="country" id="country" title="Please select the country">
+                        <?php foreach($locationResult['countries'] as $row){ ?>
+                          <option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
+                        <?php } ?>
                       </select>
                     </div>
-                    <label for="district" class="col-sm-2 control-label"><?= $this->translate('District'); ?></label>
-                    <div class="col-lg-4">
+                    <label for="province" class="col-sm-2 control-label province"><?= $this->translate('Province'); ?></label>
+                    <div class=" col-lg-4 province">
+                      <select class="form-control" name="province" multiple="multiple" id="province" title="Please select province">
+                        <option value="">--Select--</option>
+                        <?php foreach ($locationResult['provinces'] as $val) { ?>
+                          <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                        <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="district" class="col-sm-2 control-label district"><?= $this->translate('District'); ?></label>
+                    <div class="col-lg-4 district">
                       <select class="form-control" multiple="multiple" name="district" id="district" title="Please select district">
                         <option value="">--Select--</option>
+                        <?php foreach ($locationResult['districts'] as $val) { ?>
+                          <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                        <?php } ?>
                       </select>
                     </div>
                   </div>
@@ -329,14 +341,22 @@
   $(document).ready(function() {
     var startDate = "";
     var endDate = "";
-    $("#district").select2({
+
+    $("#country").select2({
+      width: '100%',
+      placeholder: 'All',
+      allowClear: true,
+      tags: false
+    });
+  
+    $("#province").select2({
       width: '100%',
       placeholder: 'All',
       allowClear: true,
       tags: false
     });
 
-    $("#province").select2({
+    $("#district").select2({
       width: '100%',
       placeholder: 'All',
       allowClear: true,
@@ -425,6 +445,10 @@
             "value": $("#level").val()
           });
           aoData.push({
+            "name": "country",
+            "value": $("#country").val()
+          });
+          aoData.push({
             "name": "province",
             "value": $("#province").val()
           });
@@ -464,6 +488,7 @@
         });
       }
     });
+    getLocations();
   });
 
   function search() {
@@ -563,5 +588,26 @@
           document.location.href = '/temporary/' + res;
         }
       });
+  }
+  function getLocations() {
+    var mappingType = <?php echo json_encode($userMappingType); ?>;
+
+    var types = ['country', 'province', 'district'];
+    if(mappingType != ""){
+      types.forEach(function(type) {
+          if (mappingType === 'country' && (type === 'country' || type === 'province' || type === 'district')) {
+              $("." + type).show();
+          } else if (mappingType === 'province' && type === 'province') {
+              $("." + type).show();
+          } else if (mappingType === 'district' && type === 'district') {
+              $("." + type).show();
+          } else {
+              // Hide the type that doesn't match the mappingType
+              $("." + type).hide();
+              // Reset the select values for hidden fields
+              $("." + type + " select").val([]);
+          }
+      });
+    }
   }
 </script>

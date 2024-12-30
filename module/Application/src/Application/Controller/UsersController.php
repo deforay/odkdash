@@ -49,8 +49,8 @@ class UsersController extends AbstractActionController
         $roleResult = $this->roleService->getAllActiveRoles();
         $tokenResult = $this->odkFormService->getSpiV3FormUniqueTokens();
         $countries = $this->commonService->getAllCountries();
-        $provinces = $this->provinceService->getAllActiveProvinces();
-        $districts = $this->provinceService->getAllActiveDistricts();
+        $provinces = $this->provinceService->getAllProvinces();
+        $districts = $this->provinceService->getAllDistricts();
         return new ViewModel(array('roleResults' => $roleResult, 'tokenResults' => $tokenResult, 'countries' => $countries, 'provinces' => $provinces, 'districts' => $districts));
     }
 

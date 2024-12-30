@@ -202,6 +202,20 @@ class GeographicalDivisionsTable extends AbstractTableGateway
 
     public function fetchAllActiveProvinces()
     {
+        $loginContainer = new Container('credo');
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active','geo_parent'=>'0'));
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'province') {
+            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+        }
+        $roleQueryStr = $sql->buildSqlString($query);
+        return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
+    public function fetchAllProvinces()
+    {
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active','geo_parent'=>'0'));
@@ -385,11 +399,50 @@ class GeographicalDivisionsTable extends AbstractTableGateway
 
     public function fetchAllActiveDistricts()
     {
+        $loginContainer = new Container('credo');
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active'))->where("geo_parent!=0");
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'district') {
+            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+        }
+        $queryStr = $sql->buildSqlString($query);
+        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
+    public function fetchAllDistricts()
+    {
+        $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active'))->where("geo_parent!=0");
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
+    public function fetchAllMappedLocations()
+    {
+        $loginContainer = new Container('credo');
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active','geo_parent'=>'0'));
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'province') {
+            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+        }
+        $queryStr = $sql->buildSqlString($query);
+        $result['provinces'] = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active'))->where("geo_parent!=0");
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'district') {
+            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+        }
+        $queryStr = $sql->buildSqlString($query);
+        $result['districts'] = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        $countriesTable = new CountriesTable($this->adapter);
+        $result['countries'] = $countriesTable->fetchAllMapedCountries();
+
+        return $result;
     }
 
     public function fetchAllDistrictByProvince($provinceId){

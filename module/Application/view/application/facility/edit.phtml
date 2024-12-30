@@ -37,8 +37,20 @@
                       <input type="text" placeholder="Name of the Contact Person" class="form-control" name="contactPerson" id="contactPerson" value="<?php echo $result->contact_person; ?>">
                     </div>
 					<div class="form-group col-lg-6">
-                      <label>Province</label>
-					  
+                      	<label>Country</label>
+                      	<select class="form-control" name="country" id="country" title="Please select country">
+							<option value="">--Select--</option>
+							<?php
+							foreach ($countries as $val) {
+							?>
+							<option value="<?php echo base64_encode($val['country_id']); ?>" <?php if($result->country==$val['country_id']){echo 'selected=selected';}?>><?php echo ucwords($val['country_name']); ?></option>
+							<?php
+							}
+							?>
+						</select>
+                    </div>
+					<div class="form-group col-lg-6">
+                      	<label>Province</label>
                       	<select class="form-control" name="province" id="province" title="Please select province" onchange="getDistrict()">
 							<option value="">--Select--</option>
 							<?php
@@ -89,8 +101,14 @@
 <script type="text/javascript">
 		duplicateName = true;
 		$(document).ready(function(){
-			
 			//initialize the javascript
+			$("#country").select2({
+				width: '100%',
+				placeholder: '--Select--',
+				allowClear: true,
+				tags: false
+			});
+
 			$("#province").select2({
 				width: '100%',
 				placeholder: '--Select--',

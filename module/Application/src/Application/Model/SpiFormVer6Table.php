@@ -4595,21 +4595,46 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv3.level='" . $parameters['level'] . "'");
                 $tQuery = $tQuery->where("spiv3.level='" . $parameters['level'] . "'");
             }
+
+            if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
+                // Mapping exists
+                if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+                    // User mapped by country: show mapped country data and all related provinces and districts
+                    $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
+                        ->where('f.country IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+                    $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
+                        ->where('f.country IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+                } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                    // User mapped by province: show only mapped provinces
+                    $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
+                        ->where('f.province IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+                    $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
+                        ->where('f.province IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+                } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                    // User mapped by district: show only mapped districts
+                    $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
+                        ->where('f.district IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+                    $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
+                        ->where('f.district IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+                }
+            }
+            if (isset($parameters['country']) && $parameters['country'] != '') {
+                $sQuery = $sQuery->join(array('f1' => 'spi_rt_3_facilities'), 'f1.id=spiv3.facility', array('country'))
+                    ->where('f1.country IN (' . $parameters['country'] . ')');    
+                $tQuery = $tQuery->join(array('f1' => 'spi_rt_3_facilities'), 'f1.id=spiv3.facility', array('country'))
+                    ->where('f1.country IN (' . $parameters['country'] . ')');
+            }
             if (isset($parameters['province']) && $parameters['province'] != '') {
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where("f.province='" . $parameters['province'] . "'");
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where("f.province='" . $parameters['province'] . "'");
+                $sQuery = $sQuery->join(array('f2' => 'spi_rt_3_facilities'), 'f2.id=spiv3.facility', array('province'))
+                    ->where('f2.province IN (' . $parameters['province'] . ')');        
+                $tQuery = $tQuery->join(array('f2' => 'spi_rt_3_facilities'), 'f2.id=spiv3.facility', array('province'))
+                    ->where('f2.province IN (' . $parameters['province'] . ')');
             }
             if (isset($parameters['district']) && $parameters['district'] != '') {
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where("f.district='" . $parameters['district'] . "'");
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where("f.district='" . $parameters['district'] . "'");
-            }
-            if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
-                $sQuery = $sQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
-                $tQuery = $tQuery->where("spiv3.affiliation='" . $parameters['affiliation'] . "'");
+                $sQuery = $sQuery->join(array('f3' => 'spi_rt_3_facilities'), 'f3.id=spiv3.facility', array('district'))
+                    ->where("f3.district='" . $parameters['district'] . "'");
+                $tQuery = $tQuery->join(array('f3' => 'spi_rt_3_facilities'), 'f3.id=spiv3.facility', array('district'))
+                    ->where("f3.district='" . $parameters['district'] . "'");
             }
         } elseif ($parameters['source'] == 'apspi') {
             //For Audit Performance

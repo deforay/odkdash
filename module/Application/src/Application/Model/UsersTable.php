@@ -50,7 +50,7 @@ class UsersTable extends AbstractTableGateway
         $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
-        $userLocationMap = new UserLocationMapTable($dbAdapter);
+        $userLocationMapTable = new UserLocationMapTable($dbAdapter);
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('u' => 'users'))
             ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
@@ -77,10 +77,7 @@ class UsersTable extends AbstractTableGateway
         if ($sResult && $passwordValidation) {
             $userMappedIdsArray = array();
             $userMappingType = '';
-            $userLocationQuery = $sql->select()->from(array('u_l_map' => 'user_location_map'))
-                ->where(array('u_l_map.user_id' => $sResult->id));
-            $userLocationQueryStr = $sql->buildSqlString($userLocationQuery);
-            $userLocationMapResult = $dbAdapter->query($userLocationQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
             foreach ($userLocationMapResult as $ulMap) {
                 $userMappedIdsArray[] = $ulMap['location_id'];
                 $userMappingType = $ulMap['mapping_type'];

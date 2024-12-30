@@ -334,14 +334,15 @@ class SpiV6Controller extends AbstractActionController
             $drange = $this->params()->fromQuery('drange');
         }
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
-        $provinceResult = $this->provinceService->getAllActiveProvinces();
+        //$provinceResult = $this->provinceService->getAllActiveProvinces();
+        $locationResult = $this->provinceService->getAllMappedLocations();
         return new ViewModel(array(
             'source' => $source,
             'roundno' => $roundno,
             'drange' => $drange,
             'level' => $level,
             'testingPointResult' => $testingPointResult,
-            'provinceResult' => $provinceResult
+            'locationResult' => $locationResult
         ));
     }
 

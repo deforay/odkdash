@@ -2817,3 +2817,6 @@ CREATE TABLE `user_location_map` (
   `mapping_type` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Brindha 26-Dec-2024
+ALTER TABLE `spi_rt_3_facilities` ADD `country` VARCHAR(255) NULL DEFAULT NULL AFTER `province`;

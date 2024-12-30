@@ -84,6 +84,11 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         if (isset($params['facilityId']) && trim($params['facilityId']) != "") {
             $dbAdapter = $this->adapter;
             $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            $countryId = $provinceId = $districtId = null;
+            //Add Country
+            if (isset($params['country']) && trim($params['country']) != '') {
+                $countryId = base64_decode($params['country']);
+            }
             //Add Province
             if (isset($params['province']) && trim($params['province']) == 'other') {
                 if (trim($params['provinceName']) != "") {
@@ -112,6 +117,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 'contact_person' => $params['contactPerson'],
                 'district' => $districtId,
                 'province' => $provinceId,
+                'country' => $countryId,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );
@@ -130,6 +136,10 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $rowId = base64_decode($params['rowId']);
 
             $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            //Add Country
+            if (isset($params['country']) && trim($params['country']) != '') {
+                $params['country'] = base64_decode($params['country']);
+            }
             //Add Province
             if (isset($params['province']) && trim($params['province']) == 'other') {
                 if (trim($params['provinceName']) != "") {
@@ -149,6 +159,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             }
             $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
             $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
+            $country = (isset($params['country']) && trim($params['country']) != '') ? $params['country'] : '';
             $data = array(
                 'facility_id' => $params['facilityId'],
                 'facility_name' => $params['facilityName'],
@@ -156,6 +167,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 'contact_person' => $params['contactPerson'],
                 'district' => $district,
                 'province' => $province,
+                'country' => $country,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
             );

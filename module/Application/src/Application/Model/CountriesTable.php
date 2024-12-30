@@ -31,16 +31,16 @@ class CountriesTable extends AbstractTableGateway
 
     public function fetchAllCountries()
     {
-        return $this->select()->toArray();
+        return $this->select(['status' => 'active'])->toArray();
     }
 
     public function fetchMapedCountries()
     {
         $loginContainer = new Container('credo');
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'country') {
-            $result = $this->select(array('country_id IN(' . implode(",", $loginContainer->userMappedIds) . ')'))->toArray();
+            $result = $this->select(array('status' => 'active', 'country_id IN(' . implode(",", $loginContainer->userMappedIds) . ')'))->toArray();
         } else {
-            $result = $this->select()->toArray();
+            $result = $this->select(array('status' => 'active'))->toArray();
         }
 
         $response = array();
@@ -48,5 +48,16 @@ class CountriesTable extends AbstractTableGateway
             $response[$row['country_id']] = $row;
         }
         return $response;
+    }
+
+    public function fetchAllMapedCountries()
+    {
+        $loginContainer = new Container('credo');
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'country') {
+            $result = $this->select(array('country_id IN(' . implode(",", $loginContainer->userMappedIds) . ')'))->toArray();
+        } else {
+            $result = $this->select()->toArray();
+        }
+        return $result;
     }
 }

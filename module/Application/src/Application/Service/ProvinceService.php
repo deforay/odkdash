@@ -86,6 +86,35 @@ class ProvinceService {
         return $db->fetchAllActiveProvinces();
     }
 
+    public function getAllMappedLocations(){
+        $db = $this->sm->get('GeographicalDivisionsTable');
+        return $db->fetchAllMappedLocations();
+    }
+
+    public function getAllCountries()
+    {
+        $db = $this->sm->get('CountriesTable');
+        return $db->fetchAllCountries();
+    }
+
+    public function getAllMapedCountries()
+    {
+        $db = $this->sm->get('CountriesTable');
+        return $db->fetchAllMapedCountries();
+    }
+
+    public function getAllProvinces()
+    {
+        $db = $this->sm->get('GeographicalDivisionsTable');
+        return $db->fetchAllProvinces();
+    }
+
+    public function getAllDistricts()
+    {
+        $db = $this->sm->get('GeographicalDivisionsTable');
+        return $db->fetchAllDistricts();
+    }
+
     public function addDistrict($params) {
         $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
         $adapter->beginTransaction();

@@ -46,8 +46,10 @@ class FacilityController extends AbstractActionController
             return $this->redirect()->toRoute("spi-facility");
         }else{
             $provinceResult = $this->provinceService->getAllActiveProvinces();
+            $countries = $this->provinceService->getAllMapedCountries();
             return new ViewModel(array(
                 'provinceResult' => $provinceResult,
+                'countries' => $countries
             ));
         }
     }
@@ -65,9 +67,11 @@ class FacilityController extends AbstractActionController
             $id = base64_decode($this->params()->fromRoute('id'));
             $result = $this->facilityService->getFacility($id);
             $provinceResult = $this->provinceService->getAllActiveProvinces();
+            $countries = $this->provinceService->getAllMapedCountries();
             return new ViewModel(array(
                 'result' => $result,
                 'provinceResult' => $provinceResult,
+                'countries' => $countries
             ));
         }
     }
