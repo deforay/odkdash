@@ -36,7 +36,8 @@ class DashboardV6Controller extends AbstractActionController
         $spiV6auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
         //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllTestingPointTypeV6();
-        $provinceResult = $this->provinceService->getAllActiveProvinces();
+        $locationResult = $this->provinceService->getAllMappedLocations();
+        //$provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
             'perf1' => $perf1,
             'perflast30' => $perflast30,
@@ -50,7 +51,7 @@ class DashboardV6Controller extends AbstractActionController
             //'zeroCounts' => $zeroCounts,
             'spiV6auditRoundNo' => $spiV6auditRoundNo,
             'testingPointResult' => $testingPointResult,
-            'provinceResult' => $provinceResult
+            'locationResult' => $locationResult
         ));
     }
 }

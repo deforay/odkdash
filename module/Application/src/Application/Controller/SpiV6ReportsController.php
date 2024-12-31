@@ -37,12 +37,13 @@ class SpiV6ReportsController extends AbstractActionController
         $pendingCount = $this->odkFormService->getSpiV6PendingCount();
         //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
-        $provinceResult = $this->provinceService->getAllActiveProvinces();
+        $locationResult = $this->provinceService->getAllMappedLocations();
+        //$provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
             'pendingCount' => $pendingCount,
             'spiV3auditRoundNo' => $spiV3auditRoundNo,
-            'provinceResult' => $provinceResult
+            'locationResult' => $locationResult
         ));
     }
 

@@ -4,6 +4,7 @@ use Laminas\Session\Container;
 $sessionLogin = new Container('credo');
 $config = $this->GlobalConfigHelper();
 $mapDisplay = $config['dashboard_map_display'];
+$userMappingType = $sessionLogin->userMappingType;
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
@@ -145,27 +146,36 @@ $mapDisplay = $config['dashboard_map_display'];
 								</div>
 							</div>
 							 <div class="form-group">
-								<label for="province" class="col-sm-2 control-label">Province</label>
-								<div class=" col-lg-4">
-									<select class="" id="province" multiple="multiple" onchange="getDistrictList();">
-										<?php
-										foreach ($provinceResult as $val) {
-										?>
-										<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
-										<?php
-										}
-										?>
-										
+								<label for="country" class="col-sm-2 control-label country"><?= $this->translate('Country'); ?></label>
+								<div class=" col-lg-4 country">
+									<select class="form-control" multiple="multiple" name="country" id="country" title="Please select the country">
+										<option value=""><?= $this->translate('All'); ?></option>  
+										<?php foreach($locationResult['countries'] as $row){ ?>
+											<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
+										<?php } ?>
 									</select>
 								</div>
-								
-								<label for="district" class="col-sm-2 control-label">District</label>
-								<div class=" col-lg-4">
-									<select class="form-control" id="district" multiple="multiple">
+								<label for="province" class="col-sm-2 control-label province">Province</label>
+								<div class=" col-lg-4 province">
+									<select class="" id="province" multiple="multiple">
 										<option value="">All</option>
+										<?php foreach ($locationResult['provinces'] as $val) { ?>
+											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+										<?php } ?>
 									</select>
 								</div>
 							</div> 
+							<div class="form-group">
+								<label for="district" class="col-sm-2 control-label district">District</label>
+								<div class=" col-lg-4 district">
+									<select class="form-control" id="district" multiple="multiple">
+										<option value="">All</option>
+										<?php foreach ($locationResult['districts'] as $val) { ?>
+											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+										<?php } ?>
+									</select>
+								</div>
+							</div>
 							<div class="form-group">
 								<label for="scoreLevel" class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
 								<div class=" col-lg-4">
@@ -1276,6 +1286,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1294,6 +1305,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1316,6 +1328,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1338,6 +1351,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1359,6 +1373,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1381,6 +1396,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1404,6 +1420,7 @@ $mapDisplay = $config['dashboard_map_display'];
 				testPointName: $("#testPointName").val(),
 				level: $("#level").val(),
 				affiliation: $("#affiliation").val(),
+				country: $("#country").val(),
 				province: $("#province").val(),
 				district: $("#district").val(),
 				scoreLevel: $("#scoreLevel").val()
@@ -1677,12 +1694,23 @@ $mapDisplay = $config['dashboard_map_display'];
 		//getAuditSectionZeroDetails();
 		//getAuditSectionZeroProtocolDetails();
 
-
+		$("#country").select2({
+			width: '100%',
+			placeholder: 'All',
+			allowClear: true,
+			tags: false
+		});
 		$("#province").select2({
-          width: '100%',
-          placeholder: 'All',
-          allowClear: true,
-          tags: false
+			width: '100%',
+			placeholder: 'All',
+			allowClear: true,
+			tags: false
+    	});
+		$("#district").select2({
+			width: '100%',
+			placeholder: 'All',
+			allowClear: true,
+			tags: false
     	});
 		$("#auditRndNo,#auditRndNoSectionZero,#auditRndNoSectionZeroProtocol").multipleSelect({
 			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
@@ -1699,12 +1727,7 @@ $mapDisplay = $config['dashboard_map_display'];
 			width: '30%',
 			minimumCountSelected: '2'
 		});
-		$("#district").select2({
-          width: '100%',
-          placeholder: 'All',
-          allowClear: true,
-          tags: false
-    	});
+		getLocations();
 	});
 
 
@@ -2165,4 +2188,26 @@ $mapDisplay = $config['dashboard_map_display'];
 		$('#district').html(data);
 		});
   	}
+
+	function getLocations() {
+		var mappingType = <?php echo json_encode($userMappingType); ?>;
+
+		var types = ['country', 'province', 'district'];
+		if(mappingType != ""){
+			types.forEach(function(type) {
+				if (mappingType === 'country' && (type === 'country' || type === 'province' || type === 'district')) {
+					$("." + type).show();
+				} else if (mappingType === 'province' && type === 'province') {
+					$("." + type).show();
+				} else if (mappingType === 'district' && type === 'district') {
+					$("." + type).show();
+				} else {
+					// Hide the type that doesn't match the mappingType
+					$("." + type).hide();
+					// Reset the select values for hidden fields
+					$("." + type + " select").val([]);
+				}
+			});
+		}
+	}
 </script>
