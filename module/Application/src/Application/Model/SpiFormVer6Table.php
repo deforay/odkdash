@@ -449,6 +449,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
             $submissionData['SPIRRT'] = $submissionData['SPIRRT'] ?? $submissionData['SPIRT'];
             $submissionData['EQA'] = $submissionData['EQA'] ?? $submissionData['EXTERNALQA'];
+            $submissionData['RTRI_SECTION'] = $submissionData['INFECTIONSUR'] ?? $submissionData['RTRI_SECTION'];
 
             $data['uuid'] = $submissionData['meta']['instanceID'];
             $data['content'] = 'record';
@@ -656,31 +657,31 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data['EQA_SCORE'] = $submissionData['EQA']['EQA_SCORE'];
             $data['EQA_DISPLAY'] = $submissionData['EQA']['EQA_DISPLAY'];
             $data['EQAPHOTO'] = $submissionData['EQA']['EQAPHOTO'];
-            $data['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_1'] ?? null;
-            $data['RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] = $submissionData['INFECTIONSUR']['RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_1'] ?? null;
-            $data['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_2'] ?? null;
-            $data['RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] = $submissionData['INFECTIONSUR']['RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_2'] ?? null;
-            $data['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_3'] ?? null;
-            $data['RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE'] = $submissionData['INFECTIONSUR']['RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_3'] ?? null;
-            $data['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_4'] ?? null;
-            $data['RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] = $submissionData['INFECTIONSUR']['RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_4'] ?? null;
-            $data['RTRI_Q_8_5_RTRI_KIT_STORAGE'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_5_RTRI_KIT_STORAGE'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_5'] ?? null;
-            $data['RTRI_C_8_5_RTRI_KIT_STORAGE'] = $submissionData['INFECTIONSUR']['RTRI_C_8_5_RTRI_KIT_STORAGE'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_5'] ?? null;
-            $data['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_6'] ?? null;
-            $data['RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] = $submissionData['INFECTIONSUR']['RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_6'] ?? null;
-            $data['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_7'] ?? null;
-            $data['RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] = $submissionData['INFECTIONSUR']['RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_7'] ?? null;
-            $data['RTRI_Q_8_8_QC_ROUTINELY_USED'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_8_QC_ROUTINELY_USED'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_8'] ?? null;
-            $data['RTRI_C_8_8_QC_ROUTINELY_USED'] = $submissionData['INFECTIONSUR']['RTRI_C_8_8_QC_ROUTINELY_USED'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_8'] ?? null;
-            $data['RTRI_Q_8_9_QC_RESULTS_RECORDED'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_9_QC_RESULTS_RECORDED'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_9'] ?? null;
-            $data['RTRI_C_8_9_QC_RESULTS_RECORDED'] = $submissionData['INFECTIONSUR']['RTRI_C_8_9_QC_RESULTS_RECORDED'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_9'] ?? null;
-            $data['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_10'] ?? null;
-            $data['RTRI_C_8_10_INCORRECT_QC_DOCUMENTED'] = $submissionData['INFECTIONSUR']['RTRI_C_8_10_INCORRECT_QC_DOCUMENTED'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_10'] ?? null;
-            $data['RTRI_Q_8_11_INVALID_RTRI_RESULTS'] = $submissionData['INFECTIONSUR']['RTRI_Q_8_11_INVALID_RTRI_RESULTS'] ?? $submissionData['INFECTIONSUR']['RTRI_Q_8_11'] ?? null;
-            $data['RTRI_C_8_11_INVALID_RTRI_RESULTS'] = $submissionData['INFECTIONSUR']['RTRI_C_8_11_INVALID_RTRI_RESULTS'] ?? $submissionData['INFECTIONSUR']['RTRI_C_8_11'] ?? null;
-            $data['RTRI_SCORE'] = $submissionData['INFECTIONSUR']['RTRI_SCORE'] ?? null;
-            $data['RTRI_DISPLAY'] = $submissionData['INFECTIONSUR']['RTRI_DISPLAY'] ?? null;
-            $data['RTRIPHOTO'] = $submissionData['INFECTIONSUR']['RTRIPHOTO'] ?? null;
+            $data['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_1'] ?? null;
+            $data['RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] = $submissionData['RTRI_SECTION']['RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_1'] ?? null;
+            $data['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_2'] ?? null;
+            $data['RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] = $submissionData['RTRI_SECTION']['RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_2'] ?? null;
+            $data['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_3'] ?? null;
+            $data['RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE'] = $submissionData['RTRI_SECTION']['RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_3'] ?? null;
+            $data['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_4'] ?? null;
+            $data['RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] = $submissionData['RTRI_SECTION']['RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_4'] ?? null;
+            $data['RTRI_Q_8_5_RTRI_KIT_STORAGE'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_5_RTRI_KIT_STORAGE'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_5'] ?? null;
+            $data['RTRI_C_8_5_RTRI_KIT_STORAGE'] = $submissionData['RTRI_SECTION']['RTRI_C_8_5_RTRI_KIT_STORAGE'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_5'] ?? null;
+            $data['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_6'] ?? null;
+            $data['RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] = $submissionData['RTRI_SECTION']['RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_6'] ?? null;
+            $data['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_7'] ?? null;
+            $data['RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] = $submissionData['RTRI_SECTION']['RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_7'] ?? null;
+            $data['RTRI_Q_8_8_QC_ROUTINELY_USED'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_8_QC_ROUTINELY_USED'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_8'] ?? null;
+            $data['RTRI_C_8_8_QC_ROUTINELY_USED'] = $submissionData['RTRI_SECTION']['RTRI_C_8_8_QC_ROUTINELY_USED'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_8'] ?? null;
+            $data['RTRI_Q_8_9_QC_RESULTS_RECORDED'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_9_QC_RESULTS_RECORDED'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_9'] ?? null;
+            $data['RTRI_C_8_9_QC_RESULTS_RECORDED'] = $submissionData['RTRI_SECTION']['RTRI_C_8_9_QC_RESULTS_RECORDED'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_9'] ?? null;
+            $data['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_10'] ?? null;
+            $data['RTRI_C_8_10_INCORRECT_QC_DOCUMENTED'] = $submissionData['RTRI_SECTION']['RTRI_C_8_10_INCORRECT_QC_DOCUMENTED'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_10'] ?? null;
+            $data['RTRI_Q_8_11_INVALID_RTRI_RESULTS'] = $submissionData['RTRI_SECTION']['RTRI_Q_8_11_INVALID_RTRI_RESULTS'] ?? $submissionData['RTRI_SECTION']['RTRI_Q_8_11'] ?? null;
+            $data['RTRI_C_8_11_INVALID_RTRI_RESULTS'] = $submissionData['RTRI_SECTION']['RTRI_C_8_11_INVALID_RTRI_RESULTS'] ?? $submissionData['RTRI_SECTION']['RTRI_C_8_11'] ?? null;
+            $data['RTRI_SCORE'] = $submissionData['RTRI_SECTION']['RTRI_SCORE'] ?? null;
+            $data['RTRI_DISPLAY'] = $submissionData['RTRI_SECTION']['RTRI_DISPLAY'] ?? null;
+            $data['RTRIPHOTO'] = $submissionData['RTRI_SECTION']['RTRIPHOTO'] ?? null;
             $data['AuditRequiredScore'] = $submissionData['AuditRequiredScore'];
             $data['FINAL_AUDIT_SCORE'] = $submissionData['FINAL_AUDIT_SCORE'];
             $data['MAX_AUDIT_SCORE'] = $submissionData['MAX_AUDIT_SCORE'];
@@ -712,7 +713,67 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data['info24'] = $submissionData['Summary_cont_a']['info24'] ?? null;
             $data['info25'] = $submissionData['Summary_cont_a']['info25'] ?? null;
             $data['info26'] = $submissionData['Summary_cont_a']['info26'] ?? null;
-            $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['meta']['instanceID']]);
+            // Check for new corrective action fields in raw data
+            $newCorrectiveActions = [];
+            if (!empty($submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            if (!empty($submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
+                $newCorrectiveActions['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            }
+            if (!empty($submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
+                $newCorrectiveActions['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            }
+            
+            if (!empty($newCorrectiveActions)) {
+                // If new corrective action fields are present, store them
+                $data['correctiveaction'] = json_encode($newCorrectiveActions);
+            } elseif (!empty($correctiveActions) && isset($correctiveActions[$submissionData['meta']['instanceID']])) {
+                // Otherwise, fallback to old corrective actions
+                $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['meta']['instanceID']]);
+            } else {
+                $data['correctiveaction'] = json_encode([]);
+            }
+                
             $data['sitephoto'] = $submissionData['sitephoto'];
             $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1] ?? null;
             $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0] ?? null;
@@ -1719,16 +1780,33 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
 
-        if (isset($parameters['province']) && trim($parameters['province']) != '') {
-            $parameters['province'] = explode(",", $parameters['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.facility_id=spiv6.facilityid OR f.facility_name=spiv6.facilityname', array('province', 'district'), 'left');
-
-            $sQuery = $sQuery->where('f.province IN ("' . implode('", "', $parameters['province']) . '")');
-
-            if (isset($parameters['district']) && trim($parameters['district']) != '') {
-                $parameters['district'] = explode(",", $parameters['district']);
-                $sQuery = $sQuery->where('f.district IN ("' . implode('", "', $parameters['district']) . '")');
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
+            // Mapping exists
+            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+                // User mapped by country: show mapped country data and all related provinces and districts
+                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility OR f.facility_name=spiv6.facilityname', array('country', 'province', 'district'))
+                    ->where('f.country IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                // User mapped by province: show only mapped provinces
+                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility OR f.facility_name=spiv6.facilityname', array('province'))
+                    ->where('f.province IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
+            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                // User mapped by district: show only mapped districts
+                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility OR f.facility_name=spiv6.facilityname', array('district'))
+                    ->where('f.district IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
             }
+        }
+        if (isset($parameters['country']) && $parameters['country'] != '') {
+            $sQuery = $sQuery->join(array('f1' => 'spi_rt_3_facilities'), 'f1.id=spiv6.facility OR f1.facility_name=spiv6.facilityname', array('country'))
+                ->where('f1.country IN (' . $parameters['country'] . ')');    
+        }
+        if (isset($parameters['province']) && $parameters['province'] != '') {
+            $sQuery = $sQuery->join(array('f2' => 'spi_rt_3_facilities'), 'f2.id=spiv6.facility OR f2.facility_name=spiv6.facilityname', array('province'))
+                ->where('f2.province IN (' . $parameters['province'] . ')');        
+        }
+        if (isset($parameters['district']) && $parameters['district'] != '') {
+            $sQuery = $sQuery->join(array('f3' => 'spi_rt_3_facilities'), 'f3.id=spiv6.facility OR f3.facility_name=spiv6.facilityname', array('district'))
+                ->where("f3.district='" . $parameters['district'] . "'");
         }
 
 

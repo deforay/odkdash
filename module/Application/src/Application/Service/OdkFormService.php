@@ -5351,7 +5351,9 @@ class OdkFormService
         if ($section && isset($submission[$section][$mediaField])) {
             $fileName = $submission[$section][$mediaField];
         } else {
-            $fileName = $submission[$mediaField];
+            if(isset($submission[$mediaField])){
+                $fileName = $submission[$mediaField];
+            }
         }
 
         if ($fileName != '') {

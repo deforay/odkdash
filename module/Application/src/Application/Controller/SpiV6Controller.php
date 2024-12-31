@@ -28,7 +28,8 @@ class SpiV6Controller extends AbstractActionController
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
-        $provinceResult = $this->provinceService->getAllActiveProvinces();
+        $locationResult = $this->provinceService->getAllMappedLocations();
+        //$provinceResult = $this->provinceService->getAllActiveProvinces();
         //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevels();
         if ($request->isPost()) {
             $param = $request->getPost();
@@ -37,7 +38,7 @@ class SpiV6Controller extends AbstractActionController
         }
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
-            'provinceResult' => $provinceResult
+            'locationResult' => $locationResult
         ));
     }
 
