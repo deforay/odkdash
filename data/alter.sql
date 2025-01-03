@@ -2822,3 +2822,6 @@ CREATE TABLE `user_location_map` (
 ALTER TABLE `spi_rt_3_facilities` ADD `country` VARCHAR(255) NULL DEFAULT NULL AFTER `province`;
 
 INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6Controller', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');
+
+-- Brindha 03-Jan-2025
+ALTER TABLE `spi_form_v_6` ADD `sitephoto2` TEXT NULL DEFAULT NULL AFTER `sitephoto`;

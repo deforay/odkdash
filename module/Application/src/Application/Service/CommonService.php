@@ -589,6 +589,7 @@ class CommonService
     {
         // Generate UUIDv4 for filename
         $filename = Uuid::uuid4()->toString() . '.json.gz';
+        //echo $filename;
 
         // Define the storage path
         $storagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'form_dump';
@@ -702,5 +703,19 @@ class CommonService
             $embedImg = '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" style="width:100px; height:auto;" />';
         }
         return $embedImg;
+    }
+
+    /**
+     * Filters non-null values from an array.
+     *
+     * @param array $data The array to filter.
+     * @return array Filtered array containing only non-null values.
+     */
+    public static function filterNonNullValues(array $data): array
+    {
+        if (empty($data)) {
+            return []; // Return an empty array if input is null or empty
+        }
+        return array_filter($data, fn($value) => $value !== null);
     }
 }

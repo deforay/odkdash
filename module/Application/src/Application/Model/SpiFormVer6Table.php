@@ -715,53 +715,102 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data['info26'] = $submissionData['Summary_cont_a']['info26'] ?? null;
             // Check for new corrective action fields in raw data
             $newCorrectiveActions = [];
-            if (!empty($submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'];
+
+            if (!empty($submissionData['SPIRRT']['ENABLE_PERSONAL_IMM_CORACT']) && $submissionData['SPIRRT']['ENABLE_PERSONAL_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['SPIRRT']['ENABLE_PERSONAL_FUP_CORACT']) && $submissionData['SPIRRT']['ENABLE_PERSONAL_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['SPIRRT']['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['PHYSICAL']['ENABLE_PHYSICAL_IMM_CORACT']) && $submissionData['PHYSICAL']['ENABLE_PHYSICAL_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['PHYSICAL']['ENABLE_PHYSICAL_FUP_CORACT']) && $submissionData['PHYSICAL']['ENABLE_PHYSICAL_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['PHYSICAL']['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['SAFETY']['ENABLE_SAFETY_IMM_CORACT']) && $submissionData['SAFETY']['ENABLE_SAFETY_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['SAFETY']['ENABLE_SAFETY_FUP_CORACT']) && $submissionData['SAFETY']['ENABLE_SAFETY_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['SAFETY']['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['PRETEST']['ENABLE_PRETEST_IMM_CORACT']) && $submissionData['PRETEST']['ENABLE_PRETEST_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['PRETEST']['ENABLE_PRETEST_FUP_CORACT']) && $submissionData['PRETEST']['ENABLE_PRETEST_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['PRETEST']['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['TEST']['ENABLE_TEST_IMM_CORACT']) && $submissionData['TEST']['ENABLE_TEST_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['TEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['TEST']['ENABLE_TEST_FUP_CORACT']) && $submissionData['TEST']['ENABLE_TEST_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['TEST']['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['TEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['POSTTEST']['ENABLE_POSTTEST_IMM_CORACT']) && $submissionData['POSTTEST']['ENABLE_POSTTEST_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['POSTTEST']['ENABLE_POSTTEST_FUP_CORACT']) && $submissionData['POSTTEST']['ENABLE_POSTTEST_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['POSTTEST']['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['EQA']['ENABLE_EQA_IMM_CORACT']) && $submissionData['EQA']['ENABLE_EQA_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['EQA_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['EQA']['ENABLE_EQA_FUP_CORACT']) && $submissionData['EQA']['ENABLE_EQA_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['EQA']['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['EQA_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'])) {
-                $newCorrectiveActions['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'] = $submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'];
+            if (!empty($submissionData['RTRI_SECTION']['ENABLE_RTRI_IMM_CORACT']) && $submissionData['RTRI_SECTION']['ENABLE_RTRI_IMM_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['RTRI_CORRECTIVE_ACTIONS_IMMEDIATE'] = $filteredActions;
+                }
             }
-            if (!empty($submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'])) {
-                $newCorrectiveActions['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'] = $submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'];
+            if (!empty($submissionData['RTRI_SECTION']['ENABLE_RTRI_FUP_CORACT']) && $submissionData['RTRI_SECTION']['ENABLE_RTRI_FUP_CORACT'] == 'yes') {
+                $filteredActions = CommonService::filterNonNullValues($submissionData['RTRI_SECTION']['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'] ?? []);
+                if (!empty($filteredActions)) {
+                    $newCorrectiveActions['RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'] = $filteredActions;
+                }
             }
             
             if (!empty($newCorrectiveActions)) {
@@ -774,7 +823,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $data['correctiveaction'] = json_encode([]);
             }
                 
-            $data['sitephoto'] = $submissionData['sitephoto'];
+            $data['sitephoto'] = $submissionData['sitephoto'] ?? null;
+            $data['sitephoto2'] = $submissionData['sitephoto2'] ?? null;
             $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1] ?? null;
             $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0] ?? null;
             $data['Altitude'] = $submissionData["lab_geopoint"]["coordinates"][2] ?? null;
@@ -1104,6 +1154,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     'info26' => $data['info26'],
                     'correctiveaction' => $data['correctiveaction'] ?? null,
                     'sitephoto' => $data['sitephoto'] ?? null,
+                    'sitephoto2' => $data['sitephoto2'] ?? null,
                     'Latitude' => $data['Latitude'] ?? null,
                     'Longitude' => $data['Longitude'] ?? null,
                     'Altitude' => $data['Altitude'] ?? null,

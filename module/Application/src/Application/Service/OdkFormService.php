@@ -5277,6 +5277,7 @@ class OdkFormService
                     $responseSubmission = $response->getBody()->getContents();
                     $responseSubmission = !empty($responseSubmission) ? json_decode($responseSubmission, true) : [];
                     $params = $responseSubmission['value'] ?? [];
+                    //print_r($params);
 
                     $correctiveActions = [];
                     foreach ($params as $submission) {
@@ -5318,14 +5319,14 @@ class OdkFormService
     {
         // Check if the submission contains media URLs (e.g., images, audio, video)
         $mediaFields = [
-            'PERSONALPHOTO' => 'SPIRRT',      // First column from SPIRRT
-            'PHYSICALPHOTO' => 'PHYSICAL',    // Second column from PHYSICAL
-            'SAFETYPHOTO'   => 'SAFETY',      // Third column from SAFETY
-            'PRETESTPHOTO'  => 'PRETEST',     // Add more fields if needed
-            'TESTPHOTO'     => 'TEST',        // and so on...
+            'PERSONALPHOTO' => 'SPIRRT',
+            'PHYSICALPHOTO' => 'PHYSICAL',
+            'SAFETYPHOTO'   => 'SAFETY',
+            'PRETESTPHOTO'  => 'PRETEST',
+            'TESTPHOTO'     => 'TEST',
             'POSTTESTPHOTO' => 'POSTTEST',
             'EQAPHOTO'      => 'EQA',
-            'RTRIPHOTO'     => 'INFECTIONSUR'
+            'RTRIPHOTO'     => 'RTRI_SECTION'
         ];
 
         // Loop through each field defined in $mediaFields and process the download.
@@ -5333,7 +5334,7 @@ class OdkFormService
             $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section);
         }
 
-        $mediaFieldsWithoutSection = ['sitephoto', 'auditorSignature'];
+        $mediaFieldsWithoutSection = ['sitephoto', 'sitephoto2', 'auditorSignature'];
 
         foreach ($mediaFieldsWithoutSection as $mediaField) {
             if (isset($submission[$mediaField])) {
@@ -5346,6 +5347,7 @@ class OdkFormService
     {
         $submission['SPIRRT'] = $submission['SPIRRT'] ?? $submission['SPIRT'];
         $submission['EQA'] = $submission['EQA'] ?? $submission['EXTERNALQA'];
+        $submission['RTRI_SECTION'] = $submission['INFECTIONSUR'] ?? $submission['RTRI_SECTION'];
 
         $fileName = '';
         if ($section && isset($submission[$section][$mediaField])) {
