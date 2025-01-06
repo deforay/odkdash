@@ -25,7 +25,6 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class OdkFormService
 {
-
     public $sm = null;
     public $translator = null;
     public $adapter = null;
@@ -94,8 +93,8 @@ class OdkFormService
         try {
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
-            $output = array();
-            $outputScore = array();
+            $output = [];
+            $outputScore = [];
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $username = $loginContainer->login;
             $trackTable = new EventLogTable($dbAdapter);
@@ -150,14 +149,14 @@ class OdkFormService
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
                 $auditScore = 0;
-                $levelZero = array();
-                $levelOne = array();
-                $levelTwo = array();
-                $levelThree = array();
-                $levelFour = array();
+                $levelZero = [];
+                $levelOne = [];
+                $levelTwo = [];
+                $levelThree = [];
+                $levelFour = [];
                 $counter = count($sResult);
                 for ($l = 0; $l < $counter; $l++) {
-                    $row = array();
+                    $row = [];
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
 
@@ -198,21 +197,21 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            $fieldNames = array();
+            $fieldNames = [];
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
                     $fieldNames[] = $key;
                 }
             }
             $xlsx = new SimpleXLSXGen();
-            $outputData = array();
+            $outputData = [];
             $headerRow = ['Facility Report SPI-RT--CHECKLIST-version-3'];
             $outputData[] = $headerRow;
             $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint];
             $outputData[] = $data;
             $outputData[] = $fieldNames;
             foreach ($output as $rowNo => $rowData) {
-                $row = array();
+                $row = [];
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
@@ -311,18 +310,18 @@ class OdkFormService
             // print_r($sResult);die;
             if (count($sResult) > 0) {
                 $auditScore = 0;
-                $levelZero = array();
-                $levelOne = array();
-                $levelTwo = array();
-                $levelThree = array();
-                $levelFour = array();
+                $levelZero = [];
+                $levelOne = [];
+                $levelTwo = [];
+                $levelThree = [];
+                $levelFour = [];
                 $counter = count($sResult);
                 for ($l = 0; $l < $counter; $l++) {
-                    $row = array();
-                    $cells = array();
+                    $row = [];
+                    $cells = [];
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
-                            if ($key == 'AUDIT_SCORE_PERCANTAGE') {
+                            if ($key == 'AUDIT_SCORE_PERCANTAGE' || $key == 'AUDIT_SCORE_PERCENTAGE') {
                                 if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) {
                                     continue;
                                 }
@@ -358,21 +357,21 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            $fieldNames = array();
+            $fieldNames = [];
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
                     $fieldNames[] = $key;
                 }
             }
             $xlsx = new SimpleXLSXGen();
-            $outputData = array();
+            $outputData = [];
             $headerRow = ['Facility Report SPI-RRT--CHECKLIST-version-5'];
             $outputData[] = $headerRow;
             $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint];
             $outputData[] = $data;
             $outputData[] = $fieldNames;
             foreach ($output as $rowNo => $rowData) {
-                $row = array();
+                $row = [];
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
@@ -475,7 +474,7 @@ class OdkFormService
             foreach ($result as $key => $data) {
                 $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
                 $MyData->setSerieDescription("Level" . $key);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -533,7 +532,7 @@ class OdkFormService
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
                 $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -682,7 +681,7 @@ class OdkFormService
             $spreadsheet = new Spreadsheet();
             $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xlsx';
-            $output = array();
+            $output = [];
             $sheet = $spreadsheet->getActiveSheet();
             $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -708,7 +707,7 @@ class OdkFormService
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
                         $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
-                    $row = array();
+                    $row = [];
                     $row[] = $aRow['facilityname'];
                     $row[] = $auditDate;
                     $row[] = $aRow['testingpointname'] . " - " . $aRow['testingpointtype'];
@@ -720,35 +719,35 @@ class OdkFormService
                     $row[] = $aRow['POST_SCORE'];
                     $row[] = $aRow['EQA_SCORE'];
                     $row[] = $aRow['FINAL_AUDIT_SCORE'];
-                    $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'], 2);
+                    $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE'], 2);
                     $output[] = $row;
                 }
             }
-            $styleArray = array(
-                'font' => array(
+            $styleArray = [
+                'font' => [
                     'bold' => true,
                     'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                    ),
-                ),
-            );
-            $borderStyle = array(
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                    ),
-                ),
-            );
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'outline' => [
+                        'style' => Border::BORDER_THICK,
+                    ],
+                ],
+            ];
+            $borderStyle = [
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                ],
+                'borders' => [
+                    'outline' => [
+                        'style' => Border::BORDER_MEDIUM,
+                    ],
+                ],
+            ];
 
             $sheet->mergeCells('A1:B1');
             $sheet->mergeCells('A2:B2');
@@ -838,7 +837,7 @@ class OdkFormService
             $userName = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $trackTable = new EventLogTable($dbAdapter);
-            $output = array();
+            $output = [];
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $filename = 'facility-report-v5' . date('d-M-Y-H-i-s') . '.xlsx';
@@ -867,7 +866,7 @@ class OdkFormService
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
                         $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
-                    $row = array();
+                    $row = [];
                     $row[] = $aRow['facilityname'];
                     $row[] = $auditDate;
                     $row[] = $aRow['testingpointtype'];
@@ -1728,7 +1727,7 @@ class OdkFormService
 
                 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
 
-                $scorePer = round($formData['AUDIT_SCORE_PERCANTAGE']);
+                $scorePer = round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE']);
                 $level = '';
                 $colorCode = '';
                 if ($scorePer < 40) {
@@ -1756,7 +1755,7 @@ class OdkFormService
                 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
                 $partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
                 $partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
-                $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
+                $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
                 $partDtableBox3 .= '</table>';
 
                 $pdf->writeHTMLCell(70, 26, 125, '', $partDtableBox3, 1, 1, 0, true, 'L', true);
@@ -3365,12 +3364,12 @@ class OdkFormService
         $trackTable = new EventLogTable($dbAdapter);
         $result = $db->fetchDownloadFilesRow();
         $xlsx = new SimpleXLSXGen();
-        $output = array();
+        $output = [];
         $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
         $output[] = $headerRow;
         if (count($result) > 0) {
             foreach ($result as $data) {
-                $row = array();
+                $row = [];
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
                 $row[] = $data['assesmentofaudit'];
                 $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
@@ -3398,12 +3397,12 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer3DownloadTable');
         $result = $db->fetchDownloadFilesRow();
         $xlsx = new SimpleXLSXGen();
-        $output = array();
+        $output = [];
         $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Level Name', 'Audit Score'];
         $output[] = $headerRow;
         if (count($result) > 0) {
             foreach ($result as $data) {
-                $row = array();
+                $row = [];
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
                 $row[] = $data['assesmentofaudit'];
                 $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
@@ -3616,7 +3615,7 @@ class OdkFormService
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
                 $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -3765,12 +3764,12 @@ class OdkFormService
         $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
         $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $xlsx = new SimpleXLSXGen();
-        $output = array();
+        $output = [];
         $headerRow = ['Facility Name', 'Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
         $output[] = $headerRow;
         if (count($result) > 0) {
             foreach ($result as $data) {
-                $row = array();
+                $row = [];
                 $row[] = $data['facilityname'];
                 $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
                 $row[] = CommonService::humanReadableDateFormat($data['assesmentofaudit']);
@@ -3958,15 +3957,15 @@ class OdkFormService
 
             if (count($sResult) > 0) {
                 $auditScore = 0;
-                $levelZero = array();
-                $levelOne = array();
-                $levelTwo = array();
-                $levelThree = array();
-                $levelFour = array();
+                $levelZero = [];
+                $levelOne = [];
+                $levelTwo = [];
+                $levelThree = [];
+                $levelFour = [];
                 $counter = count($sResult);
                 for ($l = 0; $l < $counter; $l++) {
-                    $row = array();
-                    $cells = array();
+                    $row = [];
+                    $cells = [];
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
                             if ($key == 'AUDIT_SCORE_PERCENTAGE') {
@@ -4007,8 +4006,8 @@ class OdkFormService
                 $outputScore['levelFourCount'] = count($levelFour);
             }
 
-            $fieldNames = array();
-            $lastColumnArray = array();
+            $fieldNames = [];
+            $lastColumnArray = [];
             $lastColumnArray = array_keys($outputScore);
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
@@ -4016,14 +4015,14 @@ class OdkFormService
                 }
             }
             $xlsx = new SimpleXLSXGen();
-            $outputData = array();
+            $outputData = [];
             $headerRow = ['Facility Report SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION'];
             $outputData[] = $headerRow;
             $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint];
             $outputData[] = $data;
             $outputData[] = $fieldNames;
             foreach ($output as $rowNo => $rowData) {
-                $row = array();
+                $row = [];
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
@@ -4139,15 +4138,15 @@ class OdkFormService
                 $D0_S6_Score = 0;
                 $D0_S7_Score = 0;
                 $D0_S8_Score = 0;
-                $levelZero = array();
-                $levelOne = array();
-                $levelTwo = array();
-                $levelThree = array();
-                $levelFour = array();
+                $levelZero = [];
+                $levelOne = [];
+                $levelTwo = [];
+                $levelThree = [];
+                $levelFour = [];
                 $counter = count($sResult);
                 for ($l = 0; $l < $counter; $l++) {
-                    $row = array();
-                    $cells = array();
+                    $row = [];
+                    $cells = [];
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
                             if (($key == 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY')) {
@@ -4248,8 +4247,8 @@ class OdkFormService
                 $outputScore['levelThreeCount'] = count($levelThree);
                 $outputScore['levelFourCount'] = count($levelFour);
             }
-            $fieldNames = array();
-            $lastColumnArray = array();
+            $fieldNames = [];
+            $lastColumnArray = [];
             $lastColumnArray = array_keys($outputScore);
             foreach ($sResult[0] as $key => $aRow) {
                 if ($key != 'id' && $key != 'content' && $key != 'token') {
@@ -4257,14 +4256,14 @@ class OdkFormService
                 }
             }
             $xlsx = new SimpleXLSXGen();
-            $outputData = array();
+            $outputData = [];
             $headerRow = ['Facility Report SPI-RRT--CHECKLIST-version-6'];
             $outputData[] = $headerRow;
             $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint];
             $outputData[] = $data;
             $outputData[] = $fieldNames;
             foreach ($output as $rowNo => $rowData) {
-                $row = array();
+                $row = [];
                 $colNo = 1;
 
                 foreach ($rowData as $field => $value) {
@@ -4334,7 +4333,7 @@ class OdkFormService
             foreach ($result as $key => $data) {
                 $MyData->addPoints(array($data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']), "Level" . $key);
                 $MyData->setSerieDescription("Level" . $key);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4396,7 +4395,7 @@ class OdkFormService
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
                 $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2), round($adata['RTRI_SCORE'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4459,7 +4458,7 @@ class OdkFormService
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
                 $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance " . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop., round($adata['RTRI_SCORE'], , round($adata['RTRI_SCORE'], 2)2)
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4524,7 +4523,7 @@ class OdkFormService
                 //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
                 $MyData->addPoints(array(round($adata['DIAGNOSED_HIV_ABOVE_15'], 2), round($adata['CANDIDATE_SCREENED_FOR_PARTICIPATION'], 2), round($adata['ELIGIBLE_DURING_REVIEW_PERIOD'], 2), round($adata['ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'], 2), round($adata['DOCUMENTED_AND_REFUSED'], 2), round($adata['PARTICIAPANTS_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance " . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop., round($adata['RTRI_SCORE'], , round($adata['RTRI_SCORE'], 2)2)
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4734,7 +4733,7 @@ class OdkFormService
 
                 $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4795,7 +4794,7 @@ class OdkFormService
 
                 $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4856,7 +4855,7 @@ class OdkFormService
 
                 $MyData->addPoints(array(round($adata['DIAGNOSED_HIV_ABOVE_15'], 2), round($adata['CANDIDATE_SCREENED_FOR_PARTICIPATION'], 2), round($adata['ELIGIBLE_DURING_REVIEW_PERIOD'], 2), round($adata['ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'], 2), round($adata['DOCUMENTED_AND_REFUSED'], 2), round($adata['PARTICIAPANTS_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'], 2)), "Audit Performance");
                 $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = array();
+                $rgbColor = [];
                 //Create a loop.
                 foreach (array('r', 'g', 'b') as $color) {
                     //Generate a random number between 0 and 255.
@@ -4964,7 +4963,7 @@ class OdkFormService
             $userName = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $auditTable = new EventLogTable($dbAdapter);
-            $output = array();
+            $output = [];
             $spreadsheet = new Spreadsheet();
             $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xlsx';
@@ -4994,7 +4993,7 @@ class OdkFormService
                     if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
                         $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     }
-                    $row = array();
+                    $row = [];
                     $row[] = $aRow['facilityname'];
                     $row[] = $auditDate;
                     $row[] = $aRow['testingpointtype'];
@@ -6868,7 +6867,7 @@ class OdkFormService
 
                 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
 
-                $scorePer = round($formData['AUDIT_SCORE_PERCENTAGE']);
+                $scorePer = round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE']);
                 $level = '';
                 $colorCode = '';
                 if ($scorePer < 40) {
@@ -6891,7 +6890,7 @@ class OdkFormService
                 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
                 $partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
                 $partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
-                $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
+                $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
                 $partDtableBox3 .= '</table>';
 
                 $pdf->writeHTMLCell(70, 26, 125, '', $partDtableBox3, 1, 1, 0, true, 'L', true);
@@ -7106,7 +7105,7 @@ class OdkFormService
             $params = $params->data;
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
-            $outputScore = array();
+            $outputScore = [];
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $username = $loginContainer->login;
             $trackTable = new EventLogTable($dbAdapter);
@@ -7136,11 +7135,11 @@ class OdkFormService
             $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
             $auditScore = 0;
-            $levelZero = array();
-            $levelOne = array();
-            $levelTwo = array();
-            $levelThree = array();
-            $levelFour = array();
+            $levelZero = [];
+            $levelOne = [];
+            $levelTwo = [];
+            $levelThree = [];
+            $levelFour = [];
 
             if ($source == 'apall') { // source
                 $headerRow = ['Overall Audit Performance'];
@@ -7179,7 +7178,7 @@ class OdkFormService
             $outputData[] = $fieldNames;
             foreach ($rResult as $aRow) {
                 $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
-                $row = array();
+                $row = [];
                 if ($source == 'hv' || $source == 'la' || $source == 'apall' || $source == 'apl180' || $source == 'ap') {
                     $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
                     if (isset($scorePer) && $scorePer < 40) {

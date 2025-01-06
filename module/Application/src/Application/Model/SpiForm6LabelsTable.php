@@ -39,7 +39,7 @@ class SpiForm6LabelsTable extends AbstractTableGateway
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;//die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        $response = array();
+        $response = [];
         foreach ($rResult as $row) {
             $response[$row['field']] = array($row['short_label'], $row['label']);
         }

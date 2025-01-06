@@ -21,7 +21,7 @@ class DashboardController extends AbstractActionController
 
     public function indexAction()
     {
-        $params = array();
+        $params = [];
         $perf1 = $this->odkFormService->getPerformance($params);
         $perflast30 = $this->odkFormService->getPerformanceLast30Days('');
         $perflast180 = $this->odkFormService->getPerformanceLast180Days();

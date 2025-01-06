@@ -55,8 +55,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         //error_log(print_r($params,true));
 
         foreach ($params['data'] as $datar) {
-            $par = array();
-            $data = array();
+            $par = [];
+            $data = [];
             foreach ($datar as $key => $val) {
                 $key = preg_replace('/[\*]+/', '', $key);
                 $key = str_replace("lab_geopoint:", "", $key);
@@ -351,8 +351,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         //error_log(print_r($params,true));
 
         foreach ($params as $submissionData) {
-            $par = array();
-            $data = array();
+            $par = [];
+            $data = [];
 
             //$data['token'] = $formDetails["enketoId"];
 
@@ -1455,13 +1455,13 @@ class SpiFormVer3Table extends AbstractTableGateway
         $approveStatusAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status');
 
         $auditScore = 0;
-        $levelZero = array();
-        $levelOne = array();
-        $levelTwo = array();
-        $levelThree = array();
-        $levelFour = array();
+        $levelZero = [];
+        $levelOne = [];
+        $levelTwo = [];
+        $levelThree = [];
+        $levelFour = [];
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $approve = '';
             $downloadPdf = "";
             $auditScore += (int) $aRow['AUDIT_SCORE_PERCANTAGE'];
@@ -1672,7 +1672,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $downloadPdf = "";
             $edit = "";
             $remove = "";
@@ -1841,7 +1841,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sQueryStr = $sql->buildSqlString($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
-        $response = array();
+        $response = [];
 
         foreach ($rResult as $row) {
             //$response[$row['auditroundno']]['PERSONAL_SCORE'][]=  $row['PERSONAL_SCORE'];
@@ -1860,7 +1860,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $response[0]['EQA_SCORE'][] = $row['EQA_SCORE'];
         }
 
-        $auditRoundWiseData = array();
+        $auditRoundWiseData = [];
         foreach ($response as $auditNo => $auditScores) {
             $auditRoundWiseData[$auditNo]['PERSONAL_SCORE'] = array_sum($auditScores['PERSONAL_SCORE']) / count($auditScores['PERSONAL_SCORE']);
             $auditRoundWiseData[$auditNo]['PHYSICAL_SCORE'] = array_sum($auditScores['PHYSICAL_SCORE']) / count($auditScores['PERSONAL_SCORE']);
@@ -1961,7 +1961,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
-        $response = array();
+        $response = [];
 
         $questionColums = array(
             'PERSONAL_Q_1_1',
@@ -2322,7 +2322,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $row[] = $aRow['facilityname'];
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = $aRow['testingpointname'] . " - " . $aRow['testingpointtype'];
@@ -2444,7 +2444,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $eventTable = new EventLogTable($dbAdapter);
             $sql = new Sql($this->adapter);
             $formId = base64_decode($params['formId']);
-            $summationData = array();
+            $summationData = [];
             if (isset($params['sectionNo'])) {
                 $n = count($params['sectionNo']);
                 for ($i = 0; $i < $n; $i++) {
@@ -2872,7 +2872,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $downloadPdfAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf');
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $downloadPdf = "";
 
             $row[] = $aRow['facilityid'];
@@ -2891,7 +2891,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
     public function fetchFacilitiesAudits($params)
     {
-        $audits = array();
+        $audits = [];
         $aResult = "";
         if (isset($params['facilityName']) && trim($params['facilityName']) != '') {
             $dbAdapter = $this->adapter;
@@ -3079,7 +3079,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $downloadPdf = "";
 
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
@@ -3373,13 +3373,13 @@ class SpiFormVer3Table extends AbstractTableGateway
         );
 
 
-        //$personalScoreArray = array();
-        //$physicalScoreArray = array();
-        //$safetyScoreArray = array();
-        //$preTestScoreArray = array();
-        //$testScoreArray = array();
-        //$postTestScoreArray = array();
-        //$eqaScoreArray = array();
+        //$personalScoreArray = [];
+        //$physicalScoreArray = [];
+        //$safetyScoreArray = [];
+        //$preTestScoreArray = [];
+        //$testScoreArray = [];
+        //$postTestScoreArray = [];
+        //$eqaScoreArray = [];
         //$personalScore = 0;
         //$physicalScore = 0;
         //$safetyScore = 0;
@@ -3388,13 +3388,13 @@ class SpiFormVer3Table extends AbstractTableGateway
         //$postTestScore = 0;
         //$eqaScore = 0;
         $auditScore = 0;
-        $levelZero = array();
-        $levelOne = array();
-        $levelTwo = array();
-        $levelThree = array();
-        $levelFour = array();
+        $levelZero = [];
+        $levelOne = [];
+        $levelTwo = [];
+        $levelThree = [];
+        $levelFour = [];
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += $aRow['AUDIT_SCORE_PERCANTAGE'];
                 if (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40) {
@@ -3491,7 +3491,7 @@ class SpiFormVer3Table extends AbstractTableGateway
 
     public function fetchTestingPointTypeNamesByType($params)
     {
-        $typeResult = array();
+        $typeResult = [];
         if (isset($params['testingPointType']) && trim($params['testingPointType']) != '') {
             if ($params['testingPointType'] == 'other') {
                 $column = 'DISTINCT(testingpointtype_other) as testingpointName';

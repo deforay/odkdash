@@ -43,7 +43,7 @@ class CountriesTable extends AbstractTableGateway
             $result = $this->select(array('status' => 'active'))->toArray();
         }
 
-        $response = array();
+        $response = [];
         foreach ($result as $row) {
             $response[$row['country_id']] = $row;
         }

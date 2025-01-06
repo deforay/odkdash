@@ -180,7 +180,7 @@ class EventLogTable extends AbstractTableGateway
             "aaData" => array()
         );
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $row[] = ucwords($aRow['event_type']);
             $row[] = ucwords($aRow['action']);
             $row[] = ucwords($aRow['resource_name']);

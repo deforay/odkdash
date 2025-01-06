@@ -314,7 +314,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit');
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
 
             $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(\'' . $aRow['facility_id'] . '\',\'facilityId\');getAuditData(\'' . $aRow['facility_id'] . '\',\'facilityid\');">' . $aRow['facility_id'] . '</a>';
             $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(\'' . $aRow['facility_name'] . '\',\'facilityName\');getAuditData(\'' . $aRow['facility_name'] . '\',\'facilityname\');">' . $aRow['facility_name'] . '</a>';
@@ -341,7 +341,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $query = $sql->select()->from('spi_rt_3_facilities')->where("facility_name like '%$strSearch%'");
         $queryStr = $sql->buildSqlString($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $echoResult = array();
+        $echoResult = [];
         foreach ($result as $row) {
             $echoResult[] = array("id" => $row['id'], "name" => ucwords($row['facility_name']));
         }
@@ -406,9 +406,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function fetchFacilityProfileByAudit($ids)
     {
-        $result = array();
-        $fResult = array();
-        $auditsResult = array();
+        $result = [];
+        $fResult = [];
+        $auditsResult = [];
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         if (isset($ids) && trim($ids) != '') {
@@ -438,9 +438,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function fetchFacilityProfileByAuditV5($ids)
     {
-        $result = array();
-        $fResult = array();
-        $auditsResult = array();
+        $result = [];
+        $fResult = [];
+        $auditsResult = [];
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         if (isset($ids) && trim($ids) != '') {
@@ -470,9 +470,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function fetchFacilityProfileByAuditV6($ids)
     {
-        $result = array();
-        $fResult = array();
-        $auditsResult = array();
+        $result = [];
+        $fResult = [];
+        $auditsResult = [];
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         if (isset($ids) && trim($ids) != '') {
@@ -620,7 +620,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 ->group('spirt3.province');
             $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
             $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
-            $echoResult = array();
+            $echoResult = [];
             foreach ($rResult as $row) {
                 $echoResult[] = array("id" => $row['province'], "text" => ucwords($row['province']));
             }
@@ -641,7 +641,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 ->group('spirt3.district');
             $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
             $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
-            $echoResult = array();
+            $echoResult = [];
             foreach ($rResult as $row) {
                 $echoResult[] = array("id" => $row['district'], "text" => ucwords($row['district']));
             }

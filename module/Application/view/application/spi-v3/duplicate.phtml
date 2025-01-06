@@ -45,7 +45,7 @@ $common = new CommonService();
                 <td><?php echo $duplicate['testingpointtype']; ?></td>
                 <td><?php echo $duplicate['level']; ?></td>
                 <td><?php echo $duplicate['affiliation']; ?></td>
-                <td><?php echo round($duplicate['AUDIT_SCORE_PERCANTAGE'], 2); ?></td>
+                <td><?php echo round($duplicate['AUDIT_SCORE_PERCANTAGE'] ?? $duplicate['AUDIT_SCORE_PERCENTAGE'], 2); ?></td>
                 <td><?php echo $duplicate['status']; ?></td>
                 <td></td>
               </tr>
@@ -60,7 +60,7 @@ $common = new CommonService();
                   <td><?php echo $duplicate['testingpointtype']; ?></td>
                   <td><?php echo $duplicate['level']; ?></td>
                   <td><?php echo $duplicate['affiliation']; ?></td>
-                  <td><?php echo round($duplicate['AUDIT_SCORE_PERCANTAGE'], 2); ?></td>
+                  <td><?php echo round($duplicate['AUDIT_SCORE_PERCANTAGE'] ?? $duplicate['AUDIT_SCORE_PERCENTAGE'], 2); ?></td>
                   <td><?php echo $duplicate['status']; ?></td>
                   <td><a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="removeData('<?php echo $duplicate['id']; ?>');">Remove</a></td>
                 </tr>

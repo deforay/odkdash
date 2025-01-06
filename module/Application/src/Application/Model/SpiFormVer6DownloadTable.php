@@ -64,7 +64,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
 
     public function fetchDownloadDataList()
     {
-        $result = array();
+        $result = [];
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('r_spi_form_v_6_download')->where(array('download_status' => 0));

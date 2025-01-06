@@ -89,7 +89,7 @@ $version = $params['version'];
 					<thead>
 						<tr>
 							<?php
-							$colArr = array();
+							$colArr = [];
 							foreach ($result['auditColumns'] as $col) {
 								$colArr[] = $col['COLUMN_NAME'];
 							?>
@@ -131,7 +131,7 @@ $version = $params['version'];
 					<thead>
 						<tr>
 							<?php
-							$colValue = array();
+							$colValue = [];
 							foreach ($result['spiColumns'] as $col) {
 								$colValue[] = $col['COLUMN_NAME'];
 							?>

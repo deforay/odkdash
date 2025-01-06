@@ -3,12 +3,9 @@
 namespace Application\Model;
 
 use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Expression;
 use Laminas\Session\Container;
 use Laminas\Db\Adapter\Adapter;
-use Application\Model\GlobalTable;
 use Application\Service\CommonService;
-use Application\Model\SpiRtFacilitiesTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 
 /*
@@ -40,8 +37,8 @@ class SpiFormVer3TempTable extends AbstractTableGateway
         * you want to insert a non-database field (for example a counter or static image)
         */
         $queryContainer = new Container('query');
-        $aColumns = array('id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
-        $orderColumns = array('id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
+        $aColumns = ['id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status'];
+        $orderColumns = ['id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status'];
 
         /*
         * Paging
@@ -169,9 +166,8 @@ class SpiFormVer3TempTable extends AbstractTableGateway
         );
 
         $role = $loginContainer->roleCode;
-        $commonService = new \Application\Service\CommonService();
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
             $row[] = '<input type="checkbox" class="checkSpiv3Data" name="chk[]" id="chk' . $aRow['id'] . '"  value="' . $aRow['id'] . '" onclick="getValidateId(this);"  />';
             $row[] = $aRow['facilityname'];
@@ -181,7 +177,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway
             $row[] = $aRow['testingpointtype'];
             $row[] = $aRow['level'] . $level;
             $row[] = $aRow['affiliation'];
-            $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'], 2);
+            $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             $row[] = ucwords($aRow['status']);
             $output['aaData'][] = $row;
         }

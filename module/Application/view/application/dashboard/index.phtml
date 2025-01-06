@@ -1219,8 +1219,8 @@ $config = $this->GlobalConfigHelper();
 
 			<?php
 
-			$eventDatesArray = array();
-			$eventCount = array();
+			$eventDatesArray = [];
+			$eventCount = [];
 			foreach ($allSubmissions as $row) {
 				$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 				$eventDatesArray[] = "'" . $humanDate . "'";
@@ -1627,10 +1627,10 @@ $config = $this->GlobalConfigHelper();
 			}]
 		});
 		<?php
-		$eventDatesArray = array();
-		$eventDatesArrayFormat = array();
-		$auditDataList = array();
-		$eventCount = array();
+		$eventDatesArray = [];
+		$eventDatesArrayFormat = [];
+		$auditDataList = [];
+		$eventCount = [];
 		foreach ($allSubmissions as $row) {
 			$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 			$eventDatesArray[] = "'" . $humanDate . "'";
