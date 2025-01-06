@@ -6905,7 +6905,19 @@ class OdkFormService
                 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/sectionno:label'] . '</td>';
                 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/deficiency:label'] . '</td>';
                 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">' . $decoded[$language]['/SPI_RT/correctiveaction/correction:label'] . '</td>';
-                $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">' . $decoded[$language]['/SPI_RT/correctiveaction/auditorcomment:label'] . '</td>';
+                // Conditional Header Change
+                if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" && $formData['correctiveaction'] != "[]") {
+                    $correctiveActions = json_decode($formData['correctiveaction'], true);
+                    if (isset($correctiveActions[0]['sectionno'])) {
+                        // Old corrective action
+                        $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/auditorcomment:label'] . '</td>';
+                    } else {
+                        // New corrective action
+                        $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/correction:label'] . '</td>';
+                    }
+                } else {
+                    $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>' . $decoded[$language]['/SPI_RT/correctiveaction/auditorcomment:label'] . '</td>';
+                }
                 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:26%">' . $recommend[0] . '</td>';
                 $partDTable .= '</tr>';
                 $partDTable .= '<tr>';

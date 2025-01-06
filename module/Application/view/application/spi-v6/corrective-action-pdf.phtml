@@ -265,7 +265,19 @@ $partDTable .= '<tr>';
 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>Section No.</td>';
 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>Deficiency/Issue observed</td>';
 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">Correction Actions</td>';
-$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">Auditor\'s <br/>Comments</td>';
+// Conditional Header Change
+if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" && $formData['correctiveaction'] != "[]") {
+  $correctiveActions = json_decode($formData['correctiveaction'], true);
+  if (isset($correctiveActions[0]['sectionno'])) {
+      // Old corrective action
+      $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>Auditor\'s <br/>Comments</td>';
+  } else {
+      // New corrective action
+      $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>Correction Actions</td>';
+  }
+} else {
+  $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>Auditor\'s <br/>Comments</td>';
+}
 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:26%">Recommendations</td>';
 $partDTable .= '</tr>';
 $partDTable .= '<tr>';
