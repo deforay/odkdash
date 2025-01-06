@@ -3,6 +3,12 @@ use Application\Service\FpdiExtends;
 use Application\Service\TcpdfExtends;
 use Application\Service\CommonService;
 
+
+$configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "label-spi-v6.php";
+$fileContents = file_get_contents($configFile);
+//Convert the JSON string back into an array.
+$decoded = json_decode($fileContents, true);
+$language = $configData['language'];
 // Check if the template_file is set in $configData
 if (isset($configData['template_file']) && !empty($configData['template_file'])) {
     // Use FpdiExtends if the template_file is provided
@@ -270,20 +276,77 @@ $partDTable .= '<td style="font-weight:bold;text-align:center;">Timeline / Perso
 $partDTable .= '</tr>';
 if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  && $formData['correctiveaction'] != "[]") {
   $correctiveActions = json_decode($formData['correctiveaction'], true);
-  foreach ($correctiveActions as $ca) {
-    $partDTable .= '<tr nobr="true">';
-    $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-    $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
-    $partDTable .= '<td style="text-align:center;">';
-    $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
-    $partDTable .= '</td>';
-    $partDTable .= '<td style="text-align:center;">';
-    $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
-    $partDTable .= '</td>';
-    $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
-    $partDTable .= '<td>' . $ca['action'] . '</td>';
-    $partDTable .= '<td>' . $ca['timeline'] . '</td>';
-    $partDTable .= '</tr>';
+  if (isset($correctiveActions[0]['sectionno'])) {
+    foreach ($correctiveActions as $ca) {
+      $partDTable .= '<tr nobr="true">';
+      $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
+      $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
+      $partDTable .= '<td style="text-align:center;">';
+      $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
+      $partDTable .= '</td>';
+      $partDTable .= '<td style="text-align:center;">';
+      $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
+      $partDTable .= '</td>';
+      $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
+      $partDTable .= '<td>' . $ca['action'] . '</td>';
+      $partDTable .= '<td>' . $ca['timeline'] . '</td>';
+      $partDTable .= '</tr>';
+    }
+  } else {
+    $categories = [
+      'PERSONAL' => [
+          'IMMEDIATE' => 'PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' => 'PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'PHYSICAL' => [
+          'IMMEDIATE' => 'PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' => 'PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'SAFETY' => [
+          'IMMEDIATE' => 'SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'PRETEST' => [
+          'IMMEDIATE' => 'PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'TEST' => [
+          'IMMEDIATE' => 'TEST_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'TEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'POSTTEST' => [
+          'IMMEDIATE' => 'POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'EQA' => [
+          'IMMEDIATE' => 'EQA_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'EQA_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ],
+      'RTRI_SECTION' => [
+          'IMMEDIATE' => 'RTRI_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'
+      ]
+    ];
+    foreach ($categories as $category => $actions) {
+        foreach ($actions as $type => $key) {
+            if (isset($correctiveActions[$key])) {
+                $data = $correctiveActions[$key];
+                $partDTable .= '<tr nobr="true">';
+                $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td style="text-align:center;">';
+                $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
+                $partDTable .= '</td>';
+                $partDTable .= '<td style="text-align:center;">';
+                $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
+                $partDTable .= '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
+                $partDTable .= '</tr>';
+            }
+        }
+    }
   }
 } else {
   $partDTable .= '<tr>';

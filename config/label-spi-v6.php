@@ -321,7 +321,8 @@
     "/SPI_RT/POSTTEST/POST_6_4/POST_Q_6_4/1:label": "Oui", 
 
     "/SPI_RT/TEST/TEST_5_2/TEST_C_5_2:label": "Commentaires",                                          
-    "/SPI_RT/sitephoto:label": "Photo du site",                                         
+    "/SPI_RT/sitephoto:label": "Photo du site",
+    "/SPI_RT/Additionalsitephoto:label": "Photo supplémentaire du site",
     "/SPI_RT/correctiveaction/sectionno:label": "Section No. :",                                          
     "/SPI_RT/PRETEST/PRE_4_1/PRE_Q_4_1:label": "4.1 Existe-t-il des directives nationales de dépistage du VIH au point de test?",
     "/SPI_RT/TESTSITE/level/region: label": "Region / Province / Zone",                                       
@@ -928,7 +929,8 @@
     "/SPI_RT/POSTTEST/POST_6_4/POST_Q_6_4/1:label": "Sí",  
 
     "/SPI_RT/TEST/TEST_5_2/TEST_C_5_2:label": "Comentarios",                                          
-    "/SPI_RT/sitephoto:label": "Foto del sitio",                                         
+    "/SPI_RT/sitephoto:label": "Foto del sitio",
+    "/SPI_RT/Additionalsitephoto:label": "Foto adicional del sitio",
     "/SPI_RT/correctiveaction/sectionno:label": "Section No. :",                                          
     "/SPI_RT/PRETEST/PRE_4_1/PRE_Q_4_1:label": "4.1 ¿Hay pautas nacionales de prueba del VIH disponibles en el punto de prueba?",                                         
     "/SPI_RT/TESTSITE/level/region:label": "Región / Provincia / Zona",                                          
@@ -1552,6 +1554,7 @@
 
     "/SPI_RT/TEST/TEST_5_2/TEST_C_5_2:label": "Comentários",
     "/SPI_RT/sitephoto:label": "Site Photo",
+    "/SPI_RT/Additionalsitephoto:label": "Foto adicional do site",
     "/SPI_RT/correctiveaction/sectionno:label": "Section No.:",
     "/SPI_RT/PRETEST/PRE_4_1/PRE_Q_4_1:label": "4.1 Existem diretrizes nacionais de teste de HIV disponíveis no local de teste?",
     "/SPI_RT/TESTSITE/level/region:label": "Região/Província/Zona",
@@ -2160,7 +2163,8 @@
     "/SPI_RT/POSTTEST/POST_6_4/POST_Q_6_4/1:label": "Yes",                                          
     
     "/SPI_RT/TEST/TEST_5_2/TEST_C_5_2:label": "Comments",                                          
-    "/SPI_RT/sitephoto:label": "Site Photo",                                          
+    "/SPI_RT/sitephoto:label": "Site Photo",
+    "/SPI_RT/Additionalsitephoto:label": "Additional Site Photo",
     "/SPI_RT/correctiveaction/sectionno:label": "Section No. :",                                          
     "/SPI_RT/PRETEST/PRE_4_1/PRE_Q_4_1:label": "4.1 Are there national HIV testing guidelines available at the testing point?",                                          
     "/SPI_RT/TESTSITE/level/region:label": "Region/Province/Zone",                                          
