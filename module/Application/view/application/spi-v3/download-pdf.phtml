@@ -1,4 +1,5 @@
 <?php
+
 use Application\Service\FpdiExtends;
 use Application\Service\TcpdfExtends;
 use Application\Service\CommonService;
@@ -598,7 +599,7 @@ $partDtableBox2 .= '</table>';
 
 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
 
-$scorePer = round($formData['AUDIT_SCORE_PERCANTAGE']);
+$scorePer = round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE']);
 $level = '';
 $colorCode = '';
 if ($scorePer < 40) {
@@ -626,7 +627,7 @@ if ($scorePer < 40) {
 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
 $partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
 $partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
+$partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3 .= '</table>';
 
 $pdf->writeHTMLCell(70, 26, 125, '', $partDtableBox3, 1, 1, 0, true, 'L', true);

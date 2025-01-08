@@ -144,7 +144,7 @@ class GlobalTable extends AbstractTableGateway
             "aaData" => array()
         );
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $row[] = ucwords($aRow['display_name']);
             $row[] = $aRow['global_value'];
             $output['aaData'][] = $row;
@@ -159,7 +159,7 @@ class GlobalTable extends AbstractTableGateway
         $sQueryStr = $sql->buildSqlString($sQuery);
         $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $size = count($configValues);
-        $arr = array();
+        $arr = [];
         // now we create an associative array so that we can easily create view variables
         for ($i = 0; $i < $size; $i++) {
             $arr[$configValues[$i]['global_name']] = $configValues[$i]['global_value'];
@@ -172,11 +172,11 @@ class GlobalTable extends AbstractTableGateway
     public function updateConfigDetails($params)
     {
         $result = 0;
-		$fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedLogoImage']);
+        $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedLogoImage']);
         $cleanedFileName = CommonService::cleanFileName($fileName);
-        $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR , []);
-        if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists($cleanedFilePath .$cleanedFileName)) {
-            unlink($cleanedFilePath .$cleanedFileName);
+        $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR, []);
+        if (isset($_POST['removedLogoImage']) && trim($_POST['removedLogoImage']) != "" && file_exists($cleanedFilePath . $cleanedFileName)) {
+            unlink($cleanedFilePath . $cleanedFileName);
             $this->update(array('global_value' => ''), array('global_name' => 'logo'));
         }
 
@@ -193,7 +193,7 @@ class GlobalTable extends AbstractTableGateway
         }
         $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedTempFile']);
         $cleanedFileName = CommonService::cleanFileName($fileName);
-        $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR , []);
+        $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR, []);
         if (isset($_POST['removedTempFile']) && trim($_POST['removedTempFile']) != "" && file_exists($cleanedFilePath . $cleanedFileName)) {
             unlink($cleanedFilePath . $cleanedFileName);
             $this->update(array('global_value' => ''), array('global_name' => 'template_file'));
@@ -201,7 +201,7 @@ class GlobalTable extends AbstractTableGateway
 
         if (isset($_FILES['template_file']['name']) && $_FILES['template_file']['name'] != "") {
             if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template")) {
-               mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template");
+                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template");
             }
             $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['template_file']['name'], PATHINFO_EXTENSION));
             $string = CommonService::generateRandomString(6) . ".";

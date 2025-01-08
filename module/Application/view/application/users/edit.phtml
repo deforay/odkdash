@@ -1,5 +1,5 @@
 <?php
-$tokenArray = array();
+$tokenArray = [];
 foreach ($tokenResults as $token) {
 	$tokenArray[] = $token['token'];
 }
@@ -131,8 +131,8 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									<label>Countries</label>
 									<div class="form-control">
 										<select multiple="multiple" name="country[]" id="country" title="Please select the country">
-											<?php foreach($countries as $row){ ?>
-												<option value="<?php echo $row['country_id'];?>" <?php echo (in_array($row['country_id'], $userCountryMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['country_name']);?></option>
+										<?php foreach($countries as $row){ ?>
+											<option value="<?php echo $row['country_id'];?>" <?php echo (in_array($row['country_id'], $userCountryMapArray))?"selected='selected'":"";?>><?php echo ucwords($row['country_name']);?></option>
 											<?php } ?>
 										</select>
 									</div>

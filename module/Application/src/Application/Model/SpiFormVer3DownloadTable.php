@@ -43,7 +43,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
         if (isset($params['province']) && is_array($params['province']) && $params['province'] !== []) {
             $province = implode(',', $params['province']);
         }
-        $downloadData = array(
+        $downloadData = [
             'user' => $loginContainer->userId,
             'auditroundno' => (isset($params['auditRndNo']) && trim($params['auditRndNo']) != '') ? $params['auditRndNo'] : null,
             'assesmentofaudit' => (isset($params['dateRange']) && trim($params['dateRange']) != '') ? $params['dateRange'] : null,
@@ -53,7 +53,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             'affiliation' => (isset($params['affiliation']) && trim($params['affiliation']) != '') ? $params['affiliation'] : null,
             'level_name' => $province,
             'AUDIT_SCORE_PERCANTAGE' => (isset($params['scoreLevel']) && trim($params['scoreLevel']) != '') ? $params['scoreLevel'] : null
-        );
+        ];
         $this->insert($downloadData);
         $subject = '';
         $eventType = 'Export-SPI RT Form 3-PDF';
@@ -65,7 +65,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
 
     public function fetchDownloadDataList()
     {
-        $result = array();
+        $result = [];
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 0));
@@ -124,7 +124,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             $sQueryStr = $sql->buildSqlString($sQuery);
             $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             //update download status
-            $this->update(array('download_status' => 1), array('r_download_id' => $queryResult['r_download_id']));
+            $this->update(['download_status' => 1], ['r_download_id' => $queryResult['r_download_id']]);
         }
         return array('downloadResult' => $queryResult, 'formResult' => $result);
     }

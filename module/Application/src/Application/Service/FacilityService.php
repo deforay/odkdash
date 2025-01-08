@@ -395,7 +395,7 @@ class FacilityService
     public function addFacilityBasedOnForm()
     {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->addFacilityBasedOnForm(802,6);
+        return $facilityDb->addFacilityBasedOnForm(802, 6);
     }
     public function exportFacility()
     {
@@ -404,7 +404,7 @@ class FacilityService
             $queryContainer = new Container('query');
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $output = array();
+            $output = [];
             $sheet = $spreadsheet->getActiveSheet();
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $sql = new Sql($dbAdapter);
@@ -412,7 +412,7 @@ class FacilityService
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($sResult) > 0) {
                 foreach ($sResult as $aRow) {
-                    $row = array();
+                    $row = [];
                     $row[] = $aRow['facility_id'];
                     $row[] = $aRow['facility_name'];
                     $row[] = $aRow['email'];
@@ -530,16 +530,16 @@ class FacilityService
 
     public function uploadFacility($params)
     {
-            try {
+        try {
             $container = new Container('alert');
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $uploadOption = $params['uploadOption'];
-            
-            if (isset($_FILES['facilitiesInfo']['name']) && !empty($_FILES['facilitiesInfo']['name'])){
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {
+
+            if (isset($_FILES['facilitiesInfo']['name']) && !empty($_FILES['facilitiesInfo']['name'])) {
+                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {
                     mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities");
                 }
-                
+
                 $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['facilitiesInfo']['name'], PATHINFO_EXTENSION));
                 $fileName = CommonService::generateRandomString(5) . "." . $extension;
 
@@ -568,12 +568,12 @@ class FacilityService
                             return "";
                         }
                         $geographicalDivisionsTable = $this->sm->get('GeographicalDivisionsTable');
-                       
-                        $provinceId=$geographicalDivisionsTable->addProvinceByFacility(trim($rowData['E']));
-                        $districtId=$geographicalDivisionsTable->addDistrictByFacility($provinceId,trim($rowData['F']));
-                        $facilityIdCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_id', $rowData['A'],$this->sm);
-                        $facilityCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_name', $rowData['B'],$this->sm);
-                    //  print_r($facilityCheck); echo "___"; print_r($facilityCheck); die;  
+
+                        $provinceId = $geographicalDivisionsTable->addProvinceByFacility(trim($rowData['E']));
+                        $districtId = $geographicalDivisionsTable->addDistrictByFacility($provinceId, trim($rowData['F']));
+                        $facilityIdCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_id', $rowData['A'], $this->sm);
+                        $facilityCheck = CommonService::getDataFromOneFieldAndValue('spi_rt_3_facilities', 'facility_name', $rowData['B'], $this->sm);
+                        //  print_r($facilityCheck); echo "___"; print_r($facilityCheck); die;
                         $data = [
                             'facility_id' => trim($rowData['A']) ?? null,
                             'facility_name' => trim($rowData['B']) ?? null,
@@ -587,15 +587,15 @@ class FacilityService
                         ];
                         try {
                             if ($uploadOption == "facility_name_match") {
-                               if (!empty($facilityCheck)) {
-                                    $facilityDb->update($data,array('id' => $facilityCheck['id']));
+                                if (!empty($facilityCheck)) {
+                                    $facilityDb->update($data, array('id' => $facilityCheck['id']));
                                 } else {
                                     $facilityDb->insert($data);
                                     //$facilityNotAdded[] = $rowData;
                                 }
                             } elseif ($uploadOption == "facility_id_match") {
                                 if (!empty($facilityIdCheck)) {
-                                    $facilityDb->update($data,array('id' => $facilityIdCheck['id']));
+                                    $facilityDb->update($data, array('id' => $facilityIdCheck['id']));
                                 } else {
                                     $facilityDb->insert($data);
                                     //$facilityNotAdded[] = $rowData;
@@ -606,28 +606,28 @@ class FacilityService
                                 } else {
                                     $facilityNotAdded[] = $rowData;
                                 }
-                            }  elseif ($uploadOption == "update_duplicate_facility_name_code") {
+                            } elseif ($uploadOption == "update_duplicate_facility_name_code") {
                                 if (!empty($facilityIdCheck) || !empty($facilityCheck)) {
-                                    if(!empty($facilityCheck)){
-                                        $facilityDb->update($data,array('id' => $facilityCheck['id']));
+                                    if (!empty($facilityCheck)) {
+                                        $facilityDb->update($data, array('id' => $facilityCheck['id']));
                                     }
-                                    if(!empty($facilityIdCheck)){
-                                        $facilityDb->update($data,array('id' => $facilityIdCheck['id']));
+                                    if (!empty($facilityIdCheck)) {
+                                        $facilityDb->update($data, array('id' => $facilityIdCheck['id']));
                                     }
                                 } else {
                                     $facilityDb->insert($data);
                                     //$facilityNotAdded[] = $rowData;
                                 }
-                            }   elseif ($uploadOption == "facility_name_id_match") {
+                            } elseif ($uploadOption == "facility_name_id_match") {
                                 if (!empty($facilityIdCheck) && !empty($facilityCheck)) {
-                                    $facilityDb->update($data,array('id' => $facilityCheck['id']));
+                                    $facilityDb->update($data, array('id' => $facilityCheck['id']));
                                 } else {
                                     $facilityDb->insert($data);
                                     //$facilityNotAdded[] = $rowData;
                                 }
                             } else {
                                 if (empty($facilityIdCheck) && empty($facilityCheck)) {
-                                $facilityDb->insert($data);
+                                    $facilityDb->insert($data);
                                 } else {
                                     $facilityNotAdded[] = $rowData;
                                 }
@@ -641,7 +641,7 @@ class FacilityService
 
                     $notAdded = count($facilityNotAdded);
                     if ($notAdded > 0) {
-                    $spreadsheet = IOFactory::load(WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx');
+                        $spreadsheet = IOFactory::load(WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx');
                         $sheet = $spreadsheet->getActiveSheet();
                         foreach ($facilityNotAdded as $rowNo => $dataValue) {
                             $rRowCount = $rowNo + 2;
@@ -653,7 +653,7 @@ class FacilityService
                     }
 
                     $container->alertMsg = 'Facilities added successfully';
-                }else{
+                } else {
                     $container->alertMsg = 'Bulk Facility Import Failed';
                     return "";
                 }
@@ -663,7 +663,7 @@ class FacilityService
             $result['notAdded'] = $notAdded;
             $result['option'] = $uploadOption;
             return $result;
-        }catch (\Exception $exc) {
+        } catch (\Exception $exc) {
             error_log("UPLOAD-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
             return "";

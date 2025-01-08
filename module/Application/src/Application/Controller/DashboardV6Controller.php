@@ -14,7 +14,7 @@ class DashboardV6Controller extends AbstractActionController
     private $odkFormService = null;
     private $provinceService = null;
 
-    public function __construct($odkFormService,$provinceService)
+    public function __construct($odkFormService, $provinceService)
     {
         $this->odkFormService = $odkFormService;
         $this->provinceService = $provinceService;
@@ -22,7 +22,7 @@ class DashboardV6Controller extends AbstractActionController
 
     public function indexAction()
     {
-        $params = array();
+        $params = [];
         $perf1 = $this->odkFormService->getPerformanceV6($params);
         $perflast30 = $this->odkFormService->getPerformanceLast30DaysV6('');
         $perflast180 = $this->odkFormService->getPerformanceLast180DaysV6();

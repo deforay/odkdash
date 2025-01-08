@@ -75,7 +75,7 @@ class UsersTable extends AbstractTableGateway
         }
 
         if ($sResult && $passwordValidation) {
-            $userMappedIdsArray = array();
+            $userMappedIdsArray = [];
             $userMappingType = '';
             $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
             foreach ($userLocationMapResult as $ulMap) {
@@ -83,7 +83,7 @@ class UsersTable extends AbstractTableGateway
                 $userMappingType = $ulMap['mapping_type'];
             }
 
-            $token = array();
+            $token = [];
             $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
                 ->columns(array('token'))
                 ->where(array('user_id' => $sResult->id))
@@ -199,28 +199,28 @@ class UsersTable extends AbstractTableGateway
                 // Sanitize the base directory path
                 $baseDirectory = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users";
                 $safeDirectoryPath = CommonService::buildSafePath(UPLOAD_PATH, ['users']); // Use buildSafePath to sanitize path
-            
+
                 if ($safeDirectoryPath !== false) {
                     // Extract the file extension
                     $extension = strtolower(pathinfo($_FILES['user_image']['name'], PATHINFO_EXTENSION));
-            
+
                     // Construct a preliminary filename and clean it using preg_replace
                     $prelimFileName = time() . '_' . $lastInsertId; // Filename before sanitization
                     $prelimFileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $prelimFileName); // Strip out any invalid characters
-            
+
                     // Now clean the file name further using cleanFileName()
                     $safeFileName = CommonService::cleanFileName($prelimFileName) . "." . $extension;
-            
+
                     // Construct the full safe file path
                     $imageFullPath = $safeDirectoryPath . DIRECTORY_SEPARATOR . $safeFileName;
-            
+
                     // Move the uploaded file to the safe directory
                     if (move_uploaded_file($_FILES["user_image"]["tmp_name"], $imageFullPath)) {
                         // Resize the image if upload was successful
                         $resizeObj = new ImageResizeService($imageFullPath);
                         $resizeObj->resizeImage(320, 214, 'auto');
                         $resizeObj->saveImage($imageFullPath, 100);
-            
+
                         // Save the file path relative to the uploads folder
                         $imageUpName = '/uploads/users/' . $safeFileName;
                         $imageData = array('user_image' => $imageUpName);
@@ -231,7 +231,7 @@ class UsersTable extends AbstractTableGateway
                     echo "Failed to create directory.";
                 }
             }
-            
+
             return $lastInsertId;
         }
     }
@@ -293,7 +293,7 @@ class UsersTable extends AbstractTableGateway
                 }
             }
             if (isset($params['existImage']) && $params['existImage'] == '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
-		        $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $params['existImage']);
+                $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $params['existImage']);
                 $cleanedFileName = CommonService::cleanFileName($fileName);
                 $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR, []);
                 unlink($cleanedFilePath . $cleanedFileName);
@@ -305,28 +305,28 @@ class UsersTable extends AbstractTableGateway
                 // Sanitize the base directory path
                 $baseDirectory = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users";
                 $safeDirectoryPath = CommonService::buildSafePath(UPLOAD_PATH, ['users']); // Use buildSafePath to sanitize path
-            
+
                 if ($safeDirectoryPath !== false) {
                     // Extract the file extension
                     $extension = strtolower(pathinfo($_FILES['user_image']['name'], PATHINFO_EXTENSION));
-            
+
                     // Construct a preliminary filename and clean it using preg_replace
                     $prelimFileName = time() . '_' . $userId; // Filename before sanitization
                     $prelimFileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $prelimFileName); // Strip out any invalid characters
-            
+
                     // Now clean the file name further using cleanFileName()
                     $safeFileName = CommonService::cleanFileName($prelimFileName) . "." . $extension;
-            
+
                     // Construct the full safe file path
                     $imageFullPath = $safeDirectoryPath . DIRECTORY_SEPARATOR . $safeFileName;
-            
+
                     // Move the uploaded file to the safe directory
                     if (move_uploaded_file($_FILES["user_image"]["tmp_name"], $imageFullPath)) {
                         // Resize the image if upload was successful
                         $resizeObj = new ImageResizeService($imageFullPath);
                         $resizeObj->resizeImage(320, 214, 'auto');
                         $resizeObj->saveImage($imageFullPath, 100);
-            
+
                         // Save the file path relative to the uploads folder
                         $imageUpName = '/uploads/users/' . $safeFileName;
                         $imageData = array('user_image' => $imageUpName);
@@ -337,7 +337,7 @@ class UsersTable extends AbstractTableGateway
                     echo "Failed to create directory.";
                 }
             }
-            
+
             return $userId;
         }
     }
@@ -469,7 +469,7 @@ class UsersTable extends AbstractTableGateway
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\UsersController', 'edit');
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
 
             $row[] = ucwords($aRow['first_name'] . " " . $aRow['last_name']);
             $row[] = $aRow['email'];
@@ -531,7 +531,7 @@ class UsersTable extends AbstractTableGateway
                 $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $params['removedImage']);
                 $cleanedFileName = CommonService::cleanFileName($fileName);
                 $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR, []);
-               
+
                 unlink($cleanedFilePath . $cleanedFileName);
                 $imageData = array('user_image' => '');
                 $result = $this->update($imageData, array("id" => $userId));
@@ -540,28 +540,28 @@ class UsersTable extends AbstractTableGateway
                 // Sanitize the base directory path
                 $baseDirectory = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users";
                 $safeDirectoryPath = CommonService::buildSafePath(UPLOAD_PATH, ['users']); // Use buildSafePath to sanitize path
-            
+
                 if ($safeDirectoryPath !== false) {
                     // Extract the file extension
                     $extension = strtolower(pathinfo($_FILES['user_image']['name'], PATHINFO_EXTENSION));
-            
+
                     // Construct a preliminary filename and clean it using preg_replace
                     $prelimFileName = time() . '_' . $userId; // Filename before sanitization
                     $prelimFileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $prelimFileName); // Strip out any invalid characters
-            
+
                     // Now clean the file name further using cleanFileName()
                     $safeFileName = CommonService::cleanFileName($prelimFileName) . "." . $extension;
-            
+
                     // Construct the full safe file path
                     $imageFullPath = $safeDirectoryPath . DIRECTORY_SEPARATOR . $safeFileName;
-            
+
                     // Move the uploaded file to the safe directory
                     if (move_uploaded_file($_FILES["user_image"]["tmp_name"], $imageFullPath)) {
                         // Resize the image if upload was successful
                         $resizeObj = new ImageResizeService($imageFullPath);
                         $resizeObj->resizeImage(320, 214, 'auto');
                         $resizeObj->saveImage($imageFullPath, 100);
-            
+
                         // Save the file path relative to the uploads folder
                         $imageUpName = '/uploads/users/' . $safeFileName;
                         $imageData = array('user_image' => $imageUpName);
@@ -572,7 +572,7 @@ class UsersTable extends AbstractTableGateway
                     echo "Failed to create directory.";
                 }
             }
-            
+
             return $userId;
         }
     }

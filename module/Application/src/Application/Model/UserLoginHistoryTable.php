@@ -168,7 +168,7 @@ class UserLoginHistoryTable extends AbstractTableGateway
         );
 
         foreach ($rResult as $aRow) {
-            $row = array();
+            $row = [];
             $row[] = ucwords($aRow['login_id']);
             $row[] = ucwords(date('d-M-Y H:i:s', strtotime($aRow['login_attempted_datetime'])));
             $row[] = ucwords($aRow['ip_address']);

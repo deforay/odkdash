@@ -952,9 +952,9 @@ $config = $this->GlobalConfigHelper();
 		<?php
 
 		$counter = 0;
-		$barData = array();
-		$volumeData = array();
-		$labNameData = array();
+		$barData = [];
+		$volumeData = [];
+		$labNameData = [];
 		foreach ($allSubmissions as $row) {
 			if ($counter == 20) break;
 			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
@@ -1217,8 +1217,8 @@ $config = $this->GlobalConfigHelper();
 
 			<?php
 
-			$eventDatesArray = array();
-			$eventCount = array();
+			$eventDatesArray = [];
+			$eventCount = [];
 			foreach ($allSubmissions as $row) {
 				$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 				$eventDatesArray[] = "'" . $humanDate . "'";
@@ -1477,9 +1477,9 @@ $config = $this->GlobalConfigHelper();
 	$(function() {
 		<?php
 		$counter = 0;
-		$barData = array();
-		$volumeData = array();
-		$labNameData = array();
+		$barData = [];
+		$volumeData = [];
+		$labNameData = [];
 
 		foreach ($testingVolume as $row) {
 			if ($counter == 10) break;
@@ -1620,10 +1620,10 @@ $config = $this->GlobalConfigHelper();
 			}]
 		});
 		<?php
-		$eventDatesArray = array();
-		$eventDatesArrayFormat = array();
-		$auditDataList = array();
-		$eventCount = array();
+		$eventDatesArray = [];
+		$eventDatesArrayFormat = [];
+		$auditDataList = [];
+		$eventCount = [];
 		foreach ($allSubmissions as $row) {
 			$humanDate = $this->humanReadableDateFormat($row['assesmentofaudit']);
 			$eventDatesArray[] = "'" . $humanDate . "'";

@@ -69,7 +69,7 @@ class CommonController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $auditRoundNo = array();
+            $auditRoundNo = [];
             $id = $params['inpId'];
             if (trim($params["formVersion"]) == 'v3') {
                 $auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();
