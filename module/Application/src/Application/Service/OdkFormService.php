@@ -6929,11 +6929,12 @@ class OdkFormService
                     $correctiveActions = json_decode($formData['correctiveaction'], true);
                     if (isset($correctiveActions[0]['sectionno'])) {
                         foreach ($correctiveActions as $ca) {
-                            $partDTable .= '<tr nobr="true">';
+                            $rowStyle = ($ca['correction'] == 'Immediate') ? 'color:red;' : '';
+                            $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
                             $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
                             $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
                             $partDTable .= '<td style="text-align:center;">';
-                            $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
+                            $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
                             $partDTable .= '</td>';
                             $partDTable .= '<td style="text-align:center;">';
                             $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
@@ -6982,11 +6983,12 @@ class OdkFormService
                             foreach ($actions as $type => $key) {
                                 if (isset($correctiveActions[$key])) {
                                     $data = $correctiveActions[$key];
-                                    $partDTable .= '<tr nobr="true">';
+                                    $rowStyle = ($type == 'IMMEDIATE') ? 'color:red;' : '';
+                                    $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
                                     $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
                                     $partDTable .= '<td>' . ($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
                                     $partDTable .= '<td style="text-align:center;">';
-                                    $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
+                                    $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
                                     $partDTable .= '</td>';
                                     $partDTable .= '<td style="text-align:center;">';
                                     $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
