@@ -24,11 +24,13 @@ class IndexController extends AbstractActionController
     {
         $allSubmissions = $this->odkFormService->getAllApprovedSubmissionsV6();
         $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6('');
-
-        return new ViewModel(array(
+        $this->layout()->setTemplate('layout/home');
+        $viewModel = new ViewModel();
+        $viewModel->setVariables(array(
             'allSubmissions' => $allSubmissions,
-            'testingVolume' => $testingVolume,
+            'testingVolume' => $testingVolume
         ));
+        return $viewModel;
     }
 
     public function auditLocationsAction()
