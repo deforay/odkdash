@@ -98,19 +98,23 @@ $totalVersions = count(explode(",", $web_version));
                 <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RRT'); ?></a>
               <?php } ?>
             <?php } else { ?>
-              <li><a href="#"><span><?php echo $this->translate('Dashboard'); ?></span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
+              <div class="dropdown">
+                <a class="btn btn-getstarted dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <span><?php echo $this->translate('Dashboard'); ?></span>
+                </a>
+                <ul class="dropdown-menu">
                   <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-                    <li class=""><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
+                    <li><a class="dropdown-item" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
                   <?php } ?>
                   <?php if (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                    <li class=""><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
+                    <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
                   <?php } ?>
                   <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-                    <li class=""><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                    <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
                   <?php } ?>
+
                 </ul>
-              </li>
+              </div>
             <?php } ?>
           <?php } ?>
          <?php } else { ?>
