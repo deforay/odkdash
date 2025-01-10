@@ -2810,7 +2810,7 @@ ALTER TABLE `spi_form_v_6` ADD `form_metadata` JSON NULL DEFAULT NULL AFTER `D0_
 ALTER TABLE `audit_mails` ADD `audit_ids` TEXT NULL DEFAULT NULL AFTER `message`;
 
 -- Brindha 19-Dec-2024
-CREATE TABLE `user_location_map` (
+CREATE TABLE IF NOT EXISTS `user_location_map` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `location_id` int NOT NULL,

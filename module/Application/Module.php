@@ -60,7 +60,7 @@ class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        /** @var $application \Laminas\Mvc\Application */
+        /** @var \Laminas\Mvc\Application $application */
         $application = $e->getApplication();
 
         $eventManager        = $application->getEventManager();
@@ -96,7 +96,7 @@ class Module
         $session = new Container('credo');
 
 
-        /** @var $application \Laminas\Mvc\Application */
+        /** @var \Laminas\Mvc\Application $application*/
         $application = $e->getApplication();
 
         $diContainer = $application->getServiceManager();
@@ -117,11 +117,12 @@ class Module
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
         ) {
             if (empty($session) || empty($session->userId)) {
-                $url = $e->getRouter()->assemble(array(), array('name' => 'login'));
-                /** @var \Laminas\Http\Response $response */
+                $url = $e->getRouter()->assemble([], ['name' => 'login']);
+                /** @var \Laminas\Http\PhpEnvironment\Response $response */
                 $response = $e->getResponse();
                 $response->getHeaders()->addHeaderLine('Location', $url);
                 $response->setStatusCode(302);
+
                 $response->sendHeaders();
 
                 // To avoid additional processing
@@ -160,7 +161,7 @@ class Module
 
                 if (!$acl->hasResource($resource) || (!$acl->isAllowed($role, $resource, $privilege))) {
 
-                    /** @var \Laminas\Http\Response $response */
+                    /** @var \Laminas\Http\PhpEnvironment\Response $response */
                     $response = $e->getResponse();
                     $response->setStatusCode(403);
                     $response->sendHeaders();
@@ -187,10 +188,9 @@ class Module
 
     protected function initTranslator(MvcEvent $event)
     {
-
         $serviceManager = $event->getApplication()->getServiceManager();
         $translator = $serviceManager->get('translator');
-        $config = ($serviceManager->get('Config'));
+        $config = $serviceManager->get('Config');
         $translator->setLocale($config['settings']['locale'])
             ->setFallbackLocale('en_US');
     }
