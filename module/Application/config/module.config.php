@@ -323,10 +323,10 @@ return array(
             'Laminas\Log\LoggerAbstractServiceFactory',
         ],
         'factories' => [
-             'DbAdapter' => function ($container) {
+            'DbAdapter' => function ($container) {
                 // Configuration for the database connection
                 $config = $container->get('Config');
-                $dbConfig = $config['db'];                
+                $dbConfig = $config['db'];
                 return new Adapter($dbConfig);
             },
             'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
@@ -337,16 +337,16 @@ return array(
             GenerateBulkPdf::class => GenerateBulkPdfFactory::class,
         ]
     ],
-    'translator' => array(
+    'translator' => [
         'locale' => 'en_US',
-        'translation_file_patterns' => array(
-            array(
-                'type'     => 'gettext',
+        'translation_file_patterns' => [
+            [
+                'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
-            ),
-        ),
-    ),
+                'pattern' => '%s.mo',
+            ],
+        ],
+    ],
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
