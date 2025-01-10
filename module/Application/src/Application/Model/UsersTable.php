@@ -52,10 +52,10 @@ class UsersTable extends AbstractTableGateway
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $userLocationMapTable = new UserLocationMapTable($dbAdapter);
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('u' => 'users'))
-            ->join(array('urm' => 'user_role_map'), 'urm.user_id=u.id', array('role_id'))
-            ->join(array('r' => 'roles'), 'r.role_id=urm.role_id', array('role_name', 'role_code'))
-            ->where(array('login' => $username, 'u.status' => 'active'));
+        $sQuery = $sql->select()->from(['u' => 'users'])
+            ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
+            ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
+            ->where(['login' => $username, 'u.status' => 'active']);
         $sQueryStr = $sql->buildSqlString($sQuery);
 
         /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
@@ -71,7 +71,7 @@ class UsersTable extends AbstractTableGateway
             'last_login_datetime' => CommonService::getDateTime()
         ];
         if ($sResult !== false && !empty($sResult)) {
-            $this->update($data, array('id' => $sResult->id));
+            $this->update($data, ['id' => $sResult->id]);
         }
 
         if ($sResult && $passwordValidation) {
@@ -84,9 +84,9 @@ class UsersTable extends AbstractTableGateway
             }
 
             $token = [];
-            $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
-                ->columns(array('token'))
-                ->where(array('user_id' => $sResult->id))
+            $userTokenQuery = $sql->select()->from(['u_t_map' => 'user_token_map'])
+                ->columns(['token'])
+                ->where(['user_id' => $sResult->id])
                 ->order("token ASC");
             $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
             $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -113,9 +113,6 @@ class UsersTable extends AbstractTableGateway
             if (isset($redirect) && !empty($redirect) && !is_array($redirect)) {
                 if (!empty($redirect) && $redirect == 'v6') {
                     $redirectRoute = 'dashboard-v6';
-                }
-                if (!empty($redirect) && $redirect == 'v5') {
-                    $redirectRoute = 'dashboard-v5';
                 }
                 if (!empty($redirect) && $redirect == 'v3') {
                     $redirectRoute = 'dashboard';
@@ -281,7 +278,7 @@ class UsersTable extends AbstractTableGateway
                         }
                     }
                 }
-                
+
                 //Update User-Token
                 $userTokenMap->delete(array('user_id' => $userId));
                 if (isset($params['token']) && trim($params['token']) != '') {
