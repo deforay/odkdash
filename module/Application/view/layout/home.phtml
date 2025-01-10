@@ -16,146 +16,140 @@ $totalVersions = count(explode(",", $web_version));
 ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>SPI RRT Dashboard</title>
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
 
-    <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon" />
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPI RRT Dashboard</title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon" />
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
 
-    <!-- Vendor CSS Files -->
-    <link
-      href="<?php echo $this->basePath('assets/home/bootstrap/css/bootstrap.min.css'); ?>"
-      rel="stylesheet"
-    />
-    <link
-      href="<?php echo $this->basePath('assets/home/bootstrap-icons/bootstrap-icons.css'); ?>"
-      rel="stylesheet"
-    />
-    <link href="<?php echo $this->basePath('assets/home/aos/aos.css'); ?>" rel="stylesheet" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
 
-    <!-- Main CSS File -->
-    <link href="<?php echo $this->basePath('assets/css/main.css'); ?>" rel="stylesheet" />
+  <!-- Vendor CSS Files -->
+  <link
+    href="<?php echo $this->basePath('assets/home/bootstrap/css/bootstrap.min.css'); ?>"
+    rel="stylesheet" />
+  <link
+    href="<?php echo $this->basePath('assets/home/bootstrap-icons/bootstrap-icons.css'); ?>"
+    rel="stylesheet" />
+  <link href="<?php echo $this->basePath('assets/home/aos/aos.css'); ?>" rel="stylesheet" />
 
-    <!-- =======================================================
+  <!-- Main CSS File -->
+  <link href="<?php echo $this->basePath('assets/css/main.css'); ?>" rel="stylesheet" />
+
+  <!-- =======================================================
   * Template Name: OnePage
   * Template URL: https://bootstrapmade.com/onepage-multipurpose-bootstrap-template/
   * Updated: Aug 07 2024 with Bootstrap v5.3.3
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
-  </head>
+</head>
 
-  <body class="index-page">
-    <header id="header" class="header d-flex align-items-center sticky-top">
-      <div class="container-fluid container-xl position-relative d-flex align-items-center">
-        <a href="#" class="logo d-flex align-items-center me-auto">
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <!-- <img src="assets/img/logo.png" alt=""> -->
-          <?php
-          // $config = $this->GlobalConfigHelper();
-          if (!empty($config) && !empty($config['logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
-          ?>
-            <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
-          <?php
-          } else {
-          ?>
-            <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;background-color: var(--accent-color);" />
-          <?php
-          }
-          if (!empty($config) && !empty($config['additional_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
-          ?>
+<body class="index-page">
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="#" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <?php
+        // $config = $this->GlobalConfigHelper();
+        if (!empty($config) && !empty($config['logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
+        ?>
+          <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
+        <?php
+        } else {
+        ?>
+          <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;background-color: var(--accent-color);" />
+        <?php
+        }
+        if (!empty($config) && !empty($config['additional_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
+        ?>
           <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" style="width:100%;" />
-          <?php
-          }
-          ?>
-        </a>
+        <?php
+        }
+        ?>
+      </a>
 
-        <nav id="navmenu" class="navmenu">
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-        
-        <?php if (isset($sessionLogin->userId)) { ?>
-          <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\IndexController", "index")) { ?>
-            <?php if ($totalVersions == 1) { ?>
-              <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-                <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RT'); ?></a>
-              <?php } elseif (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></a>
-              <?php } elseif (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-                <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RRT'); ?></a>
-              <?php } ?>
-            <?php } else { ?>
-              <div class="dropdown">
-                <a class="btn btn-getstarted dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <span><?php echo $this->translate('Dashboard'); ?></span>
-                </a>
-                <ul class="dropdown-menu">
-                  <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-                    <li><a class="dropdown-item" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
-                  <?php } ?>
-                  <?php if (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                    <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
-                  <?php } ?>
-                  <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-                    <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
-                  <?php } ?>
+      <nav id="navmenu" class="navmenu">
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
 
-                </ul>
-              </div>
+      <?php if (isset($sessionLogin->userId)) { ?>
+        <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\IndexController", "index")) { ?>
+          <?php if ($totalVersions == 1) { ?>
+            <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
+              <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RT'); ?></a>
+            <?php } elseif (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
+              <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></a>
+            <?php } elseif (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
+              <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard SPI-RRT'); ?></a>
             <?php } ?>
+          <?php } else { ?>
+            <div class="dropdown">
+              <a class="btn btn-getstarted dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span><?php echo $this->translate('Dashboard'); ?></span>
+              </a>
+              <ul class="dropdown-menu">
+                <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
+                  <li><a class="dropdown-item" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
+                <?php } ?>
+                <?php if (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
+                  <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
+                <?php } ?>
+                <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
+                  <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                <?php } ?>
+
+              </ul>
+            </div>
           <?php } ?>
-         <?php } else { ?>
-          <a class="btn-getstarted" href="<?php echo $this->url('login', array('action' => 'index')); ?>">Login</a>
         <?php } ?>
-      </div>
-    </header>
+      <?php } else { ?>
+        <a class="btn-getstarted" href="<?php echo $this->url('login', array('action' => 'index')); ?>">Login</a>
+      <?php } ?>
+    </div>
+  </header>
 
-    <main class="main">
+  <main class="main">
 
-      <?php echo $this->content; ?>
-    </main>
+    <?php echo $this->content; ?>
+  </main>
 
-    <footer id="footer" class="footer light-background">
-      <div class="container footer-top"></div>
+  <footer id="footer" class="footer light-background">
+    <div class="footer-top"></div>
 
-      <div class="container copyright text-center mt-4">
-        <p>
-          © <span>Copyright</span>
-          <strong class="px-1 sitename">RTCQI</strong>
-          <span>All Rights Reserved</span>
-        </p>
-      </div>
-    </footer>
+    <div class=" copyright text-center mt-4">
+      <p><?= $this->translate($footerText . " This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC)."); ?>
+      </p>
+    </div>
+  </footer>
 
-    <!-- Scroll Top -->
-    <a
-      href="#"
-      id="scroll-top"
-      class="scroll-top d-flex align-items-center justify-content-center"
-      ><i class="bi bi-arrow-up-short"></i
-    ></a>
+  <!-- Scroll Top -->
+  <a
+    href="#"
+    id="scroll-top"
+    class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <!-- Preloader -->
-    <div id="preloader"></div>
+  <!-- Preloader -->
+  <div id="preloader"></div>
 
-    <!-- Vendor JS Files -->
-    <script src="<?php echo $this->basePath('assets/home/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
-    <script src="<?php echo $this->basePath('assets/home/aos/aos.js'); ?>"></script>
+  <!-- Vendor JS Files -->
+  <script src="<?php echo $this->basePath('assets/home/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
+  <script src="<?php echo $this->basePath('assets/home/aos/aos.js'); ?>"></script>
 
-    <!-- Main JS File -->
-    <script src="assets/home/main.js"></script>
-  </body>
+  <!-- Main JS File -->
+  <script src="assets/home/main.js"></script>
+</body>
+
 </html>

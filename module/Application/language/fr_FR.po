@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ODKDASH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-10 14:51+0530\n"
-"PO-Revision-Date: 2025-01-10 14:53+0530\n"
+"POT-Creation-Date: 2025-01-10 21:35+0530\n"
+"PO-Revision-Date: 2025-01-10 21:37+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: Deforay <support@deforay.com>\n"
 "Language: fr\n"
@@ -129,7 +129,6 @@ msgstr "Nombre d'audits"
 #: ../view/application/dashboard/index.phtml:860
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:65
 #: ../view/application/spi-v6/spirtv6-datewise.phtml:65
-#, fuzzy
 msgid "Level 1 (40-59)"
 msgstr "Niveau 1 (40-59)"
 
@@ -146,7 +145,6 @@ msgstr "Niveau 1 (40-59)"
 #: ../view/application/dashboard/index.phtml:867
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:72
 #: ../view/application/spi-v6/spirtv6-datewise.phtml:72
-#, fuzzy
 msgid "Level 2 (60-79)"
 msgstr "Niveau 2 (60-79)"
 
@@ -163,7 +161,6 @@ msgstr "Niveau 2 (60-79)"
 #: ../view/application/dashboard/index.phtml:874
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:79
 #: ../view/application/spi-v6/spirtv6-datewise.phtml:79
-#, fuzzy
 msgid "Level 3 (80-89)"
 msgstr "Niveau 3 (80-89)"
 
@@ -180,7 +177,6 @@ msgstr "Niveau 3 (80-89)"
 #: ../view/application/dashboard/index.phtml:881
 #: ../view/application/spi-v3/spirtv3-datewise.phtml:86
 #: ../view/application/spi-v6/spirtv6-datewise.phtml:86
-#, fuzzy
 msgid "Level 4 (90 and above)"
 msgstr "Niveau 4 (90 et plus)"
 
@@ -196,7 +192,6 @@ msgstr "Piste d’audit"
 #: ../view/application/dashboard/index.phtml:414
 #: ../view/application/index/index.phtml:195
 #: ../view/application/index/index1.phtml:142
-#, fuzzy
 msgid "Audit Locations"
 msgstr "Lieux d'audit"
 
@@ -206,7 +201,6 @@ msgstr "Version du formulaire"
 
 #: ../view/application/common/audit-locations.phtml:54
 #: ../view/application/facility/index.phtml:108
-#, fuzzy
 msgid "Audit Round"
 msgstr "Cycle d'audit"
 
@@ -273,7 +267,6 @@ msgid "OK"
 msgstr "OK"
 
 #: ../view/application/common/audit-locations.phtml:114
-#, fuzzy
 msgid "Please select one or more audit round(s)"
 msgstr "Veuillez sélectionner un ou plusieurs cycle(s) d'audit"
 
@@ -332,7 +325,6 @@ msgstr "Sélectionner la plage de date"
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:204
 #: ../view/application/spi-v6/view-data-v6.phtml:58
 #: ../view/application/spi-v6/view-data-v6.phtml:239
-#, fuzzy
 msgid "Audit Round No."
 msgstr "Numéro du cycle d'audit"
 
@@ -404,14 +396,12 @@ msgstr "Tout"
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:210
 #: ../view/application/spi-v6/view-data-v6.phtml:128
 #: ../view/application/spi-v6/view-data-v6.phtml:245
-#, fuzzy
 msgid "Score Level"
 msgstr "Niveau de score"
 
 #: ../view/application/dashboard-v5/index.phtml:211
 #: ../view/application/dashboard-v6/index.phtml:226
 #: ../view/application/dashboard/index.phtml:208
-#, fuzzy
 msgid "Overall Performance"
 msgstr "Performance globale"
 
@@ -487,7 +477,6 @@ msgstr "À ce jour"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:34
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:34
 #: ../view/application/spi-v6/view-data-v6.phtml:41
-#, fuzzy
 msgid "Performance - Last 180 days"
 msgstr "Performance - 180 derniers jours"
 
@@ -506,7 +495,6 @@ msgstr "Performance - 180 derniers jours"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:30
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:30
 #: ../view/application/spi-v6/view-data-v6.phtml:37
-#, fuzzy
 msgid "Audit Performance"
 msgstr "Audit de la performance"
 
@@ -525,7 +513,6 @@ msgstr "Pas de données disponibles"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:24
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:24
 #: ../view/application/spi-v6/view-data-v6.phtml:31
-#, fuzzy
 msgid "Performance of High Volume Sites"
 msgstr "Performance des sites à fort volume"
 
@@ -541,7 +528,6 @@ msgstr "Performance des sites à fort volume"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:26
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:26
 #: ../view/application/spi-v6/view-data-v6.phtml:33
-#, fuzzy
 msgid "Latest Audits"
 msgstr "Derniers audits"
 
@@ -575,7 +561,6 @@ msgstr "Date"
 #: ../view/application/dashboard-v6/index.phtml:473
 #: ../view/application/dashboard-v6/index.phtml:588
 #: ../view/application/dashboard/index.phtml:371
-#, fuzzy
 msgid "Poor Performance – QSE Section Questions"
 msgstr "Mauvaise performance - Questions de la section QSE"
 
@@ -604,7 +589,6 @@ msgstr "Établissement"
 #: ../view/application/dashboard/index.phtml:500
 #: ../view/application/spi-v3-reports/facility-report.phtml:164
 #: ../view/application/spi-v6-reports/facility-report.phtml:147
-#, fuzzy
 msgid "Facility name"
 msgstr "Nom de la structure"
 
@@ -659,7 +643,6 @@ msgstr "Actions"
 #: ../view/application/dashboard/index.phtml:1011
 #: ../view/application/index/index.phtml:308
 #: ../view/application/index/index1.phtml:263
-#, fuzzy
 msgid "Audit score in %"
 msgstr "Score d'audit en %"
 
@@ -694,7 +677,6 @@ msgstr "Score d'audit en %"
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:171
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:185
 #: ../view/application/spi-v6/view-data-v6.phtml:220
-#, fuzzy
 msgid "Testing Volume"
 msgstr "Volume d'essai"
 
@@ -707,7 +689,6 @@ msgstr "Volume d'essai"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:184
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:184
 #: ../view/application/spi-v6/view-data-v6.phtml:219
-#, fuzzy
 msgid "Audit Score Percentage"
 msgstr "Score d'audit Pourcentage"
 
@@ -740,7 +721,6 @@ msgstr "Tests"
 #: ../view/application/dashboard/index.phtml:1433
 #: ../view/application/index/index.phtml:637
 #: ../view/application/index/index1.phtml:592
-#, fuzzy
 msgid "Audit round(s)"
 msgstr "Cycle(s) d'audit"
 
@@ -750,7 +730,6 @@ msgstr "Cycle(s) d'audit"
 #: ../view/application/facility/index.phtml:279
 #: ../view/application/index/index.phtml:642
 #: ../view/application/index/index1.phtml:597
-#, fuzzy
 msgid "Select Audit round(s)"
 msgstr "Sélectionner le(s) tour(s) d'audit"
 
@@ -770,7 +749,6 @@ msgstr "Sélectionner le(s) tour(s) d'audit"
 #: ../view/application/spi-v6/index.phtml:537
 #: ../view/application/spi-v6/index.phtml:571
 #: ../view/application/spi-v6/view-data-v6.phtml:585
-#, fuzzy
 msgid "Unable to generate download"
 msgstr "Impossible de générer un téléchargement"
 
@@ -781,7 +759,6 @@ msgstr "Impossible de générer un téléchargement"
 #: ../view/application/index/index1.phtml:687
 #: ../view/application/spi-v3/testing-volume-datewise.phtml:67
 #: ../view/application/spi-v6/testing-volume-datewise.phtml:68
-#, fuzzy
 msgid "No. of Testers"
 msgstr "Nombre de testeurs"
 
@@ -835,7 +812,6 @@ msgstr "Niveau"
 #: ../view/application/index/index.phtml:878
 #: ../view/application/index/index1.phtml:812
 #: ../view/application/index/index1.phtml:833
-#, fuzzy
 msgid "Audit Counts"
 msgstr "Comptes d'audit"
 
@@ -848,37 +824,31 @@ msgstr "Pays"
 #: ../view/application/dashboard-v6/index.phtml:352
 #: ../view/application/dashboard-v6/index.phtml:1644
 #: ../view/application/dashboard-v6/index.phtml:1647
-#, fuzzy
 msgid "Show S0 and D0 Audit Performance Charts"
 msgstr "Afficher les diagrammes de performance des audits S0 et D0"
 
 #: ../view/application/dashboard-v6/index.phtml:362
 #: ../view/application/spi-v6/audit-performance-section-zero.phtml:36
-#, fuzzy
 msgid "Audit Performance S0"
 msgstr "Audit de la performance S0"
 
 #: ../view/application/dashboard-v6/index.phtml:400
 #: ../view/application/spi-v6/audit-performance-section-zero-protocol.phtml:39
-#, fuzzy
 msgid "Audit Performance D0"
 msgstr "Performance de l'audit D0"
 
 #: ../view/application/dashboard-v6/index.phtml:1645
-#, fuzzy
 msgid "Hide S0 and D0 Audit Performance Charts"
 msgstr "Masquer les diagrammes de performance des audits S0 et D0"
 
 #: ../view/application/dashboard/index.phtml:503
 #: ../view/application/spi-v3-reports/facility-report.phtml:166
 #: ../view/application/spi-v6-reports/facility-report.phtml:149
-#, fuzzy
 msgid "Testing Point"
 msgstr "Point d'essai"
 
 #: ../view/application/email/email-v5.phtml:21
 #: ../view/application/email/email-v6.phtml:21 ../view/layout/layout.phtml:328
-#, fuzzy
 msgid "Email SPI-RRT"
 msgstr "Courriel SPI-RRT"
 
@@ -897,7 +867,6 @@ msgstr "Sélectionner l'infrastructure"
 #: ../view/application/email/email-v5.phtml:49
 #: ../view/application/email/email-v6.phtml:59
 #: ../view/application/email/index.phtml:42
-#, fuzzy
 msgid "Facility Email Address"
 msgstr "Adresse électronique de l'établissement"
 
@@ -910,14 +879,12 @@ msgstr "Entrez une adresse email"
 #: ../view/application/email/email-v5.phtml:51
 #: ../view/application/email/email-v6.phtml:61
 #: ../view/application/email/index.phtml:44
-#, fuzzy
 msgid "Please enter facility email address"
 msgstr "Veuillez saisir l'adresse électronique de l'établissement"
 
 #: ../view/application/email/email-v5.phtml:56
 #: ../view/application/email/email-v6.phtml:66
 #: ../view/application/email/index.phtml:49
-#, fuzzy
 msgid "Choose Audits"
 msgstr "Choisir les audits"
 
@@ -936,7 +903,6 @@ msgstr "Écrire votre message"
 #: ../view/application/email/email-v5.phtml:72
 #: ../view/application/email/email-v6.phtml:82
 #: ../view/application/email/index.phtml:65
-#, fuzzy
 msgid "Please type your message"
 msgstr "Veuillez taper votre message"
 
@@ -949,7 +915,6 @@ msgstr "Pièces jointes"
 #: ../view/application/email/email-v5.phtml:78
 #: ../view/application/email/email-v6.phtml:88
 #: ../view/application/email/index.phtml:71
-#, fuzzy
 msgid "Please choose file"
 msgstr "Veuillez choisir un fichier"
 
@@ -969,22 +934,18 @@ msgstr "Annuler"
 
 #: ../view/application/email/email-v6.phtml:34
 #: ../view/application/spi-v6/index.phtml:149
-#, fuzzy
 msgid "Show Audits"
 msgstr "Audits des spectacles"
 
 #: ../view/application/email/email-v6.phtml:37
-#, fuzzy
 msgid "Already emailed"
 msgstr "Déjà envoyé par courriel"
 
 #: ../view/application/email/email-v6.phtml:38
-#, fuzzy
 msgid "Not yet emailed"
 msgstr "Pas encore envoyé par courriel"
 
 #: ../view/application/email/index.phtml:13 ../view/layout/layout.phtml:326
-#, fuzzy
 msgid "Email SPI-RT"
 msgstr "Courriel SPI-RT"
 
@@ -1007,12 +968,10 @@ msgstr "Rechercher"
 #: ../view/application/facility/add.phtml:224
 #: ../view/application/facility/edit.phtml:202
 #: ../view/application/facility/get-province-list.phtml:236
-#, fuzzy
 msgid "\" + type + \" already exists. please type another one."
 msgstr "\" + type + \" existe déjà. Veuillez en saisir un autre."
 
 #: ../view/application/facility/add.phtml:209
-#, fuzzy
 msgid "\" + type + \" can not be empty"
 msgstr "\" + type + \" ne peut être vide"
 
@@ -1037,22 +996,18 @@ msgid "Facility Name"
 msgstr "Nom de la structure"
 
 #: ../view/application/facility/get-facility-name.phtml:81
-#, fuzzy
 msgid "Updated/New Facility Name"
 msgstr "Nom de l'établissement mis à jour/nouveau"
 
 #: ../view/application/facility/get-facility-name.phtml:94
-#, fuzzy
 msgid "Facility to merge with this"
 msgstr "Facilité à fusionner avec cette"
 
 #: ../view/application/facility/get-facility-name.phtml:121
-#, fuzzy
 msgid "Merge Facility Name"
 msgstr "Fusionner le nom de l'installation"
 
 #: ../view/application/facility/get-facility-name.phtml:137
-#, fuzzy
 msgid "Please select facility name"
 msgstr "Veuillez sélectionner le nom de l'établissement"
 
@@ -1081,66 +1036,54 @@ msgid "District"
 msgstr "District"
 
 #: ../view/application/facility/get-province-list.phtml:87
-#, fuzzy
 msgid "Facility List"
 msgstr "Liste des installations"
 
 #: ../view/application/facility/get-province-list.phtml:114
 #: ../view/application/facility/index.phtml:60
-#, fuzzy
 msgid "Map Province to Facility"
 msgstr "Carte de la province à l'établissement"
 
 #: ../view/application/facility/get-province-list.phtml:132
-#, fuzzy
 msgid "Please select Facility"
 msgstr "Veuillez sélectionner l'établissement"
 
 #: ../view/application/facility/get-province-list.phtml:144
-#, fuzzy
 msgid "Do you wish to merge the selected province with the selected facility?"
 msgstr ""
 "Souhaitez-vous fusionner la province sélectionnée avec l'établissement "
 "sélectionné ?"
 
 #: ../view/application/facility/get-province-list.phtml:157
-#, fuzzy
 msgid "Province mapped successfully"
 msgstr "La province a été cartographiée avec succès"
 
 #: ../view/application/facility/get-province-list.phtml:161
-#, fuzzy
 msgid "We have experienced some problem. Please try again later."
 msgstr "Nous avons rencontré un problème. Veuillez réessayer plus tard."
 
 #: ../view/application/facility/get-province-list.phtml:169
-#, fuzzy
 msgid "Province can not be empty"
 msgstr "La province ne peut être vide"
 
 #: ../view/application/facility/get-province-list.phtml:172
-#, fuzzy
 msgid "District name can not be empty"
 msgstr "Le nom du district ne peut pas être vide"
 
 #: ../view/application/facility/get-province-list.phtml:175
-#, fuzzy
 msgid "Province name can not be empty"
 msgstr "Le nom de la province ne peut pas être vide"
 
 #: ../view/application/facility/get-province-list.phtml:178
-#, fuzzy
 msgid "Please choose atleast one facility to continue"
 msgstr "Veuillez choisir au moins un établissement pour continuer"
 
 #: ../view/application/facility/index.phtml:47 ../view/layout/layout.phtml:298
 #: ../view/layout/layout.phtml:300
-#, fuzzy
 msgid "Facilities"
 msgstr "Structures sanitaire"
 
 #: ../view/application/facility/index.phtml:51
-#, fuzzy
 msgid "Export Facilities to Excel"
 msgstr "Exporter des installations vers Excel"
 
@@ -1149,19 +1092,16 @@ msgid "Add Facility"
 msgstr "Ajouter installations"
 
 #: ../view/application/facility/index.phtml:57
-#, fuzzy
 msgid "Merge Facilities"
 msgstr "Fusionner les installations"
 
 #: ../view/application/facility/index.phtml:63
-#, fuzzy
 msgid "Bulk Upload Facilities"
 msgstr "Facilités de téléchargement en masse"
 
 #: ../view/application/facility/index.phtml:79 ../view/layout/layout.phtml:331
-#, fuzzy
 msgid "Email"
-msgstr "E-mail"
+msgstr "Courriel"
 
 #: ../view/application/facility/index.phtml:80
 msgid "Contact Person"
@@ -1178,7 +1118,6 @@ msgstr "Action"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:202
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:202
 #: ../view/application/spi-v6/view-data-v6.phtml:237
-#, fuzzy
 msgid "Facility Id"
 msgstr "Numéro d'identification de l'installation"
 
@@ -1189,14 +1128,12 @@ msgstr "Numéro d'identification de l'installation"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:206
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:206
 #: ../view/application/spi-v6/view-data-v6.phtml:241
-#, fuzzy
 msgid "Testing Point Type"
 msgstr "Type de point de contrôle"
 
 #: ../view/application/facility/index.phtml:129
 #: ../view/application/spi-v6/view-data-v6.phtml:203
 #: ../view/application/spi-v6/view-data-v6.phtml:216
-#, fuzzy
 msgid "Date of Audit"
 msgstr "Date de l'audit"
 
@@ -1205,17 +1142,14 @@ msgid "Score(%)"
 msgstr "Score"
 
 #: ../view/application/facility/index.phtml:131
-#, fuzzy
 msgid "Report"
 msgstr "Rapport"
 
 #: ../view/application/index/index.phtml:94
-#, fuzzy
 msgid "SPI RRT Dashboard"
 msgstr "Tableau de bord SPI RRT"
 
 #: ../view/application/index/index.phtml:95
-#, fuzzy
 msgid ""
 "Data Repository and Analytics for Stepwise Process for Improving the Quality "
 "of HIV Rapid and Recency Testing (SPI-RRT)"
@@ -1226,7 +1160,6 @@ msgstr ""
 #: ../view/application/index/index1.phtml:92
 #: ../view/application/spi-v3/print.phtml:10
 #: ../view/application/spi-v6/print.phtml:10
-#, fuzzy
 msgid ""
 "Stepwise Process for Improving the Quality of HIV Rapid Testing (SPI-RT) "
 "Checklist"
@@ -1236,7 +1169,6 @@ msgstr ""
 
 #: ../view/application/login/index.phtml:46 ../view/layout/layout.phtml:92
 #: ../view/layout/layout.phtml:243
-#, fuzzy
 msgid "Dashboard for Quality Improvement of HIV Rapid Testing"
 msgstr ""
 "Tableau de bord pour l'amélioration de la qualité des tests rapides de "
@@ -1260,7 +1192,6 @@ msgid "Forgot Password?"
 msgstr "Mot de passe oublié ?"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:9
-#, fuzzy
 msgid "SPI-RT 3.0 Facility Report"
 msgstr "Rapport d'installation SPI-RT 3.0"
 
@@ -1270,7 +1201,6 @@ msgstr "Rapport d'installation SPI-RT 3.0"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:69
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:69
 #: ../view/application/spi-v6/view-data-v6.phtml:76
-#, fuzzy
 msgid "Region/Province/Zone"
 msgstr "Région/Province/Zone"
 
@@ -1280,7 +1210,6 @@ msgstr "Région/Province/Zone"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:71
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:71
 #: ../view/application/spi-v6/view-data-v6.phtml:78
-#, fuzzy
 msgid "Referral center"
 msgstr "Centre de référence"
 
@@ -1299,7 +1228,6 @@ msgstr "Centre de santé"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:73
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:73
 #: ../view/application/spi-v6/view-data-v6.phtml:80
-#, fuzzy
 msgid "Dispensary"
 msgstr "Dispensaire"
 
@@ -1309,7 +1237,6 @@ msgstr "Dispensaire"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:74
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:74
 #: ../view/application/spi-v6/view-data-v6.phtml:81
-#, fuzzy
 msgid "Health Post"
 msgstr "Poste de santé"
 
@@ -1378,7 +1305,6 @@ msgstr "Privé"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:84
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:84
 #: ../view/application/spi-v6/view-data-v6.phtml:91
-#, fuzzy
 msgid "Faith-based Organization"
 msgstr "Organisation confessionnelle"
 
@@ -1401,12 +1327,10 @@ msgstr "Organisation Non Gouvernementale"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:133
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:133
 #: ../view/application/spi-v6/view-data-v6.phtml:154
-#, fuzzy
 msgid "Type of Testing Point"
 msgstr "Type de point de contrôle"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:113
-#, fuzzy
 msgid "TB Clinic"
 msgstr "Clinique de la tuberculose"
 
@@ -1415,9 +1339,8 @@ msgid "Laboratory"
 msgstr "Laboratoire"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:115
-#, fuzzy
 msgid "Treatment Center"
-msgstr "Centre de traitement : "
+msgstr "Centre de traitement"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:125
 #: ../view/application/spi-v6-reports/facility-report.phtml:121
@@ -1426,7 +1349,6 @@ msgstr "Obtenir un rapport"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:153
 #: ../view/application/spi-v6-reports/facility-report.phtml:136
-#, fuzzy
 msgid "Pending Audits (Audits not yet Accepted)"
 msgstr "Audits en cours (audits non encore acceptés)"
 
@@ -1437,7 +1359,6 @@ msgstr "Exporter vers Excel"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:167
 #: ../view/application/spi-v6-reports/facility-report.phtml:150
-#, fuzzy
 msgid "Personnel Training & Certification"
 msgstr "Formation et certification du personnel"
 
@@ -1453,7 +1374,6 @@ msgstr "Sécurité"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:170
 #: ../view/application/spi-v6-reports/facility-report.phtml:153
-#, fuzzy
 msgid "Pre-Testing"
 msgstr "Pré-test"
 
@@ -1464,13 +1384,11 @@ msgstr "Tests"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:172
 #: ../view/application/spi-v6-reports/facility-report.phtml:155
-#, fuzzy
 msgid "Post-Testing"
 msgstr "Post-test"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:173
 #: ../view/application/spi-v6-reports/facility-report.phtml:156
-#, fuzzy
 msgid "External QA"
 msgstr "Assurance qualité externe"
 
@@ -1481,7 +1399,6 @@ msgstr "Total"
 
 #: ../view/application/spi-v3-reports/facility-report.phtml:175
 #: ../view/application/spi-v6-reports/facility-report.phtml:159
-#, fuzzy
 msgid "% Scores"
 msgstr "% Scores"
 
@@ -1491,7 +1408,6 @@ msgid "No Data Available"
 msgstr "Aucune donnée disponible"
 
 #: ../view/application/spi-v3/index.phtml:34
-#, fuzzy
 msgid "SPI-RT 3.0 Checklist"
 msgstr "Liste de contrôle SPI-RT 3.0"
 
@@ -1506,12 +1422,10 @@ msgid "Duplicates"
 msgstr "Doublons"
 
 #: ../view/application/spi-v3/index.phtml:166
-#, fuzzy
 msgid "Facility Province"
 msgstr "Région FOSA"
 
 #: ../view/application/spi-v3/index.phtml:167
-#, fuzzy
 msgid "Facility District"
 msgstr "District des installations"
 
@@ -1528,13 +1442,11 @@ msgstr "District des installations"
 #: ../view/application/spi-v6/view-data-v6.phtml:205
 #: ../view/application/spi-v6/view-data-v6.phtml:218
 #: ../view/application/spi-v6/view-data-v6.phtml:242
-#, fuzzy
 msgid "Testing Point Name"
 msgstr "Nom du point d'essai"
 
 #: ../view/application/spi-v3/index.phtml:174
 #: ../view/application/spi-v6/index.phtml:186
-#, fuzzy
 msgid "Audit Score %"
 msgstr "Score d'audit %"
 
@@ -1544,7 +1456,6 @@ msgstr "Score d'audit %"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:256
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:254
 #: ../view/application/spi-v6/view-data-v6.phtml:289
-#, fuzzy
 msgid "No.of Audit(s)"
 msgstr "Nombre d'audit(s)"
 
@@ -1554,7 +1465,6 @@ msgstr "Nombre d'audit(s)"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:259
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:257
 #: ../view/application/spi-v6/view-data-v6.phtml:292
-#, fuzzy
 msgid "Avg. Audit Score"
 msgstr "Avg. Score d'audit"
 
@@ -1564,7 +1474,6 @@ msgstr "Avg. Score d'audit"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:264
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:262
 #: ../view/application/spi-v6/view-data-v6.phtml:297
-#, fuzzy
 msgid "Level 0<br>(Below 40)"
 msgstr "Niveau 0<br>(inférieur à 40)"
 
@@ -1574,7 +1483,6 @@ msgstr "Niveau 0<br>(inférieur à 40)"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:269
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:267
 #: ../view/application/spi-v6/view-data-v6.phtml:302
-#, fuzzy
 msgid "Level 1<br>(40-59)"
 msgstr "Niveau 1<br>(40-59)"
 
@@ -1584,7 +1492,6 @@ msgstr "Niveau 1<br>(40-59)"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:274
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:272
 #: ../view/application/spi-v6/view-data-v6.phtml:307
-#, fuzzy
 msgid "Level 2<br>(60-79)"
 msgstr "Niveau 2<br>(60-79)"
 
@@ -1594,7 +1501,6 @@ msgstr "Niveau 2<br>(60-79)"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:279
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:277
 #: ../view/application/spi-v6/view-data-v6.phtml:312
-#, fuzzy
 msgid "Level 3<br>(80-89)"
 msgstr "Niveau 3<br>(80-89)"
 
@@ -1604,7 +1510,6 @@ msgstr "Niveau 3<br>(80-89)"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:284
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:282
 #: ../view/application/spi-v6/view-data-v6.phtml:317
-#, fuzzy
 msgid "Level 4<br>(90 and above)"
 msgstr "Niveau 4<br>(90 et plus)"
 
@@ -1615,36 +1520,30 @@ msgstr "Exporter toutes les données"
 
 #: ../view/application/spi-v3/index.phtml:228
 #: ../view/application/spi-v6/index.phtml:241
-#, fuzzy
 msgid "Export Summary Table as PDF"
 msgstr "Exporter le tableau récapitulatif au format PDF"
 
 #: ../view/application/spi-v3/index.phtml:251
 #: ../view/application/spi-v6/index.phtml:264
-#, fuzzy
 msgid "Print Full Survey"
 msgstr "Imprimer l'enquête complète"
 
 #: ../view/application/spi-v3/index.phtml:253
 #: ../view/application/spi-v6/index.phtml:266
-#, fuzzy
 msgid "Print Corrective Actions"
 msgstr "Imprimer les actions correctives"
 
 #: ../view/application/spi-v3/index.phtml:259
-#, fuzzy
 msgid "Select Province/District(s)"
 msgstr "Sélectionnez la province/le(s) district(s)"
 
 #: ../view/application/spi-v3/index.phtml:370
 #: ../view/application/spi-v6/index.phtml:410
-#, fuzzy
 msgid "Are you sure you want to approve this audit ?"
 msgstr "Êtes-vous sûr de vouloir approuver cet audit ?"
 
 #: ../view/application/spi-v3/index.phtml:377
 #: ../view/application/spi-v6/index.phtml:417
-#, fuzzy
 msgid "Audit updated successfully"
 msgstr "L'audit a été mis à jour avec succès"
 
@@ -1655,13 +1554,11 @@ msgstr "Chargement..."
 
 #: ../view/application/spi-v3/index.phtml:503
 #: ../view/application/spi-v6/index.phtml:574
-#, fuzzy
 msgid "Your download is processing"
 msgstr "Votre téléchargement est en cours"
 
 #: ../view/application/spi-v3/print.phtml:54
 #: ../view/application/spi-v6/print.phtml:54
-#, fuzzy
 msgid ""
 "Stepwise Process for Improving the Quality of HIV Rapid Testing\n"
 "  (SPI-RT) Checklist"
@@ -1672,7 +1569,6 @@ msgstr ""
 
 #: ../view/application/spi-v3/print.phtml:62
 #: ../view/application/spi-v6/print.phtml:62
-#, fuzzy
 msgid ""
 "SPI-RT\n"
 "  Checklist"
@@ -1684,14 +1580,12 @@ msgstr ""
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:32
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:32
 #: ../view/application/spi-v6/view-data-v6.phtml:39
-#, fuzzy
 msgid "Overall Audit Performance"
 msgstr "Performance globale de l'audit"
 
 #: ../view/application/spi-v3/view-data.phtml:91
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:91
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:91
-#, fuzzy
 msgid "Province/District"
 msgstr "Province/District"
 
@@ -1701,7 +1595,6 @@ msgstr "Province/District"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:181
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:168
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:181
-#, fuzzy
 msgid "Assesment of Audit"
 msgstr "Évaluation de l'audit"
 
@@ -1709,7 +1602,6 @@ msgstr "Évaluation de l'audit"
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:194
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:194
 #: ../view/application/spi-v6/view-data-v6.phtml:229
-#, fuzzy
 msgid "Audit Count"
 msgstr "Nombre d'audits"
 
@@ -1722,149 +1614,121 @@ msgstr "Pourcentage"
 
 #: ../view/application/spi-v3/view-data.phtml:220
 #: ../view/application/spi-v6/view-data-v6.phtml:255
-#, fuzzy
 msgid "Personal Training and Certifications"
 msgstr "Formation personnelle et certifications"
 
 #: ../view/application/spi-v3/view-data.phtml:221
 #: ../view/application/spi-v6/view-data-v6.phtml:256
-#, fuzzy
 msgid "Physical Facility"
 msgstr "Installation physique"
 
 #: ../view/application/spi-v3/view-data.phtml:222
 #: ../view/application/spi-v6/view-data-v6.phtml:257
-#, fuzzy
 msgid "Saftey"
 msgstr "Sécurité"
 
 #: ../view/application/spi-v3/view-data.phtml:223
 #: ../view/application/spi-v6/view-data-v6.phtml:258
-#, fuzzy
 msgid "Pre-Testing Phase"
 msgstr "Phase de pré-test"
 
 #: ../view/application/spi-v3/view-data.phtml:224
 #: ../view/application/spi-v6/view-data-v6.phtml:259
-#, fuzzy
 msgid "Testing Phase"
 msgstr "Phase de test"
 
 #: ../view/application/spi-v3/view-data.phtml:225
 #: ../view/application/spi-v6/view-data-v6.phtml:260
-#, fuzzy
 msgid "Post-Testing Phase"
 msgstr "Phase de post-test"
 
 #: ../view/application/spi-v3/view-data.phtml:226
 #: ../view/application/spi-v6/view-data-v6.phtml:261
-#, fuzzy
 msgid "External Quality Assessment"
 msgstr "Évaluation externe de la qualité"
 
 #: ../view/application/spi-v6-reports/facility-report.phtml:16
 #: ../view/layout/layout.phtml:316
-#, fuzzy
 msgid "SPI-RRT Facility Report"
 msgstr "Rapport sur l'installation SPI-RRT"
 
 #: ../view/application/spi-v6-reports/facility-report.phtml:157
-#, fuzzy
 msgid "RTRI"
 msgstr "RTRI"
 
 #: ../view/application/spi-v6/index.phtml:54
-#, fuzzy
 msgid "SPI-RRT Checklist V6"
 msgstr "Liste de contrôle SPI-RRT V6"
 
 #: ../view/application/spi-v6/index.phtml:153
-#, fuzzy
 msgid "Already Printed"
-msgstr "Résultats déjà imprimés"
+msgstr "Déjà imprimé"
 
 #: ../view/application/spi-v6/index.phtml:154
-#, fuzzy
 msgid "Not yet Printed"
 msgstr "Résultats pas encore imprimés"
 
 #: ../view/application/spi-v6/index.phtml:240
-#, fuzzy
 msgid "Export D and S Data"
 msgstr "Exporter les données D et S"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:220
-#, fuzzy
 msgid "HIV above 15"
 msgstr "VIH supérieur à 15"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:222
-#, fuzzy
 msgid "Screened for participation"
 msgstr "Sélection pour la participation"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:223
-#, fuzzy
 msgid "Eligible during Review"
 msgstr "Admissible en cours d'examen"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:224
-#, fuzzy
 msgid "Eligible and declined"
 msgstr "Éligibles et refusés"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:225
-#, fuzzy
 msgid "Documented and refused"
 msgstr "Documenté et refusé"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:226
-#, fuzzy
 msgid "Enrolled in RTRI"
 msgstr "Inscrits à l'IRTF"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:227
-#, fuzzy
 msgid "Incorrectly Enrolled"
 msgstr "Inscrits à tort"
 
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:228
-#, fuzzy
 msgid "Correctly Enrolled"
 msgstr "Correctement inscrits"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:220
-#, fuzzy
 msgid "Surveilance Protocol Eligibility"
 msgstr "Éligibilité au protocole de surveillance"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:221
-#, fuzzy
 msgid "Councellors Following Protocol"
 msgstr "Les conseillers suivent le protocole"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:222
-#, fuzzy
 msgid "Recency Tests Recorded"
 msgstr "Tests de récence enregistrés"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:223
-#, fuzzy
 msgid "Process Documented"
 msgstr "Processus documenté"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:224
-#, fuzzy
 msgid "Results Returned in 2 Weeks"
 msgstr "Résultats obtenus en 2 semaines"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:225
-#, fuzzy
 msgid "Protocol violation Documented"
 msgstr "Violation du protocole documentée"
 
 #: ../view/application/spi-v6/view-data-section-zero-v6.phtml:226
-#, fuzzy
 msgid "Documenting Protocol Errors"
 msgstr "Documenter les erreurs de protocole"
 
@@ -1873,7 +1737,6 @@ msgid "Countries"
 msgstr "Pays"
 
 #: ../view/application/spi-v6/view-data-v6.phtml:206
-#, fuzzy
 msgid "Monthly Test Volume"
 msgstr "Volume d'essai mensuel"
 
@@ -1888,13 +1751,11 @@ msgstr "Veuillez sélectionner un pays."
 
 #: ../view/application/users/add.phtml:162
 #: ../view/application/users/edit.phtml:229
-#, fuzzy
 msgid "Please select province."
 msgstr "Veuillez sélectionner une province."
 
 #: ../view/application/users/add.phtml:168
 #: ../view/application/users/edit.phtml:235
-#, fuzzy
 msgid "Please select district."
 msgstr "Veuillez sélectionner un district."
 
@@ -1902,28 +1763,34 @@ msgstr "Veuillez sélectionner un district."
 msgid "An error occurred"
 msgstr "Une erreur est survenue"
 
-#: ../view/layout/home.phtml:89 ../view/layout/home.phtml:99
+#: ../view/layout/home.phtml:92 ../view/layout/home.phtml:105
 #: ../view/layout/layout.phtml:257 ../view/layout/layout.phtml:267
-#, fuzzy
 msgid "Dashboard SPI-RT"
 msgstr "Tableau de bord SPI-RT"
 
-#: ../view/layout/home.phtml:91 ../view/layout/home.phtml:102
+#: ../view/layout/home.phtml:94 ../view/layout/home.phtml:108
 #: ../view/layout/layout.phtml:259 ../view/layout/layout.phtml:270
-#, fuzzy
 msgid "Dashboard SPI-RRT v5"
 msgstr "Tableau de bord SPI-RRT v5"
 
-#: ../view/layout/home.phtml:93 ../view/layout/home.phtml:105
+#: ../view/layout/home.phtml:96 ../view/layout/home.phtml:111
 #: ../view/layout/layout.phtml:261 ../view/layout/layout.phtml:273
-#, fuzzy
 msgid "Dashboard SPI-RRT"
 msgstr "Tableau de bord SPI-RRT"
 
-#: ../view/layout/home.phtml:96 ../view/layout/layout.phtml:264
-#, fuzzy
+#: ../view/layout/home.phtml:101 ../view/layout/layout.phtml:264
 msgid "Dashboard"
 msgstr "Tableau de bord"
+
+#: ../view/layout/home.phtml:133
+msgid ""
+" This project is supported by the U.S. President's Emergency Plan for AIDS "
+"Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention "
+"(CDC)."
+msgstr ""
+" Ce projet est soutenu par le Plan présidentiel d'urgence d'aide à la lutte "
+"contre le sida (PEPFAR) par l'intermédiaire des Centres américains de "
+"contrôle et de prévention des maladies (CDC)."
 
 #: ../view/layout/layout.phtml:23
 msgid "Roles"
@@ -1934,7 +1801,6 @@ msgid "Users"
 msgstr "Utilisateurs"
 
 #: ../view/layout/layout.phtml:31
-#, fuzzy
 msgid "Global Config"
 msgstr "Configuration globale"
 
@@ -1947,17 +1813,14 @@ msgid "Event Log"
 msgstr "Journal des évènements"
 
 #: ../view/layout/layout.phtml:41 ../view/layout/layout.phtml:352
-#, fuzzy
 msgid "SPI-RT v3 Form Data"
 msgstr "Données du formulaire SPI-RT v3"
 
 #: ../view/layout/layout.phtml:44 ../view/layout/layout.phtml:355
-#, fuzzy
 msgid "SPI-RT v6 Form Data"
 msgstr "Données du formulaire SPI-RT v6"
 
 #: ../view/layout/layout.phtml:52
-#, fuzzy
 msgid "Validate SPI-RT Data"
 msgstr "Validation des données SPI-RT"
 
@@ -1966,7 +1829,6 @@ msgid "Sign Out"
 msgstr "Déconnexion"
 
 #: ../view/layout/layout.phtml:226
-#, fuzzy
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
