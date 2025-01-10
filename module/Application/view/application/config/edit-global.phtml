@@ -47,6 +47,38 @@
 										</div>
 									</div>
 								</div>
+
+								<div class="form-group">
+									<label for="" class="col-sm-2 control-label">Additional Logo</label>
+									<div class="col-lg-4">
+										<div class="logoNamefileinput fileinput-new" data-provides="fileinput">
+											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
+												<?php
+												if (isset($config['additional_logo']) && trim($config['additional_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
+												?>
+													<img src="/uploads/logo/<?php echo $config['additional_logo']; ?>" alt="Logo image" />
+												<?php } else { ?>
+													<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=No image" />
+												<?php } ?>
+											</div>
+											<div>
+												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+													<input type="file" id="additional_logo" name="additional_logo" title="Please select additional logo image" onchange="getNewAdditionalLogoImage('<?php echo $config['additional_logo']; ?>');">
+												</span>
+												<?php
+												if (isset($config['additional_logo']) && trim($config['additional_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
+												?>
+													<a id="clearAdditionalLogoImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearAdditionalLogo('<?php echo $config['additional_logo']; ?>')">Clear</a>
+												<?php } ?>
+												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+											</div>
+										</div>
+										<div class="box-body">
+											Please make sure additional logo image size of: <code>170x175</code>
+										</div>
+									</div>
+								</div>
+
 								<div class="form-group">
 									<label for="" class="col-sm-2 control-label">Template File</label>
 									<div class="col-lg-4">
@@ -175,6 +207,7 @@
 								<hr>
 								<div class="spacer col-lg-5" align="center">
 									<input type="hidden" name="removedLogoImage" id="removedLogoImage" />
+									<input type="hidden" name="removedAdditionalLogoImage" id="removedAdditionalLogoImage" />
 									<input type="hidden" name="removedTempFile" id="removedTempFile" />
 									<button type="button" onclick="validateNow();" class="btn btn-space btn-primary">Update</button>
 									<a href="<?php echo $this->url('config', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
@@ -227,6 +260,17 @@
 	function getNewTempFile(img) {
 		$('#clearTempFile').hide();
 		$("#removedTempFile").val(img);
+	}
+
+	function clearAdditionalLogo(img) {
+		$('.logoNamefileinput').fileinput('clear');
+		$('#clearAdditionalLogoImage').hide();
+		$("#removedAdditionalLogoImage").val(img);
+	}
+
+	function getNewAdditionalLogoImage(img) {
+		$('#clearAdditionalLogoImage').hide();
+		$("#removedAdditionalLogoImage").val(img);
 	}
 
 	function checkMapDisplay() {

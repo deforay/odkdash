@@ -191,6 +191,28 @@ class GlobalTable extends AbstractTableGateway
                 $this->update(array('global_value' => $imageName), array('global_name' => 'logo'));
             }
         }
+
+        $fileName =$_POST['removedAdditionalLogoImage'];
+        $cleanedFileName = CommonService::cleanFileName($fileName);
+        
+        if (isset($_POST['removedAdditionalLogoImage']) && trim($_POST['removedAdditionalLogoImage']) != "" && file_exists($cleanedFilePath.DIRECTORY_SEPARATOR.$cleanedFileName)) {
+            unlink($cleanedFilePath.DIRECTORY_SEPARATOR.$cleanedFileName);
+            $this->update(array('global_value' => ''), array('global_name' => 'additional_logo'));
+        }
+        
+        if (isset($_FILES['additional_logo']['name']) && $_FILES['additional_logo']['name'] != "") {
+            
+            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
+                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
+            }
+            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['additional_logo']['name'], PATHINFO_EXTENSION));
+            $string = CommonService::generateRandomString(6) . ".";
+            $imageName = "additional_logo" . $string . $extension;
+            if (move_uploaded_file($_FILES["additional_logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
+                $this->update(array('global_value' => $imageName), array('global_name' => 'additional_logo'));
+            }
+        }
+
         $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedTempFile']);
         $cleanedFileName = CommonService::cleanFileName($fileName);
         $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR, []);
