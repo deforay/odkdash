@@ -18,7 +18,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="col-sm-2 control-label">Logo</label>
+									<label for="" class="col-sm-2 control-label">Logo <span class="mandatory">*</span></label>
 									<div class="col-lg-4">
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
@@ -242,13 +242,14 @@
 	function clearImage(img) {
 		$('.fileinput').fileinput('clear');
 		$('#clearImage').hide();
-		$("#offerImage").addClass("isRequired");
+		$("#logo").addClass("isRequired");
 		$("#removedLogoImage").val(img);
 	}
 
 	function getNewImage(img) {
 		$('#clearImage').hide();
 		$("#removedLogoImage").val(img);
+		$("#logo").addClass("isRequired");
 	}
 
 	function clearTempFile(img) {
