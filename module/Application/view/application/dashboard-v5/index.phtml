@@ -94,7 +94,7 @@ $config = $this->GlobalConfigHelper();
 					<div class="panel-body">
 						<form role="form" class="form-horizontal">
 							<div class="form-group">
-								<label for="date" class="col-sm-2 control-label">Date Range</label>
+								<label for="date" class="col-sm-2 control-label"><?= $this->translate('Date Range'); ?></label>
 								<div class=" col-lg-4">
 									<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="datepicker form-control" id="dateRange" readonly>
 								</div>
@@ -112,28 +112,28 @@ $config = $this->GlobalConfigHelper();
 							</div>
 
 							<div class="form-group">
-								<label for="level" class="col-sm-2 control-label">Level</label>
+								<label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="level">
-										<option value="">All</option>
-										<option value="Region/Province/Zone">Region/Province/Zone</option>
-										<option value="District">District</option>
-										<option value="Referral center">Referral center</option>
-										<option value="HealthCenter">Health center</option>
-										<option value="Dispensary">Dispensary</option>
-										<option value="Health Post">Health Post</option>
-										<option value="Other">Other</option>
+										<option value=""><?= $this->translate('All'); ?></option>
+										<option value="Region/Province/Zone"><?= $this->translate('Region/Province/Zone'); ?></option>
+										<option value="District"><?= $this->translate('District'); ?></option>
+										<option value="Referral center"><?= $this->translate('Referral center'); ?></option>
+										<option value="HealthCenter"><?= $this->translate('Health center'); ?></option>
+										<option value="Dispensary"><?= $this->translate('Dispensary'); ?></option>
+										<option value="Health Post"><?= $this->translate('Health Post'); ?></option>
+										<option value="Other"><?= $this->translate('Other'); ?></option>
 									</select>
 								</div>
-								<label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+								<label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="affiliation">
-										<option value="">All</option>
-										<option value="Government">Government</option>
-										<option value="Private">Private</option>
-										<option value="Faith-based Organization">Faith-based Organization</option>
-										<option value="Non-governmental organization">Non-governmental organization</option>
-										<option value="Other">Other</option>
+										<option value=""><?= $this->translate('All'); ?></option>
+										<option value="Government"><?= $this->translate('Government'); ?></option>
+										<option value="Private"><?= $this->translate('Private'); ?></option>
+										<option value="Faith-based Organization"><?= $this->translate('Faith-based Organization'); ?></option>
+										<option value="Non-governmental organization"><?= $this->translate('Non-governmental organization'); ?></option>
+										<option value="Other"><?= $this->translate('Other'); ?></option>
 									</select>
 								</div>
 							</div>
@@ -167,7 +167,7 @@ $config = $this->GlobalConfigHelper();
 								<label for="scoreLevel" class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="scoreLevel">
-										<option value="">All</option>
+										<option value=""><?= $this->translate('All'); ?></option>
 										<option value="0">0</option>
 										<option value="1">1</option>
 										<option value="2">2</option>
@@ -175,10 +175,10 @@ $config = $this->GlobalConfigHelper();
 										<option value="4">4</option>
 									</select>
 								</div>
-								<label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
+								<label for="testPoint" class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="testPoint">
-										<option value="">All</option>
+										<option value=""><?= $this->translate('All'); ?></option>
 										<?php
 										foreach ($testingPointResult as $val) {
 										?>
@@ -193,8 +193,8 @@ $config = $this->GlobalConfigHelper();
 								<div class="testPointNameSection"></div>
 							</div>
 							<div class="form-group" style="text-align:center;">
-								<button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
-								&nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span>Hide Advanced Option</span></a>
+								<button type="button" onclick="search()" class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>
+								&nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span><?= $this->translate('Hide Advanced Option'); ?></span></a>
 							</div>
 						</form>
 					</div>
@@ -265,7 +265,7 @@ $config = $this->GlobalConfigHelper();
 						</div>
 					</div>
 
-					Date : <input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
+					<?= $this->translate('Date :'); ?> <input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
 					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv3()"><?php echo $this->translate('OK'); ?></a>
 					<div id="dateRangePickerValue">
 						<div class="row chart-container">
@@ -670,7 +670,7 @@ $config = $this->GlobalConfigHelper();
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: 'Total Audits:- <?php echo $total; ?>',
+						text: '<?= $this->translate("Total Audits:") . " - " . $total; ?>',
 					}
 				}
 			},
@@ -701,7 +701,7 @@ $config = $this->GlobalConfigHelper();
 				}
 			},
 			series: [{
-				name: 'Audit Performance',
+				name: '<?= $this->translate('Audit Performance'); ?>',
 				colorByPoint: true,
 				point: {
 					events: {
@@ -780,7 +780,7 @@ $config = $this->GlobalConfigHelper();
 				exporting: {
 					chartOptions: {
 						subtitle: {
-							text: 'Total Audits:- <?php echo $total; ?>',
+							text: '<?= $this->translate("Total Audits:") . " - " . $total; ?>',
 						}
 					}
 				},
@@ -814,7 +814,7 @@ $config = $this->GlobalConfigHelper();
 					}
 				},
 				series: [{
-					name: 'Audit Performance',
+					name: '<?= $this->translate('Audit Performance'); ?>',
 					colorByPoint: true,
 					point: {
 						events: {
@@ -898,7 +898,7 @@ $config = $this->GlobalConfigHelper();
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: 'Total Audits:- <?php echo $total; ?>',
+						text: '<?= $this->translate("Total Audits:") . " - " . $total; ?>',
 					}
 				}
 			},
@@ -929,7 +929,7 @@ $config = $this->GlobalConfigHelper();
 				}
 			},
 			series: [{
-				name: 'Audit Performance',
+				name: '<?= $this->translate('Audit Performance'); ?>',
 				colorByPoint: true,
 				point: {
 					events: {
@@ -1419,7 +1419,7 @@ $config = $this->GlobalConfigHelper();
 
 
 		$("#provinceDistrict").multipleSelect({
-			placeholder: 'Select Province',
+			placeholder: '<?= $this->translate('Select Province'); ?>',
 			width: '100%'
 		});
 		$("#auditRndNo").multipleSelect({

@@ -19,7 +19,7 @@
 <div class="am-content">
     <div class="page-head">
         <h2><?= $this->translate('Email SPI-RRT'); ?></h2>
-        <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+        <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= $this->translate('indicates required field'); ?></span>
     </div>
 
     <div class="main-content">
@@ -32,7 +32,7 @@
                                 <div class="row">
                                     <div class="form-group col-lg-6">
                                         <label><?= $this->translate('Facility'); ?> <span class="mandatory">*</span></label>
-                                        <select class="select2 form-control isRequired" name="facility" id="facility" title="Please select the facility" onchange="getSelectedFacilitesAudits(this.value);">
+                                        <select class="select2 form-control isRequired" name="facility" id="facility" title="<?= $this->translate('Please select the facility'); ?>" onchange="getSelectedFacilitesAudits(this.value);">
                                             <option value="">-- <?= $this->translate('Select Facility'); ?> --</option>
                                             <?php
                                             if (isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
@@ -55,7 +55,7 @@
                                     <div class="form-group col-lg-6">
                                         <label><?= $this->translate('Choose Audits'); ?> </label>
                                         <div id="ajaxAudit">
-                                            <select class="" name="audits[]" id="audits" multiple="multiple" title="Please select the audits">
+                                            <select class="" name="audits[]" id="audits" multiple="multiple" title="<?= $this->translate('Please select the audits'); ?>">
                                                 <?php if (isset($facilityResult['auditsResult']) && count($facilityResult['auditsResult']) > 0) {
                                                     foreach ($facilityResult['auditsResult'] as $audits) {
                                                 ?>
@@ -104,7 +104,7 @@
             tags: false
         });
         $("#audits").multipleSelect({
-            placeholder: 'Please select audits',
+            placeholder: '<?= $this->translate('Please select audits'); ?>',
             width: '100%'
         });
 
@@ -157,7 +157,7 @@
                     tags: false
                 });
                 $("#audits").multipleSelect({
-                    placeholder: 'Please select audits',
+                    placeholder: '<?= $this->translate('Please select audits'); ?>',
                     width: '100%'
                 });
             });

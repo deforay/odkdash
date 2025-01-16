@@ -93,7 +93,7 @@ $userMappingType = $sessionLogin->userMappingType;
 <div class="am-content">
 	<div class="page-head">
 		<span style="">
-			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> SPI-RRT Audits<a id="showFilterBtn" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;" onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a></h2>
+			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> <?= $this->translate('SPI-RRT Audits'); ?><a id="showFilterBtn" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;" onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a></h2>
 		</span>
 	</div>
 	<div class="main-content">
@@ -104,7 +104,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					<div class="panel-body">
 						<form role="form" class="form-horizontal">
 							<div class="form-group">
-								<label for="date" class="col-sm-2 control-label">Date Range</label>
+								<label for="date" class="col-sm-2 control-label"><?= $this->translate('Date Range'); ?></label>
 								<div class=" col-lg-4">
 									<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="datepicker form-control" id="dateRange" readonly>
 								</div>
@@ -122,28 +122,28 @@ $userMappingType = $sessionLogin->userMappingType;
 							</div>
 
 							<div class="form-group">
-								<label for="level" class="col-sm-2 control-label">Level</label>
+								<label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="level">
-										<option value="">All</option>
-										<option value="Region/Province/Zone">Region/Province/Zone</option>
-										<option value="District">District</option>
-										<option value="Referral center">Referral center</option>
-										<option value="HealthCenter">Health center</option>
-										<option value="Dispensary">Dispensary</option>
-										<option value="Health Post">Health Post</option>
-										<option value="Other">Other</option>
+										<option value=""><?= $this->translate('All'); ?></option>
+										<option value="Region/Province/Zone"><?= $this->translate('Region/Province/Zone'); ?></option>
+										<option value="District"><?= $this->translate('District'); ?></option>
+										<option value="Referral center"><?= $this->translate('Referral center'); ?></option>
+										<option value="HealthCenter"><?= $this->translate('Health center'); ?></option>
+										<option value="Dispensary"><?= $this->translate('Dispensary'); ?></option>
+										<option value="Health Post"><?= $this->translate('Health Post'); ?></option>
+										<option value="Other"><?= $this->translate('Other'); ?></option>
 									</select>
 								</div>
-								<label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+								<label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="affiliation">
-										<option value="">All</option>
-										<option value="Government">Government</option>
-										<option value="Private">Private</option>
-										<option value="Faith-based Organization">Faith-based Organization</option>
-										<option value="Non-governmental organization">Non-governmental organization</option>
-										<option value="Other">Other</option>
+										<option value=""><?= $this->translate('All'); ?></option>
+										<option value="Government"><?= $this->translate('Government'); ?></option>
+										<option value="Private"><?= $this->translate('Private'); ?></option>
+										<option value="Faith-based Organization"><?= $this->translate('Faith-based Organization'); ?></option>
+										<option value="Non-governmental organization"><?= $this->translate('Non-governmental organization'); ?></option>
+										<option value="Other"><?= $this->translate('Other'); ?></option>
 									</select>
 								</div>
 							</div>
@@ -157,10 +157,10 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php } ?>
 									</select>
 								</div>
-								<label for="province" class="col-sm-2 control-label province">Province</label>
+								<label for="province" class="col-sm-2 control-label province"><?= $this->translate('Province'); ?></label>
 								<div class=" col-lg-4 province">
 									<select class="" id="province" multiple="multiple">
-										<option value="">All</option>
+										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['provinces'] as $val) { ?>
 											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
 										<?php } ?>
@@ -168,10 +168,10 @@ $userMappingType = $sessionLogin->userMappingType;
 								</div>
 							</div> 
 							<div class="form-group">
-								<label for="district" class="col-sm-2 control-label district">District</label>
+								<label for="district" class="col-sm-2 control-label district"><?= $this->translate('District'); ?></label>
 								<div class=" col-lg-4 district">
 									<select class="form-control" id="district" multiple="multiple">
-										<option value="">All</option>
+										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['districts'] as $val) { ?>
 											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
 										<?php } ?>
@@ -182,7 +182,7 @@ $userMappingType = $sessionLogin->userMappingType;
 								<label for="scoreLevel" class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="scoreLevel">
-										<option value="">All</option>
+										<option value=""><?= $this->translate('All'); ?></option>
 										<option value="0">0</option>
 										<option value="1">1</option>
 										<option value="2">2</option>
@@ -190,10 +190,10 @@ $userMappingType = $sessionLogin->userMappingType;
 										<option value="4">4</option>
 									</select>
 								</div>
-								<label for="testPoint" class="col-sm-2 control-label">Type of Testing Point</label>
+								<label for="testPoint" class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="testPoint">
-										<option value="">All</option>
+										<option value=""><?= $this->translate('All'); ?></option>
 										<?php
 										foreach ($testingPointResult as $val) {
 										?>
@@ -208,8 +208,8 @@ $userMappingType = $sessionLogin->userMappingType;
 								<div class="testPointNameSection"></div>
 							</div>
 							<div class="form-group" style="text-align:center;">
-								<button type="button" onclick="search()" class="btn btn-space btn-primary">Search</button>
-								&nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span>Hide Advanced Option</span></a>
+								<button type="button" onclick="search()" class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>
+								&nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span><?= $this->translate('Hide Advanced Option'); ?></span></a>
 							</div>
 						</form>
 					</div>
@@ -280,7 +280,7 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 					</div>
 
-					Date : <input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
+					<?= $this->translate('Date : '); ?><input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
 					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv6()"><?php echo $this->translate('OK'); ?></a>
 					<div id="dateRangePickerValue">
 						<div class="row chart-container">
@@ -879,7 +879,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: 'Total Audits:- <?php echo $total; ?>',
+						text: '<?= $this->translate("Total Audits:") . " - " . $total; ?>',
 					}
 				}
 			},
@@ -910,7 +910,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 			},
 			series: [{
-				name: 'Audit Performance',
+				name: '<?= $this->translate('Audit Performance'); ?>',
 				colorByPoint: true,
 				point: {
 					events: {
@@ -989,7 +989,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				exporting: {
 					chartOptions: {
 						subtitle: {
-							text: 'Total Audits:- <?php echo $total; ?>',
+							text: '<?= $this->translate("Total Audits:") . " - " . $total; ?>',
 						}
 					}
 				},
@@ -1023,7 +1023,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					}
 				},
 				series: [{
-					name: 'Audit Performance',
+					name: '<?= $this->translate('Audit Performance'); ?>',
 					colorByPoint: true,
 					point: {
 						events: {
@@ -1107,7 +1107,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: 'Total Audits:- <?php echo $total; ?>',
+						text: '<?= $this->translate("Total Audits:") . " - " . $total; ?>',
 					}
 				}
 			},
@@ -1138,7 +1138,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 			},
 			series: [{
-				name: 'Audit Performance',
+				name: '<?= $this->translate('Audit Performance'); ?>',
 				colorByPoint: true,
 				point: {
 					events: {
@@ -1699,19 +1699,19 @@ $userMappingType = $sessionLogin->userMappingType;
 
 		$("#country").select2({
 			width: '100%',
-			placeholder: 'All',
+			placeholder: '<?= $this->translate('All'); ?>',
 			allowClear: true,
 			tags: false
 		});
 		$("#province").select2({
 			width: '100%',
-			placeholder: 'All',
+			placeholder: '<?= $this->translate('All'); ?>',
 			allowClear: true,
 			tags: false
     	});
 		$("#district").select2({
 			width: '100%',
-			placeholder: 'All',
+			placeholder: '<?= $this->translate('All'); ?>',
 			allowClear: true,
 			tags: false
 		});
@@ -2171,7 +2171,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				function(data) {
 					$('.districtFilter').html(data);
 					$("#district").multipleSelect({
-						placeholder: 'Select District(s)',
+						placeholder: '<?= $this->translate('Select District(s)'); ?>',
 						width: '100%'
 					});
 				});

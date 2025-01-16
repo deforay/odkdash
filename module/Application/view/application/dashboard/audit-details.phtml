@@ -13,7 +13,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
 
 <div class="am-content">
         <div class="page-head">
-          <h2>SPI-RT 3.0 Audit Details (<?php echo $assesmentOfAuditDate; ?>)</h2>
+          <h2><?= $this->translate('SPI-RT 3.0 Audit Details'); ?> (<?php echo $assesmentOfAuditDate; ?>)</h2>
         </div>
         
         <div class="main-content">
@@ -24,17 +24,17 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                   <thead>
                     <tr>
                       
-                      <th>Facility Name</th>
-                      <th style="width:8%;">Audit Round No.</th>
-                      <th style="width:10%;">Audit Date</th>
-                      <th style="width:10%;">Testing Point Name</th>
-                      <th style="width:6%;">Testing Point Type</th>
-                      <th style="width:8%;">Level</th>
-                      <th>Affiliation</th>
-                      <th style="width:5%;">Audit Score %</th>
-                      <th style="width:8%;">Status</th>
+                      <th><?= $this->translate('Facility Name'); ?></th>
+                      <th style="width:8%;"><?= $this->translate('Audit Round No.'); ?></th>
+                      <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
+                      <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
+                      <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>
+                      <th style="width:8%;"><?= $this->translate('Level'); ?></th>
+                      <th><?= $this->translate('Affiliation'); ?></th>
+                      <th style="width:5%;"><?= $this->translate('Audit Score %'); ?></th>
+                      <th style="width:8%;"><?= $this->translate('Status'); ?></th>
                       <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf')) { ?>
-                      <th>Action</th>
+                      <th><?= $this->translate('Action'); ?></th>
                       <?php } ?>
                     </tr>
                   </thead>

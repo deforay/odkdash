@@ -40,12 +40,12 @@ $version = $params['version'];
 							<form name="auditTrail" id="auditTrail" class="mb-5" action="<?php echo $this->url('audit-trail', array('action' => 'index')); ?>" method="post">
 
 								<div class="form-group row">
-									<label class="col-sm-4 col-form-label" for="">Version Type<span class="mandatory">*</span></label>
+									<label class="col-sm-4 col-form-label" for=""><?= $this->translate('Version Type'); ?><span class="mandatory">*</span></label>
 									<div class="col-sm-4">
 										<select class="form-control" id="version" name="version">
-											<option value=''>Choose Version</option>
-											<option <?php if (isset($version) && $version == 'v3') echo 'selected'; ?> value='v3'>SPI RT V3</option>
-											<option <?php if (isset($version) && $version == 'v6') echo 'selected'; ?> value='v6'>SPI RRT</option>
+											<option value=''><?= $this->translate('Choose Version'); ?></option>
+											<option <?php if (isset($version) && $version == 'v3') echo 'selected'; ?> value='v3'><?= $this->translate('SPI RT V3'); ?></option>
+											<option <?php if (isset($version) && $version == 'v6') echo 'selected'; ?> value='v6'><?= $this->translate('SPI RRT'); ?></option>
 
 										</select>
 									</div>
@@ -53,15 +53,15 @@ $version = $params['version'];
 
 
 								<div class="form-group row">
-									<label class="col-sm-4 col-form-label" for="">Meta Instance ID<span class="mandatory">*</span></label>
+									<label class="col-sm-4 col-form-label" for=""><?= $this->translate('Meta Instance ID'); ?><span class="mandatory">*</span></label>
 									<div class="col-sm-4">
-										<input type="text" value="<?php echo $metaInstance; ?>" class="form-control isRequired" id="metaInstance" name="metaInstance" placeholder="Enter the Meta Instance ID" title="Please enter the Meta Instance ID">
+										<input type="text" value="<?php echo $metaInstance; ?>" class="form-control isRequired" id="metaInstance" name="metaInstance" placeholder="<?= $this->translate('Enter the Meta Instance ID'); ?>" title="<?= $this->translate('Please enter the Meta Instance ID'); ?>">
 									</div>
 								</div>
 								<div class="row items-push">
 									<div class="col-lg-7 offset-lg-4">
-										<a href="<?php echo $this->url('audit-trail', array('action' => 'index')); ?>" class="btn btn-danger">Cancel</a>&nbsp;
-										<button type="submit" class="btn btn-primary" onclick="validateNow();return false;"><i class="fa fa-fw fa-check"></i> Submit</button>
+										<a href="<?php echo $this->url('audit-trail', array('action' => 'index')); ?>" class="btn btn-danger"><?= $this->translate('Cancel'); ?></a>&nbsp;
+										<button type="submit" class="btn btn-primary" onclick="validateNow();return false;"><i class="fa fa-fw fa-check"></i> <?= $this->translate('Submit'); ?></button>
 									</div>
 								</div>
 							</form>
@@ -71,7 +71,7 @@ $version = $params['version'];
 			</div>
 		</div>
 		<?php if (!empty($metaInstance)) { ?>
-			<h3> Audit Trail for SPI Form <b><?php echo $metaInstance; ?></b></h3>
+			<h3> <?= $this->translate('Audit Trail for SPI Form '); ?><b><?php echo $metaInstance; ?></b></h3>
 			<?php if (!empty($auditRecency)) { ?>
 				<select name="auditColumn[]" id="auditColumn" class="form-control" multiple="multiple">
 					<?php
@@ -126,7 +126,7 @@ $version = $params['version'];
 					</tbody>
 				</table>
 				<br>
-				<h3> Current Record for SPI Form<b> <?php echo $metaInstance; ?></b></h3>
+				<h3><?= $this->translate(' Current Record for SPI Form'); ?><b> <?php echo $metaInstance; ?></b></h3>
 				<table id="current" class="table table-striped table-hover table-bordered" aria-hidden="true">
 					<thead>
 						<tr>
@@ -169,7 +169,7 @@ $version = $params['version'];
 
 				</table>
 		<?php } else {
-				echo '<h3 align="center">Records are not available for this sample code. Please enter  valid sample code</h3>';
+				echo '<h3 align="center">' . $this->translate('Records are not available for this sample code. Please enter  valid sample code') . '</h3>';
 			}
 		}
 		?>
@@ -221,7 +221,7 @@ $version = $params['version'];
 		});*/
 
 			$("#auditColumn").select2({
-				placeholder: 'Select Province/District(s)',
+				placeholder: <?= $this->translate('Select Province/District(s)'); ?>,
 				width: '100%'
 			});
 			oTable = $('#auditTable').DataTable({

@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
 <div class="am-content">
 	<div class="page-head">
-		<h2>Edit Global Config</h2>
+		<h2><?= $this->translate('Edit Global Config'); ?></h2>
 	</div>
 	<div class="main-content">
 		<div class="widget widget-fullwidth widget-small" style="padding:5px;">
@@ -12,13 +12,13 @@
 						<div class="panel-body">
 							<form role="form" class="form-horizontal" name="editConfig" id="editConfig" method="post" action="<?php echo $this->url('config', array('action' => 'edit-global')); ?>" enctype="multipart/form-data" autocomplete="off">
 								<div class="form-group">
-									<label for="header" class="col-sm-2 control-label">Header</label>
+									<label for="header" class="col-sm-2 control-label"><?= $this->translate('Header'); ?></label>
 									<div class="col-lg-4">
-										<textarea row="3" name="header" id="header" class="form-control" placeholder="Header" title="Please enter header"><?php echo $config['header'] ?></textarea>
+										<textarea row="3" name="header" id="header" class="form-control" placeholder="<?= $this->translate('Header'); ?>" title="<?= $this->translate('Please enter header'); ?>"><?php echo $config['header'] ?></textarea>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="col-sm-2 control-label">Logo <span class="mandatory">*</span></label>
+									<label for="" class="col-sm-2 control-label"><?= $this->translate('Logo'); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-4">
 										<div class="fileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
@@ -31,25 +31,25 @@
 												<?php } ?>
 											</div>
 											<div>
-												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-													<input type="file" id="logo" name="logo" title="Please select logo image" onchange="getNewImage('<?php echo $config['logo']; ?>');">
+												<span class="btn btn-default btn-file"><span class="fileinput-new"><?= $this->translate('Select image'); ?></span><span class="fileinput-exists"><?= $this->translate('Change'); ?></span>
+													<input type="file" id="logo" name="logo" title="<?= $this->translate('Please select logo image'); ?>" onchange="getNewImage('<?php echo $config['logo']; ?>');">
 												</span>
 												<?php
 												if (isset($config['logo']) && trim($config['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
 												?>
-													<a id="clearImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearImage('<?php echo $config['logo']; ?>')">Clear</a>
+													<a id="clearImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearImage('<?php echo $config['logo']; ?>')"><?= $this->translate('Clear'); ?></a>
 												<?php } ?>
-												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?= $this->translate('Remove'); ?></a>
 											</div>
 										</div>
 										<div class="box-body">
-											Please make sure logo image size of: <code>170x175</code>
+											<?= $this->translate('Please make sure logo image size of: '); ?><code>170x175</code>
 										</div>
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label for="" class="col-sm-2 control-label">Additional Logo</label>
+									<label for="" class="col-sm-2 control-label"><?= $this->translate('Additional Logo'); ?></label>
 									<div class="col-lg-4">
 										<div class="logoNamefileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
@@ -62,25 +62,25 @@
 												<?php } ?>
 											</div>
 											<div>
-												<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-													<input type="file" id="additional_logo" name="additional_logo" title="Please select additional logo image" onchange="getNewAdditionalLogoImage('<?php echo $config['additional_logo']; ?>');">
+												<span class="btn btn-default btn-file"><span class="fileinput-new"><?= $this->translate('Select image'); ?></span><span class="fileinput-exists"><?= $this->translate('Change'); ?></span>
+													<input type="file" id="additional_logo" name="additional_logo" title="<?= $this->translate('Please select additional logo image'); ?>" onchange="getNewAdditionalLogoImage('<?php echo $config['additional_logo']; ?>');">
 												</span>
 												<?php
 												if (isset($config['additional_logo']) && trim($config['additional_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
 												?>
-													<a id="clearAdditionalLogoImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearAdditionalLogo('<?php echo $config['additional_logo']; ?>')">Clear</a>
+													<a id="clearAdditionalLogoImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearAdditionalLogo('<?php echo $config['additional_logo']; ?>')"><?= $this->translate('Clear'); ?></a>
 												<?php } ?>
-												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?= $this->translate('Remove'); ?></a>
 											</div>
 										</div>
 										<div class="box-body">
-											Please make sure additional logo image size of: <code>170x175</code>
+											<?= $this->translate('Please make sure additional logo image size of: '); ?><code>170x175</code>
 										</div>
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label for="" class="col-sm-2 control-label">Template File</label>
+									<label for="" class="col-sm-2 control-label"><?= $this->translate('Template File'); ?></label>
 									<div class="col-lg-4">
 										<div class="tempfileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
@@ -93,114 +93,114 @@
 												<?php } ?>
 											</div>
 											<div>
-												<span class="btn btn-default btn-file"><span class="fileinput-new">Select File</span><span class="fileinput-exists">Change</span>
-													<input type="file" id="template_file" name="template_file" accept=".pdf" title="Please select Template File" onchange="getNewTempFile('<?php echo $config['template_file']; ?>');">
+												<span class="btn btn-default btn-file"><span class="fileinput-new"><?= $this->translate('Select File'); ?></span><span class="fileinput-exists">Change</span>
+													<input type="file" id="template_file" name="template_file" accept=".pdf" title="<?= $this->translate('Please select Template File'); ?>" onchange="getNewTempFile('<?php echo $config['template_file']; ?>');">
 												</span>
 												<?php
 												if (isset($config['template_file']) && trim($config['template_file']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $config['template_file'])) {
 												?>
-													<a id="clearTempFile" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearTempFile('<?php echo $config['template_file']; ?>')">Clear</a>
+													<a id="clearTempFile" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearTempFile('<?php echo $config['template_file']; ?>')"><?= $this->translate('Clear'); ?></a>
 												<?php } ?>
-												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+												<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?= $this->translate('Remove'); ?></a>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="topMargin" class="col-sm-2 control-label">Template Top Margin</label>
+									<label for="topMargin" class="col-sm-2 control-label"><?= $this->translate('Template Top Margin'); ?></label>
 									<div class="col-lg-4">
-										<input name="template_top_margin" id="topMargin" class="form-control" placeholder="Top Margin" title="Please enter Top Margin" value="<?php echo $config['template_top_margin']; ?>" />
+										<input name="template_top_margin" id="topMargin" class="form-control" placeholder="<?= $this->translate('Top Margin'); ?>" title="<?= $this->translate('Please enter Top Margin'); ?>" value="<?php echo $config['template_top_margin']; ?>" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="country-name" class="col-sm-2 control-label">Country or Instance Name<span class="mandatory">*</span></label>
+									<label for="country-name" class="col-sm-2 control-label"><?= $this->translate('Country or Instance Name'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<input name="country-name" id="country-name" class="form-control isRequired" placeholder="Country/Instance Name" title="Please enter country/instance name" value="<?php echo $config['country-name']; ?>" />
+										<input name="country-name" id="country-name" class="form-control isRequired" placeholder="<?= $this->translate('Country/Instance Name'); ?>" title="<?= $this->translate('Please enter country/instance name'); ?>" value="<?php echo $config['country-name']; ?>" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="approve_status" class="col-sm-2 control-label">Auto Approval<span class="mandatory">*</span></label>
+									<label for="approve_status" class="col-sm-2 control-label"><?= $this->translate('Auto Approval'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="approve_status" id="approve_status" class="form-control isRequired" title="Please select audit approval status">
+										<select name="approve_status" id="approve_status" class="form-control isRequired" title="<?= $this->translate('Please select audit approval status'); ?>">
 											<option value="">--select</option>
-											<option value="yes" <?php echo ($config['approve_status'] == 'yes' ? " selected='selected'" : ""); ?>>Yes</option>
-											<option value="no" <?php echo ($config['approve_status'] == 'no' ? " selected='selected'" : ""); ?>>No</option>
+											<option value="yes" <?php echo ($config['approve_status'] == 'yes' ? " selected='selected'" : ""); ?>><?= $this->translate('Yes'); ?></option>
+											<option value="no" <?php echo ($config['approve_status'] == 'no' ? " selected='selected'" : ""); ?>><?= $this->translate('No'); ?></option>
 										</select>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="embed_signatures_in_pdf" class="col-sm-2 control-label">Embed Signatures In PDF<span class="mandatory">*</span></label>
+									<label for="embed_signatures_in_pdf" class="col-sm-2 control-label"><?= $this->translate('Embed Signatures In PDF'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="embed_signatures_in_pdf" id="embed_signatures_in_pdf" class="form-control isRequired" title="Please select embed signatures in pdf">
+										<select name="embed_signatures_in_pdf" id="embed_signatures_in_pdf" class="form-control isRequired" title="<?= $this->translate('Please select embed signatures in pdf'); ?>">
 											<option value="">--select</option>
-											<option value="yes" <?php echo ($config['embed_signatures_in_pdf'] == 'yes' ? " selected='selected'" : ""); ?>>Yes</option>
-											<option value="no" <?php echo ($config['embed_signatures_in_pdf'] == 'no' ? " selected='selected'" : ""); ?>>No</option>
+											<option value="yes" <?php echo ($config['embed_signatures_in_pdf'] == 'yes' ? " selected='selected'" : ""); ?>><?= $this->translate('Yes'); ?></option>
+											<option value="no" <?php echo ($config['embed_signatures_in_pdf'] == 'no' ? " selected='selected'" : ""); ?>><?= $this->translate('No'); ?></option>
 										</select>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="embed_images_in_audit_pdf" class="col-sm-2 control-label">Embed Images in Audit PDF<span class="mandatory">*</span></label>
+									<label for="embed_images_in_audit_pdf" class="col-sm-2 control-label"><?= $this->translate('Embed Images in Audit PDF'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="embed_images_in_audit_pdf" id="embed_images_in_audit_pdf" class="form-control isRequired" title="Please select embed images in audit pdf">
+										<select name="embed_images_in_audit_pdf" id="embed_images_in_audit_pdf" class="form-control isRequired" title="<?= $this->translate('Please select embed images in audit pdf'); ?>">
 											<option value="">--select</option>
-											<option value="yes" <?php echo ($config['embed_images_in_audit_pdf'] == 'yes' ? " selected='selected'" : ""); ?>>Yes</option>
-											<option value="no" <?php echo ($config['embed_images_in_audit_pdf'] == 'no' ? " selected='selected'" : ""); ?>>No</option>
+											<option value="yes" <?php echo ($config['embed_images_in_audit_pdf'] == 'yes' ? " selected='selected'" : ""); ?>><?= $this->translate('Yes'); ?></option>
+											<option value="no" <?php echo ($config['embed_images_in_audit_pdf'] == 'no' ? " selected='selected'" : ""); ?>><?= $this->translate('No'); ?></option>
 										</select>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="dashboard_map_display" class="col-sm-2 control-label">Dashboard Map Display<span class="mandatory">*</span></label>
+									<label for="dashboard_map_display" class="col-sm-2 control-label"><?= $this->translate('Dashboard Map Display'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="dashboard_map_display" id="dashboard_map_display" class="form-control isRequired" title="Please select dashboard map display" onchange="checkMapDisplay()">
+										<select name="dashboard_map_display" id="dashboard_map_display" class="form-control isRequired" title="<?= $this->translate('Please select dashboard map display'); ?>" onchange="checkMapDisplay()">
 											<option value="">--select</option>
-											<option value="horizontal" <?php echo ($config['dashboard_map_display'] == 'horizontal' ? " selected='selected'" : ""); ?>>Horizontal</option>
-											<option value="vertical" <?php echo ($config['dashboard_map_display'] == 'vertical' ? " selected='selected'" : ""); ?>>Vertical</option>
+											<option value="horizontal" <?php echo ($config['dashboard_map_display'] == 'horizontal' ? " selected='selected'" : ""); ?>><?= $this->translate('Horizontal'); ?></option>
+											<option value="vertical" <?php echo ($config['dashboard_map_display'] == 'vertical' ? " selected='selected'" : ""); ?>><?= $this->translate('Vertical'); ?></option>
 										</select>
-										<input type="text" value="<?php echo $config['dashboard_map_height']; ?>" placeholder="Enter map display height" class="form-control" name="dashboard_map_height" id="dashboard_map_height" style="<?php echo ($config['dashboard_map_display'] == 'vertical' ?  'display:none;' : '') ?>" title="Please enter the map display height">
+										<input type="text" value="<?php echo $config['dashboard_map_height']; ?>" placeholder="Enter map display height" class="form-control" name="dashboard_map_height" id="dashboard_map_height" style="<?php echo ($config['dashboard_map_display'] == 'vertical' ?  'display:none;' : '') ?>" title="<?= $this->translate('Please enter the map display height'); ?>">
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="dashboard_map_zoomlevel" class="col-sm-2 control-label">Dashboard Map Zoom Level<span class="mandatory">*</span></label>
+									<label for="dashboard_map_zoomlevel" class="col-sm-2 control-label"><?= $this->translate('Dashboard Map Zoom Level'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<input name="dashboard_map_zoomlevel" id="dashboard_map_zoomlevel" class="form-control isRequired" placeholder="Enter dashboard map zoomlevel" title="Please enter dashboard map zoomlevel" value="<?php echo $config['dashboard_map_zoomlevel']; ?>" />
+										<input name="dashboard_map_zoomlevel" id="dashboard_map_zoomlevel" class="form-control isRequired" placeholder="<?= $this->translate('Enter dashboard map zoomlevel'); ?>" title="<?= $this->translate('Please enter dashboard map zoomlevel'); ?>" value="<?php echo $config['dashboard_map_zoomlevel']; ?>" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="approve_status" class="col-sm-2 control-label">Language <span class="mandatory">*</span></label>
+									<label for="language" class="col-sm-2 control-label"><?= $this->translate('Language'); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="language" id="language" class="form-control isRequired" title="Please select language">
-											<option value="English" <?php echo ($config['language'] == 'English' ? " selected='selected'" : ""); ?>>English</option>
-											<option value="French" <?php echo ($config['language'] == 'French' ? " selected='selected'" : ""); ?>>French</option>
-											<option value="Spanish" <?php echo ($config['language'] == 'Spanish' ? " selected='selected'" : ""); ?>>Spanish</option>
-											<option value="Portuguese" <?php echo ($config['language'] == 'Portuguese' ? " selected='selected'" : ""); ?>>Portuguese</option>
+										<select name="language" id="language" class="form-control isRequired" title="<?= $this->translate('Please select language'); ?>">
+											<option value="en_US" <?php echo ($config['language'] == 'en_US' ? " selected='selected'" : ""); ?>><?= $this->translate('English'); ?></option>
+											<option value="fr_FR" <?php echo ($config['language'] == 'fr_FR' ? " selected='selected'" : ""); ?>><?= $this->translate('French'); ?></option>
+											<option value="pt_BR" <?php echo ($config['language'] == 'pt_BR' ? " selected='selected'" : ""); ?>><?= $this->translate('Portuguese'); ?></option>
+											<option value="es_ES" <?php echo ($config['language'] == 'es_ES' ? " selected='selected'" : ""); ?>><?= $this->translate('Spanish'); ?></option>
 										</select>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="latitude" class="col-sm-2 control-label">Latitude<span class="mandatory">*</span></label>
+									<label for="latitude" class="col-sm-2 control-label"><?= $this->translate('Latitude'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<input name="latitude" id="latitude" class="form-control isRequired" placeholder="Latitude" title="Please enter Latitude" value="<?php echo $config['latitude']; ?>" />
+										<input name="latitude" id="latitude" class="form-control isRequired" placeholder="<?= $this->translate('Latitude'); ?>" title="<?= $this->translate('Please enter Latitude'); ?>" value="<?php echo $config['latitude']; ?>" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="longitude" class="col-sm-2 control-label">Longitude<span class="mandatory">*</span></label>
+									<label for="longitude" class="col-sm-2 control-label"><?= $this->translate('Longitude'); ?><span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<input name="longitude" id="longitude" class="form-control isRequired" placeholder="Longitude" title="Please enter Longitude" value="<?php echo $config['longitude']; ?>" />
+										<input name="longitude" id="longitude" class="form-control isRequired" placeholder="<?= $this->translate('Longitude'); ?>" title="<?= $this->translate('Please enter Longitude'); ?>" value="<?php echo $config['longitude']; ?>" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="web_version" class="col-sm-2 control-label">Web Version <span class="mandatory">*</span></label>
+									<label for="web_version" class="col-sm-2 control-label"><?= $this->translate('Web Version'); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-4">
-										<select name="web_version[]" id="web_version" class=" " title="Please select web version" multiple="multiple">
+										<select name="web_version[]" id="web_version" class=" " title="<?= $this->translate('Please select web version'); ?>" multiple="multiple">
 											<option value="v3" <?php if (preg_match("/v3/i", $config['web_version'])) {
 																	echo "selected='selected'";
-																}  ?>>SPI-RT v3</option>
+																}  ?>><?= $this->translate('SPI-RT v3'); ?></option>
 											<!-- <option value="v5" <?php if (preg_match("/v5/i", $config['web_version'])) {
 																		echo "selected='selected'";
-																	}  ?>>Version 5 (SPI-RRT)</option> -->
+																	}  ?>><?= $this->translate('Version 5 (SPI-RRT)'); ?></option> -->
 											<option value="v6" <?php if (preg_match("/v6/i", $config['web_version'])) {
 																	echo "selected='selected'";
-																}  ?>>SPI-RRT</option>
+																}  ?>><?= $this->translate('SPI-RRT'); ?></option>
 										</select>
 									</div>
 								</div>
@@ -209,8 +209,8 @@
 									<input type="hidden" name="removedLogoImage" id="removedLogoImage" />
 									<input type="hidden" name="removedAdditionalLogoImage" id="removedAdditionalLogoImage" />
 									<input type="hidden" name="removedTempFile" id="removedTempFile" />
-									<button type="button" onclick="validateNow();" class="btn btn-space btn-primary">Update</button>
-									<a href="<?php echo $this->url('config', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+									<button type="button" onclick="validateNow();" class="btn btn-space btn-primary"><?= $this->translate('Update'); ?></button>
+									<a href="<?php echo $this->url('config', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
 								</div>
 							</form>
 						</div>
@@ -224,7 +224,7 @@
 <script>
 	$(document).ready(function() {
 		$("#web_version").multipleSelect({
-			placeholder: 'Select Web Version',
+			placeholder: '<?= $this->translate('Select Web Version'); ?>',
 			width: '100%'
 		});
 

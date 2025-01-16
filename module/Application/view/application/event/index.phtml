@@ -14,7 +14,7 @@ $acl = $this->layout()->acl;
         <div class="page-head">
           <div class="row">
 				<div class="col-sm-8">
-				<h2>Event Log History List</h2>
+				<h2><?= $this->translate('Event Log History List'); ?></h2>
 				</div>
 		  </div>
         </div>
@@ -31,11 +31,11 @@ $acl = $this->layout()->acl;
                 <div class="form-group">
                   <label for="date" class="col-sm-2 control-label"><?= $this->translate('Date Range'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Select Date Range" class="form-control" id="date" readonly>
+                    <input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="form-control" id="date" readonly>
                   </div>
                   <label for="eventType" class="col-sm-2 control-label"><?= $this->translate('Event Type'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Select Event Type" class="form-control" name="eventType" id="eventType">
+                    <input type="text" placeholder="<?= $this->translate('Select Event Type'); ?>" class="form-control" name="eventType" id="eventType">
                   </div>
                 </div>
 
@@ -56,10 +56,10 @@ $acl = $this->layout()->acl;
           <table  cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-condensed" id="eventLogDataTable">
 					<thead>
 					<tr>
-            <th>Event Type</th>
-            <th>Action</th>
-            <th>Resource Name</th>
-            <th>Date Time</th>
+            <th><?= $this->translate('Event Type'); ?></th>
+            <th><?= $this->translate('Action'); ?></th>
+            <th><?= $this->translate('Resource Name'); ?></th>
+            <th><?= $this->translate('Date Time'); ?></th>
 					</tr>
 					</thead>
 					<tbody>

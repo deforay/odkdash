@@ -9,11 +9,11 @@ $acl=$this->layout()->acl;
     <div class="page-head">
         <div class="row">
 				<div class="col-sm-8">
-				<h2>Global Config</h2>
+				<h2><?= $this->translate('Global Config'); ?></h2>
 				</div>
 				<div class="col-sm-4">
 				    <?php if ($acl->isAllowed($role, 'Application\Controller\ConfigController','edit-global')) { ?>
-					<a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;Edit Global Config</a>
+					<a href="<?php echo $this->url('config',array('action' => 'edit-global'));?>" class="btn btn-dark pull-right" style="margin-left: 5px;">&nbsp;<?= $this->translate('Edit Global Config'); ?></a>
 					<?php } ?>
 				</div>
 		  </div>
@@ -24,8 +24,8 @@ $acl=$this->layout()->acl;
             <table id="config" class="table table-bordered table-striped table-hover table-fw-widget">
               <thead>
                 <tr>
-                    <th>Config Name</th>
-                    <th>Value</th>
+                    <th><?= $this->translate('Config Name'); ?></th>
+                    <th><?= $this->translate('Value'); ?></th>
                 </tr>
               </thead>
               <tbody>
