@@ -15,8 +15,8 @@ foreach ($tokenResults as $token) {
 </script>
 <div class="am-content">
 	<div class="page-head">
-		<h2>Add User</h2>
-		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+		<h2><?= $this->translate('Add User'); ?></h2>
+		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= $this->translate('indicates required field'); ?></span>
 	</div>
 
 	<div class="main-content">
@@ -27,37 +27,37 @@ foreach ($tokenResults as $token) {
 						<div class="panel-body">
 							<form role="form" name="addUserInformation" id="addUserInformation" enctype="multipart/form-data" method="post" action="<?php echo $this->url('users', array('action' => 'add')); ?>" autocomplete="off">
 								<div class="form-group col-lg-6">
-									<label>First Name <span class="mandatory">*</span> </label>
-									<input type="text" placeholder="First Name" class="form-control isRequired" name="firstName" id="firstName" title="Please enter the first name">
+									<label><?= $this->translate('First Name'); ?><span class="mandatory">*</span> </label>
+									<input type="text" placeholder="<?= $this->translate('First Name'); ?>" class="form-control isRequired" name="firstName" id="firstName" title="<?= $this->translate('Please enter the first name'); ?>">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Last Name </label>
-									<input type="text" placeholder="Last Name" class="form-control" name="lastName" id="lastName" title="Please enter the last name">
+									<label><?= $this->translate('Last Name'); ?></label>
+									<input type="text" placeholder="<?= $this->translate('Last Name'); ?>" class="form-control" name="lastName" id="lastName" title="<?= $this->translate('Please enter the last name'); ?>">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Login ID <span class="mandatory">*</span></label>
-									<input type="text" placeholder="Login ID" class="form-control isRequired" name="userName" id="userName" title="Please enter the user name" onblur="checkNameValidation('users','login', this, null, 'This name already exists. Please choose another name.')">
+									<label><?= $this->translate('Login ID'); ?> <span class="mandatory">*</span></label>
+									<input type="text" placeholder="<?= $this->translate('Login ID'); ?>" class="form-control isRequired" name="userName" id="userName" title="<?= $this->translate('Please enter the user name'); ?>" onblur="checkNameValidation('users','login', this, null, 'This name already exists. Please choose another name.')">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Password <span class="mandatory">*</span></label>
-									<input type="password" placeholder="Password" class="form-control isRequired" name="password" id="password" title="Please enter the password">
+									<label><?= $this->translate('Password'); ?> <span class="mandatory">*</span></label>
+									<input type="password" placeholder="<?= $this->translate('Password'); ?>" class="form-control isRequired" name="password" id="password" title="<?= $this->translate('Please enter the password'); ?>">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Confirm Password <span class="mandatory">*</span></label>
-									<input type="password" placeholder="Confirm Password" class="form-control confirmPassword isRequired" name="password" id="confirmPassword" title="Please check your password and confirm password are same">
+									<label><?= $this->translate('Confirm Password'); ?> <span class="mandatory">*</span></label>
+									<input type="password" placeholder="<?= $this->translate('Confirm Password'); ?>" class="form-control confirmPassword isRequired" name="password" id="confirmPassword" title="<?= $this->translate('Please check your password and confirm password are same'); ?>">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Mobile Number</label>
-									<input type="tel" placeholder="Enter Mobile Number" maxlength="10" onkeypress="return isNumberKey(event);" class="form-control" name="mobile_no" id="mobile_no" title="Please enter the mobile number" onblur="checkNameValidation('users','contact_no', this,null,'Entered mobile number is already exist.')">
+									<label><?= $this->translate('Mobile Number'); ?></label>
+									<input type="tel" placeholder="<?= $this->translate('Enter Mobile Number'); ?>" maxlength="10" onkeypress="return isNumberKey(event);" class="form-control" name="mobile_no" id="mobile_no" title="<?= $this->translate('Please enter the mobile number'); ?>" onblur="checkNameValidation('users','contact_no', this,null,'Entered mobile number is already exist.')">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Email</label>
-									<input type="text" placeholder="Email" class="form-control isEmail" name="email" id="email" title="Please enter the email id" onblur="checkNameValidation('users','email', this,null,'Entered mail id is already exist.')">
+									<label><?= $this->translate('Email'); ?></label>
+									<input type="text" placeholder="<?= $this->translate('Email'); ?>" class="form-control isEmail" name="email" id="email" title="<?= $this->translate('Please enter the email id'); ?>" onblur="checkNameValidation('users','email', this,null,'Entered mail id is already exist.')">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Role <span class="mandatory">*</span></label>
-									<select class="form-control isRequired" name="roleId" id="roleId" title="Please select the role">
-										<option value="">--Select--</option>
+									<label><?= $this->translate('Role'); ?> <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="roleId" id="roleId" title="<?= $this->translate('Please select the role'); ?>">
+										<option value="">--<?= $this->translate('Select'); ?>--</option>
 										<?php
 										foreach ($roleResults as $role) {
 										?>
@@ -68,29 +68,29 @@ foreach ($tokenResults as $token) {
 									</select>
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Token (Note: You can add multiple token by comma separator values)</label>
-									<input type="text" placeholder="Enter token" class="form-control" name="token" id="token" title="Please enter token">
+									<label><?= $this->translate('Token (Note: You can add multiple token by comma separator values)'); ?></label>
+									<input type="text" placeholder="<?= $this->translate('Enter token'); ?>" class="form-control" name="token" id="token" title="<?= $this->translate('Please enter token'); ?>">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Status <span class="mandatory">*</span></label>
-									<select class="form-control isRequired" name="status" id="status" title="Please select the status">
-										<option value="active">Active</option>
-										<option value="inactive">Inactive</option>
+									<label><?= $this->translate('Status'); ?> <span class="mandatory">*</span></label>
+									<select class="form-control isRequired" name="status" id="status" title="<?= $this->translate('Please select the status'); ?>">
+										<option value="active"><?= $this->translate('Active'); ?></option>
+										<option value="inactive"><?= $this->translate('Inactive'); ?></option>
 									</select>
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Mapping Type</label>
-									<select class="form-control" name="mappingType" id="mappingType" title="Please select the mappingType" onchange="getLocations()">
-										<option value="">--Select--</option>	
-										<option value="country">Country</option>
-										<option value="province">Province</option>
-										<option value="district">District</option>
+									<label><?= $this->translate('Mapping Type'); ?></label>
+									<select class="form-control" name="mappingType" id="mappingType" title="<?= $this->translate('Please select the mappingType'); ?>" onchange="getLocations()">
+										<option value="">--<?= $this->translate('Select'); ?>--</option>	
+										<option value="country"><?= $this->translate('Country'); ?></option>
+										<option value="province"><?= $this->translate('Province'); ?></option>
+										<option value="district"><?= $this->translate('District'); ?></option>
 									</select>
 								</div>
 								<div class="form-group col-lg-6 country" style="display:none">
-									<label>Countries</label>
+									<label><?= $this->translate('Countries'); ?></label>
 									<div class="form-control">
-										<select multiple="multiple" name="country[]" id="country" title="Please select the country">
+										<select multiple="multiple" name="country[]" id="country" title="<?= $this->translate('Please select the country'); ?>">
 											<?php foreach($countries as $row){ ?>
 												<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
 											<?php } ?>
@@ -98,9 +98,9 @@ foreach ($tokenResults as $token) {
 									</div>
 								</div>
 								<div class="form-group col-lg-6 province" style="display:none">
-									<label>Provinces</label>
+									<label><?= $this->translate('Provinces'); ?></label>
 									<div class="form-control">
-										<select multiple="multiple" name="province[]" id="province" title="Please select the province">
+										<select multiple="multiple" name="province[]" id="province" title="<?= $this->translate('Please select the province'); ?>">
 											<?php foreach($provinces as $row){ ?>
 												<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
 											<?php } ?>
@@ -108,9 +108,9 @@ foreach ($tokenResults as $token) {
 									</div>
 								</div>
 								<div class="form-group col-lg-6 district" style="display:none">
-									<label>Districts</label>
+									<label><?= $this->translate('Districts'); ?></label>
 									<div class="form-control">
-										<select multiple="multiple" name="district[]" id="district" title="Please select the district">
+										<select multiple="multiple" name="district[]" id="district" title="<?= $this->translate('Please select the district'); ?>">
 											<?php foreach($districts as $row){ ?>
 												<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
 											<?php } ?>
@@ -118,7 +118,7 @@ foreach ($tokenResults as $token) {
 									</div>
 								</div>
 								<div class="form-group col-lg-6">
-									<label>User Image</label>
+									<label><?= $this->translate('User Image'); ?></label>
 									<div class="input-group col-sm-6" style="padding-left: 14px;width:66%;">
 										<div class="controls">
 											<div class="fileinput fileinput-new" data-provides="fileinput">
@@ -127,17 +127,17 @@ foreach ($tokenResults as $token) {
 												</div>
 												<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
 												<div>
-													<span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
-														<input type="file" class="" name="user_image" id="user_image" title="Please choose image"></span>
-													<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+													<span class="btn btn-default btn-file"><span class="fileinput-new"><?= $this->translate('Select image'); ?></span><span class="fileinput-exists"><?= $this->translate('Change'); ?></span>
+														<input type="file" class="" name="user_image" id="user_image" title="<?= $this->translate('Please choose image'); ?>"></span>
+													<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?= $this->translate('Remove'); ?></a>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="spacer col-lg-12">
-									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-									<a href="<?php echo $this->url('users', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
+									<a href="<?php echo $this->url('users', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
 								</div>
 							</form>
 						</div>

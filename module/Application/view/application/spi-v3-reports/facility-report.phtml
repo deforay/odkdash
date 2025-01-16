@@ -107,9 +107,9 @@
 									<div class=" col-lg-4">
 										<select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
 											<option value=""><?= $this->translate('All'); ?></option>
-											<option value="VCT/HTC">VCT/HTC</option>
-											<option value="PITC">PITC</option>
-											<option value="PMTCT">PMTCT</option>
+											<option value="VCT/HTC"><?= $this->translate('VCT/HTC'); ?></option>
+											<option value="PITC"><?= $this->translate('PITC'); ?></option>
+											<option value="PMTCT"><?= $this->translate('PMTCT'); ?></option>
 											<option value="TB clinic"><?= $this->translate('TB Clinic'); ?></option>
 											<option value="Laboratory"><?= $this->translate('Laboratory'); ?></option>
 											<option value="Treatment Center"><?= $this->translate('Treatment Center'); ?></option>
@@ -123,7 +123,7 @@
 								</div>
 								<div class="form-group" style="text-align:center;">
 									<button type="button" onclick="getReport()" class="btn btn-sm btn-success"><?= $this->translate('Get Report'); ?></button>
-									&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+									&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= $this->translate('Reset'); ?></span></button>
 								</div>
 							</form>
 						</div>
