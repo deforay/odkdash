@@ -69,7 +69,7 @@
                                 </td>
                             </tr>
                             <tr class="editFC" style="display:none;">
-                                <td class="col-lg-6"><b>Updated/New Facility ID</b> <span class="mandatory">*</span></td>
+                                <td class="col-lg-6"><b><?= $this->translate('Updated/New Facility ID'); ?></b> <span class="mandatory">*</span></td>
                                 <td class="col-lg-6"><input type="text" name="facilityId" id="facilityId" class="form-control" /></td>
                             </tr>
                             <tr class="editFC" style="display:none;">
@@ -149,11 +149,11 @@
         //console.log(upFaciltyName);
         if (fName != '' && upFaciltyName != '' && upFaciltyName != null) {
             if ($.trim(facilityId) == '') {
-                alert("Please enter facility id");
+                alert("<?= $this->translate('Please enter facility id'); ?>");
                 $("#facilityId").focus();
                 return false;
             } else if ($.trim(editFacilityName) == '') {
-                alert("Please enter facility name");
+                alert("<?= $this->translate('Please enter facility name'); ?>");
                 $("#editFacilityName").focus();
                 return false;
             }
@@ -169,7 +169,7 @@
                     },
                     function(data) {
                         //if (data > 0) {
-                            alert("Facility names merged successfully");
+                            alert("<?= $this->translate('Facility names merged successfully'); ?>");
                             parent.closeModal();
                             parent.window.location.href = window.parent.location.href;
                         //} else {
@@ -180,7 +180,7 @@
                     });
             }
         } else {
-            alert("Please fill all the mandatory fields");
+            alert("<?= $this->translate('Please fill all the mandatory fields'); ?>");
         }
     }
 

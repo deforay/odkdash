@@ -47,7 +47,7 @@
 									<b><?= $this->translate('Province'); ?></b><span class="mandatory">*</span>
 								</td>
 								<td class="col-lg-8" align="center">
-									<select class="form-control" name="province" id="province" title="Please select province" onchange="getDistrict()">
+									<select class="form-control" name="province" id="province" title="<?= $this->translate('Please select province'); ?>" onchange="getDistrict()">
 										<option value="">--Select--</option>
 										<?php
 										foreach ($provinces as $val) {
@@ -56,9 +56,9 @@
 										<?php
 										}
 										?>
-										<option value="other">Other</option>
+										<option value="other"><?= $this->translate('Other'); ?></option>
 									</select>
-									<input type="text" placeholder="Enter Province Name" class="form-control" name="provinceName" id="provinceName" style="display:none;" data-type="Province" onblur="checkExistName(this)" title="Please enter the province name">
+									<input type="text" placeholder="<?= $this->translate('Enter Province Name'); ?>" class="form-control" name="provinceName" id="provinceName" style="display:none;" data-type="Province" onblur="checkExistName(this)" title="<?= $this->translate('Please enter the province name'); ?>">
 									</td>
 							</tr>
 							<tr>
@@ -71,10 +71,10 @@
 									<b><?= $this->translate('District'); ?></b>
 								</td>
 								<td class="col-lg-8" align="center">
-									<select class="form-control" name="district" id="district" title="Please select district" onchange="checkDistrict()">
+									<select class="form-control" name="district" id="district" title="<?= $this->translate('Please select district'); ?>" onchange="checkDistrict()">
 										<option value="">--Select--</option>
 									</select>
-									<input type="text" placeholder="Enter District Name" class="form-control" name="districtName" id="districtName"  data-type="District" onblur="checkExistName(this)" style="display:none;" title="Please enter the district name">
+									<input type="text" placeholder="<?= $this->translate('Enter District Name'); ?>" class="form-control" name="districtName" id="districtName"  data-type="District" onblur="checkExistName(this)" style="display:none;" title="<?= $this->translate('Please enter the district name'); ?>">
 									</td>
 							</tr>
 							<tr>

@@ -13,7 +13,7 @@ $container = new Container('alert');
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="shortcut icon" href="assets/img/favicon.png">
-  <title>Dashboard for Quality Improvement of HIV Rapid Testing </title>
+  <title><?= $this->translate('Dashboard for Quality Improvement of HIV Rapid Testing'); ?> </title>
   <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/stroke-7/style.css'); ?>" />
   <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/jquery.nanoscroller/css/nanoscroller.css'); ?>" />
   <!--[if lt IE 9]>
@@ -70,7 +70,7 @@ $container = new Container('alert');
                   <div class="form-group footer row" style="display:none;">
                     <div class="col-xs-6"><a href="#"><?= $this->translate('Forgot Password?'); ?></a></div>
                     <div class="col-xs-6 remember">
-                      <label for="remember">Remember Me</label>
+                      <label for="remember"><?= $this->translate('Remember Me'); ?></label>
                       <div class="am-checkbox">
                         <input type="checkbox" id="remember">
                         <label for="remember"></label>
@@ -83,7 +83,7 @@ $container = new Container('alert');
             </div>
           </div>
           <a href="http://apps.who.int/iris/bitstream/10665/199799/1/9789241508179_eng.pdf" style="text-decoration:underline;">
-            Improving the quality of HIV-Related Point-of Care Testing<br>1 December 2015
+            <?= $this->translate('Improving the quality of HIV-Related Point-of Care Testing<br>1 December 2015'); ?>
           </a>
 
         </div>

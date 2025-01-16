@@ -70,8 +70,8 @@
 </style>
 <div class="am-content">
 	<div class="page-head">
-		<h2>Add Role</h2>
-		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+		<h2><?= $this->translate('Add Role'); ?></h2>
+		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= $this->translate('indicates required field'); ?></span>
 	</div>
 
 	<div class="main-content">
@@ -82,31 +82,31 @@
 						<div class="panel-body">
 							<form role="form" name="addRoleInformation" id="addRoleInformation" method="post" action="<?php echo $this->url('roles', array('action' => 'add')); ?>" autocomplete="off">
 								<div class="form-group col-lg-6">
-									<label>Role Name <span class="mandatory">*</span> </label>
-									<input type="text" placeholder="Role Name" class="form-control isRequired" name="roleName" id="roleName" title="Please enter the role name" onblur="checkNameValidation('roles','role_name', this, null, 'This name already exists. Please choose another name.')">
+									<label><?= $this->translate('Role Name'); ?> <span class="mandatory">*</span> </label>
+									<input type="text" placeholder="<?= $this->translate('Role Name'); ?>" class="form-control isRequired" name="roleName" id="roleName" title="<?= $this->translate('Please enter the role name'); ?>" onblur="checkNameValidation('roles','role_name', this, null, 'This name already exists. Please choose another name.')">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Role Code <span class="mandatory">*</span></label>
-									<input type="text" placeholder="Role Code" class="form-control isRequired" name="roleCode" id="roleCode" title="Please enter role code" onblur="checkNameValidation('roles', 'role_code', this, null, 'Already exist this code . Please choose another code.')">
+									<label><?= $this->translate('Role Code'); ?> <span class="mandatory">*</span></label>
+									<input type="text" placeholder="<?= $this->translate('Role Code'); ?>" class="form-control isRequired" name="roleCode" id="roleCode" title="<?= $this->translate('Please enter role code'); ?>" onblur="checkNameValidation('roles', 'role_code', this, null, 'Already exist this code . Please choose another code.')">
 								</div>
 								<div class="form-group col-lg-6">
-									<label>Description</label>
-									<textarea class="form-control" placeholder="Description" name="description" id="description"></textarea>
+									<label><?= $this->translate('Description'); ?></label>
+									<textarea class="form-control" placeholder="<?= $this->translate('Description'); ?>" name="description" id="description"></textarea>
 								</div>
 
 								<div class="form-group col-sm-12">
 									<div class="form-group">
-										<label class="col-sm-1 control-label">Note :</label>
+										<label class="col-sm-1 control-label"><?= $this->translate('Note :'); ?></label>
 										<div class="col-sm-10">
-											<p class="">Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc.</p>
+											<p class=""><?= $this->translate('Unless you choose "access" the people belonging to this role will not be able to access other rights like "add", "edit" etc.'); ?></p>
 										</div>
 									</div>
 									<div class="form-group col-sm-12" style="padding-left:14px;">
 										<div class="privilege-switch super-switch">
 											<input type="radio" class='' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
-											<label for="allowAllPrivileges">Select All</label>
+											<label for="allowAllPrivileges"><?= $this->translate('Select All'); ?></label>
 											<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" checked/></a>
-											<label for="denyAllPrivileges">Unselect All</label>
+											<label for="denyAllPrivileges"><?= $this->translate('Unselect All'); ?></label>
 										</div>
 									</div>
 									<table aria-describedby="table" class="table table-striped responsive-utilities">
@@ -124,12 +124,12 @@
 																	 echo '<input type="radio" class="" id="all' . $displayName . '" 
 																			name="' . $displayName . '" 
 																			onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', true);">
-																		   <label for="all' . $displayName . '">All</label>';
+																		   <label for="all' . $displayName . '">' . $this->translate('All') . '</label>';
 																 
 																	 echo '<input type="radio" class="" id="none' . $displayName . '" 
 																			name="' . $displayName . '" 
 																			onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', false);">
-																		   <label for="none' . $displayName . '">None</label>';
+																		   <label for="none' . $displayName . '">' . $this->translate('None') . '</label>';
 																?>
 															</div>
 														</div>
@@ -146,10 +146,10 @@
 															<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
 																<?php
 																	echo '<input type="radio" class="selectPrivilege" name="resource[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']">';
-																	echo '<label for="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="normal-label">Yes</label>';
+																	echo '<label for="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="normal-label">' . $this->translate('Yes') . '</label>';
 																	
 																	echo '<input type="radio" class="unselectPrivilege" name="resource[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']">';
-																	echo '<label for="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="deny-label">No</label>';
+																	echo '<label for="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="deny-label">' . $this->translate('No') . '</label>';
 																?>
 															</div>
 														</div>
@@ -164,8 +164,8 @@
 
 
 								<div class="spacer  col-lg-12">
-									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-									<a href="<?php echo $this->url('roles', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
+									<a href="<?php echo $this->url('roles', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
 								</div>
 							</form>
 						</div>

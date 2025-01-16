@@ -28,7 +28,7 @@ if (isset($_GET['total'])) {
 </style>
 <div class="am-content">
 	<div class="page-head">
-		<h2>Upload Facility</h2>
+		<h2><?= $this->translate('Upload Facility'); ?></h2>
 	</div>
 
 	<div class="main-content">
@@ -41,22 +41,22 @@ if (isset($_GET['total'])) {
 
 								<div class="col-md-12">
 									<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-										<h3 style="margin-left:100px; color:green;">Total number of records in file : <?= htmlspecialchars($_GET['total']); ?> | Number of Facilities added : <?= htmlspecialchars($addedRecords); ?> | Number of Facilities not added : <?= htmlspecialchars($_GET['notAdded']); ?></h3>
+										<h3 style="margin-left:100px; color:green;"><?= $this->translate('Total number of records in file :'); ?> <?= htmlspecialchars($_GET['total']); ?> | <?= $this->translate('Number of Facilities added :'); ?> <?= htmlspecialchars($addedRecords); ?> | <?= $this->translate('Number of Facilities not added :'); ?> <?= htmlspecialchars($_GET['notAdded']); ?></h3>
 										<?php if ($_GET['notAdded'] > 0) { ?>
-											<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel Sheet with not uploaded facilities</a><br><br>
+											<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download><?= $this->translate('Download the Excel Sheet with not uploaded facilities'); ?></a><br><br>
 										<?php } ?>
 									<?php } ?>
 									<div class="row">
 										<div class="form-group">
-											<label class="col-lg-2 control-label">Upload Options <span class="mandatory">*</span></label>
+											<label class="col-lg-2 control-label"><?= $this->translate('Upload Options '); ?><span class="mandatory">*</span></label>
 											<div class="col-lg-5">
 												<select name="uploadOption" id="uploadOption" class="form-control">
-													<option value="default" <?php echo ($_GET['option'] ?? '') == 'default' ? 'selected="selected"' : ''; ?>>Don't update duplicates (default)</option>
-													<option value="facility_name_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_match' ? 'selected="selected"' : ''; ?>>Update if Facility Name matches</option>
-													<option value="facility_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_id_match' ? 'selected="selected"' : ''; ?>>Update if Facility Id matches</option>
-													<option value="facility_name_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_id_match' ? 'selected="selected"' : ''; ?>>Update if Facility Name and Facility Id match</option>
-													<option value="skip_facility_name_code" <?php echo ($_GET['option'] ?? '') == 'skip_facility_name_code' ? 'selected="selected"' : ''; ?>>Skip Duplicate Facility Name or Code</option>
-													<option value="update_duplicate_facility_name_code" <?php echo ($_GET['option'] ?? '') == 'update_duplicate_facility_name_code' ? 'selected="selected"' : ''; ?>>Update Duplicate Facility Name or Code</option>
+													<option value="default" <?php echo ($_GET['option'] ?? '') == 'default' ? 'selected="selected"' : ''; ?>><?= $this->translate("Don't update duplicates (default)"); ?></option>
+													<option value="facility_name_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_match' ? 'selected="selected"' : ''; ?>><?= $this->translate('Update if Facility Name matches'); ?></option>
+													<option value="facility_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_id_match' ? 'selected="selected"' : ''; ?>><?= $this->translate('Update if Facility Id matches'); ?></option>
+													<option value="facility_name_id_match" <?php echo ($_GET['option'] ?? '') == 'facility_name_id_match' ? 'selected="selected"' : ''; ?>><?= $this->translate('Update if Facility Name and Facility Id match'); ?></option>
+													<option value="skip_facility_name_code" <?php echo ($_GET['option'] ?? '') == 'skip_facility_name_code' ? 'selected="selected"' : ''; ?>><?= $this->translate('Skip Duplicate Facility Name or Code'); ?></option>
+													<option value="update_duplicate_facility_name_code" <?php echo ($_GET['option'] ?? '') == 'update_duplicate_facility_name_code' ? 'selected="selected"' : ''; ?>><?= $this->translate('Update Duplicate Facility Name or Code'); ?></option>
 												</select>
 											</div>
 										</div>
@@ -66,17 +66,17 @@ if (isset($_GET['total'])) {
 
 									<div class="row">
 										<div class="form-group">
-											<label class="col-lg-2 control-label">Upload File <span class="mandatory">*</span></label>
+											<label class="col-lg-2 control-label"><?= $this->translate('Upload File '); ?><span class="mandatory">*</span></label>
 											<div class="col-lg-8">
-												<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" title="Click to upload file" />
-												<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download>Click here to download the Excel format for uploading facilities in bulk</a>
+												<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" title="<?= $this->translate('Click to upload file'); ?>" />
+												<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download><?= $this->translate('Click here to download the Excel format for uploading facilities in bulk'); ?></a>
 											</div>
 										</div>
 									</div><br>
 
 									<div class="spacer  col-lg-12">
-										<button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-										<a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+										<button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
+										<a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
 									</div>
 								</div>
 							</form>
