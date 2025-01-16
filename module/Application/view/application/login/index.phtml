@@ -44,7 +44,7 @@ $container = new Container('alert');
               }
               if (!empty($config) && !empty($config['additional_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
               ?>
-                <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" alt="Additional Logo" style="width:120px;" />
+                <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" alt="Additional Logo" style="width:120px;height:50px;" />
               <?php
               }
               ?>
