@@ -66,7 +66,7 @@ $totalVersions = count(explode(",", $web_version));
         // $config = $this->GlobalConfigHelper();
         if (!empty($config) && !empty($config['logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
         ?>
-          <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
+          <img alt="Logo" src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
         <?php
         } else {
         ?>
@@ -75,7 +75,7 @@ $totalVersions = count(explode(",", $web_version));
         }
         if (!empty($config) && !empty($config['additional_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
         ?>
-          <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" style="width:100%;" />
+          <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" alt="Additional Logo" style="width:100%;" />
         <?php
         }
         ?>

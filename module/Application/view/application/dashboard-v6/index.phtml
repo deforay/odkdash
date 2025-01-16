@@ -151,7 +151,7 @@ $userMappingType = $sessionLogin->userMappingType;
 								<label for="country" class="col-sm-2 control-label country"><?= $this->translate('Country'); ?></label>
 								<div class=" col-lg-4 country">
 									<select class="form-control" multiple="multiple" name="country" id="country" title="Please select the country">
-										<option value=""><?= $this->translate('All'); ?></option>  
+										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach($locationResult['countries'] as $row){ ?>
 											<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
 										<?php } ?>
@@ -166,7 +166,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php } ?>
 									</select>
 								</div>
-							</div> 
+							</div>
 							<div class="form-group">
 								<label for="district" class="col-sm-2 control-label district"><?= $this->translate('District'); ?></label>
 								<div class=" col-lg-4 district">
@@ -544,7 +544,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					</div>
 				</div>
 			</div>
-		<?php else : // vertical layout 
+		<?php else : // vertical layout
 		?>
 			<div class="row">
 				<div class="col-md-6" id="lefter">
@@ -1688,7 +1688,6 @@ $userMappingType = $sessionLogin->userMappingType;
 		widget_top_3();
 		//radar_chart();
 		getAuditDetails();
-		//calendar_widget();
 		bar_chart();
 		//zeroCountsBarChart();
 		getAuditWorstDetails();

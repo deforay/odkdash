@@ -20,7 +20,6 @@ class GenerateBulkPdf extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->odkFormService->getDownloadDataList();
-        $this->odkFormService->getV5DownloadDataList();
         $this->odkFormService->getV6DownloadDataList();
         return Command::SUCCESS;
     }

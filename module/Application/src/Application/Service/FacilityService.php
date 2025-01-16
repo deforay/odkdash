@@ -410,7 +410,7 @@ class FacilityService
             $sql = new Sql($dbAdapter);
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllFacilityQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            if (count($sResult) > 0) {
+            if (!empty($sResult)) {
                 foreach ($sResult as $aRow) {
                     $row = [];
                     $row[] = $aRow['facility_id'];
