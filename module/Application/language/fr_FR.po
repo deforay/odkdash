@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ODKDASH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-10 21:35+0530\n"
-"PO-Revision-Date: 2025-01-10 21:37+0530\n"
+"POT-Creation-Date: 2025-01-12 21:16+0530\n"
+"PO-Revision-Date: 2025-01-13 09:10+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: Deforay <support@deforay.com>\n"
 "Language: fr\n"
@@ -190,7 +190,7 @@ msgstr "Piste d’audit"
 #: ../view/application/dashboard-v6/index.phtml:517
 #: ../view/application/dashboard-v6/index.phtml:631
 #: ../view/application/dashboard/index.phtml:414
-#: ../view/application/index/index.phtml:195
+#: ../view/application/index/index.phtml:196
 #: ../view/application/index/index1.phtml:142
 msgid "Audit Locations"
 msgstr "Lieux d'audit"
@@ -641,7 +641,7 @@ msgstr "Actions"
 #: ../view/application/dashboard-v5/index.phtml:1009
 #: ../view/application/dashboard-v6/index.phtml:1219
 #: ../view/application/dashboard/index.phtml:1011
-#: ../view/application/index/index.phtml:308
+#: ../view/application/index/index.phtml:310
 #: ../view/application/index/index1.phtml:263
 msgid "Audit score in %"
 msgstr "Score d'audit en %"
@@ -658,10 +658,10 @@ msgstr "Score d'audit en %"
 #: ../view/application/dashboard/index.phtml:1057
 #: ../view/application/dashboard/index.phtml:1571
 #: ../view/application/dashboard/index.phtml:1596
-#: ../view/application/index/index.phtml:317
-#: ../view/application/index/index.phtml:354
-#: ../view/application/index/index.phtml:760
-#: ../view/application/index/index.phtml:785
+#: ../view/application/index/index.phtml:319
+#: ../view/application/index/index.phtml:356
+#: ../view/application/index/index.phtml:762
+#: ../view/application/index/index.phtml:787
 #: ../view/application/index/index1.phtml:272
 #: ../view/application/index/index1.phtml:309
 #: ../view/application/index/index1.phtml:715
@@ -683,7 +683,7 @@ msgstr "Volume d'essai"
 #: ../view/application/dashboard-v5/index.phtml:1047
 #: ../view/application/dashboard-v6/index.phtml:1257
 #: ../view/application/dashboard/index.phtml:1049
-#: ../view/application/index/index.phtml:346
+#: ../view/application/index/index.phtml:348
 #: ../view/application/index/index1.phtml:301
 #: ../view/application/spi-v3/view-data.phtml:184
 #: ../view/application/spi-v6/view-data-section-zero-protocol-v6.phtml:184
@@ -700,9 +700,9 @@ msgstr "Score d'audit Pourcentage"
 #: ../view/application/dashboard/index.phtml:1068
 #: ../view/application/dashboard/index.phtml:1606
 #: ../view/application/dashboard/index.phtml:1614
-#: ../view/application/index/index.phtml:365
-#: ../view/application/index/index.phtml:795
-#: ../view/application/index/index.phtml:803
+#: ../view/application/index/index.phtml:367
+#: ../view/application/index/index.phtml:797
+#: ../view/application/index/index.phtml:805
 #: ../view/application/index/index1.phtml:320
 #: ../view/application/index/index1.phtml:750
 #: ../view/application/index/index1.phtml:758
@@ -719,7 +719,7 @@ msgstr "Tests"
 #: ../view/application/dashboard-v6/index.phtml:1724
 #: ../view/application/dashboard/index.phtml:1428
 #: ../view/application/dashboard/index.phtml:1433
-#: ../view/application/index/index.phtml:637
+#: ../view/application/index/index.phtml:639
 #: ../view/application/index/index1.phtml:592
 msgid "Audit round(s)"
 msgstr "Cycle(s) d'audit"
@@ -728,7 +728,7 @@ msgstr "Cycle(s) d'audit"
 #: ../view/application/dashboard-v6/index.phtml:1729
 #: ../view/application/dashboard/index.phtml:1438
 #: ../view/application/facility/index.phtml:279
-#: ../view/application/index/index.phtml:642
+#: ../view/application/index/index.phtml:644
 #: ../view/application/index/index1.phtml:597
 msgid "Select Audit round(s)"
 msgstr "Sélectionner le(s) tour(s) d'audit"
@@ -755,7 +755,7 @@ msgstr "Impossible de générer un téléchargement"
 #: ../view/application/dashboard-v5/index.phtml:1536
 #: ../view/application/dashboard-v6/index.phtml:1895
 #: ../view/application/dashboard/index.phtml:1543
-#: ../view/application/index/index.phtml:732
+#: ../view/application/index/index.phtml:734
 #: ../view/application/index/index1.phtml:687
 #: ../view/application/spi-v3/testing-volume-datewise.phtml:67
 #: ../view/application/spi-v6/testing-volume-datewise.phtml:68
@@ -766,7 +766,7 @@ msgstr "Nombre de testeurs"
 #: ../view/application/dashboard-v6/index.phtml:1962
 #: ../view/application/dashboard-v6/index.phtml:1966
 #: ../view/application/dashboard/index.phtml:1610
-#: ../view/application/index/index.phtml:799
+#: ../view/application/index/index.phtml:801
 #: ../view/application/index/index1.phtml:754
 #: ../view/application/spi-v3/testing-volume-datewise.phtml:134
 #: ../view/application/spi-v3/view-data.phtml:172
@@ -780,7 +780,7 @@ msgstr "Testeurs"
 #: ../view/application/dashboard-v5/index.phtml:1611
 #: ../view/application/dashboard-v6/index.phtml:1970
 #: ../view/application/dashboard/index.phtml:1618
-#: ../view/application/index/index.phtml:807
+#: ../view/application/index/index.phtml:809
 #: ../view/application/index/index1.phtml:762
 #: ../view/application/spi-v3-reports/facility-report.phtml:43
 #: ../view/application/spi-v3/index.phtml:63
@@ -808,8 +808,8 @@ msgstr "Niveau"
 #: ../view/application/dashboard-v6/index.phtml:2061
 #: ../view/application/dashboard/index.phtml:1678
 #: ../view/application/dashboard/index.phtml:1709
-#: ../view/application/index/index.phtml:857
-#: ../view/application/index/index.phtml:878
+#: ../view/application/index/index.phtml:859
+#: ../view/application/index/index.phtml:880
 #: ../view/application/index/index1.phtml:812
 #: ../view/application/index/index1.phtml:833
 msgid "Audit Counts"
@@ -1763,26 +1763,27 @@ msgstr "Veuillez sélectionner un district."
 msgid "An error occurred"
 msgstr "Une erreur est survenue"
 
-#: ../view/layout/home.phtml:92 ../view/layout/home.phtml:105
-#: ../view/layout/layout.phtml:257 ../view/layout/layout.phtml:267
-msgid "Dashboard SPI-RT"
-msgstr "Tableau de bord SPI-RT"
-
-#: ../view/layout/home.phtml:94 ../view/layout/home.phtml:108
-#: ../view/layout/layout.phtml:259 ../view/layout/layout.phtml:270
-msgid "Dashboard SPI-RRT v5"
-msgstr "Tableau de bord SPI-RRT v5"
-
-#: ../view/layout/home.phtml:96 ../view/layout/home.phtml:111
-#: ../view/layout/layout.phtml:261 ../view/layout/layout.phtml:273
-msgid "Dashboard SPI-RRT"
-msgstr "Tableau de bord SPI-RRT"
-
-#: ../view/layout/home.phtml:101 ../view/layout/layout.phtml:264
+#: ../view/layout/home.phtml:92 ../view/layout/home.phtml:94
+#: ../view/layout/home.phtml:99 ../view/layout/layout.phtml:264
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: ../view/layout/home.phtml:133
+#: ../view/layout/home.phtml:103 ../view/layout/layout.phtml:257
+#: ../view/layout/layout.phtml:267
+msgid "Dashboard SPI-RT"
+msgstr "Tableau de bord SPI-RT"
+
+#: ../view/layout/home.phtml:106 ../view/layout/layout.phtml:259
+#: ../view/layout/layout.phtml:270
+msgid "Dashboard SPI-RRT v5"
+msgstr "Tableau de bord SPI-RRT v5"
+
+#: ../view/layout/home.phtml:109 ../view/layout/layout.phtml:261
+#: ../view/layout/layout.phtml:273
+msgid "Dashboard SPI-RRT"
+msgstr "Tableau de bord SPI-RRT"
+
+#: ../view/layout/home.phtml:131
 msgid ""
 " This project is supported by the U.S. President's Emergency Plan for AIDS "
 "Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention "

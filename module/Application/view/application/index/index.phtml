@@ -170,6 +170,7 @@ $config = $this->GlobalConfigHelper();
 					<div class="widget-head">
 						<span class="title">
 							<h3><?= $this->translate('Latest Audits'); ?></h3>
+							<hr>
 						</span>
 					</div>
 					<div class="chart-container">
@@ -191,12 +192,12 @@ $config = $this->GlobalConfigHelper();
 
 					<div class="widget-head">
 						<div class="title row">
-							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+							<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
 								<h3><?= $this->translate('Audit Locations'); ?></h3>
+								<hr>
 							</div>
 						</div>
 					</div>
-
 					<div id="auditLocations" style="height:500px;max-height:500px;">
 					</div>
 				</div>
@@ -218,24 +219,24 @@ $config = $this->GlobalConfigHelper();
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/leaflet.js'); ?>"></script>
 <script type="text/javascript">
-	var color1 = "red";
-	var color2 = "orange";
-	var color3 = "yellow";
-	var color4 = "#8DD63E";
-	var color5 = "#528A16";
+	let color1 = "red";
+	let color2 = "orange";
+	let color3 = "yellow";
+	let color4 = "#8DD63E";
+	let color5 = "#528A16";
 
 	//Get the template css colors into js vars
 	function getColor(c) {
-		var tmp = $("<div>", {
+		let tmp = $("<div>", {
 			class: c
 		}).appendTo("body");
-		var color = tmp.css("background-color");
+		let color = tmp.css("background-color");
 		tmp.remove();
 
 		return color;
 	}
 
-	var colors = {};
+	let colors = {};
 	colors.primary = getColor('clr-primary');
 	colors.success = getColor('clr-success');
 	colors.info = getColor('clr-info');
@@ -414,14 +415,14 @@ $config = $this->GlobalConfigHelper();
 
 	//Calendar Widget
 	function calendar_widget() {
-		var widget = $(".widget-calendar");
-		var calNotes = $(".cal-notes", widget);
-		var calNotesDay = $(".day", calNotes);
-		var calNotesDate = $(".date", calNotes);
+		let widget = $(".widget-calendar");
+		let calNotes = $(".cal-notes", widget);
+		let calNotesDay = $(".day", calNotes);
+		let calNotesDate = $(".date", calNotes);
 
 		//Calculate the weekday name
-		var d = new Date();
-		var weekday = new Array(7);
+		let d = new Date();
+		let weekday = new Array(7);
 		weekday[0] = "Sunday";
 		weekday[1] = "Monday";
 		weekday[2] = "Tuesday";
