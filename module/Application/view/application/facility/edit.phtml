@@ -8,7 +8,7 @@
 </style>
 <div class="am-content">
         <div class="page-head">
-          <h2>Edit Facility</h2>
+          <h2><?= $this->translate('Edit Facility'); ?></h2>
         </div>
         
         
@@ -20,25 +20,25 @@
                 <div class="panel-body">
                   <form role="form" name="editFacilityInfo" id="editFacilityInfo" method="post" action="<?php echo $this->url('spi-facility', array('action' => 'edit')); ?>" autocomplete="off" >
                     <div class="form-group col-lg-6">
-                      <label>Facility Id</label>
-                      <input type="text" placeholder="Facility Id" class="form-control isRequired" name="facilityId" id="facilityId" title="Please enter the facility id" value="<?php echo $result->facility_id; ?>">
+                      <label><?= $this->translate('Facility Id'); ?></label>
+                      <input type="text" placeholder="<?= $this->translate('Facility Id'); ?>" class="form-control isRequired" name="facilityId" id="facilityId" title="<?= $this->translate('Please enter the facility id'); ?>" value="<?php echo $result->facility_id; ?>">
                       <input type="hidden" class="form-control isRequired" name="rowId" id="rowId" value="<?php echo base64_encode($result->id); ?>">
                     </div>
                     <div class="form-group col-lg-6">
-                      <label>Facility Name</label>
-                      <input type="text" placeholder="Facility Name" class="form-control isRequired" name="facilityName" id="facilityName" title="Please enter the facility name" value="<?php echo $result->facility_name; ?>" onblur="checkNameValidation('spi_rt_3_facilities','facility_name', this,'<?php echo "id##" .$result->id; ?>','This name already exists. Please choose another name.')">
+                      <label><?= $this->translate('Facility Name'); ?></label>
+                      <input type="text" placeholder="<?= $this->translate('Facility Name'); ?>" class="form-control isRequired" name="facilityName" id="facilityName" title="<?= $this->translate('Please enter the facility name'); ?>" value="<?php echo $result->facility_name; ?>" onblur="checkNameValidation('spi_rt_3_facilities','facility_name', this,'<?php echo "id##" .$result->id; ?>','This name already exists. Please choose another name.')">
                     </div>
                     <div class="form-group col-lg-6">
-                      <label>Email</label>
-                      <input type="text" placeholder="Email" class="form-control isEmail" name="email" id="email" value="<?php echo $result->email; ?>">
+                      <label><?= $this->translate('Email'); ?></label>
+                      <input type="text" placeholder="<?= $this->translate('Email'); ?>" class="form-control isEmail" name="email" id="email" value="<?php echo $result->email; ?>">
                     </div>
                     <div class="form-group col-lg-6">
-                      <label>Name of the Contact Person</label>
-                      <input type="text" placeholder="Name of the Contact Person" class="form-control" name="contactPerson" id="contactPerson" value="<?php echo $result->contact_person; ?>">
+                      <label><?= $this->translate('Name of the Contact Person'); ?></label>
+                      <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" class="form-control" name="contactPerson" id="contactPerson" value="<?php echo $result->contact_person; ?>">
                     </div>
 					<div class="form-group col-lg-6">
-                      	<label>Country</label>
-                      	<select class="form-control" name="country" id="country" title="Please select country">
+                      	<label><?= $this->translate('Country'); ?></label>
+                      	<select class="form-control" name="country" id="country" title="<?= $this->translate('Please select country'); ?>">
 							<option value="">--Select--</option>
 							<?php
 							foreach ($countries as $val) {
@@ -50,8 +50,8 @@
 						</select>
                     </div>
 					<div class="form-group col-lg-6">
-                      	<label>Province</label>
-                      	<select class="form-control" name="province" id="province" title="Please select province" onchange="getDistrict()">
+                      	<label><?= $this->translate('Province'); ?></label>
+                      	<select class="form-control" name="province" id="province" title="<?= $this->translate('Please select province'); ?>" onchange="getDistrict()">
 							<option value="">--Select--</option>
 							<?php
 							foreach ($provinceResult as $val) {
@@ -60,28 +60,28 @@
 							<?php
 							}
 							?>
-							<option value="other">Other</option>
+							<option value="other"><?= $this->translate('Other'); ?></option>
 						</select>
-						<input type="text" placeholder="Enter Province Name" class="form-control" name="provinceName" id="provinceName" data-type="Province" onblur="checkExistName(this)" style="display:none;" title="Please enter the province name">
+						<input type="text" placeholder="Enter Province Name'); ?>" class="form-control" name="provinceName" id="provinceName" data-type="Province" onblur="checkExistName(this)" style="display:none;" title="<?= $this->translate('Please enter the province name'); ?>">
                     </div>
 					<div class="form-group col-lg-6">
-                      	<label>District</label>
-					  	<select class="form-control" name="district" id="district" title="Please select district" onchange="checkDistrict()">
+                      	<label><?= $this->translate('District'); ?></label>
+					  	<select class="form-control" name="district" id="district" title="<?= $this->translate('Please select district'); ?>" onchange="checkDistrict()">
 							<option value="">--Select--</option>
 						</select>
-						<input type="text" placeholder="Enter District Name" class="form-control" name="districtName" id="districtName" data-type="District" onblur="checkExistName(this)" style="display:none;" title="Please enter the district name">
+						<input type="text" placeholder="<?= $this->translate('Enter District Name'); ?>" class="form-control" name="districtName" id="districtName" data-type="District" onblur="checkExistName(this)" style="display:none;" title="<?= $this->translate('Please enter the district name'); ?>">
                     </div>
 					<div class="form-group col-lg-6">
-                      <label>Latitude</label>
-                      <input type="text" placeholder="Latitude" class="form-control" name="latitude" id="latitude" value="<?php echo $result->latitude; ?>">
+                      <label><?= $this->translate('Latitude'); ?></label>
+                      <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" class="form-control" name="latitude" id="latitude" value="<?php echo $result->latitude; ?>">
                     </div>
 					<div class="form-group col-lg-6">
-                      <label>Longitude</label>
-                      <input type="text" placeholder="Longitude" class="form-control" name="longitude" id="longitude" value="<?php echo $result->longitude; ?>">
+                      <label><?= $this->translate('Longitude'); ?></label>
+                      <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" class="form-control" name="longitude" id="longitude" value="<?php echo $result->longitude; ?>">
                     </div>
                     <div class="spacer  col-lg-12">
-                      <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-                     <a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a> 
+                      <button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
+                     <a href="<?php echo $this->url('spi-facility', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a> 
                     </div>
                   </form>
                 </div>

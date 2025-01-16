@@ -14,7 +14,7 @@
                                                                                                                                             } else {
                                                                                                                                                 echo "-";
                                                                                                                                             } ?></span></div>
-    <div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php if (isset($perf1[0]['newestDate']) && trim($perf1[0]['newestDate']) != '') {
+    <div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php if (isset($perf1[0]['newestDate']) && trim($perf1[0]['newestDate']) != '') {
                                                                                                                                                                 echo $this->humanReadableDateFormat($perf1[0]['newestDate']);
                                                                                                                                                             } else {
                                                                                                                                                                 echo "-";
@@ -65,7 +65,7 @@
                 foreach ($auditRoundWiseData as $auditNo => $adata) {
                 ?> {
                         //name : 'Audit <?php echo $auditNo; ?>',
-                        name: 'Audit Performance',
+                        name: '<?= $this->translate('Audit Performance'); ?>',
                         pointPlacement: 'on',
                         data: [<?php echo round($adata['PERSONAL_SCORE'], 2); ?>,
                             <?php echo round($adata['PHYSICAL_SCORE'], 2); ?>,

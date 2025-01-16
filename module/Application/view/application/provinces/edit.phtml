@@ -1,7 +1,7 @@
 <div class="am-content">
 	<div class="page-head">
-		<h2>Edit Province</h2>
-		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+		<h2><?= $this->translate('Edit Province'); ?></h2>
+		<span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= $this->translate('indicates required field'); ?></span>
 	</div>
 
 	<div class="main-content">
@@ -12,26 +12,26 @@
 						<div class="panel-body">
 							<form role="form" name="addProvinceInformation" id="addProvinceInformation" method="post" action="<?php echo $this->url('provinces', array('action' => 'edit')); ?>" autocomplete="off">
 								<div class="form-group col-lg-6">
-									<label>Province Name <span class="mandatory">*</span> </label>
-									<input type="text" class="form-control isRequired" id="provinceName" name="provinceName" placeholder="Province Name" title="Please enter Province name" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province name that you entered already exists.Enter another name')" value="<?php echo $result->geo_name; ?>"/>
+									<label><?= $this->translate('Province Name'); ?> <span class="mandatory">*</span> </label>
+									<input type="text" class="form-control isRequired" id="provinceName" name="provinceName" placeholder="<?= $this->translate('Province Name'); ?>" title="<?= $this->translate('Please enter Province name'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province name that you entered already exists.Enter another name')" value="<?php echo $result->geo_name; ?>"/>
 									<input type="hidden" class="form-control isRequired" id="provinceId" name="provinceId" value="<?php echo base64_encode($result->geo_id); ?>"/>
 								</div>
 								<div class="form-group col-lg-6">
-									<label for="provinceCode">Province Code <span class="mandatory">*</span></label>
-									<input type="text" class="form-control isRequired" id="provinceCode" name="provinceCode" placeholder="Province code" title="Please enter Province code" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province code that you entered already exists.Enter another code')" value="<?php echo $result->geo_code; ?>"/>
+									<label for="provinceCode"><?= $this->translate('Province Code'); ?> <span class="mandatory">*</span></label>
+									<input type="text" class="form-control isRequired" id="provinceCode" name="provinceCode" placeholder="<?= $this->translate('Province code'); ?>" title="<?= $this->translate('Please enter Province code'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province code that you entered already exists.Enter another code')" value="<?php echo $result->geo_code; ?>"/>
 								</div>
 								
 								<div class="form-group col-lg-6">
-									<label for="status">Status <span class="mandatory">*</span></label>
+									<label for="status"><?= $this->translate('Status'); ?> <span class="mandatory">*</span></label>
 									<select class="form-control isRequired" name="status" id="status">
-										<option value="active" <?php if($result->geo_status=='active'){echo 'selected=selected';}?>>Active</option>
-										<option value="inactive" <?php if($result->geo_status=='inactive'){echo 'selected=selected';}?>>Inactive</option>
+										<option value="active" <?php if($result->geo_status=='active'){echo 'selected=selected';}?>><?= $this->translate('Active'); ?></option>
+										<option value="inactive" <?php if($result->geo_status=='inactive'){echo 'selected=selected';}?>><?= $this->translate('Inactive'); ?></option>
 									</select>
 								</div>
 
 								<div class="spacer  col-lg-12">
-									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-									<a href="<?php echo $this->url('provinces', array('action' => 'index')); ?>" class="btn btn-space btn-default">Cancel</a>
+									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
+									<a href="<?php echo $this->url('provinces', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
 								</div>
 								
 							</form>
