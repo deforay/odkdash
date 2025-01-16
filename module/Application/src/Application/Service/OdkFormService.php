@@ -4121,6 +4121,7 @@ class OdkFormService
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
+            // print_r($sResult); die;
             if (count($sResult) > 0) {
                 $auditScore = 0;
                 $sQ1Score = 0;
@@ -4150,49 +4151,50 @@ class OdkFormService
                     foreach ($sResult[$l] as $key => $aRow) {
                         if ($key != 'id' && $key != 'content' && $key != 'token') {
                             if (($key == 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY')) {
-                                $sQ1Score += $sResult[$l][$key];
+                                // $sQ1Score += $sResult[$l][$key];
+                                $sQ1Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL')) {
-                                $sQ2Score += $sResult[$l][$key];
+                                $sQ2Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'S0_Q_3_TESTS_RECORDED_RECENCY')) {
-                                $sQ3Score += $sResult[$l][$key];
+                                $sQ3Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'S0_Q_4_PROCESS_DOCUMENTED')) {
-                                $sQ4Score += $sResult[$l][$key];
+                                $sQ4Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS')) {
-                                $sQ5Score += $sResult[$l][$key];
+                                $sQ5Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED')) {
-                                $sQ6Score += $sResult[$l][$key];
+                                $sQ6Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS')) {
-                                $sQ7Score += $sResult[$l][$key];
+                                $sQ7Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_1_DIAGNOSED_HIV_ABOVE_15')) {
-                                $D0_S1_Score += $sResult[$l][$key];
+                                $D0_S1_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION')) {
-                                $D0_S2_Score += $sResult[$l][$key];
+                                $D0_S2_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD')) {
-                                $D0_S3_Score += $sResult[$l][$key];
+                                $D0_S3_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD')) {
-                                $D0_S4_Score += $sResult[$l][$key];
+                                $D0_S4_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_5_DOCUMENTED_AND_REFUSED')) {
-                                $D0_S5_Score += $sResult[$l][$key];
+                                $D0_S5_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI')) {
-                                $D0_S6_Score += $sResult[$l][$key];
+                                $D0_S6_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI')) {
-                                $D0_S7_Score += $sResult[$l][$key];
+                                $D0_S7_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if (($key == 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI')) {
-                                $D0_S8_Score += $sResult[$l][$key];
+                                $D0_S8_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
                             }
                             if ($key == 'AUDIT_SCORE_PERCENTAGE') {
                                 if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) {
@@ -5352,7 +5354,7 @@ class OdkFormService
         if ($section && isset($submission[$section][$mediaField])) {
             $fileName = $submission[$section][$mediaField];
         } else {
-            if(isset($submission[$mediaField])){
+            if (isset($submission[$mediaField])) {
                 $fileName = $submission[$mediaField];
             }
         }
@@ -5688,7 +5690,7 @@ class OdkFormService
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONAL_Display:label'] . '</td>';
                 $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PERSONALPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PERSONALPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONALPHOTO:label'] . '</td>';
@@ -5773,7 +5775,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PHYSICALPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PHYSICALPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PHYSICALPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICALPHOTO:label'] . '</td>';
@@ -5880,7 +5882,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['SAFETYPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['SAFETYPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['SAFETYPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETYPHOTO:label'] . '</td>';
@@ -6002,7 +6004,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PRETESTPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PRETESTPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PRETESTPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETESTPHOTO:label'] . '</td>';
@@ -6107,7 +6109,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['TESTPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['TESTPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['TESTPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TESTPHOTO:label'] . '</td>';
@@ -6212,7 +6214,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['POSTTESTPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['POSTTESTPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['POSTTESTPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POSTTESTPHOTO:label'] . '</td>';
@@ -6310,7 +6312,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['EQAPHOTO'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['EQAPHOTO'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['EQAPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQAPHOTO:label'] . '</td>';
@@ -6435,7 +6437,7 @@ class OdkFormService
                     $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
                     $partBTable .= '</tr>';
 
-                    if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['RTRIPHOTO'] != ''){
+                    if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['RTRIPHOTO'] != '') {
                         $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['RTRIPHOTO'];
                         $partBTable .= '<tr nobr="true">';
                         $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRIPHOTO:label'] . '</td>';
@@ -7009,7 +7011,7 @@ class OdkFormService
                 $partDTable .= '</table><br/><br/><br/>';
                 $pdf->writeHTML($partDTable, true, 0, true, 0);
 
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto'];
                     $siteTable = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
                     $siteTable .= '<tr nobr="true">';
@@ -7042,7 +7044,7 @@ class OdkFormService
                     $signBox2 .= '<tr><td>' . $decoded[$language]['/SPI_RT/auditorSignature:label'] . '</td>';
                 }
                 $signImg = "";
-                if(!empty($configData['embed_signatures_in_pdf']) && $configData['embed_signatures_in_pdf'] == "yes" && $formData['auditorSignature'] != ''){
+                if (!empty($configData['embed_signatures_in_pdf']) && $configData['embed_signatures_in_pdf'] == "yes" && $formData['auditorSignature'] != '') {
                     $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['auditorSignature'];
                     $signImg = CommonService::embedImage($imagePath);
                 }
@@ -7081,11 +7083,20 @@ class OdkFormService
     public function getBulkDownloadsFiles()
     {
         $directory = TEMP_UPLOAD_PATH . "/bulk-pdf/";
+        // Check if directory exists and is readable
+        if (!is_dir($directory) || !is_readable($directory)) {
+         return []; // Return an empty array if directory is invalid
+        }
+       
         $files = scandir($directory);
 
+        // Ensure $files is valid
+        if ($files === false) {
+            return []; // Return an empty array if scandir fails
+        }
         // Remove . and .. from the list
         $files = array_diff($files, array('.', '..'));
-
+      
         return $files;
     }
 

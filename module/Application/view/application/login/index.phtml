@@ -42,6 +42,11 @@ $container = new Container('alert');
                 <img src="<?php echo $this->basePath('assets/img/logo.png'); ?>" style="width:120px;" alt="logo" class="logo-img">
               <?php
               }
+              if (!empty($config) && !empty($config['additional_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
+              ?>
+                <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" alt="Additional Logo" style="width:120px;" />
+              <?php
+              }
               ?>
               <span><?= $this->translate('Dashboard for Quality Improvement of HIV Rapid Testing'); ?> </span>
             </div>

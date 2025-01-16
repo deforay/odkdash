@@ -469,6 +469,7 @@ $userMappingType = $sessionLogin->userMappingType;
         testPoint: testPoint
       },
       function(data) {
+        // console.log(data);return false;
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
           alert('<?= $this->translate('Unable to generate download'); ?>');
