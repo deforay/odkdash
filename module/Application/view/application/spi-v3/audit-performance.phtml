@@ -65,7 +65,7 @@
                 foreach ($auditRoundWiseData as $auditNo => $adata) {
                 ?> {
                         //name : 'Audit <?php echo $auditNo; ?>',
-                        name: 'Audit Performance',
+                        name: '<?= $this->translate('Audit Performance'); ?>',
                         pointPlacement: 'on',
                         data: [<?php echo round($adata['PERSONAL_SCORE'], 2); ?>,
                             <?php echo round($adata['PHYSICAL_SCORE'], 2); ?>,

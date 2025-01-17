@@ -12,7 +12,7 @@ $common = new CommonService();
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
 <div class="am-content">
   <div class="page-head">
-    <h2>SPI-RT 3.0 Checklist (Possible Duplicate Audit(s))</h2>
+    <h2><?= $this->translate('SPI-RT 3.0 Checklist (Possible Duplicate Audit(s))'); ?></h2>
   </div>
 
   <div class="main-content">
@@ -20,16 +20,16 @@ $common = new CommonService();
       <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
         <thead>
           <tr>
-            <th>Facility Name</th>
-            <th style="width:8%;">Audit Round No.</th>
-            <th style="width:10%;">Audit Date</th>
-            <th style="width:10%;">Testing Point Name</th>
-            <th style="width:6%;">Testing Point Type</th>
-            <th style="width:8%;">Level</th>
-            <th>Affiliation</th>
-            <th style="width:5%;">Audit Score %</th>
-            <th style="width:8%;">Status</th>
-            <th style="width:8%;">Action</th>
+            <th><?= $this->translate('Facility Name'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Audit Round No.'); ?></th>
+            <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
+            <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
+            <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Level'); ?></th>
+            <th><?= $this->translate('Affiliation'); ?></th>
+            <th style="width:5%;"><?= $this->translate('Audit Score '); ?>%</th>
+            <th style="width:8%;"><?= $this->translate('Status'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Action'); ?></th>
           </tr>
         </thead>
         <tbody>
@@ -91,14 +91,14 @@ $common = new CommonService();
   });
 
   function removeData(id) {
-    conf = confirm("Are you sure you want to remove this duplicate audit ?");
+    conf = confirm("<?= $this->translate('Are you sure you want to remove this duplicate audit ?'); ?>");
     if (conf) {
       $.post("<?php echo $this->url('spi-v3-form', array('action' => 'remove-audit')); ?>", {
           id: id
         },
         function(data) {
           if (data > 0) {
-            alert("Audit removed successfully");
+            alert("<?= $this->translate('Audit removed successfully'); ?>");
             $("#" + id).hide();
           }
         });
