@@ -1,5 +1,4 @@
 <?php
-
 use Application\Service\FpdiExtends;
 use Application\Service\TcpdfExtends;
 use Application\Service\CommonService;
@@ -12,13 +11,13 @@ $decoded = json_decode($fileContents, true);
 $language = $configData['language'];
 // Check if the template_file is set in $configData
 if (isset($configData['template_file']) && !empty($configData['template_file'])) {
-  // Use FpdiExtends if the template_file is provided
-  $pdf = new FpdiExtends('P', 'mm', 'A4', true, 'UTF-8', false, false);
-  $pdf->setParams($configData['template_file'], $configData['template_top_margin']);
+    // Use FpdiExtends if the template_file is provided
+    $pdf = new FpdiExtends('P', 'mm', 'A4', true, 'UTF-8', false, false);
+    $pdf->setParams($configData['template_file'], $configData['template_top_margin']);
 } else {
-  // Use TCPDF as a fallback when template_file is not provided
-  $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-  $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
+    // Use TCPDF as a fallback when template_file is not provided
+    $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
 }
 
 // set document information
@@ -161,15 +160,15 @@ $testingTab .= '</table>';
 $pdf->writeHTML($testingTab, true, 0, true, 0);
 
 
-$partCTitle = '<p style="font-weight:bold;">' . $this->translate("PART C: SCORING CRITERIA") . '</p>';
+$partCTitle = '<p style="font-weight:bold;">PART C: SCORING CRITERIA</p>';
 $pdf->writeHTML($partCTitle, true, 0, true, 0);
 $partCtableBox1 = '<table cellpadding="2">';
 $partCtableBox1 .= "<tr><td>
-  <p>" . $this->translate("Each element marked will be assigned a point value: • Items marked “Yes” receive 1 point each. • Items marked “Partial”
-  receive 0.5 point each. • Items marked “No” receive 0 point each.") . "</p>
-  <p>" . $this->translate("Total points scored for each section should be tallied and recorded at the end of the section") . "</p>
-  <p>" . $this->translate("The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance
-  level.") . "</p>
+  <p>Each element marked will be assigned a point value: • Items marked “Yes” receive 1 point each. • Items marked “Partial”
+  receive 0.5 point each. • Items marked “No” receive 0 point each.</p>
+  <p>Total points scored for each section should be tallied and recorded at the end of the section</p>
+  <p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance
+  level.</p>
 </td></tr>";
 $partCtableBox1 .= '</table>';
 $partCtableBox1 .= '</table>';
@@ -177,61 +176,59 @@ $pdf->writeHTML($partCtableBox1, true, 0, true, 0);
 
 $partCTable = '<table border="1" cellspacing="0" cellpadding="5">';
 $partCTable .= '<tr style="font-weight:bold;text-align:center;">';
-$partCTable .= '<td style="width:15%">' . $this->translate("Levels") . '</td>';
-$partCTable .= '<td  style="width:25%">% ' . $this->translate("Score") . '</td>';
-$partCTable .= '<td  style="width:60%">' . $this->translate("Description of results") . '</td>';
+$partCTable .= '<td style="width:15%">Levels</td>';
+$partCTable .= '<td  style="width:25%">% Score</td>';
+$partCTable .= '<td  style="width:60%">Description of results</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-$partCTable .= '<td style="width:15%;background-color:#C00000;">' . $this->translate("Level") . ' 0</td>';
-$partCTable .= '<td style="width:25%">' . $this->translate("Less than") . ' 40%</td>';
-$partCTable .= '<td style="width:60%">' . $this->translate("Needs improvement in all areas and immediate remediation") . '</td>';
+$partCTable .= '<td style="width:15%;background-color:#C00000;">Level 0</td>';
+$partCTable .= '<td  style="width:25%">Less than 40%</td>';
+$partCTable .= '<td  style="width:60%">Needs improvement in all areas and immediate remediation</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
-$partCTable .= '<td style="width:15%;background-color:#E36C0A;">' . $this->translate("Level") . ' 1</td>';
+$partCTable .= '<td style="width:15%;background-color:#E36C0A;">Level 1</td>';
 $partCTable .= '<td  style="width:25%">40% - 59%</td>';
-$partCTable .= '<td  style="width:60%">' . $this->translate("Needs improvement in specific areas") . '</td>';
+$partCTable .= '<td  style="width:60%">Needs improvement in specific areas</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
 $partCTable .= '<td style="width:15%;background-color:#FFFF00;">Level 2</td>';
 $partCTable .= '<td  style="width:25%">60% - 79%</td>';
-$partCTable .= '<td  style="width:60%">' . $this->translate("Partially eligible") . '</td>';
+$partCTable .= '<td  style="width:60%">Partially eligible</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
 $partCTable .= '<td style="width:15%;background-color:#92D050;">Level 3</td>';
 $partCTable .= '<td  style="width:25%">80% - 89%</td>';
-$partCTable .= '<td  style="width:60%">' . $this->translate("Close to national site certification") . '</td>';
+$partCTable .= '<td  style="width:60%">Close to national site certification</td>';
 $partCTable .= '</tr>';
 
 $partCTable .= '<tr style="text-align:left;">';
 $partCTable .= '<td style="width:15%;background-color:#00B050;">Level 4</td>';
-$partCTable .= '<td  style="width:25%">90% ' . $this->translate("or higher") . '</td>';
-$partCTable .= '<td  style="width:60%">' . $this->translate("Eligible to national site certification") . '</td>';
+$partCTable .= '<td  style="width:25%">90% or higher</td>';
+$partCTable .= '<td  style="width:60%">Eligible to national site certification</td>';
 $partCTable .= '</tr>';
 $partCTable .= '</table>';
 
 $pdf->writeHTML($partCTable, true, 0, true, 0);
 
-$partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $this->translate("Part D. Auditor's Summation Report for SPI-RT Audit") . '</p>';
+
+$partDTitle = '<p style="font-weight:bold;line-height:30px;">Part D. Auditor\'s Summation Report for SPI-RT Audit</p>';
 $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
-$partDtableBox1 .= "<tr><td>" . $this->translate("Facility Name:") . " " . $formData['facilityname'] . "</td></tr>";
-$partDtableBox1 .= "<tr><td>" . $this->translate("Site Type:") . " " . $formData['testingpointtype'];
-$partDtableBox1 .= (isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "";
+$partDtableBox1 .= "<tr><td>Facility Name:" . $formData['facilityname'] . "</td></tr><tr><td>Site Type:" . $formData['testingpointtype'];
+$partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
 $partDtableBox1 .= "</td></tr>";
-$partDtableBox1 .= "<tr><td>" . $this->translate("Staff Audited Name:") . " " . $formData['staffaudited'] . "</td></tr>";
+$partDtableBox1 .= "<tr><td>Staff Audited Name: " . $formData['staffaudited'] . "</td></tr>";
 $partDtableBox1 .= '</table>';
 $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
 $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox2 .= "<tr><td>" . $this->translate("No. of Tester(s):") . " " . $formData['NumberofTester'] . "</td></tr>";
-$partDtableBox2 .= "<tr><td>" . $this->translate("Duration of Audit:") . " " . $formData['durationaudit'] . "</td></tr>";
+$partDtableBox2 .= "<tr><td>No. of Tester(s): " . $formData['NumberofTester'] . "</td></tr><tr><td>Duration of Audit: " . $formData['durationaudit'] . "</td></tr>";
 $partDtableBox2 .= '</table>';
-
 
 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
 
@@ -239,55 +236,55 @@ $scorePer = round($formData['AUDIT_SCORE_PERCENTAGE_ROUNDED']);
 $level = '';
 $colorCode = '';
 if ($scorePer < 40) {
-  $level = $this->translate("Level 0");
+  $level = "Level 0";
   $colorCode = "background-color:#C00000";
 } elseif ($scorePer >= 40 && $scorePer <= 59) {
-  $level = $this->translate("Level 1");
+  $level = "Level 1";
   $colorCode = "background-color:#E36C0A";
 } elseif ($scorePer >= 60 && $scorePer <= 79) {
-  $level = $this->translate("Level 2");
+  $level = "Level 2";
   $colorCode = "background-color:#FFFF00";
 } elseif ($scorePer >= 80 && $scorePer <= 89) {
-  $level = $this->translate("Level 3");
+  $level = "Level 3";
   $colorCode = "background-color:#92D050";
 } elseif ($scorePer >= 90) {
-  $level = $this->translate("Level 4");
+  $level = "Level 4";
   $colorCode = "background-color:#00B050";
 }
 
 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox3 .= "<tr><td>" . $this->translate("Total points scored (exclude N/A)") . " = " . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= "<tr><td>" . $this->translate("Total score expected") . " = " . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= '<tr><td>' . $this->translate("% Score") . " = " . round($formData['AUDIT_SCORE_PERCENTAGE_ROUNDED'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $this->translate($level) . '  &nbsp;&nbsp;</span></td></tr>';
+$partDtableBox3 .= "<tr><td>Total points scored (exclude N/A) = " . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
+$partDtableBox3 .= "<tr><td>Total score expected = " . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+$partDtableBox3 .= '<tr><td>% Score = ' . round($formData['AUDIT_SCORE_PERCENTAGE_ROUNDED'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3 .= '</table>';
 
 $pdf->writeHTMLCell(70, 26, 125, '', $partDtableBox3, 1, 1, 0, true, 'L', true);
 
 $partDTable = '<br/><br/><table border="1" cellspacing="0" cellpadding="5" style="width:100%">';
 $partDTable .= '<tr>';
-$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>' . $this->translate("Section No.") . '</td>';
-$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>' . $this->translate("Deficiency/Issue observed") . '</td>';
-$partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">' . $this->translate("Correction Actions") . '</td>';
+$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>Section No.</td>';
+$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>Deficiency/Issue observed</td>';
+$partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">Correction Actions</td>';
 // Conditional Header Change
 if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" && $formData['correctiveaction'] != "[]") {
   $correctiveActions = json_decode($formData['correctiveaction'], true);
   if (isset($correctiveActions[0]['sectionno'])) {
-    // Old corrective action
-    $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>' . $this->translate("Auditor's Comments") . '</td>';
+      // Old corrective action
+      $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>Auditor\'s <br/>Comments</td>';
   } else {
-    // New corrective action
-    $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>' . $this->translate("Correction Actions") . '</td>';
+      // New corrective action
+      $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>Correction Actions</td>';
   }
 } else {
-  $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>' . $this->translate("Auditor's Comments") . '</td>';
+  $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%;"><br/><br/>Auditor\'s <br/>Comments</td>';
 }
-$partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:26%">' . $this->translate("Recommendations") . '</td>';
+$partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:26%">Recommendations</td>';
 $partDTable .= '</tr>';
 $partDTable .= '<tr>';
-$partDTable .= '<td style="font-weight:bold;text-align:center;width:12%;">' . $this->translate("Immediate") . '</td>';
-$partDTable .= '<td style="font-weight:bold;text-align:center;width:8%;">' . $this->translate("Follow up") . '</td>';
-$partDTable .= '<td style="font-weight:bold;text-align:center;">' . $this->translate("Actions") . '</td>';
-$partDTable .= '<td style="font-weight:bold;text-align:center;">' . $this->translate("Timeline / Person responsible") . '</td>';
+$partDTable .= '<td style="font-weight:bold;text-align:center;width:12%;">Immediate</td>';
+$partDTable .= '<td style="font-weight:bold;text-align:center;width:8%;">Follow up</td>';
+$partDTable .= '<td style="font-weight:bold;text-align:center;">Actions</td>';
+$partDTable .= '<td style="font-weight:bold;text-align:center;">Timeline / Person responsible</td>';
 $partDTable .= '</tr>';
 if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != ""  && $formData['correctiveaction'] != "[]") {
   $correctiveActions = json_decode($formData['correctiveaction'], true);
@@ -296,73 +293,73 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
       $rowStyle = ($ca['correction'] == 'Immediate') ? 'color:red;' : '';
       $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
       $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['deficiency']) . '</td>';
+      $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
       $partDTable .= '<td style="text-align:center;">';
       $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . $this->basePath('assets/img/red-tick.png') . '" width="20">' : "");
       $partDTable .= '</td>';
       $partDTable .= '<td style="text-align:center;">';
       $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
       $partDTable .= '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['auditorcomment']) . '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['action']) . '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['timeline']) . '</td>';
+      $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
+      $partDTable .= '<td>' . $ca['action'] . '</td>';
+      $partDTable .= '<td>' . $ca['timeline'] . '</td>';
       $partDTable .= '</tr>';
     }
   } else {
     $categories = [
       'PERSONAL' => [
-        'IMMEDIATE' => 'PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' => 'PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'PERSONAL_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' => 'PERSONAL_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'PHYSICAL' => [
-        'IMMEDIATE' => 'PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' => 'PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'PHYSICAL_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' => 'PHYSICAL_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'SAFETY' => [
-        'IMMEDIATE' => 'SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' =>  'SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'PRETEST' => [
-        'IMMEDIATE' => 'PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' =>  'PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'TEST' => [
-        'IMMEDIATE' => 'TEST_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' =>  'TEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'TEST_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'TEST_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'POSTTEST' => [
-        'IMMEDIATE' => 'POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' =>  'POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'EQA' => [
-        'IMMEDIATE' => 'EQA_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' =>  'EQA_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'EQA_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'EQA_CORRECTIVE_ACTIONS_FOLLOWUP'
       ],
       'RTRI_SECTION' => [
-        'IMMEDIATE' => 'RTRI_CORRECTIVE_ACTIONS_IMMEDIATE',
-        'FOLLOWUP' =>  'RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'
+          'IMMEDIATE' => 'RTRI_CORRECTIVE_ACTIONS_IMMEDIATE',
+          'FOLLOWUP' =>  'RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'
       ]
     ];
     foreach ($categories as $category => $actions) {
-      foreach ($actions as $type => $key) {
-        if (isset($correctiveActions[$key])) {
-          $data = $correctiveActions[$key];
-          $rowStyle = ($type == 'IMMEDIATE') ? 'color:red;' : '';
-          $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
-          $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td style="text-align:center;">';
-          $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
-          $partDTable .= '</td>';
-          $partDTable .= '<td style="text-align:center;">';
-          $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
-          $partDTable .= '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
-          $partDTable .= '</tr>';
+        foreach ($actions as $type => $key) {
+            if (isset($correctiveActions[$key])) {
+                $data = $correctiveActions[$key];
+                $rowStyle = ($type == 'IMMEDIATE') ? 'color:red;' : '';
+                $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
+                $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td style="text-align:center;">';
+                $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
+                $partDTable .= '</td>';
+                $partDTable .= '<td style="text-align:center;">';
+                $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
+                $partDTable .= '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
+                $partDTable .= '<td>' . ($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
+                $partDTable .= '</tr>';
+            }
         }
-      }
     }
   }
 } else {
