@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <div class="am-content">
   <div class="page-head">
-    <h2>Edit SPI RT Version 3</h2>
+    <h2><?= $this->translate('Edit SPI RT Version 3'); ?></h2>
   </div>
   <div class="main-content">
     <div class="widget widget-fullwidth widget-small" style="padding:5px;">
@@ -33,22 +33,22 @@
           <div class="panel panel-default">
             <div class="panel-body">
               <form role="form" class="form-horizontal" name="editSPIRT" id="editSPIRT" method="post" action="<?php echo $this->url('spi-v3-form', array('action' => 'edit')); ?>" autocomplete="off">
-                <h4><b>PART A: CHARACTERISTICS OF THE FACILITY OR TESTING POINT AUDITED</b></h4>
-                <p>Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.</p>
+                <h4><b><?= $this->translate('PART A: CHARACTERISTICS OF THE FACILITY OR TESTING POINT AUDITED'); ?></b></h4>
+                <p><?= $this->translate('Before completing the checklist, it is important to characterize the testing point to be audited. Please provide relevant information in the summary table below.'); ?></p>
                 <div class="form-group">
-                  <label for="auditDate" class="col-sm-2 control-label">Date of Audit (dd/mm/yyyy)</label>
+                  <label for="auditDate" class="col-sm-2 control-label"><?= $this->translate('Date of Audit (dd/mm/yyyy)'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Enter Date" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                    <input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?>" readonly>
                   </div>
-                  <label for="auditRound" class="col-sm-2 control-label">Audit Round No.</label>
+                  <label for="auditRound" class="col-sm-2 control-label"><?= $this->translate('Audit Round No.'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Audit Round No" name="auditRound" class="form-control" value="<?php echo $formData['auditroundno']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Audit Round No'); ?>" name="auditRound" class="form-control" value="<?php echo $formData['auditroundno']; ?>">
                     <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="testingFacility" class="col-sm-2 control-label">Testing Facility</label>
+                  <label for="testingFacility" class="col-sm-2 control-label"><?= $this->translate('Testing Facility'); ?></label>
                   <div class=" col-lg-4">
                     <select id="testingFacility" name="testingFacility" class="select2 form-control" onchange="getFacilityInfo();">
                       <option value=""> -- Select -- </option>
@@ -61,32 +61,32 @@
                       } ?>
                     </select>
                   </div>
-                  <label for="testingFacilityName" class="col-sm-2 control-label">Testing Facility Name</label>
+                  <label for="testingFacilityName" class="col-sm-2 control-label"><?= $this->translate('Testing Facility Name'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Testing Facility Name" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fName)) ? $formData['facilityInfo']->fName : ''; ?>" onblur="copyFacilityName(this.value)">
+                    <input type="text" placeholder="<?= $this->translate('Testing Facility Name'); ?>" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fName)) ? $formData['facilityInfo']->fName : ''; ?>" onblur="copyFacilityName(this.value)">
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="testingFacilityId" class="col-sm-2 control-label">Testing Facility ID</label>
+                  <label for="testingFacilityId" class="col-sm-2 control-label"><?= $this->translate('Testing Facility ID'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Testing Facility ID" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo (isset($formData['facilityInfo']->ffId)) ? $formData['facilityInfo']->ffId : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Testing Facility ID'); ?>" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo (isset($formData['facilityInfo']->ffId)) ? $formData['facilityInfo']->ffId : ''; ?>">
                   </div>
-                  <label for="email" class="col-sm-2 control-label">Email</label>
+                  <label for="email" class="col-sm-2 control-label"><?= $this->translate('Email'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Email" name="email" id="email" class="form-control isEmail" value="<?php echo (isset($formData['facilityInfo']->fEmail)) ? $formData['facilityInfo']->fEmail : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Email'); ?>" name="email" id="email" class="form-control isEmail" value="<?php echo (isset($formData['facilityInfo']->fEmail)) ? $formData['facilityInfo']->fEmail : ''; ?>">
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="contactPerson" class="col-sm-2 control-label">Name of the Contact Person</label>
+                  <label for="contactPerson" class="col-sm-2 control-label"><?= $this->translate('Name of the Contact Person'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Name of the Contact Person" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fCPerson)) ? $formData['facilityInfo']->fCPerson : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fCPerson)) ? $formData['facilityInfo']->fCPerson : ''; ?>">
                   </div>
-                  <label for="district" class="col-sm-2 control-label">District</label>
+                  <label for="district" class="col-sm-2 control-label"><?= $this->translate('District'); ?></label>
                   <div class=" col-lg-4">
-                    <!--<input type="text" placeholder="District" name="district" id="district" class="form-control" value="< ?php echo(isset($formData['facilityInfo']->fDistrict))?$formData['facilityInfo']->fDistrict:''; ?>">-->
-                    <select name="district" id="district" class="form-control" title="Please choose district" onchange="showTextBox(this,'districtTextBox')">
+                    <!--<input type="text" placeholder="<?= $this->translate('District'); ?>" name="district" id="district" class="form-control" value="< ?php echo(isset($formData['facilityInfo']->fDistrict))?$formData['facilityInfo']->fDistrict:''; ?>">-->
+                    <select name="district" id="district" class="form-control" title="<?= $this->translate('Please choose district'); ?>" onchange="showTextBox(this,'districtTextBox')">
                       <option value="">-- Select --</option>
                       <?php
                       foreach ($districtList as $district) {
@@ -95,18 +95,18 @@
                       <?php
                       }
                       ?>
-                      <option value='other'>Other</option>
+                      <option value='other'><?= $this->translate('Other'); ?></option>
 
                     </select>
-                    <input type="text" name="districtTextBox" id="districtTextBox" style="display:none;" class="form-control" placeholder="Please enter district" />
+                    <input type="text" name="districtTextBox" id="districtTextBox" style="display:none;" class="form-control" placeholder="<?= $this->translate('Please enter district'); ?>" />
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="province" class="col-sm-2 control-label">Province</label>
+                  <label for="province" class="col-sm-2 control-label"><?= $this->translate('Province'); ?></label>
                   <div class=" col-lg-4">
-                    <!--<input type="text" placeholder="Province" name="province" id="province" class="form-control" value="< ?php echo(isset($formData['facilityInfo']->fProvince))?$formData['facilityInfo']->fProvince:''; ?>">-->
-                    <select name="province" id="province" class="form-control" title="Please choose province" onchange="showTextBox(this,'provinceTextBox')">
+                    <!--<input type="text" placeholder="<?= $this->translate('Province'); ?>" name="province" id="province" class="form-control" value="< ?php echo(isset($formData['facilityInfo']->fProvince))?$formData['facilityInfo']->fProvince:''; ?>">-->
+                    <select name="province" id="province" class="form-control" title="<?= $this->translate('Please choose province'); ?>" onchange="showTextBox(this,'provinceTextBox')">
                       <option value="">-- Select --</option>
                       <?php
                       foreach ($provinceList as $province) {
@@ -115,92 +115,92 @@
                       <?php
                       }
                       ?>
-                      <option value='other'>Other</option>
+                      <option value='other'><?= $this->translate('Other'); ?></option>
                     </select>
-                    <input type="text" name="provinceTextBox" id="provinceTextBox" style="display:none;" class="form-control" placeholder="Please enter province" />
+                    <input type="text" name="provinceTextBox" id="provinceTextBox" style="display:none;" class="form-control" placeholder="<?= $this->translate('Please enter province'); ?>" />
                   </div>
-                  <label for="latitude" class="col-sm-2 control-label">Latitude</label>
+                  <label for="latitude" class="col-sm-2 control-label"><?= $this->translate('Latitude'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Latitude" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLatitude)) ? $formData['facilityInfo']->fLatitude : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLatitude)) ? $formData['facilityInfo']->fLatitude : ''; ?>">
                   </div>
                 </div>
 
                 <div class="form-group ">
-                  <label for="longitude" class="col-sm-2 control-label">Longitude</label>
+                  <label for="longitude" class="col-sm-2 control-label"><?= $this->translate('Longitude'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="Longitude" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLongitude)) ? $formData['facilityInfo']->fLongitude : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLongitude)) ? $formData['facilityInfo']->fLongitude : ''; ?>">
                   </div>
-                  <label for="testingPointName" class="col-sm-2 control-label">Testing Point Name</label>
+                  <label for="testingPointName" class="col-sm-2 control-label"><?= $this->translate('Testing Point Name'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Testing Point Name" name="testingPointName" class="form-control" value="<?php echo $formData['testingpointname']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Testing Point Name'); ?>" name="testingPointName" class="form-control" value="<?php echo $formData['testingpointname']; ?>">
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label for="testingPointType" class="col-sm-2 control-label">Type of testing point</label>
+                  <label for="testingPointType" class="col-sm-2 control-label"><?= $this->translate('Type of testing point'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Type of testing point" name="testingPointType" class="form-control" value="<?php echo $formData['testingpointtype']; ?>" onblur="copySiteType(this.value)">
+                    <input type="text" placeholder="<?= $this->translate('Type of testing point'); ?>" name="testingPointType" class="form-control" value="<?php echo $formData['testingpointtype']; ?>" onblur="copySiteType(this.value)">
                   </div>
-                  <label for="testingPointTypeOther" class="col-sm-2 control-label">Testing point type other</label>
+                  <label for="testingPointTypeOther" class="col-sm-2 control-label"><?= $this->translate('Testing point type other'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Testing point type other" name="testingPointTypeOther" class="form-control" value="<?php echo $formData['testingpointtype_other']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Testing point type other'); ?>" name="testingPointTypeOther" class="form-control" value="<?php echo $formData['testingpointtype_other']; ?>">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="location" class="col-sm-2 control-label">Location/Address</label>
+                  <label for="location" class="col-sm-2 control-label"><?= $this->translate('Location/Address'); ?></label>
                   <div class="col-lg-4">
                     <textarea class="form-control" name="location" rows="5"><?php echo $formData['locationaddress']; ?></textarea>
                   </div>
-                  <label for="level" class="col-sm-2 control-label">Level</label>
+                  <label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Level" name="level" class="form-control" value="<?php echo $formData['level']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Level'); ?>" name="level" class="form-control" value="<?php echo $formData['level']; ?>">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="levelOther" class="col-sm-2 control-label">Level Other</label>
+                  <label for="levelOther" class="col-sm-2 control-label"><?= $this->translate('Level Other'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Level Other" name="levelOther" class="form-control" value="<?php echo $formData['level_other']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Level Other'); ?>" name="levelOther" class="form-control" value="<?php echo $formData['level_other']; ?>">
                   </div>
-                  <label for="levelName" class="col-sm-2 control-label">Level Name</label>
+                  <label for="levelName" class="col-sm-2 control-label"><?= $this->translate('Level Name'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Level Other" name="levelName" class="form-control" value="<?php echo $formData['level_name']; ?>">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
-                  <div class="col-lg-4">
-                    <input type="text" placeholder="Affiliation" name="affiliation" class="form-control" value="<?php echo $formData['affiliation']; ?>">
-                  </div>
-                  <label for="affiliationOther" class="col-sm-2 control-label">Affiliation Other</label>
-                  <div class="col-lg-4">
-                    <input type="text" placeholder="Affiliation" name="affiliationOther" class="form-control" value="<?php echo $formData['affiliation_other']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Level Other'); ?>" name="levelName" class="form-control" value="<?php echo $formData['level_name']; ?>">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="numberOfTester" class="col-sm-2 control-label">Number of Testers</label>
+                  <label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Number of Testers" name="numberOfTester" class="form-control" value="<?php echo $formData['NumberofTester']; ?>" onblur="copyNoOfTest(this.value)">
+                    <input type="text" placeholder="<?= $this->translate('Affiliation'); ?>" name="affiliation" class="form-control" value="<?php echo $formData['affiliation']; ?>">
                   </div>
-                  <label for="averageTestedPerMonth" class="col-sm-2 control-label">Average tested per month</label>
+                  <label for="affiliationOther" class="col-sm-2 control-label"><?= $this->translate('Affiliation Other'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Average tested per month" name="averageTestedPerMonth" class="form-control" value="<?php echo $formData['avgMonthTesting']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Affiliation'); ?>" name="affiliationOther" class="form-control" value="<?php echo $formData['affiliation_other']; ?>">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="numberOfTester" class="col-sm-2 control-label"><?= $this->translate('Number of Testers'); ?></label>
+                  <div class="col-lg-4">
+                    <input type="text" placeholder="<?= $this->translate('Number of Testers'); ?>" name="numberOfTester" class="form-control" value="<?php echo $formData['NumberofTester']; ?>" onblur="copyNoOfTest(this.value)">
+                  </div>
+                  <label for="averageTestedPerMonth" class="col-sm-2 control-label"><?= $this->translate('Average tested per month'); ?></label>
+                  <div class="col-lg-4">
+                    <input type="text" placeholder="<?= $this->translate('Average tested per month'); ?>" name="averageTestedPerMonth" class="form-control" value="<?php echo $formData['avgMonthTesting']; ?>">
                   </div>
                 </div>
                 <div class="form-group ">
-                  <label for="nameOfAuditor1" class="col-sm-2 control-label">Name of the Auditor 1</label>
+                  <label for="nameOfAuditor1" class="col-sm-2 control-label"><?= $this->translate('Name of the Auditor 1'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Name of the Auditor 1" name="nameOfAuditor1" class="form-control" value="<?php echo $formData['name_auditor_lead']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Name of the Auditor 1'); ?>" name="nameOfAuditor1" class="form-control" value="<?php echo $formData['name_auditor_lead']; ?>">
                   </div>
-                  <label for="nameOfAuditor2" class="col-sm-2 control-label">Name of the Auditor 2</label>
+                  <label for="nameOfAuditor2" class="col-sm-2 control-label"><?= $this->translate('Name of the Auditor 2'); ?></label>
                   <div class="col-lg-4">
-                    <input type="text" placeholder="Name of the Auditor 2" name="nameOfAuditor2" class="form-control" value="<?php echo $formData['name_auditor2']; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Name of the Auditor 2'); ?>" name="nameOfAuditor2" class="form-control" value="<?php echo $formData['name_auditor2']; ?>">
                   </div>
                 </div>
                 <br />
                 <div class="form-group col-lg-12">
-                  <h4><b>PART B. SPI- RT Checklist</b></h4>
-                  <div>For each of the sections listed below, please check <b>Yes, Partial or No</b>, where applicable. Indicate
-                    "<b>Yes</b>" only when all elements are satisfactorily present. Provide comments for each "<b>Partial</b>" or "<b>No</b>" response. State N/A in the comments section if "not applicable" where appropriate (*).</div>
+                  <h4><b><?= $this->translate('PART B. SPI- RT Checklist'); ?></b></h4>
+                  <div><?= $this->translate('For each of the sections listed below, please check '); ?><b><?= $this->translate('Yes, Partial or No'); ?></b>, <?= $this->translate('where applicable. Indicate '); ?>
+                    <b><?= $this->translate('Yes'); ?></b>" <?= $this->translate('only when all elements are satisfactorily present. Provide comments for each '); ?><b><?= $this->translate('Partial'); ?></b> <?= $this->translate('or '); ?><b><?= $this->translate('No'); ?></b>" <?= $this->translate('response. State N/A in the comments section if '); ?>"<?= $this->translate('not applicable'); ?>" <?= $this->translate('where appropriate (*).'); ?></div>
                   <br />
                 </div>
 
@@ -210,7 +210,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#personal').slideToggle('slow'),addShowClass('shown','personal1');">1.0 PERSONNEL TRAINING AND CERTIFICATION</a>
+                      <a href="javascript:void(0);" onclick="$('#personal').slideToggle('slow'),addShowClass('shown','personal1');"><?= $this->translate('1.0 PERSONNEL TRAINING AND CERTIFICATION'); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">10</th>
                   </tr>
@@ -218,16 +218,16 @@
                     <td colspan="7">
                       <table class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td style="width:3%;">1.1</td>
-                          <td style="width:42%;">Have all testers received a comprehensive training on HIV rapid testing using the nationally approved curriculum?</td>
+                          <td style="width:42%;"><?= $this->translate('Have all testers received a comprehensive training on HIV rapid testing using the nationally approved curriculum?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_1']) && $formData['PERSONAL_Q_1_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -243,7 +243,7 @@
 
                         <tr>
                           <td>1.2</td>
-                          <td>Are the testers trained on the use of standardized HIV testing registers/logbooks?</td>
+                          <td><?= $this->translate('Are the testers trained on the use of standardized HIV testing registers/logbooks?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_2']) && $formData['PERSONAL_Q_1_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -259,7 +259,7 @@
 
                         <tr>
                           <td>1.3</td>
-                          <td>Are the testers trained on external quality assessment (EQA) or proficiency testing (PT) process?</td>
+                          <td><?= $this->translate('Are the testers trained on external quality assessment (EQA) or proficiency testing (PT) process?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_3']) && $formData['PERSONAL_Q_1_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -275,7 +275,7 @@
 
                         <tr>
                           <td>1.4</td>
-                          <td>Are the testers trained on quality control (QC) process?</td>
+                          <td><?= $this->translate('Are the testers trained on quality control (QC) process?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_4']) && $formData['PERSONAL_Q_1_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -291,7 +291,7 @@
 
                         <tr>
                           <td>1.5</td>
-                          <td>Are the testers trained on safety and waste management procedures and practices?</td>
+                          <td><?= $this->translate('Are the testers trained on safety and waste management procedures and practices?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_5']) && $formData['PERSONAL_Q_1_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -307,7 +307,7 @@
 
                         <tr>
                           <td>1.6</td>
-                          <td>Have all testers received a refresher training within the last two years?</td>
+                          <td><?= $this->translate('Have all testers received a refresher training within the last two years?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_6']) && $formData['PERSONAL_Q_1_6'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -323,7 +323,7 @@
 
                         <tr>
                           <td>1.7</td>
-                          <td>Are there records indicating all testers have demonstrated competency in HIV rapid testing prior to client testing?</td>
+                          <td><?= $this->translate('Are there records indicating all testers have demonstrated competency in HIV rapid testing prior to client testing?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_7']) && $formData['PERSONAL_Q_1_7'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -339,7 +339,7 @@
 
                         <tr>
                           <td>1.8</td>
-                          <td>Have all testers been certified through a national certification program?</td>
+                          <td><?= $this->translate('Have all testers been certified through a national certification program?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_8']) && $formData['PERSONAL_Q_1_8'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -355,7 +355,7 @@
 
                         <tr>
                           <td>1.9</td>
-                          <td>Are only certified testers allowed to perform HIV testing?</td>
+                          <td><?= $this->translate('Are only certified testers allowed to perform HIV testing?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_9']) && $formData['PERSONAL_Q_1_9'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -371,7 +371,7 @@
 
                         <tr>
                           <td>1.10</td>
-                          <td>Are all testers required to be re-certified periodically (e.g., every two years)?</td>
+                          <td><?= $this->translate('Are all testers required to be re-certified periodically (e.g., every two years)?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_10']) && $formData['PERSONAL_Q_1_10'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -386,7 +386,7 @@
                         </tr>
 
                         <tr>
-                          <td colspan="6" style="font-weight:bold;">1.0 PERSONNEL TRAINING AND CERTIFICATION SCORE </td>
+                          <td colspan="6" style="font-weight:bold;"><?= $this->translate('1.0 PERSONNEL TRAINING AND CERTIFICATION SCORE '); ?></td>
                           <td style="text-align:center;"><?php echo $formData['PERSONAL_SCORE']; ?></td>
                         </tr>
                       </table>
@@ -401,7 +401,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#physical').slideToggle('slow');">2.0 PHYSICAL FACILITY </a>
+                      <a href="javascript:void(0);" onclick="$('#physical').slideToggle('slow');"><?= $this->translate('2.0 PHYSICAL FACILITY '); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">5</th>
                   </tr>
@@ -409,16 +409,16 @@
                     <td colspan="3">
                       <table class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td>2.1</td>
-                          <td>Is there a designated area for HIV testing?</td>
+                          <td><?= $this->translate('Is there a designated area for HIV testing?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_1']) && $formData['PHYSICAL_Q_2_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -433,7 +433,7 @@
                         </tr>
                         <tr>
                           <td>2.2</td>
-                          <td>Is the testing area clean and organized for HIV rapid testing?</td>
+                          <td><?= $this->translate('Is the testing area clean and organized for HIV rapid testing?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_2']) && $formData['PHYSICAL_Q_2_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -448,7 +448,7 @@
                         </tr>
                         <tr>
                           <td>2.3</td>
-                          <td>Is sufficient lighting available in the designated testing area?</td>
+                          <td><?= $this->translate('Is sufficient lighting available in the designated testing area?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_3']) && $formData['PHYSICAL_Q_2_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -463,7 +463,7 @@
                         </tr>
                         <tr>
                           <td>2.4</td>
-                          <td>Are the test kits kept in a temperature controlled environment based on the manufacturers' instructions?</td>
+                          <td><?= $this->translate("Are the test kits kept in a temperature controlled environment based on the manufacturers' instructions?"); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_4']) && $formData['PHYSICAL_Q_2_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -478,7 +478,7 @@
                         </tr>
                         <tr>
                           <td>2.5</td>
-                          <td>Is there sufficient and secure storage space for test kits and other consumables?</td>
+                          <td><?= $this->translate('Is there sufficient and secure storage space for test kits and other consumables?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_5']) && $formData['PHYSICAL_Q_2_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -492,7 +492,7 @@
                           <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_5']); ?></td>
                         </tr>
                         <tr>
-                          <td colspan="6" style="font-weight:bold;">2.0 PHYSICAL FACILITY SCORE </td>
+                          <td colspan="6" style="font-weight:bold;"><?= $this->translate('2.0 PHYSICAL FACILITY SCORE '); ?></td>
                           <td style="text-align:center;"><?php echo $formData['PHYSICAL_SCORE']; ?></td>
                         </tr>
                       </table>
@@ -506,7 +506,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#safetyTable').slideToggle('slow'),addShowClass('shown','safetyTable1');">3.0 SAFETY</a>
+                      <a href="javascript:void(0);" onclick="$('#safetyTable').slideToggle('slow'),addShowClass('shown','safetyTable1');"><?= $this->translate('3.0 SAFETY'); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">11</th>
                   </tr>
@@ -514,16 +514,16 @@
                     <td colspan="3">
                       <table cellspacing="0" cellpadding="5" class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td>3.1</td>
-                          <td>Are there SOPs and/or job aides in place to implement safety practices?</td>
+                          <td><?= $this->translate('Are there SOPs and/or job aides in place to implement safety practices?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_1']) && $formData['SAFETY_Q_3_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -538,7 +538,7 @@
                         </tr>
                         <tr>
                           <td>3.2</td>
-                          <td>Are there SOPs and/or job aides in place on how to dispose of infectious and non-infectious waste?</td>
+                          <td><?= $this->translate('Are there SOPs and/or job aides in place on how to dispose of infectious and non-infectious waste?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_2']) && $formData['SAFETY_Q_3_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -553,7 +553,7 @@
                         </tr>
                         <tr>
                           <td>3.3</td>
-                          <td>Are there SOPs and/or job aides in place to manage spills of blood and other body fluids?</td>
+                          <td><?= $this->translate('Are there SOPs and/or job aides in place to manage spills of blood and other body fluids?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_3']) && $formData['SAFETY_Q_3_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -568,7 +568,7 @@
                         </tr>
                         <tr>
                           <td>3.4</td>
-                          <td>Are there SOPs and/or job aides in place to address accidental exposure to potentially infectious body fluids through a needle stick injury, splash or other sharps injury?</td>
+                          <td><?= $this->translate('Are there SOPs and/or job aides in place to address accidental exposure to potentially infectious body fluids through a needle stick injury, splash or other sharps injury?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_4']) && $formData['SAFETY_Q_3_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -583,7 +583,7 @@
                         </tr>
                         <tr>
                           <td>3.5</td>
-                          <td>Is personal protective equipment (PPE) always available to testers?</td>
+                          <td><?= $this->translate('Is personal protective equipment (PPE) always available to testers?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_5']) && $formData['SAFETY_Q_3_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -598,7 +598,7 @@
                         </tr>
                         <tr>
                           <td>3.6</td>
-                          <td>Is PPE consistently used by all testers?</td>
+                          <td><?= $this->translate('Is PPE consistently used by all testers?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_6']) && $formData['SAFETY_Q_3_6'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -613,7 +613,7 @@
                         </tr>
                         <tr>
                           <td>3.7</td>
-                          <td>Is PPE properly used by all testers through the testing process?</td>
+                          <td><?= $this->translate('Is PPE properly used by all testers through the testing process?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_7']) && $formData['SAFETY_Q_3_7'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -628,7 +628,7 @@
                         </tr>
                         <tr>
                           <td>3.8</td>
-                          <td>Is there clean water and soap available for hand washing?</td>
+                          <td><?= $this->translate('Is there clean water and soap available for hand washing?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_8']) && $formData['SAFETY_Q_3_8'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -643,7 +643,7 @@
                         </tr>
                         <tr>
                           <td>3.9</td>
-                          <td>Is there an appropriate disinfectant to clean the work area available?</td>
+                          <td><?= $this->translate('Is there an appropriate disinfectant to clean the work area available?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_9']) && $formData['SAFETY_Q_3_9'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -658,7 +658,7 @@
                         </tr>
                         <tr>
                           <td>3.10</td>
-                          <td>Are sharps, infectious, and non-infectious waste handled properly?</td>
+                          <td><?= $this->translate('Are sharps, infectious, and non-infectious waste handled properly?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_10']) && $formData['SAFETY_Q_3_10'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -673,7 +673,7 @@
                         </tr>
                         <tr>
                           <td>3.11</td>
-                          <td>Are infectious and non-infectious waste containers emptied regularly per the SOP and/or job aides?</td>
+                          <td><?= $this->translate('Are infectious and non-infectious waste containers emptied regularly per the SOP and/or job aides?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_11']) && $formData['SAFETY_Q_3_11'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -687,7 +687,7 @@
                           <td style="text-align:center;"><?php echo $formData['SAFETY_Q_3_11']; ?></td>
                         </tr>
                         <tr>
-                          <th colspan="6">3.0 SAFETY SCORE </th>
+                          <th colspan="6"><?= $this->translate('3.0 SAFETY SCORE '); ?></th>
                           <td style="text-align:center;"><?php echo $formData['SAFETY_SCORE']; ?></td>
                         </tr>
                       </table>
@@ -701,7 +701,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#preTestingTable').slideToggle('slow'),addShowClass('shown','preTestingTable1');">4.0 PRE-TESTING PHASE</a>
+                      <a href="javascript:void(0);" onclick="$('#preTestingTable').slideToggle('slow'),addShowClass('shown','preTestingTable1');"><?= $this->translate('4.0 PRE-TESTING PHASE'); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">12</th>
                   </tr>
@@ -709,16 +709,16 @@
                     <td colspan="3">
                       <table cellspacing="0" cellpadding="5" class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td>4.1</td>
-                          <td>Are there national testing guidelines specific to the program (e.g. HTS, PMTCT, TB, etc.) available at the testing point?</td>
+                          <td><?= $this->translate('Are there national testing guidelines specific to the program (e.g. HTS, PMTCT, TB, etc.) available at the testing point?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_1']) && $formData['PRE_Q_4_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -733,7 +733,7 @@
                         </tr>
                         <tr>
                           <td>4.2</td>
-                          <td>Is the national HIV testing algorithm being used?</td>
+                          <td><?= $this->translate('Is the national HIV testing algorithm being used?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_2']) && $formData['PRE_Q_4_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -748,7 +748,7 @@
                         </tr>
                         <tr>
                           <td>4.3</td>
-                          <td>Is there a process in place for an alternative HIV testing algorithm in case of expired or shortage of test kit(s)?</td>
+                          <td><?= $this->translate('Is there a process in place for an alternative HIV testing algorithm in case of expired or shortage of test kit(s)?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_3']) && $formData['PRE_Q_4_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -763,7 +763,7 @@
                         </tr>
                         <tr>
                           <td>4.4</td>
-                          <td>Are there SOPs and/or job aides in place for each HIV rapid test used in the testing algorithm?</td>
+                          <td><?= $this->translate('Are there SOPs and/or job aides in place for each HIV rapid test used in the testing algorithm?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_4']) && $formData['PRE_Q_4_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -778,7 +778,7 @@
                         </tr>
                         <tr>
                           <td>4.5</td>
-                          <td>Are only nationally approved HIV rapid kits available for use currently?</td>
+                          <td><?= $this->translate('Are only nationally approved HIV rapid kits available for use currently?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_5']) && $formData['PRE_Q_4_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -793,7 +793,7 @@
                         </tr>
                         <tr>
                           <td>4.6</td>
-                          <td>Are all the test kits currently in use within the expiration date?</td>
+                          <td><?= $this->translate('Are all the test kits currently in use within the expiration date?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_6']) && $formData['PRE_Q_4_6'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -808,7 +808,7 @@
                         </tr>
                         <tr>
                           <td>4.7</td>
-                          <td>Are test kits labeled with date received and initials?</td>
+                          <td><?= $this->translate('Are test kits labeled with date received and initials?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_7']) && $formData['PRE_Q_4_7'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -823,7 +823,7 @@
                         </tr>
                         <tr>
                           <td>4.8</td>
-                          <td>Is there a process in place for stock management?</td>
+                          <td><?= $this->translate('Is there a process in place for stock management?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_8']) && $formData['PRE_Q_4_8'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -838,7 +838,7 @@
                         </tr>
                         <tr>
                           <td>4.9</td>
-                          <td>Are job aides on client sample collection available and posted at the testing point?</td>
+                          <td><?= $this->translate('Are job aides on client sample collection available and posted at the testing point?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_9']) && $formData['PRE_Q_4_9'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -853,7 +853,7 @@
                         </tr>
                         <tr>
                           <td>4.10</td>
-                          <td>Are there sufficient supplies available for client sample collection?</td>
+                          <td><?= $this->translate('Are there sufficient supplies available for client sample collection?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_10']) && $formData['PRE_Q_4_10'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -868,7 +868,7 @@
                         </tr>
                         <tr>
                           <td>4.11</td>
-                          <td>Are there national guidelines describing how client identification should be recorded in the HIV testing register?</td>
+                          <td><?= $this->translate('Are there national guidelines describing how client identification should be recorded in the HIV testing register?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_11']) && $formData['PRE_Q_4_11'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -883,7 +883,7 @@
                         </tr>
                         <tr>
                           <td>4.12</td>
-                          <td>Are client identifiers recorded in the HIV testing register per national guidelines and on test devices?</td>
+                          <td><?= $this->translate('Are client identifiers recorded in the HIV testing register per national guidelines and on test devices?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_12']) && $formData['PRE_Q_4_12'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -897,7 +897,7 @@
                           <td style="text-align:center;"><?php echo $formData['PRE_Q_4_12']; ?></td>
                         </tr>
                         <tr>
-                          <th colspan="6">4.0 PRE-TESTING PHASE SCORE</th>
+                          <th colspan="6"><?= $this->translate('4.0 PRE-TESTING PHASE SCORE'); ?></th>
                           <td style="text-align:center;"><?php echo $formData['PRETEST_SCORE']; ?></td>
                         </tr>
                       </table>
@@ -911,7 +911,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#testingPhaseTable').slideToggle('slow'),addShowClass('shown','testingPhaseTable1');">5.0 TESTING PHASE</a>
+                      <a href="javascript:void(0);" onclick="$('#testingPhaseTable').slideToggle('slow'),addShowClass('shown','testingPhaseTable1');"><?= $this->translate('5.0 TESTING PHASE'); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">9</th>
                   </tr>
@@ -919,16 +919,16 @@
                     <td colspan="3">
                       <table cellspacing="0" cellpadding="5" class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td>5.1</td>
-                          <td>Are SOPs and/or job aides on HIV testing procedures available and posted at the testing point?</td>
+                          <td><?= $this->translate('Are SOPs and/or job aides on HIV testing procedures available and posted at the testing point?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_1']) && $formData['TEST_Q_5_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -943,7 +943,7 @@
                         </tr>
                         <tr>
                           <td>5.2</td>
-                          <td>Are timers available and used routinely for HIV rapid testing?</td>
+                          <td><?= $this->translate('Are timers available and used routinely for HIV rapid testing?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_2']) && $formData['TEST_Q_5_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -958,7 +958,7 @@
                         </tr>
                         <tr>
                           <td>5.3</td>
-                          <td>Are sample collection devices (e.g., capillary tube, loop, disposable pipettes, etc.) used accurately?</td>
+                          <td><?= $this->translate('Are sample collection devices (e.g., capillary tube, loop, disposable pipettes, etc.) used accurately?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_3']) && $formData['TEST_Q_5_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -973,7 +973,7 @@
                         </tr>
                         <tr>
                           <td>5.4</td>
-                          <td>Are testing procedures adequately followed?</td>
+                          <td><?= $this->translate('Are testing procedures adequately followed?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_4']) && $formData['TEST_Q_5_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -988,7 +988,7 @@
                         </tr>
                         <tr>
                           <td>5.5</td>
-                          <td>Are positive and negative quality control (QC) specimens routinely used (e.g., daily or weekly) according to country guidelines?</td>
+                          <td><?= $this->translate('Are positive and negative quality control (QC) specimens routinely used (e.g., daily or weekly) according to country guidelines?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_5']) && $formData['TEST_Q_5_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1003,7 +1003,7 @@
                         </tr>
                         <tr>
                           <td>5.6</td>
-                          <td>Are QC results properly recorded?</td>
+                          <td><?= $this->translate('Are QC results properly recorded?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_6']) && $formData['TEST_Q_5_6'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1018,7 +1018,7 @@
                         </tr>
                         <tr>
                           <td>5.7</td>
-                          <td>Are incorrect/invalid QC results properly recorded?</td>
+                          <td><?= $this->translate('Are incorrect/invalid QC results properly recorded?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_7']) && $formData['TEST_Q_5_7'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1033,7 +1033,7 @@
                         </tr>
                         <tr>
                           <td>5.8</td>
-                          <td>Are appropriate steps taken and documented when QC results are incorrect and/or invalid?</td>
+                          <td><?= $this->translate('Are appropriate steps taken and documented when QC results are incorrect and/or invalid?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_8']) && $formData['TEST_Q_5_8'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1048,7 +1048,7 @@
                         </tr>
                         <tr>
                           <td>5.9</td>
-                          <td>Are QC records reviewed by the person in charge routinely?</td>
+                          <td><?= $this->translate('Are QC records reviewed by the person in charge routinely?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_9']) && $formData['TEST_Q_5_9'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1063,7 +1063,7 @@
                         </tr>
 
                         <tr>
-                          <th colspan="6">5.0 TESTING PHASE SCORE</th>
+                          <th colspan="6"><?= $this->translate('5.0 TESTING PHASE SCORE'); ?></th>
                           <td style="text-align:center;"><?php echo $formData['TEST_SCORE']; ?></td>
                         </tr>
                       </table>
@@ -1077,7 +1077,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#postTestingTable').slideToggle('slow'),addShowClass('shown','postTestingTable1');">6.0 POST TESTING PHASE - DOCUMENTS AND RECORDS</a>
+                      <a href="javascript:void(0);" onclick="$('#postTestingTable').slideToggle('slow'),addShowClass('shown','postTestingTable1');"><?= $this->translate('6.0 POST TESTING PHASE - DOCUMENTS AND RECORDS'); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">9</th>
                   </tr>
@@ -1085,16 +1085,16 @@
                     <td colspan="3">
                       <table cellspacing="0" cellpadding="5" class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td>6.1</td>
-                          <td>Is there a national standardized HIV rapid testing register/logbook available and in use?</td>
+                          <td><?= $this->translate('Is there a national standardized HIV rapid testing register/logbook available and in use?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_1']) && $formData['POST_Q_6_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1109,7 +1109,7 @@
                         </tr>
                         <tr>
                           <td>6.2</td>
-                          <td>Does the HIV testing register/logbook include all of the key quality elements?</td>
+                          <td><?= $this->translate('Does the HIV testing register/logbook include all of the key quality elements?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_2']) && $formData['POST_Q_6_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1124,7 +1124,7 @@
                         </tr>
                         <tr>
                           <td>6.3</td>
-                          <td>Are all the elements in the register/ logbook recorded/captured correctly? (e.g., client demographics, kit names, lot numbers, expiration dates, tester name, individual and final HIV results, etc.)?</td>
+                          <td><?= $this->translate('Are all the elements in the register/ logbook recorded/captured correctly? (e.g., client demographics, kit names, lot numbers, expiration dates, tester name, individual and final HIV results, etc.)?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_3']) && $formData['POST_Q_6_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1139,7 +1139,7 @@
                         </tr>
                         <tr>
                           <td>6.4</td>
-                          <td>Is the total summary at the end of each page of the register/logbooks complied accurately?</td>
+                          <td><?= $this->translate('Is the total summary at the end of each page of the register/logbooks complied accurately?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_4']) && $formData['POST_Q_6_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1154,7 +1154,7 @@
                         </tr>
                         <tr>
                           <td>6.5</td>
-                          <td>Are invalid test results recorded in the register/logbook?</td>
+                          <td><?= $this->translate('Are invalid test results recorded in the register/logbook?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_5']) && $formData['POST_Q_6_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1169,7 +1169,7 @@
                         </tr>
                         <tr>
                           <td>6.6</td>
-                          <td>Are invalid tests repeated and results properly recorded in the register/logbook?</td>
+                          <td><?= $this->translate('Are invalid tests repeated and results properly recorded in the register/logbook?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_6']) && $formData['POST_Q_6_6'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1184,7 +1184,7 @@
                         </tr>
                         <tr>
                           <td>6.7</td>
-                          <td>Are all client documents and records securely kept throughout all phases of the testing process?</td>
+                          <td><?= $this->translate('Are all client documents and records securely kept throughout all phases of the testing process?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_7']) && $formData['POST_Q_6_7'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1199,7 +1199,7 @@
                         </tr>
                         <tr>
                           <td>6.8</td>
-                          <td>Are all registers/logbooks and other documents kept in a secure location when not in use?</td>
+                          <td><?= $this->translate('Are all registers/logbooks and other documents kept in a secure location when not in use?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_8']) && $formData['POST_Q_6_8'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1214,7 +1214,7 @@
                         </tr>
                         <tr>
                           <td>6.9</td>
-                          <td>Are registers/logbooks properly labeled and archived when full?</td>
+                          <td><?= $this->translate('Are registers/logbooks properly labeled and archived when full?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_9']) && $formData['POST_Q_6_9'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1229,7 +1229,7 @@
                         </tr>
 
                         <tr>
-                          <th colspan="6">6.0 POST TESTING PHASE - DOCUMENTS AND RECORDS SCORE</th>
+                          <th colspan="6"><?= $this->translate('6.0 POST TESTING PHASE - DOCUMENTS AND RECORDS SCORE'); ?></th>
                           <td style="text-align:center;"><?php echo $formData['POST_SCORE']; ?></td>
                         </tr>
                       </table>
@@ -1243,7 +1243,7 @@
 
                     </th>
                     <th style="width:93%">
-                      <a href="javascript:void(0);" onclick="$('#externalTable').slideToggle('slow'),addShowClass('shown','externalTable1');">7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING)</a>
+                      <a href="javascript:void(0);" onclick="$('#externalTable').slideToggle('slow'),addShowClass('shown','externalTable1');"><?= $this->translate('7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING)'); ?></a>
                     </th>
                     <th style="text-align:center;width:5%">8/14</th>
                   </tr>
@@ -1251,16 +1251,16 @@
                     <td colspan="3">
                       <table cellspacing="0" cellpadding="5" class="table table-bordered">
                         <tr>
-                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2">SECTION</td>
-                          <th style="text-align:center;width:3%;">YES</th>
-                          <th style="text-align:center;width:4%;">Partial</th>
-                          <th style="text-align:center;width:3%;">NO</th>
-                          <th style="text-align:center;width:40%;">Comments</th>
-                          <th style="text-align:center;width:5%;">Score</th>
+                          <td style="text-align:center;font-weight:bold;width:45%;" colspan="2"><?= $this->translate('SECTION'); ?></td>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('YES'); ?></th>
+                          <th style="text-align:center;width:4%;"><?= $this->translate('Partial'); ?></th>
+                          <th style="text-align:center;width:3%;"><?= $this->translate('NO'); ?></th>
+                          <th style="text-align:center;width:40%;"><?= $this->translate('Comments'); ?></th>
+                          <th style="text-align:center;width:5%;"><?= $this->translate('Score'); ?></th>
                         </tr>
                         <tr>
                           <td>7.1</td>
-                          <td>Is the testing point enrolled in an EQA/PT program?</td>
+                          <td><?= $this->translate('Is the testing point enrolled in an EQA/PT program?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_1']) && $formData['EQA_Q_7_1'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1275,7 +1275,7 @@
                         </tr>
                         <tr>
                           <td>7.2</td>
-                          <td>Do all testers at the testing point test the EQA/PT samples?</td>
+                          <td><?= $this->translate('Do all testers at the testing point test the EQA/PT samples?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_2']) && $formData['EQA_Q_7_2'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1290,7 +1290,7 @@
                         </tr>
                         <tr>
                           <td>7.3</td>
-                          <td>Does the person in charge at the testing point review the /PT results before submission to NRL or designee?</td>
+                          <td><?= $this->translate('Does the person in charge at the testing point review the /PT results before submission to NRL or designee?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_3']) && $formData['EQA_Q_7_3'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1305,7 +1305,7 @@
                         </tr>
                         <tr>
                           <td>7.4</td>
-                          <td>Is an EQA/PT report received from NRL and reviewed by testers and/or the person in charge at the testing point?</td>
+                          <td><?= $this->translate('Is an EQA/PT report received from NRL and reviewed by testers and/or the person in charge at the testing point?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_4']) && $formData['EQA_Q_7_4'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1320,7 +1320,7 @@
                         </tr>
                         <tr>
                           <td>7.5</td>
-                          <td>Does the testing point implement corrective action in case of unsatisfactory results?</td>
+                          <td><?= $this->translate('Does the testing point implement corrective action in case of unsatisfactory results?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_5']) && $formData['EQA_Q_7_5'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1335,7 +1335,7 @@
                         </tr>
                         <tr>
                           <td>7.6</td>
-                          <td>Does the testing point receive periodic supervisory visits?</td>
+                          <td><?= $this->translate('Does the testing point receive periodic supervisory visits?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_6']) && $formData['EQA_Q_7_6'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1350,7 +1350,7 @@
                         </tr>
                         <tr>
                           <td>7.7</td>
-                          <td>Is feedback provided during supervisory visit and documented?</td>
+                          <td><?= $this->translate('Is feedback provided during supervisory visit and documented?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_7']) && $formData['EQA_Q_7_7'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1365,7 +1365,7 @@
                         </tr>
                         <tr>
                           <td>7.8</td>
-                          <td>If testers need to be retrained, are they being retrained during the supervisory visit?</td>
+                          <td><?= $this->translate('If testers need to be retrained, are they being retrained during the supervisory visit?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_8']) && $formData['EQA_Q_7_8'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1380,12 +1380,12 @@
                         </tr>
                         <tr>
                           <th colspan="7">
-                            If the country external quality assessment program includes retesting of serum or DBS, proceed with questions 7.9 –7.14. Otherwise, STOP here.
+                            <?= $this->translate('If the country external quality assessment program includes retesting of serum or DBS, proceed with questions 7.9 –7.14. Otherwise, STOP here.'); ?>
                           </th>
                         </tr>
                         <tr>
                           <td>7.9*</td>
-                          <td>Does the site collect samples for retesting according to country guidelines (e.g., collection of every 20<sup>th</sup> client serum or DBS sample)?</td>
+                          <td><?= $this->translate('Does the site collect samples for retesting according to country guidelines (e.g., collection of every 20'); ?><sup><?= $this->translate('th'); ?></sup> <?= $this->translate('client serum or DBS sample)?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_9']) && $formData['EQA_Q_7_9'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1400,7 +1400,7 @@
                         </tr>
                         <tr>
                           <td>7.10*</td>
-                          <td>Are the serum or DBS samples collected for retesting properly documented?</td>
+                          <td><?= $this->translate('Are the serum or DBS samples collected for retesting properly documented?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_10']) && $formData['EQA_Q_7_10'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1415,7 +1415,7 @@
                         </tr>
                         <tr>
                           <td>7.11*</td>
-                          <td>Are serum or DBS samples collected properly (e.g., at least 3 complete circles or correct volume and correct tubes, etc.)?</td>
+                          <td><?= $this->translate('Are serum or DBS samples collected properly (e.g., at least 3 complete circles or correct volume and correct tubes, etc.)?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_11']) && $formData['EQA_Q_7_11'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1430,7 +1430,7 @@
                         </tr>
                         <tr>
                           <td>7.12*</td>
-                          <td>Are serum or DBS samples stored properly (e.g., away from sunlight, separated by glassine paper, desiccant, or at 4&deg;C or 20&deg;C, etc.)?</td>
+                          <td><?= $this->translate('Are serum or DBS samples stored properly (e.g., away from sunlight, separated by glassine paper, desiccant, or at 4&deg;C or 20&deg;C, etc.)?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_12']) && $formData['EQA_Q_7_12'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1445,7 +1445,7 @@
                         </tr>
                         <tr>
                           <td>7.13*</td>
-                          <td>Are the identifiers of serum or DBS samples sent for retesting properly recorded?</td>
+                          <td><?= $this->translate('Are the identifiers of serum or DBS samples sent for retesting properly recorded?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_13']) && $formData['EQA_Q_7_13'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1460,7 +1460,7 @@
                         </tr>
                         <tr>
                           <td>7.14*</td>
-                          <td>Are the serum or DBS results received from the referral lab properly documented and recorded in the HIV testing register/logbook?</td>
+                          <td><?= $this->translate('Are the serum or DBS results received from the referral lab properly documented and recorded in the HIV testing register/logbook?'); ?></td>
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_14']) && $formData['EQA_Q_7_14'] == 1) ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
@@ -1475,95 +1475,95 @@
                         </tr>
 
                         <tr>
-                          <th colspan="6">7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING) SCORE </th>
+                          <th colspan="6"><?= $this->translate('7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING) SCORE '); ?></th>
                           <td style="text-align:center;"><?php echo $formData['EQA_SCORE']; ?></td>
                         </tr>
                         <tr>
-                          <td colspan="7">*Those marked with an asterisk are only applicable to sites where sample retesting is performed.</td>
+                          <td colspan="7">*<?= $this->translate('Those marked with an asterisk are only applicable to sites where sample retesting is performed.'); ?></td>
                         </tr>
                       </table>
                     </td>
                   </tr>
                 </table>
-                <h4><b>PART C: SCORING CRITERIA</b></h4>
-                <p>Each element marked will be assigned a point value:</p>
+                <h4><b><?= $this->translate('PART C: SCORING CRITERIA'); ?></b></h4>
+                <p><?= $this->translate('Each element marked will be assigned a point value:'); ?></p>
                 <div style="margin-left:10px;">
-                  <p>* Items marked "Yes" receive 1 point each.</p>
-                  <p>* Items marked "Partial" receive 0.5 point each.</p>
-                  <p>* Items marked "No" receive 0 point each.</p>
+                  <p>* <?= $this->translate('Items marked "Yes" receive 1 point each.'); ?></p>
+                  <p>* <?= $this->translate('Items marked "Partial" receive 0.5 point each.'); ?></p>
+                  <p>* <?= $this->translate('Items marked "No" receive 0 point each.'); ?></p>
                 </div>
-                <p>Total points scored for each section should be tallied and recorded at the end of the section.</p>
-                <p>The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance level.</p>
+                <p><?= $this->translate('Total points scored for each section should be tallied and recorded at the end of the section.'); ?></p>
+                <p><?= $this->translate('The overall total points obtained by each HIV testing point audited will be weighed to correspond to a specific performance level.'); ?></p>
 
                 <table class="table table-bordered" cellspacing="0" cellpadding="5">
                   <tr style="text-align:center;">
-                    <th>Levels</th>
-                    <th>% Score</th>
-                    <th>Description of results</th>
+                    <th><?= $this->translate('Levels'); ?></th>
+                    <th><?= $this->translate('% Score'); ?></th>
+                    <th><?= $this->translate('Description of results'); ?></th>
                   </tr>
                   <tr>
-                    <td style="background-color:#C00000;color:#000000;">Level 0</td>
-                    <td>Less than 40%</td>
-                    <td>Needs improvement in all areas and immediate remediation</td>
+                    <td style="background-color:#C00000;color:#000000;"><?= $this->translate('Level 0'); ?></td>
+                    <td><?= $this->translate('Less than 40%'); ?></td>
+                    <td><?= $this->translate('Needs improvement in all areas and immediate remediationv'); ?></td>
                   </tr>
                   <tr>
-                    <td style="background-color:#E36C0A;color:#000000;">Level 1</td>
+                    <td style="background-color:#E36C0A;color:#000000;"><?= $this->translate('Level 1'); ?></td>
                     <td>40% - 59%</td>
-                    <td>Needs improvement in specific areas</td>
+                    <td><?= $this->translate('Needs improvement in specific areas'); ?></td>
                   </tr>
                   <tr>
-                    <td style="background-color:#FFFF00;color:#000000;">Level 2</td>
+                    <td style="background-color:#FFFF00;color:#000000;"><?= $this->translate('Level 2'); ?></td>
                     <td>60% - 79%</td>
-                    <td>Partially eligible</td>
+                    <td><?= $this->translate('Partially eligible'); ?></td>
                   </tr>
                   <tr>
-                    <td style="background-color:#92D050;color:#000000;">Level 3</td>
+                    <td style="background-color:#92D050;color:#000000;"><?= $this->translate('Level 3'); ?></td>
                     <td>80% - 89%</td>
-                    <td>Close to national site certification</td>
+                    <td><?= $this->translate('Close to national site certification'); ?></td>
                   </tr>
                   <tr>
-                    <td style="background-color:#00B050;color:#000000;">Level 4</td>
-                    <td>90% or higher</td>
-                    <td>Eligible to national site certification</td>
+                    <td style="background-color:#00B050;color:#000000;"><?= $this->translate('Level 4'); ?></td>
+                    <td>90% <?= $this->translate('or higher'); ?></td>
+                    <td><?= $this->translate('Eligible to national site certification'); ?></td>
                   </tr>
                 </table>
 
-                <h4><b>Part D. Auditor's Summation Report for SPI-RT Audit</b></h4>
+                <h4><b><?= $this->translate("Part D. Auditor's Summation Report for SPI-RT Audit"); ?></b></h4>
 
                 <div class="form-group col-lg-6">
-                  <label>Facility Name</label>
+                  <label><?= $this->translate("Facility Name"); ?></label>
                   <p class="form-control" id="facilityName"><?php echo $formData['facilityInfo']->fName; ?></p>
                 </div>
                 <div class="form-group col-lg-6">
-                  <label>Site Type</label>
+                  <label><?= $this->translate("Site Type"); ?></label>
                   <p class="form-control" id="siteType"><?php echo $formData['testingpointtype']; ?></p>
                 </div>
                 <div class="form-group col-lg-6">
-                  <label>Staff Audited Name</label>
+                  <label><?= $this->translate("Staff Audited Name"); ?></label>
                   <input type="text" placeholder="Staff Audited Name" name="staffAuditedName" class="form-control" value="<?php echo $formData['staffaudited']; ?>">
                 </div>
                 <div class="form-group col-lg-6">
-                  <label>No. of Tester(s)</label>
+                  <label><?= $this->translate("No. of Tester(s)"); ?></label>
                   <p class="form-control" id="noOfTesterId"><?php echo $formData['NumberofTester']; ?></p>
                 </div>
 
                 <div class="form-group col-lg-6">
-                  <label>Duration of Audit</label>
+                  <label><?= $this->translate("Duration of Audit"); ?></label>
                   <input type="text" placeholder="Duration of Audit" name="durationaudit" class="form-control" value="<?php echo $formData['durationaudit']; ?>">
                 </div>
 
                 <div class="form-group col-lg-6">
-                  <label>Total points scored (exclude N/A)</label>
+                  <label><?= $this->translate("Total points scored (exclude N/A)"); ?></label>
                   <p class="form-control"><?php echo $formData['FINAL_AUDIT_SCORE']; ?></p>
                 </div>
 
 
                 <div class="form-group col-lg-6">
-                  <label>Total score expected </label>
+                  <label><?= $this->translate("Total score expected "); ?></label>
                   <p class="form-control"><?php echo $formData['MAX_AUDIT_SCORE']; ?></p>
                 </div>
                 <div class="form-group col-lg-3">
-                  <label>% Score </label>
+                  <label><?= $this->translate("% Score "); ?></label>
                   <p class="form-control"><?php echo round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2); ?></p>
                 </div>
                 <div class="form-group col-lg-3">
@@ -1594,18 +1594,18 @@
 
                 <table id="correctiveActionTable" class="table table-bordered" cellspacing="0" cellpadding="5" style="width:100%">
                   <tr>
-                    <th rowspan="2" style="text-align:center;width:3%">Section No.</th>
-                    <th rowspan="2" style="text-align:center;width:20%">Deficiency/Issue observed</th>
-                    <th colspan="2" style="text-align:center;width:8%">Correction <br />Actions</th>
-                    <th rowspan="2" style="text-align:center;width:33%">Auditor's <br />Comments</th>
-                    <th colspan="2" style="text-align:center;width:36%">Recommendations</th>
-                    <th rowspan="2">Add/<br />Remove</th>
+                    <th rowspan="2" style="text-align:center;width:3%"><?= $this->translate("Section No."); ?></th>
+                    <th rowspan="2" style="text-align:center;width:20%"><?= $this->translate("Deficiency/Issue observed"); ?></th>
+                    <th colspan="2" style="text-align:center;width:8%"><?= $this->translate("Correction "); ?><br /><?= $this->translate("Actions"); ?></th>
+                    <th rowspan="2" style="text-align:center;width:33%"><?= $this->translate("Auditor's "); ?><br /><?= $this->translate("Comments"); ?></th>
+                    <th colspan="2" style="text-align:center;width:36%"><?= $this->translate("Recommendations"); ?></th>
+                    <th rowspan="2"><?= $this->translate("Add/"); ?><br /><?= $this->translate("Remove"); ?></th>
                   </tr>
                   <tr>
-                    <th style="text-align:center;width:4%;">Immediate</th>
-                    <th style="text-align:center;width:4%;">Follow up</th>
-                    <th style="text-align:center;width:30%;">Actions</th>
-                    <th style="text-align:center;width:4%;">Timeline / Person responsible</th>
+                    <th style="text-align:center;width:4%;"><?= $this->translate("Immediate"); ?></th>
+                    <th style="text-align:center;width:4%;"><?= $this->translate("Follow up"); ?></th>
+                    <th style="text-align:center;width:30%;"><?= $this->translate("Actions"); ?></th>
+                    <th style="text-align:center;width:4%;"><?= $this->translate("Timeline / Person responsible"); ?></th>
                   </tr>
                   <?php
                   $i = 3;
@@ -1624,12 +1624,12 @@
                         <td align="center">
                           <input type="radio" class="isRequired" name="correction<?php echo $i; ?>" value="Immediate" <?php if ($ca['correction'] == 'Immediate') {
                                                                                                                         echo "checked";
-                                                                                                                      } ?> title="Please select the corrective action">
+                                                                                                                      } ?> title="<?= $this->translate('Please select the corrective action'); ?>">
                         </td>
                         <td align="center">
                           <input type="radio" class="isRequired" name="correction<?php echo $i; ?>" value="Followup" <?php if ($ca['correction'] == 'Followup') {
                                                                                                                         echo "checked";
-                                                                                                                      } ?> title="Please select the corrective action">
+                                                                                                                      } ?> title="<?= $this->translate('Please select the corrective action'); ?>">
                         </td>
                         <td><textarea class="form-control" name="auditorComment[]"><?php echo $ca['auditorcomment']; ?></textarea></td>
                         <td><textarea class="form-control" name="action[]"><?php echo $ca['action']; ?></textarea></td>
@@ -1679,8 +1679,8 @@
                 </table>
                 <div class="spacer  col-lg-12">
 
-                  <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Save</button>
-                  <a href="<?php echo $this->url('spi-v3-form', array('action' => 'manage-facility')); ?>" class="btn btn-space btn-default">Cancel</a>
+                  <button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Save'); ?></button>
+                  <a href="<?php echo $this->url('spi-v3-form', array('action' => 'manage-facility')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
                 </div>
 
               </form>
@@ -1765,8 +1765,8 @@
       rl = document.getElementById("correctiveActionTable").rows.length - 1;
       b.innerHTML = '<input type="text" class="form-control" id="sectionNo' + rowCount + '" name="sectionNo[]" /><input type="hidden" name="rowId[]" class="form-control" value="' + rowCount + '">';
       c.innerHTML = '<input type="text" class="form-control" id="deficiency' + rowCount + '" name="deficiency[]" />';
-      d.innerHTML = '<input type="radio" class="isRequired" name="correction' + rowCount + '" value="Immediate" title="Please select the corrective action">';
-      e.innerHTML = '<input type="radio" class="isRequired" name="correction' + rowCount + '" value="Followup" title="Please select the corrective action">';
+      d.innerHTML = '<input type="radio" class="isRequired" name="correction' + rowCount + '" value="Immediate" title="<?= $this->translate('Please select the corrective action'); ?>">';
+      e.innerHTML = '<input type="radio" class="isRequired" name="correction' + rowCount + '" value="Followup" title="<?= $this->translate('Please select the corrective action'); ?>">';
       f.innerHTML = '<textarea class="form-control" name="auditorComment[]"></textarea>';
       g.innerHTML = '<textarea class="form-control" name="action[]"></textarea>';
       h.innerHTML = '<input type="text" name="timeline[]" class="form-control">';

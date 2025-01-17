@@ -1,10 +1,10 @@
 <?php
 $typeNameData = '';
 if(count($result) > 0){
-    $typeNameData.='<label for="testPoint" class="col-sm-2 control-label">Testing Point Names</label>';
+    $typeNameData.='<label for="testPoint" class="col-sm-2 control-label">' . $this->translate('Testing Point Names') . '</label>';
     $typeNameData.='<div class=" col-lg-4">';
     $typeNameData.='<select class="form-control" id="testPointName">';
-      $typeNameData.='<option value="">All</option>';
+      $typeNameData.='<option value="">' . $this->translate('All') . '</option>';
             foreach($result as $val){
               $typeNameData.='<option value="'.$val['testingpointName'].'">'.ucwords($val['testingpointName']).'</option>';
          }
