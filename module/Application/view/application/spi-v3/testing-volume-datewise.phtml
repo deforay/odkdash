@@ -35,7 +35,7 @@
             $levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
             $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
             $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-            $labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . addslashes($row['testingpointname']) . "<br>'");
+            $labNameData[] = "'". $this->translate('Date') . " : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + '" . $this->translate('Facility Name') . " : " . addslashes($row['facilityname']) . " <br> " . $this->translate('Testing Point Name') . " : " . addslashes($row['testingpointname']) . "<br>'";
             $counter++;
         }
         ?>
@@ -74,7 +74,7 @@
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: 'Level',
+                    text: '<?= $this->translate('Level'); ?>',
                     style: {
                         color: Highcharts.getOptions().colors[0]
                     }

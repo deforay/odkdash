@@ -3,8 +3,8 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
 ?>
 <div class="am-content">
   <div class="page-head">
-    <h2>SPI RT V3 - Data Validation</h2>
-    <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required field</span>
+    <h2><?= $this->translate('SPI RT V3 - Data Validation'); ?></h2>
+    <span class="muted pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= $this->translate('indicates required field'); ?></span>
   </div>
   <div class="main-content">
     <div class="widget widget-fullwidth widget-small" style="padding:5px;">
@@ -14,13 +14,13 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
             <div class="panel-body">
               <form role="form" name="addImportFile" id="addImportFile" method="post" enctype="multipart/form-data" action="<?php echo $this->url('spi-v3-form', array('action' => 'validate-spiv3-data')); ?>">
                 <div class="form-group col-lg-6">
-                  <label>Import File<span class="mandatory">*</span> </label>
-                  <input type="file" class="form-control isRequired" name="fileName" id="fileName" title="Please choose file">
-                  <code>Upload csv file</code>
+                  <label><?= $this->translate('Import File'); ?><span class="mandatory">*</span> </label>
+                  <input type="file" class="form-control isRequired" name="fileName" id="fileName" title="<?= $this->translate('Please choose file'); ?>">
+                  <code><?= $this->translate('Upload csv file'); ?></code>
                 </div>
                 <div class="spacer col-lg-12">
-                  <button type="button" onclick="validateNow()" class="btn btn-space btn-primary">Submit</button>
-                  <a href="javascript:void(0)" onclick="window.location.reload();" class="btn btn-space btn-default">Reset</a>
+                  <button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
+                  <a href="javascript:void(0)" onclick="window.location.reload();" class="btn btn-space btn-default"><?= $this->translate('Reset'); ?></a>
                 </div>
               </form>
             </div>
@@ -40,11 +40,11 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
         <div class="col-sm-3">&nbsp;</div>
         <div class="col-sm-6">
           <div class="col-sm-1">
-            <label>Token:</label>
+            <label><?= $this->translate('Token:'); ?></label>
           </div>
           <div class="col-sm-5">
-            <select class="form-control" name="token" id="token" title="Please choose token">
-              <option value="">-- Select --</option>
+            <select class="form-control" name="token" id="token" title="Please choose token'); ?>">
+              <option value=""><?= $this->translate('-- Select --'); ?></option>
               <?php
               $selected = '';
               if (count($tokenResults) == 1) {
@@ -67,15 +67,15 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
         <thead>
           <tr>
             <th><input type="checkbox" id="checkAllValidateData" onclick="checkAllValidateData()" /></th>
-            <th>Facility Name</th>
-            <th style="width:8%;">Audit Round No.</th>
-            <th style="width:10%;">Audit Date</th>
-            <th style="width:10%;">Testing Point Name</th>
-            <th style="width:6%;">Testing Point Type</th>
-            <th style="width:8%;">Level</th>
-            <th>Affiliation</th>
-            <th style="width:5%;">Audit Score %</th>
-            <th style="width:8%;">Status</th>
+            <th><?= $this->translate('Facility Name'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Audit Round No.'); ?></th>
+            <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
+            <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
+            <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Level'); ?></th>
+            <th><?= $this->translate('Affiliation'); ?></th>
+            <th style="width:5%;"><?= $this->translate('Audit Score %'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Status'); ?></th>
           </tr>
         </thead>
         <tbody>
@@ -105,7 +105,7 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
       var fileName = fup.value;
       var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
       if (ext != "csv") {
-        alert("Upload csv file only");
+        alert('<?php echo $this->translate("Upload csv file only"); ?>');
         return false;
       }
       document.getElementById('addImportFile').submit();
@@ -141,8 +141,8 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
           "data": aoData,
           "success": function(json) {
             //$.unblockUI();
-            $("#totalDataCount").html("<b>Total No. of Audits in CSV : </b>" + json.newData);
-            $("#newDataCount").html("<b>Total No. of Audits in ODKDash : </b>" + json.totalData);
+            $("#totalDataCount").html("<b><?php echo $this->translate('Total No. of Audits in CSV'); ?> : </b>" + json.newData);
+            $("#newDataCount").html("<b><?php echo $this->translate('Total No. of Audits in ODKDash'); ?> : </b>" + json.totalData);
             fnCallback(json);
           }
         });
@@ -200,7 +200,8 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
     validateId = $("#checkedValidateSpiv3Data").val();
     token = $("#token").val();
     if (validateId != '' && token != '') {
-      conf = confirm("Are you sure want to import these audit(s)?");
+      conf = confirm("<?php echo $this->translate('Are you sure want to import these audit(s)?'); ?>");
+
       if (conf) {
         $.blockUI();
         $.post("<?php echo $this->url('spi-v3-form', array('action' => 'add-spiv3-validate-data')); ?>", {
@@ -220,7 +221,7 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
           });
       }
     } else {
-      alert("Please choose atleat one row and token!");
+      alert("<?php echo $this->translate('Please choose atleat one row and token!'); ?>");
     }
   }
 </script>

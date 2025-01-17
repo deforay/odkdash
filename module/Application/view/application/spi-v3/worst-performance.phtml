@@ -52,9 +52,11 @@
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'No. of <strong><em>Zeroes</em></strong>'
+                    text: '<?php echo $this->translate("No. of "); ?>' +
+                        '<strong><em><?php echo $this->translate("Zeroes"); ?></em></strong>'
                 }
             },
+
             tooltip: {
                 formatter: function() {
                     return ' ' +
@@ -70,7 +72,7 @@
                 }
             },
             series: [{
-                name: 'Responses scoring a Zero',
+                name: '<?php echo $this->translate("Responses scoring a Zero"); ?>',
                 data: [<?php echo implode(",", $barData); ?>]
             }]
         });
