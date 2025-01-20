@@ -79,9 +79,19 @@ foreach ($tokenResults as $token) {
 									</select>
 								</div>
 								<div class="form-group col-lg-6">
+									<label for="language"><?= $this->translate('Language'); ?></label>
+									<select name="language" id="language" class="form-control" title="<?= $this->translate('Please select language'); ?>">
+										<option value="">--<?= $this->translate('Select'); ?>--</option>
+										<option value="en_US"><?= $this->translate('English'); ?></option>
+										<option value="fr_FR"><?= $this->translate('French'); ?></option>
+										<option value="pt_BR"><?= $this->translate('Portuguese'); ?></option>
+										<option value="es_ES"><?= $this->translate('Spanish'); ?></option>
+									</select>
+								</div>
+								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Mapping Type'); ?></label>
 									<select class="form-control" name="mappingType" id="mappingType" title="<?= $this->translate('Please select the mappingType'); ?>" onchange="getLocations()">
-										<option value="">--<?= $this->translate('Select'); ?>--</option>	
+										<option value="">--<?= $this->translate('Select'); ?>--</option>
 										<option value="country"><?= $this->translate('Country'); ?></option>
 										<option value="province"><?= $this->translate('Province'); ?></option>
 										<option value="district"><?= $this->translate('District'); ?></option>

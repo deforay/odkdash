@@ -260,7 +260,7 @@ $config = $this->GlobalConfigHelper();
 						}
 					},
 					title: {
-						text: '<?= $this->translate('Audit score in %'); ?>',
+						text: "<?= $this->translate('Audit score in %'); ?>",
 						style: {
 							color: Highcharts.getOptions().colors[1]
 						}
@@ -269,7 +269,7 @@ $config = $this->GlobalConfigHelper();
 					max: 100
 				}, { // Secondary yAxis
 					title: {
-						text: '<?= $this->translate('Testing Volume'); ?>',
+						text: "<?= $this->translate('Testing Volume'); ?>",
 						style: {
 							color: Highcharts.getOptions().colors[0]
 						}
@@ -306,7 +306,7 @@ $config = $this->GlobalConfigHelper();
 					valueSuffix: ' %'
 				}
 			}, {
-				name: '<?= $this->translate('Testing Volume'); ?>',
+				name: "<?= $this->translate("Testing Volume"); ?>",
 				type: 'column',
 				data: [<?php echo implode(",", $volumeData); ?>],
 				stack: 'volume',

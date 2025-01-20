@@ -188,10 +188,10 @@ class Module
 
     protected function initTranslator(MvcEvent $event)
     {
+        $loginContainer = new Container('credo');
         $serviceManager = $event->getApplication()->getServiceManager();
         $translator = $serviceManager->get('translator');
-        $config = $serviceManager->get('Config');
-        $translator->setLocale($config['settings']['locale'])
+        $translator->setLocale($loginContainer->language)
             ->setFallbackLocale('en_US');
     }
 

@@ -1006,7 +1006,7 @@ $config = $this->GlobalConfigHelper();
 						}
 					},
 					title: {
-						text: '<?= $this->translate('Audit score in %'); ?>',
+						text: "<?= $this->translate("Audit score in %"); ?>",
 						style: {
 							color: Highcharts.getOptions().colors[1]
 						}
@@ -1015,7 +1015,7 @@ $config = $this->GlobalConfigHelper();
 					max: 100
 				}, { // Secondary yAxis
 					title: {
-						text: '<?= $this->translate('Testing Volume'); ?>',
+						text: "<?= $this->translate("Testing Volume"); ?>",
 						style: {
 							color: Highcharts.getOptions().colors[0]
 						}
@@ -1044,7 +1044,7 @@ $config = $this->GlobalConfigHelper();
 				}
 			},
 			series: [{
-				name: '<?= $this->translate('Audit Score Percentage'); ?>',
+				name: "<?= $this->translate("Audit Score Percentage"); ?>",
 				data: [<?php echo implode(",", $barData); ?>],
 				stack: 'score',
 				type: 'column',
@@ -1052,7 +1052,7 @@ $config = $this->GlobalConfigHelper();
 					valueSuffix: ' %'
 				}
 			}, {
-				name: '<?= $this->translate('Testing Volume'); ?>',
+				name: "<?= $this->translate("Testing Volume"); ?>",
 				type: 'column',
 				data: [<?php echo implode(",", $volumeData); ?>],
 				stack: 'volume',
@@ -1418,21 +1418,21 @@ $config = $this->GlobalConfigHelper();
 
 
 		$("#provinceDistrict").multipleSelect({
-			placeholder: '<?= $this->translate('Select Province'); ?>',
+			placeholder: "<?= $this->translate("Select Province"); ?>",
 			width: '100%'
 		});
 		$("#auditRndNo").multipleSelect({
-			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
+			placeholder: "<?= $this->translate("Audit round(s)"); ?>",
 			width: '31%',
 			minimumCountSelected: '2'
 		});
 		$("#auditRndWorstNo").multipleSelect({
-			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
+			placeholder: "<?= $this->translate("Audit round(s)"); ?>",
 			width: '25%',
 			minimumCountSelected: '2'
 		});
 		$("#auditRndNoLocations").multipleSelect({
-			placeholder: '<?= $this->translate('Select Audit round(s)'); ?>',
+			placeholder: "<?= $this->translate("Select Audit round(s)"); ?>",
 			width: '30%',
 			minimumCountSelected: '2'
 		});
@@ -1442,7 +1442,7 @@ $config = $this->GlobalConfigHelper();
 
 
 	function approveStatus(id) {
-		conf = confirm("Are you sure you want to approve this audit ?");
+		conf = confirm("<?= $this->translate("Are you sure you want to approve this audit ?"); ?>");
 		if (conf) {
 			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'approve-status')); ?>", {
 					id: id
@@ -1560,7 +1560,7 @@ $config = $this->GlobalConfigHelper();
 			}, { // Tertiary yAxis
 				gridLineWidth: 0,
 				title: {
-					text: '<?= $this->translate('Testing Volume'); ?>',
+					text: "<?= $this->translate("Testing Volume"); ?>",
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}
@@ -1585,7 +1585,7 @@ $config = $this->GlobalConfigHelper();
 				enabled: true
 			},
 			series: [{
-				name: '<?= $this->translate('Testing Volume'); ?>',
+				name: "<?= $this->translate("Testing Volume"); ?>",
 				type: 'column',
 				yAxis: 2,
 				data: [<?php echo implode(",", $volumeData); ?>],
@@ -1599,7 +1599,7 @@ $config = $this->GlobalConfigHelper();
 				}
 
 			}, {
-				name: '<?= $this->translate('Testers'); ?>',
+				name: "<?= $this->translate("Testers"); ?>",
 				type: 'column',
 				data: [<?php echo implode(",", $testerData); ?>],
 				tooltip: {
@@ -1667,7 +1667,7 @@ $config = $this->GlobalConfigHelper();
 			yAxis: {
 				min: 0,
 				title: {
-					text: '<?= $this->translate('Audit Counts'); ?>'
+					text: "<?= $this->translate("Audit Counts"); ?>"
 				}
 			},
 			legend: {
@@ -1698,7 +1698,7 @@ $config = $this->GlobalConfigHelper();
 				}
 			},
 			series: [{
-				name: '<?= $this->translate('Audit Counts'); ?>',
+				name: "<?= $this->translate("Audit Counts"); ?>",
 				data: $.parseJSON('<?php echo $auditDataList; ?>')
 			}]
 		});
@@ -1766,7 +1766,7 @@ $config = $this->GlobalConfigHelper();
 				function(data) {
 					$('.districtFilter').html(data);
 					$("#district").multipleSelect({
-						placeholder: 'Select District(s)',
+						placeholder: "<?= $this->translate("Select District(s)"); ?>",
 						width: '100%'
 					});
 				});

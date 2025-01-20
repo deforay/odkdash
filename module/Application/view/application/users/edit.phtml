@@ -117,7 +117,16 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 																	} ?>><?= $this->translate('Inactive'); ?></option>
 									</select>
 								</div>
-
+								<div class="form-group col-lg-6">
+									<label for="language"><?= $this->translate('Language'); ?></label>
+									<select name="language" id="language" class="form-control" title="<?= $this->translate('Please select language'); ?>">
+										<option value="">--<?= $this->translate('Select'); ?>--</option>
+										<option value="en_US" <?php echo ($result->language == 'en_US' ? " selected='selected'" : ""); ?>><?= $this->translate('English'); ?></option>
+										<option value="fr_FR" <?php echo ($result->language == 'fr_FR' ? " selected='selected'" : ""); ?>><?= $this->translate('French'); ?></option>
+										<option value="pt_BR" <?php echo ($result->language == 'pt_BR' ? " selected='selected'" : ""); ?>><?= $this->translate('Portuguese'); ?></option>
+										<option value="es_ES" <?php echo ($result->language == 'es_ES' ? " selected='selected'" : ""); ?>><?= $this->translate('Spanish'); ?></option>
+									</select>
+								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Mapping Type'); ?></label>
 									<select class="form-control" name="mappingType" id="mappingType" title="><?= $this->translate('Please select the mappingType'); ?>" onchange="getLocations()">

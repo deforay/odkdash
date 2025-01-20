@@ -93,6 +93,14 @@ class UsersTable extends AbstractTableGateway
             foreach ($userTokenResult as $userToken) {
                 $token[] = $userToken['token'];
             }
+            $language = $gTable->getGlobalValue('language');
+            if (isset($sResult->language) && !empty($sResult->language)){
+                $loginContainer->language = $sResult->language;
+            } elseif (!empty($language)) {
+                $loginContainer->language = $language;
+            } else {
+                $loginContainer->language = 'en_US';
+            }
             $loginContainer->userId = $sResult->id;
             $loginContainer->login = $sResult->login;
             $loginContainer->roleCode = $sResult->role_code;
@@ -155,6 +163,7 @@ class UsersTable extends AbstractTableGateway
                 'password' => $password,
                 'email' => $params['email'],
                 'status' => $params['status'],
+                'language' => $params['language'],
                 'contact_no' => $params['mobile_no'],
                 'created_on' => CommonService::getDateTime()
             );
@@ -253,7 +262,8 @@ class UsersTable extends AbstractTableGateway
                 'login' => $params['userName'],
                 'email' => $params['email'],
                 'contact_no' => $params['mobile_no'],
-                'status' => $params['status']
+                'status' => $params['status'],
+                'language' => $params['language']
             );
             $this->update($data, array('id' => $userId));
             if ($userId > 0) {

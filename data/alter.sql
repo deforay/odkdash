@@ -2828,3 +2828,6 @@ ALTER TABLE `spi_form_v_6` ADD `sitephoto2` TEXT NULL DEFAULT NULL AFTER `siteph
 
 -- ilahir 10-Jan-2025
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Additional Logo', 'additional_logo', NULL);
+
+-- Brindha 20-Jan-2025
+ALTER TABLE `users` ADD `language` VARCHAR(255) NULL DEFAULT NULL AFTER `status`;

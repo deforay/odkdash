@@ -1216,7 +1216,7 @@ $userMappingType = $sessionLogin->userMappingType;
 						}
 					},
 					title: {
-						text: '<?= $this->translate('Audit score in %'); ?>',
+						text: "<?= $this->translate("Audit score in %"); ?>",
 						style: {
 							color: Highcharts.getOptions().colors[1]
 						}
@@ -1225,7 +1225,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					max: 100
 				}, { // Secondary yAxis
 					title: {
-						text: '<?= $this->translate('Testing Volume'); ?>',
+						text: "<?= $this->translate("Testing Volume"); ?>",
 						style: {
 							color: Highcharts.getOptions().colors[0]
 						}
@@ -1254,7 +1254,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 			},
 			series: [{
-				name: '<?= $this->translate('Audit Score Percentage'); ?>',
+				name: "<?= $this->translate("Audit Score Percentage"); ?>",
 				data: [<?php echo implode(",", $barData); ?>],
 				stack: 'score',
 				type: 'column',
@@ -1262,7 +1262,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					valueSuffix: ' %'
 				}
 			}, {
-				name: '<?= $this->translate('Testing Volume'); ?>',
+				name: "<?= $this->translate("Testing Volume"); ?>",
 				type: 'column',
 				data: [<?php echo implode(",", $volumeData); ?>],
 				stack: 'volume',
@@ -1715,17 +1715,17 @@ $userMappingType = $sessionLogin->userMappingType;
 			tags: false
 		});
 		$("#auditRndNo,#auditRndNoSectionZero,#auditRndNoSectionZeroProtocol").multipleSelect({
-			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
+			placeholder: "<?= $this->translate("Audit round(s)"); ?>",
 			width: '31%',
 			minimumCountSelected: '2'
 		});
 		$("#auditRndWorstNo").multipleSelect({
-			placeholder: '<?= $this->translate('Audit round(s)'); ?>',
+			placeholder: "<?= $this->translate("Audit round(s)"); ?>",
 			width: '25%',
 			minimumCountSelected: '2'
 		});
 		$("#auditRndNoLocations").multipleSelect({
-			placeholder: '<?= $this->translate('Select Audit round(s)'); ?>',
+			placeholder: "<?= $this->translate("Select Audit round(s)"); ?>",
 			width: '30%',
 			minimumCountSelected: '2'
 		});
@@ -1735,7 +1735,7 @@ $userMappingType = $sessionLogin->userMappingType;
 
 
 	function approveStatus(id) {
-		conf = confirm("Are you sure you want to approve this audit ?");
+		conf = confirm("<?= $this->translate("Are you sure you want to approve this audit ?"); ?>");
 		if (conf) {
 			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'approve-status')); ?>", {
 					id: id
@@ -1776,7 +1776,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			function(data) {
 				console.log(data);
 				if (data == "" || data == null || data == undefined) {
-					alert('<?= $this->translate('Unable to generate download'); ?>');
+					alert("<?= $this->translate("Unable to generate download"); ?>");
 				} else {
 					window.open('/temporary/' + data, '_blank');
 				}
@@ -1792,7 +1792,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
-					alert('<?= $this->translate('Unable to generate download'); ?>');
+					alert("<?= $this->translate("Unable to generate download"); ?>");
 				} else {
 					window.open('/temporary/' + data, '_blank');
 				}
@@ -1919,7 +1919,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			}, { // Tertiary yAxis
 				gridLineWidth: 0,
 				title: {
-					text: '<?= $this->translate('Testing Volume'); ?>',
+					text: "<?= $this->translate("Testing Volume"); ?>",
 					style: {
 						color: Highcharts.getOptions().colors[1]
 					}
@@ -1944,7 +1944,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				enabled: true
 			},
 			series: [{
-				name: '<?= $this->translate('Testing Volume'); ?>',
+				name: "<?= $this->translate("Testing Volume"); ?>",
 				type: 'column',
 				yAxis: 2,
 				data: [<?php echo implode(",", $highVolumeData); ?>],
@@ -1958,7 +1958,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 
 			}, {
-				name: '<?= $this->translate('Testers'); ?>',
+				name: "<?= $this->translate("Testers"); ?>",
 				type: 'column',
 				data: [<?php echo implode(",", $highVolumeTesterData); ?>],
 				tooltip: {
@@ -2026,7 +2026,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			yAxis: {
 				min: 0,
 				title: {
-					text: '<?= $this->translate('Audit Counts'); ?>'
+					text: "<?= $this->translate("Audit Counts"); ?>"
 				}
 			},
 			legend: {
@@ -2057,7 +2057,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 			},
 			series: [{
-				name: '<?= $this->translate('Audit Counts'); ?>',
+				name: "<?= $this->translate("Audit Counts"); ?>",
 				data: $.parseJSON('<?php echo $auditDataList; ?>')
 			}]
 		});
