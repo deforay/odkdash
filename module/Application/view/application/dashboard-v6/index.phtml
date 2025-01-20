@@ -1742,7 +1742,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				},
 				function(data) {
 					if (data > 0) {
-						alert("Audit updated successfully");
+						alert("<?= $this->translate("Audit updated successfully"); ?>");
 						window.location.href = window.location;
 					}
 

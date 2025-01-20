@@ -176,7 +176,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
                 },
                 function(data) {
                     if (data > 0) {
-                        alert("Audit updated successfully");
+                        alert("<?= $this->translate("Audit updated successfully"); ?>");
                         $("#facilityNameRight").html("");
 
                         var selectArr = [];

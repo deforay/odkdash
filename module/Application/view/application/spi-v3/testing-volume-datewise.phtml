@@ -92,7 +92,7 @@
             }, { // Tertiary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: '<?= $this->translate('Testing Volume'); ?>',
+                    text: "<?= $this->translate("Testing Volume"); ?>",
                     style: {
                         color: Highcharts.getOptions().colors[1]
                     }
@@ -117,7 +117,7 @@
                 enabled: true
             },
             series: [{
-                name: '<?= $this->translate('Testing Volume'); ?>',
+                name: "<?= $this->translate("Testing Volume"); ?>",
                 type: 'column',
                 yAxis: 2,
                 data: [<?php echo implode(",", $volumeData); ?>],
