@@ -88,4 +88,15 @@ class CommonController extends AbstractActionController
 
         return $viewModel;
     }
+
+    public function generatePasswordAction()
+    {
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $password = $this->commonService->generatePassword();
+            return $this->getResponse()->setContent($password);
+        }
+    }
 }

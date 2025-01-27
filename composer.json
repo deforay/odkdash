@@ -39,7 +39,8 @@
         "ramsey/uuid": "^4.7",
         "symfony/mailer": "^7.1",
         "setasign/fpdf": "1.8.*",
-        "setasign/fpdi": "^2.5"
+        "setasign/fpdi": "^2.5",
+        "hackzilla/password-generator": "^1.7"
     },
     "autoload": {
         "psr-4": {

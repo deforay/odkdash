@@ -2831,3 +2831,6 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 
 -- Brindha 20-Jan-2025
 ALTER TABLE `users` ADD `language` VARCHAR(255) NULL DEFAULT NULL AFTER `status`;
+
+-- Brindha 22-Jan-2025
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\UsersController', 'reset-password', 'Reset Password');

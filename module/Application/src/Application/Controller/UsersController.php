@@ -135,4 +135,28 @@ class UsersController extends AbstractActionController
             ));
         }
     }
+
+    public function resetPasswordAction()
+    {
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $params = $request->getPost();
+            $result = $this->userService->resetPassword($params);
+            $viewModel = new ViewModel(array(
+                'result' => $result
+            ));
+            $viewModel->setTerminal(true);
+            return $viewModel;
+        } else {
+            $layout = $this->layout();
+            $layout->setTemplate('layout/modal');
+            $id = base64_decode($this->params()->fromRoute('id'));
+            $result = $this->userService->getUser($id);
+            return new ViewModel(array(
+                'result' => $result
+            ));
+        }
+    }
 }

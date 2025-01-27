@@ -474,16 +474,25 @@ class UsersTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $role = $loginContainer->roleCode;
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\UsersController', 'edit');
-
+        $updatePassword = (bool) $acl->isAllowed($role, 'Application\Controller\UsersController', 'reset-password');
+        
         foreach ($rResult as $aRow) {
             $row = [];
 
             $row[] = ucwords($aRow['first_name'] . " " . $aRow['last_name']);
             $row[] = $aRow['email'];
             $row[] = ucwords($aRow['status']);
+            $actionStr = '';
             if ($update) {
-                $edit = '<a href="/users/edit/' . base64_encode($aRow['id']) . '" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
-                $row[] = $edit;
+                $editStr = '<a href="/users/edit/' . base64_encode($aRow['id']) . '" class="btn btn-info btn-xs" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
+                $actionStr .= $editStr;
+            }
+            if ($updatePassword) {
+                $resetPasswordStr = ' <a href="javascript:void(0);" onclick="showModal(\'/users/reset-password/' . base64_encode($aRow['id']) . '\',\'800\',\'450\');" class="btn btn-warning btn-xs" title="Reset Password">Reset Password</a>';
+                $actionStr .= $resetPasswordStr;
+            }
+            if($update || $updatePassword){
+                $row[] = $actionStr;
             }
             $output['aaData'][] = $row;
         }
@@ -610,5 +619,13 @@ class UsersTable extends AbstractTableGateway
             $passwordValidation = password_verify($params['password'], $sResult->password);
         }
         return $passwordValidation;
+    }
+
+    public function resetPassword($params)
+    {
+        $userId = base64_decode($params->userId);
+        $password = $this->passwordHash($params['newPassword']);
+        $data = array('password' => $password);
+        return $this->update($data, array('id' => $userId));
     }
 }
