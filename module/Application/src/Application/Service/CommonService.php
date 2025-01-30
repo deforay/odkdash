@@ -18,6 +18,7 @@ use Laminas\Mime\Part as MimePart;
 use Laminas\Mail\Transport\SmtpOptions;
 use Laminas\Mime\Message as MimeMessage;
 use Laminas\Mail\Transport\Smtp as SmtpTransport;
+use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
 
 class CommonService
 {
@@ -718,7 +719,23 @@ class CommonService
         }
         return array_filter($data, fn($value) => $value !== null);
     }
+    
+    public static function generatePassword()
+    {
+        $generator = new RequirementPasswordGenerator();
+        $generator
+            ->setLength(12)
+            ->setOptionValue(RequirementPasswordGenerator::OPTION_UPPER_CASE, true)
+            ->setOptionValue(RequirementPasswordGenerator::OPTION_LOWER_CASE, true)
+            ->setOptionValue(RequirementPasswordGenerator::OPTION_NUMBERS, true)
+            ->setOptionValue(RequirementPasswordGenerator::OPTION_SYMBOLS, false)
+            ->setMinimumCount(RequirementPasswordGenerator::OPTION_UPPER_CASE, 2)
+            ->setMinimumCount(RequirementPasswordGenerator::OPTION_LOWER_CASE, 2)
+            ->setMinimumCount(RequirementPasswordGenerator::OPTION_NUMBERS, 2);
 
+        return $generator->generatePassword();
+    }
+    
     public static function generateRandomNumbers(int $length = 6, string $seeds = 'numeric'): string
     {
         // Possible seeds

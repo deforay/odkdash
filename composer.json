@@ -40,6 +40,7 @@
         "symfony/mailer": "^7.1",
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.5",
+        "hackzilla/password-generator": "^1.7",
         "twilio/sdk": "^8.3"
     },
     "autoload": {

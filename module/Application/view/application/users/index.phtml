@@ -33,8 +33,8 @@ if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) {
                         <th><?= $this->translate('User Name'); ?></th>
                         <th><?= $this->translate('Email'); ?></th>
                         <th><?= $this->translate('Status'); ?></th>
-                        <?php if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) { ?>
-                        <th><?= $this->translate('Action'); ?></th>
+                        <?php if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit') || $acl->isAllowed($role, 'Application\Controller\UsersController', 'reset-password')) { ?>
+                            <th><?= $this->translate('Action'); ?></th>
                         <?php } ?>
                     </tr>
                 </thead>
@@ -74,4 +74,16 @@ if ($acl->isAllowed($role, 'Application\Controller\UsersController', 'edit')) {
             }
         });
     });
+
+    function showModal(url, w, h) {
+		showdefModal('dDiv', w, h);
+		document.getElementById('dFrame').style.height = h + 'px';
+		document.getElementById('dFrame').style.width = w + 'px';
+		document.getElementById('dFrame').src = url;
+	}
+
+	function closeModal() {
+		document.getElementById('dFrame').src = "";
+		hidedefModal('dDiv');
+	}
 </script>

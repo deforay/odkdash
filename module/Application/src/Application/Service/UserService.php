@@ -161,6 +161,31 @@ class UserService
         }
     }
 
+    public function resetPassword($params)
+    {
+        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $adapter->beginTransaction();
+        try {
+            $result = $this->usersTable->resetPassword($params);
+            if ($result > 0) {
+                $adapter->commit();
+                //<-- Event log
+                $subject = $result;
+                $eventType = 'user-password-reset';
+                $action = 'resets a user password' . $params['userfirstName'];
+                $resourceName = 'users';
+                $eventLogDb = $this->sm->get('EventLogTable');
+                $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
+                //-------->
+                //$container = new Container('alert');
+                //$container->alertMsg = 'Password changed successfully';
+            }
+        } catch (\Exception $exc) {
+            error_log($exc->getMessage());
+            error_log($exc->getTraceAsString());
+        }
+    }
+    
     public function validateUserOtp($otp)
     {
         return $this->usersTable->validateUserOtp($otp);

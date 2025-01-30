@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class OdkFormService
@@ -608,13 +609,13 @@ class OdkFormService
                     if (!isset($value)) {
                         $value = "";
                     }
-                    $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
+                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
                     $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
+                    $cellName = $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getColumn();
                     $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
                     $sheet->getDefaultRowDimension()->setRowHeight(18);
                     $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getAlignment()->setWrapText(true);
                     $colNo++;
                 }
             }
@@ -3148,13 +3149,12 @@ class OdkFormService
                     if (!isset($value)) {
                         $value = "";
                     }
-                    $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
+                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
                     $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
-                    $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
+                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . $rRowCount)->applyFromArray($borderStyle);
                     $sheet->getDefaultRowDimension()->setRowHeight(18);
                     $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getAlignment()->setWrapText(true);
                     ++$colNo;
                 }
             }
@@ -5069,7 +5069,7 @@ class OdkFormService
                     $siteTable .= '</tr></table>';
                     $pdf->writeHTML($siteTable, true, 0, true, 0);
                 }
-                if(!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto2'] != ''){
+                if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto2'] != '') {
                     $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto2'];
                     $siteTable2 = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
                     $siteTable2 .= '<tr nobr="true">';
@@ -5134,9 +5134,9 @@ class OdkFormService
         $directory = TEMP_UPLOAD_PATH . "/bulk-pdf/";
         // Check if directory exists and is readable
         if (!is_dir($directory) || !is_readable($directory)) {
-         return []; // Return an empty array if directory is invalid
+            return []; // Return an empty array if directory is invalid
         }
-       
+
         $files = scandir($directory);
 
         // Ensure $files is valid
@@ -5145,7 +5145,7 @@ class OdkFormService
         }
         // Remove . and .. from the list
         $files = array_diff($files, array('.', '..'));
-      
+
         return $files;
     }
 
