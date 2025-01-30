@@ -204,6 +204,32 @@
 										</select>
 									</div>
 								</div>
+
+								<div class="form-group">
+									<label for="login_otp" class="col-sm-2 control-label"><?= $this->translate('Send OTP For Login'); ?></label>
+									<div class="col-lg-4">
+										<select name="login_otp" id="login_otp" class="form-control" title="<?= $this->translate('Please select send OTP for login'); ?>" onchange="checkEnableWhatsapp()">
+											<option value="">--select</option>
+											<option value="yes" <?php echo ($config['login_otp'] == 'yes' ? " selected='selected'" : ""); ?>><?= $this->translate('Yes'); ?></option>
+											<option value="no" <?php echo ($config['login_otp'] == 'no' ? " selected='selected'" : ""); ?>><?= $this->translate('No'); ?></option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group whatsapp">
+									<label for="whatsapp_sid" class="col-sm-2 control-label"><?= $this->translate('Whatsapp sid'); ?><span class="mandatory">*</span></label>
+									<div class="col-lg-4">
+										<input name="whatsapp_sid" id="whatsapp_sid" class="form-control" placeholder="<?= $this->translate('Whatsapp sid'); ?>" title="<?= $this->translate('Please enter whatsapp sid'); ?>" value="<?php echo $config['whatsapp_sid']; ?>" />
+									</div>
+								</div>
+
+								<div class="form-group whatsapp">
+									<label for="whatsapp_token" class="col-sm-2 control-label"><?= $this->translate('Whatsapp Token'); ?> <span class="mandatory">*</span></label>
+									<div class="col-lg-4">
+										<input name="whatsapp_token" id="whatsapp_token" class="form-control" placeholder="<?= $this->translate('Whatsapp Token'); ?>" title="<?= $this->translate('Please enter whatsapp token'); ?>" value="<?php echo $config['whatsapp_token']; ?>" />
+									</div>
+								</div>
+
 								<hr>
 								<div class="spacer col-lg-5" align="center">
 									<input type="hidden" name="removedLogoImage" id="removedLogoImage" />
@@ -227,7 +253,7 @@
 			placeholder: '<?= $this->translate('Select Web Version'); ?>',
 			width: '100%'
 		});
-
+		checkEnableWhatsapp();
 	});
 
 	function validateNow() {
@@ -282,6 +308,20 @@
 		} else {
 			$("#dashboard_map_height").hide();
 			$("#dashboard_map_height").removeClass("isRequired");
+		}
+	}
+	function checkEnableWhatsapp(){
+		whatsappEnable = $("#login_otp").val();
+		if(whatsappEnable=='yes'){
+			$(".whatsapp").show();
+			$("#whatsapp_sid").addClass("isRequired");
+			$("#whatsapp_token").addClass("isRequired");
+		}else{
+			$(".whatsapp").hide();
+			$("#whatsapp_sid").val('');
+			$("#whatsapp_token").val('');
+			$("#whatsapp_sid").removeClass("isRequired");
+			$("#whatsapp_token").removeClass("isRequired");
 		}
 	}
 </script>

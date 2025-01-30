@@ -38,6 +38,18 @@ class LoginController extends AbstractActionController
         }
     }
 
+    public function validateOtpAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params=$request->getPost();
+            $route=$this->userService->validateUserOtp(trim($params['otp']));
+            return $this->redirect()->toRoute($route);
+        }
+        $vm = new ViewModel();
+        $vm->setTerminal(true);
+        return $vm;
+    }
+
     public function logoutAction()
     {
         $sessionLogin = new Container('credo');

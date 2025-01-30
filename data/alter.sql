@@ -2831,3 +2831,13 @@ INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global
 
 -- Brindha 20-Jan-2025
 ALTER TABLE `users` ADD `language` VARCHAR(255) NULL DEFAULT NULL AFTER `status`;
+
+--ilahir 23-Jan-2025
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Send OTP For Login', 'login_otp', 'no');
+ALTER TABLE `users` ADD `otp` VARCHAR(255) NULL DEFAULT NULL AFTER `template_file`;
+ALTER TABLE `users` ADD `otp_generated_datetime` DATETIME NULL AFTER `otp`;
+
+
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Whatsapp Token', 'whatsapp_token', NULL);
+INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'whatsapp Sandbox id', 'whatsapp_sid', NULL);
+

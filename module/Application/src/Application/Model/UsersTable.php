@@ -14,7 +14,7 @@ use \Application\Service\ImageResizeService;
 use Application\Model\UserLoginHistoryTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\UserLocationMapTable;
-
+use Twilio\Rest\Client;
 
 
 /*
@@ -66,7 +66,6 @@ class UsersTable extends AbstractTableGateway
             $passwordValidation = password_verify($params['password'], $sResult->password);
         }
 
-
         $data = [
             'last_login_datetime' => CommonService::getDateTime()
         ];
@@ -77,56 +76,19 @@ class UsersTable extends AbstractTableGateway
         if ($sResult && $passwordValidation) {
             $userMappedIdsArray = [];
             $userMappingType = '';
-            $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
-            foreach ($userLocationMapResult as $ulMap) {
-                $userMappedIdsArray[] = $ulMap['location_id'];
-                $userMappingType = $ulMap['mapping_type'];
-            }
-
-            $token = [];
-            $userTokenQuery = $sql->select()->from(['u_t_map' => 'user_token_map'])
-                ->columns(['token'])
-                ->where(['user_id' => $sResult->id])
-                ->order("token ASC");
-            $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
-            $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            foreach ($userTokenResult as $userToken) {
-                $token[] = $userToken['token'];
-            }
-            $language = $gTable->getGlobalValue('language');
-            if (isset($sResult->language) && !empty($sResult->language)){
-                $loginContainer->language = $sResult->language;
-            } elseif (!empty($language)) {
-                $loginContainer->language = $language;
-            } else {
-                $loginContainer->language = 'en_US';
-            }
-            $loginContainer->userId = $sResult->id;
-            $loginContainer->login = $sResult->login;
-            $loginContainer->roleCode = $sResult->role_code;
-            $loginContainer->roleId = $sResult->role_id;
-            $loginContainer->token = $token;
-            $loginContainer->userMappedIds = $userMappedIdsArray;
-            $loginContainer->userMappingType = $userMappingType;
-            $loginContainer->userImage = $sResult->user_image;
-            $subject = '';
-            $eventType = 'login in';
-            $action = $username . ' logged in';
-            $resourceName = 'login in';
-            $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-            $userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
-
-            $redirect = $gTable->getGlobalValue('web_version');
-            $redirectRoute = 'dashboard';
-            if (isset($redirect) && !empty($redirect) && !is_array($redirect)) {
-                if (!empty($redirect) && $redirect == 'v6') {
-                    $redirectRoute = 'dashboard-v6';
+            $sendLoginOtp = $gTable->getGlobalValue('login_otp');
+            if($sendLoginOtp=="yes"){
+                if(trim($sResult->contact_no)!=""){
+                    $this->updateUserOtp($sResult->id,trim($sResult->contact_no));
+                    $loginContainer->otpId = $sResult->id;
+                    return 'validate-otp';
+                }else{
+                    $container->alertMsg = 'Please contact your admin,Unable to sent OTP your number';
+                    return 'login';
                 }
-                if (!empty($redirect) && $redirect == 'v3') {
-                    $redirectRoute = 'dashboard';
-                }
+            }else{
+                return $this->userEventLog($sResult);
             }
-            return $redirectRoute;
         } else {
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
@@ -610,5 +572,122 @@ class UsersTable extends AbstractTableGateway
             $passwordValidation = password_verify($params['password'], $sResult->password);
         }
         return $passwordValidation;
+    }
+
+    public function updateUserOtp($userId,$mobileNo){
+        $dbAdapter = $this->adapter;
+        $userOtp = CommonService::generateRandomNumbers();
+        $gTable = new GlobalTable($dbAdapter);
+        $twilio = new Client($sid, $token);
+        $sid = $gTable->getGlobalValue('whatsapp_sid');
+        $token = $gTable->getGlobalValue('whatsapp_token');
+        //$sid    = "AC537f1200cf12718a79f2799d3c1a8747";
+        //$token  = "e6fa192349112adb4890660523696b49";
+        /*
+        $message = $twilio->messages
+          ->create("whatsapp:$mobileNo", // to
+            array(
+              "from" => "whatsapp:+14155238886",
+              "contentSid" => "HX229f5a04fd0510ce1b071852155d3e75",
+              "contentVariables" => json_encode([
+                "1" => $userOtp
+                ]),
+              "body" => "Test Message"
+            )
+        );
+        //print_r($message->sid);die;
+        */ 
+        $otpData = array('otp' => $userOtp,'otp_generated_datetime'=>CommonService::getDateTime());
+        $this->update($otpData, array("id" => $userId));
+    }
+
+    public function validateUserOtp($otp, $expiry = 30){
+        if (trim($otp) != "") {
+            $sql = new Sql($this->adapter);
+            $loginContainer = new Container('credo');
+            $container = new Container('alert');
+            $dbAdapter = $this->adapter;
+            $query = $sql->select()->from(array('u' => 'users'))
+                    ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
+                    ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
+                    ->where(array('u.id' => $loginContainer->otpId,'otp' => $otp,'u.status' => 'active'));
+            $queryStr = $sql->buildSqlString($query);
+            $sResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if ($sResult) {
+                $userMappedIdsArray = [];
+                $userMappingType = '';
+                if (!$this->select(array('TIMESTAMPDIFF(MINUTE, otp_generated_datetime, now()) <= ' . $expiry, 'id' => $loginContainer->otpId))) {
+                    $container->alertMsg = 'The sms code has expired. Please re-send the OTP';
+                    return 'login';
+                }
+
+                return $this->userEventLog($sResult);
+            }else{
+                $container->alertMsg = 'Please enter valid otp';
+                return 'validate-otp';
+            }
+
+        }
+    }
+
+    public function userEventLog($sResult){
+        $dbAdapter = $this->adapter;
+        $userLocationMapTable = new UserLocationMapTable($dbAdapter);
+        $sql = new Sql($this->adapter);
+        $gTable = new GlobalTable($dbAdapter);
+        $trackTable = new EventLogTable($dbAdapter);
+        $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
+        $loginContainer = new Container('credo');
+        $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
+        foreach ($userLocationMapResult as $ulMap) {
+            $userMappedIdsArray[] = $ulMap['location_id'];
+            $userMappingType = $ulMap['mapping_type'];
+        }
+        
+        $token = [];
+        $userTokenQuery = $sql->select()->from(['u_t_map' => 'user_token_map'])
+            ->columns(['token'])
+            ->where(['user_id' => $sResult->id])
+            ->order("token ASC");
+        $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
+        $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        foreach ($userTokenResult as $userToken) {
+            $token[] = $userToken['token'];
+        }
+        
+        $language = $gTable->getGlobalValue('language');
+        if (isset($sResult->language) && !empty($sResult->language)){
+            $loginContainer->language = $sResult->language;
+        } elseif (!empty($language)) {
+            $loginContainer->language = $language;
+        } else {
+            $loginContainer->language = 'en_US';
+        }
+        $loginContainer->userId = $sResult->id;
+        $loginContainer->login = $sResult->login;
+        $loginContainer->roleCode = $sResult->role_code;
+        $loginContainer->roleId = $sResult->role_id;
+        $loginContainer->token = $token;
+        $loginContainer->userMappedIds = $userMappedIdsArray;
+        $loginContainer->userMappingType = $userMappingType;
+        $loginContainer->userImage = $sResult->user_image;
+        $subject = '';
+        $eventType = 'login in';
+        $action = $sResult->login . ' logged in';
+        $resourceName = 'login in';
+        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
+        $userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
+
+        $redirect = $gTable->getGlobalValue('web_version');
+        $redirectRoute = 'dashboard';
+        if (isset($redirect) && !empty($redirect) && !is_array($redirect)) {
+            if (!empty($redirect) && $redirect == 'v6') {
+                $redirectRoute = 'dashboard-v6';
+            }
+            if (!empty($redirect) && $redirect == 'v3') {
+                $redirectRoute = 'dashboard';
+            }
+        }
+        return $redirectRoute;
     }
 }

@@ -718,4 +718,29 @@ class CommonService
         }
         return array_filter($data, fn($value) => $value !== null);
     }
+
+    public static function generateRandomNumbers(int $length = 6, string $seeds = 'numeric'): string
+    {
+        // Possible seeds
+        $seedings = [];
+        $seedings['alpha'] = 'abcdefghijklmnopqrstuvwxyz';
+        $seedings['numeric'] = '0123456789';
+        $seedings['alphanum'] = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $seedings['hexidec'] = '0123456789abcdef';
+
+        // Choose seed
+        if (isset($seedings[$seeds])) {
+            $seeds = $seedings[$seeds];
+        }
+
+        // Generate
+        $str = '';
+        $seedsCount = strlen($seeds);
+
+        for ($i = 0; $i < $length; $i++) {
+            $str .= $seeds[random_int(0, $seedsCount - 1)];
+        }
+
+        return $str;
+    }
 }

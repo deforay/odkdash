@@ -315,6 +315,16 @@ return array(
                     ),
                 ),
             ),
+            'validate-otp' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/login/validate-otp',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\LoginController',
+                        'action' => 'validate-otp',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => [

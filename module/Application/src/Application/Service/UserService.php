@@ -160,4 +160,9 @@ class UserService
             error_log($exc->getTraceAsString());
         }
     }
+
+    public function validateUserOtp($otp)
+    {
+        return $this->usersTable->validateUserOtp($otp);
+    }
 }
