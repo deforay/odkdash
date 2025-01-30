@@ -46,7 +46,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                   <div class=" col-lg-4">
                     <input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="form-control" id="date" readonly>
                   </div>
-                  <label for="auditRndNo" class="col-sm-2 control-label"><?= $this->translate('Audit Round No.'); ?></label>
+                  <label for="auditRndNo" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" id="auditRndNo">
                       <option value=''><?= $this->translate('All'); ?></option>
@@ -145,7 +145,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                   <button type="button" onclick="search();" class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>&nbsp;
                   <button type="button" onclick="exportSearchPDFData();" class="btn btn-space btn-success"><?= $this->translate('Export as PDF'); ?></button>
                   <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'view-bulk-downloads')) { ?>
-                    <a href="/spi-v3/view-bulk-downloads" class="btn btn-space btn-success"><?= $this->translate('View Bulk Downloads '); ?></a>
+                    <a href="/spi-v3/view-bulk-downloads" class="btn btn-space btn-success"><?= $this->translate('View Bulk Downloads'); ?></a>
                   <?php } ?>
                 </div>
               </form>
@@ -153,7 +153,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
             <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'duplicate')) { ?>
               <a id="duplicate" href="/spi-v3/duplicate" class="btn btn-danger btn-sm"><?= $this->translate('Duplicates'); ?> (0)</a>&nbsp;&nbsp;
             <?php } ?>
-            <a href="/spi-v3/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i><?= $this->translate(' Download Audits in Bulk '); ?></a>
+            <a href="/spi-v3/download-files" target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i><?= $this->translate(' Download Audits in Bulk'); ?></a>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
             <th><?= $this->translate('Facility Name'); ?></th>
             <th><?= $this->translate('Facility Province'); ?></th>
             <th><?= $this->translate('Facility District'); ?></th>
-            <th style="width:8%;"><?= $this->translate('Audit Round No.'); ?></th>
+            <th style="width:8%;"><?= $this->translate('Audit Round Number'); ?></th>
             <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
             <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
             <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>

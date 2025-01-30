@@ -108,7 +108,7 @@ $userMappingType = $sessionLogin->userMappingType;
 								<div class=" col-lg-4">
 									<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="datepicker form-control" id="dateRange" readonly>
 								</div>
-								<label for="auditRndNoFilter" class="col-sm-2 control-label"><?= $this->translate('Audit Round No.'); ?></label>
+								<label for="auditRndNoFilter" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="auditRndNoFilter">
 										<option value=''><?= $this->translate('All'); ?></option>
@@ -280,7 +280,7 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 					</div>
 
-					<?= $this->translate('Date : '); ?><input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
+					<?= $this->translate('Date') . " : "; ?><input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
 					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv6()"><?php echo $this->translate('OK'); ?></a>
 					<div id="dateRangePickerValue">
 						<div class="row chart-container">

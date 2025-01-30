@@ -58,19 +58,19 @@ $pdf->SetFont('times', '', 10);
 $pdf->AddPage();
 //$pdf->SetY(20,true,false);
 
-$partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $this->translate('Part D. Auditor\'s Summation Report for SPI-RT Audit') . '</p>';
+$partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $this->translate("Part D. Auditor's Summation Report for SPI-RT Audit") . '</p>';
 $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
 $partDtableBox1 .= '<tr><td>' . $this->translate('Facility Name:') . $formData['facilityname'] . '</td></tr><tr><td>' . $this->translate('Site Type:') . $formData['testingpointtype'];
 $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
 $partDtableBox1 .= "</td></tr>";
-$partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name: ') . $formData['staffaudited'] . "</td></tr>";
+$partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name:') . $formData['staffaudited'] . "</td></tr>";
 $partDtableBox1 .= '</table>';
 $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
 $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox2 .= '<tr><td>' . $this->translate('No. of Tester(s): ') . $formData['NumberofTester'] . '</td></tr><tr><td>' . $this->translate('Duration of Audit: ') . $formData['durationaudit'] . "</td></tr>";
+$partDtableBox2 .= '<tr><td>' . $this->translate('No. of Tester(s)') .': ' . $formData['NumberofTester'] . '</td></tr><tr><td>' . $this->translate('Duration of Audit') .': ' . $formData['durationaudit'] . "</td></tr>";
 $partDtableBox2 .= '</table>';
 
 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
@@ -96,9 +96,9 @@ if ($scorePer < 40) {
 }
 
 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox3 .= '<tr><td>' . $this->translate('Total points scored (exclude N/A) = ') . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= '<tr><td>' . $this->translate('Total score expected = ') . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= '<tr><td>% ' . $this->translate('Score = ') . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
+$partDtableBox3 .= '<tr><td>' . $this->translate('Total points scored (exclude N/A) =') . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
+$partDtableBox3 .= '<tr><td>' . $this->translate('Total score expected =') . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+$partDtableBox3 .= '<tr><td>% ' . $this->translate('Score =') . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3 .= '</table>';
 
 $pdf->writeHTMLCell(70, 26, 125, '', $partDtableBox3, 1, 1, 0, true, 'L', true);
@@ -108,7 +108,7 @@ $partDTable .= '<tr>';
 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>' . $this->translate('Section No.') . '</td>';
 $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>' . $this->translate('Deficiency/Issue observed') . '</td>';
 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">' . $this->translate('Correction Actions') . '</td>';
-$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">' . $this->translate("Auditor\'s ") . '<br/>' . $this->translate('Comments') . '</td>';
+$partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">' . $this->translate("Auditor's") . '<br/>' . $this->translate('Comments') . '</td>';
 $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:26%">' . $this->translate('Recommendations') . '</td>';
 $partDTable .= '</tr>';
 $partDTable .= '<tr>';
@@ -144,7 +144,7 @@ $pdf->writeHTML($partDTable, true, 0, true, 0);
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
 $signBox1 .= '<tr><td>' . $this->translate('Staff Audited Signature:') . '</td></tr>';
-$signBox1 .= '<tr><td>' . $this->translate('Person in Charge Name and Signature : ') . $formData['personincharge'] . "</td></tr>";
+$signBox1 .= '<tr><td>' . $this->translate('Person in Charge Name and Signature :') . $formData['personincharge'] . "</td></tr>";
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 

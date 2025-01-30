@@ -52,7 +52,7 @@
                   <div class=" col-lg-4">
                     <input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?>" readonly>
                   </div>
-                  <label for="auditRound" class="col-sm-2 control-label"><?= $this->translate('Audit Round No.'); ?></label>
+                  <label for="auditRound" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
                   <div class=" col-lg-4">
                     <input type="text" placeholder="<?= $this->translate('Audit Round No'); ?>" name="auditRound" class="form-control" value="<?php echo $formData['auditroundno']; ?>">
                     <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
@@ -163,7 +163,7 @@
                 <div class="form-group col-lg-12">
                   <h4><b><?= $this->translate('PART B. SPI-RRT Checklist'); ?></b></h4>
                   <div>
-                    <?= $this->translate('For each of the sections listed below, please check '); ?>
+                    <?= $this->translate('For each of the sections listed below, please check'); ?>
                     <b><?= $this->translate('Yes, Partial or No'); ?></b>
                     <?= $this->translate(', where applicable. Indicate "'); ?>
                     <b><?= $this->translate('Yes'); ?></b>
@@ -373,7 +373,7 @@
 
                       </th>
                       <th style="width:93%">
-                        <a href="javascript:void(0);" onclick="$('#physical').slideToggle('slow');"><?= $this->translate('2.0 PHYSICAL FACILITY '); ?></a>
+                        <a href="javascript:void(0);" onclick="$('#physical').slideToggle('slow');"><?= $this->translate('2.0 PHYSICAL FACILITY'); ?></a>
                       </th>
                       <th style="text-align:center;width:5%">5</th>
                     </tr>
@@ -464,7 +464,7 @@
                             <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_5_SUFFICIENT_SECURE_STORAGE']); ?></td>
                           </tr>
                           <tr>
-                            <td colspan="6" style="font-weight:bold;"><?= $this->translate('2.0 PHYSICAL FACILITY SCORE '); ?></td>
+                            <td colspan="6" style="font-weight:bold;"><?= $this->translate('2.0 PHYSICAL FACILITY SCORE'); ?></td>
                             <td style="text-align:center;"><?php echo $formData['PHYSICAL_SCORE']; ?></td>
                           </tr>
                         </table>
@@ -1351,7 +1351,7 @@
                             <td style="text-align:center;"><?php echo $formData['EQA_Q_7_8_TESTERS_RETRAINED_IN_VISITS']; ?></td>
                           </tr>
                           <tr>
-                            <th colspan="6"><?= $this->translate('7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING) SCORE '); ?></th>
+                            <th colspan="6"><?= $this->translate('7.0 EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING) SCORE'); ?></th>
                             <td style="text-align:center;"><?php echo $formData['EQA_SCORE']; ?></td>
                           </tr>
                         </table>
@@ -1685,7 +1685,7 @@
                               <td style="text-align:center;"><?php echo $formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']; ?></td>
                             </tr>
                             <tr>
-                              <th colspan="7">S.0 <?= $this->translate('HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL '); ?></th>
+                              <th colspan="7">S.0 <?= $this->translate('HIV-1 RECENT INFECTION SURVEILLANCE STUDY PROTOCOL'); ?></th>
                             </tr>
                           </table>
                         </td>
@@ -1850,11 +1850,11 @@
 
 
                   <div class="form-group col-lg-6">
-                    <label><?= $this->translate('Total score expected '); ?></label>
+                    <label><?= $this->translate('Total score expected'); ?></label>
                     <p class="form-control"><?php echo $formData['MAX_AUDIT_SCORE']; ?></p>
                   </div>
                   <div class="form-group col-lg-3">
-                    <label>%<?= $this->translate(' Score '); ?></label>
+                    <label>%<?= $this->translate('Score'); ?></label>
                     <p class="form-control"><?php echo round($formData['AUDIT_SCORE_PERCENTAGE'], 2); ?></p>
                   </div>
                   <div class="form-group col-lg-3">

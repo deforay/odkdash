@@ -31,7 +31,7 @@ $userMappingType = $loginContainer->userMappingType;
 									<div class=" col-lg-4">
 										<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="form-control" id="dateRange" readonly>
 									</div>
-									<label for="auditRndNo" class="col-sm-2 control-label"><?= $this->translate('Audit Round No.'); ?></label>
+									<label for="auditRndNo" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
 									<div class=" col-lg-4">
 										<select class="form-control" id="auditRndNo">
 											<option value=''><?= $this->translate('All'); ?></option>
@@ -74,7 +74,7 @@ $userMappingType = $loginContainer->userMappingType;
 									<label for="country" class="col-sm-2 control-label country"><?= $this->translate('Country'); ?></label>
 									<div class=" col-lg-4 country">
 										<select class="form-control" multiple="multiple" name="country" id="country" title="Please select the country">
-											<option value=""><?= $this->translate('All'); ?></option>  
+											<option value=""><?= $this->translate('All'); ?></option>
 											<?php foreach($locationResult['countries'] as $row){ ?>
 												<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
 											<?php } ?>

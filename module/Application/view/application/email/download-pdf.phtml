@@ -69,7 +69,7 @@ if (!empty($formData)) {
 
   $testingTab .= '<tr>';
   $testingTab .= '<td><b>' . $this->translate('Date of Audit') . '</b>(dd/mm/yyyy): ' . $this->humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
-  $testingTab .= '<td><b>' . $this->translate('Audit Round No:') . '</b> ' . $formData['auditroundno'] . '</td>';
+  $testingTab .= '<td><b>' . $this->translate('Audit Round Number') . ':</b> ' . $formData['auditroundno'] . '</td>';
   $testingTab .= '</tr>';
 
   $testingTab .= '<tr>';
@@ -78,8 +78,8 @@ if (!empty($formData)) {
   $testingTab .= '</tr>';
 
   $testingTab .= '<tr>';
-  $testingTab .= '<td><b>' . $this->translate('Testing Point Name:') . '</b> ' . $formData['testingpointname'] . '</td>';
-  $testingTab .= '<td><b>' . $this->translate('Type of testing point : ') . '</b>' . $formData['testingpointtype'];
+  $testingTab .= '<td><b>' . $this->translate('Testing Point Name') . ' : </b> ' . $formData['testingpointname'] . '</td>';
+  $testingTab .= '<td><b>' . $this->translate('Type of testing point') . ' : </b>' . $formData['testingpointtype'];
   $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
   $testingTab .= '</tr>';
 
@@ -89,21 +89,21 @@ if (!empty($formData)) {
 
   $testingTab .= '<tr>';
   $testingTab .= '<td><b>' . $this->translate('Level') . '</b> <br/>' . $formData['level'];
-  $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? $this->translate(" Other - ") . $formData['level_other'] : "") . ':' . $formData['level_name'];
+  $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? $this->translate("Other") . " - " . $formData['level_other'] : "") . ':' . $formData['level_name'];
   $testingTab .= '</td>';
   $testingTab .= '<td><b>' . $this->translate('Affiliation') . '</b><br/>' . $formData['affiliation'];
-  $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ?  $this->translate("Other : ") . $formData['affiliation_other'] : "");
+  $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ?  $this->translate("Other"). " : " . $formData['affiliation_other'] : "");
   $testingTab .= '</td>';
   $testingTab .= '</tr>';
 
   $testingTab .= '<tr>';
-  $testingTab .= '<td><b>' . $this->translate('Number of Testers: ') . '</b>' . $formData['NumberofTester'] . '</td>';
-  $testingTab .= '<td><b>' . $this->translate('Average tested per month: ') . '</b>' . $formData['avgMonthTesting'] . '</td>';
+  $testingTab .= '<td><b>' . $this->translate('Number of Testers:') . '</b>' . $formData['NumberofTester'] . '</td>';
+  $testingTab .= '<td><b>' . $this->translate('Average tested per month') . ' : </b>' . $formData['avgMonthTesting'] . '</td>';
   $testingTab .= '</tr>';
 
   $testingTab .= '<tr>';
-  $testingTab .= '<td><b>' . $this->translate('Name of the Auditor 1: ') . '</b>' . $formData['name_auditor_lead'] . '</td>';
-  $testingTab .= '<td><b>' . $this->translate('Name of the Auditor 2: ') . '</b>' . $formData['name_auditor2'] . '</td>';
+  $testingTab .= '<td><b>' . $this->translate('Name of the Auditor 1') . ': </b>' . $formData['name_auditor_lead'] . '</td>';
+  $testingTab .= '<td><b>' . $this->translate('Name of the Auditor 2') . ': </b>' . $formData['name_auditor2'] . '</td>';
   $testingTab .= '</tr>';
 
   $testingTab .= '</table>';
@@ -115,8 +115,7 @@ if (!empty($formData)) {
   $pdf->writeHTML($partBHeading, true, 0, true, 0);
 
 
-  $partBCont = '<br/><div>' . $this->translate('For each of the sections listed below, please check ') . '<b>' . $this->translate('Yes, Partial or No') . '</b>, ' . $this->translate('where applicable. Indicate');
-  $partBCont .= '<b>' . $this->translate('Yes') . '</b>' . $this->translate(' only when all elements are satisfactorily present. Provide comments for each ') . '<b>' . $this->translate('Partial') . '</b>' . $this->translate(' or ') . '<b>' . $this->translate('No') . '</b>' . $this->translate(' response. State N/A in the comments section if "not applicable" where appropriate ') . '(*).</div>';
+  $partBCont = '<br/><div>' . $this->translate('For each of the sections listed below, please check : Yes, Partial or No where applicable. Indicate only when all elements are satisfactorily present. Provide comments for each Partial or No response. State N/A in the comments section if "not applicable" where appropriate') . '(*).</div>';
 
   $pdf->writeHTML($partBCont, true, 0, true, 0);
 
@@ -131,7 +130,7 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $this->translate('1.0 PERSONNEL TRAINING AND CERTIFICATION ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $this->translate('1.0 PERSONNEL TRAINING AND CERTIFICATION') . '</td>';
   $partBTable .= '<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">10</td>';
   $partBTable .= '</tr>';
 
@@ -328,13 +327,13 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;">' . $this->translate('1.0 PERSONNEL TRAINING AND CERTIFICATION SCORE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;">' . $this->translate('1.0 PERSONNEL TRAINING AND CERTIFICATION SCORE') . '</td>';
   $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
   $partBTable .= '</tr>';
 
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $this->translate('2.0 PHYSICAL FACILITY ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">' . $this->translate('2.0 PHYSICAL FACILITY') . '</td>';
   $partBTable .= '<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">5</td>';
   $partBTable .= '</tr>';
 
@@ -436,13 +435,13 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;">2.0 ' . $this->translate('PHYSICAL FACILITY SCORE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;">2.0 ' . $this->translate('PHYSICAL FACILITY SCORE') . '</td>';
   $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
   $partBTable .= '</tr>';
 
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">3.0 ' . $this->translate('SAFETY ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">3.0 ' . $this->translate('SAFETY') . '</td>';
   $partBTable .= '<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">11</td>';
   $partBTable .= '</tr>';
 
@@ -659,13 +658,13 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;">3.0 ' . $this->translate('SAFETY SCORE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;">3.0 ' . $this->translate('SAFETY SCORE') . '</td>';
   $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
   $partBTable .= '</tr>';
 
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">4.0 ' . $this->translate('PRE-TESTING PHASE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">4.0 ' . $this->translate('PRE-TESTING PHASE') . '</td>';
   $partBTable .= '<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">12</td>';
   $partBTable .= '</tr>';
 
@@ -898,13 +897,13 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;">4.0 ' . $this->translate('PRE-TESTING PHASE SCORE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;">4.0 ' . $this->translate('PRE-TESTING PHASE SCORE') . '</td>';
   $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
   $partBTable .= '</tr>';
 
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">5.0 ' . $this->translate('TESTING PHASE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">5.0 ' . $this->translate('TESTING PHASE') . '</td>';
   $partBTable .= '<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">9</td>';
   $partBTable .= '</tr>';
 
@@ -1080,7 +1079,7 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;">5.0 ' . $this->translate('TESTING PHASE SCORE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;">5.0 ' . $this->translate('TESTING PHASE SCORE') . '</td>';
   $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
   $partBTable .= '</tr>';
 
@@ -1268,7 +1267,7 @@ if (!empty($formData)) {
 
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">7.0 ' . $this->translate('EXTERNAL QUALITY ASSESSMENT (PT, SUPERVISION AND RETESTING) ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;background-color:#dddbdb;">7.0 ' . $this->translate('EXTERNAL QUALITY ASSESSMENT (PT, SUPERVISION AND RETESTING)') . '</td>';
   $partBTable .= '<td style="text-align:center;font-weight:bold;background-color:#dddbdb;">8/14</td>';
   $partBTable .= '</tr>';
 
@@ -1425,12 +1424,12 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="7" style="text-align:center;font-weight:bold;background-color:#dddbdb;">' . $this->translate('If the country external quality assessment program includes retesting of serum or DBS, proceed with questions ') . '7.9 &#8211; 7.14. <br/>' . $this->translate('Otherwise, STOP here.') . '</td>';
+  $partBTable .= '<td colspan="7" style="text-align:center;font-weight:bold;background-color:#dddbdb;">' . $this->translate('If the country external quality assessment program includes retesting of serum or DBS, proceed with questions 7.9 - 7.14 <br/> Otherwise, STOP here.') . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
   $partBTable .= '<td>7.9*</td>';
-  $partBTable .= '<td>' . $this->translate('Does the site collect samples for retesting according to country guidelines (e.g., collection of every ') . '20<sup>th</sup>' . $this->translate('client serum or DBS sample)?') . '</td>';
+  $partBTable .= '<td>' . $this->translate('Does the site collect samples for retesting according to country guidelines (e.g., collection of every 20th client serum or DBS sample)?') . '</td>';
   $partBTable .= '<td style="text-align:center;">';
   $partBTable .= (isset($formData['EQA_Q_7_9']) && $formData['EQA_Q_7_9'] == 1) ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
@@ -1543,7 +1542,7 @@ if (!empty($formData)) {
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
-  $partBTable .= '<td colspan="6" style="font-weight:bold;">7.0 ' . $this->translate('EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING) SCORE ') . '</td>';
+  $partBTable .= '<td colspan="6" style="font-weight:bold;">7.0 ' . $this->translate('EXTERNAL QUALITY AUDIT (PT, SUPERVISION AND RETESTING) SCORE') . '</td>';
   $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
   $partBTable .= '</tr>';
 
@@ -1604,19 +1603,19 @@ if (!empty($formData)) {
 
   $pdf->writeHTML($partCTable, true, 0, true, 0);
 
-  $partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $this->translate('Part D. Auditor\'s Summation Report for SPI-RT Audit') . '</p>';
+  $partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $this->translate("Part D. Auditor's Summation Report for SPI-RT Audit") . '</p>';
   $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
   $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
   $partDtableBox1 .= '<tr><td>' . $this->translate('Facility Name:') . $formData['facilityname'] . '</td></tr><tr><td>' . $this->translate('Site Type:') . $formData['testingpointtype'];
   $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
   $partDtableBox1 .= "</td></tr>";
-  $partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name: ') . $formData['staffaudited'] . '</td></tr>';
+  $partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name:') . $formData['staffaudited'] . '</td></tr>';
   $partDtableBox1 .= '</table>';
   $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
   $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-  $partDtableBox2 .= '<tr><td>' . $this->translate('No. of Tester(s): ') . $formData['NumberofTester'] . '</td></tr><tr><td>' . $this->translate('Duration of Audit: ') . $formData['durationaudit'] . "</td></tr>";
+  $partDtableBox2 .= '<tr><td>' . $this->translate('No. of Tester(s)') .': ' . $formData['NumberofTester'] . '</td></tr><tr><td>' . $this->translate('Duration of Audit') .': '. $formData['durationaudit'] . "</td></tr>";
   $partDtableBox2 .= '</table>';
 
   $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
@@ -1642,8 +1641,8 @@ if (!empty($formData)) {
   }
 
   $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-  $partDtableBox3 .= '<tr><td>' . $this->translate('Total points scored (exclude N/A) = ') . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-  $partDtableBox3 .= '<tr><td>' . $this->translate('Total score expected = ') . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+  $partDtableBox3 .= '<tr><td>' . $this->translate('Total points scored (exclude N/A) =') . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
+  $partDtableBox3 .= '<tr><td>' . $this->translate('Total score expected =') . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
   $partDtableBox3 .= '<tr><td>% Score = ' . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
   $partDtableBox3 .= '</table>';
 
@@ -1654,7 +1653,7 @@ if (!empty($formData)) {
   $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:9%"><br/><br/>' . $this->translate('Section No.') . '</td>';
   $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:22%"><br/><br/>' . $this->translate('Deficiency/Issue observed') . '</td>';
   $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:20%">' . $this->translate('Correction Actions') . '</td>';
-  $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">' . $this->translate('Auditor\'s ') . '<br/>' . $this->translate('Comments') . '</td>';
+  $partDTable .= '<td rowspan="2" style="font-weight:bold;text-align:center;width:23%">' . $this->translate("Auditor's") . '<br/>' . $this->translate('Comments') . '</td>';
   $partDTable .= '<td colspan="2" style="font-weight:bold;text-align:center;width:26%">' . $this->translate('Recommendations') . '</td>';
   $partDTable .= '</tr>';
   $partDTable .= '<tr>';
@@ -1690,7 +1689,7 @@ if (!empty($formData)) {
 
   $signBox1 = '<table cellspacing="0" cellpadding="4">';
   $signBox1 .= '<tr><td>' . $this->translate('Staff Audited Signature:') . '</td></tr>';
-  $signBox1 .= '<tr><td>' . $this->translate('Person in Charge Name and Signature : ') . $formData['personincharge'] . "</td></tr>";
+  $signBox1 .= '<tr><td>' . $this->translate('Person in Charge Name and Signature :') . $formData['personincharge'] . "</td></tr>";
   $signBox1 .= '</table>';
   $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 

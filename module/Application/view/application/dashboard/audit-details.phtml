@@ -15,17 +15,17 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
         <div class="page-head">
           <h2><?= $this->translate('SPI-RT 3.0 Audit Details'); ?> (<?php echo $assesmentOfAuditDate; ?>)</h2>
         </div>
-        
+
         <div class="main-content">
-            
+
             <div class="widget widget-fullwidth widget-small" style="padding:5px;">
 
                 <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
                   <thead>
                     <tr>
-                      
+
                       <th><?= $this->translate('Facility Name'); ?></th>
-                      <th style="width:8%;"><?= $this->translate('Audit Round No.'); ?></th>
+                      <th style="width:8%;"><?= $this->translate('Audit Round Number'); ?></th>
                       <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
                       <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
                       <th style="width:6%;"><?= $this->translate('Testing Point Type'); ?></th>
@@ -47,10 +47,10 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
 
 
             </div>
-      
+
         <br>
-       
-            
+
+
         </div>
 </div>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/datatables.min.js'); ?>"></script>
@@ -59,7 +59,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
 <script type="text/javascript">
     table = null;
   $(document).ready(function () {
-   
+
    table = $('#example').DataTable({
         "bProcessing": true,
         "bServerSide": true,
@@ -84,7 +84,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
             });
         }
     } );
-      
+
   });
   function downloadPdf(formId){
    window.open('<?php echo $this->url('spi-v3-form',array('action' => 'download-pdf'))?>'+formId);

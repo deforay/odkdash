@@ -12,16 +12,16 @@
 						<div class="panel-body">
 							<form role="form" name="addDistrictInformation" id="addDistrictInformation" method="post" action="<?php echo $this->url('district', array('action' => 'add')); ?>" autocomplete="off">
 								<div class="form-group col-lg-6">
-									<label><?= $this->translate('District Name '); ?><span class="mandatory">*</span> </label>
+									<label><?= $this->translate('District Name'); ?><span class="mandatory">*</span> </label>
 									<input type="text" class="form-control isRequired" id="districtName" name="districtName" placeholder="<?= $this->translate('District Name'); ?>" title="<?= $this->translate('Please enter district name'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,null,'The district name that you entered already exists.Enter another name')" />
 								</div>
 								<div class="form-group col-lg-6">
-									<label for="districtCode"><?= $this->translate('District Code '); ?><span class="mandatory">*</span></label>
+									<label for="districtCode"><?= $this->translate('District Code'); ?><span class="mandatory">*</span></label>
 									<input type="text" class="form-control isRequired" id="districtCode" name="districtCode" placeholder="<?= $this->translate('District code'); ?>" title="<?= $this->translate('Please enter district code'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,null,'The district code that you entered already exists.Enter another code')" />
 								</div>
-								
+
 								<div class="form-group col-lg-6">
-									<label for="province"><?= $this->translate('Province '); ?><span class="mandatory">*</span></label>
+									<label for="province"><?= $this->translate('Province'); ?><span class="mandatory">*</span></label>
 									<select class="form-control isRequired" name="province" id="province" title="<?= $this->translate('Please select province'); ?>">
 										<option value="">--Select--</option>
 										<?php
@@ -35,7 +35,7 @@
 								</div>
 
 								<div class="form-group col-lg-6">
-									<label for="status"><?= $this->translate('Status '); ?><span class="mandatory">*</span></label>
+									<label for="status"><?= $this->translate('Status'); ?><span class="mandatory">*</span></label>
 									<select class="form-control isRequired" name="status" id="status">
 										<option value="active"><?= $this->translate('Active'); ?></option>
 										<option value="inactive"><?= $this->translate('Inactive'); ?></option>
@@ -46,7 +46,7 @@
 									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
 									<a href="<?php echo $this->url('district', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
 								</div>
-								
+
 							</form>
 						</div>
 					</div>
@@ -93,5 +93,5 @@
 				}
 			});
 	}
-	
+
 </script>

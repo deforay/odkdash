@@ -76,7 +76,7 @@ if ($argument['testPoint'] == '') {
     $argument['testPoint'] = "All";
 }
 $filter = '';
-$filter .= "<tr><td><b>" . $this->translate("Date Range") . " </b>: " . $argument['dateRange'] . "</td><td><b>" . $this->translate("Audit Round No.") . " </b>: " . $argument['auditRndNo'] . "</td><td><b>" . $this->translate("Level") . " </b>: " . $argument['level'] . "</td></tr>";
+$filter .= "<tr><td><b>" . $this->translate("Date Range") . " </b>: " . $argument['dateRange'] . "</td><td><b>" . $this->translate("Audit Round Number") . " </b>: " . $argument['auditRndNo'] . "</td><td><b>" . $this->translate("Level") . " </b>: " . $argument['level'] . "</td></tr>";
 //$filter .= "<tr><td><b>" . $this->translate("Affiliation") . " </b>: " . $argument['affiliation'] . "</td><td><b>" . $this->translate("Province") . " </b>: " . $argument['province'] . "</td><td><b>" . $this->translate("District") . " </b>: " . $argument['district'] . "</td></tr>";
 $filter .= "<tr><td><b>" . $this->translate("Score Level") . " </b>: " . $argument['scoreLevel'] . "</td><td><b>" . $this->translate("Type Of Testing Point") . " </b>: " . $argument['testPoint'] . "</td></tr>";
 $partA = '';
@@ -120,7 +120,7 @@ $pdf->writeHTML($pdfContent, true, 0, true, 0);
 $testingResult = '<table border="1" BORDERCOLOR=RED cellspacing="0" cellpadding="5" >';
 $testingResult .= '<tr style="background-color:#3598DC;color:#fff;text-align:center">';
 $testingResult .= '<th><b>' . $this->translate("Facility Name") . '</b></th>';
-$testingResult .= '<th><b>' . $this->translate("Audit Round No.") . '</b></th>';
+$testingResult .= '<th><b>' . $this->translate("Audit Round Number") . '</b></th>';
 $testingResult .= '<th><b>' . $this->translate("Audit Date") . '</b></th>';
 $testingResult .= '<th><b>' . $this->translate("Testing Point Name") . '</b></th>';
 $testingResult .= '<th><b>' . $this->translate("Testing Point Type") . '</b></th>';

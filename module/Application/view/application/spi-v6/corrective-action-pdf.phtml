@@ -350,16 +350,16 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
           $rowStyle = ($type == 'IMMEDIATE') ? 'color:red;' : '';
           $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
           $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . ($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
           $partDTable .= '<td style="text-align:center;">';
           $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
           $partDTable .= '</td>';
           $partDTable .= '<td style="text-align:center;">';
           $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
           $partDTable .= '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . $this->translate($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . ($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . ($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . ($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
           $partDTable .= '</tr>';
         }
       }
