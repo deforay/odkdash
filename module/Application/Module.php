@@ -677,13 +677,6 @@ class Module
                         return new FacilityService($diContainer);
                     }
                 },
-                'CommonService' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        return new CommonService($diContainer);
-                    }
-                },
                 'RoleService' => new class
                 {
                     public function __invoke($diContainer)
