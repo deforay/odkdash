@@ -2142,12 +2142,12 @@ class SpiFormVer6Table extends AbstractTableGateway
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
-        $output = array(
+        $output = [
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
-            "aaData" => array(),
-        );
+            "aaData" => [],
+        ];
         $role = $loginContainer->roleCode;
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit');
 
@@ -2198,14 +2198,13 @@ class SpiFormVer6Table extends AbstractTableGateway
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $dbAdapter = $this->adapter;
-        $trackTable = new EventLogTable($dbAdapter);
+        $trackTable = new EventLogTable($this->adapter);
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
             ->where(array('spiv6.id' => $id));
         $sQueryStr = $sql->buildSqlString($sQuery);
         /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
-        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $sResult = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
         if ($sResult) {
             $searchFacility = false;
             if (trim($sResult->facility) != '' || trim($sResult->facilityid) != '' || trim($sResult->facilityname) != '') {
@@ -2213,18 +2212,18 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                     ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
                 if (isset($sResult->facility) && $sResult->facility > 0) {
-                    $fQuery = $fQuery->where(array("spirt3.id" => $sResult->facility));
+                    $fQuery = $fQuery->where(["spirt3.id" => $sResult->facility]);
                     $searchFacility = true;
                 } elseif (isset($sResult->facilityid) && $sResult->facilityid != '') {
-                    $fQuery = $fQuery->where(array("spirt3.facility_id" => $sResult->facilityid));
+                    $fQuery = $fQuery->where(["spirt3.facility_id" => $sResult->facilityid]);
                     $searchFacility = true;
                 } elseif (isset($sResult->facilityname) && $sResult->facilityname != '') {
-                    $fQuery = $fQuery->where(array("spirt3.facility_name" => $sResult->facilityname));
+                    $fQuery = $fQuery->where(["spirt3.facility_name" => $sResult->facilityname]);
                     $searchFacility = true;
                 }
                 if ($searchFacility) {
                     $fQueryStr = $sql->buildSqlString($fQuery);
-                    $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                    $sResult['facilityInfo'] = $this->adapter->query($fQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
                 }
             }
             //if ($pdfDowload == 'yes') {

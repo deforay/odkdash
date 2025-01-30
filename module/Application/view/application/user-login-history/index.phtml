@@ -85,10 +85,12 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-p
         oTable = $('#roleDataTable').DataTable({
             "bScrollCollapse": true,
             "bRetrieve": true,
-            "aaSorting": [[0, "desc"]],
+            "aaSorting": [
+                [0, "desc"]
+            ],
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "<?php echo $this->url('user-login-history',  array('action' => 'index')); ?>",
+            "sAjaxSource": "<?php echo $this->url('user-login-history', ['action' => 'index']); ?>",
             "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "dateRange",

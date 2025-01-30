@@ -6,6 +6,7 @@ use Application\Model\GeographicalDivisionsTable;
 use Laminas\Session\Container;
 use Application\Service\CommonService;
 use Laminas\Db\Sql\Sql;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class FacilityService
@@ -490,13 +491,13 @@ class FacilityService
                     if (!isset($value)) {
                         $value = "";
                     }
-                    $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
+                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
                     $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCellByColumnAndRow($colNo, $rowNo + 6)->getColumn();
+                    $cellName = $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getColumn();
                     $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
                     $sheet->getDefaultRowDimension()->setRowHeight(18);
                     $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyleByColumnAndRow($colNo, $rowNo + 6)->getAlignment()->setWrapText(true);
+                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getAlignment()->setWrapText(true);
                     $colNo++;
                 }
             }
@@ -632,10 +633,10 @@ class FacilityService
                                     $facilityNotAdded[] = $rowData;
                                 }
                             }
-                        } catch (Throwable $e) {
+                        } catch (\Throwable $e) {
                             $facilityNotAdded[] = $rowData;
-                            error_log($db->getLastError());
-                            error_log($db->getLastQuery());
+                            error_log($e->getMessage());
+                            error_log($e->getTraceAsString());
                         }
                     }
 

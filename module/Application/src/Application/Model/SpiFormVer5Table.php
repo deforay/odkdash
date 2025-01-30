@@ -1182,6 +1182,7 @@ class SpiFormVer5Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
             ->where(array('spiv5.id' => $id));
         $sQueryStr = $sql->buildSqlString($sQuery);
+        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
         $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($sResult) {
             if (trim($sResult->facility) != '' || trim($sResult->facilityid) != '' || trim($sResult->facilityname) != '') {
@@ -2149,6 +2150,7 @@ class SpiFormVer5Table extends AbstractTableGateway
                     ->columns(array('id'))
                     ->where("spirt3.facility_name='" . $params['testingFacilityName'] . "'");
                 $fQueryStr = $sql->buildSqlString($fQuery);
+                /** @var \Laminas\Db\Adapter\Driver\ResultInterface $fResult */
                 $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
                 if ($fResult) {
                     $id = $fResult->id;
@@ -3459,10 +3461,11 @@ class SpiFormVer5Table extends AbstractTableGateway
                 $dbAdapter = $this->adapter;
                 $insert->values($par);
                 $selectString = $sql->buildSqlString($insert);
+                /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
                 $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
                 if ($results->getGeneratedValue() > 0) {
                     $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->adapter);
-                    $spiv3Temp->delete(array('id' => $newResult['id']));
+                    $spiv3Temp->delete(['id' => $newResult['id']]);
                 }
             }
         }
@@ -3471,11 +3474,11 @@ class SpiFormVer5Table extends AbstractTableGateway
     public function updateSpiv5FacilityInfo($id, $params)
     {
         if ($id > 0) {
-            $data = array(
+            $data = [
                 'facilityid' => $params['facilityId'],
                 'facilityname' => $params['facilityName']
-            );
-            $this->update($data, array('facility' => $id));
+            ];
+            $this->update($data, ['facility' => $id]);
         }
         return $id;
     }

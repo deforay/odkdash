@@ -475,7 +475,7 @@ class UsersTable extends AbstractTableGateway
         $role = $loginContainer->roleCode;
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\UsersController', 'edit');
         $updatePassword = (bool) $acl->isAllowed($role, 'Application\Controller\UsersController', 'reset-password');
-        
+
         foreach ($rResult as $aRow) {
             $row = [];
 
