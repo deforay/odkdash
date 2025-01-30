@@ -191,7 +191,13 @@ class Module
         $loginContainer = new Container('credo');
         $serviceManager = $event->getApplication()->getServiceManager();
         $translator = $serviceManager->get('translator');
-        $translator->setLocale($loginContainer->language)
+        if (empty($loginContainer->language)) {
+            $globalTable = $serviceManager->get('GlobalTable');
+            $language = $globalTable->getGlobalValue('language');
+        } else {
+            $language = $loginContainer->language;
+        }
+        $translator->setLocale($language)
             ->setFallbackLocale('en_US');
     }
 

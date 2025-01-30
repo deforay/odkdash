@@ -77,16 +77,16 @@ class UsersTable extends AbstractTableGateway
             $userMappedIdsArray = [];
             $userMappingType = '';
             $sendLoginOtp = $gTable->getGlobalValue('login_otp');
-            if($sendLoginOtp=="yes"){
-                if(trim($sResult->contact_no)!=""){
-                    $this->updateUserOtp($sResult->id,trim($sResult->contact_no));
+            if ($sendLoginOtp == "yes") {
+                if (trim($sResult->contact_no) != "") {
+                    $this->updateUserOtp($sResult->id, trim($sResult->contact_no));
                     $loginContainer->otpId = $sResult->id;
                     return 'validate-otp';
-                }else{
+                } else {
                     $container->alertMsg = 'Please contact your admin,Unable to sent OTP your number';
                     return 'login';
                 }
-            }else{
+            } else {
                 return $this->userEventLog($sResult);
             }
         } else {
@@ -136,7 +136,7 @@ class UsersTable extends AbstractTableGateway
                 $userRoleMap->insert(array('user_id' => $lastInsertId, 'role_id' => $params['roleId']));
 
                 //Add User-Location
-                if(!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
+                if (!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
                     $locationKey = $params['mappingType'];
                     if (!empty($params[$locationKey])) {
                         $data = array_map(function ($location) use ($lastInsertId, $params) {
@@ -233,7 +233,7 @@ class UsersTable extends AbstractTableGateway
 
                 //Update User-Location
                 $userLocationMap->delete(array('user_id' => $userId));
-                if(!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
+                if (!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
                     $locationKey = $params['mappingType'];
                     if (!empty($params[$locationKey])) {
                         $data = array_map(function ($location) use ($userId, $params) {
@@ -453,7 +453,7 @@ class UsersTable extends AbstractTableGateway
                 $resetPasswordStr = ' <a href="javascript:void(0);" onclick="showModal(\'/users/reset-password/' . base64_encode($aRow['id']) . '\',\'800\',\'450\');" class="btn btn-warning btn-xs" title="Reset Password">Reset Password</a>';
                 $actionStr .= $resetPasswordStr;
             }
-            if($update || $updatePassword){
+            if ($update || $updatePassword) {
                 $row[] = $actionStr;
             }
             $output['aaData'][] = $row;
@@ -582,7 +582,7 @@ class UsersTable extends AbstractTableGateway
         }
         return $passwordValidation;
     }
-    
+
     public function resetPassword($params)
     {
         $userId = base64_decode($params->userId);
@@ -591,43 +591,31 @@ class UsersTable extends AbstractTableGateway
         return $this->update($data, array('id' => $userId));
     }
 
-    public function updateUserOtp($userId,$mobileNo){
+    public function updateUserOtp($userId, $mobileNo)
+    {
         $dbAdapter = $this->adapter;
         $userOtp = CommonService::generateRandomNumbers();
         $gTable = new GlobalTable($dbAdapter);
-        $twilio = new Client($sid, $token);
         $sid = $gTable->getGlobalValue('whatsapp_sid');
         $token = $gTable->getGlobalValue('whatsapp_token');
-        //$sid    = "AC537f1200cf12718a79f2799d3c1a8747";
-        //$token  = "e6fa192349112adb4890660523696b49";
-        /*
-        $message = $twilio->messages
-          ->create("whatsapp:$mobileNo", // to
-            array(
-              "from" => "whatsapp:+14155238886",
-              "contentSid" => "HX229f5a04fd0510ce1b071852155d3e75",
-              "contentVariables" => json_encode([
-                "1" => $userOtp
-                ]),
-              "body" => "Test Message"
-            )
-        );
-        //print_r($message->sid);die;
-        */ 
-        $otpData = array('otp' => $userOtp,'otp_generated_datetime'=>CommonService::getDateTime());
+
+        //$twilio = new Client($sid, $token);
+
+        $otpData = array('otp' => $userOtp, 'otp_generated_datetime' => CommonService::getDateTime());
         $this->update($otpData, array("id" => $userId));
     }
 
-    public function validateUserOtp($otp, $expiry = 30){
+    public function validateUserOtp($otp, $expiry = 30)
+    {
         if (trim($otp) != "") {
             $sql = new Sql($this->adapter);
             $loginContainer = new Container('credo');
             $container = new Container('alert');
             $dbAdapter = $this->adapter;
             $query = $sql->select()->from(array('u' => 'users'))
-                    ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
-                    ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
-                    ->where(array('u.id' => $loginContainer->otpId,'otp' => $otp,'u.status' => 'active'));
+                ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
+                ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
+                ->where(array('u.id' => $loginContainer->otpId, 'otp' => $otp, 'u.status' => 'active'));
             $queryStr = $sql->buildSqlString($query);
             $sResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if ($sResult) {
@@ -639,15 +627,15 @@ class UsersTable extends AbstractTableGateway
                 }
 
                 return $this->userEventLog($sResult);
-            }else{
+            } else {
                 $container->alertMsg = 'Please enter valid otp';
                 return 'validate-otp';
             }
-
         }
     }
 
-    public function userEventLog($sResult){
+    public function userEventLog($sResult)
+    {
         $dbAdapter = $this->adapter;
         $userLocationMapTable = new UserLocationMapTable($dbAdapter);
         $sql = new Sql($this->adapter);
@@ -660,7 +648,7 @@ class UsersTable extends AbstractTableGateway
             $userMappedIdsArray[] = $ulMap['location_id'];
             $userMappingType = $ulMap['mapping_type'];
         }
-        
+
         $token = [];
         $userTokenQuery = $sql->select()->from(['u_t_map' => 'user_token_map'])
             ->columns(['token'])
@@ -671,9 +659,9 @@ class UsersTable extends AbstractTableGateway
         foreach ($userTokenResult as $userToken) {
             $token[] = $userToken['token'];
         }
-        
+
         $language = $gTable->getGlobalValue('language');
-        if (isset($sResult->language) && !empty($sResult->language)){
+        if (isset($sResult->language) && !empty($sResult->language)) {
             $loginContainer->language = $sResult->language;
         } elseif (!empty($language)) {
             $loginContainer->language = $language;
