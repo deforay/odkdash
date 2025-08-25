@@ -2,7 +2,6 @@
 
 namespace Application\Service;
 
-use Application\Model\GeographicalDivisionsTable;
 use Exception;
 use ZipArchive;
 use Laminas\Mail;
@@ -333,7 +332,7 @@ class CommonService
                         if (isset($result['audit_ids']) && !empty($result['audit_ids'])) {
                             $spiFormV6Db->updateAuditMailSentStatus($result['audit_ids']);
                         }
-                        
+
                     } catch (\Exception $e) {
                         error_log($e->getMessage());
                         error_log("Email failed for ID: " . $id);
@@ -548,7 +547,7 @@ class CommonService
                 continue;
             }
             if (is_dir("$dir/$file")) {
-                $this->rmdirRecursive("$dir/$file");
+                self::rmdirRecursive("$dir/$file");
             } else {
                 unlink("$dir/$file");
             }
@@ -719,7 +718,7 @@ class CommonService
         }
         return array_filter($data, fn($value) => $value !== null);
     }
-    
+
     public static function generatePassword()
     {
         $generator = new RequirementPasswordGenerator();
@@ -735,7 +734,7 @@ class CommonService
 
         return $generator->generatePassword();
     }
-    
+
     public static function generateRandomNumbers(int $length = 6, string $seeds = 'numeric'): string
     {
         // Possible seeds

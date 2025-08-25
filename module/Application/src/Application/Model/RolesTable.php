@@ -2,21 +2,12 @@
 
 namespace Application\Model;
 
+use Laminas\Db\Sql\Sql;
 use Laminas\Session\Container;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Zend\Debug\Debug;
-use Laminas\Config\Writer\PhpArray;
+use Application\Model\BaseTableGateway;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-class RolesTable extends AbstractTableGateway
+class RolesTable extends BaseTableGateway
 {
 
     protected $table = 'roles';
@@ -194,7 +185,7 @@ class RolesTable extends AbstractTableGateway
 
     public function getRolesDetails($id)
     {
-        return $this->select(array('role_id' => (int) $id))->current();
+        return $this->selectOne(array('role_id' => (int) $id));
     }
 
     public function fecthAllActiveRoles()

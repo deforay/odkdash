@@ -1,18 +1,9 @@
 <?php
 namespace Application\Service;
 
-use Laminas\Session\Container;
-use Exception;
-use Laminas\Db\Sql\Sql;
-use Laminas\Mail\Transport\Smtp as SmtpTransport;
-use Laminas\Mail\Transport\SmtpOptions;
-use Laminas\Mail;
-use Laminas\Mime\Message as MimeMessage;
-use Laminas\Mime\Part as MimePart;
-
 class ImageResizeService {
 
-    
+
     private $image;
     private $width;
     private $height;
@@ -52,7 +43,7 @@ class ImageResizeService {
     public function resizeImage($newWidth, $newHeight,$fileName, $option="auto") {
         // *** Get optimal width and height - based on $option
         // *** Open up the file
-        
+
         $optionArray = $this->getDimensions($newWidth, $newHeight, $option);
 
         $optimalWidth = $optionArray['optimalWidth'];
@@ -69,7 +60,7 @@ class ImageResizeService {
 
     }
     private function getDimensions($newWidth, $newHeight, $option) {
-        
+
         //if($newHeight > $this->height && $newWidth > $this->width ){
         //    return array('optimalWidth' => $this->width, 'optimalHeight' => $this->height);
         //}
@@ -91,15 +82,10 @@ class ImageResizeService {
                 $optimalWidth = $optionArray['optimalWidth'];
                 $optimalHeight = $optionArray['optimalHeight'];
                 break;
-            case 'crop':
-                $optionArray = $this->getOptimalCrop($newWidth, $newHeight);
-                $optimalWidth = $optionArray['optimalWidth'];
-                $optimalHeight = $optionArray['optimalHeight'];
-                break;
         }
         return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
     }
-    
+
     private function getSizeByAuto($newWidth, $newHeight) {
         if ($this->height < $this->width) {
             // *** Image to be resized is wider (landscape)
@@ -127,12 +113,12 @@ class ImageResizeService {
         $ratio = $this->height / $this->width;
         return $newWidth * $ratio;
     }
-    
+
       private function getSizeByFixedHeight($newHeight) {
         $ratio = $this->width / $this->height;
         return $newHeight * $ratio;
     }
-    
+
     ## --------------------------------------------------------
 
     public function saveImage($savePath, $imageQuality="100") {
@@ -175,7 +161,5 @@ class ImageResizeService {
 
         imagedestroy($this->imageResized);
     }
-    
-}
 
-?>
+}

@@ -7,11 +7,7 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\Sql\Sql;
 use Application\Service\CommonService;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 /**
  * Description of Countries
@@ -194,14 +190,14 @@ class GlobalTable extends AbstractTableGateway
 
         $fileName =$_POST['removedAdditionalLogoImage'];
         $cleanedFileName = CommonService::cleanFileName($fileName);
-        
+
         if (isset($_POST['removedAdditionalLogoImage']) && trim($_POST['removedAdditionalLogoImage']) != "" && file_exists($cleanedFilePath.DIRECTORY_SEPARATOR.$cleanedFileName)) {
             unlink($cleanedFilePath.DIRECTORY_SEPARATOR.$cleanedFileName);
             $this->update(array('global_value' => ''), array('global_name' => 'additional_logo'));
         }
-        
+
         if (isset($_FILES['additional_logo']['name']) && $_FILES['additional_logo']['name'] != "") {
-            
+
             if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
                 mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
             }

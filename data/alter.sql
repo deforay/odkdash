@@ -1951,9 +1951,9 @@ ADD PRIMARY KEY (`id`);
 ALTER TABLE `spi_form_v_6_duplicate`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-v6', 'View Data');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'view-data-v5', 'View Data');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'email-v6', 'Email');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-v6', 'View Data');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'view-data-v5', 'View Data');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'email-v6', 'Email');
 
 ALTER TABLE `spi_form_v_6` CHANGE `formVersion` `formVersion` MEDIUMTEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
 ALTER TABLE `spi_form_v_6` ADD `DO_SURVEILLANCE` TEXT NULL AFTER `status`;
@@ -2012,15 +2012,15 @@ ALTER TABLE `spi_form_v_6` ADD `D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI`
 
 -- Selvam 29-Dec-2021
 
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-v6', 'View Data');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'view-data-v5', 'View Data');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'email-v6', 'Email');
-INSERT INTO `privileges`
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-v6', 'View Data');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV5', 'view-data-v5', 'View Data');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'email-v6', 'Email');
+INSERT IGNORE INTO `privileges`
 (`resource_id`, `privilege_name`, `display_name`)
 VALUES
 ('Application\\Controller\\SpiV6', 'view-data-section-zero-v6', 'View Section S0 Data');
 
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\SpiV6', 'view-data-section-zero-protocol-v6', 'View Section D0 Data');
 
 -- Sakthivel 30-Sep-2021
 
@@ -2029,13 +2029,13 @@ DROP table `spi_rt_5_facilities`;
 
 -- Sakthivel 1-Oct-2021
 
- ALTER TABLE `users` ADD `contact_no` varchar(255) DEFAULT NULL AFTER `email`;
- ALTER TABLE `users` ADD `user_image` varchar(255) DEFAULT NULL AFTER `contact_no`;
+ALTER TABLE `users` ADD `contact_no` varchar(255) DEFAULT NULL AFTER `email`;
+ALTER TABLE `users` ADD `user_image` varchar(255) DEFAULT NULL AFTER `contact_no`;
 
- INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\UsersController', 'profile', 'Edit Profile');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\Controller\UsersController', 'profile', 'Edit Profile');
 
 -- Sakthivel 04-10-2021
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Users', 'change-password', 'Change Password');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\Users', 'change-password', 'Change Password');
 
 ALTER TABLE  `users` ADD  `last_login_datetime` DATETIME NULL DEFAULT NULL;
 
@@ -2835,9 +2835,9 @@ ALTER TABLE `users` ADD `language` VARCHAR(255) NULL DEFAULT NULL AFTER `status`
 -- Brindha 22-Jan-2025
 INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\UsersController', 'reset-password', 'Reset Password');
 
---ilahir 23-Jan-2025
+-- ilahir 23-Jan-2025
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Send OTP For Login', 'login_otp', 'no');
-ALTER TABLE `users` ADD `otp` VARCHAR(255) NULL DEFAULT NULL AFTER `template_file`;
+ALTER TABLE `users` ADD `otp` VARCHAR(255) NULL DEFAULT NULL;
 ALTER TABLE `users` ADD `otp_generated_datetime` DATETIME NULL AFTER `otp`;
 
 

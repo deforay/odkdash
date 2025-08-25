@@ -17,11 +17,7 @@ use Application\Model\UserLocationMapTable;
 use Twilio\Rest\Client;
 
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 /**
  * Description of Countries
@@ -612,10 +608,10 @@ class UsersTable extends AbstractTableGateway
             $loginContainer = new Container('credo');
             $container = new Container('alert');
             $dbAdapter = $this->adapter;
-            $query = $sql->select()->from(array('u' => 'users'))
+            $query = $sql->select()->from(['u' => 'users'])
                 ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
                 ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
-                ->where(array('u.id' => $loginContainer->otpId, 'otp' => $otp, 'u.status' => 'active'));
+                ->where(['u.id' => $loginContainer->otpId, 'otp' => $otp, 'u.status' => 'active']);
             $queryStr = $sql->buildSqlString($query);
             $sResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if ($sResult) {

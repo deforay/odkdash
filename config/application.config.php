@@ -1,13 +1,8 @@
 <?php
-/**
- * If you need an environment-specific system or application configuration,
- * there is an example in the documentation
- * @see http://framework.zend.com/manual/current/en/tutorials/config.advanced.html#environment-specific-system-configuration
- * @see http://framework.zend.com/manual/current/en/tutorials/config.advanced.html#environment-specific-application-configuration
- */
-return array(
+
+return [
     // This should be an array of module namespaces used in the application.
-    'modules' => array(
+    'modules' => [
         'Laminas\Mvc\Plugin\FilePrg',
         'Laminas\Mvc\Plugin\FlashMessenger',
         'Laminas\Mvc\Plugin\Identity',
@@ -23,31 +18,29 @@ return array(
         'Laminas\Mvc\Middleware',
         'Laminas\Session',
         'Laminas\Mvc\I18n',
-        'Laminas\Log',
         'Laminas\I18n',
         'Laminas\Db',
         'Laminas\Router',
-        'Laminas\Validator',
         'Laminas\Diactoros',
         'Laminas\Cache\Storage\Adapter\Filesystem',
         'Application',
-    ),
+    ],
     // These are various options for the listeners attached to the ModuleManager
-    'module_listener_options' => array(
+    'module_listener_options' => [
         // This should be an array of paths in which modules reside.
         // If a string key is provided, the listener will consider that a module
         // namespace, the value of that key the specific path to that module's
         // Module class.
-        'module_paths' => array(
+        'module_paths' => [
             './module',
             './vendor',
-        ),
+        ],
         // An array of paths from which to glob configuration files after
         // modules are loaded. These effectively override configuration
         // provided by modules themselves. Paths may use GLOB_BRACE notation.
-        'config_glob_paths' => array(
+        'config_glob_paths' => [
             'config/autoload/{{,*.}global,{,*.}local}.php',
-        ),
+        ],
         // Whether or not to enable a configuration cache.
         // If enabled, the merged configuration will be cached and used in
         // subsequent requests.
@@ -70,7 +63,7 @@ return array(
         // Enabled by default, prevents usage of modules that depend on other modules
         // that weren't loaded.
         // 'check_dependencies' => true,
-    ),
+    ],
     // Used to create an own service manager. May contain one or more child arrays.
     //'service_listener_options' => array(
     //     array(
@@ -80,7 +73,7 @@ return array(
     //         'method'          => $stringRequiredMethodName,
     //     ),
     // ),
-   // Initial configuration with which to seed the ServiceManager.
-   // Should be compatible with Laminas\ServiceManager\Config.
-   // 'service_manager' => array(),
-);
+    // Initial configuration with which to seed the ServiceManager.
+    // Should be compatible with Laminas\ServiceManager\Config.
+    // 'service_manager' => array(),
+];

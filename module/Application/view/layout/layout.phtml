@@ -111,19 +111,19 @@ $googleTag = "GTM-TSMNF9F9";
 
   <!-- Google Tag Manager -->
   <script>
-    (function(w,d,s,l,i){
-      w[l]=w[l]||[];
+    (function(w, d, s, l, i) {
+      w[l] = w[l] || [];
       w[l].push({
         'gtm.start': new Date().getTime(),
-        event:'gtm.js'
+        event: 'gtm.js'
       });
-      var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),
-          dl=l!='dataLayer'?'&l='+l:'';
-      j.async=true;
-      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-      f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','<?php echo $googleTag; ?>');
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', '<?php echo $googleTag; ?>');
   </script>
   <!-- End Google Tag Manager -->
 
@@ -193,11 +193,11 @@ $googleTag = "GTM-TSMNF9F9";
             // $config = $this->GlobalConfigHelper();
             if (!empty($config) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
             ?>
-              <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;margin-top:25px;" />
+              <img src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;margin-top:5px;" />
             <?php
             } else {
             ?>
-              <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;margin-top:25px;" />
+              <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;margin-top:5px;" />
             <?php
             }
             ?>
@@ -253,24 +253,19 @@ $googleTag = "GTM-TSMNF9F9";
         <ul class="sidebar-elements">
           <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\IndexController", "index")) { ?>
             <?php if ($totalVersions == 1) { ?>
-              <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-                <li class="parent"><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
-              <?php } elseif (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                <li class="parent"><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
-              <?php } elseif (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-                <li class="parent"><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+              <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
+                <li class="parent"><a href="<?php echo $this->url('dashboard-v6', ['action' => 'index']); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+              <?php } elseif (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
+                <li class="parent"><a href="<?php echo $this->url('dashboard', ['action' => 'index']); ?>"><i class="icon s7-monitor"></i><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
               <?php } ?>
             <?php } else { ?>
               <li class="parent"><a href="#"><i class="icon s7-ribbon"></i><span><?php echo $this->translate('Dashboard'); ?></span></a>
                 <ul class="sub-menu">
                   <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-                    <li class=""><a href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
-                  <?php } ?>
-                  <?php if (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                    <li class=""><a href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
+                    <li class=""><a href="<?php echo $this->url('dashboard', ['action' => 'index']); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
                   <?php } ?>
                   <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-                    <li class=""><a href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                    <li class=""><a href="<?php echo $this->url('dashboard-v6', ['action' => 'index']); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
                   <?php } ?>
                 </ul>
               </li>

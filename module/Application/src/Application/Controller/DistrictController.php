@@ -2,10 +2,10 @@
 
 namespace Application\Controller;
 
-use Laminas\Config\Config;
 use Laminas\Json\Json;
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use Application\Service\ProvinceService;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class DistrictController extends AbstractActionController
 {
@@ -13,7 +13,7 @@ class DistrictController extends AbstractActionController
 
     private $provinceService = null;
 
-    public function __construct($provinceService)
+    public function __construct(ProvinceService $provinceService)
     {
         $this->provinceService = $provinceService;
     }

@@ -727,21 +727,19 @@ class Module
 
     public function getViewHelperConfig()
     {
-        return array(
+        return [
             'invokables' => [
                 'humanReadableDateFormat' => 'Application\View\Helper\HumanReadableDateFormat',
             ],
             'factories' => [
-                'GlobalConfigHelper' => new class
-                {
+                'GlobalConfigHelper' => new class {
                     public function __invoke($diContainer)
                     {
                         $globalTable = $diContainer->get('GlobalTable');
                         return new GlobalConfigHelper($globalTable);
                     }
                 },
-                'GetCountryDetailsByIdHelper' => new class
-                {
+                'GetCountryDetailsByIdHelper' => new class {
                     public function __invoke($diContainer)
                     {
                         $countriesTable = $diContainer->get('CountriesTable');
@@ -751,7 +749,7 @@ class Module
             ]
 
 
-        );
+        ];
     }
 
 

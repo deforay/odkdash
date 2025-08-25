@@ -20,7 +20,7 @@ $totalVersions = count(explode(",", $web_version));
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title><?php echo $this->translate('SPI RRT Dashboard'); ?></title>
+  <title><?php echo $this->translate('SPI RRT Dashboard'); ?></title>
   <meta name="description" content="" />
   <meta name="keywords" content="" />
 
@@ -88,9 +88,9 @@ $totalVersions = count(explode(",", $web_version));
       <?php if (isset($sessionLogin->userId)) { ?>
         <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\IndexController", "index")) { ?>
           <?php if ($totalVersions == 1) { ?>
-            <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-              <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
-            <?php } elseif (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
+            <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
+              <a class="btn-getstarted" href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
+            <?php } elseif (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
               <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
             <?php } ?>
           <?php } else { ?>
@@ -114,7 +114,7 @@ $totalVersions = count(explode(",", $web_version));
           <?php } ?>
         <?php } ?>
       <?php } else { ?>
-        <a class="btn-getstarted" href="<?php echo $this->url('login', array('action' => 'index')); ?>"><?php echo $this->translate('Login'); ?></a>
+        <a class="btn-getstarted" href="<?php echo $this->url('login', ['action' => 'index']); ?>"><?php echo $this->translate('Login'); ?></a>
       <?php } ?>
     </div>
   </header>

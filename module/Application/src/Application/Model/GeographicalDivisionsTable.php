@@ -2,21 +2,18 @@
 
 namespace Application\Model;
 
+use Zend\Debug\Debug;
+use Laminas\Db\Sql\Sql;
 use Laminas\Session\Container;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Zend\Debug\Debug;
 use Laminas\Config\Writer\PhpArray;
 use Application\Service\CommonService;
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+use Application\Model\BaseTableGateway;
 
 
-class GeographicalDivisionsTable extends AbstractTableGateway
+
+
+class GeographicalDivisionsTable extends BaseTableGateway
 {
 
     protected $table = 'geographical_divisions';
@@ -32,14 +29,15 @@ class GeographicalDivisionsTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $currentDateTime = CommonService::getDateTime();
         if (trim($params['provinceName']) != "") {
-            $data = array(
+            $data = [
                 'geo_name' => $params['provinceName'],
                 'geo_code' => $params['provinceCode'],
+                'geo_parent' => 0,
                 'geo_status' => $params['status'],
                 'created_by' => $loginContainer->userId,
-                'created_on'    => $currentDateTime,
-                'updated_datetime'    => $currentDateTime
-            );
+                'created_on' => $currentDateTime,
+                'updated_datetime' => $currentDateTime
+            ];
 
             $this->insert($data);
             return $this->lastInsertValue;
@@ -51,13 +49,14 @@ class GeographicalDivisionsTable extends AbstractTableGateway
         if (trim($params['provinceName']) != "" && trim($params['provinceId']) != "") {
             $provinceId = base64_decode($params['provinceId']);
             $currentDateTime = CommonService::getDateTime();
-            $data = array(
+            $data = [
                 'geo_name' => $params['provinceName'],
                 'geo_code' => $params['provinceCode'],
                 'geo_status' => $params['status'],
-                'updated_datetime'    => $currentDateTime
-            );
-            $this->update($data, array('geo_id=' . $provinceId));
+                'geo_parent' => 0,
+                'updated_datetime' => $currentDateTime
+            ];
+            $this->update($data, ['geo_id' => $provinceId]);
             return $provinceId;
         }
     }
@@ -137,13 +136,10 @@ class GeographicalDivisionsTable extends AbstractTableGateway
             }
         }
 
-        /*
-         * SQL queries
-         * Get data to display
-         */
+
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from('geographical_divisions')->where("geo_parent =0");
+        $sQuery = $sql->select()->from('geographical_divisions')->where("geo_parent =0 OR geo_parent is NULL");
         //$sQuery=$this->select();
         if (isset($sWhere) && $sWhere != "") {
             $sQuery->where($sWhere);
@@ -197,7 +193,7 @@ class GeographicalDivisionsTable extends AbstractTableGateway
 
     public function getProvinceDetails($id)
     {
-        return $this->select(array('geo_id' => (int) $id))->current();
+        return $this->selectOne(array('geo_id' => (int) $id));
     }
 
     public function fetchAllActiveProvinces()
@@ -205,7 +201,9 @@ class GeographicalDivisionsTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active','geo_parent'=>'0'));
+        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(
+            ['geo_status' => 'active', 'geo_parent = 0 OR geo_parent IS NULL']
+        );
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'province') {
             $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
         }
@@ -425,7 +423,7 @@ class GeographicalDivisionsTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active','geo_parent'=>'0'));
+        $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active', 'geo_parent' => '0'));
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'province') {
             $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
         }
@@ -486,6 +484,7 @@ class GeographicalDivisionsTable extends AbstractTableGateway
             $data = array(
                 'geo_name' => $provinceName,
                 'geo_code' => $provinceName,
+                'geo_parent' => 0,
                 'geo_status' => 'active',
                 'created_by' => $loginContainer->userId,
                 'created_on'    => $currentDateTime,
@@ -525,7 +524,7 @@ class GeographicalDivisionsTable extends AbstractTableGateway
 
     public function getProvinceDistrict($params)
     {
-        $res = $this->select(array('geo_name' => $params['geo_name']))->current();
+        $res = $this->selectOne(array('geo_name' => $params['geo_name']));
         if ($res) {
             return 1;
         }

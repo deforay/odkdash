@@ -12,11 +12,7 @@ use Application\Service\CommonService;
 use Application\Model\SpiRtFacilitiesTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 /**
  * Description of Countries
@@ -2200,8 +2196,8 @@ class SpiFormVer6Table extends AbstractTableGateway
         $username = $loginContainer->login;
         $trackTable = new EventLogTable($this->adapter);
         $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where(array('spiv6.id' => $id));
+        $sQuery = $sql->select()->from(['spiv6' => 'spi_form_v_6'])
+            ->where(['spiv6.id' => $id]);
         $sQueryStr = $sql->buildSqlString($sQuery);
         /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
         $sResult = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
@@ -2210,7 +2206,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             if (trim($sResult->facility) != '' || trim($sResult->facilityid) != '' || trim($sResult->facilityname) != '') {
                 //$fQuery = $sql->select()->from(array('spirt5' => 'spi_rt_5_facilities'))
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
+                    ->columns(['fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude']);
                 if (isset($sResult->facility) && $sResult->facility > 0) {
                     $fQuery = $fQuery->where(["spirt3.id" => $sResult->facility]);
                     $searchFacility = true;

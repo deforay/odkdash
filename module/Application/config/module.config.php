@@ -330,7 +330,6 @@ return array(
     'service_manager' => [
         'abstract_factories' => [
             'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Laminas\Log\LoggerAbstractServiceFactory',
         ],
         'factories' => [
             'DbAdapter' => function ($container) {

@@ -12,22 +12,22 @@
  * file.
  */
 
-return array(
-    'db' => array(
-        'driver'         => 'Pdo',
-        'dsn'            => 'mysql:dbname=odkdash;host=localhost',
-        'driver_options' => array(
+return [
+    'db' => [
+        'driver' => 'Pdo',
+        'dsn' => 'mysql:dbname=odkdash-zw;host=localhost',
+        'driver_options' => [
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-        ),
-    ),
-    'module_layouts' => array(
+        ],
+    ],
+    'module_layouts' => [
         'Application' => 'layout/layout',
         'Application' => 'layout/modal'
-    ),
-    'service_manager' => array(
-        'factories' => array(
+    ],
+    'service_manager' => [
+        'factories' => [
             'Laminas\Db\Adapter\Adapter'
             => 'Laminas\Db\Adapter\AdapterServiceFactory',
-        ),
-    ),
-);
+        ],
+    ],
+];

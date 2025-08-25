@@ -758,7 +758,6 @@ class OdkFormService
 
     public function getDownloadDataList()
     {
-        $common = new CommonService();
         $db = $this->sm->get('SpiFormVer3DownloadTable');
         $result = $db->fetchDownloadDataList();
         if (count($result['formResult']) > 0) {
@@ -1463,11 +1462,10 @@ class OdkFormService
             }
             //zip part
             $zip = new ZipArchive();
-            $commonService = new \Application\Service\CommonService();
             $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
-            $commonService->zipFolder($folderPath, $zipFileName);
+            CommonService::zipFolder($folderPath, $zipFileName);
             // now we can remove the $folderPath
-            $commonService->rmdirRecursive($folderPath);
+            CommonService::rmdirRecursive($folderPath);
         }
     }
 

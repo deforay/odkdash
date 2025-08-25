@@ -3,7 +3,7 @@
 namespace Application\Command;
 
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Application\Command\SendAuditMail;
 
 class SendAuditMailFactory implements FactoryInterface
