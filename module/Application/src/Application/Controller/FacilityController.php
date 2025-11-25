@@ -4,7 +4,7 @@ namespace Application\Controller;
 
 use Application\Model\SpiRtFacilitiesTable;
 use Laminas\Config\Config;
-use Laminas\Json\Json;
+
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
@@ -30,9 +30,9 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->facilityService->getAllFacilities($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 
@@ -58,7 +58,7 @@ class FacilityController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
-        
+
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->facilityService->updateFacility($params);
@@ -85,9 +85,9 @@ class FacilityController extends AbstractActionController
             $val = $request->getQuery('search');
             //\Zend\Debug\Debug::dump($val);
             //die;
-            
+
             $result = $this->facilityService->getFacilityList($val);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 
@@ -95,7 +95,7 @@ class FacilityController extends AbstractActionController
     {
         $layout = $this->layout();
         $layout->setTemplate('layout/modal');
-        
+
         $result = $this->odkFormService->getAllFacilityNames();
         return new ViewModel(array(
             'facilityName' => $result
@@ -108,9 +108,9 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->facilityService->getAllTestingPoints($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 
@@ -120,7 +120,7 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->odkFormService->getSpiV3FormFacilityAuditNo($params);
             $viewModel = new ViewModel(array(
                 'spiV3auditRoundNo' => $result
@@ -134,8 +134,8 @@ class FacilityController extends AbstractActionController
     {
         $layout = $this->layout();
         $layout->setTemplate('layout/modal');
-        
-        
+
+
         $result = $this->odkFormService->getAllFacilityNames();
         $provinceResult = $this->provinceService->getAllActiveProvinces();
         return new ViewModel(array(
@@ -147,7 +147,7 @@ class FacilityController extends AbstractActionController
     public function mapProvinceAction()
     {
         /** @var \Laminas\Http\Request $request */
-      
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -166,7 +166,7 @@ class FacilityController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->facilityService->getFacilityDetails($params);
             $viewModel = new ViewModel(array(
                 'result' => $result
@@ -181,7 +181,7 @@ class FacilityController extends AbstractActionController
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
-            
+
             $result = $this->facilityService->exportFacility();
             $viewModel = new ViewModel(array(
                 'result' => $result
@@ -198,7 +198,7 @@ class FacilityController extends AbstractActionController
         if ($request->isGet()) {
             $val = $request->getQuery('q');
             $result = $this->facilityService->getProvinceData($val);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
     public function searchDistrictListAction()
@@ -208,7 +208,7 @@ class FacilityController extends AbstractActionController
         if ($request->isGet()) {
             $val = $request->getQuery('q');
             $result = $this->facilityService->getDistrictData($val);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 
@@ -232,7 +232,7 @@ class FacilityController extends AbstractActionController
                 // Redirect to the generated URL
                 return $this->redirect()->toUrl($url);
             }
-        }    
+        }
     }
 
     public function checkProvinceDistrictAction()
@@ -242,8 +242,8 @@ class FacilityController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $provinceResult = $this->provinceService->checkProvinceDistrict($params);
-            return $this->getResponse()->setContent(Json::encode($provinceResult));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($provinceResult));
 
-        }   
+        }
     }
 }

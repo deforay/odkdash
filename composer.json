@@ -9,40 +9,39 @@
         "spi-rrt"
     ],
     "require": {
-        "php": "^8.2.0",
+        "php": "^8.2 || ^8.3 || ^8.4",
         "laminas/laminas-component-installer": "^3.2",
         "laminas/laminas-development-mode": "^3.10",
         "laminas/laminas-mvc": "^3.8",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.5",
-        "laminas/laminas-mail": "^2.25",
-        "laminas/laminas-serializer": "^2.17",
+        "laminas/laminas-serializer": "^2.18",
         "laminas/laminas-i18n": "^2.24",
-        "laminas/laminas-db": "^2.18",
-        "laminas/laminas-cli": "^1.9",
+        "laminas/laminas-db": "^2.20",
+        "laminas/laminas-cli": "^1.13",
         "laminas/laminas-mvc-plugins": "^1.2",
-        "laminas/laminas-mvc-middleware": "^2.4",
+        "laminas/laminas-mvc-middleware": "^2.5",
         "laminas/laminas-mvc-i18n": "^1.8",
-        "laminas/laminas-di": "^3.13",
-        "laminas/laminas-router": "^3.12",
-        "laminas/laminas-permissions-acl": "^2.16",
-        "phpoffice/phpspreadsheet": "^5.0",
+        "laminas/laminas-di": "^3.15",
+        "laminas/laminas-router": "^3.16",
+        "laminas/laminas-permissions-acl": "^2.17",
+        "phpoffice/phpspreadsheet": "^5.3",
         "guzzlehttp/guzzle": "^7.10",
         "tecnickcom/tcpdf": "^6.10",
         "shuchkin/simplexlsxgen": "^1.5",
-        "szymach/c-pchart": "^3.0",
+        "szymach/c-pchart": "^3.1",
         "psr/container": "^1.1",
         "spatie/once": "^3.1",
-        "laminas/laminas-session": "^2.17",
-        "ramsey/uuid": "^4.7",
+        "laminas/laminas-session": "^2.26",
+        "ramsey/uuid": "^4.9",
         "symfony/mailer": "^7.3",
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.6",
         "hackzilla/password-generator": "^1.7",
-        "twilio/sdk": "^8.7"
+        "twilio/sdk": "^8.8"
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application/src/"
+            "Application\\": "module/Application/src/Application/"
         }
     },
     "autoload-dev": {
@@ -80,6 +79,9 @@
             "composer/package-versions-deprecated": true,
             "laminas/laminas-component-installer": true,
             "laminas/laminas-skeleton-installer": true
+        },
+        "platform": {
+            "php": "8.3"
         }
     },
     "require-dev": {

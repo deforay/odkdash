@@ -2,9 +2,10 @@
 
 namespace Application\Controller;
 
+use Application\Service\CommonService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Json\Json;
+
 
 class ConfigController extends AbstractActionController
 {
@@ -22,7 +23,7 @@ class ConfigController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->commonService->getAllConfig($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 

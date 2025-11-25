@@ -2,8 +2,9 @@
 
 namespace Application\Controller;
 
-use Laminas\Json\Json;
+
 use Laminas\View\Model\ViewModel;
+use Application\Service\CommonService;
 use Application\Service\ProvinceService;
 use Laminas\Mvc\Controller\AbstractActionController;
 
@@ -26,7 +27,7 @@ class DistrictController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->provinceService->getAllDistrictDetails($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 

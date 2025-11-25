@@ -4,10 +4,11 @@
 
 namespace Application\Controller;
 
+
 use Laminas\Session\Container;
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Json\Json;
+use Application\Service\CommonService;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class DashboardController extends AbstractActionController
 {
@@ -58,7 +59,7 @@ class DashboardController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->odkFormService->getAllApprovedSubmissionsDetailsBasedOnAuditDate($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         } else {
             $assesmentOfAuditDate = base64_decode($this->params()->fromRoute('id'));
             return new ViewModel(array(

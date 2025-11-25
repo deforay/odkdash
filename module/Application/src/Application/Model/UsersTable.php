@@ -590,7 +590,7 @@ class UsersTable extends AbstractTableGateway
     public function updateUserOtp($userId, $mobileNo)
     {
         $dbAdapter = $this->adapter;
-        $userOtp = CommonService::generateRandomNumbers();
+        $userOtp = CommonService::generateOTP();
         $gTable = new GlobalTable($dbAdapter);
         $sid = $gTable->getGlobalValue('whatsapp_sid');
         $token = $gTable->getGlobalValue('whatsapp_token');

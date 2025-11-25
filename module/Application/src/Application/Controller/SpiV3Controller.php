@@ -4,7 +4,7 @@ namespace Application\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Json\Json;
+
 
 class SpiV3Controller extends AbstractActionController
 {
@@ -29,7 +29,7 @@ class SpiV3Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSubmissionsDetails($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
@@ -80,7 +80,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function downloadPdfAction()
     {
-        
+
         $configData = $this->commonService->getGlobalConfigDetails();
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
@@ -139,7 +139,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function auditPerformanceAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseData($params);
@@ -153,7 +153,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function worstPerformanceAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $zeroCounts = $this->odkFormService->getZeroQuestionCounts($params);
@@ -167,7 +167,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function auditLocationsAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocation($params);
@@ -186,7 +186,7 @@ class SpiV3Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSubmissionsDatas($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         } else {
             $result = $this->odkFormService->getPendingFacilityNames();
 
@@ -199,7 +199,7 @@ class SpiV3Controller extends AbstractActionController
     public function mergeFacilityNameAction()
     {
         if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();            
+            $params = $this->getRequest()->getPost();
             $result = $this->odkFormService->mergeFacilityName($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
@@ -215,7 +215,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function deleteAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $result = $this->odkFormService->deleteAuditData($params);
@@ -228,7 +228,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function spirtv3DatewiseAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $perflast30 = $this->odkFormService->getPerformanceLast30Days($params);
@@ -241,7 +241,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function testingVolumeDatewiseAction()
     {
-        
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             $testingVolume = $this->odkFormService->getAllApprovedTestingVolume($params);
@@ -259,7 +259,7 @@ class SpiV3Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->odkFormService->getViewDataDetails($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         $source = '';
         $roundno = '';
@@ -293,7 +293,7 @@ class SpiV3Controller extends AbstractActionController
     {
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
-            
+
             $result = $this->odkFormService->getTestingPointTypeNamesByType($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
@@ -304,8 +304,8 @@ class SpiV3Controller extends AbstractActionController
 
     public function downloadSpiderChartAction()
     {
-        
-        
+
+
         if ($this->getRequest()->isPost()) {
             $params = $this->getRequest()->getPost();
             // $result = $this->odkFormService->getAuditRoundWiseDataChart($params);
@@ -319,7 +319,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function exportAsPdfAction()
     {
-        
+
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -356,7 +356,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function saveDownloadDataAction()
     {
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -370,7 +370,7 @@ class SpiV3Controller extends AbstractActionController
 
     public function downloadFilesAction()
     {
-        
+
         $result = $this->odkFormService->getDownloadFilesRow();
         return new ViewModel(array('result' => $result));
     }
@@ -409,7 +409,7 @@ class SpiV3Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllValidateSpiv3Details($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
     public function addSpiv3ValidateDataAction()
@@ -418,7 +418,7 @@ class SpiV3Controller extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->odkFormService->addValidateSpiv3Data($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result));
@@ -433,5 +433,5 @@ class SpiV3Controller extends AbstractActionController
         return new ViewModel(array('result' => $result));
     }
 
-    
+
 }

@@ -3,7 +3,7 @@
 namespace Application\Controller;
 
 use Laminas\Config\Config;
-use Laminas\Json\Json;
+
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
@@ -26,7 +26,7 @@ class ProvincesController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->provinceService->getAllProvinceDetails($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 

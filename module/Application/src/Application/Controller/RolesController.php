@@ -3,7 +3,7 @@
 namespace Application\Controller;
 
 use Laminas\Config\Config;
-use Laminas\Json\Json;
+
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
@@ -27,7 +27,7 @@ class RolesController extends AbstractActionController
             $params = $request->getPost();
 
             $result = $this->roleService->getAllRolesDetails($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 

@@ -12,7 +12,6 @@ return [
         'Laminas\InputFilter',
         'Laminas\Filter',
         'Laminas\Cache',
-        'Laminas\Mail',
         'Laminas\Serializer',
         'Laminas\Di',
         'Laminas\Mvc\Middleware',

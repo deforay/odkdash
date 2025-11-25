@@ -4,19 +4,17 @@ namespace Application\Service;
 
 use Exception;
 use ZipArchive;
-use Laminas\Mail;
 use Ramsey\Uuid\Uuid;
 use DateTimeImmutable;
-use Laminas\Mime\Mime;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
 use Laminas\Session\Container;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Laminas\Mime\Part as MimePart;
-use Laminas\Mail\Transport\SmtpOptions;
-use Laminas\Mime\Message as MimeMessage;
-use Laminas\Mail\Transport\Smtp as SmtpTransport;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
 use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
 
 class CommonService
@@ -28,7 +26,7 @@ class CommonService
     public function __construct($sm = null)
     {
         if ($sm === null) {
-            throw new \Exception("Service Manager cannot be null");
+            throw new Exception("Service Manager cannot be null");
         }
         $this->sm = $sm;
     }
@@ -162,29 +160,30 @@ class CommonService
         try {
             $tempMailDb = $this->sm->get('TempMailTable');
             $configResult = $this->sm->get('Config');
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $dbAdapter = $this->sm->get('Laminas\\Db\\Adapter\\Adapter');
             $sql = new Sql($dbAdapter);
 
-            // Setup SMTP transport using LOGIN authentication
-            $transport = new SmtpTransport();
-            $options = new SmtpOptions(array(
-                'host' => $configResult["email"]["host"],
-                'port' => $configResult["email"]["config"]["port"],
-                'connection_class' => $configResult["email"]["config"]["auth"],
-                'connection_config' => array(
-                    'username' => $configResult["email"]["config"]["username"],
-                    'password' => $configResult["email"]["config"]["password"],
-                    'ssl' => $configResult["email"]["config"]["ssl"],
-                ),
-            ));
-            $transport->setOptions($options);
+            // Setup SMTP transport using Symfony Mailer DSN
+            $ssl = $configResult["email"]["config"]["ssl"];
+            $scheme = ($ssl === 'tls') ? 'smtp' : (($ssl === 'ssl') ? 'smtps' : 'smtp');
+            $dsn = sprintf(
+                '%s://%s:%s@%s:%s',
+                $scheme,
+                urlencode($configResult["email"]["config"]["username"]),
+                urlencode($configResult["email"]["config"]["password"]),
+                $configResult["email"]["host"],
+                $configResult["email"]["config"]["port"]
+            );
+            $transport = Transport::fromDsn($dsn);
+            $mailer = new Mailer($transport);
+
             $limit = '10';
             $mailQuery = $sql->select()->from(array('tm' => 'temp_mail'))->where("status='pending'")->limit($limit);
             $mailQueryStr = $sql->buildSqlString($mailQuery);
             $mailResult = $dbAdapter->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
             if (count($mailResult) > 0) {
                 foreach ($mailResult as $result) {
-                    $alertMail = new Mail\Message();
+                    $email = new Email();
                     $id = $result['temp_id'];
                     $tempMailDb->updateTempMailStatus($id);
 
@@ -192,51 +191,39 @@ class CommonService
                     $fromFullName = $result['from_full_name'];
                     $subject = $result['subject'];
 
-                    $alertMail->addFrom($fromEmail, $fromFullName);
-                    $alertMail->addReplyTo($fromEmail, $fromFullName);
-                    $alertMail->addTo($result['to_email']);
+                    $email->from(sprintf('%s <%s>', $fromFullName, $fromEmail));
+                    $email->replyTo($fromEmail);
+                    $email->to($result['to_email']);
 
                     if (isset($result['cc']) && trim($result['cc']) != "") {
-                        $alertMail->addCc($result['cc']);
+                        $email->cc($result['cc']);
                     }
 
                     if (isset($result['bcc']) && trim($result['bcc']) != "") {
-                        $alertMail->addBcc($result['bcc']);
+                        $email->bcc($result['bcc']);
                     }
 
-                    $alertMail->setSubject($subject);
-
-                    $html = new MimePart($result['message']);
-                    $html->type = "text/html";
-
-                    $body = new MimeMessage();
-                    $body->setParts(array($html));
+                    $email->subject($subject);
+                    $email->html($result['message']);
 
                     $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id;
                     if (is_dir($dirPath)) {
-                        $dh  = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id);
+                        $dh = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id);
                         while (($filename = readdir($dh)) !== false) {
                             if ($filename != "." && $filename != "..") {
-                                $fileContent = fopen($dirPath . DIRECTORY_SEPARATOR . $filename, 'r');
-                                $attachment = new MimePart($fileContent);
-                                $attachment->filename    = $filename;
-                                $attachment->type        = Mime::TYPE_OCTETSTREAM;
-                                $attachment->encoding    = Mime::ENCODING_BASE64;
-                                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
-                                $body->addPart($attachment);
+                                $filePath = $dirPath . DIRECTORY_SEPARATOR . $filename;
+                                $email->attachFromPath($filePath, $filename);
                             }
                         }
                         closedir($dh);
                         $this->removeDirectory($dirPath);
                     }
 
-                    $alertMail->setBody($body);
-
-                    $transport->send($alertMail);
+                    $mailer->send($email);
                     $tempMailDb->deleteTempMail($id);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log($e->getMessage());
             error_log($e->getTraceAsString());
             error_log('whoops! Something went wrong in send-mail.');
@@ -249,22 +236,23 @@ class CommonService
             $auditMailDb = $this->sm->get('AuditMailTable');
             $spiFormV6Db = $this->sm->get('SpiFormVer6Table');
             $configResult = $this->sm->get('Config');
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $dbAdapter = $this->sm->get('Laminas\\Db\\Adapter\\Adapter');
             $sql = new Sql($dbAdapter);
 
-            // Setup SMTP transport using LOGIN authentication
-            $transport = new SmtpTransport();
-            $options = new SmtpOptions(array(
-                'host' => $configResult["email"]["host"],
-                'port' => $configResult["email"]["config"]["port"],
-                'connection_class' => $configResult["email"]["config"]["auth"],
-                'connection_config' => array(
-                    'username' => $configResult["email"]["config"]["username"],
-                    'password' => $configResult["email"]["config"]["password"],
-                    'ssl' => $configResult["email"]["config"]["ssl"],
-                ),
-            ));
-            $transport->setOptions($options);
+            // Setup SMTP transport using Symfony Mailer DSN
+            $ssl = $configResult["email"]["config"]["ssl"];
+            $scheme = ($ssl === 'tls') ? 'smtp' : (($ssl === 'ssl') ? 'smtps' : 'smtp');
+            $dsn = sprintf(
+                '%s://%s:%s@%s:%s',
+                $scheme,
+                urlencode($configResult["email"]["config"]["username"]),
+                urlencode($configResult["email"]["config"]["password"]),
+                $configResult["email"]["host"],
+                $configResult["email"]["config"]["port"]
+            );
+            $transport = Transport::fromDsn($dsn);
+            $mailer = new Mailer($transport);
+
             $limit = '10';
             $mailQuery = $sql->select()
                 ->from(array('a_mail' => 'audit_mails'))
@@ -276,7 +264,7 @@ class CommonService
 
             if (!empty($mailResult)) {
                 foreach ($mailResult as $result) {
-                    $alertMail = new Mail\Message();
+                    $email = new Email();
                     $id = $result['mail_id'];
                     $auditMailDb->updateInitialAuditMailStatus($id);
 
@@ -284,39 +272,29 @@ class CommonService
                     $fromFullName = $result['from_full_name'];
                     $subject = $result['subject'];
 
-                    $alertMail->addFrom($fromEmail, $fromFullName);
-                    $alertMail->addReplyTo($fromEmail, $fromFullName);
-                    $alertMail->addTo($result['to_email']);
+                    $email->from(sprintf('%s <%s>', $fromFullName, $fromEmail));
+                    $email->replyTo($fromEmail);
+                    $email->to($result['to_email']);
 
                     if (isset($result['cc']) && trim($result['cc']) != "") {
-                        $alertMail->addCc($result['cc']);
+                        $email->cc($result['cc']);
                     }
 
                     if (isset($result['bcc']) && trim($result['bcc']) != "") {
-                        $alertMail->addBcc($result['bcc']);
+                        $email->bcc($result['bcc']);
                     }
 
-                    $alertMail->setSubject($subject);
-
-                    $html = new MimePart($result['message']);
-                    $html->type = "text/html";
-
-                    $body = new MimeMessage();
-                    $body->setParts(array($html));
+                    $email->subject($subject);
+                    $email->html($result['message']);
 
                     $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id;
                     if (is_dir($dirPath)) {
-                        $dh  = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id);
+                        $dh = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id);
                         // while (($filename = readdir($dh)) !== false) {
                         foreach ($dh as $filename => $value) {
                             if (!in_array($value, array(".", ".."))) {
-                                $fileContent = fopen($dirPath . DIRECTORY_SEPARATOR . $value, 'r');
-                                $attachment = new MimePart($fileContent);
-                                $attachment->filename    = $value;
-                                $attachment->type        = Mime::TYPE_OCTETSTREAM;
-                                $attachment->encoding    = Mime::ENCODING_BASE64;
-                                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
-                                $body->addPart($attachment);
+                                $filePath = $dirPath . DIRECTORY_SEPARATOR . $value;
+                                $email->attachFromPath($filePath, $value);
                             }
                         }
                         // }
@@ -324,16 +302,13 @@ class CommonService
                         $this->removeDirectory($dirPath);
                     }
 
-                    $alertMail->setBody($body);
-
                     try {
-                        $transport->send($alertMail);
+                        $mailer->send($email);
                         $auditMailDb->updateAuditMailStatus($id);
                         if (isset($result['audit_ids']) && !empty($result['audit_ids'])) {
                             $spiFormV6Db->updateAuditMailSentStatus($result['audit_ids']);
                         }
-
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         error_log($e->getMessage());
                         error_log("Email failed for ID: " . $id);
                     }
@@ -735,28 +710,51 @@ class CommonService
         return $generator->generatePassword();
     }
 
-    public static function generateRandomNumbers(int $length = 6, string $seeds = 'numeric'): string
+    /**
+     * Encode data to JSON safely.
+     *
+     * @param mixed $data
+     * @param int   $options
+     * @param int   $depth
+     * @return string
+     * @throws \JsonException
+     */
+    public static function jsonEncode(mixed $data, int $options = 0, int $depth = 512): string
     {
-        // Possible seeds
-        $seedings = [];
-        $seedings['alpha'] = 'abcdefghijklmnopqrstuvwxyz';
-        $seedings['numeric'] = '0123456789';
-        $seedings['alphanum'] = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        $seedings['hexidec'] = '0123456789abcdef';
+        // Default to Laminas-like behavior (escape <, >, &, ', " and throw on error)
+        $options |= JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR;
 
-        // Choose seed
-        if (isset($seedings[$seeds])) {
-            $seeds = $seedings[$seeds];
+        return json_encode($data, $options, $depth);
+    }
+
+    /**
+     * Generate a numeric OTP.
+     *
+     * @param int  $digits              Length of the OTP (e.g., 4–8)
+     * @param bool $allowLeadingZero    If false, first digit will be 1–9
+     */
+    public static function generateOtp(int $digits = 6, bool $allowLeadingZero = true): string
+    {
+        if ($digits < 1) {
+            throw new \InvalidArgumentException('OTP length must be >= 1');
         }
 
-        // Generate
-        $str = '';
-        $seedsCount = strlen($seeds);
+        $otp = '';
 
-        for ($i = 0; $i < $length; $i++) {
-            $str .= $seeds[random_int(0, $seedsCount - 1)];
+        if ($allowLeadingZero || $digits === 1) {
+            // All digits 0–9
+            for ($i = 0; $i < $digits; $i++) {
+                $otp .= (string) random_int(0, 9);
+            }
+            return $otp;
         }
 
-        return $str;
+        // First digit 1–9 to avoid leading zero
+        $otp .= (string) random_int(1, 9);
+        for ($i = 1; $i < $digits; $i++) {
+            $otp .= (string) random_int(0, 9);
+        }
+
+        return $otp;
     }
 }

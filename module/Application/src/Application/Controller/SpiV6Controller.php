@@ -6,7 +6,7 @@ use Application\Service\CommonService;
 use Application\Service\OdkFormService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Json\Json;
+
 
 class SpiV6Controller extends AbstractActionController
 {
@@ -34,7 +34,7 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSpiV6SubmissionsDetails($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         return new ViewModel(array(
             'testingPointResult' => $testingPointResult,
@@ -162,8 +162,10 @@ class SpiV6Controller extends AbstractActionController
     public function auditPerformanceAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseDataV6($params);
             $perf1 = $this->odkFormService->getPerformanceV6($params);
             //var_dump($perf1);die;
@@ -176,9 +178,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function auditPerformanceSectionZeroAction()
     {
-
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseSectionS0DataV6($params);
             //var_dump('ss');die;
             $perf1 = $this->odkFormService->getPerformanceV6($params);
@@ -192,8 +195,10 @@ class SpiV6Controller extends AbstractActionController
     public function auditPerformanceSectionZeroProtocolAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $auditRoundWiseData = $this->odkFormService->getAuditRoundWiseSectionD0DataV6($params);
             //var_dump('ss');die;
             $perf1 = $this->odkFormService->getPerformanceV6($params);
@@ -207,8 +212,10 @@ class SpiV6Controller extends AbstractActionController
     public function worstPerformanceAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $zeroCounts = $this->odkFormService->getZeroQuestionCountsV6($params);
             $spiV3Labels = $this->odkFormService->getSpiV6FormLabels();
             $viewModel = new ViewModel();
@@ -220,9 +227,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function auditLocationsAction()
     {
-
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocationV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
@@ -239,7 +247,7 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllSubmissionsDatasV6($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         } else {
             $result = $this->odkFormService->getPendingFacilityNamesV6();
 
@@ -251,8 +259,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function mergeFacilityNameAction()
     {
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
 
             $result = $this->odkFormService->mergeFacilityName($params);
             $viewModel = new ViewModel();
@@ -270,8 +280,10 @@ class SpiV6Controller extends AbstractActionController
     public function deleteAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $result = $this->odkFormService->deleteAuditDataV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
@@ -283,8 +295,10 @@ class SpiV6Controller extends AbstractActionController
     public function spirtv6DatewiseAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $perflast30 = $this->odkFormService->getPerformanceLast30DaysV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('perflast30' => $perflast30))
@@ -296,8 +310,10 @@ class SpiV6Controller extends AbstractActionController
     public function testingVolumeDatewiseAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $testingVolume = $this->odkFormService->getAllApprovedTestingVolumeV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('testingVolume' => $testingVolume))
@@ -314,7 +330,7 @@ class SpiV6Controller extends AbstractActionController
             $params = $request->getPost();
             $result = $this->odkFormService->getViewDataDetailsV6($params);
             // print_r($result); die;
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         $source = '';
         $roundno = '';
@@ -355,7 +371,7 @@ class SpiV6Controller extends AbstractActionController
             $params = $request->getPost();
             $result = $this->odkFormService->getViewDataS0DetailsV6($params);
             //var_dump($result);die;
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         $source = '';
         $roundno = '';
@@ -393,7 +409,7 @@ class SpiV6Controller extends AbstractActionController
             $params = $request->getPost();
             $result = $this->odkFormService->getViewDataD0DetailsV6($params);
             //var_dump($result);die;
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         $source = '';
         $roundno = '';
@@ -427,8 +443,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function getTestingPointTypeNamesAction()
     {
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
 
             $result = $this->odkFormService->getTestingPointTypeNamesByTypeV6($params);
             $viewModel = new ViewModel();
@@ -440,10 +458,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function downloadSpiderChartAction()
     {
-
-
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             // $result = $this->odkFormService->getAuditRoundWiseDataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
@@ -455,8 +473,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function downloadSectionZeroSpiderChartAction()
     {
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             // $result = $this->odkFormService->getAuditRoundWiseS0DataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
@@ -468,8 +488,10 @@ class SpiV6Controller extends AbstractActionController
 
     public function downloadSectionZeroProtocolSpiderChartAction()
     {
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             // $result = $this->odkFormService->getAuditRoundWiseD0DataChartV6($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
@@ -510,8 +532,10 @@ class SpiV6Controller extends AbstractActionController
     public function removeAuditAction()
     {
 
-        if ($this->getRequest()->isPost()) {
-            $params = $this->getRequest()->getPost();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $params = $request->getPost();
             $result = $this->odkFormService->removeAuditV6($params);
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('result' => $result))
@@ -523,6 +547,7 @@ class SpiV6Controller extends AbstractActionController
     public function saveDownloadDataAction()
     {
 
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -546,6 +571,7 @@ class SpiV6Controller extends AbstractActionController
     public function getDistrictByProvinceAction()
     {
 
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -579,7 +605,7 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllValidateSpiv3Details($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
     public function addSpiv3ValidateDataAction()
@@ -605,6 +631,7 @@ class SpiV6Controller extends AbstractActionController
 
     public function getDistrictBasedProvinceAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
@@ -619,6 +646,7 @@ class SpiV6Controller extends AbstractActionController
 
     public function exportViewDataV6Action()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();

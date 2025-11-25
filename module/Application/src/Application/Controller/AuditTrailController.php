@@ -30,7 +30,6 @@ class AuditTrailController extends AbstractActionController
                 $result = $this->auditTrailService->getSpiV6Details($params);
                 $colCount = 320;
             }
-            //return $this->getResponse()->setContent(Json::encode($result));
             return new ViewModel(array(
                 'result' => $result,
                 'params' => $params,

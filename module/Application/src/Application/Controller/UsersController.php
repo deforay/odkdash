@@ -3,7 +3,7 @@
 namespace Application\Controller;
 
 use Laminas\Config\Config;
-use Laminas\Json\Json;
+
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
@@ -32,7 +32,7 @@ class UsersController extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->userService->getAllUsers($params);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
     }
 

@@ -4,7 +4,7 @@ namespace Application\Controller;
 
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Json\Json;
+
 
 class SpiV6ReportsController extends AbstractActionController
 {
@@ -30,10 +30,10 @@ class SpiV6ReportsController extends AbstractActionController
         if ($request->isPost()) {
             $param = $request->getPost();
             $result = $this->odkFormService->getAllApprovedV6FormSubmissionsTable($param);
-            return $this->getResponse()->setContent(Json::encode($result));
+            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
         }
         $spiV3auditRoundNo = $this->odkFormService->getSpiV6FormAuditNo();
-        
+
         $pendingCount = $this->odkFormService->getSpiV6PendingCount();
         //$levelNamesResult = $this->odkFormService->getSpiV6FormUniqueLevelNames();
         $testingPointResult = $this->odkFormService->getAllSpiV6TestingPointType();
@@ -53,7 +53,7 @@ class SpiV6ReportsController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            
+
             $result = $this->odkFormService->exportV6FacilityReport($params);
             $viewModel = new ViewModel(array('result' => $result));
             $viewModel->setTerminal(true);
