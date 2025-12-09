@@ -72,8 +72,8 @@ if ($language == 'Portuguese') {
     $langDateFormat = '(dd/mm/yyyy)';
 }
 //echo '<pre>'; print_r($formData); die;
-$fId = (isset($formData['facilityInfo']['ffId'])) ? ucwords($formData['facilityInfo']['ffId']) : '';
-$fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facilityInfo']['fName']) : '';
+$fId = (isset($formData['facilityInfo']['ffId']) && trim($formData['facilityInfo']['ffId'])!='') ? ucwords($formData['facilityInfo']['ffId']) : $formData['facilityid'];
+$fName = (isset($formData['facilityInfo']['fName']) && trim($formData['facilityInfo']['fName'])!='') ? ucwords($formData['facilityInfo']['fName']) : $formData['facilityname'];
 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 $testingTab .= '<tr>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $this->humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
