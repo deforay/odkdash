@@ -4,8 +4,9 @@ namespace Application\Controller;
 
 use Laminas\Config\Config;
 
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use Application\Service\CommonService;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class ProvincesController extends AbstractActionController
 {
@@ -58,13 +59,14 @@ class ProvincesController extends AbstractActionController
         }
     }
 
-    public function getDistrictByProvinceAction(){
+    public function getDistrictByProvinceAction()
+    {
         $result = "";
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
         if ($request->isPost()) {
             $params = $request->getPost();
-            $provinceId=base64_decode($params['provinceId']);
+            $provinceId = base64_decode($params['provinceId']);
             $result = $this->provinceService->getAllDistrictByProvince($provinceId);
         }
         $viewModel = new ViewModel();

@@ -4,8 +4,9 @@ namespace Application\Controller;
 
 use Laminas\Config\Config;
 
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use Application\Service\CommonService;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class UsersController extends AbstractActionController
 {

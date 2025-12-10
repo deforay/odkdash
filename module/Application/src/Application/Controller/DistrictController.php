@@ -40,7 +40,7 @@ class DistrictController extends AbstractActionController
             $params = $request->getPost();
             $this->provinceService->addDistrict($params);
             return $this->redirect()->toRoute("district");
-        }else{
+        } else {
             $provinceResult = $this->provinceService->getAllActiveProvinces();
             return new ViewModel(array(
                 'provinceResult' => $provinceResult

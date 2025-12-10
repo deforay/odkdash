@@ -2,11 +2,12 @@
 
 namespace Application\Controller;
 
-use Application\Model\SpiRtFacilitiesTable;
 use Laminas\Config\Config;
-
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+
+use Application\Service\CommonService;
+use Application\Model\SpiRtFacilitiesTable;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 class FacilityController extends AbstractActionController
 {
@@ -15,7 +16,7 @@ class FacilityController extends AbstractActionController
     private $odkFormService = null;
     private $provinceService = null;
 
-    public function __construct($facilityService, $odkFormService,$provinceService)
+    public function __construct($facilityService, $odkFormService, $provinceService)
     {
         $this->facilityService = $facilityService;
         $this->odkFormService = $odkFormService;
@@ -44,7 +45,7 @@ class FacilityController extends AbstractActionController
             $params = $request->getPost();
             $result = $this->facilityService->addFacility($params);
             return $this->redirect()->toRoute("spi-facility");
-        }else{
+        } else {
             $provinceResult = $this->provinceService->getAllActiveProvinces();
             $countries = $this->provinceService->getAllMapedCountries();
             return new ViewModel(array(
@@ -214,15 +215,16 @@ class FacilityController extends AbstractActionController
 
     public function uploadFacilityAction()
     {
+        /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
 
         if ($request->isPost()) {
             $params = $request->getPost();
             $result = $this->facilityService->uploadFacility($params);
-            if(empty($result)){
-               return $this->redirect()->toRoute("upload-facility");
-            }else{
-            // Build query string for the result parameters
+            if (empty($result)) {
+                return $this->redirect()->toRoute("upload-facility");
+            } else {
+                // Build query string for the result parameters
                 $query = http_build_query([
                     'total' => $result['total'],
                     'notAdded' => $result['notAdded'],
@@ -237,7 +239,8 @@ class FacilityController extends AbstractActionController
 
     public function checkProvinceDistrictAction()
     {
-       $request = $this->getRequest();
+        /** @var \Laminas\Http\Request $request */
+        $request = $this->getRequest();
 
         if ($request->isPost()) {
             $params = $request->getPost();

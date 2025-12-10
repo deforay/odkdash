@@ -2,8 +2,9 @@
 
 namespace Application\Controller;
 
-use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
+use Application\Service\CommonService;
+use Laminas\Mvc\Controller\AbstractActionController;
 
 
 class SpiV3Controller extends AbstractActionController
@@ -96,7 +97,7 @@ class SpiV3Controller extends AbstractActionController
             return $viewModel;
         } else {
             $id = ($this->params()->fromRoute('id'));
-            $formData = $this->odkFormService->getFormData($id,'yes');
+            $formData = $this->odkFormService->getFormData($id, 'yes');
             $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
             $viewModel->setTerminal(true);
             return $viewModel;
@@ -106,7 +107,7 @@ class SpiV3Controller extends AbstractActionController
     public function correctiveActionPdfAction()
     {
         $id = ($this->params()->fromRoute('id'));
-        $formData = $this->odkFormService->getFormData($id,'yes');
+        $formData = $this->odkFormService->getFormData($id, 'yes');
         $configData = $this->commonService->getGlobalConfigDetails();
         $viewModel = new ViewModel(array('formData' => $formData, 'configData' => $configData));
         $viewModel->setTerminal(true);
@@ -173,7 +174,7 @@ class SpiV3Controller extends AbstractActionController
             $allSubmissions = $this->odkFormService->getAllApprovedSubmissionLocation($params);
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
-            $viewModel->setVariables(array('allSubmissions' => $allSubmissions,'configData'=>$configData))
+            $viewModel->setVariables(array('allSubmissions' => $allSubmissions, 'configData' => $configData))
                 ->setTerminal(true);
             return $viewModel;
         }
