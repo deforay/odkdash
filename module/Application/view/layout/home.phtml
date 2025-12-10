@@ -36,12 +36,8 @@ $totalVersions = count(explode(",", $web_version));
     rel="stylesheet" />
 
   <!-- Vendor CSS Files -->
-  <link
-    href="<?php echo $this->basePath('assets/home/bootstrap/css/bootstrap.min.css'); ?>"
-    rel="stylesheet" />
-  <link
-    href="<?php echo $this->basePath('assets/home/bootstrap-icons/bootstrap-icons.css'); ?>"
-    rel="stylesheet" />
+  <link href="<?php echo $this->basePath('assets/home/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet" />
+  <link href="<?php echo $this->basePath('assets/home/bootstrap-icons/bootstrap-icons.css'); ?>" rel="stylesheet" />
   <link href="<?php echo $this->basePath('assets/home/aos/aos.css'); ?>" rel="stylesheet" />
 
   <!-- Main CSS File -->
@@ -65,18 +61,20 @@ $totalVersions = count(explode(",", $web_version));
         <?php
         // $config = $this->GlobalConfigHelper();
         if (!empty($config) && !empty($config['logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
-        ?>
+          ?>
           <img alt="Logo" src="<?php echo $this->basePath('uploads/logo/' . $config['logo']); ?>" style="width:100%;" />
-        <?php
+          <?php
         } else {
-        ?>
-          <img src="<?php echo $this->basePath('assets/img/logo.png') ?>" style="width:100%;background-color: var(--accent-color);" />
-        <?php
+          ?>
+          <img src="<?php echo $this->basePath('assets/img/logo.png') ?>"
+            style="width:100%;background-color: var(--accent-color);" />
+          <?php
         }
         if (!empty($config) && !empty($config['additional_logo']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {
-        ?>
-          <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" alt="Additional Logo" style="width:100%;" />
-        <?php
+          ?>
+          <img src="<?php echo $this->basePath('uploads/logo/' . $config['additional_logo']); ?>" alt="Additional Logo"
+            style="width:100%;" />
+          <?php
         }
         ?>
       </a>
@@ -89,24 +87,33 @@ $totalVersions = count(explode(",", $web_version));
         <?php if (isset($acl) && $acl->isAllowed($role, "Application\Controller\IndexController", "index")) { ?>
           <?php if ($totalVersions == 1) { ?>
             <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-              <a class="btn-getstarted" href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
+              <a class="btn-getstarted"
+                href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
             <?php } elseif (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-              <a class="btn-getstarted" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
+              <a class="btn-getstarted"
+                href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><?php echo $this->translate('Dashboard'); ?></a>
             <?php } ?>
           <?php } else { ?>
             <div class="dropdown">
-              <a class="btn btn-getstarted dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a class="btn btn-getstarted dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
                 <span><?php echo $this->translate('Dashboard'); ?></span>
               </a>
               <ul class="dropdown-menu">
                 <?php if (preg_match("/v3/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardController", "index")) { ?>
-                  <li><a class="dropdown-item" href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a></li>
+                  <li><a class="dropdown-item"
+                      href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a>
+                  </li>
                 <?php } ?>
                 <?php if (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                  <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a></li>
+                  <li><a class="dropdown-item"
+                      href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a>
+                  </li>
                 <?php } ?>
                 <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
-                  <li><a class="dropdown-item" href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a></li>
+                  <li><a class="dropdown-item"
+                      href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a>
+                  </li>
                 <?php } ?>
 
               </ul>
@@ -114,7 +121,8 @@ $totalVersions = count(explode(",", $web_version));
           <?php } ?>
         <?php } ?>
       <?php } else { ?>
-        <a class="btn-getstarted" href="<?php echo $this->url('login', ['action' => 'index']); ?>"><?php echo $this->translate('Login'); ?></a>
+        <a class="btn-getstarted"
+          href="<?php echo $this->url('login', ['action' => 'index']); ?>"><?php echo $this->translate('Login'); ?></a>
       <?php } ?>
     </div>
   </header>
@@ -128,16 +136,15 @@ $totalVersions = count(explode(",", $web_version));
     <div class="footer-top"></div>
 
     <div class=" copyright text-center mt-4">
-      <p><?= $this->translate($footerText . " This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC)."); ?>
+      <p>
+        <?= ($footerText ?? '') . ' ' . $this->translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC)."); ?>
       </p>
     </div>
   </footer>
 
   <!-- Scroll Top -->
-  <a
-    href="#"
-    id="scroll-top"
-    class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
 
   <!-- Preloader -->
   <div id="preloader"></div>

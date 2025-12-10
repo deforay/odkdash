@@ -455,7 +455,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $data['meta-ui-version'] = '';
             $data['meta-submission-date'] = $submissionData['__system']["submissionDate"];
             $data['meta-is-complete'] = '1';
-            $data['meta-date-marked-as-complete'] =  explode("T", $submissionData["end"])[0];
+            $data['meta-date-marked-as-complete'] = explode("T", $submissionData["end"])[0];
             $data['start'] = $submissionData['start'] ?? null;
             $data['end'] = $submissionData['end'] ?? null;
             $data['today'] = $submissionData['today'] ?? null;
@@ -1343,9 +1343,9 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($maxDate === null || $auditDate > $maxDate) {
                 $maxDate = $auditDate;
             }
-            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+            $scorePer = round((float) $aRow['AUDIT_SCORE_PERCENTAGE']);
             $row = [];
-            $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+            $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
             if (isset($scorePer) && $scorePer < 40) {
                 $level = 0;
                 $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
@@ -1940,8 +1940,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             $approve = '';
             $downloadPdf = "";
             $aRow['AUDIT_SCORE_PERCENTAGE'] = (float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0);
-            $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
-            $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+            $scorePer = round((float) $aRow['AUDIT_SCORE_PERCENTAGE']);
+            $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
             if (isset($scorePer) && $scorePer < 40) {
                 $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
             } elseif (isset($scorePer) && $scorePer >= 40 && $scorePer < 60) {
@@ -2239,8 +2239,8 @@ class SpiFormVer6Table extends AbstractTableGateway
     public function updateFormMetadata($id, $key, $value, $formMetaData)
     {
         $existingMetadata = !empty($formMetaData)
-                ? json_decode($formMetaData, true)
-                : [];
+            ? json_decode($formMetaData, true)
+            : [];
 
         if (isset($existingMetadata[$key]) && $existingMetadata[$key] === $value) {
             return; // Skip if already set
@@ -2259,9 +2259,9 @@ class SpiFormVer6Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()
-                    ->from('spi_form_v_6')
-                    ->columns(['id', 'form_metadata'])
-                    ->where(['id' => $auditIdArray]);
+            ->from('spi_form_v_6')
+            ->columns(['id', 'form_metadata'])
+            ->where(['id' => $auditIdArray]);
 
         $queryStr = $sql->buildSqlString($query);
         $results = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -2371,14 +2371,14 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         foreach ($rResult as $row) {
 
-            $response[0]['PERSONAL_SCORE'][] = $row['PERSONAL_SCORE'];
-            $response[0]['PHYSICAL_SCORE'][] = $row['PHYSICAL_SCORE'];
-            $response[0]['SAFETY_SCORE'][] = $row['SAFETY_SCORE'];
-            $response[0]['PRETEST_SCORE'][] = $row['PRETEST_SCORE'];
-            $response[0]['TEST_SCORE'][] = $row['TEST_SCORE'];
-            $response[0]['POST_SCORE'][] = $row['POST_SCORE'];
-            $response[0]['EQA_SCORE'][] = $row['EQA_SCORE'];
-            $response[0]['RTRI_SCORE'][] = $row['RTRI_SCORE'];
+            $response[0]['PERSONAL_SCORE'][] = (float) $row['PERSONAL_SCORE'];
+            $response[0]['PHYSICAL_SCORE'][] = (float) $row['PHYSICAL_SCORE'];
+            $response[0]['SAFETY_SCORE'][] = (float) $row['SAFETY_SCORE'];
+            $response[0]['PRETEST_SCORE'][] = (float) $row['PRETEST_SCORE'];
+            $response[0]['TEST_SCORE'][] = (float) $row['TEST_SCORE'];
+            $response[0]['POST_SCORE'][] = (float) $row['POST_SCORE'];
+            $response[0]['EQA_SCORE'][] = (float) $row['EQA_SCORE'];
+            $response[0]['RTRI_SCORE'][] = (float) $row['RTRI_SCORE'];
         }
 
         $auditRoundWiseData = [];
@@ -4980,7 +4980,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $levelFour = 0;
 
         foreach ($rResult as $aRow) {
-            $scorePer = $aRow['AUDIT_SCORE_PERCENTAGE'];
+            $scorePer = (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
             $auditScore += $scorePer;
             $row = [];
 
@@ -5375,7 +5375,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = [];
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+                $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
                 if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
@@ -5786,7 +5786,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = [];
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+                $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
                 if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
