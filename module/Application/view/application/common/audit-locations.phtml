@@ -21,8 +21,8 @@ $isV6 = preg_match("/v6/i", $web_version);
 	}
 </style>
 <!--<link rel="stylesheet" type="text/css" href="< ?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>"/>-->
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.bootstrap4.min.css" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js" type="text/javascript"></script>
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/leaflet.css'); ?>" type="text/css" />
 <div class="am-content">
@@ -107,9 +107,10 @@ $isV6 = preg_match("/v6/i", $web_version);
 			function(data) {
 				$("#auditRndNoLocations").html(data);
 				//$("#hiddenAuditRndNoLocations").html(data);
-				$("#auditRndNoLocations").multipleSelect({
+				new TomSelect('#auditRndNoLocations', {
+					plugins: ['remove_button'],
 					placeholder: '<?= $this->translate('Please select one or more audit round(s)'); ?>',
-					width: '25%'
+					maxItems: null
 				});
 
 				// let x = [];

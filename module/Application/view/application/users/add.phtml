@@ -9,8 +9,8 @@ foreach ($tokenResults as $token) {
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/tokenfield.min.css'); ?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/jasny-bootstrap.min.css'); ?>" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/toastify.min.css'); ?>" type="text/css" />
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.bootstrap4.min.css" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jasny-bootstrap.min.js'); ?>">
 	type = "text/javascript" >
 </script>
@@ -100,33 +100,27 @@ foreach ($tokenResults as $token) {
 								</div>
 								<div class="form-group col-lg-6 country" style="display:none">
 									<label><?= $this->translate('Countries'); ?></label>
-									<div class="form-control">
-										<select multiple="multiple" name="country[]" id="country" title="<?= $this->translate('Please select the country'); ?>">
-											<?php foreach($countries as $row){ ?>
-												<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
-											<?php } ?>
-										</select>
-									</div>
+									<select multiple="multiple" name="country[]" id="country" placeholder="<?= $this->translate('Please select country.'); ?>">
+										<?php foreach($countries as $row){ ?>
+											<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
+										<?php } ?>
+									</select>
 								</div>
 								<div class="form-group col-lg-6 province" style="display:none">
 									<label><?= $this->translate('Provinces'); ?></label>
-									<div class="form-control">
-										<select multiple="multiple" name="province[]" id="province" title="<?= $this->translate('Please select the province'); ?>">
-											<?php foreach($provinces as $row){ ?>
-												<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
-											<?php } ?>
-										</select>
-									</div>
+									<select multiple="multiple" name="province[]" id="province" placeholder="<?= $this->translate('Please select province.'); ?>">
+										<?php foreach($provinces as $row){ ?>
+											<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
+										<?php } ?>
+									</select>
 								</div>
 								<div class="form-group col-lg-6 district" style="display:none">
 									<label><?= $this->translate('Districts'); ?></label>
-									<div class="form-control">
-										<select multiple="multiple" name="district[]" id="district" title="<?= $this->translate('Please select the district'); ?>">
-											<?php foreach($districts as $row){ ?>
-												<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
-											<?php } ?>
-										</select>
-									</div>
+									<select multiple="multiple" name="district[]" id="district" placeholder="<?= $this->translate('Please select district.'); ?>">
+										<?php foreach($districts as $row){ ?>
+											<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
+										<?php } ?>
+									</select>
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('User Image'); ?></label>
@@ -166,23 +160,22 @@ foreach ($tokenResults as $token) {
 <script src="<?php echo $this->basePath('assets/js/toastify-js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
 <script type="text/javascript">
+	var tomSelectCountry, tomSelectProvince, tomSelectDistrict;
+
 	$(document).ready(function() {
-		$("#country").multipleSelect({
-			placeholder: '<?= $this->translate('Please select country.'); ?>',
-			width: '100%',
-			minimumCountSelected: '2'
+		tomSelectCountry = new TomSelect('#country', {
+			plugins: ['remove_button'],
+			maxItems: null
 		});
 
-		$("#province").multipleSelect({
-			placeholder: '<?= $this->translate('Please select province.'); ?>',
-			width: '100%',
-			minimumCountSelected: '2'
+		tomSelectProvince = new TomSelect('#province', {
+			plugins: ['remove_button'],
+			maxItems: null
 		});
 
-		$("#district").multipleSelect({
-			placeholder: '<?= $this->translate('Please select district.'); ?>',
-			width: '100%',
-			minimumCountSelected: '2'
+		tomSelectDistrict = new TomSelect('#district', {
+			plugins: ['remove_button'],
+			maxItems: null
 		});
 
 		$('#token').tokenfield({
@@ -244,14 +237,18 @@ foreach ($tokenResults as $token) {
 
 	function getLocations() {
 		var mappingType = $("#mappingType").val();
-		var types = ['country', 'province', 'district'];
-		
-		types.forEach(function(type) {
+		var tomSelects = {
+			'country': tomSelectCountry,
+			'province': tomSelectProvince,
+			'district': tomSelectDistrict
+		};
+
+		Object.keys(tomSelects).forEach(function(type) {
 			if (mappingType === type) {
 				$("." + type).show();
 			} else {
 				$("." + type).hide();
-				$("." + type + " select").val([]).multipleSelect("refresh");
+				tomSelects[type].clear();
 			}
 		});
 	}

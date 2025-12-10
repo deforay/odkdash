@@ -311,15 +311,15 @@ class UsersTable extends AbstractTableGateway
     {
 
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
-        * you want to insert a non-database field (for example a counter or static image)
-        */
+         * you want to insert a non-database field (for example a counter or static image)
+         */
 
         $aColumns = array('first_name', 'last_name', 'email', 'status');
         $orderColumns = array('first_name', 'email', 'status');
 
         /*
-        * Paging
-        */
+         * Paging
+         */
         $sLimit = "";
         if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
             $sOffset = $parameters['iDisplayStart'];
@@ -327,8 +327,8 @@ class UsersTable extends AbstractTableGateway
         }
 
         /*
-        * Ordering
-        */
+         * Ordering
+         */
 
         $sOrder = "";
         if (isset($parameters['iSortCol_0'])) {
@@ -341,11 +341,11 @@ class UsersTable extends AbstractTableGateway
         }
 
         /*
-        * Filtering
-        * NOTE this does not match the built-in DataTables filtering which does it
-        * word by word on any field. It's possible to do here, but concerned about efficiency
-        * on very large tables, and MySQL's regex functionality is very limited
-        */
+         * Filtering
+         * NOTE this does not match the built-in DataTables filtering which does it
+         * word by word on any field. It's possible to do here, but concerned about efficiency
+         * on very large tables, and MySQL's regex functionality is very limited
+         */
 
         $sWhere = "";
         if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
@@ -385,9 +385,9 @@ class UsersTable extends AbstractTableGateway
         }
 
         /*
-        * SQL queries
-        * Get data to display
-        */
+         * SQL queries
+         * Get data to display
+         */
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('users');
@@ -418,7 +418,7 @@ class UsersTable extends AbstractTableGateway
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from('users');
+        $tQuery = $sql->select()->from('users');
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -640,6 +640,18 @@ class UsersTable extends AbstractTableGateway
         $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $loginContainer = new Container('credo');
         $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
+
+        if (!empty($userLocationMapResult)) {
+            // Convert object to array if needed
+            $userLocationMapResult = (array) $userLocationMapResult;
+
+            // Check if it's a single associative array (not indexed), wrap it in an array
+            if (!isset($userLocationMapResult[0])) {
+                $userLocationMapResult = [$userLocationMapResult];
+            }
+        } else {
+            $userLocationMapResult = [];
+        }
         foreach ($userLocationMapResult as $ulMap) {
             $userMappedIdsArray[] = $ulMap['location_id'];
             $userMappingType = $ulMap['mapping_type'];

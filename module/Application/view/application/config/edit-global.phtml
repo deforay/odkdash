@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/jasny-bootstrap.min.css'); ?>" />
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.bootstrap4.min.css" type="text/css" />
 <div class="am-content">
 	<div class="page-head">
 		<h2><?= $this->translate('Edit Global Config'); ?></h2>
@@ -246,12 +246,13 @@
 		</div>
 	</div>
 </div>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js" type="text/javascript"></script>
 <script>
 	$(document).ready(function() {
-		$("#web_version").multipleSelect({
+		new TomSelect('#web_version', {
+			plugins: ['remove_button'],
 			placeholder: '<?= $this->translate('Select Web Version'); ?>',
-			width: '100%'
+			maxItems: null
 		});
 		checkEnableWhatsapp();
 	});

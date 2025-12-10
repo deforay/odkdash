@@ -13,7 +13,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.bootstrap4.min.css" type="text/css" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css" />
 <style>
   td.details-control {
@@ -235,7 +235,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
 </div>
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js" type="text/javascript"></script>
 
 <script src="<?php echo $this->basePath('assets/lib/select2/js/select2.min.js'); ?>" type="text/javascript"></script>
 
@@ -252,12 +252,15 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
       '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
       '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Corrective Actions'); ?></a>';
   }
+  var tomSelectProvince;
+
   $(document).ready(function() {
     var startDate = "";
     var endDate = "";
-    $("#province").multipleSelect({
+    tomSelectProvince = new TomSelect('#province', {
+      plugins: ['remove_button'],
       placeholder: '<?= $this->translate('Select Province/District(s)'); ?>',
-      width: '100%'
+      maxItems: null
     });
     $('#date').daterangepicker({
         format: 'DD-MMM-YYYY',

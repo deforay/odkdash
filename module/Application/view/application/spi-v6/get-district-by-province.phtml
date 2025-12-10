@@ -1,4 +1,4 @@
-<select class="" id="district" multiple="multiple">
+<select class="" id="district" multiple="multiple" placeholder="Select District(s)">
     <?php
     foreach($result as $districtName){
     ?>
@@ -9,6 +9,10 @@
 </select>
 <script>
     $(document).ready(function () {
-        $("#district").multipleSelect({placeholder:'Select District(s)',width: '100%'});
+        new TomSelect('#district', {
+            plugins: ['remove_button'],
+            placeholder: 'Select District(s)',
+            maxItems: null
+        });
     });
 </script>

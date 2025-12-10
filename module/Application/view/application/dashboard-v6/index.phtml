@@ -7,9 +7,11 @@ $config = $this->GlobalConfigHelper();
 $mapDisplay = $config['dashboard_map_display'];
 $userMappingType = $sessionLogin->userMappingType;
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
-<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
-<link rel="stylesheet" href="<?php echo $this->basePath('assets/css/jquery.multiselect.css'); ?>" type="text/css" />
+<link rel="stylesheet" type="text/css"
+	href="<?php echo $this->basePath('assets/lib/select2/css/select2.min.css'); ?>" />
+<link rel="stylesheet" type="text/css"
+	href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.bootstrap4.min.css" type="text/css" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" type="text/css" />
 <link rel="stylesheet" href="<?php echo $this->basePath('assets/css/leaflet.css'); ?>" type="text/css" />
 <style>
@@ -88,12 +90,16 @@ $userMappingType = $sessionLogin->userMappingType;
 </style>
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
-<script src="<?php echo $this->basePath('assets/js/jquery.multiselect.js'); ?>" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/leaflet.js'); ?>"></script>
 <div class="am-content">
 	<div class="page-head">
 		<span style="">
-			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> <?= $this->translate('SPI-RRT Audits'); ?><a id="showFilterBtn" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;" onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a></h2>
+			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?>
+				<?= $this->translate('SPI-RRT Audits'); ?><a id="showFilterBtn"
+					class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;"
+					onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a>
+			</h2>
 		</span>
 	</div>
 	<div class="main-content">
@@ -104,11 +110,14 @@ $userMappingType = $sessionLogin->userMappingType;
 					<div class="panel-body">
 						<form role="form" class="form-horizontal">
 							<div class="form-group">
-								<label for="date" class="col-sm-2 control-label"><?= $this->translate('Date Range'); ?></label>
+								<label for="date"
+									class="col-sm-2 control-label"><?= $this->translate('Date Range'); ?></label>
 								<div class=" col-lg-4">
-									<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>" class="datepicker form-control" id="dateRange" readonly>
+									<input type="text" placeholder="<?= $this->translate('Select Date Range'); ?>"
+										class="datepicker form-control" id="dateRange" readonly>
 								</div>
-								<label for="auditRndNoFilter" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
+								<label for="auditRndNoFilter"
+									class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="auditRndNoFilter">
 										<option value=''><?= $this->translate('All'); ?></option>
@@ -122,64 +131,78 @@ $userMappingType = $sessionLogin->userMappingType;
 							</div>
 
 							<div class="form-group">
-								<label for="level" class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
+								<label for="level"
+									class="col-sm-2 control-label"><?= $this->translate('Level'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="level">
 										<option value=""><?= $this->translate('All'); ?></option>
-										<option value="Region/Province/Zone"><?= $this->translate('Region/Province/Zone'); ?></option>
+										<option value="Region/Province/Zone">
+											<?= $this->translate('Region/Province/Zone'); ?></option>
 										<option value="District"><?= $this->translate('District'); ?></option>
-										<option value="Referral center"><?= $this->translate('Referral center'); ?></option>
+										<option value="Referral center"><?= $this->translate('Referral center'); ?>
+										</option>
 										<option value="HealthCenter"><?= $this->translate('Health center'); ?></option>
 										<option value="Dispensary"><?= $this->translate('Dispensary'); ?></option>
 										<option value="Health Post"><?= $this->translate('Health Post'); ?></option>
 										<option value="Other"><?= $this->translate('Other'); ?></option>
 									</select>
 								</div>
-								<label for="affiliation" class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
+								<label for="affiliation"
+									class="col-sm-2 control-label"><?= $this->translate('Affiliation'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="affiliation">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<option value="Government"><?= $this->translate('Government'); ?></option>
 										<option value="Private"><?= $this->translate('Private'); ?></option>
-										<option value="Faith-based Organization"><?= $this->translate('Faith-based Organization'); ?></option>
-										<option value="Non-governmental organization"><?= $this->translate('Non-governmental organization'); ?></option>
+										<option value="Faith-based Organization">
+											<?= $this->translate('Faith-based Organization'); ?></option>
+										<option value="Non-governmental organization">
+											<?= $this->translate('Non-governmental organization'); ?></option>
 										<option value="Other"><?= $this->translate('Other'); ?></option>
 									</select>
 								</div>
 							</div>
-							 <div class="form-group">
-								<label for="country" class="col-sm-2 control-label country"><?= $this->translate('Country'); ?></label>
+							<div class="form-group">
+								<label for="country"
+									class="col-sm-2 control-label country"><?= $this->translate('Country'); ?></label>
 								<div class=" col-lg-4 country">
-									<select class="form-control" multiple="multiple" name="country" id="country" title="Please select the country">
+									<select class="form-control" multiple="multiple" name="country" id="country"
+										title="Please select the country">
 										<option value=""><?= $this->translate('All'); ?></option>
-										<?php foreach($locationResult['countries'] as $row){ ?>
-											<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
+										<?php foreach ($locationResult['countries'] as $row) { ?>
+											<option value="<?php echo $row['country_id']; ?>">
+												<?php echo ucwords($row['country_name']); ?></option>
 										<?php } ?>
 									</select>
 								</div>
-								<label for="province" class="col-sm-2 control-label province"><?= $this->translate('Province'); ?></label>
+								<label for="province"
+									class="col-sm-2 control-label province"><?= $this->translate('Province'); ?></label>
 								<div class=" col-lg-4 province">
 									<select class="" id="province" multiple="multiple">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['provinces'] as $val) { ?>
-											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+											<option value="<?php echo $val['geo_id']; ?>">
+												<?php echo ucwords($val['geo_name']); ?></option>
 										<?php } ?>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="district" class="col-sm-2 control-label district"><?= $this->translate('District'); ?></label>
+								<label for="district"
+									class="col-sm-2 control-label district"><?= $this->translate('District'); ?></label>
 								<div class=" col-lg-4 district">
 									<select class="form-control" id="district" multiple="multiple">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['districts'] as $val) { ?>
-											<option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+											<option value="<?php echo $val['geo_id']; ?>">
+												<?php echo ucwords($val['geo_name']); ?></option>
 										<?php } ?>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="scoreLevel" class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
+								<label for="scoreLevel"
+									class="col-sm-2 control-label"><?php echo $this->translate('Score Level'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="scoreLevel">
 										<option value=""><?= $this->translate('All'); ?></option>
@@ -190,15 +213,17 @@ $userMappingType = $sessionLogin->userMappingType;
 										<option value="4">4</option>
 									</select>
 								</div>
-								<label for="testPoint" class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
+								<label for="testPoint"
+									class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
 								<div class=" col-lg-4">
 									<select class="form-control" id="testPoint">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php
 										foreach ($testingPointResult as $val) {
-										?>
-											<option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
-										<?php
+											?>
+											<option value="<?php echo $val['testingPointType']; ?>">
+												<?php echo ucwords($val['testingPointType']); ?></option>
+											<?php
 										}
 										?>
 									</select>
@@ -208,8 +233,10 @@ $userMappingType = $sessionLogin->userMappingType;
 								<div class="testPointNameSection"></div>
 							</div>
 							<div class="form-group" style="text-align:center;">
-								<button type="button" onclick="search()" class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>
-								&nbsp;<a class="btn btn-space btn-primary" onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span><?= $this->translate('Hide Advanced Option'); ?></span></a>
+								<button type="button" onclick="search()"
+									class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>
+								&nbsp;<a class="btn btn-space btn-primary"
+									onclick="hideAdvanceSearch('advanceFilter','showFilterBtn');"><span><?= $this->translate('Hide Advanced Option'); ?></span></a>
 							</div>
 						</form>
 					</div>
@@ -226,7 +253,8 @@ $userMappingType = $sessionLogin->userMappingType;
 								<h3><?php echo $this->translate('Overall Performance'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apall')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSpiV6Data('apall')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -236,9 +264,17 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 					</div>
 					<div class="row chart-info">
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['oldestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['newestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span
+								class="title"><?= $this->translate('From Date'); ?></span><span
+								class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['oldestDate']) ?></span>
+						</div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span
+								class="title"><?= $this->translate('To Date'); ?></span><span
+								class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['newestDate']) ?></span>
+						</div>
+						<div class="col-xs-4" style="text-align:center;"><span
+								class="title"><?= $this->translate('No. of Audits'); ?></span><span
+								class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -247,10 +283,12 @@ $userMappingType = $sessionLogin->userMappingType;
 					<div class="widget-head">
 						<div class="title row">
 							<div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
-								<h3 style="font-size: 18px;"><?php echo $this->translate('Performance - Last 180 days'); ?></h3>
+								<h3 style="font-size: 18px;">
+									<?php echo $this->translate('Performance - Last 180 days'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apl180')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSpiV6Data('apl180')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -260,9 +298,17 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 					</div>
 					<div class="row chart-info">
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['oldestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['newestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span
+								class="title"><?php echo $this->translate('From Date'); ?></span><span
+								class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['oldestDate']) ?></span>
+						</div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span
+								class="title"><?php echo $this->translate('To Date'); ?></span><span
+								class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['newestDate']) ?></span>
+						</div>
+						<div class="col-xs-4" style="text-align:center;"><span
+								class="title"><?php echo $this->translate('No. of Audits'); ?></span><span
+								class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -275,13 +321,17 @@ $userMappingType = $sessionLogin->userMappingType;
 								<h3><?php echo $this->translate('Audit Performance'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('ap')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSpiV6Data('ap')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
 
-					<?= $this->translate('Date') . " : "; ?><input style="width:57%;" type="text" placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="spiRTv3">
-					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getspiRTv6()"><?php echo $this->translate('OK'); ?></a>
+					<?= $this->translate('Date') . " : "; ?><input style="width:57%;" type="text"
+						placeholder="<?php echo $this->translate('Enter Date'); ?>" class="datepicker limitBar"
+						id="spiRTv3">
+					<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+						onclick="getspiRTv6()"><?php echo $this->translate('OK'); ?></a>
 					<div id="dateRangePickerValue">
 						<div class="row chart-container">
 							<div class="col-md-12">
@@ -295,9 +345,17 @@ $userMappingType = $sessionLogin->userMappingType;
 							</div>
 						</div>
 						<div class="row chart-info">
-							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['oldestDate']) ?></span></div>
-							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['newestDate']) ?></span></div>
-							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+							<div class="col-xs-4" style="text-align:center;"><span
+									class="title"><?= $this->translate('From Date'); ?></span><span
+									class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['oldestDate']) ?></span>
+							</div>
+							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span
+									class="title"><?= $this->translate('To Date'); ?></span><span
+									class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['newestDate']) ?></span>
+							</div>
+							<div class="col-xs-4" style="text-align:center;"><span
+									class="title"><?= $this->translate('No. of Audits'); ?></span><span
+									class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
 						</div>
 					</div>
 				</div>
@@ -314,11 +372,15 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 						<div style="margin-top:2%;" class="row">
 							<div class="col-lg-6 col-md-6">
-								<input style="width:70%;margin-left:1%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="datepicker limitBar" id="testingVolumeDate">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getTestingVolumeValue()"><?php echo $this->translate('OK'); ?></a>
+								<input style="width:70%;margin-left:1%" type="text"
+									placeholder="<?= $this->translate('Enter Date'); ?>" class="datepicker limitBar"
+									id="testingVolumeDate">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+									onclick="getTestingVolumeValue()"><?php echo $this->translate('OK'); ?></a>
 							</div>
 							<div class="col-lg-6 col-md-6" style="text-align:right;">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('hv')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSpiV6Data('hv')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -337,7 +399,8 @@ $userMappingType = $sessionLogin->userMappingType;
 								<h3><?php echo $this->translate('Latest Audits'); ?></h3>
 							</div>
 							<div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('la')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSpiV6Data('la')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -349,7 +412,8 @@ $userMappingType = $sessionLogin->userMappingType;
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<button class="btn btn-primary" id="rtriStuff"><?= $this->translate("Show S0 and D0 Audit Performance Charts"); ?> </button>
+				<button class="btn btn-primary"
+					id="rtriStuff"><?= $this->translate("Show S0 and D0 Audit Performance Charts"); ?> </button>
 			</div>
 		</div>
 		<br>
@@ -362,18 +426,23 @@ $userMappingType = $sessionLogin->userMappingType;
 								<h3><?php echo $this->translate('Audit Performance S0'); ?></h3>
 							</div>
 							<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
-								<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSectionZeroSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSectionZeroSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="downloadSectionZeroSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSectionZeroSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 						<div style="margin-top:2%;" class="row">
 							<div class="col-lg-6 col-md-6">
-								<select class="" id="auditRndNoSectionZero" multiple="multiple" onchange="getAuditSectionZeroDetails()">
+								<select class="" id="auditRndNoSectionZero" multiple="multiple"
+									onchange="getAuditSectionZeroDetails()">
 									<?php
 									foreach ($spiV6auditRoundNo as $auditRoundNo) {
-									?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-									<?php
+										?>
+										<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+										</option>
+										<?php
 									}
 									?>
 								</select>
@@ -381,8 +450,11 @@ $userMappingType = $sessionLogin->userMappingType;
 
 							<div class="col-lg-6 col-md-6">
 								<label style=""><?php echo $this->translate('Date'); ?></label>
-								<input style="width:65%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="audiPerformanceDateSectionZero">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditSectionZeroDetails()"><?php echo $this->translate('OK'); ?></a>
+								<input style="width:65%" type="text"
+									placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+									id="audiPerformanceDateSectionZero">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+									onclick="getAuditSectionZeroDetails()"><?php echo $this->translate('OK'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -400,18 +472,23 @@ $userMappingType = $sessionLogin->userMappingType;
 								<h3><?php echo $this->translate('Audit Performance D0'); ?></h3>
 							</div>
 							<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
-								<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSectionZeroProtocolSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSectionZeroProtocolSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="downloadSectionZeroProtocolSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSectionZeroProtocolSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 						<div style="margin-top:2%;" class="row">
 							<div class="col-lg-6 col-md-6">
-								<select class="" id="auditRndNoSectionZeroProtocol" multiple="multiple" onchange="getAuditSectionZeroProtocolDetails()">
+								<select class="" id="auditRndNoSectionZeroProtocol" multiple="multiple"
+									onchange="getAuditSectionZeroProtocolDetails()">
 									<?php
 									foreach ($spiV6auditRoundNo as $auditRoundNo) {
-									?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-									<?php
+										?>
+										<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+										</option>
+										<?php
 									}
 									?>
 								</select>
@@ -419,8 +496,11 @@ $userMappingType = $sessionLogin->userMappingType;
 
 							<div class="col-lg-6 col-md-6">
 								<label style=""><?php echo $this->translate('Date'); ?></label>
-								<input style="width:65%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="audiPerformanceDateSectionZeroProtocol">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditSectionZeroProtocolDetails()"><?php echo $this->translate('OK'); ?></a>
+								<input style="width:65%" type="text"
+									placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+									id="audiPerformanceDateSectionZeroProtocol">
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+									onclick="getAuditSectionZeroProtocolDetails()"><?php echo $this->translate('OK'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -428,7 +508,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				</div>
 			</div>
 		</div>
-		<?php if ($mapDisplay == 'horizontal') : ?>
+		<?php if ($mapDisplay == 'horizontal'): ?>
 			<div class="row">
 				<div class="col-md-6" id="lefter">
 					<div class="widget widget-radar widget-pie">
@@ -438,8 +518,10 @@ $userMappingType = $sessionLogin->userMappingType;
 									<h3><?php echo $this->translate('Audit Performance'); ?></h3>
 								</div>
 								<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
-									<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+									<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default"
+										onclick="downloadSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+										onclick="viewSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
 								</div>
 							</div>
 							<div style="margin-top:2%;" class="row">
@@ -447,9 +529,11 @@ $userMappingType = $sessionLogin->userMappingType;
 									<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
-										?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
@@ -457,8 +541,11 @@ $userMappingType = $sessionLogin->userMappingType;
 
 								<div class="col-lg-6 col-md-6">
 									<label style=""><?php echo $this->translate('Date'); ?></label>
-									<input style="width:65%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="audiPerformanceDate">
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditDetails()"><?php echo $this->translate('OK'); ?></a>
+									<input style="width:65%" type="text"
+										placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+										id="audiPerformanceDate">
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+										onclick="getAuditDetails()"><?php echo $this->translate('OK'); ?></a>
 								</div>
 							</div>
 						</div>
@@ -486,20 +573,26 @@ $userMappingType = $sessionLogin->userMappingType;
 
 							<div style="margin-top:2%;" class="row">
 								<div class="col-lg-6 col-md-6">
-									<select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+									<select class="" id="auditRndWorstNo" multiple="multiple"
+										onchange="getAuditWorstDetails()">
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
-										?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
 								</div>
 								<div class="col-lg-6 col-md-6">
 									<label style="margin-left: 1%;"><?= $this->translate('Date'); ?></label>
-									<input style="width:57%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="worstDate">
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()"><?php echo $this->translate('OK'); ?></a>
+									<input style="width:57%" type="text"
+										placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+										id="worstDate">
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+										onclick="getAuditWorstDetails()"><?php echo $this->translate('OK'); ?></a>
 								</div>
 							</div>
 						</div>
@@ -520,20 +613,26 @@ $userMappingType = $sessionLogin->userMappingType;
 
 							<div style="margin-top:2%;" class="row">
 								<div class="col-lg-6 col-md-6">
-									<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+									<select class="" id="auditRndNoLocations" multiple="multiple"
+										onchange="getAuditLocationDetails()">
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
-										?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
 								</div>
 								<div class="col-lg-6 col-md-6">
 									<label style="margin-left: 1%;"><?= $this->translate('Date'); ?></label>
-									<input style="width:60%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="locationDateRange">
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()"><?php echo $this->translate('OK'); ?></a>
+									<input style="width:60%" type="text"
+										placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+										id="locationDateRange">
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+										onclick="getAuditLocationDetails()"><?php echo $this->translate('OK'); ?></a>
 								</div>
 							</div>
 						</div>
@@ -544,8 +643,8 @@ $userMappingType = $sessionLogin->userMappingType;
 					</div>
 				</div>
 			</div>
-		<?php else : // vertical layout
-		?>
+		<?php else:  // vertical layout
+				?>
 			<div class="row">
 				<div class="col-md-6" id="lefter">
 					<div class="widget widget-radar widget-pie">
@@ -555,8 +654,10 @@ $userMappingType = $sessionLogin->userMappingType;
 									<h3><?php echo $this->translate('Audit Performance'); ?></h3>
 								</div>
 								<div class="col-lg-5 col-sm-5 col-md-5 col-xs-5">
-									<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="downloadSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
+									<a style="display:none;" href="javascript:void(0)" class="btn btn-sm btn-default"
+										onclick="downloadSpiderPDF()"><?php echo $this->translate('PDF'); ?></a>
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+										onclick="viewSpiV6Data('apspi')"><?php echo $this->translate('View Data'); ?></a>
 								</div>
 							</div>
 							<div style="margin-top:2%;" class="row">
@@ -564,9 +665,11 @@ $userMappingType = $sessionLogin->userMappingType;
 									<select class="" id="auditRndNo" multiple="multiple" onchange="getAuditDetails()">
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
-										?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
@@ -574,8 +677,11 @@ $userMappingType = $sessionLogin->userMappingType;
 
 								<div class="col-lg-6 col-md-6">
 									<label style=""><?php echo $this->translate('Date'); ?></label>
-									<input style="width:65%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="audiPerformanceDate">
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditDetails()"><?php echo $this->translate('OK'); ?></a>
+									<input style="width:65%" type="text"
+										placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+										id="audiPerformanceDate">
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+										onclick="getAuditDetails()"><?php echo $this->translate('OK'); ?></a>
 								</div>
 							</div>
 						</div>
@@ -601,20 +707,26 @@ $userMappingType = $sessionLogin->userMappingType;
 
 							<div style="margin-top:2%;" class="row">
 								<div class="col-lg-6 col-md-6">
-									<select class="" id="auditRndWorstNo" multiple="multiple" onchange="getAuditWorstDetails()">
+									<select class="" id="auditRndWorstNo" multiple="multiple"
+										onchange="getAuditWorstDetails()">
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
-										?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
 								</div>
 								<div class="col-lg-6 col-md-6">
 									<label style="margin-left: 1%;"><?= $this->translate('Date'); ?></label>
-									<input style="width:57%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="worstDate">
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditWorstDetails()"><?php echo $this->translate('OK'); ?></a>
+									<input style="width:57%" type="text"
+										placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+										id="worstDate">
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+										onclick="getAuditWorstDetails()"><?php echo $this->translate('OK'); ?></a>
 								</div>
 							</div>
 						</div>
@@ -634,20 +746,26 @@ $userMappingType = $sessionLogin->userMappingType;
 
 							<div style="margin-top:2%;" class="row">
 								<div class="col-lg-6 col-md-6">
-									<select class="" id="auditRndNoLocations" multiple="multiple" onchange="getAuditLocationDetails()">
+									<select class="" id="auditRndNoLocations" multiple="multiple"
+										onchange="getAuditLocationDetails()">
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
-										?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
 								</div>
 								<div class="col-lg-6 col-md-6">
 									<label style="margin-left: 1%;"><?= $this->translate('Date'); ?></label>
-									<input style="width:60%" type="text" placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker" id="locationDateRange">
-									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="getAuditLocationDetails()"><?php echo $this->translate('OK'); ?></a>
+									<input style="width:60%" type="text"
+										placeholder="<?= $this->translate('Enter Date'); ?>" class="limitBar datepicker"
+										id="locationDateRange">
+									<a style="" href="javascript:void(0)" class="btn btn-sm btn-primary"
+										onclick="getAuditLocationDetails()"><?php echo $this->translate('OK'); ?></a>
 								</div>
 							</div>
 						</div>
@@ -669,7 +787,8 @@ $userMappingType = $sessionLogin->userMappingType;
 								<h3><?php echo $this->translate('Audit Dates'); ?></h3>
 							</div>
 							<div class="col-lg-2 col-sm-2 col-md-2 col-xs-2" style="text-align:center;">
-								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default" onclick="viewSpiV6Data('ad')"><?php echo $this->translate('View Data'); ?></a>
+								<a style="" href="javascript:void(0)" class="btn btn-sm btn-default"
+									onclick="viewSpiV6Data('ad')"><?php echo $this->translate('View Data'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -710,7 +829,8 @@ $userMappingType = $sessionLogin->userMappingType;
 						</span>
 					</div>
 					<div class="table-container">
-						<table id="latestAuditsTbl" class="datatables table table-striped table-bordered table-condensed">
+						<table id="latestAuditsTbl"
+							class="datatables table table-striped table-bordered table-condensed">
 							<thead>
 								<tr>
 									<th style="width:8%;"><?php echo $this->translate('Facility ID') ?></th>
@@ -720,14 +840,14 @@ $userMappingType = $sessionLogin->userMappingType;
 									<th style="width:8%;"><?php echo $this->translate('Status'); ?></th>
 									<?php if ($update || $approve || $email) { ?>
 										<th><?php echo $this->translate('Actions'); ?></th>
-									<?php  } ?>
+									<?php } ?>
 								</tr>
 							</thead>
 							<tbody>
 								<?php
 								foreach ($rawSubmissions as $row) {
 
-								?>
+									?>
 									<tr>
 										<td><?php echo $row['facilityid']; ?></td>
 										<td><?php echo $row['facilityname']; ?></td>
@@ -739,21 +859,26 @@ $userMappingType = $sessionLogin->userMappingType;
 											<td>
 												<?php
 												if ($update) {
-												?> <a href="/spi-v6/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+													?> <a href="/spi-v6/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i
+															class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
-													<a href="/email/email-v6/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
-												<?php
+													<a href="/email/email-v6/<?php echo base64_encode($row['id']); ?>"><i
+															class="fa fa-envelope"></i> Mail</a>
+													<?php
 												}
 
 												if ($row['status'] == 'pending' && $approve) { ?>
-													<a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')" style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;
+													<a href="javascript:void(0);"
+														onclick="approveStatus('<?php echo $row['id']; ?>')"
+														style="white-space:nowrap;"><i class="fa fa-check"></i>
+														Approve</a>&nbsp;&nbsp;
 												<?php } ?>
 											</td>
 
 										<?php } ?>
 									</tr>
-								<?php
+									<?php
 								}
 								?>
 							</tbody>
@@ -826,40 +951,40 @@ $userMappingType = $sessionLogin->userMappingType;
 		?>
 
 		var data = [{
-				y: <?php echo $perf1[0]['level0']; ?>,
-				color: color1,
-				name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level0']; ?>",
-				url: '/view-data?source=apall&level=level0'
-			},
-			{
-				y: <?php echo $perf1[0]['level1']; ?>,
-				color: color2,
-				name: "<?= $this->translate('Level 1 (40-59)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level1']; ?>",
-				url: '/view-data?source=apall&level=level1'
-			},
-			{
-				y: <?php echo $perf1[0]['level2']; ?>,
-				color: color3,
-				name: "<?= $this->translate('Level 2 (60-79)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level2']; ?>",
-				url: '/view-data?source=apall&level=level2'
-			},
-			{
-				y: <?php echo $perf1[0]['level3']; ?>,
-				color: color4,
-				name: "<?= $this->translate('Level 3 (80-89)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level3']; ?>",
-				url: '/view-data?source=apall&level=level3'
-			},
-			{
-				y: <?php echo $perf1[0]['level4']; ?>,
-				color: color5,
-				name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level4']; ?>",
-				url: '/view-data?source=apall&level=level4'
-			},
+			y: <?php echo $perf1[0]['level0']; ?>,
+			color: color1,
+			name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level0']; ?>",
+			url: '/view-data?source=apall&level=level0'
+		},
+		{
+			y: <?php echo $perf1[0]['level1']; ?>,
+			color: color2,
+			name: "<?= $this->translate('Level 1 (40-59)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level1']; ?>",
+			url: '/view-data?source=apall&level=level1'
+		},
+		{
+			y: <?php echo $perf1[0]['level2']; ?>,
+			color: color3,
+			name: "<?= $this->translate('Level 2 (60-79)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level2']; ?>",
+			url: '/view-data?source=apall&level=level2'
+		},
+		{
+			y: <?php echo $perf1[0]['level3']; ?>,
+			color: color4,
+			name: "<?= $this->translate('Level 3 (80-89)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level3']; ?>",
+			url: '/view-data?source=apall&level=level3'
+		},
+		{
+			y: <?php echo $perf1[0]['level4']; ?>,
+			color: color5,
+			name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perf1[0]['level4']; ?>",
+			url: '/view-data?source=apall&level=level4'
+		},
 
 
 		];
@@ -894,7 +1019,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				borderWidth: 0,
 				useHTML: true,
 				itemMarginBottom: 10,
-				labelFormatter: function() {
+				labelFormatter: function () {
 					return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">' + this.percentage.toFixed(1) + '% (No. of Audits ' + Highcharts.numberFormat(this.y, 0) + ')</span></div>';
 				}
 
@@ -914,7 +1039,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				colorByPoint: true,
 				point: {
 					events: {
-						click: function(e) {
+						click: function (e) {
 							//console.log(e.point.url);
 							window.open(e.point.url, '_blank');
 							e.preventDefault();
@@ -936,43 +1061,43 @@ $userMappingType = $sessionLogin->userMappingType;
 			$perflast30[0]['level3'] = ($perflast30[0]['level3'] > 0) ? $perflast30[0]['level3'] : 0;
 			$perflast30[0]['level4'] = ($perflast30[0]['level4'] > 0) ? $perflast30[0]['level4'] : 0;
 
-		?>
+			?>
 
 			var data = [{
-					y: <?php echo $perflast30[0]['level0']; ?>,
-					color: color1,
-					name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
-					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level0']; ?>",
-					url: '/view-data?source=ap&level=level0&drange=' + $("#spiRTv3").val()
-				},
-				{
-					y: <?php echo $perflast30[0]['level1']; ?>,
-					color: color2,
-					name: "<?= $this->translate('Level 1 (40-59)'); ?>",
-					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level1']; ?>",
-					url: '/view-data?source=ap&level=level1&drange=' + $("#spiRTv3").val()
-				},
-				{
-					y: <?php echo $perflast30[0]['level2']; ?>,
-					color: color3,
-					name: "<?= $this->translate('Level 2 (60-79)'); ?>",
-					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level2']; ?>",
-					url: '/view-data?source=ap&level=level2&drange=' + $("#spiRTv3").val()
-				},
-				{
-					y: <?php echo $perflast30[0]['level3']; ?>,
-					color: color4,
-					name: "<?= $this->translate('Level 3 (80-89)'); ?>",
-					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level3']; ?>",
-					url: '/view-data?source=ap&level=level3&drange=' + $("#spiRTv3").val()
-				},
-				{
-					y: <?php echo $perflast30[0]['level4']; ?>,
-					color: color5,
-					name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
-					number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level4']; ?>",
-					url: '/view-data?source=ap&level=level4&drange=' + $("#spiRTv3").val()
-				},
+				y: <?php echo $perflast30[0]['level0']; ?>,
+				color: color1,
+				name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level0']; ?>",
+				url: '/view-data?source=ap&level=level0&drange=' + $("#spiRTv3").val()
+			},
+			{
+				y: <?php echo $perflast30[0]['level1']; ?>,
+				color: color2,
+				name: "<?= $this->translate('Level 1 (40-59)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level1']; ?>",
+				url: '/view-data?source=ap&level=level1&drange=' + $("#spiRTv3").val()
+			},
+			{
+				y: <?php echo $perflast30[0]['level2']; ?>,
+				color: color3,
+				name: "<?= $this->translate('Level 2 (60-79)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level2']; ?>",
+				url: '/view-data?source=ap&level=level2&drange=' + $("#spiRTv3").val()
+			},
+			{
+				y: <?php echo $perflast30[0]['level3']; ?>,
+				color: color4,
+				name: "<?= $this->translate('Level 3 (80-89)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level3']; ?>",
+				url: '/view-data?source=ap&level=level3&drange=' + $("#spiRTv3").val()
+			},
+			{
+				y: <?php echo $perflast30[0]['level4']; ?>,
+				color: color5,
+				name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
+				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast30[0]['level4']; ?>",
+				url: '/view-data?source=ap&level=level4&drange=' + $("#spiRTv3").val()
+			},
 			];
 
 			<?php $total = $perflast30[0]['level0'] + $perflast30[0]['level1'] + $perflast30[0]['level2'] + $perflast30[0]['level3'] + $perflast30[0]['level4']; ?>
@@ -1005,7 +1130,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					borderWidth: 0,
 					useHTML: true,
 					itemMarginBottom: 10,
-					labelFormatter: function() {
+					labelFormatter: function () {
 						return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">' + this.percentage.toFixed(1) + '% (No. of Audits ' + Highcharts.numberFormat(this.y, 0) + ')</span></div>';
 					}
 
@@ -1027,7 +1152,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					colorByPoint: true,
 					point: {
 						events: {
-							click: function(e) {
+							click: function (e) {
 								window.open(e.point.url, '_blank');
 								e.preventDefault();
 							}
@@ -1037,7 +1162,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}]
 			});
 
-		<?php
+			<?php
 		}
 		?>
 
@@ -1058,40 +1183,40 @@ $userMappingType = $sessionLogin->userMappingType;
 		?>
 
 		var data = [{
-				y: <?php echo $perflast180[0]['level0']; ?>,
-				color: color1,
-				name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
-				number: "<?= $this->translate('No. of Audits') . " " . $perflast180[0]['level0']; ?>",
-				url: '/view-data?source=apl180&level=level0'
-			},
-			{
-				y: <?php echo $perflast180[0]['level1']; ?>,
-				color: color2,
-				name: "<?= $this->translate('Level 1 (40-59)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level1']; ?>",
-				url: '/view-data?source=apl180&level=level1'
-			},
-			{
-				y: <?php echo $perflast180[0]['level2']; ?>,
-				color: color3,
-				name: "<?= $this->translate('Level 2 (60-79)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level2']; ?>",
-				url: '/view-data?source=apl180&level=level2'
-			},
-			{
-				y: <?php echo $perflast180[0]['level3']; ?>,
-				color: color4,
-				name: "<?= $this->translate('Level 3 (80-89)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level3']; ?>",
-				url: '/view-data?source=apl180&level=level3'
-			},
-			{
-				y: <?php echo $perflast180[0]['level4']; ?>,
-				color: color5,
-				name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
-				number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level4']; ?>",
-				url: '/view-data?source=apl180&level=level4'
-			}
+			y: <?php echo $perflast180[0]['level0']; ?>,
+			color: color1,
+			name: "<?= $this->translate('Level 0 (Below 40)'); ?>",
+			number: "<?= $this->translate('No. of Audits') . " " . $perflast180[0]['level0']; ?>",
+			url: '/view-data?source=apl180&level=level0'
+		},
+		{
+			y: <?php echo $perflast180[0]['level1']; ?>,
+			color: color2,
+			name: "<?= $this->translate('Level 1 (40-59)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level1']; ?>",
+			url: '/view-data?source=apl180&level=level1'
+		},
+		{
+			y: <?php echo $perflast180[0]['level2']; ?>,
+			color: color3,
+			name: "<?= $this->translate('Level 2 (60-79)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level2']; ?>",
+			url: '/view-data?source=apl180&level=level2'
+		},
+		{
+			y: <?php echo $perflast180[0]['level3']; ?>,
+			color: color4,
+			name: "<?= $this->translate('Level 3 (80-89)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level3']; ?>",
+			url: '/view-data?source=apl180&level=level3'
+		},
+		{
+			y: <?php echo $perflast180[0]['level4']; ?>,
+			color: color5,
+			name: "<?= $this->translate('Level 4 (90 and above)'); ?>",
+			number: "<?php echo $this->translate('No. of Audits') . " " . $perflast180[0]['level4']; ?>",
+			url: '/view-data?source=apl180&level=level4'
+		}
 		];
 		<?php $total = $perflast180[0]['level0'] + $perflast180[0]['level1'] + $perflast180[0]['level2'] + $perflast180[0]['level3'] + $perflast180[0]['level4']; ?>
 		$('#widget-top-3').highcharts({
@@ -1123,7 +1248,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				borderWidth: 0,
 				useHTML: true,
 				itemMarginBottom: 10,
-				labelFormatter: function() {
+				labelFormatter: function () {
 					return '<div style="width:260px"><span style="float:left;">' + this.name + '</span><span style="float:right; ">' + this.percentage.toFixed(1) + '% (No. of Audits ' + Highcharts.numberFormat(this.y, 0) + ')</span></div>';
 				}
 			},
@@ -1142,7 +1267,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				colorByPoint: true,
 				point: {
 					events: {
-						click: function(e) {
+						click: function (e) {
 							window.open(e.point.url, '_blank');
 							e.preventDefault();
 						}
@@ -1165,7 +1290,8 @@ $userMappingType = $sessionLogin->userMappingType;
 		$volumeData = [];
 		$labNameData = [];
 		foreach ($allSubmissions as $row) {
-			if ($counter == 20) break;
+			if ($counter == 20)
+				break;
 			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
 				$color = '#FF0000';
 			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] < 60) {
@@ -1283,18 +1409,18 @@ $userMappingType = $sessionLogin->userMappingType;
 	function getspiRTv6() {
 		dateRange = $("#spiRTv3").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'spirtv6-datewise')); ?>", {
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				$("#dateRangePickerValue").html(data);
 			});
 	}
@@ -1302,18 +1428,18 @@ $userMappingType = $sessionLogin->userMappingType;
 	function getTestingVolumeValue() {
 		dateRange = $("#testingVolumeDate").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'testing-volume-datewise')); ?>", {
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				$("#testVolumeValues").html(data);
 			});
 	}
@@ -1323,20 +1449,20 @@ $userMappingType = $sessionLogin->userMappingType;
 		limitBar = $("#limitBar").val();
 		dateRange = $("#worstDate").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'worst-performance')); ?>", {
-				roundno: value,
-				limitBar: limitBar,
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			roundno: value,
+			limitBar: limitBar,
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				//alert(data);
 				$("#zeroCountChart").html(data);
 			});
@@ -1347,19 +1473,19 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNo").val();
 		dateRange = $("#audiPerformanceDate").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-performance')); ?>", {
-				roundno: value,
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				$("#radarChart").html(data);
 			});
 
@@ -1369,19 +1495,19 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNoSectionZero").val();
 		dateRange = $("#audiPerformanceDateSectionZero").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-performance-section-zero')); ?>", {
-				roundno: value,
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				$("#radarChartSectionZero").html(data);
 			});
 
@@ -1392,19 +1518,19 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNoSectionZeroProtocol").val();
 		dateRange = $("#audiPerformanceDateSectionZeroProtocol").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-performance-section-zero-protocol')); ?>", {
-				roundno: value,
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				$("#radarChartSectionZeroProtocol").html(data);
 			});
 
@@ -1416,19 +1542,19 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNoLocations").val();
 		dateRange = $("#locationDateRange").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'audit-locations')); ?>", {
-				roundno: value,
-				dateRange: dateRange,
-				auditRndNo: $("#auditRndNoFilter").val(),
-				testPoint: $("#testPoint").val(),
-				testPointName: $("#testPointName").val(),
-				level: $("#level").val(),
-				affiliation: $("#affiliation").val(),
-				country: $("#country").val(),
-				province: $("#province").val(),
-				district: $("#district").val(),
-				scoreLevel: $("#scoreLevel").val()
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange,
+			auditRndNo: $("#auditRndNoFilter").val(),
+			testPoint: $("#testPoint").val(),
+			testPointName: $("#testPointName").val(),
+			level: $("#level").val(),
+			affiliation: $("#affiliation").val(),
+			country: $("#country").val(),
+			province: $("#province").val(),
+			district: $("#district").val(),
+			scoreLevel: $("#scoreLevel").val()
+		},
+			function (data) {
 				//console.log(data);
 				$("#auditLocations").html(data);
 			});
@@ -1496,13 +1622,13 @@ $userMappingType = $sessionLogin->userMappingType;
 			$countJson = json_encode($eventCount);
 
 			if ($countJson != null && $countJson != "") {
-			?>
+				?>
 				var countJson = <?php echo $countJson; ?>
-			<?php
+				<?php
 			} else {
-			?>
+				?>
 				var countJson = null;
-			<?php
+				<?php
 			}
 			?>
 
@@ -1513,7 +1639,7 @@ $userMappingType = $sessionLogin->userMappingType;
 
 			$(".ui-datepicker").datepicker({
 				dateFormat: 'dd-M-yy',
-				onSelect: function(s, o) {
+				onSelect: function (s, o) {
 					var sd = new Date(s);
 					var weekdayName = weekday[sd.getDay()];
 					var monthName = month[sd.getMonth()];
@@ -1521,7 +1647,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					calNotesDay.html(weekdayName);
 					calNotesDate.html(monthName + " " + monthDay);
 				},
-				beforeShowDay: function(date) {
+				beforeShowDay: function (date) {
 					hdate = $.datepicker.formatDate('dd-M-yy', date);
 					if ($.inArray(hdate, eventDates) > -1) {
 						return [true, "event", "Audits on this date : " + countJson[hdate]];
@@ -1536,7 +1662,7 @@ $userMappingType = $sessionLogin->userMappingType;
 	function getdata() {
 		var Base64 = {
 			_keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-			encode: function(e) {
+			encode: function (e) {
 				var t = "";
 				var n, r, i, s, o, u, a;
 				var f = 0;
@@ -1558,7 +1684,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 				return t
 			},
-			decode: function(e) {
+			decode: function (e) {
 				var t = "";
 				var n, r, i;
 				var s, o, u, a;
@@ -1583,7 +1709,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				t = Base64._utf8_decode(t);
 				return t
 			},
-			_utf8_encode: function(e) {
+			_utf8_encode: function (e) {
 				e = e.replace(/rn/g, "n");
 				var t = "";
 				for (var n = 0; n < e.length; n++) {
@@ -1601,7 +1727,7 @@ $userMappingType = $sessionLogin->userMappingType;
 				}
 				return t
 			},
-			_utf8_decode: function(e) {
+			_utf8_decode: function (e) {
 				var t = "";
 				var n = 0;
 				var r = c1 = c2 = 0;
@@ -1633,11 +1759,11 @@ $userMappingType = $sessionLogin->userMappingType;
 			window.open('/common/audit-locations', '_blank');
 		}
 	}
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 
-		$('#rtriStuff').on('click', function() {
-			$('#rtriStuffDiv').toggle(100, function() {
+		$('#rtriStuff').on('click', function () {
+			$('#rtriStuffDiv').toggle(100, function () {
 				getAuditSectionZeroDetails();
 				getAuditSectionZeroProtocolDetails();
 
@@ -1652,20 +1778,20 @@ $userMappingType = $sessionLogin->userMappingType;
 		var startDate = "";
 		var endDate = "";
 		$('.datepicker').daterangepicker({
-				format: 'DD-MMM-YYYY',
-				startDate: moment().subtract('days', 29),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-					'Last 7 Days': [moment().subtract('days', 6), moment()],
-					'Last 30 Days': [moment().subtract('days', 29), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-				},
+			format: 'DD-MMM-YYYY',
+			startDate: moment().subtract('days', 29),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
+				'Last 7 Days': [moment().subtract('days', 6), moment()],
+				'Last 30 Days': [moment().subtract('days', 29), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 			},
-			function(start, end) {
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -1707,27 +1833,29 @@ $userMappingType = $sessionLogin->userMappingType;
 			placeholder: '<?= $this->translate('All'); ?>',
 			allowClear: true,
 			tags: false
-    	});
+		});
 		$("#district").select2({
 			width: '100%',
 			placeholder: '<?= $this->translate('All'); ?>',
 			allowClear: true,
 			tags: false
 		});
-		$("#auditRndNo,#auditRndNoSectionZero,#auditRndNoSectionZeroProtocol").multipleSelect({
-			placeholder: "<?= $this->translate("Audit round(s)"); ?>",
-			width: '31%',
-			minimumCountSelected: '2'
+		['#auditRndNo', '#auditRndNoSectionZero', '#auditRndNoSectionZeroProtocol'].forEach(function(selector) {
+			new TomSelect(selector, {
+				plugins: ['remove_button'],
+				placeholder: "<?= $this->translate("Audit round(s)"); ?>",
+				maxItems: null
+			});
 		});
-		$("#auditRndWorstNo").multipleSelect({
+		new TomSelect('#auditRndWorstNo', {
+			plugins: ['remove_button'],
 			placeholder: "<?= $this->translate("Audit round(s)"); ?>",
-			width: '25%',
-			minimumCountSelected: '2'
+			maxItems: null
 		});
-		$("#auditRndNoLocations").multipleSelect({
+		new TomSelect('#auditRndNoLocations', {
+			plugins: ['remove_button'],
 			placeholder: "<?= $this->translate("Select Audit round(s)"); ?>",
-			width: '30%',
-			minimumCountSelected: '2'
+			maxItems: null
 		});
 		getLocations();
 	});
@@ -1738,9 +1866,9 @@ $userMappingType = $sessionLogin->userMappingType;
 		conf = confirm("<?= $this->translate("Are you sure you want to approve this audit ?"); ?>");
 		if (conf) {
 			$.post("<?php echo $this->url('spi-v6-form', array('action' => 'approve-status')); ?>", {
-					id: id
-				},
-				function(data) {
+				id: id
+			},
+				function (data) {
 					if (data > 0) {
 						alert("<?= $this->translate("Audit updated successfully"); ?>");
 						window.location.href = window.location;
@@ -1754,10 +1882,10 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNo").val();
 		dateRange = $("#audiPerformanceDate").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-spider-chart')); ?>", {
-				roundno: value,
-				dateRange: dateRange
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange
+		},
+			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
@@ -1770,10 +1898,10 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNoSectionZero").val();
 		dateRange = $("#audiPerformanceDateSectionZero").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-section-zero-spider-chart')); ?>", {
-				roundno: value,
-				dateRange: dateRange
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange
+		},
+			function (data) {
 				console.log(data);
 				if (data == "" || data == null || data == undefined) {
 					alert("<?= $this->translate("Unable to generate download"); ?>");
@@ -1787,10 +1915,10 @@ $userMappingType = $sessionLogin->userMappingType;
 		value = $("#auditRndNoSectionZeroProtocol").val();
 		dateRange = $("#audiPerformanceDateSectionZeroProtocol").val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'download-section-zero-protocol-spider-chart')); ?>", {
-				roundno: value,
-				dateRange: dateRange
-			},
-			function(data) {
+			roundno: value,
+			dateRange: dateRange
+		},
+			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					alert("<?= $this->translate("Unable to generate download"); ?>");
 				} else {
@@ -1799,14 +1927,15 @@ $userMappingType = $sessionLogin->userMappingType;
 			});
 	}
 
-	$(function() {
+	$(function () {
 		<?php
 		$counter = 0;
 		$barData = [];
 		$labNameData = [];
 
 		foreach ($testingVolume as $row) {
-			if ($counter == 10) break;
+			if ($counter == 10)
+				break;
 			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
 				$color = '#FF0000';
 				$level = 0;
@@ -1827,7 +1956,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
 			// $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			// $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : "  . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
 		}
 
@@ -2049,7 +2178,7 @@ $userMappingType = $sessionLogin->userMappingType;
 					cursor: 'pointer',
 					point: {
 						events: {
-							click: function() {
+							click: function () {
 								location.href = this.options.url;
 							}
 						}
@@ -2130,9 +2259,9 @@ $userMappingType = $sessionLogin->userMappingType;
 		$.blockUI();
 		var testingPointType = $('#testPoint').val();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-testing-point-type-names')); ?>", {
-				testingPointType: testingPointType
-			},
-			function(data) {
+			testingPointType: testingPointType
+		},
+			function (data) {
 				$('.testPointNameSection').html(data);
 				$.unblockUI();
 			});
@@ -2165,13 +2294,14 @@ $userMappingType = $sessionLogin->userMappingType;
 		var province = $('#provinceDistrict').val();
 		if (province != '' && province != null) {
 			$.post("<?php echo $this->url('spi-v3-form', array('action' => 'get-district-by-province')); ?>", {
-					province: province
-				},
-				function(data) {
+				province: province
+			},
+				function (data) {
 					$('.districtFilter').html(data);
-					$("#district").multipleSelect({
+					new TomSelect('#district', {
+						plugins: ['remove_button'],
 						placeholder: '<?= $this->translate('Select District(s)'); ?>',
-						width: '100%'
+						maxItems: null
 					});
 				});
 		} else {
@@ -2182,9 +2312,9 @@ $userMappingType = $sessionLogin->userMappingType;
 	function getDistrictList() {
 		$.blockUI();
 		$.post("<?php echo $this->url('spi-v6-form', array('action' => 'get-district-based-province')); ?>", {
-				provinceId: $("#province").val()
-			},
-			function(data) {
+			provinceId: $("#province").val()
+		},
+			function (data) {
 				$.unblockUI();
 				// console.log(data); return false;
 				$('#district').html(data);
@@ -2195,8 +2325,8 @@ $userMappingType = $sessionLogin->userMappingType;
 		var mappingType = <?php echo json_encode($userMappingType); ?>;
 
 		var types = ['country', 'province', 'district'];
-		if(mappingType != ""){
-			types.forEach(function(type) {
+		if (mappingType != "") {
+			types.forEach(function (type) {
 				if (mappingType === 'country' && (type === 'country' || type === 'province' || type === 'district')) {
 					$("." + type).show();
 				} else if (mappingType === 'province' && type === 'province') {
@@ -2209,6 +2339,10 @@ $userMappingType = $sessionLogin->userMappingType;
 					// Reset the select values for hidden fields
 					$("." + type + " select").val([]);
 				}
+			});
+		} else {
+			types.forEach(function (type) {
+				$("." + type).show();
 			});
 		}
 	}

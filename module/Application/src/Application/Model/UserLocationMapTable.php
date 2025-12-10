@@ -2,12 +2,12 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Laminas\Db\Adapter\Adapter;
+use Application\Model\BaseTableGateway;
 
 
-class UserLocationMapTable extends AbstractTableGateway
+class UserLocationMapTable extends BaseTableGateway
 {
 
     protected $table = 'user_location_map';
@@ -20,6 +20,6 @@ class UserLocationMapTable extends AbstractTableGateway
 
     public function fetchSelectedLocation($id)
     {
-        return $this->select(array('user_id' => $id))->toArray();
+        return $this->selectOne(['user_id' => $id]);
     }
 }
