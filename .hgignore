@@ -32,5 +32,6 @@ Thumbs.db.orig
 .DS_Store.orig
 ^custom.global.php
 ^vendor/*
+^backups/*
 
 

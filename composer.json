@@ -37,7 +37,8 @@
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.6",
         "hackzilla/password-generator": "^1.7",
-        "twilio/sdk": "^8.8"
+        "twilio/sdk": "^8.8",
+        "amitdugar/db-tools": "^0.1.1"
     },
     "autoload": {
         "psr-4": {
