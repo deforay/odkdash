@@ -641,7 +641,7 @@ class UsersTable extends AbstractTableGateway
         $loginContainer = new Container('credo');
         $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
 
-        if (!empty($userLocationMapResult)) {
+        if (count($userLocationMapResult) > 0) {
             // Convert object to array if needed
             $userLocationMapResult = (array) $userLocationMapResult;
 
