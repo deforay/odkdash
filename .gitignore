@@ -1,14 +1,46 @@
-nbproject
-._*
-.vagrant
-.~lock.*
-.buildpath
+# Logs
+error_log
+error.log
+errors.log
+npm-debug.log
+
+# OS files
+Thumbs.db
+Thumbs.db.orig
 .DS_Store
+.DS_Store.orig
+._*
+
+# Editors / IDEs
 .idea
 .project
 .settings
-vendor
+.buildpath
+nbproject
+.~lock.*
+
+# Local / env
+.vagrant
+.env
+custom.global.php
+config/autoload/custom.global.php
+rector.php
+
+# Dependencies — ignore vendor/ but keep autoload.php
+/vendor/*
+!/vendor/autoload.php
 composer.phar
+
+# Generated dirs — ignore contents but keep index.php
+/application/cache/*
+!/application/cache/index.php
+/backup/*
+!/backup/index.php
+/backups/
+/public/uploads/*
+!/public/uploads/index.php
+/public/temporary/*
+!/public/temporary/index.php
 
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md
