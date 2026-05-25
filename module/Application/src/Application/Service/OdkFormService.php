@@ -1490,7 +1490,8 @@ class OdkFormService
         if (count($result) > 0) {
             foreach ($result as $data) {
                 $row = [];
-                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];;
+                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
+                ;
                 $row[] = $data['assesmentofaudit'];
                 $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
                 $row[] = trim($data['testingpointname']) == '' ? 'All' : $data['testingpointname'];
@@ -3301,7 +3302,7 @@ class OdkFormService
                 $httpClient = new Client([
                     'base_uri' => $baseUrl,
                     'cookies' => true,
-                    'timeout'  => 300
+                    'timeout' => 300
                 ]);
 
                 // Authenticate and obtain session cookie
@@ -3369,12 +3370,12 @@ class OdkFormService
         $mediaFields = [
             'PERSONALPHOTO' => 'SPIRRT',
             'PHYSICALPHOTO' => 'PHYSICAL',
-            'SAFETYPHOTO'   => 'SAFETY',
-            'PRETESTPHOTO'  => 'PRETEST',
-            'TESTPHOTO'     => 'TEST',
+            'SAFETYPHOTO' => 'SAFETY',
+            'PRETESTPHOTO' => 'PRETEST',
+            'TESTPHOTO' => 'TEST',
             'POSTTESTPHOTO' => 'POSTTEST',
-            'EQAPHOTO'      => 'EQA',
-            'RTRIPHOTO'     => 'RTRI_SECTION'
+            'EQAPHOTO' => 'EQA',
+            'RTRIPHOTO' => 'RTRI_SECTION'
         ];
 
         // Loop through each field defined in $mediaFields and process the download.
@@ -3419,11 +3420,11 @@ class OdkFormService
                 $mediaContent = $mediaResponse->getBody()->getContents();
 
                 if (!file_exists(UPLOAD_PATH) && !is_dir(UPLOAD_PATH)) {
-                    mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads");
+                    mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads", 0777, true);
                 }
                 $filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments';
                 if (!file_exists($filePath) && !is_dir($filePath)) {
-                    mkdir($filePath);
+                    mkdir($filePath, 0777, true);
                 }
 
                 $submissionId = $submission['__id'];
@@ -3435,7 +3436,7 @@ class OdkFormService
                     //chmod($subDirPath, 0777);
                 }
 
-                $uploadMediaFilePath =  $subDirPath . DIRECTORY_SEPARATOR . $fileName;  // Change this to your desired directory
+                $uploadMediaFilePath = $subDirPath . DIRECTORY_SEPARATOR . $fileName;  // Change this to your desired directory
                 // Save the media file locally
                 file_put_contents($uploadMediaFilePath, $mediaContent);
 
@@ -3648,7 +3649,8 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 1)
+                    if (
+                        (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 1)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 1)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 1)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS'] == 1)
@@ -3660,7 +3662,8 @@ class OdkFormService
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 1)
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0.5)
+                    } elseif (
+                        (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0.5)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 0.5)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 0.5)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS'] == 0.5)
@@ -3672,7 +3675,8 @@ class OdkFormService
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED']) && $formData['PERSONAL_Q_1_' . $i . '_RECERTIFIED'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0)
+                    } elseif (
+                        (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TRAINING'] == 0)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_' . $i . '_HIV_TESTING_REGISTER'] == 0)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_EQA_PT']) && $formData['PERSONAL_Q_1_' . $i . '_EQA_PT'] == 0)
                         || (isset($formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS']) && $formData['PERSONAL_Q_1_' . $i . '_QC_PROCESS'] == 0)
@@ -3738,7 +3742,7 @@ class OdkFormService
                 $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
                 $partBTable .= '</tr>';
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PERSONALPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONALPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -3757,21 +3761,24 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 1)
+                    if (
+                        (isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 1)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA'] == 1)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 1)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 1)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 1)
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0.5)
+                    } elseif (
+                        (isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0.5)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA'] == 0.5)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0.5)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0.5)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_SECURE_STORAGE'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0)
+                    } elseif (
+                        (isset($formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_DESIGNATED_HIV_AREA'] == 0)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_' . $i . '_CLEAN_TESTING_AREA'] == 0)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_' . $i . '_SUFFICIENT_LIGHT_AVAILABILITY'] == 0)
                         || (isset($formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_' . $i . '_TEST_KIT_STORAGE'] == 0)
@@ -3823,7 +3830,7 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PHYSICALPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PHYSICALPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PHYSICALPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICALPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -3841,7 +3848,8 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 1)
+                    if (
+                        (isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 1)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 1)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 1)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY'] == 1)
@@ -3853,7 +3861,8 @@ class OdkFormService
                         || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 1)
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 0.5)
+                    } elseif (
+                        (isset($formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_IMPLEMENT_SAFETY_PRACTICES'] == 0.5)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 0.5)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 0.5)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY'] == 0.5)
@@ -3865,7 +3874,8 @@ class OdkFormService
                         || (isset($formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_' . $i . '_INFECTIOUS_WASTE_EMPTIED'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'] == 0)
+                    } elseif (
+                        (isset($formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . 'IMPLEMENT_SAFETY_PRACTICES'] == 0)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_' . $i . '_ACCIDENTAL_EXPOSURE'] == 0)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_' . $i . '_PRACTICE_SAFETY_PRACTICES'] == 0)
                         || (isset($formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_' . $i . '_PPE_AVAILABILITY'] == 0)
@@ -3930,7 +3940,7 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['SAFETYPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['SAFETYPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['SAFETYPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETYPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -3948,7 +3958,8 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 1)
+                    if (
+                        (isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 1)
                         || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 1)
                         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 1)
                         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE'] == 1)
@@ -3963,7 +3974,8 @@ class OdkFormService
                         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 1)
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0.5)
+                    } elseif (
+                        (isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0.5)
                         || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 0.5)
                         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 0.5)
                         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE'] == 0.5)
@@ -3978,7 +3990,8 @@ class OdkFormService
                         || (isset($formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_' . $i . '_CLIENT_ID_RECORDED'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0)
+                    } elseif (
+                        (isset($formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_' . $i . '_NATIONAL_GUIDELINES'] == 0)
                         || (isset($formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_' . $i . '_HIV_TESTING_ALGORITHM'] == 0)
                         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCESSIBLE'] == 0)
                         || (isset($formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_' . $i . '_TEST_PROCEDURES_ACCURATE'] == 0)
@@ -4052,7 +4065,7 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PRETESTPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PRETESTPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PRETESTPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETESTPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -4070,7 +4083,8 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 1)
+                    if (
+                        (isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 1)
                         || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 1)
                         || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 1)
                         || (isset($formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] == 1)
@@ -4082,7 +4096,8 @@ class OdkFormService
 
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0.5)
+                    } elseif (
+                        (isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0.5)
                         || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 0.5)
                         || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 0.5)
                         || (isset($formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] == 0.5)
@@ -4093,7 +4108,8 @@ class OdkFormService
                         || (isset($formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_' . $i . '_REVIEW_QC_RECORDS'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0)
+                    } elseif (
+                        (isset($formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_' . $i . '_PROCEDURES_TESTING_ALGORITHM'] == 0)
                         || (isset($formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_' . $i . '_TIMERS_AVAILABILITY'] == 0)
                         || (isset($formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_' . $i . '_SAMPLE_DEVICE_ACCURACY'] == 0)
                         || (isset($formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_' . $i . '_TESTING_PROCEDURE_FOLLOWED'] == 0)
@@ -4157,7 +4173,7 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['TESTPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['TESTPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['TESTPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TESTPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -4175,7 +4191,8 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 1)
+                    if (
+                        (isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 1)
                         || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 1)
                         || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 1)
                         || (isset($formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] == 1)
@@ -4187,7 +4204,8 @@ class OdkFormService
 
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0.5)
+                    } elseif (
+                        (isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0.5)
                         || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 0.5)
                         || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 0.5)
                         || (isset($formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] == 0.5)
@@ -4198,7 +4216,8 @@ class OdkFormService
                         || (isset($formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_' . $i . '_REGISTERS_PROPERLY_LABELED'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0)
+                    } elseif (
+                        (isset($formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_' . $i . '_STANDARDIZED_HIV_REGISTER'] == 0)
                         || (isset($formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_' . $i . '_ELEMENTS_CAPTURED_CORRECTLY'] == 0)
                         || (isset($formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_' . $i . '_PAGE_TOTAL_SUMMARY'] == 0)
                         || (isset($formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_' . $i . '_INVALID_TEST_RESULT_RECORDED'] == 0)
@@ -4262,7 +4281,7 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['POSTTESTPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['POSTTESTPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['POSTTESTPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POSTTESTPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -4280,7 +4299,8 @@ class OdkFormService
                     $partial = "";
                     $comments = "";
 
-                    if ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 1)
+                    if (
+                        (isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 1)
                         || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 1)
                         || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 1)
                         || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] == 1)
@@ -4291,7 +4311,8 @@ class OdkFormService
 
                     ) {
                         $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0.5)
+                    } elseif (
+                        (isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0.5)
                         || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 0.5)
                         || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 0.5)
                         || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] == 0.5)
@@ -4301,7 +4322,8 @@ class OdkFormService
                         || (isset($formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_' . $i . '_TESTERS_RETRAINED_IN_VISITS'] == 0.5)
                     ) {
                         $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                    } elseif ((isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0)
+                    } elseif (
+                        (isset($formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT']) && $formData['EQA_Q_7_' . $i . '_PT_ENROLLMENT'] == 0)
                         || (isset($formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_' . $i . '_TESTING_EQAPT_SAMPLES'] == 0)
                         || (isset($formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_' . $i . '_REVIEW_BEFORE_SUBMISSION'] == 0)
                         || (isset($formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_' . $i . '_FEEDBACK_RECEIVED_REVIEWED'] == 0)
@@ -4360,7 +4382,7 @@ class OdkFormService
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['EQAPHOTO'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['EQAPHOTO'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['EQAPHOTO'];
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQAPHOTO:label'] . '</td>';
                     $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -4387,7 +4409,8 @@ class OdkFormService
                         $partial = "";
                         $comments = "";
 
-                        if ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 1)
+                        if (
+                            (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 1)
                             || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 1)
                             || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 1)
                             || (isset($formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] == 1)
@@ -4401,7 +4424,8 @@ class OdkFormService
 
                         ) {
                             $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                        } elseif ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0.5)
+                        } elseif (
+                            (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0.5)
                             || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 0.5)
                             || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 0.5)
                             || (isset($formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] == 0.5)
@@ -4414,7 +4438,8 @@ class OdkFormService
                             || (isset($formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_' . $i . '_INVALID_RTRI_RESULTS'] == 0.5)
                         ) {
                             $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
-                        } elseif ((isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0)
+                        } elseif (
+                            (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_RECEIVED_RTRI_TRAINING'] == 0)
                             || (isset($formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_' . $i . '_TESTERS_DEMONSTRATED_COMPETENCY'] == 0)
                             || (isset($formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_JOBAIDS_READILY_AVAILABLE'] == 0)
                             || (isset($formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_' . $i . '_SUFFICIENT_SUPPLY_AVAILABLE'] == 0)
@@ -4485,7 +4510,7 @@ class OdkFormService
                     $partBTable .= '</tr>';
 
                     if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['RTRIPHOTO'] != '') {
-                        $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['RTRIPHOTO'];
+                        $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['RTRIPHOTO'];
                         $partBTable .= '<tr nobr="true">';
                         $partBTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRIPHOTO:label'] . '</td>';
                         $partBTable .= '<td colspan="5" style="text-align:center;">' . CommonService::embedImage($imagePath) . '</td>';
@@ -4526,7 +4551,8 @@ class OdkFormService
                         $partial = "";
                         $comments = "";
 
-                        if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 1)
+                        if (
+                            (isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 1)
                             || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 1)
                             || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 1)
                             || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 1)
@@ -4538,7 +4564,8 @@ class OdkFormService
                             $yes = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
                         }
 
-                        if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5)
+                        if (
+                            (isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0.5)
                             || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 0.5)
                             || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 0.5)
                             || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 0.5)
@@ -4550,7 +4577,8 @@ class OdkFormService
                             $partial = '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">';
                         }
 
-                        if ((isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0)
+                        if (
+                            (isset($formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_' . $i . '_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == 0)
                             || (isset($formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_' . $i . '_COUNSELORS_FOLLOWING_PROTOCOL'] == 0)
                             || (isset($formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_' . $i . '_TESTS_RECORDED_RECENCY'] == 0)
                             || (isset($formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED']) && $formData['S0_Q_' . $i . '_PROCESS_DOCUMENTED'] == 0)
@@ -5005,27 +5033,27 @@ class OdkFormService
                             ],
                             'SAFETY' => [
                                 'IMMEDIATE' => 'SAFETY_CORRECTIVE_ACTIONS_IMMEDIATE',
-                                'FOLLOWUP' =>  'SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'
+                                'FOLLOWUP' => 'SAFETY_CORRECTIVE_ACTIONS_FOLLOWUP'
                             ],
                             'PRETEST' => [
                                 'IMMEDIATE' => 'PRETEST_CORRECTIVE_ACTIONS_IMMEDIATE',
-                                'FOLLOWUP' =>  'PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+                                'FOLLOWUP' => 'PRETEST_CORRECTIVE_ACTIONS_FOLLOWUP'
                             ],
                             'TEST' => [
                                 'IMMEDIATE' => 'TEST_CORRECTIVE_ACTIONS_IMMEDIATE',
-                                'FOLLOWUP' =>  'TEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+                                'FOLLOWUP' => 'TEST_CORRECTIVE_ACTIONS_FOLLOWUP'
                             ],
                             'POSTTEST' => [
                                 'IMMEDIATE' => 'POSTTEST_CORRECTIVE_ACTIONS_IMMEDIATE',
-                                'FOLLOWUP' =>  'POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'
+                                'FOLLOWUP' => 'POSTTEST_CORRECTIVE_ACTIONS_FOLLOWUP'
                             ],
                             'EQA' => [
                                 'IMMEDIATE' => 'EQA_CORRECTIVE_ACTIONS_IMMEDIATE',
-                                'FOLLOWUP' =>  'EQA_CORRECTIVE_ACTIONS_FOLLOWUP'
+                                'FOLLOWUP' => 'EQA_CORRECTIVE_ACTIONS_FOLLOWUP'
                             ],
                             'RTRI_SECTION' => [
                                 'IMMEDIATE' => 'RTRI_CORRECTIVE_ACTIONS_IMMEDIATE',
-                                'FOLLOWUP' =>  'RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'
+                                'FOLLOWUP' => 'RTRI_CORRECTIVE_ACTIONS_FOLLOWUP'
                             ]
                         ];
                         foreach ($categories as $category => $actions) {
@@ -5059,7 +5087,7 @@ class OdkFormService
                 $pdf->writeHTML($partDTable, true, 0, true, 0);
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto'];
                     $siteTable = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
                     $siteTable .= '<tr nobr="true">';
                     $siteTable .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/sitephoto:label'] . '</td>';
@@ -5068,7 +5096,7 @@ class OdkFormService
                     $pdf->writeHTML($siteTable, true, 0, true, 0);
                 }
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['sitephoto2'] != '') {
-                    $imagePath =  $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto2'];
+                    $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['sitephoto2'];
                     $siteTable2 = '<br><br><br><table border="1" cellspacing="0" cellpadding="5" style="width:100%;margin-top:20px;">';
                     $siteTable2 .= '<tr nobr="true">';
                     $siteTable2 .= '<td style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/Additionalsitephoto:label'] . '</td>';
