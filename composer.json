@@ -42,7 +42,8 @@
         "amitdugar/db-tools": "^2.1",
         "crunzphp/crunz": "^3.8",
         "phpmyadmin/sql-parser": "^5.10",
-        "composer/semver": "^3.4"
+        "composer/semver": "^3.4",
+        "halaxa/json-machine": "^1.2"
     },
     "autoload": {
         "psr-4": {

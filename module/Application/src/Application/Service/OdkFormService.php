@@ -9,6 +9,11 @@ use DateTimeZone;
 use CpChart\Image;
 use CpChart\Chart\Pie;
 use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
+use GuzzleHttp\Psr7\Request;
+use JsonMachine\Items;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Laminas\Db\Sql\Sql;
 use CpChart\Chart\Radar;
 use Shuchkin\SimpleXLSXGen;
@@ -3271,180 +3276,320 @@ class OdkFormService
         }
     }
 
-    public function syncOdkCentralV6()
+    /**
+     * Sync submissions from ODK Central v6 forms.
+     *
+     * Streams OData pages to disk, parses with JsonMachine (no full-response
+     * decode), saves per-page so a crash mid-sync only loses the in-flight
+     * page, and parallelises media downloads with Guzzle Pool. Driven by an
+     * optional SymfonyStyle for progress / sign-of-life.
+     */
+    public function syncOdkCentralV6(?SymfonyStyle $io = null): void
     {
         $configResult = $this->sm->get('Config');
-        if (isset($configResult['odkcentral']['spirrt'])) {
-            foreach ($configResult['odkcentral']['spirrt'] as $item) {
-                $spirrtURL = rtrim((string) $item['url'], "/");
-                $projectId = $item['projectId'];
-                $formId = $item['formId'];
+        $projects = $configResult['odkcentral']['spirrt'] ?? [];
+        if (!is_array($projects) || $projects === []) {
+            $io?->warning('No spirrt projects configured under odkcentral.');
+            return;
+        }
 
-                /** @var SpiFormVer6Table $spiV6db */
-                $spiV6db = $this->sm->get('SpiFormVer6Table');
-                $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
-                $lastFormDate = $lastDateQuery[0]["last_added_form_date"];
-
-                $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
-                $url = "$baseUrl.svc/Submissions";
-                if (!empty($lastFormDate)) {
-                    $lastFormDate = DateTime::createFromFormat('Y-m-d H:i:s.u', $lastFormDate, new DateTimeZone('UTC'));
-                    if (!empty($lastFormDate) && $lastFormDate !== false) {
-                        $lastFormDate = $lastFormDate->format('Y-m-d\TH:i:s.v\Z');
-                        $url = "$baseUrl.svc/Submissions?%24filter=__system%2FsubmissionDate%20gt%20" . urlencode($lastFormDate);
-                    }
-                }
-
-                // $odataClient = new ODataClient($spirrtURL, function($request) {
-                $email = $item['email'];
-                $password = $item['password'];
-
-                $httpClient = new Client([
-                    'base_uri' => $baseUrl,
-                    'cookies' => true,
-                    'timeout' => 300
-                ]);
-
-                // Authenticate and obtain session cookie
-                $response = $httpClient->post('/v1/sessions', [
-                    'json' => [
-                        'email' => $email,
-                        'password' => $password,
-                    ],
-                ]);
-
-                // Check if the request was successful
-                if ($response->getStatusCode() == 200) {
-                    $authResponse = json_decode($response->getBody()->getContents(), true);
-                    $authToken = $authResponse['token'];
-
-                    $response = $httpClient->get($url, [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $authToken,
-                        ],
-                    ]);
-                    $responseSubmission = $response->getBody()->getContents();
-                    $responseSubmission = !empty($responseSubmission) ? json_decode($responseSubmission, true) : [];
-                    $params = $responseSubmission['value'] ?? [];
-                    //print_r($params);
-
-                    $correctiveActions = [];
-                    foreach ($params as $submission) {
-
-                        $correctiveActionUrl = $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'];
-
-                        // Now, fetch the corrective actions
-                        $correctiveActionResponse = $httpClient->get($correctiveActionUrl, [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . $authToken,
-                            ],
-                        ]);
-
-                        if ($correctiveActionResponse->getStatusCode() == 200) {
-                            $correctiveActionsData = $correctiveActionResponse->getBody()->getContents();
-
-                            if (!empty($correctiveActionsData)) {
-                                $correctiveAction = json_decode($correctiveActionsData, true);
-                            } else {
-                                $correctiveAction = [];
-                            }
-
-                            $correctiveActions[$submission['__id']] = $correctiveAction["value"] ?? [];
-                        }
-                        // Handle media download
-                        $this->downloadMediaFiles($submission, $httpClient, $authToken, $baseUrl);
-                    }
-                    if (isset($params) && !empty($params)) {
-                        $spiV6db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
-                    }
-                } else {
-                    echo "Error authenticating: " . $response->getStatusCode();
-                }
+        foreach ($projects as $item) {
+            if (empty($item['url']) || empty($item['projectId']) || empty($item['formId'])) {
+                $io?->warning('Skipping project entry: missing url / projectId / formId.');
+                continue;
+            }
+            try {
+                $this->syncProjectV6($item, $io);
+            } catch (\Throwable $e) {
+                // One bad project shouldn't abort the rest of the sync.
+                $io?->error(sprintf(
+                    'Project %s/%s failed: %s',
+                    $item['projectId'] ?? '?',
+                    $item['formId'] ?? '?',
+                    $e->getMessage()
+                ));
+                error_log($e->getMessage());
+                error_log($e->getTraceAsString());
             }
         }
     }
 
-    public function downloadMediaFiles($submission, $httpClient, $authToken, $baseUrl)
+    /** Page size for the OData submissions listing. */
+    private const ODATA_PAGE_SIZE = 50;
+
+    /** Concurrency for parallel media file downloads per page. */
+    private const MEDIA_POOL_CONCURRENCY = 5;
+
+    /** Media fields nested under a section key. */
+    private const MEDIA_FIELDS_SECTIONED = [
+        'PERSONALPHOTO' => 'SPIRRT',
+        'PHYSICALPHOTO' => 'PHYSICAL',
+        'SAFETYPHOTO'   => 'SAFETY',
+        'PRETESTPHOTO'  => 'PRETEST',
+        'TESTPHOTO'     => 'TEST',
+        'POSTTESTPHOTO' => 'POSTTEST',
+        'EQAPHOTO'      => 'EQA',
+        'RTRIPHOTO'     => 'RTRI_SECTION',
+    ];
+
+    /** Media fields at the top level of the submission. */
+    private const MEDIA_FIELDS_FLAT = ['sitephoto', 'sitephoto2', 'auditorSignature'];
+
+    private function syncProjectV6(array $item, ?SymfonyStyle $io): void
     {
-        // Check if the submission contains media URLs (e.g., images, audio, video)
-        $mediaFields = [
-            'PERSONALPHOTO' => 'SPIRRT',
-            'PHYSICALPHOTO' => 'PHYSICAL',
-            'SAFETYPHOTO' => 'SAFETY',
-            'PRETESTPHOTO' => 'PRETEST',
-            'TESTPHOTO' => 'TEST',
-            'POSTTESTPHOTO' => 'POSTTEST',
-            'EQAPHOTO' => 'EQA',
-            'RTRIPHOTO' => 'RTRI_SECTION'
-        ];
+        $spirrtURL = rtrim((string) $item['url'], '/');
+        $projectId = $item['projectId'];
+        $formId = $item['formId'];
+        $email = $item['email'];
+        $password = $item['password'];
 
-        // Loop through each field defined in $mediaFields and process the download.
-        foreach ($mediaFields as $mediaField => $section) {
-            $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section);
-        }
+        $io?->section(sprintf('%s / project=%s form=%s', $spirrtURL, $projectId, $formId));
 
-        $mediaFieldsWithoutSection = ['sitephoto', 'sitephoto2', 'auditorSignature'];
+        /** @var SpiFormVer6Table $spiV6db */
+        $spiV6db = $this->sm->get('SpiFormVer6Table');
+        $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
+        $lastFormDate = $lastDateQuery[0]['last_added_form_date'] ?? null;
 
-        foreach ($mediaFieldsWithoutSection as $mediaField) {
-            if (isset($submission[$mediaField])) {
-                $this->downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField);
+        $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
+        $startUrl = "$baseUrl.svc/Submissions?\$top=" . self::ODATA_PAGE_SIZE . '&$count=true';
+        if (!empty($lastFormDate)) {
+            $lastFormDate = DateTime::createFromFormat('Y-m-d H:i:s.u', $lastFormDate, new DateTimeZone('UTC'));
+            if ($lastFormDate instanceof DateTime) {
+                $iso = $lastFormDate->format('Y-m-d\TH:i:s.v\Z');
+                $startUrl .= '&$filter=' . urlencode("__system/submissionDate gt $iso");
             }
         }
-    }
 
-    public function downloadMediaField($submission, $httpClient, $authToken, $baseUrl, $mediaField, $section = null)
-    {
-        $submission['SPIRRT'] = $submission['SPIRRT'] ?? $submission['SPIRT'];
-        $submission['EQA'] = $submission['EQA'] ?? $submission['EXTERNALQA'];
-        $submission['RTRI_SECTION'] = $submission['INFECTIONSUR'] ?? $submission['RTRI_SECTION'];
+        $httpClient = new Client([
+            'base_uri' => $baseUrl,
+            'cookies'  => true,
+            'timeout'  => 300,
+        ]);
 
-        $fileName = '';
-        if ($section && isset($submission[$section][$mediaField])) {
-            $fileName = $submission[$section][$mediaField];
-        } else {
-            if (isset($submission[$mediaField])) {
-                $fileName = $submission[$mediaField];
-            }
+        // Authenticate and obtain a session token.
+        $authResp = $httpClient->post('/v1/sessions', [
+            'json' => ['email' => $email, 'password' => $password],
+        ]);
+        if ($authResp->getStatusCode() !== 200) {
+            $io?->error('Auth failed: HTTP ' . $authResp->getStatusCode());
+            return;
         }
+        $authBody = json_decode($authResp->getBody()->getContents(), true);
+        $authToken = $authBody['token'] ?? null;
+        if (!$authToken) {
+            $io?->error('Auth response had no token.');
+            return;
+        }
+        $authHeaders = ['Authorization' => 'Bearer ' . $authToken];
 
-        if ($fileName != '') {
-            $mediaUrl = $baseUrl . '/submissions/' . $submission['__id'] . '/attachments/' . $fileName;
+        $progress = null;
+        $totalSeen = 0;
+        $pageNumber = 0;
+        $nextUrl = $startUrl;
 
-            $mediaResponse = $httpClient->get($mediaUrl, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $authToken,
-                ],
+        while ($nextUrl !== null) {
+            $pageNumber++;
+            $tmpPath = tempnam(sys_get_temp_dir(), 'odk-page-');
+
+            // Stream the OData page straight to disk — never holds the whole
+            // JSON in PHP memory.
+            $pageResp = $httpClient->get($nextUrl, [
+                'headers' => $authHeaders,
+                'sink'    => $tmpPath,
+            ]);
+            if ($pageResp->getStatusCode() !== 200) {
+                @unlink($tmpPath);
+                throw new \RuntimeException("Page $pageNumber HTTP " . $pageResp->getStatusCode());
+            }
+
+            // First pass: peek at metadata (count, nextLink) so we can size the
+            // progress bar. JsonMachine streams; reading these top-level keys
+            // doesn't decode the whole `value` array.
+            $meta = Items::fromFile($tmpPath, [
+                'pointer' => '',
+                'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true),
+            ]);
+            $odataCount = null;
+            $nextLink = null;
+            foreach ($meta as $key => $val) {
+                if ($key === '@odata.count') {
+                    $odataCount = (int) $val;
+                } elseif ($key === '@odata.nextLink') {
+                    $nextLink = (string) $val;
+                }
+                // Skip parsing `value` here — we re-open with a /value pointer
+                // below. ExtJsonDecoder is lazy, so this terminates cheaply.
+            }
+            unset($meta);
+
+            if ($progress === null && $io !== null && $odataCount !== null) {
+                $progress = $io->createProgressBar($odataCount);
+                $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %message%');
+                $progress->setMessage('starting…');
+                $progress->start();
+            }
+
+            // Second pass: stream just the submissions array.
+            $submissions = Items::fromFile($tmpPath, [
+                'pointer' => '/value',
+                'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true),
             ]);
 
-            if ($mediaResponse->getStatusCode() == 200) {
-                $mediaContent = $mediaResponse->getBody()->getContents();
+            $batch = [];
+            $correctiveActions = [];
+            $mediaRequests = [];
 
-                if (!file_exists(UPLOAD_PATH) && !is_dir(UPLOAD_PATH)) {
-                    mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads", 0777, true);
+            foreach ($submissions as $submission) {
+                $submission = (array) $submission;
+                $batch[] = $submission;
+                $totalSeen++;
+
+                // Fetch corrective actions for this submission. Small response,
+                // keep it sequential — pooling would barely help here.
+                if (!empty($submission['correctiveaction@odata.navigationLink'])) {
+                    $caUrl = $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'];
+                    $caResp = $httpClient->get($caUrl, ['headers' => $authHeaders]);
+                    if ($caResp->getStatusCode() === 200) {
+                        $caBody = $caResp->getBody()->getContents();
+                        $caJson = $caBody !== '' ? json_decode($caBody, true) : null;
+                        $correctiveActions[$submission['__id']] = $caJson['value'] ?? [];
+                    }
                 }
-                $filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments';
-                if (!file_exists($filePath) && !is_dir($filePath)) {
-                    mkdir($filePath, 0777, true);
+
+                foreach ($this->collectMediaRequestsV6($submission, $baseUrl) as $req) {
+                    $mediaRequests[] = $req;
                 }
 
-                $submissionId = $submission['__id'];
-                $uuid = str_replace('uuid:', '', $submissionId);
-                $subDirPath = $filePath . DIRECTORY_SEPARATOR . $uuid;
+                $progress?->setMessage(sprintf('p%d sub %s', $pageNumber, substr((string) ($submission['__id'] ?? ''), -8)));
+                $progress?->advance();
+            }
+            unset($submissions);
 
-                if (!file_exists($subDirPath) && !is_dir($subDirPath)) {
-                    mkdir($subDirPath, 0777, true);
-                    //chmod($subDirPath, 0777);
-                }
+            // Parallel media downloads — each one sinks straight to its target
+            // path so the file content never sits in PHP memory.
+            if ($mediaRequests !== []) {
+                $progress?->setMessage(sprintf('p%d downloading %d media…', $pageNumber, count($mediaRequests)));
+                $this->downloadMediaPoolV6($httpClient, $authHeaders, $mediaRequests, $io);
+            }
 
-                $uploadMediaFilePath = $subDirPath . DIRECTORY_SEPARATOR . $fileName;  // Change this to your desired directory
-                // Save the media file locally
-                file_put_contents($uploadMediaFilePath, $mediaContent);
+            // Per-page save: bounded memory regardless of backlog size, and
+            // each page acts as a crash-recovery checkpoint.
+            if ($batch !== []) {
+                $progress?->setMessage(sprintf('p%d saving %d rows…', $pageNumber, count($batch)));
+                $spiV6db->saveOdkCentralData($batch, $correctiveActions, $projectId, $formId);
+            }
 
-                //echo "Media file saved: " . $uploadMediaFilePath;
-            } else {
-                echo "Failed to download media for field $mediaField: " . $mediaResponse->getStatusCode();
+            @unlink($tmpPath);
+            unset($batch, $correctiveActions, $mediaRequests);
+            gc_collect_cycles();
+
+            $nextUrl = $nextLink; // null when the server stops paging
+        }
+
+        $progress?->setMessage('done');
+        $progress?->finish();
+        $io?->newLine(2);
+        $io?->success(sprintf('Synced %d submission(s) across %d page(s).', $totalSeen, $pageNumber));
+    }
+
+    /**
+     * Build a flat list of media download descriptors for a single submission.
+     * Returns ['url' => string, 'sink' => string] entries — no I/O is done here.
+     */
+    private function collectMediaRequestsV6(array $submission, string $baseUrl): array
+    {
+        // Normalise the legacy/renamed section keys so the field lookup below
+        // works regardless of which form version we got.
+        $submission['SPIRRT']       = $submission['SPIRRT']       ?? $submission['SPIRT']        ?? null;
+        $submission['EQA']          = $submission['EQA']          ?? $submission['EXTERNALQA']   ?? null;
+        $submission['RTRI_SECTION'] = $submission['INFECTIONSUR'] ?? $submission['RTRI_SECTION'] ?? null;
+
+        $submissionId = (string) ($submission['__id'] ?? '');
+        if ($submissionId === '') {
+            return [];
+        }
+
+        $uuid = str_replace('uuid:', '', $submissionId);
+        $rootDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments';
+        $subDir  = $rootDir . DIRECTORY_SEPARATOR . $uuid;
+        // mkdir checks are batched once per submission rather than once per
+        // file; cheap and avoids the race on the inner @mkdir.
+        if (!is_dir($rootDir)) {
+            @mkdir($rootDir, 0777, true);
+        }
+
+        $requests = [];
+        foreach (self::MEDIA_FIELDS_SECTIONED as $field => $section) {
+            $name = $submission[$section][$field] ?? null;
+            if ($name) {
+                $requests[] = $this->buildMediaRequest($baseUrl, $submissionId, $subDir, $name);
             }
         }
+        foreach (self::MEDIA_FIELDS_FLAT as $field) {
+            $name = $submission[$field] ?? null;
+            if ($name) {
+                $requests[] = $this->buildMediaRequest($baseUrl, $submissionId, $subDir, $name);
+            }
+        }
+
+        if ($requests !== [] && !is_dir($subDir)) {
+            @mkdir($subDir, 0777, true);
+        }
+
+        return $requests;
+    }
+
+    private function buildMediaRequest(string $baseUrl, string $submissionId, string $subDir, string $fileName): array
+    {
+        return [
+            'url'  => $baseUrl . '/submissions/' . $submissionId . '/attachments/' . $fileName,
+            'sink' => $subDir . DIRECTORY_SEPARATOR . $fileName,
+        ];
+    }
+
+    /**
+     * Download an entire page's media in parallel via Guzzle Pool. Each file
+     * streams straight to its sink path; nothing is held in PHP memory.
+     */
+    private function downloadMediaPoolV6(Client $client, array $authHeaders, array $requests, ?SymfonyStyle $io): void
+    {
+        $requestGenerator = function () use ($requests, $authHeaders) {
+            foreach ($requests as $req) {
+                yield new Request('GET', $req['url'], $authHeaders);
+            }
+        };
+
+        $pool = new Pool($client, $requestGenerator(), [
+            'concurrency' => self::MEDIA_POOL_CONCURRENCY,
+            'options'     => [], // per-request options applied below via index
+            'fulfilled'   => function ($response, $index) use ($requests) {
+                // Guzzle Pool doesn't natively support per-request 'sink', so
+                // we stream the body to disk by hand. The body is a stream, so
+                // this is still memory-bounded — we never hold the full file.
+                $sink = $requests[$index]['sink'];
+                $fh = fopen($sink, 'wb');
+                if ($fh === false) {
+                    return;
+                }
+                $body = $response->getBody();
+                while (!$body->eof()) {
+                    $chunk = $body->read(64 * 1024);
+                    if ($chunk === '') {
+                        break;
+                    }
+                    fwrite($fh, $chunk);
+                }
+                fclose($fh);
+            },
+            'rejected'    => function ($reason, $index) use ($requests, $io) {
+                $io?->writeln(sprintf(
+                    '<comment>media download failed: %s (%s)</comment>',
+                    $requests[$index]['url'] ?? '?',
+                    $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason
+                ));
+            },
+        ]);
+        $pool->promise()->wait();
     }
 
     public function formatResponse($strResponse)
