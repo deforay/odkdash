@@ -27,9 +27,8 @@ config/autoload/custom.global.php
 config/autoload/global.php
 rector.php
 
-# Dependencies — ignore vendor/ but keep autoload.php
-/vendor/*
-!/vendor/autoload.php
+# Dependencies — vendor/ is composer-generated, never tracked
+/vendor/
 composer.phar
 
 # Generated dirs — ignore contents but keep index.php
