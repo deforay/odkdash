@@ -1,9 +1,11 @@
 # Crunz configuration — see https://github.com/crunzphp/crunz
 #
-# `timezone` is intentionally omitted: crunz then falls back to PHP's
-# date_default_timezone_get(), which mirrors the server's setting. Useful
-# because odkdash is deployed across Malawi/Jamaica/Zimbabwe and the cron
-# schedule should follow the host's clock.
+# Timezone is fixed to UTC so the same crunz.yml works across all
+# deployments (Malawi, Jamaica, Zimbabwe). Most jobs run every minute,
+# so wall-clock alignment doesn't matter; the only time-anchored job is
+# the nightly DB backup at 02:00 UTC, which lands in local-night for all
+# current deployments.
 
 source: tasks
 suffix: Tasks.php
+timezone: UTC

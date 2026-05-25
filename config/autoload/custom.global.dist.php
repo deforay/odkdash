@@ -4,6 +4,11 @@ return [
     'settings' => [
         'locale' => 'en_US',
     ],
+    // Timezone used by scheduled tasks (tasks/GeneralTasks.php). Pick the
+    // IANA zone for this deployment (e.g. Africa/Blantyre, America/Jamaica,
+    // Africa/Harare). Falls back to PHP's date_default_timezone_get() if
+    // unset. Examples: 'UTC', 'Asia/Kolkata'.
+    'timezone' => 'UTC',
     'odkcentral' => [
         'spirrt' => [
             [

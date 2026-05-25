@@ -17,9 +17,9 @@ $autoloadDir = __DIR__ . '/config/autoload';
 // Either may be present at any given time on a freshly-cloned repo.
 $merged = [];
 $globals = glob($autoloadDir . '/{,*.}global.php', GLOB_BRACE) ?: [];
-$locals  = glob($autoloadDir . '/{,*.}local.php', GLOB_BRACE) ?: [];
+$locals = glob($autoloadDir . '/{,*.}local.php', GLOB_BRACE) ?: [];
 foreach (array_merge($globals, $locals) as $file) {
-    $config = require $file;
+    $config = require_once $file;
     if (is_array($config)) {
         $merged = array_replace_recursive($merged, $config);
     }
@@ -44,11 +44,11 @@ if (preg_match('/port=(\d+)/', $dsn, $m)) {
 
 // Credentials live in local.php under the long-form keys this repo has
 // historically used. Allow both naming styles for safety.
-$dbConfig  = $merged['db'] ?? [];
-$user      = $dbConfig['username']      ?? $dbConfig['user']     ?? 'root';
-$password  = $dbConfig['password']      ?? '';
+$dbConfig = $merged['db'] ?? [];
+$user = $dbConfig['username'] ?? $dbConfig['user'] ?? 'root';
+$password = $dbConfig['password'] ?? '';
 $dbNameAlt = $dbConfig['data-base-name'] ?? null;
-$hostAlt   = $dbConfig['data-base-host'] ?? null;
+$hostAlt = $dbConfig['data-base-host'] ?? null;
 if ($database === '' && $dbNameAlt !== null) {
     $database = (string) $dbNameAlt;
 }
@@ -63,12 +63,12 @@ if (!is_dir($backupDir)) {
 
 return [
     'odkdash' => [
-        'host'       => $host,
-        'port'       => $port,
-        'database'   => $database,
-        'user'       => $user,
-        'password'   => $password,
+        'host' => $host,
+        'port' => $port,
+        'database' => $database,
+        'user' => $user,
+        'password' => $password,
         'output_dir' => $backupDir,
-        'retention'  => 7,
+        'retention' => 7,
     ],
 ];
