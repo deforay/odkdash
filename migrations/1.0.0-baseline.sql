@@ -1,0 +1,15 @@
+-- 1.0.0 — Baseline marker.
+--
+-- The repo is ~10 years old and we're picking 1.0.0 as the arbitrary starting
+-- point for tracked migrations. This file is intentionally empty: it exists
+-- only so bin/migrate has a version to stamp into global_config.db_version on
+-- first run. All schema that existed before 1.0.0 lives in data/alter.sql
+-- (legacy, no longer the source of truth — do not add to it).
+--
+-- Every new migration goes here as 1.0.1-<slug>.sql, 1.1.0-<slug>.sql, etc.
+-- Conventions:
+--   * Filename: <semver>-<short-slug>.sql  (slug optional)
+--   * Statements should be idempotent when reasonable (bin/migrate's helpers
+--     handle ADD COLUMN, ADD INDEX, DROP COLUMN, ADD FK automatically — but
+--     INSERTs and CREATE TABLE without IF NOT EXISTS won't auto-skip).
+--   * Don't reuse a version that's already been deployed; bump it.
