@@ -5,7 +5,7 @@
  */
 chdir(dirname(__DIR__));
 
-defined('CONFIG_PATH') || define('CONFIG_PATH', realpath(__DIR__."/../config"));
+defined('CONFIG_PATH') || define('CONFIG_PATH', realpath(__DIR__ . "/../config"));
 
 // Decline static file requests back to the PHP built-in webserver
 if (php_sapi_name() === 'cli-server') {
@@ -17,7 +17,7 @@ if (php_sapi_name() === 'cli-server') {
 }
 
 // Setup autoloading
-require 'init_autoloader.php';
+require_once 'init_autoloader.php';
 
 // Run the application!
-Laminas\Mvc\Application::init(require 'config/application.config.php')->run();
+Laminas\Mvc\Application::init(require_once 'config/application.config.php')->run();

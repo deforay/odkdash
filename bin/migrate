@@ -30,7 +30,7 @@ declare(strict_types=1);
  */
 
 chdir(dirname(__DIR__));
-require 'init_autoloader.php';
+require_once 'init_autoloader.php';
 
 use Composer\Semver\Comparator;
 use Laminas\Db\Adapter\Adapter;
@@ -45,7 +45,7 @@ use PhpMyAdmin\SqlParser\Parser;
 // (initTranslator). On a fresh DB that table doesn't exist yet, so the
 // migrator would die before doing anything. This mirrors the first half
 // of Application::init() up to (but not including) the bootstrap() call.
-$configuration = require 'config/application.config.php';
+$configuration = require_once 'config/application.config.php';
 $serviceManager = new ServiceManager();
 (new ServiceManagerConfig($configuration['service_manager'] ?? []))
     ->configureServiceManager($serviceManager);
@@ -368,16 +368,16 @@ function handle_idempotent_ddl(Adapter $adapter, string $query): int
 function migration_error_is_warnable(string $errorCode, string $statement): bool
 {
     static $unconditionalWarn = [
-        '1050', // ER_TABLE_EXISTS_ERROR
-        '1060', // ER_DUP_FIELDNAME
-        '1061', // ER_DUP_KEYNAME
-        '1068', // ER_MULTIPLE_PRI_KEY
-        '1091', // ER_CANT_DROP_FIELD_OR_KEY
-        '1826', // ER_DUP_CONSTRAINT_NAME
+    '1050', // ER_TABLE_EXISTS_ERROR
+    '1060', // ER_DUP_FIELDNAME
+    '1061', // ER_DUP_KEYNAME
+    '1068', // ER_MULTIPLE_PRI_KEY
+    '1091', // ER_CANT_DROP_FIELD_OR_KEY
+    '1826', // ER_DUP_CONSTRAINT_NAME
     ];
     static $conditionalWarn = [
-        '1054', // ER_BAD_FIELD_ERROR
-        '1146', // ER_NO_SUCH_TABLE
+    '1054', // ER_BAD_FIELD_ERROR
+    '1146', // ER_NO_SUCH_TABLE
     ];
 
     $errorCode = trim($errorCode);
@@ -470,7 +470,8 @@ foreach ($schemaFiles as $file) {
 
 usort($migrations, function ($a, $b) {
     $vCmp = version_compare($a['version'], $b['version']);
-    if ($vCmp !== 0) return $vCmp;
+    if ($vCmp !== 0)
+        return $vCmp;
     return strcmp($a['suffix'], $b['suffix']);
 });
 
@@ -562,20 +563,26 @@ foreach ($pending as $m) {
             $status = handle_idempotent_ddl($adapter, $stmt);
 
             if ($status === MIG_SKIPPED) {
-                if ($verbose) echo "  \033[36mSKIP\033[0m  {$preview}\n";
-                $skipped++; $fileSkipped++;
+                if ($verbose)
+                    echo "  \033[36mSKIP\033[0m  {$preview}\n";
+                $skipped++;
+                $fileSkipped++;
                 continue;
             }
 
             if ($status === MIG_EXECUTED) {
-                if ($verbose) echo "  \033[32mPASS\033[0m  {$preview}\n";
-                $passed++; $filePassed++;
+                if ($verbose)
+                    echo "  \033[32mPASS\033[0m  {$preview}\n";
+                $passed++;
+                $filePassed++;
                 continue;
             }
 
             run_sql($adapter, $stmt);
-            if ($verbose) echo "  \033[32mPASS\033[0m  {$preview}\n";
-            $passed++; $filePassed++;
+            if ($verbose)
+                echo "  \033[32mPASS\033[0m  {$preview}\n";
+            $passed++;
+            $filePassed++;
         } catch (Throwable $e) {
             if (!($e instanceof DbException) && !($e instanceof PDOException)) {
                 throw $e; // not a DB error, bubble up
@@ -587,22 +594,29 @@ foreach ($pending as $m) {
                     echo "  \033[33mWARN\033[0m  {$preview}\n";
                     echo "        ({$e->getMessage()})\n";
                 }
-                $warned++; $fileWarned++;
+                $warned++;
+                $fileWarned++;
             } else {
                 echo "  \033[31mFAIL\033[0m  {$preview}\n";
                 echo "        ({$e->getMessage()})\n";
-                $failed++; $fileFailed++;
+                $failed++;
+                $fileFailed++;
             }
         }
     }
 
     if (!$verbose) {
         $bits = [];
-        if ($filePassed)  $bits[] = "\033[32m{$filePassed} passed\033[0m";
-        if ($fileSkipped) $bits[] = "\033[36m{$fileSkipped} skipped\033[0m";
-        if ($fileWarned)  $bits[] = "\033[33m{$fileWarned} warned\033[0m";
-        if ($fileFailed)  $bits[] = "\033[31m{$fileFailed} failed\033[0m";
-        if ($bits) echo "  " . implode(', ', $bits) . "\n";
+        if ($filePassed)
+            $bits[] = "\033[32m{$filePassed} passed\033[0m";
+        if ($fileSkipped)
+            $bits[] = "\033[36m{$fileSkipped} skipped\033[0m";
+        if ($fileWarned)
+            $bits[] = "\033[33m{$fileWarned} warned\033[0m";
+        if ($fileFailed)
+            $bits[] = "\033[31m{$fileFailed} failed\033[0m";
+        if ($bits)
+            echo "  " . implode(', ', $bits) . "\n";
     }
 
     $lastVersion = $m['version'];
