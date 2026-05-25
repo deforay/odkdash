@@ -1,0 +1,9 @@
+# Crunz configuration — see https://github.com/crunzphp/crunz
+#
+# `timezone` is intentionally omitted: crunz then falls back to PHP's
+# date_default_timezone_get(), which mirrors the server's setting. Useful
+# because odkdash is deployed across Malawi/Jamaica/Zimbabwe and the cron
+# schedule should follow the host's clock.
+
+source: tasks
+suffix: Tasks.php

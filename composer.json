@@ -11,7 +11,6 @@
     ],
     "require": {
         "php": "^8.2 || ^8.3 || ^8.4",
-        "laminas/laminas-component-installer": "^3.2",
         "laminas/laminas-development-mode": "^3.10",
         "laminas/laminas-mvc": "^3.8",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.5",
@@ -21,10 +20,9 @@
         "laminas/laminas-cli": "^1.15",
         "laminas/laminas-mvc-plugins": "^1.2",
         "laminas/laminas-mvc-middleware": "^2.5",
-        "laminas/laminas-mvc-i18n": "^1.8",
-        "laminas/laminas-di": "^3.16",
-        "laminas/laminas-router": "^3.16",
-        "laminas/laminas-permissions-acl": "^2.17",
+        "laminas/laminas-mvc-i18n": "^1.9",
+        "laminas/laminas-router": "^3.18",
+        "laminas/laminas-permissions-acl": "^2.18",
         "phpoffice/phpspreadsheet": "^5.7",
         "guzzlehttp/guzzle": "^7.10",
         "tecnickcom/tcpdf": "^6.11",
@@ -39,11 +37,11 @@
         "setasign/fpdi": "^2.6",
         "hackzilla/password-generator": "^1.7",
         "twilio/sdk": "^8.11",
-        "amitdugar/db-tools": "^2.1",
-        "crunzphp/crunz": "^3.8",
-        "phpmyadmin/sql-parser": "^5.10",
+        "phpmyadmin/sql-parser": "^6.0",
         "composer/semver": "^3.4",
-        "halaxa/json-machine": "^1.2"
+        "halaxa/json-machine": "^1.2",
+        "crunzphp/crunz": "^3.9",
+        "amitdugar/db-tools": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -89,7 +87,6 @@
     "config": {
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
-            "laminas/laminas-component-installer": true,
             "laminas/laminas-skeleton-installer": true
         },
         "platform": {

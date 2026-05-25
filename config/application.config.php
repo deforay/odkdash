@@ -14,7 +14,6 @@ return [
         'Laminas\Filter',
         'Laminas\Cache',
         'Laminas\Serializer',
-        'Laminas\Di',
         'Laminas\Mvc\Middleware',
         'Laminas\Session',
         'Laminas\Mvc\I18n',

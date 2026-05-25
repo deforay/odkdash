@@ -42,5 +42,8 @@ composer.phar
 /public/temporary/*
 !/public/temporary/index.php
 
+# Runtime output — db dumps, cron logs, etc.
+/var/
+
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md
