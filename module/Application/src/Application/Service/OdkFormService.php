@@ -10,7 +10,6 @@ use CpChart\Image;
 use CpChart\Chart\Pie;
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
-use GuzzleHttp\Psr7\Request;
 use JsonMachine\Items;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -3317,8 +3316,13 @@ class OdkFormService
     /** Page size for the OData submissions listing. */
     private const ODATA_PAGE_SIZE = 50;
 
-    /** Concurrency for parallel media file downloads per page. */
-    private const MEDIA_POOL_CONCURRENCY = 5;
+    /** Concurrency for parallel media file / corrective-action fetches per page. */
+    private const POOL_CONCURRENCY = 5;
+
+    /** Per-request timeout (seconds) for pooled fetches — short enough that a
+     *  slow upstream doesn't stall a whole page. The outer page GET keeps its
+     *  larger 300s budget on the Client itself. */
+    private const POOL_REQUEST_TIMEOUT = 30;
 
     /** Media fields nested under a section key. */
     private const MEDIA_FIELDS_SECTIONED = [
@@ -3402,25 +3406,13 @@ class OdkFormService
                 throw new \RuntimeException("Page $pageNumber HTTP " . $pageResp->getStatusCode());
             }
 
-            // First pass: peek at metadata (count, nextLink) so we can size the
-            // progress bar. JsonMachine streams; reading these top-level keys
-            // doesn't decode the whole `value` array.
-            $meta = Items::fromFile($tmpPath, [
-                'pointer' => '',
-                'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true),
-            ]);
-            $odataCount = null;
-            $nextLink = null;
-            foreach ($meta as $key => $val) {
-                if ($key === '@odata.count') {
-                    $odataCount = (int) $val;
-                } elseif ($key === '@odata.nextLink') {
-                    $nextLink = (string) $val;
-                }
-                // Skip parsing `value` here — we re-open with a /value pointer
-                // below. ExtJsonDecoder is lazy, so this terminates cheaply.
-            }
-            unset($meta);
+            // Peek at metadata (count, nextLink) by regex on the first chunk
+            // of the file. A JsonMachine root-pointer pass would eagerly parse
+            // the `value` array just to reach `@odata.nextLink` — defeating
+            // the streaming. The metadata keys are simple top-level scalars
+            // that ODK Central emits before `value`, so a head-of-file scan
+            // is reliable and ~free.
+            [$odataCount, $nextLink] = $this->readPageMetadataV6($tmpPath);
 
             if ($progress === null && $io !== null && $odataCount !== null) {
                 $progress = $io->createProgressBar($odataCount);
@@ -3429,7 +3421,9 @@ class OdkFormService
                 $progress->start();
             }
 
-            // Second pass: stream just the submissions array.
+            // Stream submissions. The inner foreach is now pure parsing — no
+            // HTTP, no FS work — so the progress bar advances smoothly. CA
+            // and media fetches are pooled together AFTER the page is parsed.
             $submissions = Items::fromFile($tmpPath, [
                 'pointer' => '/value',
                 'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true),
@@ -3437,6 +3431,7 @@ class OdkFormService
 
             $batch = [];
             $correctiveActions = [];
+            $caRequests = [];
             $mediaRequests = [];
 
             foreach ($submissions as $submission) {
@@ -3444,18 +3439,12 @@ class OdkFormService
                 $batch[] = $submission;
                 $totalSeen++;
 
-                // Fetch corrective actions for this submission. Small response,
-                // keep it sequential — pooling would barely help here.
                 if (!empty($submission['correctiveaction@odata.navigationLink'])) {
-                    $caUrl = $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'];
-                    $caResp = $httpClient->get($caUrl, ['headers' => $authHeaders]);
-                    if ($caResp->getStatusCode() === 200) {
-                        $caBody = $caResp->getBody()->getContents();
-                        $caJson = $caBody !== '' ? json_decode($caBody, true) : null;
-                        $correctiveActions[$submission['__id']] = $caJson['value'] ?? [];
-                    }
+                    $caRequests[] = [
+                        'submissionId' => $submission['__id'] ?? null,
+                        'url'          => $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'],
+                    ];
                 }
-
                 foreach ($this->collectMediaRequestsV6($submission, $baseUrl) as $req) {
                     $mediaRequests[] = $req;
                 }
@@ -3465,22 +3454,31 @@ class OdkFormService
             }
             unset($submissions);
 
-            // Parallel media downloads — each one sinks straight to its target
-            // path so the file content never sits in PHP memory.
+            // Pool corrective-action fetches — used to be sequential inside
+            // the inner foreach, where a single slow upstream stalled the
+            // whole page. Pooled with a real per-request timeout, one bad
+            // submission no longer hangs the rest.
+            if ($caRequests !== []) {
+                $this->displayMessage($progress, sprintf('p%d fetching %d corrective actions…', $pageNumber, count($caRequests)));
+                $correctiveActions = $this->fetchCorrectiveActionsPoolV6($httpClient, $authHeaders, $caRequests, $io);
+            }
+
+            // Pool media downloads — each request carries its own `sink` so
+            // Guzzle streams straight to disk.
             if ($mediaRequests !== []) {
-                $progress?->setMessage(sprintf('p%d downloading %d media…', $pageNumber, count($mediaRequests)));
+                $this->displayMessage($progress, sprintf('p%d downloading %d media…', $pageNumber, count($mediaRequests)));
                 $this->downloadMediaPoolV6($httpClient, $authHeaders, $mediaRequests, $io);
             }
 
             // Per-page save: bounded memory regardless of backlog size, and
             // each page acts as a crash-recovery checkpoint.
             if ($batch !== []) {
-                $progress?->setMessage(sprintf('p%d saving %d rows…', $pageNumber, count($batch)));
+                $this->displayMessage($progress, sprintf('p%d saving %d rows…', $pageNumber, count($batch)));
                 $spiV6db->saveOdkCentralData($batch, $correctiveActions, $projectId, $formId);
             }
 
             @unlink($tmpPath);
-            unset($batch, $correctiveActions, $mediaRequests);
+            unset($batch, $correctiveActions, $caRequests, $mediaRequests);
             gc_collect_cycles();
 
             $nextUrl = $nextLink; // null when the server stops paging
@@ -3548,48 +3546,138 @@ class OdkFormService
     }
 
     /**
-     * Download an entire page's media in parallel via Guzzle Pool. Each file
-     * streams straight to its sink path; nothing is held in PHP memory.
+     * Download an entire page's media in parallel. Each request is yielded as
+     * a function returning a Guzzle promise so it carries its own `sink`
+     * option — Guzzle streams the body straight to disk; nothing is held in
+     * PHP memory.
      */
     private function downloadMediaPoolV6(Client $client, array $authHeaders, array $requests, ?SymfonyStyle $io): void
     {
-        $requestGenerator = function () use ($requests, $authHeaders) {
+        $requestGenerator = function () use ($client, $requests, $authHeaders) {
             foreach ($requests as $req) {
-                yield new Request('GET', $req['url'], $authHeaders);
+                yield function () use ($client, $req, $authHeaders) {
+                    return $client->getAsync($req['url'], [
+                        'headers' => $authHeaders,
+                        'sink'    => $req['sink'],
+                        'timeout' => self::POOL_REQUEST_TIMEOUT,
+                    ]);
+                };
             }
         };
 
         $pool = new Pool($client, $requestGenerator(), [
-            'concurrency' => self::MEDIA_POOL_CONCURRENCY,
-            'options'     => [], // per-request options applied below via index
-            'fulfilled'   => function ($response, $index) use ($requests) {
-                // Guzzle Pool doesn't natively support per-request 'sink', so
-                // we stream the body to disk by hand. The body is a stream, so
-                // this is still memory-bounded — we never hold the full file.
-                $sink = $requests[$index]['sink'];
-                $fh = fopen($sink, 'wb');
-                if ($fh === false) {
-                    return;
-                }
-                $body = $response->getBody();
-                while (!$body->eof()) {
-                    $chunk = $body->read(64 * 1024);
-                    if ($chunk === '') {
-                        break;
-                    }
-                    fwrite($fh, $chunk);
-                }
-                fclose($fh);
-            },
+            'concurrency' => self::POOL_CONCURRENCY,
+            'fulfilled'   => static function () { /* sink wrote it; nothing to do */ },
             'rejected'    => function ($reason, $index) use ($requests, $io) {
-                $io?->writeln(sprintf(
-                    '<comment>media download failed: %s (%s)</comment>',
-                    $requests[$index]['url'] ?? '?',
-                    $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason
-                ));
+                $url = $requests[$index]['url'] ?? '?';
+                $msg = $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason;
+                $io?->writeln("<comment>media download failed: $url ($msg)</comment>");
+                // Partial sink files from a failed transfer would otherwise
+                // sit on disk and be served as truncated images.
+                if (isset($requests[$index]['sink']) && is_file($requests[$index]['sink'])) {
+                    @unlink($requests[$index]['sink']);
+                }
             },
         ]);
         $pool->promise()->wait();
+    }
+
+    /**
+     * Fetch corrective-actions for every submission on a page in parallel.
+     * Was sequential inside the inner foreach, where a single slow upstream
+     * would stall the whole page (see "stuck at 48/1467" report 2026-05-25).
+     *
+     * @param array<int, array{submissionId: ?string, url: string}> $requests
+     * @return array<string, array> Map of submissionId => value array.
+     */
+    private function fetchCorrectiveActionsPoolV6(Client $client, array $authHeaders, array $requests, ?SymfonyStyle $io): array
+    {
+        $out = [];
+
+        $gen = function () use ($client, $requests, $authHeaders) {
+            foreach ($requests as $req) {
+                yield function () use ($client, $req, $authHeaders) {
+                    return $client->getAsync($req['url'], [
+                        'headers' => $authHeaders,
+                        'timeout' => self::POOL_REQUEST_TIMEOUT,
+                    ]);
+                };
+            }
+        };
+
+        $pool = new Pool($client, $gen(), [
+            'concurrency' => self::POOL_CONCURRENCY,
+            'fulfilled'   => function ($response, $index) use ($requests, &$out) {
+                $submissionId = $requests[$index]['submissionId'] ?? null;
+                if ($submissionId === null || $response->getStatusCode() !== 200) {
+                    return;
+                }
+                $body = $response->getBody()->getContents();
+                if ($body === '') {
+                    $out[$submissionId] = [];
+                    return;
+                }
+                $decoded = json_decode($body, true);
+                $out[$submissionId] = $decoded['value'] ?? [];
+            },
+            'rejected'    => function ($reason, $index) use ($requests, $io) {
+                $url = $requests[$index]['url'] ?? '?';
+                $msg = $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason;
+                $io?->writeln("<comment>corrective-action fetch failed: $url ($msg)</comment>");
+            },
+        ]);
+        $pool->promise()->wait();
+
+        return $out;
+    }
+
+    /**
+     * Read @odata.count and @odata.nextLink by scanning the head of the
+     * downloaded page file. ODK Central emits these as top-level scalars
+     * before the `value` array, so a small head-of-file read is enough —
+     * far cheaper than a streaming JSON pass that would otherwise have to
+     * walk past the value array to reach the nextLink.
+     *
+     * @return array{0: ?int, 1: ?string} [count, nextLink]
+     */
+    private function readPageMetadataV6(string $path): array
+    {
+        $fh = @fopen($path, 'rb');
+        if ($fh === false) {
+            return [null, null];
+        }
+        // 16 KB head is plenty: both scalars come before `value`, which is
+        // the only thing here that gets large.
+        $head = (string) fread($fh, 16384);
+        fclose($fh);
+
+        $count = null;
+        $nextLink = null;
+        if (preg_match('/"@odata\.count"\s*:\s*(\d+)/', $head, $m)) {
+            $count = (int) $m[1];
+        }
+        if (preg_match('/"@odata\.nextLink"\s*:\s*"((?:[^"\\\\]|\\\\.)*)"/', $head, $m)) {
+            // The nextLink is a JSON string; decode the standard escapes
+            // (`\/`, `\"`, etc.) the simple way — wrap in quotes and decode.
+            $decoded = json_decode('"' . $m[1] . '"');
+            $nextLink = is_string($decoded) ? $decoded : $m[1];
+        }
+        return [$count, $nextLink];
+    }
+
+    /**
+     * Update the progress bar message AND force a redraw. Symfony ProgressBar
+     * doesn't redraw on setMessage alone, so pool phases (CA fetch, media
+     * downloads, save) would otherwise leave the previous "p1 sub …" message
+     * stuck on screen while the bar appears frozen.
+     */
+    private function displayMessage(?ProgressBar $progress, string $message): void
+    {
+        if ($progress === null) {
+            return;
+        }
+        $progress->setMessage($message);
+        $progress->display();
     }
 
     public function formatResponse($strResponse)
