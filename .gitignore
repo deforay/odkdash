@@ -24,6 +24,7 @@ nbproject
 .env
 custom.global.php
 config/autoload/custom.global.php
+config/autoload/global.php
 rector.php
 
 # Dependencies — ignore vendor/ but keep autoload.php

@@ -1,21 +1,18 @@
 <?php
 
 /**
- * Global Configuration Override
+ * Global Configuration Override (distributed template).
  *
- * You can use this file for overriding configuration values from modules, etc.
- * You would place values in here that are agnostic to the environment and not
- * sensitive to security.
- *
- * @NOTE: In practice, this file will typically be INCLUDED in your source
- * control, so do not include passwords or other sensitive information in this
- * file.
+ * Copy to global.php and adjust for the local environment. global.php itself
+ * is gitignored so each deployment can pin its own DB name / host without
+ * accidentally committing it. Sensitive values (credentials) belong in
+ * local.php / custom.global.php, not here.
  */
 
 return [
     'db' => [
         'driver' => 'Pdo',
-        'dsn' => 'mysql:dbname=odkdash-zw;host=localhost',
+        'dsn' => 'mysql:dbname=odkdash;host=localhost',
         'driver_options' => [
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
         ],
