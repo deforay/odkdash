@@ -2744,15 +2744,15 @@ CREATE TABLE IF NOT EXISTS `geographical_divisions` (
   PRIMARY KEY (`geo_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'Manage Provinces');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'index', 'Access');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'add', 'Add');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'edit', 'Edit');
+INSERT IGNORE INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'Manage Provinces');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'index', 'Access');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'add', 'Add');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\ProvincesController', 'edit', 'Edit');
 
-INSERT INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'Manage Districts');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'index', 'Access');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'add', 'Add');
-INSERT INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'edit', 'Edit');
+INSERT IGNORE INTO `resources` (`resource_id`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'Manage Districts');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'index', 'Access');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'add', 'Add');
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`) VALUES ('Application\\Controller\\DistrictController', 'edit', 'Edit');
 
 -- Brindha 28-May-2024
 INSERT INTO `global_config` (`config_id`, `display_name`, `global_name`, `global_value`) VALUES (NULL, 'Dashboard Map Display', 'dashboard_map_display', 'horizontal');

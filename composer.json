@@ -38,7 +38,7 @@
         "setasign/fpdi": "^2.6",
         "hackzilla/password-generator": "^1.7",
         "twilio/sdk": "^8.11",
-        "amitdugar/db-tools": "^2.1"
+        "amitdugar/db-tools": "^2.1",
         "crunzphp/crunz": "^3.8"
     },
     "autoload": {
