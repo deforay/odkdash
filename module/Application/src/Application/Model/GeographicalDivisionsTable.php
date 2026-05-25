@@ -558,7 +558,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
             $this->insert($data);
             $insertId = $this->lastInsertValue;
             $query = $sql->select()->from('geographical_divisions')
-                ->where("id =$insertId");
+                ->where(['geo_id' => $insertId]);
             $queryStr = $sql->buildSqlString($query);
             $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             $res['district'] = $result['geo_id'];
