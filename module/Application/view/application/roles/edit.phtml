@@ -83,6 +83,26 @@
 		text-transform: none;
 		letter-spacing: 0.02em;
 	}
+
+	.role-action-bar {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1030;
+		background: #fff;
+		border-top: 1px solid #e2e8f0;
+		box-shadow: 0 -2px 6px rgba(0, 0, 0, .05);
+		padding: 10px 24px;
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
+	/* Reserve room so the last form rows aren't hidden behind the bar. */
+	.role-form-spacer {
+		height: 72px;
+	}
 </style>
 <?php
 // echo "<pre>"; print_r($resourceResult); die;
@@ -219,9 +239,10 @@
 											</tbody>
 										</table>
 								</div>
-								<div class="spacer  col-lg-12">
-									<button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>
-									<a href="<?php echo $this->url('roles', array('action' => 'index')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
+								<div class="role-form-spacer" aria-hidden="true"></div>
+								<div class="role-action-bar">
+									<a href="<?php echo $this->url('roles', array('action' => 'index')); ?>" class="btn btn-default" aria-label="<?= $this->translate('Cancel and return to roles list'); ?>"><?= $this->translate('Cancel'); ?></a>
+									<button type="button" onclick="validateNow()" class="btn btn-primary"><?= $this->translate('Submit'); ?></button>
 								</div>
 							</form>
 						</div>
