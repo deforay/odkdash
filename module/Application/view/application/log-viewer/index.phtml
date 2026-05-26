@@ -1,0 +1,227 @@
+<?php
+
+/**
+ * @var Laminas\View\Renderer\PhpRenderer $this
+ *
+ * Log viewer page. Lists files under var/log/ on the left, tails the
+ * selected file on the right. JSON endpoint reused for the AJAX refresh
+ * is the same action with `?format=json` (or POST).
+ */
+
+$files = $this->files ?? [];
+$defaultLines = $this->defaultLines ?? 500;
+$maxLines = $this->maxLines ?? 5000;
+?>
+<style>
+    .logviewer-page { max-width: 1180px; margin: 0 auto; padding: 8px 4px 48px; color: #2d3748; font-size: 14px; }
+    .logviewer-header { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+    .logviewer-header h1 { font-size: 22px; font-weight: 600; color: #1a202c; margin: 0; }
+    .logviewer-header .logviewer-dir { font-size: 12px; color: #718096; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .logviewer-grid { display: grid; grid-template-columns: 260px 1fr; gap: 18px; align-items: start; }
+    .logviewer-files { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; max-height: 70vh; overflow: auto; }
+    .logviewer-files h2 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #718096; margin: 4px 6px 8px; }
+    .logviewer-files ul { list-style: none; padding: 0; margin: 0; }
+    .logviewer-files li { padding: 0; }
+    .logviewer-files button { width: 100%; text-align: left; background: transparent; border: 0; padding: 7px 9px; border-radius: 6px; font-size: 13px; color: #2d3748; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+    .logviewer-files button:hover { background: #edf2f7; }
+    .logviewer-files button.active { background: #4299e1; color: #fff; }
+    .logviewer-files .filename { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .logviewer-files .meta { font-size: 11px; color: #718096; }
+    .logviewer-files button.active .meta { color: #cdeafd; }
+    .logviewer-files .empty { padding: 14px 8px; color: #718096; font-style: italic; }
+    .logviewer-content { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; }
+    .logviewer-toolbar { display: grid; grid-template-columns: 1fr 120px auto auto; gap: 10px; margin-bottom: 12px; align-items: end; }
+    .logviewer-toolbar label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #718096; display: block; margin: 0 0 4px; }
+    .logviewer-toolbar input, .logviewer-toolbar select { height: 34px; border: 1px solid #cbd5e0; border-radius: 6px; padding: 0 10px; background: #fff; font-size: 13px; color: #2d3748; width: 100%; }
+    .logviewer-toolbar .btn { height: 34px; padding: 0 14px; border-radius: 6px; border: 0; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .logviewer-toolbar .btn-primary { background: #4299e1; color: #fff; }
+    .logviewer-toolbar .btn-primary:hover { background: #3182ce; }
+    .logviewer-toolbar .btn-secondary { background: #e2e8f0; color: #2d3748; }
+    .logviewer-toolbar .btn-secondary:hover { background: #cbd5e0; }
+    .logviewer-status { font-size: 12px; color: #718096; margin-bottom: 10px; min-height: 16px; }
+    .logviewer-pre { background: #1a202c; color: #e2e8f0; padding: 14px; border-radius: 8px; max-height: 70vh; overflow: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+    .logviewer-pre.empty { color: #a0aec0; font-style: italic; padding: 24px; text-align: center; }
+    .logviewer-pre .lv-line { display: block; padding: 0 0 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .logviewer-pre .lv-line:last-child { border-bottom: 0; }
+    .logviewer-pre .lv-error { color: #fed7d7; }
+    .logviewer-pre .lv-warning { color: #faf089; }
+    .logviewer-pre .lv-info { color: #bee3f8; }
+    .logviewer-pre .lv-hl { background: #d69e2e; color: #1a202c; padding: 0 2px; border-radius: 2px; }
+</style>
+
+<div class="logviewer-page">
+    <div class="logviewer-header">
+        <div>
+            <h1><?= $this->translate('Error Logs') ?></h1>
+            <div class="logviewer-dir"><?= $this->escapeHtml($this->logDir ?? '') ?></div>
+        </div>
+    </div>
+
+    <div class="logviewer-grid">
+        <aside class="logviewer-files">
+            <h2><?= $this->translate('Log files') ?></h2>
+            <?php if (empty($files)) : ?>
+                <div class="empty"><?= $this->translate('No log files yet.') ?></div>
+            <?php else : ?>
+                <ul id="lv-file-list">
+                    <?php foreach ($files as $i => $f) : ?>
+                        <li>
+                            <button type="button"
+                                    data-file="<?= $this->escapeHtmlAttr($f['name']) ?>"
+                                    class="lv-file-btn<?= $i === 0 ? ' active' : '' ?>">
+                                <span class="filename"><?= $this->escapeHtml($f['name']) ?></span>
+                                <span class="meta">
+                                    <?= $this->escapeHtml(number_format($f['size'] / 1024, 1)) ?> KB ·
+                                    <?= $this->escapeHtml(date('M j, H:i', $f['modified'])) ?>
+                                </span>
+                            </button>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </aside>
+
+        <section class="logviewer-content">
+            <div class="logviewer-toolbar">
+                <div>
+                    <label for="lv-search"><?= $this->translate('Search') ?></label>
+                    <input type="text" id="lv-search" placeholder="<?= $this->translate('case-insensitive substring filter') ?>" autocomplete="off">
+                </div>
+                <div>
+                    <label for="lv-lines"><?= $this->translate('Lines') ?></label>
+                    <select id="lv-lines">
+                        <option value="100">100</option>
+                        <option value="500" selected>500</option>
+                        <option value="1000">1000</option>
+                        <option value="2500">2500</option>
+                        <option value="<?= (int) $maxLines ?>"><?= (int) $maxLines ?></option>
+                    </select>
+                </div>
+                <button type="button" id="lv-refresh" class="btn btn-primary"><?= $this->translate('Refresh') ?></button>
+                <button type="button" id="lv-clear" class="btn btn-secondary"><?= $this->translate('Clear filter') ?></button>
+            </div>
+            <div class="logviewer-status" id="lv-status"></div>
+            <pre class="logviewer-pre empty" id="lv-output"><?= $this->translate('Pick a log file on the left to begin.') ?></pre>
+        </section>
+    </div>
+</div>
+
+<script>
+(function () {
+    var endpoint = '<?= $this->url('log-viewer') ?>';
+    var currentFile = null;
+    var refreshDebounce = null;
+
+    function $(id) { return document.getElementById(id); }
+
+    function setActive(name) {
+        document.querySelectorAll('.lv-file-btn').forEach(function (b) {
+            b.classList.toggle('active', b.dataset.file === name);
+        });
+    }
+
+    function clearChildren(node) {
+        while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function renderLines(lines, search) {
+        var pre = $('lv-output');
+        pre.classList.remove('empty');
+        clearChildren(pre);
+
+        if (!lines || lines.length === 0) {
+            pre.classList.add('empty');
+            pre.appendChild(document.createTextNode(
+                search ? 'No matches for "' + search + '".' : 'File is empty.'
+            ));
+            return;
+        }
+
+        var fragment = document.createDocumentFragment();
+        var needle = search ? search.toLowerCase() : '';
+
+        lines.forEach(function (line) {
+            var span = document.createElement('span');
+            span.className = 'lv-line';
+            if (/\.ERROR:|\.CRITICAL:/.test(line)) span.classList.add('lv-error');
+            else if (/\.WARNING:/.test(line)) span.classList.add('lv-warning');
+            else if (/\.INFO:/.test(line)) span.classList.add('lv-info');
+
+            if (needle) {
+                var lower = line.toLowerCase();
+                var idx = lower.indexOf(needle);
+                var cursor = 0;
+                while (idx !== -1) {
+                    span.appendChild(document.createTextNode(line.substring(cursor, idx)));
+                    var hl = document.createElement('span');
+                    hl.className = 'lv-hl';
+                    hl.textContent = line.substring(idx, idx + needle.length);
+                    span.appendChild(hl);
+                    cursor = idx + needle.length;
+                    idx = lower.indexOf(needle, cursor);
+                }
+                span.appendChild(document.createTextNode(line.substring(cursor)));
+            } else {
+                span.textContent = line;
+            }
+            fragment.appendChild(span);
+        });
+        pre.appendChild(fragment);
+        pre.scrollTop = pre.scrollHeight;
+    }
+
+    function setStatus(text) {
+        $('lv-status').textContent = text || '';
+    }
+
+    function load(name) {
+        if (!name) return;
+        currentFile = name;
+        setActive(name);
+        setStatus('Loading…');
+
+        var params = new URLSearchParams({
+            format: 'json',
+            file: name,
+            lines: $('lv-lines').value,
+            q: $('lv-search').value.trim(),
+        });
+
+        fetch(endpoint + '?' + params.toString(), {
+            credentials: 'same-origin',
+            headers: { 'Accept': 'application/json' },
+        })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.error) {
+                    setStatus('Error: ' + data.error);
+                    return;
+                }
+                var status = data.count + ' lines';
+                if (data.search) status += ' matching "' + data.search + '"';
+                status += ' · ' + (data.file.size / 1024).toFixed(1) + ' KB total';
+                setStatus(status);
+                renderLines(data.lines, data.search);
+            })
+            .catch(function (err) {
+                setStatus('Request failed: ' + err.message);
+            });
+    }
+
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.lv-file-btn');
+        if (btn) load(btn.dataset.file);
+    });
+
+    $('lv-refresh').addEventListener('click', function () { load(currentFile); });
+    $('lv-clear').addEventListener('click', function () { $('lv-search').value = ''; load(currentFile); });
+    $('lv-search').addEventListener('input', function () {
+        clearTimeout(refreshDebounce);
+        refreshDebounce = setTimeout(function () { load(currentFile); }, 300);
+    });
+    $('lv-lines').addEventListener('change', function () { load(currentFile); });
+
+    var first = document.querySelector('.lv-file-btn');
+    if (first) load(first.dataset.file);
+})();
+</script>

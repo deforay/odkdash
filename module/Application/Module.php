@@ -248,6 +248,13 @@ class Module
                         return new \Application\Controller\ClientErrorController($clientErrorLogger);
                     }
                 },
+                'Application\Controller\LogViewerController' => new class {
+                    public function __invoke($diContainer)
+                    {
+                        $logger = $diContainer->get('Logger');
+                        return new \Application\Controller\LogViewerController($logger);
+                    }
+                },
                 'Application\Controller\SpiV3ReportsController' => new class {
                     public function __invoke($diContainer)
                     {
