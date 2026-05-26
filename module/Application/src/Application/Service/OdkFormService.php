@@ -2255,9 +2255,6 @@ class OdkFormService
         $fileName = 'piechart-spiv6.png';
         $PieChart->pChartObject->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
 
-        //header('Content-Type: text/plain');
-        //var_dump($path);die;
-        //$result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart-spiv5.png");
         return $fileName;
     }
 
