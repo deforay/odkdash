@@ -8,6 +8,7 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\Sql\Expression;
 use Laminas\Session\Container;
 use Application\Service\CommonService;
+use Application\Service\RequestContext;
 
 
 /**
@@ -33,14 +34,21 @@ class EventLogTable extends AbstractTableGateway
         $currentDateTime = CommonService::getDateTime();
 
         $data = array(
-            'actor' => $actorId,
-            'subject' => $subject,
-            'event_type' => $eventType,
-            'action' => $action,
-            'resource_name' => $resourceName,
-            'date_time' => $currentDateTime
+            'actor'          => $actorId,
+            'subject'        => $subject,
+            'event_type'     => $eventType,
+            'action'         => $action,
+            'resource_name'  => $resourceName,
+            'date_time'      => $currentDateTime,
+            'ip_address'     => RequestContext::getClientIp(),
+            'user_agent'     => RequestContext::getUserAgent(),
+            'session_hash'   => RequestContext::getSessionHash(),
+            'request_id'     => RequestContext::getRequestId(),
+            'request_uri'    => RequestContext::getRequestUri(),
+            'request_method' => RequestContext::getRequestMethod(),
+            'platform'       => RequestContext::getPlatform(),
         );
-        $id = $this->insert($data);
+        $this->insert($data);
     }
 
     public function fetchAllDetails($parameters)
@@ -220,6 +228,8 @@ class EventLogTable extends AbstractTableGateway
         $total = (int) ($dbAdapter->query($countSql, $dbAdapter::QUERY_MODE_EXECUTE)->current()['c'] ?? 0);
 
         $rowsSql = "SELECT e.event_id, e.actor, e.subject, e.event_type, e.action, e.resource_name, e.date_time,
+                           e.ip_address, e.user_agent, e.session_hash, e.request_id, e.request_uri,
+                           e.request_method, e.platform,
                            u.first_name, u.last_name, u.login
                     FROM event_log AS e
                     LEFT JOIN users AS u ON u.id = e.actor
@@ -238,17 +248,24 @@ class EventLogTable extends AbstractTableGateway
                 $initials .= strtoupper(substr($p, 0, 1));
             }
             $items[] = [
-                'id'           => (int) $r['event_id'],
-                'action'       => $r['action'] ?? '',
-                'eventType'    => $r['event_type'] ?? '',
-                'resourceName' => $r['resource_name'] ?? '',
-                'userName'     => $name,
-                'userInitials' => $initials ?: 'S',
-                'userLogin'    => $r['login'] ?? '',
-                'time'         => $ts ? date('g:i a', $ts) : '',
-                'dateKey'      => $ts ? date('Y-m-d', $ts) : '',
-                'dateLabel'    => $ts ? date('D, j M Y', $ts) : '',
-                'datetime'     => $r['date_time'] ?? '',
+                'id'            => (int) $r['event_id'],
+                'action'        => $r['action'] ?? '',
+                'eventType'     => $r['event_type'] ?? '',
+                'resourceName'  => $r['resource_name'] ?? '',
+                'userName'      => $name,
+                'userInitials'  => $initials ?: 'S',
+                'userLogin'     => $r['login'] ?? '',
+                'time'          => $ts ? date('g:i a', $ts) : '',
+                'dateKey'       => $ts ? date('Y-m-d', $ts) : '',
+                'dateLabel'     => $ts ? date('D, j M Y', $ts) : '',
+                'datetime'      => $r['date_time'] ?? '',
+                'ipAddress'     => $r['ip_address'] ?? '',
+                'userAgent'     => $r['user_agent'] ?? '',
+                'sessionHash'   => $r['session_hash'] ?? '',
+                'requestId'     => $r['request_id'] ?? '',
+                'requestUri'    => $r['request_uri'] ?? '',
+                'requestMethod' => $r['request_method'] ?? '',
+                'platform'      => $r['platform'] ?? '',
             ];
         }
 
