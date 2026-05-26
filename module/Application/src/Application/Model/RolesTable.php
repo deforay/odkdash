@@ -237,6 +237,15 @@ class RolesTable extends BaseTableGateway
     {
         try {
             $roleCode = $params['roleCode'];
+
+            // Super Admin's privileges are locked — Acl.php grants SA
+            // everything at runtime, and the UI disables the privilege
+            // toggles for this role. Refuse to mutate the map here so
+            // a crafted POST can't strip privileges either.
+            if ($roleCode === 'SA') {
+                return;
+            }
+
             $sql = new Sql($this->adapter);
             $dbAdapter = $this->adapter;
 

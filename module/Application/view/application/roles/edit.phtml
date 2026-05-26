@@ -103,9 +103,30 @@
 	.role-form-spacer {
 		height: 72px;
 	}
+
+	.sa-locked-banner {
+		background: #fefce8;
+		border: 1px solid #facc15;
+		color: #713f12;
+		padding: 10px 14px;
+		border-radius: 6px;
+		margin: 6px 14px 10px;
+		font-size: 13px;
+		line-height: 1.5;
+	}
+
+	.sa-locked-banner i {
+		margin-right: 6px;
+		color: #ca8a04;
+	}
+
+	.privilege-switch input[disabled] + label {
+		cursor: not-allowed;
+		opacity: 0.85;
+	}
 </style>
 <?php
-// echo "<pre>"; print_r($resourceResult); die;
+$isSuperAdmin = isset($result->role_code) && $result->role_code === 'SA';
 ?>
 <div class="am-content">
 	<div class="page-head">
@@ -163,14 +184,18 @@
 										<table aria-describedby="table" class="table table-striped responsive-utilities">
 											<tbody>
 											<?php
-											$renderPrivileges = function ($privileges, $resourceId, $resourceResult, $translate) {
+											$renderPrivileges = function ($privileges, $resourceId, $resourceResult, $translate, $isSuperAdmin) {
 												foreach ($privileges as $privilege) {
-													$isPrivilegeMatched = false;
-													if (!empty($resourceResult)) {
-														foreach ($resourceResult as $rr) {
-															if (isset($rr['privilege_id']) && $rr['privilege_id'] == $privilege['privilege_id']) {
-																$isPrivilegeMatched = true;
-																break;
+													if ($isSuperAdmin) {
+														$isPrivilegeMatched = true;
+													} else {
+														$isPrivilegeMatched = false;
+														if (!empty($resourceResult)) {
+															foreach ($resourceResult as $rr) {
+																if (isset($rr['privilege_id']) && $rr['privilege_id'] == $privilege['privilege_id']) {
+																	$isPrivilegeMatched = true;
+																	break;
+																}
 															}
 														}
 													}
@@ -178,16 +203,17 @@
 													$denyChecked  = $isPrivilegeMatched ? '' : " checked='' ";
 													$allowStyle   = $isPrivilegeMatched ? 'allow-label' : '';
 													$denyStyle    = $isPrivilegeMatched ? '' : 'deny-label';
+													$disabledAttr = $isSuperAdmin ? ' disabled' : '';
 													?>
 													<div class="col-md-3 privilege-div">
 														<strong class="privilege-label"><?php echo ucwords($privilege['display_name']); ?></strong>
 														<br>
 														<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
 															<?php
-																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" ' . $allowChecked . '>';
+																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" ' . $allowChecked . $disabledAttr . '>';
 																echo '<label for="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="' . $allowStyle . '">' . $translate('Yes') . '</label>';
 
-																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" ' . $denyChecked . '>';
+																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" ' . $denyChecked . $disabledAttr . '>';
 																echo '<label for="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="' . $denyStyle . '">' . $translate('No') . '</label>';
 															?>
 														</div>
@@ -204,14 +230,16 @@
 														<div class="card-header">
 															<h4 class="card-title" style="font-weight: bold;"><?php echo ucwords($value['display_name']); ?></h4>
 															<div class="card-actions">
-																<div class="super-switch privilege-switch pull-right">
-																	<?php
-																		echo '<input type="radio" id="all' . $displayName . '" name="' . $displayName . '" onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', true);">';
-																		echo '<label for="all' . $displayName . '">' . $this->translate('All') . '</label>';
-																		echo '<input type="radio" id="none' . $displayName . '" name="' . $displayName . '" onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', false);">';
-																		echo '<label for="none' . $displayName . '">' . $this->translate('None') . '</label>';
-																	?>
-																</div>
+																<?php if (!$isSuperAdmin): ?>
+																	<div class="super-switch privilege-switch pull-right">
+																		<?php
+																			echo '<input type="radio" id="all' . $displayName . '" name="' . $displayName . '" onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', true);">';
+																			echo '<label for="all' . $displayName . '">' . $this->translate('All') . '</label>';
+																			echo '<input type="radio" id="none' . $displayName . '" name="' . $displayName . '" onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', false);">';
+																			echo '<label for="none' . $displayName . '">' . $this->translate('None') . '</label>';
+																		?>
+																	</div>
+																<?php endif; ?>
 															</div>
 														</div>
 													</th>
@@ -219,14 +247,14 @@
 												<tr>
 													<td style="text-align:center;vertical-align:middle;" class="privilegesNode" id="<?php echo $displayName; ?>">
 														<div class="row">
-															<?php $renderPrivileges($value['privileges'], $value['resource_id'], $resourceResult, $translate); ?>
+															<?php $renderPrivileges($value['privileges'], $value['resource_id'], $resourceResult, $translate, $isSuperAdmin); ?>
 														</div>
 														<?php if (!empty($value['children'])): ?>
 															<?php foreach ($value['children'] as $child): ?>
 																<div class="child-resource-section">
 																	<h5 class="child-resource-heading"><?php echo ucwords($child['display_name']); ?></h5>
 																	<div class="row">
-																		<?php $renderPrivileges($child['privileges'], $child['resource_id'], $resourceResult, $translate); ?>
+																		<?php $renderPrivileges($child['privileges'], $child['resource_id'], $resourceResult, $translate, $isSuperAdmin); ?>
 																	</div>
 																</div>
 															<?php endforeach; ?>

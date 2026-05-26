@@ -92,5 +92,15 @@ class Acl extends LaminasAcl
         }
 
         $this->allow('daemon');
+
+        // Super Admin always has every privilege — bypasses the
+        // roles_privileges_map. The map is still backfilled (see
+        // migration 1.1.7) for display correctness in the role-edit
+        // screen, but this guarantees SA can't be locked out via map
+        // drift if a new privilege is added later.
+        if (!$this->hasRole('SA')) {
+            $this->addRole(new GenericRole('SA'));
+        }
+        $this->allow('SA');
     }
 }
