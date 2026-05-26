@@ -16,6 +16,7 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
 use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
+use ArchiveUtil\ArchiveUtility;
 
 class CommonService
 {
@@ -560,30 +561,21 @@ class CommonService
 
     public static function saveFormDump($dbAdapter, $params)
     {
-        // Generate UUIDv4 for filename
-        $filename = Uuid::uuid4()->toString() . '.json.gz';
-        //echo $filename;
-
-        // Define the storage path
         $storagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'form_dump';
-        $fullPath = $storagePath . DIRECTORY_SEPARATOR . $filename;
-
-        // Ensure directory exists
         if (!file_exists($storagePath)) {
             mkdir($storagePath, 0777, true);
         }
 
-        // Encode JSON and gzip it
-        $jsonContent = json_encode($params);
-        $gzData = gzencode($jsonContent, 9);
-        file_put_contents($fullPath, $gzData);
-
+        // ArchiveUtility picks zstd > pigz > gzip > zip based on what's
+        // available on the host and appends the right extension itself.
+        $dstStem = $storagePath . DIRECTORY_SEPARATOR . Uuid::uuid4()->toString() . '.json';
+        $fullPath = ArchiveUtility::compressContent(json_encode($params), $dstStem);
 
         // SQL Insertion
         $sql = new Sql($dbAdapter);
         $insert = $sql->insert('form_dump');
         $d = array(
-            'file_path' => $fullPath, // Storing the path instead of the JSON data
+            'file_path' => $fullPath, // Storing the path (with backend-specific extension) instead of the JSON data
             'received_on' => new Expression("NOW()")
         );
 
