@@ -347,8 +347,13 @@ return array(
         ],
     ],
     'view_manager' => [
-        'display_not_found_reason' => true,
-        'display_exceptions' => true,
+        // display_exceptions / display_not_found_reason default to false so
+        // production users never see stack traces, vendor paths, or SQL
+        // fragments on a 500 / 404 page. Override locally for dev by adding
+        // 'view_manager.display_exceptions' => true in
+        // config/autoload/local.php (which is git-ignored).
+        'display_not_found_reason' => false,
+        'display_exceptions' => false,
         'doctype' => 'HTML5',
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',

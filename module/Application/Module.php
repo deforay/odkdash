@@ -46,6 +46,7 @@ use Application\Model\SpiFormVer6DuplicateTable;
 use Application\Service\UserLoginHistoryService;
 use Application\View\Helper\GetCountryDetailsByIdHelper;
 
+use Application\Service\Logger;
 use Application\Service\ProvinceService;
 use Application\Model\GeographicalDivisionsTable;
 use Application\Model\UserLocationMapTable;
@@ -70,18 +71,27 @@ class Module
             }, 100);
         }
 
-        // //Attach render errors
-        // $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, function ($e) {
-        //     if ($e->getParam('exception')) {
-        //         $this->exception($e->getParam('exception')); //Custom error render function.
-        //     }
-        // });
-        // //Attach dispatch errors
-        // $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function ($e) {
-        //     if ($e->getParam('exception')) {
-        //         $this->exception($e->getParam('exception')); //Custom error render function.
-        //     }
-        // });
+        $serviceManager = $application->getServiceManager();
+        $logException = function (MvcEvent $event) use ($serviceManager): void {
+            $exception = $event->getParam('exception');
+            if (!$exception instanceof \Throwable) {
+                return;
+            }
+            try {
+                /** @var Logger $logger */
+                $logger = $serviceManager->get('Logger');
+                $request = $event->getRequest();
+                $logger->logException($exception, sprintf(
+                    '[%s] %s',
+                    $event->getName(),
+                    method_exists($request, 'getUriString') ? $request->getUriString() : ''
+                ));
+            } catch (\Throwable $t) {
+                @error_log('dispatch.error logger failed: ' . $t->getMessage());
+            }
+        };
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, $logException, 100);
+        $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, $logException, 100);
 
         $this->initTranslator($e);
     }
@@ -386,6 +396,13 @@ class Module
     {
         return array(
             'factories' => array(
+                'Logger' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        return new Logger();
+                    }
+                },
                 'AppAcl' => new class
                 {
 

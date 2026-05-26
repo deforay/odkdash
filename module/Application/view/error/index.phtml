@@ -2,67 +2,92 @@
 
 /**
  * @var Laminas\View\Renderer\PhpRenderer $this
+ *
+ * Server error page. With `view_manager.display_exceptions` off (the default
+ * in production) this shows a friendly fallback and nothing else — the
+ * exception is already captured by the Logger listener wired in
+ * Module::onBootstrap, so admins can find the full trace in var/log/.
+ *
+ * Override `display_exceptions => true` in config/autoload/local.php during
+ * development to see the full stack inline.
  */
+
+$showDetails = !empty($this->display_exceptions) && isset($this->exception) && $this->exception instanceof \Throwable;
 ?>
-<h1>An error occurred</h1>
-<h2><?= $this->message ?></h2>
+<body class="am-splash-screen">
+    <div class="am-wrapper am-error am-error-500">
+        <div class="am-content">
+            <div class="main-content">
+                <div class="error-container">
+                    <div class="error-image"></div>
+                    <div class="error-number">
+                        <h1><?= $this->translate('Something went wrong') ?></h1>
+                        <h2><?= $this->escapeHtml($this->message ?? $this->translate('An unexpected error occurred while processing your request.')) ?></h2>
+                    </div>
+                    <p style="margin-top: 1.5rem; color: #555;">
+                        <?= $this->translate('Our team has been notified. Please try again in a moment, and contact your administrator if the problem persists.') ?>
+                    </p>
+                    <p>
+                        <a href="<?= $this->basePath() ?>" class="btn btn-primary">
+                            <?= $this->translate('Return home') ?>
+                        </a>
+                    </p>
 
-<?php if (!empty($this->display_exceptions)) : ?>
-    <?php if (isset($this->exception) && $this->exception instanceof \Throwable) : ?>
-        <hr />
-
-        <h2>Additional information:</h2>
-        <h3><?= get_class($this->exception) ?></h3>
-        <dl>
-            <dt>File:</dt>
-            <dd>
-                <pre><?= $this->exception->getFile() ?>:<?= $this->exception->getLine() ?></pre>
-            </dd>
-            <dt>Message:</dt>
-            <dd>
-                <pre><?= $this->escapeHtml($this->exception->getMessage()) ?></pre>
-            </dd>
-            <dt>Stack trace:</dt>
-            <dd>
-                <pre><?= $this->escapeHtml($this->exception->getTraceAsString()) ?></pre>
-            </dd>
-        </dl>
-
-        <?php if ($ex = $this->exception->getPrevious()) : ?>
-            <hr />
-
-            <h2>Previous exceptions:</h2>
-            <ul class="list-unstyled">
-                <?php $icount = 0 ?>
-                <?php while ($ex) : ?>
-                    <li>
-                        <h3><?= get_class($ex) ?></h3>
+                    <?php if ($showDetails) : ?>
+                        <hr />
+                        <h2><?= $this->translate('Developer details') ?></h2>
+                        <h3><?= $this->escapeHtml(get_class($this->exception)) ?></h3>
                         <dl>
-                            <dt>File:</dt>
+                            <dt><?= $this->translate('File') ?>:</dt>
                             <dd>
-                                <pre><?= $ex->getFile() ?>:<?= $ex->getLine() ?></pre>
+                                <pre><?= $this->escapeHtml($this->exception->getFile() . ':' . $this->exception->getLine()) ?></pre>
                             </dd>
-                            <dt>Message:</dt>
+                            <dt><?= $this->translate('Message') ?>:</dt>
                             <dd>
-                                <pre><?= $this->escapeHtml($ex->getMessage()) ?></pre>
+                                <pre><?= $this->escapeHtml($this->exception->getMessage()) ?></pre>
                             </dd>
-                            <dt>Stack trace:</dt>
+                            <dt><?= $this->translate('Stack trace') ?>:</dt>
                             <dd>
-                                <pre><?= $this->escapeHtml($ex->getTraceAsString()) ?></pre>
+                                <pre><?= $this->escapeHtml($this->exception->getTraceAsString()) ?></pre>
                             </dd>
                         </dl>
-                    </li>
-                    <?php
-                    $ex = $ex->getPrevious();
-                    if (++$icount >= 50) {
-                        echo '<li>There may be more exceptions, but we do not have enough memory to process it.</li>';
-                        break;
-                    }
-                    ?>
-                <?php endwhile ?>
-            </ul>
-        <?php endif ?>
-    <?php else : ?>
-        <h3>No Exception available</h3>
-    <?php endif ?>
-<?php endif ?>
+
+                        <?php if ($ex = $this->exception->getPrevious()) : ?>
+                            <hr />
+                            <h2><?= $this->translate('Previous exceptions') ?>:</h2>
+                            <ul class="list-unstyled">
+                                <?php $icount = 0; ?>
+                                <?php while ($ex) : ?>
+                                    <li>
+                                        <h3><?= $this->escapeHtml(get_class($ex)) ?></h3>
+                                        <dl>
+                                            <dt><?= $this->translate('File') ?>:</dt>
+                                            <dd>
+                                                <pre><?= $this->escapeHtml($ex->getFile() . ':' . $ex->getLine()) ?></pre>
+                                            </dd>
+                                            <dt><?= $this->translate('Message') ?>:</dt>
+                                            <dd>
+                                                <pre><?= $this->escapeHtml($ex->getMessage()) ?></pre>
+                                            </dd>
+                                            <dt><?= $this->translate('Stack trace') ?>:</dt>
+                                            <dd>
+                                                <pre><?= $this->escapeHtml($ex->getTraceAsString()) ?></pre>
+                                            </dd>
+                                        </dl>
+                                    </li>
+                                    <?php
+                                    $ex = $ex->getPrevious();
+                                    if (++$icount >= 50) {
+                                        echo '<li>' . $this->translate('There may be more exceptions, but we do not have enough memory to process them.') . '</li>';
+                                        break;
+                                    }
+                                    ?>
+                                <?php endwhile; ?>
+                            </ul>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
