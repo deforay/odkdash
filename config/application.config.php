@@ -4,14 +4,6 @@ return [
     // This should be an array of module namespaces used in the application.
     'modules' => [
         'Laminas\Validator',
-        'Laminas\Mvc\Plugin\FilePrg',
-        'Laminas\Mvc\Plugin\FlashMessenger',
-        'Laminas\Mvc\Plugin\Identity',
-        'Laminas\Mvc\Plugin\Prg',
-        'Laminas\Form',
-        'Laminas\Hydrator',
-        'Laminas\InputFilter',
-        'Laminas\Filter',
         'Laminas\Cache',
         'Laminas\Serializer',
         'Laminas\Mvc\Middleware',

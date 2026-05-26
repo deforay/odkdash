@@ -18,7 +18,6 @@
         "laminas/laminas-i18n": "^2.33",
         "laminas/laminas-db": "^2.22",
         "laminas/laminas-cli": "^1.15",
-        "laminas/laminas-mvc-plugins": "^1.2",
         "laminas/laminas-mvc-middleware": "^2.5",
         "laminas/laminas-mvc-i18n": "^1.9",
         "laminas/laminas-router": "^3.18",
