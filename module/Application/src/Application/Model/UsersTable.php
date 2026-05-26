@@ -86,6 +86,9 @@ class UsersTable extends AbstractTableGateway
                 return $this->userEventLog($sResult);
             }
         } else {
+            $reason = $sResult ? 'invalid password' : 'unknown user';
+            $trackTable->addEventLog('', 'login-failed', "Failed login for '{$username}' ({$reason})", 'login');
+            $userHistoryTable->userHistoryLog($username, 'failed');
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
         }

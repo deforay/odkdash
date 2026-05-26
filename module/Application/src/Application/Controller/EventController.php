@@ -2,14 +2,14 @@
 
 namespace Application\Controller;
 
-use Laminas\Config\Config;
-
+use Application\Service\CommonService;
+use Application\Service\EventService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 
 class EventController extends AbstractActionController
 {
-    private $eventService = null;
+    private EventService $eventService;
 
     public function __construct($eventService)
     {
@@ -18,13 +18,18 @@ class EventController extends AbstractActionController
 
     public function indexAction()
     {
-        /** @var \Laminas\Http\Request $request */
-
         $request = $this->getRequest();
+
         if ($request->isPost()) {
-            $params = $request->getPost();
-            $result = $this->eventService->getAllDetails($params);
-            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
+            $payload = $this->eventService->getFeed((array) $request->getPost());
+            $response = $this->getResponse();
+            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
+            $response->setContent(CommonService::jsonEncode($payload));
+            return $response;
         }
+
+        return new ViewModel([
+            'eventTypes' => $this->eventService->getEventTypes(),
+        ]);
     }
 }

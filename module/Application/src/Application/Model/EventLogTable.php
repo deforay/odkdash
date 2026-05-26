@@ -185,4 +185,87 @@ class EventLogTable extends AbstractTableGateway
         }
         return $output;
     }
+
+    public function fetchFeed(array $params): array
+    {
+        $page = max(1, (int) ($params['page'] ?? 1));
+        $pageSize = (int) ($params['pageSize'] ?? 25);
+        $pageSize = max(10, min(200, $pageSize));
+        $offset = ($page - 1) * $pageSize;
+
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($dbAdapter);
+
+        $where = [];
+        if (!empty($params['startDate'])) {
+            $where[] = "e.date_time >= '" . CommonService::isoDateFormat($params['startDate']) . " 00:00:00'";
+        }
+        if (!empty($params['endDate'])) {
+            $where[] = "e.date_time <= '" . CommonService::isoDateFormat($params['endDate']) . " 23:59:59'";
+        }
+        if (!empty($params['eventType'])) {
+            $safe = preg_replace('/[^A-Za-z0-9_\- ]/', '', (string) $params['eventType']);
+            $where[] = "e.event_type = '" . $safe . "'";
+        }
+        if (!empty($params['actor'])) {
+            $where[] = "e.actor = " . (int) $params['actor'];
+        }
+        if (!empty($params['search'])) {
+            $term = $dbAdapter->getPlatform()->quoteValue('%' . $params['search'] . '%');
+            $where[] = "(e.action LIKE $term OR e.event_type LIKE $term OR e.resource_name LIKE $term OR u.first_name LIKE $term OR u.last_name LIKE $term OR u.login LIKE $term)";
+        }
+        $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+
+        $countSql = "SELECT COUNT(*) AS c FROM event_log AS e LEFT JOIN users AS u ON u.id = e.actor $whereSql";
+        $total = (int) ($dbAdapter->query($countSql, $dbAdapter::QUERY_MODE_EXECUTE)->current()['c'] ?? 0);
+
+        $rowsSql = "SELECT e.event_id, e.actor, e.subject, e.event_type, e.action, e.resource_name, e.date_time,
+                           u.first_name, u.last_name, u.login
+                    FROM event_log AS e
+                    LEFT JOIN users AS u ON u.id = e.actor
+                    $whereSql
+                    ORDER BY e.date_time DESC, e.event_id DESC
+                    LIMIT $pageSize OFFSET $offset";
+        $rows = $dbAdapter->query($rowsSql, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        $items = [];
+        foreach ($rows as $r) {
+            $ts = strtotime($r['date_time']);
+            $name = trim(($r['first_name'] ?? '') . ' ' . ($r['last_name'] ?? '')) ?: ($r['login'] ?? 'System');
+            $initials = '';
+            $parts = preg_split('/\s+/', $name);
+            foreach (array_slice($parts, 0, 2) as $p) {
+                $initials .= strtoupper(substr($p, 0, 1));
+            }
+            $items[] = [
+                'id'           => (int) $r['event_id'],
+                'action'       => $r['action'] ?? '',
+                'eventType'    => $r['event_type'] ?? '',
+                'resourceName' => $r['resource_name'] ?? '',
+                'userName'     => $name,
+                'userInitials' => $initials ?: 'S',
+                'userLogin'    => $r['login'] ?? '',
+                'time'         => $ts ? date('g:i a', $ts) : '',
+                'dateKey'      => $ts ? date('Y-m-d', $ts) : '',
+                'dateLabel'    => $ts ? date('D, j M Y', $ts) : '',
+                'datetime'     => $r['date_time'] ?? '',
+            ];
+        }
+
+        return [
+            'items'      => $items,
+            'total'      => $total,
+            'page'       => $page,
+            'pageSize'   => $pageSize,
+            'totalPages' => $pageSize > 0 ? (int) ceil($total / $pageSize) : 1,
+        ];
+    }
+
+    public function fetchEventTypes(): array
+    {
+        $dbAdapter = $this->adapter;
+        $sql = 'SELECT DISTINCT event_type FROM event_log WHERE event_type IS NOT NULL AND event_type <> "" ORDER BY event_type';
+        $rows = $dbAdapter->query($sql, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return array_column($rows, 'event_type');
+    }
 }
