@@ -67,6 +67,22 @@
 		border: 1px solid #eee;
 		padding: 10px;
 	}
+
+	.child-resource-section {
+		margin-top: 16px;
+		padding: 12px 8px 4px;
+		border-top: 1px dashed #ddd;
+	}
+
+	.child-resource-heading {
+		font-size: 14px;
+		font-weight: 600;
+		color: #555;
+		text-align: left;
+		margin: 0 0 10px 4px;
+		text-transform: none;
+		letter-spacing: 0.02em;
+	}
 </style>
 <div class="am-content">
 	<div class="page-head">
@@ -109,57 +125,71 @@
 											<label for="denyAllPrivileges"><?= $this->translate('Unselect All'); ?></label>
 										</div>
 									</div>
-									<table aria-describedby="table" class="table table-striped responsive-utilities">
-										<tbody>
-										<?php
-										foreach ($rolesresult as $value) { ?>
-											<tr class="togglerTr">
-												<th style="background-color:#eee;">
-													<div class="card-header">
-														<h4 class="card-title" style="font-weight: bold;"><?php echo ucwords($value['display_name'])  ?></h4>
-														<div class="card-actions">
-															<div class="super-switch privilege-switch pull-right">
-																<?php 
-																	 $displayName = str_replace(' ', '', $value['display_name']);
-																	 echo '<input type="radio" class="" id="all' . $displayName . '" 
-																			name="' . $displayName . '" 
-																			onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', true);">
-																		   <label for="all' . $displayName . '">' . $this->translate('All') . '</label>';
-																 
-																	 echo '<input type="radio" class="" id="none' . $displayName . '" 
-																			name="' . $displayName . '" 
-																			onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', false);">
-																		   <label for="none' . $displayName . '">' . $this->translate('None') . '</label>';
-																?>
-															</div>
+										<table aria-describedby="table" class="table table-striped responsive-utilities">
+											<tbody>
+											<?php
+											$renderPrivileges = function ($privileges, $resourceId, $translate) {
+												foreach ($privileges as $privilege) {
+													?>
+													<div class="col-md-3 privilege-div">
+														<strong class="privilege-label"><?php echo ucwords($privilege['display_name']); ?></strong>
+														<br>
+														<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
+															<?php
+																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']">';
+																echo '<label for="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="normal-label">' . $translate('Yes') . '</label>';
+
+																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']">';
+																echo '<label for="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="deny-label">' . $translate('No') . '</label>';
+															?>
 														</div>
 													</div>
-												</th>
-											</tr>
-											<tr>
-												<td style="text-align:center;vertical-align:middle;" class="privilegesNode" id="<?php echo $displayName; ?>">
-													<div class="row ">
-													<?php foreach ($value['privileges'] as $privilege) { ?>
-														<div class="col-md-3 privilege-div">
-															<strong class="privilege-label"><?php echo ucwords($privilege['display_name'])  ?></strong>
-															<br>
-															<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
-																<?php
-																	echo '<input type="radio" class="selectPrivilege" name="resource[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']">';
-																	echo '<label for="selectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="normal-label">' . $this->translate('Yes') . '</label>';
-																	
-																	echo '<input type="radio" class="unselectPrivilege" name="resource[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']">';
-																	echo '<label for="unselectPrivilege[' . $value['resource_id'] . '][' . $privilege['privilege_name'] . ']" class="deny-label">' . $this->translate('No') . '</label>';
-																?>
+													<?php
+												}
+											};
+											$translate = function ($s) { return $this->translate($s); };
+											foreach ($rolesresult as $value) {
+												$displayName = str_replace(' ', '', $value['display_name']);
+												?>
+												<tr class="togglerTr">
+													<th style="background-color:#eee;">
+														<div class="card-header">
+															<h4 class="card-title" style="font-weight: bold;"><?php echo ucwords($value['display_name']); ?></h4>
+															<div class="card-actions">
+																<div class="super-switch privilege-switch pull-right">
+																	<?php
+																		echo '<input type="radio" id="all' . $displayName . '" name="' . $displayName . '" onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', true);">';
+																		echo '<label for="all' . $displayName . '">' . $this->translate('All') . '</label>';
+																		echo '<input type="radio" id="none' . $displayName . '" name="' . $displayName . '" onclick="togglePrivilegesForThisResource(\'' . $displayName . '\', false);">';
+																		echo '<label for="none' . $displayName . '">' . $this->translate('None') . '</label>';
+																	?>
+																</div>
 															</div>
 														</div>
-													<?php } ?>
-													</div>
-												</td>
-											</tr>
-											<?php } ?>
-										</tbody>
-									</table>
+													</th>
+												</tr>
+												<tr>
+													<td style="text-align:center;vertical-align:middle;" class="privilegesNode" id="<?php echo $displayName; ?>">
+														<div class="row">
+															<?php $renderPrivileges($value['privileges'], $value['resource_id'], $translate); ?>
+														</div>
+														<?php if (!empty($value['children'])): ?>
+															<?php foreach ($value['children'] as $child): ?>
+																<div class="child-resource-section">
+																	<h5 class="child-resource-heading"><?php echo ucwords($child['display_name']); ?></h5>
+																	<div class="row">
+																		<?php $renderPrivileges($child['privileges'], $child['resource_id'], $translate); ?>
+																	</div>
+																</div>
+															<?php endforeach; ?>
+														<?php endif; ?>
+													</td>
+												</tr>
+												<?php
+											}
+											?>
+											</tbody>
+										</table>
 								</div>
 
 

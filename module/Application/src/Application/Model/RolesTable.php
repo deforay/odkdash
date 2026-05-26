@@ -201,16 +201,36 @@ class RolesTable extends BaseTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $resourceQuery = $sql->select()->from('resources')->order('display_name');
-        $resourceQueryStr = $sql->buildSqlString($resourceQuery); // Get the string of the Sql, instead of the Select-instance
-        $resourceResult = $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        $n = count($resourceResult);
-        for ($i = 0; $i < $n; $i++) {
-            $privilageQuery = $sql->select()->from('privileges')->where(array('resource_id' => $resourceResult[$i]['resource_id']))->order('display_name');
-            $privilageQueryStr = $sql->buildSqlString($privilageQuery); // Get the string of the Sql, instead of the Select-instance
-            $resourceResult[$i]['privileges'] = $dbAdapter->query($privilageQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        $resourceQuery = $sql->select()->from('resources')->order(['sort_order ASC', 'display_name ASC']);
+        $resources = $dbAdapter->query($sql->buildSqlString($resourceQuery), $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        $privQuery = $sql->select()->from('privileges')->order('display_name');
+        $allPrivs = $dbAdapter->query($sql->buildSqlString($privQuery), $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $privsByResource = [];
+        foreach ($allPrivs as $p) {
+            $privsByResource[$p['resource_id']][] = $p;
         }
-        return $resourceResult;
+
+        $byId = [];
+        foreach ($resources as $r) {
+            $r['privileges'] = $privsByResource[$r['resource_id']] ?? [];
+            $r['children']   = [];
+            $byId[$r['resource_id']] = $r;
+        }
+
+        $tree = [];
+        foreach ($byId as $id => $r) {
+            $parentId = $r['parent_resource_id'] ?? null;
+            if ($parentId !== null && $parentId !== '' && isset($byId[$parentId])) {
+                $byId[$parentId]['children'][] = $r;
+            } else {
+                $tree[] = &$byId[$id];
+            }
+        }
+        unset($r);
+
+        return $tree;
     }
 
     public function mapRolesPrivileges($params)
