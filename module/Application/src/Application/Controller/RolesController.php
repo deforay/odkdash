@@ -2,8 +2,6 @@
 
 namespace Application\Controller;
 
-use Laminas\Config\Config;
-
 use Laminas\View\Model\ViewModel;
 use Application\Service\CommonService;
 use Laminas\Mvc\Controller\AbstractActionController;
@@ -53,25 +51,33 @@ class RolesController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
+        $rolesList = $this->redirect()->toRoute('roles');
 
         if ($request->isPost()) {
             $params = $request->getPost();
-            $result = $this->roleService->updateRoles($params);
-            return $this->redirect()->toRoute("roles");
-        } else {
-            // $configFile = CONFIG_PATH . DIRECTORY_SEPARATOR . "acl.config.php";
-
-            // $config = \Laminas\Config\Factory::fromFile($configFile, true);
-
-            $id = base64_decode($this->params()->fromRoute('id'));
-            $result = $this->roleService->getRole($id);
-            $rolesResult = $this->roleService->getAllRoles(); //privileges
-            $config = $this->roleService->getPrivilegesMap($id);
-            return new ViewModel(array(
-                'result' => $result,
-                'rolesresult' => $rolesResult,
-                'resourceResult' => $config,
-            ));
+            // Super Admin is locked — UI hides Edit, but block direct POSTs too.
+            $isSa = isset($params['roleCode']) && $params['roleCode'] === 'SA';
+            if (!$isSa) {
+                $this->roleService->updateRoles($params);
+            }
+            return $rolesList;
         }
+
+        $id = base64_decode($this->params()->fromRoute('id'));
+        $result = $this->roleService->getRole($id);
+
+        // Block GET access to SA's edit form — keep the lock honest
+        // if someone hand-builds the /roles/edit/<id> URL.
+        if (isset($result->role_code) && $result->role_code === 'SA') {
+            return $rolesList;
+        }
+
+        $rolesResult = $this->roleService->getAllRoles();
+        $config = $this->roleService->getPrivilegesMap($id);
+        return new ViewModel(array(
+            'result' => $result,
+            'rolesresult' => $rolesResult,
+            'resourceResult' => $config,
+        ));
     }
 }

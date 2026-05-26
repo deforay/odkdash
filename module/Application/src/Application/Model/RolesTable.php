@@ -176,7 +176,13 @@ class RolesTable extends BaseTableGateway
             $row[] = $aRow['role_code'];
             $row[] = ucwords($aRow['status']);
             if ($update) {
-                $row[] = '<a href="/roles/edit/' . base64_encode($aRow['role_id']) . '" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+                if ($aRow['role_code'] === 'SA') {
+                    // Super Admin is locked — show a non-actionable indicator
+                    // instead of the Edit link. editAction also blocks direct URLs.
+                    $row[] = '<span class="text-muted" title="Super Admin privileges are locked"><i class="fa fa-lock"></i> Locked</span>';
+                } else {
+                    $row[] = '<a href="/roles/edit/' . base64_encode($aRow['role_id']) . '" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
+                }
             }
             $output['aaData'][] = $row;
         }
