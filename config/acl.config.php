@@ -77,9 +77,6 @@ return [
             'download-pdf' => 'allow',
             'view-bulk-downloads' => 'deny',
         ],
-        'Application\\Controller\\UserLoginHistoryController' => [
-            'index' => 'allow',
-        ],
         'Application\\Controller\\UsersController' => [
             'index' => 'allow',
             'add' => 'allow',
@@ -171,9 +168,6 @@ return [
             'download-pdf' => 'allow',
             'view-bulk-downloads' => 'deny',
         ],
-        'Application\\Controller\\UserLoginHistoryController' => [
-            'index' => 'allow',
-        ],
         'Application\\Controller\\UsersController' => [
             'index' => 'deny',
             'add' => 'deny',
@@ -264,9 +258,6 @@ return [
             'manage-facility' => 'allow',
             'download-pdf' => 'allow',
             'view-bulk-downloads' => 'deny',
-        ],
-        'Application\\Controller\\UserLoginHistoryController' => [
-            'index' => 'allow',
         ],
         'Application\\Controller\\UsersController' => [
             'index' => 'allow',

@@ -11,7 +11,6 @@ use Application\Service\CommonService;
 use Application\Model\UserRoleMapTable;
 use Application\Model\UserTokenMapTable;
 use \Application\Service\ImageResizeService;
-use Application\Model\UserLoginHistoryTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\UserLocationMapTable;
 
@@ -44,7 +43,6 @@ class UsersTable extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
-        $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $userLocationMapTable = new UserLocationMapTable($dbAdapter);
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(['u' => 'users'])
@@ -87,7 +85,6 @@ class UsersTable extends AbstractTableGateway
         } else {
             $reason = $sResult ? 'invalid password' : 'unknown user';
             $trackTable->addEventLog('', 'login-failed', "Failed login for '{$username}' ({$reason})", 'login');
-            $userHistoryTable->userHistoryLog($username, 'failed');
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
         }
@@ -632,7 +629,6 @@ class UsersTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
-        $userHistoryTable = new UserLoginHistoryTable($dbAdapter);
         $loginContainer = new Container('credo');
         $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
 
@@ -684,7 +680,6 @@ class UsersTable extends AbstractTableGateway
         $action = $sResult->login . ' logged in';
         $resourceName = 'login in';
         $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-        $userHistoryTable->userHistoryLog($sResult->login, $loginStatus = 'successful');
 
         $redirect = $gTable->getGlobalValue('web_version');
         $redirectRoute = 'dashboard';

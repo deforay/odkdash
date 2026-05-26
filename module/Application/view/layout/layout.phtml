@@ -29,9 +29,6 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\ConfigControll
   $adminMenu .= "<li><a href=" . $this->url('config', array('action' => 'index')) . ">" . $this->translate('Global Config') . "</a></li>";
 }
 
-if (isset($acl) && $acl->isAllowed($role, "Application\Controller\UserLoginHistoryController", "index")) {
-  $adminMenu .= "<li><a href=" . $this->url('user-login-history', array('action' => 'index')) . ">" . $this->translate('User Login History') . "</a></li>";
-}
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\EventController", "index")) {
   $adminMenu .= "<li><a href=" . $this->url('event-log', array('action' => 'index')) . ">" . $this->translate('Event Log') . "</a></li>";
 }

@@ -35,7 +35,6 @@ use Application\Model\UserCountryMapTable;
 use Application\Service\AuditTrailService;
 use Application\Model\SpiFormVer3TempTable;
 use Application\Model\SpiRtFacilitiesTable;
-use Application\Model\UserLoginHistoryTable;
 use Application\Model\SpiFormVer3DownloadTable;
 
 use Application\Model\SpiFormVer6DownloadTable;
@@ -43,7 +42,6 @@ use Application\View\Helper\GlobalConfigHelper;
 use Application\Model\SpiFormVer3DuplicateTable;
 
 use Application\Model\SpiFormVer6DuplicateTable;
-use Application\Service\UserLoginHistoryService;
 use Application\View\Helper\GetCountryDetailsByIdHelper;
 
 use Application\Service\Logger;
@@ -346,13 +344,6 @@ class Module
                         return new \Application\Controller\RolesController($roleService);
                     }
                 },
-                'Application\Controller\UserLoginHistoryController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $userLoginHistoryService = $diContainer->get('UserLoginHistoryService');
-                        return new \Application\Controller\UserLoginHistoryController($userLoginHistoryService);
-                    }
-                },
                 'Application\Controller\EventController' => new class {
                     public function __invoke($diContainer)
                     {
@@ -490,14 +481,6 @@ class Module
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new RolesTable($dbAdapter);
-                    }
-                },
-                'UserLoginHistoryTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new UserLoginHistoryTable($dbAdapter);
                     }
                 },
                 'UserRoleMapTable' => new class
@@ -678,13 +661,6 @@ class Module
                     public function __invoke($diContainer)
                     {
                         return new RoleService($diContainer);
-                    }
-                },
-                'UserLoginHistoryService' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        return new UserLoginHistoryService($diContainer);
                     }
                 },
                 'EventService' => new class

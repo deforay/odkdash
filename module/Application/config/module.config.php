@@ -183,16 +183,6 @@ return array(
                     ),
                 ),
             ),
-            'user-login-history' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/user-login-history[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\UserLoginHistoryController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'event-log' => array(
                 'type' => 'segment',
                 'options' => array(
