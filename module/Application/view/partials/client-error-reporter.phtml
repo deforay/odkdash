@@ -1,0 +1,90 @@
+<?php
+/**
+ * Captures uncaught JS errors and unhandled promise rejections in the
+ * browser and ships them to /client-errors. Deduplicates within a 60s
+ * window and caps at 30 reports per page-load to keep a runaway loop
+ * from flooding the server. Pattern mirrored from the sister rishs
+ * project.
+ *
+ * Included from every entry-level view (the two login pages plus the
+ * main layout.phtml and home.phtml layouts) so errors that fire on the
+ * login screen — exactly what we couldn't see before — still land in
+ * var/log/client-errors-*.log.
+ *
+ * Safe to include for anonymous users; the /client-errors route is
+ * allowlisted in Module::preSetter and accepts JSON without a session.
+ */
+?>
+<script>
+(function () {
+    var endpoint = '<?= $this->basePath('client-errors') ?>';
+    var seen = new Map();
+    var DEDUPE_MS = 60000;
+    var MAX_REPORTS = 30;
+    var sent = 0;
+
+    function hashKey(msg, src, line, col) {
+        return [msg, src, line, col].join('|');
+    }
+
+    function purge() {
+        var cutoff = Date.now() - DEDUPE_MS;
+        seen.forEach(function (t, k) { if (t < cutoff) seen.delete(k); });
+    }
+
+    function report(payload) {
+        if (sent >= MAX_REPORTS) return;
+        purge();
+        var key = hashKey(payload.message, payload.source, payload.line, payload.column);
+        if (seen.has(key)) return;
+        seen.set(key, Date.now());
+        sent++;
+
+        payload.url = window.location.href;
+        try {
+            var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+            if (navigator.sendBeacon && navigator.sendBeacon(endpoint, blob)) return;
+        } catch (e) { /* fall through to fetch */ }
+        try {
+            fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true,
+            }).catch(function () {});
+        } catch (e) { /* swallow */ }
+    }
+
+    window.addEventListener('error', function (e) {
+        if (!e) return;
+        report({
+            level: 'error',
+            message: (e.message || 'Unknown error').toString(),
+            source: (e.filename || '').toString(),
+            line: e.lineno || null,
+            column: e.colno || null,
+            stack: (e.error && e.error.stack) ? String(e.error.stack) : '',
+        });
+    });
+
+    window.addEventListener('unhandledrejection', function (e) {
+        var reason = e && e.reason;
+        var msg = (reason && (reason.message || (reason.toString && reason.toString()))) || 'Unhandled promise rejection';
+        report({
+            level: 'error',
+            message: 'Unhandled rejection: ' + String(msg),
+            stack: (reason && reason.stack) ? String(reason.stack) : '',
+        });
+    });
+
+    // Manual hook for code that catches its own errors (e.g. AJAX handlers).
+    window.reportClientError = function (err, extra) {
+        report({
+            level: 'error',
+            message: (err && err.message) ? String(err.message) : String(err),
+            stack: (err && err.stack) ? String(err.stack) : '',
+            extra: extra || null,
+        });
+    };
+})();
+</script>

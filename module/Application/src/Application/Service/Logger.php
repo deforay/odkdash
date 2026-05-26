@@ -29,10 +29,17 @@ final class Logger
 
     private ?MonologLogger $logger = null;
     private string $logDir;
+    private string $channel;
 
-    public function __construct(?string $logDir = null)
+    /**
+     * @param string $channel Used as both the Monolog channel name and the
+     *                       file prefix — `client-errors` writes to
+     *                       var/log/client-errors-YYYY-MM-DD.log.
+     */
+    public function __construct(?string $logDir = null, string $channel = 'app')
     {
         $this->logDir = $logDir ?? $this->defaultLogDir();
+        $this->channel = $channel;
     }
 
     public function info(string $message, array $context = []): void
@@ -95,7 +102,7 @@ final class Logger
             return $this->logger;
         }
 
-        $this->logger = new MonologLogger('app');
+        $this->logger = new MonologLogger($this->channel);
 
         try {
             if (!is_dir($this->logDir)) {
@@ -103,7 +110,7 @@ final class Logger
             }
             if (is_dir($this->logDir) && is_writable($this->logDir)) {
                 $handler = new RotatingFileHandler(
-                    $this->logDir . '/app.log',
+                    "{$this->logDir}/{$this->channel}.log",
                     self::DEFAULT_RETENTION_DAYS,
                     Level::Info,
                     true,

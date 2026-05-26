@@ -14,7 +14,6 @@ use \Application\Service\ImageResizeService;
 use Application\Model\UserLoginHistoryTable;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\UserLocationMapTable;
-use Twilio\Rest\Client;
 
 
 
@@ -592,14 +591,7 @@ class UsersTable extends AbstractTableGateway
 
     public function updateUserOtp($userId, $mobileNo)
     {
-        $dbAdapter = $this->adapter;
         $userOtp = CommonService::generateOTP();
-        $gTable = new GlobalTable($dbAdapter);
-        $sid = $gTable->getGlobalValue('whatsapp_sid');
-        $token = $gTable->getGlobalValue('whatsapp_token');
-
-        //$twilio = new Client($sid, $token);
-
         $otpData = array('otp' => $userOtp, 'otp_generated_datetime' => CommonService::getDateTime());
         $this->update($otpData, array("id" => $userId));
     }
