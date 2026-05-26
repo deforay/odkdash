@@ -17,8 +17,6 @@ $config = $this->GlobalConfigHelper();
 $web_version = $config['web_version'];
 $totalVersions = count(explode(",", $web_version));
 
-//print_r($acl->isAllowed($role, "Application\Controller\SpiV5ReportsController", "facility-report"));die;
-
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\RolesController", "index")) {
   $adminMenu .= "<li><a href=" . $this->url('roles', array('action' => 'index')) . ">" . $this->translate('Roles') . "</a></li>";
 }

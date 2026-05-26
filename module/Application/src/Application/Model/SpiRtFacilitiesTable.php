@@ -127,7 +127,6 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         if (isset($params['rowId']) && trim($params['rowId']) != "") {
             $dbAdapter = $this->adapter;
             $spiv3Db = new SpiFormVer3Table($dbAdapter);
-            $spiv5Db = new SpiFormVer5Table($dbAdapter);
             $spiv6Db = new SpiFormVer6Table($dbAdapter);
             $rowId = base64_decode($params['rowId']);
 
@@ -168,9 +167,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 'longitude' => $params['longitude']
             );
             $this->update($data, array('id' => $rowId));
-            //update spiv3 & spiv5 table facility info
             $spiv3Db->updateSpiv3FacilityInfo($rowId, $params);
-            $spiv5Db->updateSpiv5FacilityInfo($rowId, $params);
             $spiv6Db->updateSpiv6FacilityInfo($rowId, $params);
             return $rowId;
         }
@@ -432,38 +429,6 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         return $result;
     }
 
-    public function fetchFacilityProfileByAuditV5($ids)
-    {
-        $result = [];
-        $fResult = [];
-        $auditsResult = [];
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        if (isset($ids) && trim($ids) != '') {
-            $auditId = base64_decode($ids);
-            $auditQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
-                ->columns(array('facilityname'))
-                ->where(array('spiv5.id' => $auditId));
-            $auditQueryStr = $sql->buildSqlString($auditQuery);
-            $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($auditResult) {
-                $auditsQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
-                    ->columns(array('id', 'assesmentofaudit'))
-                    ->where(array('spiv5.facilityname' => $auditResult->facilityname, 'spiv5.status' => 'approved'));
-                $auditsQueryStr = $sql->buildSqlString($auditsQuery);
-                $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('facility_name', 'email'))
-                    ->where(array('spirt3.facility_name' => $auditResult->facilityname));
-                $fQueryStr = $sql->buildSqlString($fQuery);
-                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            }
-            $result = array('fResult' => $fResult, 'auditsResult' => $auditsResult);
-        }
-        return $result;
-    }
-
     public function fetchFacilityProfileByAuditV6($ids)
     {
         $result = [];
@@ -473,15 +438,15 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         if (isset($ids) && trim($ids) != '') {
             $auditId = base64_decode($ids);
-            $auditQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
+            $auditQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                 ->columns(array('facilityname'))
-                ->where(array('spiv5.id' => $auditId));
+                ->where(array('spiv6.id' => $auditId));
             $auditQueryStr = $sql->buildSqlString($auditQuery);
             $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
             if ($auditResult) {
-                $auditsQuery = $sql->select()->from(array('spiv5' => 'spi_form_v_6'))
+                $auditsQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                     ->columns(array('id', 'assesmentofaudit'))
-                    ->where(array('spiv5.facilityname' => $auditResult->facilityname, 'spiv5.status' => 'approved'));
+                    ->where(array('spiv6.facilityname' => $auditResult->facilityname, 'spiv6.status' => 'approved'));
                 $auditsQueryStr = $sql->buildSqlString($auditsQuery);
                 $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 

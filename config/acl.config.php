@@ -18,9 +18,6 @@ return [
         'Application\\Controller\\DashboardV6Controller' => [
             'index' => 'allow',
         ],
-        'Application\\Controller\\DashboardV5Controller' => [
-            'index' => 'allow',
-        ],
         'Application\\Controller\\DistrictController' => [
             'index' => 'allow',
             'add' => 'allow',
@@ -28,7 +25,6 @@ return [
         ],
         'Application\\Controller\\EmailController' => [
             'index' => 'allow',
-            'email-v5' => 'allow',
         ],
         'Application\\Controller\\EventController' => [
             'index' => 'deny',
@@ -51,20 +47,6 @@ return [
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-        ],
-        'Application\\Controller\\SpiV5Controller' => [
-            'index' => 'deny',
-            'manage-facility' => 'deny',
-            'approve-status' => 'deny',
-            'corrective-action-pdf' => 'deny',
-            'delete' => 'deny',
-            'download-pdf' => 'deny',
-            'download-files' => 'deny',
-            'duplicate' => 'deny',
-            'edit' => 'deny',
-            'export' => 'deny',
-            'view-bulk-downloads' => 'deny',
-            'view-data-v5' => 'deny',
         ],
         'Application\\Controller\\SpiV6Controller' => [
             'index' => 'allow',
@@ -108,9 +90,6 @@ return [
         'Application\\Controller\\SpiV3ReportsController' => [
             'facility-report' => 'allow',
         ],
-        'Application\\Controller\\SpiV5ReportsController' => [
-            'facility-report' => 'deny',
-        ],
         'Application\\Controller\\SpiV6ReportsController' => [
             'facility-report' => 'allow',
         ],
@@ -133,9 +112,6 @@ return [
         'Application\\Controller\\DashboardV6Controller' => [
             'index' => 'allow',
         ],
-        'Application\\Controller\\DashboardV5Controller' => [
-            'index' => 'allow',
-        ],
         'Application\\Controller\\DistrictController' => [
             'index' => 'deny',
             'add' => 'deny',
@@ -143,7 +119,6 @@ return [
         ],
         'Application\\Controller\\EmailController' => [
             'index' => 'allow',
-            'email-v5' => 'allow',
         ],
         'Application\\Controller\\EventController' => [
             'index' => 'deny',
@@ -166,20 +141,6 @@ return [
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'allow',
-        ],
-        'Application\\Controller\\SpiV5Controller' => [
-            'index' => 'deny',
-            'manage-facility' => 'deny',
-            'approve-status' => 'deny',
-            'corrective-action-pdf' => 'deny',
-            'delete' => 'deny',
-            'download-pdf' => 'deny',
-            'download-files' => 'deny',
-            'duplicate' => 'deny',
-            'edit' => 'deny',
-            'export' => 'deny',
-            'view-bulk-downloads' => 'deny',
-            'view-data-v5' => 'deny',
         ],
         'Application\\Controller\\SpiV6Controller' => [
             'index' => 'allow',
@@ -223,9 +184,6 @@ return [
         'Application\\Controller\\SpiV3ReportsController' => [
             'facility-report' => 'allow',
         ],
-        'Application\\Controller\\SpiV5ReportsController' => [
-            'facility-report' => 'deny',
-        ],
         'Application\\Controller\\SpiV6ReportsController' => [
             'facility-report' => 'allow',
         ],
@@ -248,9 +206,6 @@ return [
         'Application\\Controller\\DashboardV6Controller' => [
             'index' => 'allow',
         ],
-        'Application\\Controller\\DashboardV5Controller' => [
-            'index' => 'deny',
-        ],
         'Application\\Controller\\DistrictController' => [
             'index' => 'deny',
             'add' => 'deny',
@@ -258,7 +213,6 @@ return [
         ],
         'Application\\Controller\\EmailController' => [
             'index' => 'allow',
-            'email-v5' => 'deny',
         ],
         'Application\\Controller\\EventController' => [
             'index' => 'deny',
@@ -281,20 +235,6 @@ return [
             'index' => 'allow',
             'add' => 'allow',
             'edit' => 'deny',
-        ],
-        'Application\\Controller\\SpiV5Controller' => [
-            'index' => 'deny',
-            'manage-facility' => 'deny',
-            'approve-status' => 'deny',
-            'corrective-action-pdf' => 'deny',
-            'delete' => 'deny',
-            'download-pdf' => 'deny',
-            'download-files' => 'deny',
-            'duplicate' => 'deny',
-            'edit' => 'deny',
-            'export' => 'deny',
-            'view-bulk-downloads' => 'deny',
-            'view-data-v5' => 'deny',
         ],
         'Application\\Controller\\SpiV6Controller' => [
             'index' => 'deny',
@@ -337,9 +277,6 @@ return [
         ],
         'Application\\Controller\\SpiV3ReportsController' => [
             'facility-report' => 'allow',
-        ],
-        'Application\\Controller\\SpiV5ReportsController' => [
-            'facility-report' => 'deny',
         ],
         'Application\\Controller\\SpiV6ReportsController' => [
             'facility-report' => 'deny',

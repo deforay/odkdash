@@ -6223,18 +6223,6 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
     }
 
-    public function updateSpiv5FacilityInfo($id, $params)
-    {
-        if ($id > 0) {
-            $data = array(
-                'facilityid' => $params['facilityId'],
-                'facilityname' => $params['facilityName'],
-            );
-            $this->update($data, array('facility' => $id));
-        }
-        return $id;
-    }
-
     public function getLatestFormDate($projectId, $formId)
     {
         $dbAdapter = $this->adapter;

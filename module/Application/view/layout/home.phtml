@@ -105,11 +105,6 @@ $totalVersions = count(explode(",", $web_version));
                       href="<?php echo $this->url('dashboard', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RT'); ?></span></a>
                   </li>
                 <?php } ?>
-                <?php if (preg_match("/v5/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV5Controller", "index")) { ?>
-                  <li><a class="dropdown-item"
-                      href="<?php echo $this->url('dashboard-v5', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT v5'); ?></span></a>
-                  </li>
-                <?php } ?>
                 <?php if (preg_match("/v6/i", $config['web_version']) && isset($acl) && $acl->isAllowed($role, "Application\Controller\DashboardV6Controller", "index")) { ?>
                   <li><a class="dropdown-item"
                       href="<?php echo $this->url('dashboard-v6', array('action' => 'index')); ?>"><span><?php echo $this->translate('Dashboard SPI-RRT'); ?></span></a>

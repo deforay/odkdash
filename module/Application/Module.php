@@ -20,7 +20,6 @@ use Application\Service\EventService;
 use Application\Service\TcpdfExtends;
 use Application\Service\CommonService;
 use Application\Model\SpiFormVer3Table;
-use Application\Model\SpiFormVer5Table;
 use Application\Model\SpiFormVer6Table;
 use Application\Model\UserRoleMapTable;
 use Application\Service\OdkFormService;
@@ -31,7 +30,6 @@ use Application\Model\AuditSpiFormV3Table;
 use Application\Model\AuditSpiFormV6Table;
 
 
-use Application\Model\SpiForm5LabelsTable;
 use Application\Model\SpiForm6LabelsTable;
 use Application\Model\UserCountryMapTable;
 use Application\Service\AuditTrailService;
@@ -39,13 +37,11 @@ use Application\Model\SpiFormVer3TempTable;
 use Application\Model\SpiRtFacilitiesTable;
 use Application\Model\UserLoginHistoryTable;
 use Application\Model\SpiFormVer3DownloadTable;
-use Application\Model\SpiFormVer5DownloadTable;
 
 use Application\Model\SpiFormVer6DownloadTable;
 use Application\View\Helper\GlobalConfigHelper;
 use Application\Model\SpiFormVer3DuplicateTable;
 
-use Application\Model\SpiFormVer5DuplicateTable;
 use Application\Model\SpiFormVer6DuplicateTable;
 use Application\Service\UserLoginHistoryService;
 use Application\View\Helper\GetCountryDetailsByIdHelper;
@@ -353,13 +349,6 @@ class Module
                         return new \Application\Controller\DashboardController($odkFormService);
                     }
                 },
-                'Application\Controller\DashboardV5Controller' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\DashboardV5Controller($odkFormService);
-                    }
-                },
                 'Application\Controller\DashboardV6Controller' => new class {
                     public function __invoke($diContainer)
                     {
@@ -416,14 +405,6 @@ class Module
                         return new SpiFormVer3Table($dbAdapter);
                     }
                 },
-                'SpiFormVer5Table' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer5Table($dbAdapter);
-                    }
-                },
                 'SpiFormVer6Table' => new class
                 {
                     public function __invoke($diContainer)
@@ -446,14 +427,6 @@ class Module
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new SpiFormLabelsTable($dbAdapter);
-                    }
-                },
-                'SpiForm5LabelsTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiForm5LabelsTable($dbAdapter);
                     }
                 },
                 'SpiForm6LabelsTable' => new class
@@ -552,14 +525,6 @@ class Module
                         return new SpiFormVer3DownloadTable($dbAdapter);
                     }
                 },
-                'SpiFormVer5DownloadTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer5DownloadTable($dbAdapter);
-                    }
-                },
                 'SpiFormVer6DownloadTable' => new class
                 {
                     public function __invoke($diContainer)
@@ -574,14 +539,6 @@ class Module
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new SpiFormVer3DuplicateTable($dbAdapter);
-                    }
-                },
-                'SpiFormVer5DuplicateTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer5DuplicateTable($dbAdapter);
                     }
                 },
                 'SpiFormVer6DuplicateTable' => new class
