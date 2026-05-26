@@ -3253,7 +3253,7 @@ class OdkFormService
             // is reliable and ~free.
             [$odataCount, $nextLink] = $this->readPageMetadataV6($tmpPath);
 
-            if ($progress === null && $io !== null && $odataCount !== null) {
+            if ($progress === null && $io !== null && $odataCount !== null && $odataCount > 0) {
                 $progress = $io->createProgressBar($odataCount);
                 $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %message%');
                 $progress->setMessage('starting…');
@@ -3326,7 +3326,11 @@ class OdkFormService
         $progress?->setMessage('done');
         $progress?->finish();
         $io?->newLine(2);
-        $io?->success(sprintf('Synced %d submission(s) across %d page(s).', $totalSeen, $pageNumber));
+        if ($totalSeen === 0) {
+            $io?->writeln('<info>Nothing new to sync — already up to date.</info>');
+        } else {
+            $io?->success(sprintf('Synced %d submission(s) across %d page(s).', $totalSeen, $pageNumber));
+        }
     }
 
     /**

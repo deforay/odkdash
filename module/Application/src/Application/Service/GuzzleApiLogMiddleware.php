@@ -33,24 +33,30 @@ final class GuzzleApiLogMiddleware
     {
         return function (RequestInterface $request, array $options) use ($handler) {
             $start = microtime(true);
+            // If the caller is streaming the response to a file (large OData
+            // pages, media downloads) don't touch the body — we'd just read
+            // the same bytes back into PHP memory we were trying to avoid,
+            // and risk interfering with sink-backed stream state. We still
+            // log the URL + status + duration; just no body.
+            $skipResponseBody = isset($options['sink']);
             $promise = $handler($request, $options);
 
             return $promise->then(
-                function (ResponseInterface $response) use ($request, $start) {
-                    $this->record($request, $response, null, $start);
+                function (ResponseInterface $response) use ($request, $start, $skipResponseBody) {
+                    $this->record($request, $response, null, $start, $skipResponseBody);
                     return $response;
                 },
-                function ($reason) use ($request, $start) {
+                function ($reason) use ($request, $start, $skipResponseBody) {
                     $response = $reason instanceof RequestException ? $reason->getResponse() : null;
                     $errorMsg = $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason;
-                    $this->record($request, $response, $errorMsg, $start);
+                    $this->record($request, $response, $errorMsg, $start, $skipResponseBody);
                     return Create::rejectionFor($reason);
                 }
             );
         };
     }
 
-    private function record(RequestInterface $request, ?ResponseInterface $response, ?string $error, float $start): void
+    private function record(RequestInterface $request, ?ResponseInterface $response, ?string $error, float $start, bool $skipResponseBody = false): void
     {
         $durationMs = (int) round((microtime(true) - $start) * 1000);
 
@@ -63,11 +69,13 @@ final class GuzzleApiLogMiddleware
         $resBody = null;
         $statusCode = 0;
         if ($response !== null) {
-            $resBody = (string) $response->getBody();
-            if ($response->getBody()->isSeekable()) {
-                $response->getBody()->rewind();
-            }
             $statusCode = $response->getStatusCode();
+            if (!$skipResponseBody) {
+                $resBody = (string) $response->getBody();
+                if ($response->getBody()->isSeekable()) {
+                    $response->getBody()->rewind();
+                }
+            }
         }
 
         $this->apiLogger->logCall(
