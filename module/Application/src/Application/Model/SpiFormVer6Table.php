@@ -4111,18 +4111,20 @@ class SpiFormVer6Table extends AbstractTableGateway
     public function deleteAuditRowData($params)
     {
         $result = 0;
-        $loginContainer = new Container('credo');
-        $user_name = $loginContainer->login;
-        $dbAdapter = $this->adapter;
-        $eventTable = new EventLogTable($dbAdapter);
-        if (trim($params['deleteId']) != "" && trim($params['deleteId']) != '') {
-            $data = array('status' => 'deleted');
-            $result = $this->update($data, array('id' => $params['deleteId']));
-            $subject = '';
-            $eventType = 'Delete-SPI RT Form 6';
-            $action = $user_name . ' has deleted the SPI RT Form 6 information ' . $params['deleteId'];
-            $resourceName = 'SPI-RT-Form-6';
-            $eventTable->addEventLog($subject, $eventType, $action, $resourceName);
+        $deleteId = trim((string) ($params['deleteId'] ?? ''));
+        if ($deleteId !== '') {
+            $result = $this->update(['status' => 'deleted'], ['id' => $deleteId]);
+            if ($result > 0) {
+                $loginContainer = new Container('credo');
+                $userName = $loginContainer->login ?? 'system';
+                $eventTable = new EventLogTable($this->adapter);
+                $eventTable->addEventLog(
+                    '',
+                    'delete',
+                    $userName . ' deleted SPI-RRT record #' . $deleteId,
+                    'SPI-RRT'
+                );
+            }
         }
         return $result;
     }

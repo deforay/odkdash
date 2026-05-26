@@ -2926,9 +2926,20 @@ class SpiFormVer3Table extends AbstractTableGateway
     public function deleteAuditRowData($params)
     {
         $result = 0;
-        if (trim($params['deleteId']) != "" && trim($params['deleteId']) != '') {
-            $data = array('status' => 'deleted');
-            $result = $this->update($data, array('id' => $params['deleteId']));
+        $deleteId = trim((string) ($params['deleteId'] ?? ''));
+        if ($deleteId !== '') {
+            $result = $this->update(['status' => 'deleted'], ['id' => $deleteId]);
+            if ($result > 0) {
+                $loginContainer = new Container('credo');
+                $userName = $loginContainer->login ?? 'system';
+                $eventTable = new EventLogTable($this->adapter);
+                $eventTable->addEventLog(
+                    '',
+                    'delete',
+                    $userName . ' deleted SPI-RT v3 record #' . $deleteId,
+                    'SPI-RT v3'
+                );
+            }
         }
         return $result;
     }
