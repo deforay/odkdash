@@ -150,19 +150,30 @@ $eventTypes = $this->eventTypes ?? [];
     }
     .audit-search.has-value .clear-search { display: flex; }
 
-    .audit-feed { position: relative; }
-    .audit-feed .day-group { margin-bottom: 28px; }
+    /* Outer card wraps the entire feed — same pattern as the Error Logs page. */
+    .audit-feed {
+        position: relative;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 4px 16px 12px;
+    }
+    .audit-feed .day-group + .day-group {
+        margin-top: 8px;
+    }
     .audit-feed .day-header {
         position: sticky;
         top: 0;
         background: linear-gradient(to bottom, #fff 75%, rgba(255, 255, 255, 0));
-        padding: 6px 0 10px;
+        padding: 12px 0 8px;
         z-index: 2;
         font-size: 12px;
         font-weight: 600;
         color: #718096;
         text-transform: uppercase;
         letter-spacing: 0.06em;
+        border-bottom: 1px solid #edf2f7;
+        margin-bottom: 4px;
     }
     .audit-feed .day-header .count {
         color: #a0aec0;
@@ -170,21 +181,21 @@ $eventTypes = $this->eventTypes ?? [];
         margin-left: 6px;
     }
 
+    /* Rows inside the card — divider between rows, no per-row card. */
     .audit-item {
         display: grid;
         grid-template-columns: 36px 1fr auto;
         gap: 14px;
-        padding: 12px 14px;
-        border: 1px solid #edf2f7;
-        border-radius: 8px;
-        background: #fff;
-        margin-bottom: 8px;
+        padding: 12px 4px;
+        background: transparent;
         align-items: center;
-        transition: border-color .15s, box-shadow .15s;
+        transition: background .15s;
+    }
+    .audit-item + .audit-item {
+        border-top: 1px solid #f1f5f9;
     }
     .audit-item:hover {
-        border-color: #cbd5e0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .03);
+        background: #f7fafc;
     }
     .audit-icon {
         width: 36px;
