@@ -89,4 +89,15 @@ if ($hasEmailConfig($customConfig)) {
         ->appendOutputTo(__DIR__ . '/../var/log/cron-send-mail.log');
 }
 
+// ─── Weekly log cleanup ───
+// Trims api_logs and form_dump to rows newer than 365 days, but always
+// keeps a floor of recent rows even if older so a low-activity site
+// doesn't end up with empty audit pages.
+$schedule->run('vendor/bin/laminas cleanup-old-logs')
+    ->sundays()
+    ->at('03:30')
+    ->timezone($timezone)
+    ->description('Prune old api_logs and form_dump rows + files')
+    ->appendOutputTo(__DIR__ . '/../var/log/cron-cleanup-old-logs.log');
+
 return $schedule;

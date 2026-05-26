@@ -9,7 +9,10 @@ use DateTimeZone;
 use CpChart\Image;
 use CpChart\Chart\Pie;
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Pool;
+use Application\Service\ApiLogger;
+use Application\Service\GuzzleApiLogMiddleware;
 use JsonMachine\Items;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -44,6 +47,20 @@ class OdkFormService
     public function getServiceManager()
     {
         return $this->sm;
+    }
+
+    /**
+     * Build a Guzzle HandlerStack with the api_logs middleware pushed on,
+     * tagged with $source so every outbound call from sync-central-v3 /
+     * sync-central-v6 lands in the api_logs table for later inspection.
+     */
+    private function buildLoggingHandler(string $source): HandlerStack
+    {
+        $stack = HandlerStack::create();
+        /** @var ApiLogger $apiLogger */
+        $apiLogger = $this->sm->get('ApiLogger');
+        $stack->push(new GuzzleApiLogMiddleware($apiLogger, $source));
+        return $stack;
     }
 
     public function saveSpiFormVer3($params)
@@ -3035,6 +3052,7 @@ class OdkFormService
                 $httpClient = new Client([
                     'base_uri' => $baseUrl,
                     'cookies' => true,
+                    'handler' => $this->buildLoggingHandler('sync-central-v3'),
                 ]);
 
                 // Authenticate and obtain session cookie
@@ -3188,6 +3206,7 @@ class OdkFormService
             'base_uri' => $baseUrl,
             'cookies'  => true,
             'timeout'  => 300,
+            'handler'  => $this->buildLoggingHandler('sync-central-v6'),
         ]);
 
         // Authenticate and obtain a session token.

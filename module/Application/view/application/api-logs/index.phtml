@@ -1,0 +1,411 @@
+<?php
+$this->headTitle('API Logs');
+$listUrl  = $this->url('api-logs', ['action' => 'index']);
+$showUrl  = $this->url('api-logs', ['action' => 'show']);
+$statsUrl = $this->url('api-logs', ['action' => 'stats']);
+$sources  = $this->sources ?? [];
+?>
+<style>
+    .apilog-page { max-width: 1200px; margin: 0 auto; padding: 8px 4px 48px; font-size: 14px; color: #2d3748; }
+    .apilog-header { display: flex; align-items: center; justify-content: space-between; gap: 18px;
+        border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+    .apilog-header h1 { font-size: 24px; font-weight: 600; color: #1a202c; margin: 0; line-height: 1.2; }
+    .apilog-header .apilog-subtitle { font-size: 13px; color: #718096; margin-top: 2px; }
+    .apilog-refresh-btn { background: #edf2f7; color: #4a5568; border: none; padding: 6px 12px;
+        border-radius: 6px; font-size: 12px; cursor: pointer; }
+    .apilog-refresh-btn.on { background: #c6f6d5; color: #22543d; }
+
+    .apilog-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .apilog-stat { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; }
+    .apilog-stat .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #718096; }
+    .apilog-stat .value { font-size: 22px; font-weight: 700; color: #1a202c; margin-top: 4px; }
+    .apilog-stat .value.warn  { color: #d97706; }
+    .apilog-stat .value.danger{ color: #dc2626; }
+    .apilog-stat .value.ok    { color: #16a34a; }
+
+    .apilog-toolbar { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;
+        display: grid; grid-template-columns: repeat(6, 1fr) auto; gap: 10px; align-items: end; margin-bottom: 16px; }
+    .apilog-toolbar .field { display: flex; flex-direction: column; gap: 4px; }
+    .apilog-toolbar label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #718096; margin: 0; }
+    .apilog-toolbar input, .apilog-toolbar select { height: 32px; border: 1px solid #cbd5e0;
+        border-radius: 6px; padding: 0 8px; background: #fff; font-size: 13px; color: #2d3748; }
+    .apilog-toolbar .clear { height: 32px; padding: 0 14px; border: 1px solid #cbd5e0; background: #fff;
+        border-radius: 6px; font-size: 12px; cursor: pointer; color: #4a5568; }
+
+    .apilog-table-wrap { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
+    .apilog-table-wrap .total { padding: 10px 16px; border-bottom: 1px solid #edf2f7; color: #718096; font-size: 13px; }
+    .apilog-table { width: 100%; border-collapse: collapse; }
+    .apilog-table th, .apilog-table td { padding: 9px 14px; text-align: left; vertical-align: middle; }
+    .apilog-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #718096; background: #f7fafc;
+        border-bottom: 1px solid #edf2f7; cursor: pointer; user-select: none; }
+    .apilog-table td { border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+    .apilog-table tbody tr { cursor: pointer; }
+    .apilog-table tbody tr:hover { background: #fafbff; }
+    .apilog-table .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; color: #4a5568; }
+    .apilog-table .url-cell { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .method-badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: 600; border-radius: 4px; font-family: ui-monospace, monospace; }
+    .method-GET    { background: #dbeafe; color: #2563eb; }
+    .method-POST   { background: #dcfce7; color: #16a34a; }
+    .method-PUT    { background: #fef3c7; color: #d97706; }
+    .method-DELETE { background: #fee2e2; color: #dc2626; }
+    .method-OTHER  { background: #e2e8f0; color: #4a5568; }
+
+    .status-badge { display: inline-block; padding: 2px 6px; font-size: 11px; font-weight: 700; border-radius: 4px; }
+    .status-2xx { background: #dcfce7; color: #16a34a; }
+    .status-3xx { background: #dbeafe; color: #2563eb; }
+    .status-4xx { background: #fef3c7; color: #d97706; }
+    .status-5xx { background: #fee2e2; color: #dc2626; }
+    .status-0   { background: #fee2e2; color: #dc2626; }
+
+    .source-pill { display: inline-block; padding: 1px 6px; font-size: 11px; border-radius: 4px; background: #edf2f7; color: #4a5568; font-family: ui-monospace, monospace; }
+    .err-tag { display: inline-block; padding: 1px 6px; font-size: 10px; border-radius: 3px; background: #fee2e2; color: #dc2626; margin-left: 6px; }
+
+    #apilogModal .modal-dialog { width: 92vw; max-width: 1240px; }
+    #apilogModal .modal-body { padding: 0; }
+    .apilog-panes { display: grid; grid-template-columns: 1fr 1fr; min-height: 320px; }
+    .apilog-pane { padding: 14px 18px; }
+    .apilog-pane + .apilog-pane { border-left: 1px solid #e2e8f0; }
+    .apilog-pane h5 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: #718096; margin: 0 0 8px; display: flex; justify-content: space-between; align-items: center; }
+    .apilog-pane pre { background: #f7fafc; border: 1px solid #edf2f7; border-radius: 6px; padding: 10px 12px;
+        font-size: 12px; line-height: 1.45; max-height: 60vh; overflow: auto; white-space: pre-wrap; word-break: break-word; }
+    .apilog-pane .copy-btn { background: none; border: none; color: #2563eb; font-size: 11px; cursor: pointer; }
+    .apilog-meta { padding: 10px 18px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #718096; display: flex; flex-wrap: wrap; gap: 14px; }
+    .apilog-meta strong { color: #2d3748; }
+    .apilog-empty { color: #a0aec0; font-style: italic; font-size: 12px; padding: 12px 0; }
+    .apilog-err { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 12px; border-radius: 6px; font-size: 12px; }
+
+    .sort-ind { color: #cbd5e0; margin-left: 4px; font-size: 10px; }
+    .sort-ind.active { color: #2d3748; }
+
+    @media (max-width: 1024px) {
+        .apilog-stats { grid-template-columns: repeat(2, 1fr); }
+        .apilog-toolbar { grid-template-columns: repeat(2, 1fr); }
+        .apilog-panes { grid-template-columns: 1fr; }
+        .apilog-pane + .apilog-pane { border-left: none; border-top: 1px solid #e2e8f0; }
+    }
+</style>
+
+<div class="apilog-page">
+    <div class="apilog-header">
+        <div>
+            <h1><?php echo $this->translate('API Logs'); ?></h1>
+            <div class="apilog-subtitle"><?php echo $this->translate('Outbound calls to ODK Central (sync-central-v3 / v6)'); ?></div>
+        </div>
+        <button type="button" id="apilogRefreshBtn" class="apilog-refresh-btn">
+            <i class="fa fa-refresh"></i> Auto-refresh OFF
+        </button>
+    </div>
+
+    <div class="apilog-stats">
+        <div class="apilog-stat"><div class="label">Calls (24h)</div><div class="value" id="statTotal">—</div></div>
+        <div class="apilog-stat"><div class="label">Error Rate</div><div class="value" id="statErrRate">—</div></div>
+        <div class="apilog-stat"><div class="label">Avg Duration</div><div class="value" id="statAvg">—</div></div>
+        <div class="apilog-stat"><div class="label">P95 Duration</div><div class="value" id="statP95">—</div></div>
+    </div>
+
+    <form id="apilogToolbar" class="apilog-toolbar" onsubmit="return false;">
+        <div class="field"><label for="fMethod">Method</label>
+            <select id="fMethod" name="method"><option value="">All</option>
+                <option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option>
+            </select>
+        </div>
+        <div class="field"><label for="fStatus">Status</label>
+            <select id="fStatus" name="status"><option value="">All</option>
+                <option value="error">Errors (4xx/5xx/transport)</option>
+                <option value="success">Success (2xx/3xx)</option>
+                <option value="401">401</option><option value="403">403</option>
+                <option value="404">404</option><option value="500">500</option>
+            </select>
+        </div>
+        <div class="field"><label for="fSource">Source</label>
+            <select id="fSource" name="source"><option value="">All</option>
+                <?php foreach ($sources as $s): ?>
+                    <option value="<?php echo $this->escapeHtmlAttr($s); ?>"><?php echo $this->escapeHtml($s); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="field"><label for="fUrl">URL contains</label>
+            <input type="text" id="fUrl" name="url" placeholder="/v1/projects/...">
+        </div>
+        <div class="field"><label for="fSlow">Slow ≥ (ms)</label>
+            <input type="number" id="fSlow" name="slow" placeholder="e.g. 500">
+        </div>
+        <div class="field"><label for="fFrom">From date</label>
+            <input type="date" id="fFrom" name="from">
+        </div>
+        <button type="button" class="clear" id="fClear">Clear</button>
+    </form>
+
+    <div class="apilog-table-wrap">
+        <div class="total"><span id="totalCount">0</span> calls</div>
+        <table class="apilog-table">
+            <thead>
+                <tr>
+                    <th data-sort="created_at">Time <span class="sort-ind"></span></th>
+                    <th data-sort="method">Method <span class="sort-ind"></span></th>
+                    <th data-sort="url">URL <span class="sort-ind"></span></th>
+                    <th data-sort="response_code">Status <span class="sort-ind"></span></th>
+                    <th data-sort="duration_ms">Duration <span class="sort-ind"></span></th>
+                    <th data-sort="source">Source <span class="sort-ind"></span></th>
+                </tr>
+            </thead>
+            <tbody id="apilogBody">
+                <tr><td colspan="6" style="padding: 28px; text-align: center; color: #a0aec0;">Loading…</td></tr>
+            </tbody>
+        </table>
+        <div id="apilogPagination" style="padding: 10px 16px; border-top: 1px solid #edf2f7; display: flex; justify-content: space-between; align-items: center;">
+            <span id="pageInfo" style="font-size: 12px; color: #718096;"></span>
+            <span>
+                <button type="button" id="prevPage" class="clear" style="margin-right: 6px;">‹ Prev</button>
+                <button type="button" id="nextPage" class="clear">Next ›</button>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="apilogModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="apilogModalTitle">
+                    <span class="method-badge" id="modalMethod"></span>
+                    <span class="mono" id="modalUrl" style="margin-left: 8px; word-break: break-all;"></span>
+                    <span class="status-badge" id="modalStatus" style="margin-left: 8px;"></span>
+                </h4>
+                <div class="mono" id="modalSubtitle" style="margin-top: 6px; font-size: 11px; color: #718096;"></div>
+            </div>
+            <div class="modal-body">
+                <div id="modalErrorWrap" style="display:none; padding: 12px 18px;">
+                    <div class="apilog-err"><strong>Transport error:</strong> <span id="modalError"></span></div>
+                </div>
+                <div class="apilog-panes">
+                    <div class="apilog-pane">
+                        <h5>Request <button type="button" class="copy-btn" data-copy="req"><i class="fa fa-copy"></i> copy</button></h5>
+                        <div id="modalRequestBody"></div>
+                    </div>
+                    <div class="apilog-pane">
+                        <h5>Response <button type="button" class="copy-btn" data-copy="res"><i class="fa fa-copy"></i> copy</button></h5>
+                        <div id="modalResponseBody"></div>
+                    </div>
+                </div>
+                <div class="apilog-meta">
+                    <span><strong>Source:</strong> <span class="mono" id="metaSource">—</span></span>
+                    <span><strong>Request ID:</strong> <span class="mono" id="metaReqId">—</span></span>
+                    <span><strong>Duration:</strong> <span id="metaDuration">—</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var LIST_URL  = "<?php echo $listUrl; ?>";
+    var SHOW_URL  = "<?php echo $showUrl; ?>";
+    var STATS_URL = "<?php echo $statsUrl; ?>";
+
+    var state = { page: 1, perPage: 50, sort: 'created_at', dir: 'desc',
+                  filters: { method:'', status:'', source:'', url:'', slow:'', from:'' } };
+    var autoTimer = null;
+
+    function escapeHtml(v) {
+        if (v === null || v === undefined) return '';
+        return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function methodBadge(m) {
+        var cls = ['GET','POST','PUT','DELETE'].indexOf(m) >= 0 ? m : 'OTHER';
+        return '<span class="method-badge method-' + cls + '">' + escapeHtml(m || '?') + '</span>';
+    }
+
+    function statusBadge(code, hasError) {
+        var c = parseInt(code, 10) || 0;
+        var bucket = c === 0 ? '0' : (Math.floor(c/100) + 'xx');
+        var label = c || (hasError ? 'ERR' : '—');
+        return '<span class="status-badge status-' + bucket + '">' + label + '</span>';
+    }
+
+    function fmtTime(ts) {
+        if (!ts) return '';
+        var d = new Date(ts.replace(' ', 'T') + 'Z');
+        if (isNaN(d.getTime())) return ts;
+        return d.toLocaleString(undefined, { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12: false });
+    }
+
+    function refreshStats() {
+        $.getJSON(STATS_URL, function(s) {
+            $('#statTotal').text((s.total_requests||0).toLocaleString());
+            var rate = s.error_rate || 0;
+            $('#statErrRate').text(rate + '%').removeClass('warn danger ok')
+                .addClass(rate > 5 ? 'danger' : (rate > 1 ? 'warn' : 'ok'));
+            $('#statAvg').text((s.avg_duration_ms||0) + 'ms');
+            $('#statP95').text((s.p95_duration_ms||0) + 'ms').removeClass('warn danger')
+                .addClass((s.p95_duration_ms||0) > 2000 ? 'warn' : '');
+        });
+    }
+
+    function refreshList() {
+        var q = $.extend({ page: state.page, per_page: state.perPage, sort: state.sort, dir: state.dir, format: 'json' }, state.filters);
+        $.getJSON(LIST_URL, q, function(resp) {
+            renderRows(resp.rows || []);
+            $('#totalCount').text((resp.total || 0).toLocaleString());
+            var start = (state.page - 1) * state.perPage + 1;
+            var end = Math.min(start + (resp.rows||[]).length - 1, resp.total || 0);
+            $('#pageInfo').text((resp.total ? start + '–' + end + ' of ' + resp.total : '0 results'));
+            $('#prevPage').prop('disabled', state.page <= 1);
+            $('#nextPage').prop('disabled', end >= (resp.total || 0));
+            updateSortIndicators();
+        });
+    }
+
+    function renderRows(rows) {
+        if (!rows.length) {
+            $('#apilogBody').html('<tr><td colspan="6" style="padding:28px;text-align:center;color:#a0aec0;">No calls match these filters.</td></tr>');
+            return;
+        }
+        var html = rows.map(function(r) {
+            var slow = (r.duration_ms || 0) > 2000 ? ' style="color:#d97706;"' : '';
+            var errTag = r.error ? '<span class="err-tag" title="' + escapeHtml(r.error) + '">err</span>' : '';
+            return '<tr data-id="' + escapeHtml(r.request_id) + '">' +
+                '<td class="mono">' + escapeHtml(fmtTime(r.created_at)) + '</td>' +
+                '<td>' + methodBadge(r.method) + '</td>' +
+                '<td class="mono url-cell" title="' + escapeHtml(r.url || '') + '">' + escapeHtml(r.url || '') + '</td>' +
+                '<td>' + statusBadge(r.response_code, !!r.error) + errTag + '</td>' +
+                '<td class="mono"' + slow + '>' + (r.duration_ms || 0) + 'ms</td>' +
+                '<td><span class="source-pill">' + escapeHtml(r.source || '—') + '</span></td>' +
+                '</tr>';
+        }).join('');
+        $('#apilogBody').html(html);
+    }
+
+    function updateSortIndicators() {
+        $('.apilog-table th').each(function() {
+            var col = $(this).data('sort');
+            var ind = $(this).find('.sort-ind');
+            if (!col) { ind.text(''); return; }
+            if (col === state.sort) {
+                ind.text(state.dir === 'asc' ? '▲' : '▼').addClass('active');
+            } else {
+                ind.text('').removeClass('active');
+            }
+        });
+    }
+
+    function openDetail(id) {
+        $.getJSON(SHOW_URL, { id: id }, function(row) {
+            $('#modalMethod').attr('class', '').addClass('method-badge')
+                .addClass('method-' + (['GET','POST','PUT','DELETE'].indexOf(row.method) >= 0 ? row.method : 'OTHER'))
+                .text(row.method || '?');
+            $('#modalUrl').text(row.url || '');
+            var code = parseInt(row.response_code, 10) || 0;
+            var bucket = code === 0 ? '0' : Math.floor(code/100) + 'xx';
+            $('#modalStatus').attr('class', 'status-badge status-' + bucket).text(code || (row.error ? 'ERR' : '—'));
+            $('#modalSubtitle').text((row.request_id || '') + ' · ' + (row.duration_ms || 0) + 'ms · ' + fmtTime(row.created_at));
+
+            if (row.error) {
+                $('#modalErrorWrap').show();
+                $('#modalError').text(row.error);
+            } else {
+                $('#modalErrorWrap').hide();
+            }
+
+            renderBody('#modalRequestBody', row.request_body, 'No request body (likely a GET).');
+            renderBody('#modalResponseBody', row.response_body, row.error ? 'Connection failed before any response.' : 'No response body captured.');
+
+            $('#metaSource').text(row.source || '—');
+            $('#metaReqId').text(row.request_id || '—');
+            $('#metaDuration').text((row.duration_ms || 0) + ' ms');
+
+            $('#apilogModal').data('reqBody', row.request_body).data('resBody', row.response_body);
+            $('#apilogModal').modal('show');
+        });
+    }
+
+    function renderBody(sel, raw, emptyMsg) {
+        var $el = $(sel);
+        if (raw === null || raw === undefined || raw === '') {
+            $el.html('<div class="apilog-empty">' + escapeHtml(emptyMsg) + '</div>');
+            return;
+        }
+        $el.html('<pre></pre>');
+        $el.find('pre').text(prettyJson(raw));
+    }
+
+    function prettyJson(raw) {
+        if (raw === null || raw === undefined) return '';
+        try {
+            var parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+            return JSON.stringify(parsed, null, 2);
+        } catch (e) {
+            return String(raw);
+        }
+    }
+
+    $(document).on('click', '#apilogBody tr[data-id]', function() {
+        openDetail($(this).data('id'));
+    });
+
+    $('.apilog-table th[data-sort]').on('click', function() {
+        var col = $(this).data('sort');
+        if (state.sort === col) {
+            state.dir = state.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+            state.sort = col; state.dir = 'desc';
+        }
+        state.page = 1;
+        refreshList();
+    });
+
+    var filterDebounce;
+    $('#apilogToolbar').on('change input', 'input,select', function() {
+        clearTimeout(filterDebounce);
+        filterDebounce = setTimeout(function() {
+            state.filters.method = $('#fMethod').val();
+            state.filters.status = $('#fStatus').val();
+            state.filters.source = $('#fSource').val();
+            state.filters.url    = $('#fUrl').val();
+            state.filters.slow   = $('#fSlow').val();
+            state.filters.from   = $('#fFrom').val();
+            state.page = 1;
+            refreshList();
+        }, 350);
+    });
+
+    $('#fClear').on('click', function() {
+        $('#apilogToolbar')[0].reset();
+        state.filters = { method:'', status:'', source:'', url:'', slow:'', from:'' };
+        state.page = 1;
+        refreshList();
+    });
+
+    $('#prevPage').on('click', function() { if (state.page > 1) { state.page--; refreshList(); } });
+    $('#nextPage').on('click', function() { state.page++; refreshList(); });
+
+    $('#apilogRefreshBtn').on('click', function() {
+        var $b = $(this);
+        if (autoTimer) {
+            clearInterval(autoTimer); autoTimer = null;
+            $b.removeClass('on').html('<i class="fa fa-refresh"></i> Auto-refresh OFF');
+        } else {
+            autoTimer = setInterval(function() { refreshList(); refreshStats(); }, 10000);
+            $b.addClass('on').html('<i class="fa fa-refresh fa-spin"></i> Auto-refresh ON');
+        }
+    });
+
+    $('.copy-btn').on('click', function() {
+        var which = $(this).data('copy');
+        var raw = which === 'req' ? $('#apilogModal').data('reqBody') : $('#apilogModal').data('resBody');
+        if (!raw) return;
+        var text = prettyJson(raw);
+        navigator.clipboard && navigator.clipboard.writeText(text);
+        var $b = $(this); var orig = $b.html();
+        $b.html('<i class="fa fa-check"></i> copied');
+        setTimeout(function() { $b.html(orig); }, 1500);
+    });
+
+    refreshList();
+    refreshStats();
+})();
+</script>

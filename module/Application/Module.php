@@ -46,6 +46,8 @@ use Application\View\Helper\GetCountryDetailsByIdHelper;
 
 use Application\Service\Logger;
 use Application\Service\ProvinceService;
+use Application\Service\ApiLogger;
+use Application\Model\ApiLogsTable;
 use Application\Model\GeographicalDivisionsTable;
 use Application\Model\UserLocationMapTable;
 
@@ -251,6 +253,13 @@ class Module
                     {
                         $logger = $diContainer->get('Logger');
                         return new \Application\Controller\LogViewerController($logger);
+                    }
+                },
+                'Application\Controller\ApiLogsController' => new class {
+                    public function __invoke($diContainer)
+                    {
+                        $apiLogsTable = $diContainer->get('ApiLogsTable');
+                        return new \Application\Controller\ApiLogsController($apiLogsTable);
                     }
                 },
                 'Application\Controller\SpiV3ReportsController' => new class {
@@ -505,6 +514,22 @@ class Module
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new EventLogTable($dbAdapter);
+                    }
+                },
+                'ApiLogsTable' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new ApiLogsTable($dbAdapter);
+                    }
+                },
+                'ApiLogger' => new class
+                {
+                    public function __invoke($diContainer)
+                    {
+                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
+                        return new ApiLogger($dbAdapter);
                     }
                 },
                 'ResourcesTable' => new class

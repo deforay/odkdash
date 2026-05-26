@@ -7,12 +7,14 @@ use Application\Command\SendAuditMail;
 use Application\Command\SyncCentralV3;
 use Application\Command\SyncCentralV6;
 use Application\Command\GenerateBulkPdf;
+use Application\Command\CleanupOldLogs;
 use Application\Command\SendTempMailFactory;
 use Application\Command\SendAuditMailFactory;
 use Application\Command\SyncCentralV3Factory;
 use Laminas\Db\Adapter\Adapter;
 use Application\Command\SyncCentralV6Factory;
 use Application\Command\GenerateBulkPdfFactory;
+use Application\Command\CleanupOldLogsFactory;
 
 return array(
     'router' => array(
@@ -88,6 +90,16 @@ return array(
                     'route' => '/log-viewer',
                     'defaults' => array(
                         'controller' => 'Application\Controller\LogViewerController',
+                        'action' => 'index',
+                    ),
+                ),
+            ),
+            'api-logs' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/api-logs[/:action]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\ApiLogsController',
                         'action' => 'index',
                     ),
                 ),
@@ -344,6 +356,7 @@ return array(
             SyncCentralV3::class => SyncCentralV3Factory::class,
             SyncCentralV6::class => SyncCentralV6Factory::class,
             GenerateBulkPdf::class => GenerateBulkPdfFactory::class,
+            CleanupOldLogs::class => CleanupOldLogsFactory::class,
         ]
     ],
     'translator' => [
@@ -385,6 +398,7 @@ return array(
             'sync-central-v3' => SyncCentralV3::class,
             'sync-central-v6' => SyncCentralV6::class,
             'generate-bulk-pdf' => GenerateBulkPdf::class,
+            'cleanup-old-logs' => CleanupOldLogs::class,
         ],
     ],
 );
