@@ -36,7 +36,7 @@
         "ramsey/uuid": "^4.9",
         "setasign/fpdi": "^2.6",
         "shuchkin/simplexlsxgen": "^1.5",
-        "symfony/mailer": "^7.4",
+        "symfony/mailer": "^8.0",
         "szymach/c-pchart": "^3.1",
         "tecnickcom/tcpdf": "^6.11"
     },
