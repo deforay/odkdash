@@ -13,31 +13,37 @@ SPI RRT dashboard. Laminas MVC application on PHP 8.2 or later, MySQL, and Apach
 
 ## How to upgrade an installation
 
-Run the upgrade script as root on the server:
+Run the upgrade script straight from the repo, as root on the server:
 
 ```bash
-sudo /var/www/odkdash/bin/upgrade.sh
+curl -fsSL "https://raw.githubusercontent.com/deforay/odkdash/master/bin/upgrade.sh?v=$(date +%s)" | sudo bash -s -- -A
 ```
+
+The `?v=` query defeats the raw CDN cache. The `-A` flag upgrades every odkdash
+instance in `/var/www`, so a server hosting both `odkdash` and
+`odkdash-trinidad` needs one run.
 
 The script updates the source, installs dependencies, applies migrations, resets
 permissions, installs the crunz cron entry, and reloads Apache. It backs up
-`config/autoload/` and the database to `/var/odkdash-backup/` first.
+`config/autoload/` and the database to `/var/odkdash-backup/` first. Prompts read
+from the terminal, so they still work through the pipe.
 
-To upgrade an instance at another path, pass `-p`:
+To upgrade one instance, pass `-p`:
 
 ```bash
 sudo /var/www/odkdash/bin/upgrade.sh -p /var/www/odkdash-trinidad
 ```
 
-Run the script once per path. A server hosting several instances needs several
-runs.
-
 | Option | Effect |
 |---|---|
-| `-p PATH` | Sets the installation path. Defaults to `/var/www/odkdash` |
+| `-A` | Upgrades every odkdash instance found in `/var/www` |
+| `-p PATH` | Upgrades one instance. Defaults to `/var/www/odkdash` |
 | `-b` | Skips the database and folder backups |
 | `-f` | Sets aside local changes to tracked files on a git checkout |
 | `-y` | Answers every prompt with its default and never blocks |
+
+One failing instance does not stop the others. The summary at the end lists what
+upgraded and what failed, and the exit status is non-zero if any instance failed.
 
 The script preserves everything under `config/autoload/`, which holds the
 database credentials for the deployment. It also preserves `var/`, `uploads/`,
