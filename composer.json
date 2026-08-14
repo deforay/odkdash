@@ -10,11 +10,11 @@
         "spi-rrt"
     ],
     "require": {
-        "php": "^8.2 || ^8.3 || ^8.4",
-        "amitdugar/db-tools": "^2.1",
+        "php": "^8.4",
+        "amitdugar/db-tools": "^3.3",
         "composer/semver": "^3.4",
         "crunzphp/crunz": "^3.9",
-        "guzzlehttp/guzzle": "^7.10",
+        "guzzlehttp/guzzle": "^8.0",
         "hackzilla/password-generator": "^1.7",
         "halaxa/json-machine": "^1.2",
         "laminas/laminas-cache-storage-adapter-filesystem": "^2.5",
@@ -90,10 +90,10 @@
         "sort-packages": true,
         "secure-http": true,
         "platform": {
-            "php": "8.4"
+            "php": "8.4.1"
         }
     },
     "require-dev": {
-        "symfony/var-dumper": "^7.0"
+        "symfony/var-dumper": "^8.0"
     }
 }
