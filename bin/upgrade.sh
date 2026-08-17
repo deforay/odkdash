@@ -6,12 +6,14 @@
 #
 #   curl -fsSL "https://raw.githubusercontent.com/deforay/odkdash/master/bin/upgrade.sh?v=$(date +%s)" | sudo bash -s -- -A
 #
-# Instances come in two shapes: some are git checkouts (MIGRATION.md deploys
-# Trinidad that way), others were unpacked from a tarball or copied off another
-# server and have no .git at all. The script detects which it is and either
-# fast-forwards the checkout or rsyncs a fresh source tree over it. Either way
-# everything under config/autoload/ is preserved — local.php is tracked
-# upstream but holds this deployment's database credentials.
+# Every instance is deployed the same way, as ept's upgrade does it: a shallow
+# source mirror is refreshed once per run and rsynced over the tree, with .git
+# excluded. An instance's own git state is never consulted, because in the field
+# a .git is no proof of a maintained checkout — the Malawi box had one whose
+# HEAD trailed the files on disk by hundreds of commits, which is enough to
+# block an upgrade that a plain copy would have completed. Everything under
+# config/autoload/ is preserved: local.php is tracked upstream but holds this
+# deployment's database credentials.
 #
 # It deliberately does no system-level work. PHP, MySQL and Apache belong to
 # the setup script, and on the servers where odkdash runs alongside ept,
@@ -25,14 +27,12 @@
 # Trees too old to carry db-tools fall back to mysqldump and a .sql.gz.
 #
 # Usage:
-#   sudo bin/upgrade.sh [-A] [-p PATH] [-b] [-f] [-y]
+#   sudo bin/upgrade.sh [-A] [-p PATH] [-b] [-y]
 #
 # Options:
 #   -A       upgrade every odkdash instance found in /var/www
 #   -p PATH  upgrade one instance (default /var/www/odkdash)
 #   -b       skip the backups (the config/autoload tarball is always taken)
-#   -f       on a checkout, set aside local changes to tracked files outside
-#            config/autoload instead of stopping
 #   -y       non-interactive: every prompt takes its default, which is the safe
 #            answer, so a failed backup stops that instance rather than plough on
 #
@@ -97,19 +97,23 @@ ask_yes_no() {
     # Probe by opening the terminal rather than testing for it. /dev/tty exists
     # under cron and in containers but cannot be opened, and the failed
     # redirect prints noise of its own.
-    if [ "$assume_defaults" = true ] || ! { exec 3</dev/tty; } 2>/dev/null; then
+    if [ "$assume_defaults" = true ] || ! { exec 3<>/dev/tty; } 2>/dev/null; then
         print info "${question}? [auto: ${default}]"
         [ "$default" = "yes" ]
         return
     fi
 
-    printf "%s? [default: %s, auto in 20s] " "$question" "$default"
-    if ! read -r -t 20 answer <&3; then
-        printf '\n'
+    # Prompt on the terminal rather than stdout. The script arrives on stdin
+    # from curl, so stdout and the terminal are not the same thing here, and a
+    # prompt written to one while the answer is read from the other looks like
+    # a script that ignores what you type.
+    printf "%s? [default: %s, auto in 60s] " "$question" "$default" >&3
+    if ! read -r -t 60 answer <&3; then
+        printf '\n' >&3
         print info "No input. Using the default: ${default}"
         answer="$default"
     fi
-    exec 3<&-
+    exec 3>&-
 
     answer="$(printf '%s' "${answer:-$default}" | tr '[:upper:]' '[:lower:]')"
     [ "$answer" = "y" ] || [ "$answer" = "yes" ]
@@ -293,13 +297,14 @@ dump_database() {
     mysqldump_fallback
 }
 
-# What version an instance is on. A checkout knows from git; an rsynced tree
-# only knows because the deploy stamped VERSION.txt.
+# What version an instance is on. VERSION.txt is what the deploy stamps, so it
+# wins: a tree that happens to carry a .git is not deployed through it, and that
+# HEAD describes whatever was last committed there, not what is on disk.
 installed_ref() {
-    if [ -e "$app_path/.git" ]; then
-        run_git -C "$app_path" rev-parse --short HEAD 2>/dev/null
-    elif [ -f "$app_path/VERSION.txt" ]; then
+    if [ -f "$app_path/VERSION.txt" ]; then
         head -1 "$app_path/VERSION.txt"
+    elif [ -e "$app_path/.git" ]; then
+        run_git -C "$app_path" rev-parse --short HEAD 2>/dev/null
     else
         echo "unknown"
     fi
@@ -387,19 +392,13 @@ acquire_source() {
 upgrade_instance() {
     app_path="$1"
     local position="$2" total="$3"
-    local deploy_mode ref_before ref_after lock_before branch remote_url dirty
+    local ref_before ref_after lock_before
     local config_stash config_backup db_backup folder_backup
     # Dynamically scoped, so dump_database and write_defaults_file see them.
     local db_name db_user db_pass db_host db_port defaults_file=""
 
-    if [ -e "$app_path/.git" ]; then
-        deploy_mode="git"
-    else
-        deploy_mode="rsync"
-    fi
-
     print header "Upgrading ${position}/${total}: ${app_path}"
-    say info "Deploy mode: ${deploy_mode}. Currently at: $(installed_ref)"
+    say info "Currently at: $(installed_ref)"
 
     # --- backups ------------------------------------------------------------
     mkdir -p "$BACKUP_ROOT/db" "$BACKUP_ROOT/config" "$BACKUP_ROOT/www"
@@ -435,9 +434,9 @@ upgrade_instance() {
         say info "Skipping database backup (-b)."
     fi
 
-    # An rsync deploy overwrites tracked files with no git history to fall back
-    # on, so offer a copy of the tree first. Checkouts recover with git alone.
-    if [ "$deploy_mode" = "rsync" ] && [ "$skip_backups" = false ]; then
+    # The deploy overwrites whatever is in the tree, with nothing to fall back
+    # on, so offer a copy of it first.
+    if [ "$skip_backups" = false ]; then
         if ask_yes_no "Back up ${app_path} before overwriting it" "yes"; then
             folder_backup="${BACKUP_ROOT}/www/$(basename "$app_path")-${stamp}"
             print info "Copying ${app_path} to ${folder_backup}..."
@@ -458,84 +457,26 @@ upgrade_instance() {
     cp -a "$app_path/config/autoload/." "$config_stash/" ||
         { fail "Could not stage config/autoload for ${app_path}."; return 1; }
 
-    if [ "$deploy_mode" = "git" ]; then
-        if ! command -v git &>/dev/null; then
-            fail "${app_path} is a git checkout but git is not installed."
-            return 1
-        fi
+    acquire_source ||
+        { fail "Could not obtain the source (mirror, clone and tarball all failed)."; return 1; }
 
-        branch="$(run_git -C "$app_path" rev-parse --abbrev-ref HEAD 2>/dev/null)"
-        if [ -z "$branch" ] || [ "$branch" = "HEAD" ]; then
-            fail "${app_path} is not on a branch (detached HEAD)."
-            return 1
-        fi
+    # Symlinked directories are how instances point uploads at another volume;
+    # -K fills them rather than replacing them with real dirs. No --delete:
+    # files the instance has and the repo does not are left alone. .git is
+    # excluded so the mirror's history never lands in a deployed instance.
+    print info "Deploying source into ${app_path}..."
+    rsync -a -K --info=progress2 \
+        --exclude='.git' \
+        --exclude='config/autoload/' \
+        --exclude='vendor/' \
+        --exclude='var/' \
+        --exclude='uploads/' \
+        --exclude='public/uploads/' \
+        --exclude='public/temporary/' \
+        --exclude='data/cache/' \
+        "$src_dir/" "$app_path/" 2>>"$log_file" ||
+        { fail "rsync deploy failed for ${app_path}. See ${log_file}."; return 1; }
 
-        remote_url="$(run_git -C "$app_path" remote get-url origin 2>/dev/null)"
-        if [ -z "$remote_url" ]; then
-            fail "${app_path} has no origin remote. Add one: git -C ${app_path} remote add origin ${REPO_GIT_URL}"
-            return 1
-        fi
-
-        # Local modifications outside config/autoload are code changes that
-        # belong upstream. Clobbering them silently is how deployments quietly
-        # diverge.
-        dirty="$(run_git -C "$app_path" status --porcelain --untracked-files=no -- . ':(exclude)config/autoload')"
-        if [ -n "$dirty" ]; then
-            print warning "Tracked files modified outside config/autoload:"
-            printf '%s\n' "$dirty"
-            if [ "$force_dirty" = true ]; then
-                # Stash rather than checkout, so -f stays recoverable.
-                if run_git -C "$app_path" stash push --quiet -m "odkdash-upgrade ${stamp}" \
-                    -- . ':(exclude)config/autoload' 2>>"$log_file"; then
-                    say warning "Local modifications stashed (-f). Recover with: git -C ${app_path} stash list"
-                else
-                    run_git -C "$app_path" checkout -- . 2>>"$log_file" ||
-                        { fail "Could not discard local modifications in ${app_path}."; return 1; }
-                    say warning "Local modifications discarded (-f)."
-                fi
-            else
-                fail "${app_path} has local code changes. Push them upstream, or re-run with -f to set them aside."
-                return 1
-            fi
-        fi
-
-        run_git -C "$app_path" checkout -- config/autoload 2>>"$log_file" || true
-
-        print info "Fetching origin/${branch}..."
-        # An SSH remote is the usual failure here: the key belongs to the admin
-        # who cloned it, and this script runs as root.
-        if ! run_git -C "$app_path" fetch --prune origin "$branch" 2>>"$log_file"; then
-            fail "git fetch from ${remote_url} failed (see ${log_file}). If it is an SSH remote, switch it: git -C ${app_path} remote set-url origin ${REPO_GIT_URL}"
-            return 1
-        fi
-
-        if ! run_git -C "$app_path" merge --ff-only "origin/${branch}" 2>>"$log_file"; then
-            fail "${app_path} has diverged from origin/${branch}. Resolve it by hand."
-            return 1
-        fi
-    else
-        acquire_source ||
-            { fail "Could not obtain the source (mirror, clone and tarball all failed)."; return 1; }
-
-        # Symlinked directories are how instances point uploads at another
-        # volume; -K fills them rather than replacing them with real dirs. No
-        # --delete: files the instance has and the repo does not are left alone.
-        print info "Deploying source into ${app_path}..."
-        rsync -a -K --info=progress2 \
-            --exclude='.git' \
-            --exclude='config/autoload/' \
-            --exclude='vendor/' \
-            --exclude='var/' \
-            --exclude='uploads/' \
-            --exclude='public/uploads/' \
-            --exclude='public/temporary/' \
-            --exclude='data/cache/' \
-            "$src_dir/" "$app_path/" 2>>"$log_file" ||
-            { fail "rsync deploy failed for ${app_path}. See ${log_file}."; return 1; }
-    fi
-
-    # config/autoload is excluded from the rsync and checked out clean before
-    # the merge, but both modes restore the stash so they end in the same state.
     cp -a "$config_stash/." "$app_path/config/autoload/" ||
         { fail "Could not restore config/autoload for ${app_path}."; return 1; }
     rm -rf "$config_stash"
@@ -546,8 +487,12 @@ upgrade_instance() {
         say info "Already up to date at ${ref_after}."
     else
         say success "Updated ${ref_before} → ${ref_after}"
-        [ "$deploy_mode" = "git" ] &&
-            run_git -C "$app_path" log --oneline "${ref_before}..${ref_after}" | head -20
+    fi
+
+    # A leftover .git now describes a commit the files no longer match, so say
+    # so once rather than let git status mislead whoever looks next.
+    if [ -e "$app_path/.git" ]; then
+        say warning "${app_path} still has a .git. It is not used for deployment; its HEAD is now stale."
     fi
 
     # Ownership before composer, not after: the deploy can land root-owned
@@ -633,15 +578,13 @@ app_path=""
 target_path=""
 upgrade_all=false
 skip_backups=false
-force_dirty=false
 assume_defaults=false
 
-while getopts ":Ap:bfy" opt; do
+while getopts ":Ap:by" opt; do
     case $opt in
         A) upgrade_all=true ;;
         p) target_path="$OPTARG" ;;
         b) skip_backups=true ;;
-        f) force_dirty=true ;;
         y) assume_defaults=true ;;
         *) : ;;
     esac
