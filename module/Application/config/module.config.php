@@ -16,6 +16,8 @@ use Application\I18n\Translator;
 use Application\Command\SyncCentralV6Factory;
 use Application\Command\GenerateBulkPdfFactory;
 use Application\Command\CleanupOldLogsFactory;
+use Application\Command\AuditsUnlinked;
+use Application\Command\AuditsUnlinkedFactory;
 
 return array(
     'router' => array(
@@ -367,6 +369,7 @@ return array(
             SyncCentralV6::class => SyncCentralV6Factory::class,
             GenerateBulkPdf::class => GenerateBulkPdfFactory::class,
             CleanupOldLogs::class => CleanupOldLogsFactory::class,
+            AuditsUnlinked::class => AuditsUnlinkedFactory::class,
         ]
     ],
     'translator' => [
@@ -411,6 +414,7 @@ return array(
             'sync-central-v6' => SyncCentralV6::class,
             'generate-bulk-pdf' => GenerateBulkPdf::class,
             'cleanup-old-logs' => CleanupOldLogs::class,
+            'audits:unlinked' => AuditsUnlinked::class,
         ],
     ],
 );

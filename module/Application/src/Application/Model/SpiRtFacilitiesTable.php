@@ -24,7 +24,22 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $this->adapter = $adapter;
     }
 
-    public function addFacilityBasedOnForm($formId, $formVersion = 3)
+    /**
+     * Resolve the facility an audit belongs to and record it on the form row.
+     *
+     * Every location filter joins facilities on spi_form_v_6.facility, so an
+     * audit whose facility column is empty is invisible to a mapped user. That
+     * column is the only link — matching on facilityname was dropped because
+     * names are not unique and facilityid is not a facility key at all.
+     *
+     * $createIfMissing is what separates ingest from approval. On ingest we
+     * only link to a facility that already exists; a facility the auditor has
+     * named for the first time is not promoted into the master list until the
+     * audit is approved, which is the behaviour this has always had.
+     *
+     * Returns the facility id, or null when there is nothing to link to.
+     */
+    public function addFacilityBasedOnForm($formId, $formVersion = 3, $createIfMissing = true)
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
@@ -42,38 +57,55 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
         $queryStr = $sql->buildSqlString($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if ($result != "") {
-
-            $fQuery = $sql->select()->from('spi_rt_3_facilities')
-                ->where(array('facility_name' => $result['facilityname']));
-
-            $fQueryStr = $sql->buildSqlString($fQuery);
-            $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($fResult == "") {
-                $district = $result['district'];
-                $province = 'Unknown';
-                if (isset($result['district']) && $result['district'] != '') {
-                    $dbAdapter = $this->adapter;
-                    $geoTable = new GeographicalDivisionsTable($dbAdapter);
-                    $res = $geoTable->checkDistrict(trim($result['district']));
-                    if ($res) {
-                        $district = $res['district'];
-                        $province = $res['province'];
-                    }
-                }
-                $data = [
-                    'facility_id' => $result['facilityid'] ?? null,
-                    'facility_name' => $result['facilityname'] ?? null,
-                    'country' => $this->getInstanceCountryId(),
-                    'province' => $province,
-                    'district' => $district,
-                    'latitude' => $result['Latitude'] ?? null,
-                    'longitude' => $result['Longitude'] ?? null
-                ];
-                // print_r($data); die;
-                return $this->insert($data);
-            }
+        if ($result == "" || trim((string) ($result['facilityname'] ?? '')) === '') {
+            // Nothing to key a facility on. Left unlinked deliberately: one
+            // blank-named row would silently collect every such audit.
+            return null;
         }
+
+        // Lowest id wins, so a duplicated facility name always resolves the
+        // same way here as it does in the 1.2.4 backfill.
+        $fQuery = $sql->select()->from('spi_rt_3_facilities')
+            ->where(array('facility_name' => $result['facilityname']))
+            ->order('id ASC');
+
+        $fQueryStr = $sql->buildSqlString($fQuery);
+        $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+
+        if ($fResult != "") {
+            $facilityId = $fResult['id'];
+        } elseif ($createIfMissing) {
+            $district = $result['district'];
+            $province = 'Unknown';
+            if (isset($result['district']) && $result['district'] != '') {
+                $geoTable = new GeographicalDivisionsTable($dbAdapter);
+                $res = $geoTable->checkDistrict(trim($result['district']));
+                if ($res) {
+                    $district = $res['district'];
+                    $province = $res['province'];
+                }
+            }
+            $data = [
+                'facility_id' => $result['facilityid'] ?? null,
+                'facility_name' => $result['facilityname'] ?? null,
+                'country' => $this->getInstanceCountryId(),
+                'province' => $province,
+                'district' => $district,
+                'latitude' => $result['Latitude'] ?? null,
+                'longitude' => $result['Longitude'] ?? null
+            ];
+            $this->insert($data);
+            $facilityId = $this->lastInsertValue;
+        } else {
+            return null;
+        }
+
+        $update = $sql->update($table)
+            ->set(['facility' => $facilityId])
+            ->where(['id' => $formId]);
+        $dbAdapter->query($sql->buildSqlString($update), $dbAdapter::QUERY_MODE_EXECUTE);
+
+        return $facilityId;
     }
 
     /**
