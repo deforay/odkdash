@@ -12,6 +12,7 @@ use Application\Command\SendTempMailFactory;
 use Application\Command\SendAuditMailFactory;
 use Application\Command\SyncCentralV3Factory;
 use Laminas\Db\Adapter\Adapter;
+use Application\I18n\Translator;
 use Application\Command\SyncCentralV6Factory;
 use Application\Command\GenerateBulkPdfFactory;
 use Application\Command\CleanupOldLogsFactory;
@@ -347,7 +348,19 @@ return array(
                 $dbConfig = $config['db'];
                 return new Adapter($dbConfig);
             },
-            'translator' => 'Laminas\Mvc\I18n\TranslatorFactory',
+            // Was Laminas\Mvc\I18n\TranslatorFactory. Reads the same
+            // 'translator' config block below, so the catalogue location and
+            // the locale are still declared in one place.
+            'translator' => function ($container) {
+                $config = $container->get('Config')['translator'] ?? [];
+                $translator = new Translator($config['locale'] ?? 'en_US');
+
+                foreach ($config['translation_file_patterns'] ?? [] as $filePattern) {
+                    $translator->addPattern($filePattern['base_dir'], $filePattern['pattern']);
+                }
+
+                return $translator;
+            },
             SendTempMail::class => SendTempMailFactory::class,
             SendAuditMail::class => SendAuditMailFactory::class,
             SyncCentralV3::class => SyncCentralV3Factory::class,

@@ -4,8 +4,6 @@ return [
     // This should be an array of module namespaces used in the application.
     'modules' => [
         'Laminas\Session',
-        'Laminas\Mvc\I18n',
-        'Laminas\I18n',
         'Laminas\Db',
         'Laminas\Router',
         'Application',

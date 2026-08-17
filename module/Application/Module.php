@@ -43,6 +43,7 @@ use Application\Model\SpiFormVer3DuplicateTable;
 
 use Application\Model\SpiFormVer6DuplicateTable;
 use Application\View\Helper\GetCountryDetailsByIdHelper;
+use Application\View\Helper\Translate;
 
 use Application\Service\Logger;
 use Application\Service\ProvinceService;
@@ -741,6 +742,15 @@ class Module
                     {
                         $countriesTable = $diContainer->get('CountriesTable');
                         return new GetCountryDetailsByIdHelper($countriesTable);
+                    }
+                },
+                // laminas-i18n used to register this one. Same name and
+                // signature, so the ~2900 translate() calls in the views are
+                // untouched.
+                'translate' => new class {
+                    public function __invoke($diContainer)
+                    {
+                        return new Translate($diContainer->get('translator'));
                     }
                 }
             ]
