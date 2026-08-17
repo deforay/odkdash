@@ -21,7 +21,6 @@
         "laminas/laminas-i18n": "^2.33",
         "laminas/laminas-mvc": "^3.8",
         "laminas/laminas-mvc-i18n": "^1.9",
-        "laminas/laminas-permissions-acl": "^2.18",
         "laminas/laminas-router": "^3.18",
         "laminas/laminas-session": "^2.27",
         "monolog/monolog": "^3.10",

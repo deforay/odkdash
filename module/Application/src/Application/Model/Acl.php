@@ -1,28 +1,47 @@
 <?php
 
-
 namespace Application\Model;
 
-
-use Laminas\Permissions\Acl\Role\GenericRole;
-use Laminas\Permissions\Acl\Acl as LaminasAcl;
-use Laminas\Permissions\Acl\Resource\GenericResource;
-
-
-class Acl extends LaminasAcl
+/**
+ * Role-based access control for the dashboard.
+ *
+ * This used to extend laminas-permissions-acl, of which the application used
+ * five methods and none of the features — no role inheritance, no deny rules,
+ * no assertions, no resource tree. What is left once those go is a flat
+ * allow-list built from the resources, roles, privileges and
+ * roles_privileges_map tables, which is what this class holds directly.
+ *
+ * Externally only isAllowed() and hasResource() are called, so the swap is
+ * invisible to the 110 call sites in the controllers and layout.
+ *
+ * Two deliberate differences from the Laminas behaviour, both denying where
+ * it threw: an unknown role or an unknown resource returns false rather than
+ * raising InvalidArgumentException. A resource that vanishes from the
+ * database therefore hides a menu entry instead of producing a 500, and no
+ * case grants access that Laminas would have refused.
+ */
+class Acl
 {
+    /** @var array<string, true> */
+    private array $roles = [];
+
+    /** @var array<string, true> */
+    private array $resources = [];
+
+    /** @var array<string, array<string, array<string, true>>> role => resource => privilege */
+    private array $allowed = [];
+
+    /** @var array<string, true> roles holding a blanket allow */
+    private array $allowedEverything = [];
+
     public function __construct($resourceList, $rolesList, $rolePrivileges, $privileges)
     {
         foreach ($resourceList as $res) {
-            if (!$this->hasResource($res['resource_id'])) {
-                $this->addResource(new GenericResource($res['resource_id']));
-            }
+            $this->addResource($res['resource_id']);
         }
 
         foreach ($rolesList as $rol) {
-            if (!$this->hasRole($rol['role_code'])) {
-                $this->addRole(new GenericRole($rol['role_code']));
-            }
+            $this->addRole($rol['role_code']);
         }
 
         // Map privileges to resource and privilege names
@@ -77,9 +96,7 @@ class Acl extends LaminasAcl
         }
 
         foreach ($config as $role => $resources) {
-            if (!$this->hasRole($role)) {
-                $this->addRole(new GenericRole($role));
-            }
+            $this->addRole($role);
             foreach ($resources as $resource => $permissions) {
                 foreach ($permissions as $privilege => $permission) {
                     $this->$permission($role, $resource, $privilege);
@@ -87,10 +104,7 @@ class Acl extends LaminasAcl
             }
         }
 
-        if (!$this->hasRole('daemon')) {
-            $this->addRole('daemon');
-        }
-
+        $this->addRole('daemon');
         $this->allow('daemon');
 
         // Super Admin always has every privilege — bypasses the
@@ -98,9 +112,72 @@ class Acl extends LaminasAcl
         // migration 1.1.7) for display correctness in the role-edit
         // screen, but this guarantees SA can't be locked out via map
         // drift if a new privilege is added later.
-        if (!$this->hasRole('SA')) {
-            $this->addRole(new GenericRole('SA'));
-        }
+        $this->addRole('SA');
         $this->allow('SA');
+    }
+
+    public function hasResource($resource): bool
+    {
+        return isset($this->resources[(string) $resource]);
+    }
+
+    public function hasRole($role): bool
+    {
+        return isset($this->roles[(string) $role]);
+    }
+
+    /**
+     * A role with a blanket allow still needs the resource to be registered,
+     * matching Laminas, where isAllowed() resolved the resource before it
+     * consulted any rule.
+     */
+    public function isAllowed($role = null, $resource = null, $privilege = null): bool
+    {
+        $role = (string) $role;
+
+        if (!isset($this->roles[$role])) {
+            return false;
+        }
+
+        if ($resource !== null && !isset($this->resources[(string) $resource])) {
+            return false;
+        }
+
+        if (isset($this->allowedEverything[$role])) {
+            return true;
+        }
+
+        if ($resource === null || $privilege === null) {
+            return false;
+        }
+
+        return isset($this->allowed[$role][(string) $resource][(string) $privilege]);
+    }
+
+    private function addResource($resource): void
+    {
+        $this->resources[(string) $resource] = true;
+    }
+
+    private function addRole($role): void
+    {
+        $this->roles[(string) $role] = true;
+    }
+
+    /**
+     * Called with a role alone this is a blanket allow, as it was in Laminas,
+     * where a null resource and privilege meant "all of them".
+     */
+    private function allow($role, $resource = null, $privilege = null): void
+    {
+        $role = (string) $role;
+        $this->addRole($role);
+
+        if ($resource === null || $privilege === null) {
+            $this->allowedEverything[$role] = true;
+            return;
+        }
+
+        $this->allowed[$role][(string) $resource][(string) $privilege] = true;
     }
 }
