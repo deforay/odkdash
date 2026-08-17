@@ -4,7 +4,7 @@ namespace Application\Model;
 
 use Zend\Debug\Debug;
 use Laminas\Db\Sql\Sql;
-use Laminas\Session\Container;
+use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Config\Writer\PhpArray;
 use Application\Service\CommonService;

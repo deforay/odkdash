@@ -495,16 +495,16 @@ usort($migrations, function ($a, $b) {
     return strcmp($a['suffix'], $b['suffix']);
 });
 
-$startVersion = $fromVersion ?? $dbVersion;
-$pending = array_filter(
-    $migrations,
-    fn($m) => Comparator::greaterThanOrEqualTo($m['version'], $startVersion)
-);
+// An explicit --version=X replays from X inclusive, which is the point of the
+// flag. A normal run must start *after* the version already recorded, or every
+// run repeats the last migration — harmless for an idempotent one, destructive
+// for anything that drops or rewrites a table.
+$pending = $fromVersion !== null
+    ? array_filter($migrations, fn($m) => Comparator::greaterThanOrEqualTo($m['version'], $fromVersion))
+    : array_filter($migrations, fn($m) => Comparator::greaterThan($m['version'], $dbVersion));
 
 if ($showStatus) {
-    $reportable = $fromVersion === null
-        ? array_filter($pending, fn($m) => version_compare($m['version'], $dbVersion, '>'))
-        : $pending;
+    $reportable = $pending;
     echo "Pending migrations:\n";
     if (empty($reportable)) {
         echo "  (none — database is up to date)\n";

@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Application\Session;
+
+/**
+ * Session storage, reduced to the clear() the logout path calls.
+ */
+class SessionStorage
+{
+    /**
+     * Empties every namespace and ends the session, which is what logout
+     * needs: Laminas' clear() on the storage wiped the whole session, not
+     * just the container that reached it.
+     */
+    public function clear(): void
+    {
+        $_SESSION = [];
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            return;
+        }
+
+        // Expire the cookie too, otherwise the browser keeps presenting a
+        // session id that is now empty but still valid.
+        if (ini_get('session.use_cookies') && !headers_sent()) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                [
+                    'expires' => time() - 42000,
+                    'path' => $params['path'],
+                    'domain' => $params['domain'],
+                    'secure' => $params['secure'],
+                    'httponly' => $params['httponly'],
+                    'samesite' => $params['samesite'] ?? 'Lax',
+                ]
+            );
+        }
+
+        session_destroy();
+    }
+}

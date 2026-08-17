@@ -84,7 +84,7 @@ class ClientErrorController extends AbstractActionController
 
     private function resolveUserId(): ?int
     {
-        $session = new \Laminas\Session\Container('credo');
+        $session = new \Application\Session\Container('credo');
         return isset($session->userId) ? (int) $session->userId : null;
     }
 

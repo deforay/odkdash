@@ -5,7 +5,7 @@ namespace Application\Controller;
 use Application\Service\UserService;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Laminas\Session\Container;
+use Application\Session\Container;
 
 
 class LoginController extends AbstractActionController

@@ -25,7 +25,7 @@
 <div class="am-content">
   <div class="page-head">
     <?php
-    use Laminas\Session\Container;
+    use Application\Session\Container;
     $loginContainer = new Container('credo');
     $userMappingType = $loginContainer->userMappingType;
     if ($source == 'hv') {

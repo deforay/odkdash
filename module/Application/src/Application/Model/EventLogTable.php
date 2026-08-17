@@ -6,7 +6,7 @@ use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Laminas\Db\Sql\Expression;
-use Laminas\Session\Container;
+use Application\Session\Container;
 use Application\Service\CommonService;
 use Application\Service\RequestContext;
 

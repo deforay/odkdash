@@ -2,7 +2,7 @@
 
 namespace Application\Model;
 
-use Laminas\Session\Container;
+use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
@@ -64,6 +64,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 $data = [
                     'facility_id' => $result['facilityid'] ?? null,
                     'facility_name' => $result['facilityname'] ?? null,
+                    'country' => $this->getInstanceCountryId(),
                     'province' => $province,
                     'district' => $district,
                     'latitude' => $result['Latitude'] ?? null,
@@ -73,6 +74,32 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 return $this->insert($data);
             }
         }
+    }
+
+    /**
+     * Country id this instance serves, resolved from the country-name global config.
+     *
+     * Facilities created from a form have no country of their own to go on, but a
+     * deployment only ever covers one, so the instance name is the source. Returns
+     * null when it does not name a country, which is no worse than the NULL that
+     * used to be written unconditionally.
+     */
+    public function getInstanceCountryId()
+    {
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $gTable = new GlobalTable($dbAdapter);
+        $countryName = trim((string) $gTable->getGlobalValue('country-name'));
+        if ($countryName === '') {
+            return null;
+        }
+        $query = $sql->select()->from('countries')
+            ->columns(['country_id'])
+            ->where(['country_name' => $countryName]);
+        $queryStr = $sql->buildSqlString($query);
+        $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+
+        return $result ? $result['country_id'] : null;
     }
 
     public function addFacilityDetails($params)

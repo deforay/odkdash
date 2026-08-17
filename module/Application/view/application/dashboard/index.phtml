@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Session\Container;
+use Application\Session\Container;
 
 $sessionLogin = new Container('credo');
 $config = $this->GlobalConfigHelper();
@@ -463,7 +463,7 @@ $config = $this->GlobalConfigHelper();
 			</div>
 		</div>
 		<?php
-		$loginContainer = new \Laminas\Session\Container('credo');
+		$loginContainer = new \Application\Session\Container('credo');
 		$role = $loginContainer->roleCode;
 		$acl = (isset($this->layout()->acl) && $this->layout()->acl != "") ? ($this->layout()->acl) : null;
 		if ($acl != null && $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'edit')) {
