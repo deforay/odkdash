@@ -718,6 +718,25 @@ class CommonService
     }
 
     /**
+     * Escape a value for output in an HTML context.
+     *
+     * The audit tables hand DataTables an array of cells, and DataTables writes
+     * each one as HTML; the PDF export walks the same rows into TCPDF's
+     * writeHTML. Both are HTML sinks, so any value that came from an ODK
+     * submission has to pass through here before it goes into a row. Cells the
+     * code builds itself — action links, badges, checkboxes — stay unescaped as
+     * a whole and are assembled from escaped parts instead.
+     *
+     * ENT_SUBSTITUTE keeps a field with a bad byte in it from escaping to an
+     * empty string, which would silently blank a facility name rather than
+     * showing it.
+     */
+    public static function escapeHtml($value): string
+    {
+        return htmlspecialchars((string) ($value ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /**
      * Generate a numeric OTP.
      *
      * @param int  $digits              Length of the OTP (e.g., 4–8)

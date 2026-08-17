@@ -2023,7 +2023,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             /* Escaped because DataTables writes this cell as HTML and the name arrives
              * verbatim from the ODK submission, so a crafted facility name would run
              * as script for everyone viewing the list. */
-            $facilityName = htmlspecialchars(trim((string) $aRow['facilityname']), ENT_QUOTES, 'UTF-8');
+            $facilityName = CommonService::escapeHtml(trim((string) $aRow['facilityname']));
             if (empty($aRow['facility'])) {
                 /* Carries no facility link, so location filters cannot place it. It is
                  * listed anyway rather than hidden; assigning a facility on the edit
@@ -2034,45 +2034,45 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = $facilityName;
             }
 
-            $row[] = $aRow['auditroundno'];
+            $row[] = CommonService::escapeHtml($aRow['auditroundno']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             //$row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-            $row[] = $aRow['testingpointtype'];
-            $row[] = $aRow['affiliation'];
+            $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['affiliation']);
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0, 2);
-            $row[] = ucwords($aRow['status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
             if ($aRow['status'] == 'pending' && $approveStatusAction) {
-                $approve = '<br><a href="javascript:void(0);" onclick="approveStatus(' . $aRow['id'] . ')"  style="white-space:nowrap;"><i class="fa fa-check"></i>  Approve</a>';
+                $approve = '<br><a href="javascript:void(0);" onclick="approveStatus(' . (int) $aRow['id'] . ')"  style="white-space:nowrap;"><i class="fa fa-check"></i>  Approve</a>';
             }
 
             if ($downloadPdfAction) {
-                $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+                $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . (int) $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
             }
             if ($editAction) {
-                $edit = '<br><a href="/spi-v6/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+                $edit = '<br><a href="/spi-v6/edit/' . (int) $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
             }
             if ($deleteAction) {
                 /* The raw name is handed over rather than scraped from the cell,
                  * which also carries the "Unassigned facility" badge. json_encode
-                 * makes it a JS string literal, htmlspecialchars makes that safe
-                 * inside the attribute; the browser undoes the second on the way in. */
-                $deleteName = htmlspecialchars(
-                    json_encode(trim((string) $aRow['facilityname'])),
-                    ENT_QUOTES,
-                    'UTF-8'
+                 * makes it a JS string literal, escapeHtml makes that safe inside
+                 * the attribute; the browser undoes the second on the way in. */
+                $deleteName = CommonService::escapeHtml(
+                    json_encode(trim((string) $aRow['facilityname']))
                 );
-                $remove = '<br><a href="javascript:void(0);" onclick="deleteAudit(' . $aRow['id'] . ', ' . $deleteName . ');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
+                $remove = '<br><a href="javascript:void(0);" onclick="deleteAudit(' . (int) $aRow['id'] . ', ' . $deleteName . ');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
             }
             $row[] = $approve . " " . $downloadPdf . " " . $edit . " " . $remove;
-            $row[] = $aRow['PERSONAL_SCORE'];
-            $row[] = $aRow['PHYSICAL_SCORE'];
-            $row[] = $aRow['SAFETY_SCORE'];
-            $row[] = $aRow['PRETEST_SCORE'];
-            $row[] = $aRow['TEST_SCORE'];
-            $row[] = $aRow['POST_SCORE'];
-            $row[] = $aRow['EQA_SCORE'];
-            $row[] = $aRow['RTRI_SCORE'];
+            /* Every score column is a varchar carrying whatever ODK submitted, so
+             * these are text cells like any other rather than numbers. */
+            $row[] = CommonService::escapeHtml($aRow['PERSONAL_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['PHYSICAL_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['SAFETY_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['PRETEST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['TEST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['POST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['EQA_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['RTRI_SCORE']);
 
             $t = (float) $aRow['PERSONAL_SCORE'] + (float) $aRow['PHYSICAL_SCORE'] + (float) $aRow['SAFETY_SCORE'] + (float) $aRow['PRETEST_SCORE'] + (float) $aRow['TEST_SCORE'] + (float) $aRow['POST_SCORE'] + (float) $aRow['EQA_SCORE'];
             if (trim($aRow['performrtritesting']) == 'Yes') {
@@ -3097,17 +3097,17 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = $aRow['facilityname'];
+            $row[] = CommonService::escapeHtml($aRow['facilityname']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-            $row[] = $aRow['testingpointname'] . " - " . $aRow['testingpointtype'];
-            $row[] = $aRow['PERSONAL_SCORE'];
-            $row[] = $aRow['PHYSICAL_SCORE'];
-            $row[] = $aRow['SAFETY_SCORE'];
-            $row[] = $aRow['PRETEST_SCORE'];
-            $row[] = $aRow['TEST_SCORE'];
-            $row[] = $aRow['POST_SCORE'];
-            $row[] = $aRow['EQA_SCORE'];
-            $row[] = $aRow['FINAL_AUDIT_SCORE'];
+            $row[] = CommonService::escapeHtml($aRow['testingpointname'] . " - " . $aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['PERSONAL_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['PHYSICAL_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['SAFETY_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['PRETEST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['TEST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['POST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['EQA_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['FINAL_AUDIT_SCORE']);
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             $output['aaData'][] = $row;
         }
@@ -3375,18 +3375,18 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = $aRow['facilityname'];
+            $row[] = CommonService::escapeHtml($aRow['facilityname']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-            $row[] = $aRow['testingpointtype'];
-            $row[] = $aRow['PERSONAL_SCORE'];
-            $row[] = $aRow['PHYSICAL_SCORE'];
-            $row[] = $aRow['SAFETY_SCORE'];
-            $row[] = $aRow['PRETEST_SCORE'];
-            $row[] = $aRow['TEST_SCORE'];
-            $row[] = $aRow['POST_SCORE'];
-            $row[] = $aRow['EQA_SCORE'];
-            $row[] = $aRow['RTRI_SCORE'];
-            $row[] = $aRow['FINAL_AUDIT_SCORE'];
+            $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['PERSONAL_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['PHYSICAL_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['SAFETY_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['PRETEST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['TEST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['POST_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['EQA_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['RTRI_SCORE']);
+            $row[] = CommonService::escapeHtml($aRow['FINAL_AUDIT_SCORE']);
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             $output['aaData'][] = $row;
         }
@@ -3904,13 +3904,13 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row = [];
             $downloadPdf = "";
 
-            $row[] = $aRow['facilityid'];
-            $row[] = ucwords($aRow['facilityname']);
-            $row[] = $aRow['testingpointtype'];
+            $row[] = CommonService::escapeHtml($aRow['facilityid']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+            $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             if ($downloadPdfAction) {
-                $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+                $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . (int) $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
             }
             $row[] = $downloadPdf;
             $output['aaData'][] = $row;
@@ -4166,19 +4166,19 @@ class SpiFormVer6Table extends AbstractTableGateway
 
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
 
-            $row[] = $aRow['facilityname'];
-            $row[] = $aRow['auditroundno'];
+            $row[] = CommonService::escapeHtml($aRow['facilityname']);
+            $row[] = CommonService::escapeHtml($aRow['auditroundno']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-            $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-            $row[] = $aRow['testingpointtype'];
-            $row[] = $aRow['level'] . $level;
-            $row[] = $aRow['affiliation'];
+            $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['level'] . $level);
+            $row[] = CommonService::escapeHtml($aRow['affiliation']);
             $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-            $row[] = ucwords($aRow['status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
 
             if ($downloadPdfAction) {
-                $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
+                $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . (int) $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
             }
             //$pending = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
             $row[] = $downloadPdf;
@@ -4897,29 +4897,29 @@ class SpiFormVer6Table extends AbstractTableGateway
 
             if ($parameters['source'] == 'hv') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
-                $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
+                $row[] = CommonService::escapeHtml($aRow['NumberofTester'] ?? 0);
                 $row[] = $level; //level
             } elseif ($parameters['source'] == 'la') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+                $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
             } elseif ($parameters['source'] == 'ad') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = $aRow['totalDataPoints'];
+                $row[] = CommonService::escapeHtml($aRow['totalDataPoints']);
             } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $row[] = $aRow['facilityid'];
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = $aRow['auditroundno'];
+                $row[] = CommonService::escapeHtml($aRow['facilityid']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml($aRow['auditroundno']);
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['testingpointtype']);
-                $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
-                $row[] = ucwords($aRow['level']);
-                $row[] = ucwords($aRow['affiliation']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['testingpointtype']));
+                $row[] = CommonService::escapeHtml(($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']));
+                $row[] = CommonService::escapeHtml(ucwords($aRow['level']));
+                $row[] = CommonService::escapeHtml(ucwords($aRow['affiliation']));
                 $row[] = $level; //level
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             } elseif ($parameters['source'] == 'apspi') {
@@ -5287,40 +5287,40 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             if ($parameters['source'] == 'hv') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
-                $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
+                $row[] = CommonService::escapeHtml($aRow['NumberofTester'] ?? 0);
                 $row[] = $level;
             } elseif ($parameters['source'] == 'la') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+                $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
             } elseif ($parameters['source'] == 'ad') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = $aRow['totalDataPoints'];
+                $row[] = CommonService::escapeHtml($aRow['totalDataPoints']);
             } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $row[] = $aRow['facilityid'];
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = $aRow['auditroundno'];
+                $row[] = CommonService::escapeHtml($aRow['facilityid']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml($aRow['auditroundno']);
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['testingpointtype']);
-                $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
-                $row[] = ucwords($aRow['level']);
-                $row[] = ucwords($aRow['affiliation']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['testingpointtype']));
+                $row[] = CommonService::escapeHtml(($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']));
+                $row[] = CommonService::escapeHtml(ucwords($aRow['level']));
+                $row[] = CommonService::escapeHtml(ucwords($aRow['affiliation']));
                 $row[] = $level;
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = $aRow['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'];
-                $row[] = $aRow['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL'];
-                $row[] = $aRow['S0_Q_3_TESTS_RECORDED_RECENCY'];
-                $row[] = $aRow['S0_Q_4_PROCESS_DOCUMENTED'];
-                $row[] = $aRow['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS'];
-                $row[] = $aRow['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED'];
-                $row[] = $aRow['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS'];
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']);
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']);
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_3_TESTS_RECORDED_RECENCY']);
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_4_PROCESS_DOCUMENTED']);
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']);
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']);
+                $row[] = CommonService::escapeHtml($aRow['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']);
                 //$personalScoreArray[] = $aRow['PERSONAL_SCORE'];
                 //$physicalScoreArray[] = $aRow['PHYSICAL_SCORE'];
                 //$safetyScoreArray[] = $aRow['SAFETY_SCORE'];
@@ -5698,41 +5698,41 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             if ($parameters['source'] == 'hv') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
-                $row[] = (isset($aRow['NumberofTester']) ? $aRow['NumberofTester'] : 0);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
+                $row[] = CommonService::escapeHtml($aRow['NumberofTester'] ?? 0);
                 $row[] = $level;
             } elseif ($parameters['source'] == 'la') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-                $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
+                $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
             } elseif ($parameters['source'] == 'ad') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = $aRow['totalDataPoints'];
+                $row[] = CommonService::escapeHtml($aRow['totalDataPoints']);
             } elseif ($parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $row[] = $aRow['facilityid'];
-                $row[] = ucwords($aRow['facilityname']);
-                $row[] = $aRow['auditroundno'];
+                $row[] = CommonService::escapeHtml($aRow['facilityid']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
+                $row[] = CommonService::escapeHtml($aRow['auditroundno']);
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = ucwords($aRow['testingpointtype']);
-                $row[] = ($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']);
-                $row[] = ucwords($aRow['level']);
-                $row[] = ucwords($aRow['affiliation']);
+                $row[] = CommonService::escapeHtml(ucwords($aRow['testingpointtype']));
+                $row[] = CommonService::escapeHtml(($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']));
+                $row[] = CommonService::escapeHtml(ucwords($aRow['level']));
+                $row[] = CommonService::escapeHtml(ucwords($aRow['affiliation']));
                 $row[] = $level;
                 $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = $aRow['D0_S_1_DIAGNOSED_HIV_ABOVE_15'];
-                $row[] = $aRow['D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION'];
-                $row[] = $aRow['D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD'];
-                $row[] = $aRow['D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'];
-                $row[] = $aRow['D0_S_5_DOCUMENTED_AND_REFUSED'];
-                $row[] = $aRow['D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI'];
-                $row[] = $aRow['D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'];
-                $row[] = $aRow['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+                $row[] = CommonService::escapeHtml($aRow['D0_S_1_DIAGNOSED_HIV_ABOVE_15']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_5_DOCUMENTED_AND_REFUSED']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']);
+                $row[] = CommonService::escapeHtml($aRow['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']);
                 //$personalScoreArray[] = $aRow['PERSONAL_SCORE'];
                 //$physicalScoreArray[] = $aRow['PHYSICAL_SCORE'];
                 //$safetyScoreArray[] = $aRow['SAFETY_SCORE'];
