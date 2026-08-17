@@ -42,3 +42,6 @@ UPDATE `spi_form_v_6` v
  WHERE v.facility IS NULL OR v.facility = 0;
 
 CREATE INDEX `idx_v6_facility` ON `spi_form_v_6` (`facility`);
+
+-- Thana 17-Aug-2026
+ALTER TABLE `spi_form_v_6` ADD `session_hash` VARCHAR(16) NULL DEFAULT NULL AFTER `form_metadata`;
