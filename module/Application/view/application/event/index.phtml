@@ -4,6 +4,32 @@ $eventTypes = $this->eventTypes ?? [];
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" />
 
 <style>
+    .icon-fingerprint {
+        display: inline-block;
+        width: 11px;
+        height: 11px;
+        margin-right: 3px;
+        vertical-align: -1px;
+        opacity: 0.65;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a5 5 0 0 0-5 5v2c0 .8.1 1.5.4 2.2'/><path d='M17 4.6A8 8 0 0 1 19 10v2c0 1.6-.3 3.1-1 4.6'/><path d='M7 5.6A8 8 0 0 0 5 10v2c0 4 1.5 7.2 3.5 9.2'/><path d='M9 9a3 3 0 0 1 6 0v2c0 4 1 6.2 3 8.2'/><path d='M12 9v2c0 5 2 8 4 10'/><path d='M9 13c0 4 1.5 6.7 3 8.2'/></svg>");
+    }
+    .session-pill:hover .icon-fingerprint {
+        filter: brightness(0.6);
+    }
+    .session-pill {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 10.5px; color: #475569; background: #f1f5f9;
+        border: 1px solid #e2e8f0; border-radius: 10px; padding: 1px 8px;
+        cursor: pointer; user-select: all; white-space: nowrap;
+    }
+    .session-pill:hover { background: #e2e8f0; color: #1e293b; }
+    .session-pill i { margin-right: 3px; opacity: 0.65; }
+    .select2-container--default .select2-selection--single .select2-selection__arrow b:after {
+        content: ""
+    }
+
     .audit-page {
         max-width: 1080px;
         margin: 0 auto;

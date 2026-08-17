@@ -24,32 +24,6 @@ $userMappingType = $sessionLogin->userMappingType;
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/css/tom-select.bootstrap4.min.css"
   type="text/css" />
 <style>
-  .icon-fingerprint {
-      display: inline-block;
-      width: 11px;
-      height: 11px;
-      margin-right: 3px;
-      vertical-align: -1px;
-      opacity: 0.65;
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2a5 5 0 0 0-5 5v2c0 .8.1 1.5.4 2.2'/><path d='M17 4.6A8 8 0 0 1 19 10v2c0 1.6-.3 3.1-1 4.6'/><path d='M7 5.6A8 8 0 0 0 5 10v2c0 4 1.5 7.2 3.5 9.2'/><path d='M9 9a3 3 0 0 1 6 0v2c0 4 1 6.2 3 8.2'/><path d='M12 9v2c0 5 2 8 4 10'/><path d='M9 13c0 4 1.5 6.7 3 8.2'/></svg>");
-  }
-  .session-pill:hover .icon-fingerprint {
-      filter: brightness(0.6);
-  }
-  .session-pill {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 10.5px; color: #475569; background: #f1f5f9;
-    border: 1px solid #e2e8f0; border-radius: 10px; padding: 1px 8px;
-    cursor: pointer; user-select: all; white-space: nowrap;
-  }
-  .session-pill:hover { background: #e2e8f0; color: #1e293b; }
-  .session-pill i { margin-right: 3px; opacity: 0.65; }
-  .select2-container--default .select2-selection--single .select2-selection__arrow b:after {
-    content: ""
-  }
-
   .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b:after {
     content: ""
   }
@@ -306,13 +280,6 @@ $userMappingType = $sessionLogin->userMappingType;
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="sessionHash" class="col-sm-2 control-label"><?= $this->translate('Session'); ?></label>
-                  <div class="col-lg-4">
-                    <input type="search" class="form-control" id="sessionHash"
-                      placeholder="<?= $this->translate('16-char session hash'); ?>" autocomplete="off">
-                  </div>
-                </div>
-                <div class="form-group">
                   <div class="testPointNameSection"></div>
                 </div>
                 <div class="form-group" style="text-align:center;">
@@ -480,26 +447,13 @@ $userMappingType = $sessionLogin->userMappingType;
 <script type="text/javascript">
   table = null;
 
-  // function formatValue(value) {
-  //   //return '<a href="/spi-v3/print/'+value+'" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
-  //   return '<a href="javascript:void(0);" onclick="downloadPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Full Survey'); ?></a>' +
-  //     '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-  //     '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Corrective Actions'); ?></a>';
-  // }
-  function formatValue(value, sessionHash) {
-    var out = '<a href="javascript:void(0);" onclick="downloadPdf(' + value + ')"><i class="fa fa-print"></i> <?= $this->translate('Print Full Survey'); ?></a>'
-      + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-      + '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf(' + value + ')"><i class="fa fa-print"></i> <?= $this->translate('Print Corrective Actions'); ?></a>';
-    if (sessionHash) {
-      out += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-        + '<span class="session-pill" data-session="' + sessionHash + '" '
-        +   'title="<?= $this->translate('Click to filter by this session'); ?>" '
-        +   'onclick="filterBySession(\'' + sessionHash + '\')">'
-        +   '<i class="fa fa-fingerprint"></i> ' + sessionHash.substring(0, 8)
-        + '</span>';
-    }
-    return out;
+  function formatValue(value) {
+    //return '<a href="/spi-v3/print/'+value+'" target="_blank"><i class="fa fa-print"></i> Print Full Survey</a>'
+    return '<a href="javascript:void(0);" onclick="downloadPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Full Survey'); ?></a>' +
+      '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+      '<a href="javascript:void(0)" onclick="downloadCorrectiveActionPdf(' + value + ')" ><i class="fa fa-print"></i> <?= $this->translate('Print Corrective Actions'); ?></a>';
   }
+  
   $(document).ready(function () {
     var startDate = "";
     var endDate = "";
@@ -631,13 +585,6 @@ $userMappingType = $sessionLogin->userMappingType;
       }
     });
 
-    window.filterBySession = function (hash) {
-      $('#sessionHash').val(hash);
-      updateFilterCount();
-      filterHighlighter.refresh();
-      setFilterPanel(true);
-      search();
-    };
     $("#country").select2({
       width: '100%',
       placeholder: 'All',

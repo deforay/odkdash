@@ -21,6 +21,9 @@ class EventLogTable extends AbstractTableGateway
 
     protected $table = 'event_log';
     protected $adapter;
+    private static $eventLogColsCache = null;
+    private static $usersNameExprCache = null;
+
 
     public function __construct(Adapter $adapter)
     {
@@ -194,6 +197,154 @@ class EventLogTable extends AbstractTableGateway
             $output['aaData'][] = $row;
         }
         return $output;
+    }
+
+    private function eventLogColumns()
+    {
+        if (self::$eventLogColsCache !== null) {
+            return self::$eventLogColsCache;
+        }
+        try {
+            $meta = $this->adapter->query('SHOW COLUMNS FROM event_log', $this->adapter::QUERY_MODE_EXECUTE)->toArray();
+            self::$eventLogColsCache = array_flip(array_map(function ($c) { return strtolower($c['Field']); }, $meta));
+        } catch (Throwable $e) {
+            return [];
+        }
+        return self::$eventLogColsCache;
+    }
+
+    /**
+     * Builds a SQL expression for the actor's display name, adapting to whichever
+     * name columns `users` actually has. Falls back to 'User #<id>' if neither
+     * shape is present, rather than silently showing blank names.
+     */
+    private function usersNameExpr()
+    {
+        if (self::$usersNameExprCache !== null) {
+            return self::$usersNameExprCache;
+        }
+        try {
+            $meta = $this->adapter->query('SHOW COLUMNS FROM users', $this->adapter::QUERY_MODE_EXECUTE)->toArray();
+            $cols = array_flip(array_map(function ($c) { return strtolower($c['Field']); }, $meta));
+        } catch (Throwable $e) {
+            $cols = [];
+        }
+        if (isset($cols['first_name']) || isset($cols['last_name'])) {
+            self::$usersNameExprCache = "CONCAT_WS(' ', u.first_name, u.last_name)";
+        } elseif (isset($cols['name'])) {
+            self::$usersNameExprCache = 'u.name';
+        } else {
+            self::$usersNameExprCache = "CONCAT('User #', u.id)";
+        }
+        return self::$usersNameExprCache;
+    }
+
+    private function usersLoginExpr()
+    {
+        // Adjust column name if your users table's login field isn't `email`.
+        return 'u.email';
+    }
+
+    public function fetchEventLogFeed($parameters)
+    {
+        $page = isset($parameters['page']) ? max(1, (int) $parameters['page']) : 1;
+        $pageSize = isset($parameters['pageSize']) ? (int) $parameters['pageSize'] : 25;
+        $pageSize = max(5, min(200, $pageSize));
+        $offset = ($page - 1) * $pageSize;
+
+        $search = trim($parameters['search'] ?? '');
+        $eventType = trim($parameters['eventType'] ?? '');
+        $startDate = '';
+        $endDate = '';
+        if (!empty($parameters['startDate']) && !empty($parameters['endDate'])) {
+            $startDate = CommonService::isoDateFormat($parameters['startDate']);
+            $endDate = CommonService::isoDateFormat($parameters['endDate']);
+        }
+
+        $sql = new Sql($this->adapter);
+        $nameExpr = $this->usersNameExpr();
+        $loginExpr = $this->usersLoginExpr();
+
+        $select = $sql->select()
+            ->from(['el' => 'event_log'])
+            ->columns([
+                'event_type', 'action', 'resource_name', 'subject', 'date_time',
+                'ip_address', 'user_agent', 'session_hash',
+                'request_id', 'request_uri', 'request_method', 'platform', 'actor',
+            ])
+            ->join(
+                ['u' => 'users'],
+                'u.id = el.actor',
+                ['actor_name' => new \Zend\Db\Sql\Expression($nameExpr), 'actor_login' => new \Zend\Db\Sql\Expression($loginExpr)],
+                \Zend\Db\Sql\Select::JOIN_LEFT
+            );
+
+        if ($eventType !== '') {
+            $select->where(['el.event_type' => $eventType]);
+        }
+        if ($startDate !== '' && $endDate !== '') {
+            $select->where("el.date_time >= '{$startDate}' AND el.date_time <= '{$endDate} 23:59:59'");
+        }
+        if ($search !== '') {
+            $q = $this->adapter->platform->quoteValue('%' . $search . '%');
+            $select->where(
+                "el.action LIKE {$q} OR el.resource_name LIKE {$q} OR el.event_type LIKE {$q} "
+                . "OR {$nameExpr} LIKE {$q} OR {$loginExpr} LIKE {$q}"
+            );
+        }
+
+        $countSelect = clone $select;
+        $countSelect->reset(\Zend\Db\Sql\Select::COLUMNS);
+        $countSelect->columns(['c' => new \Zend\Db\Sql\Expression('COUNT(*)')]);
+        $total = (int) $this->adapter->query($sql->buildSqlString($countSelect), $this->adapter::QUERY_MODE_EXECUTE)->current()['c'];
+
+        $select->order('el.date_time DESC')->limit($pageSize)->offset($offset);
+        $rows = $this->adapter->query($sql->buildSqlString($select), $this->adapter::QUERY_MODE_EXECUTE);
+
+        $items = [];
+        foreach ($rows as $row) {
+            $ts = strtotime($row['date_time']);
+            $userName = trim($row['actor_name'] ?? '') !== '' ? $row['actor_name'] : 'System';
+            $items[] = [
+                'action' => CommonService::escapeHtml($row['action']),
+                'eventType' => $row['event_type'],
+                'userName' => CommonService::escapeHtml($userName),
+                'userInitials' => $this->initialsFor($userName),
+                'userLogin' => $row['actor_login'] ?? '',
+                'ipAddress' => $row['ip_address'] ?? '',
+                'userAgent' => $row['user_agent'] ?? '',
+                'sessionHash' => $row['session_hash'] ?? '',
+                'platform' => $row['platform'] ?? '',
+                'requestId' => $row['request_id'] ?? '',
+                'requestMethod' => $row['request_method'] ?? '',
+                'requestUri' => $row['request_uri'] ?? '',
+                'datetime' => $ts ? date('d-M-Y', $ts) : '',
+                'time' => $ts ? date('g:i a', $ts) : '',
+                'dateKey' => $ts ? date('Y-m-d', $ts) : '',
+                'dateLabel' => $ts ? date('D, d M Y', $ts) : '',
+            ];
+        }
+
+        return [
+            'page' => $page,
+            'pageSize' => $pageSize,
+            'total' => $total,
+            'totalPages' => $pageSize > 0 ? (int) ceil($total / $pageSize) : 1,
+            'items' => $items,
+        ];
+    }
+
+    private function initialsFor($name)
+    {
+        $name = trim((string) $name);
+        if ($name === '') return '?';
+        $parts = preg_split('/\s+/', $name);
+        $out = '';
+        foreach ($parts as $p) {
+            if ($p !== '' && ctype_alpha($p[0])) $out .= strtoupper($p[0]);
+            if (strlen($out) >= 2) break;
+        }
+        return $out !== '' ? $out : strtoupper($name[0]);
     }
 
     public function fetchFeed(array $params): array

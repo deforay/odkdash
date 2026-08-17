@@ -24,7 +24,6 @@ class SpiFormVer6Table extends AbstractTableGateway
 
     protected $table = 'spi_form_v_6';
     protected $adapter;
-    private static $sessionHashColCache = null;
 
     public function __construct(Adapter $adapter)
     {
@@ -32,22 +31,6 @@ class SpiFormVer6Table extends AbstractTableGateway
     }
 
 
-    private function hasSessionHashColumn()
-    {
-        if (self::$sessionHashColCache !== null) {
-            return self::$sessionHashColCache;
-        }
-        try {
-            $result = $this->adapter->query(
-                "SHOW COLUMNS FROM `spi_form_v_6` LIKE 'session_hash'",
-                $this->adapter::QUERY_MODE_EXECUTE
-            );
-            self::$sessionHashColCache = (count($result->toArray()) > 0);
-            return self::$sessionHashColCache;
-        } catch (Throwable $e) {
-            return false; // don't poison the cache on a transient failure
-        }
-    }
     public function getAllLabels()
     {
         $dbAdapter = $this->adapter;
@@ -1902,10 +1885,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
-        if (isset($parameters['sessionHash']) && trim($parameters['sessionHash']) != '' && $this->hasSessionHashColumn()) {
-            $sessionHashVal = $dbAdapter->platform->quoteValue(trim($parameters['sessionHash']));
-            $sQuery = $sQuery->where("spiv6.session_hash={$sessionHashVal}");
-        }
         $sQuery = $this->applyV6LocationScope($sQuery, $parameters, $loginContainer);
 
         if (!empty($loginContainer->token)) {
@@ -1979,10 +1958,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
-        if (isset($parameters['sessionHash']) && trim($parameters['sessionHash']) != '' && $this->hasSessionHashColumn()) {
-            $sessionHashVal = $dbAdapter->platform->quoteValue(trim($parameters['sessionHash']));
-            $tQuery = $tQuery->where("spiv6.session_hash={$sessionHashVal}");
-        }
         $tQuery = $this->applyV6LocationScope($tQuery, $parameters, $loginContainer);
 
         if (!empty($loginContainer->token)) {
@@ -2048,14 +2023,6 @@ class SpiFormVer6Table extends AbstractTableGateway
              * verbatim from the ODK submission, so a crafted facility name would run
              * as script for everyone viewing the list. */
             $facilityName = CommonService::escapeHtml(trim((string) $aRow['facilityname']));
-            $sessionPill = '';
-            if ($this->hasSessionHashColumn() && !empty($aRow['session_hash'])) {
-                $sh = CommonService::escapeHtml($aRow['session_hash']);
-                $sessionPill = ' <span class="session-pill" data-session="' . $sh . '" '
-                    . 'title="Click to filter by this session" '
-                    . 'onclick="filterBySession(\'' . $sh . '\'); event.stopPropagation();">'
-                    . '<span class="icon-fingerprint"></span>' . substr($sh, 0, 8) . '</span>';
-            }
             if (empty($aRow['facility'])) {
                 /* Carries no facility link, so location filters cannot place it. It is
                  * listed anyway rather than hidden; assigning a facility on the edit
@@ -2063,7 +2030,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = ($facilityName != '' ? $facilityName . ' ' : '')
                     . '<span class="label label-warning" title="Not linked to a facility, so location filters cannot see it. Edit the audit to assign one.">Unassigned facility</span>';
             } else {
-                $row[] = $facilityName . $sessionPill;
+                $row[] = $facilityName;
             }
 
             $row[] = CommonService::escapeHtml($aRow['auditroundno']);
