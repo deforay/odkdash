@@ -17,6 +17,13 @@
 # the setup script, and on the servers where odkdash runs alongside ept,
 # ept-update already tunes them.
 #
+# Databases are dumped with the app's own db-tools where vendor/ has it, which
+# means a .sql.zst archive restorable with:
+#
+#   (cd /var/www/odkdash && vendor/bin/db-tools restore /var/odkdash-backup/db/NAME.sql.zst)
+#
+# Trees too old to carry db-tools fall back to mysqldump and a .sql.gz.
+#
 # Usage:
 #   sudo bin/upgrade.sh [-A] [-p PATH] [-b] [-f] [-y]
 #
@@ -159,9 +166,11 @@ fetch_url() {
     fi
 }
 
-# The merged config decides which database an instance talks to. Mirror the
-# app's own glob and merge order rather than guessing from a single file.
-resolve_db_name() {
+# The merged config decides which database an instance talks to, and with which
+# credentials. Mirror the app's own glob and merge order rather than guessing
+# from a single file. Emits name, user, password, host and port, one per line,
+# so a value containing spaces survives the round trip.
+resolve_db_config() {
     (cd "$app_path" && as_web php -r '
         $files = glob("config/autoload/{{,*.}global,{,*.}local}.php", GLOB_BRACE) ?: [];
         $db = [];
@@ -171,12 +180,117 @@ resolve_db_name() {
                 $db = array_merge($db, $conf["db"]);
             }
         }
-        if (!empty($db["dsn"]) && preg_match("/dbname=([^;]+)/", $db["dsn"], $m)) {
-            echo trim($m[1]);
-        } elseif (!empty($db["data-base-name"])) {
-            echo trim($db["data-base-name"]);
+        $name = $host = $port = "";
+        if (!empty($db["dsn"])) {
+            foreach (["dbname" => "name", "host" => "host", "port" => "port"] as $key => $var) {
+                if (preg_match("/" . $key . "=([^;]+)/", $db["dsn"], $m)) {
+                    $$var = trim($m[1]);
+                }
+            }
+        }
+        if ($name === "" && !empty($db["data-base-name"])) $name = trim($db["data-base-name"]);
+        if ($host === "" && !empty($db["data-base-host"])) $host = trim($db["data-base-host"]);
+        if ($port === "" && !empty($db["port"])) $port = trim($db["port"]);
+        foreach ([$name, $db["username"] ?? "", $db["password"] ?? "", $host, $port] as $value) {
+            echo str_replace(["\r", "\n"], "", (string) $value), "\n";
         }
     ' 2>/dev/null)
+}
+
+# mysqldump needs a password on most boxes; putting it on the command line would
+# expose it in ps, so it goes in a 0600 option file instead. Option-file values
+# are quoted because a password may contain # or ; which otherwise start a
+# comment.
+write_defaults_file() {
+    local user="$1" pass="$2" host="$3" port="$4" escaped
+
+    defaults_file="$(mktemp)"
+    chmod 600 "$defaults_file"
+    {
+        printf '[client]\n'
+        escaped="${user//\\/\\\\}"; printf 'user="%s"\n' "${escaped//\"/\\\"}"
+        if [ -n "$pass" ]; then
+            escaped="${pass//\\/\\\\}"; printf 'password="%s"\n' "${escaped//\"/\\\"}"
+        fi
+        [ -n "$host" ] && printf 'host="%s"\n' "$host"
+        [ -n "$port" ] && printf 'port=%s\n' "$port"
+    } >"$defaults_file"
+}
+
+# db-tools is the app's own backup tool: db-tools.php reads the credentials out
+# of config/autoload, and the archive comes out zstd-compressed where zstd is
+# installed (pigz or gzip otherwise). It writes its own filename into the output
+# directory, so the path is read back from what it prints.
+#
+# Encryption is on by default and retention would prune older archives; an
+# upgrade backup has to be restorable without a key and must never delete a
+# previous one, hence --no-encrypt and --retention=0.
+db_tools_dump() {
+    local output status path
+
+    [ -f "$app_path/vendor/bin/db-tools" ] && [ -f "$app_path/db-tools.php" ] || return 1
+
+    # As root, unlike the rest of the run: $BACKUP_ROOT is root-owned, and the
+    # ownership sweep later in the upgrade tidies anything left in the app tree.
+    output="$(cd "$app_path" && php vendor/bin/db-tools backup \
+        --output-dir="$BACKUP_ROOT/db" --no-encrypt --retention=0 \
+        --no-interaction 2>&1)"
+    status=$?
+    printf '%s\n' "$output" >>"$log_file"
+    [ $status -eq 0 ] || return 1
+
+    path="$(printf '%s\n' "$output" | grep -oE '/[^[:space:]]+\.sql\.(zst|gz|zip)' | tail -1)"
+    [ -n "$path" ] && [ -f "$path" ] || return 1
+
+    db_backup="$path"
+}
+
+# mysqldump, for trees whose vendor/ predates db-tools — the backup runs before
+# composer install, so the new source has not landed yet. Root over the unix
+# socket is what MIGRATION.md uses and needs no credentials, but it only
+# authenticates where root uses auth_socket. The app user always reaches its own
+# database, though it may lack PROCESS (tablespaces) and the rights to read
+# routines and triggers, hence the narrowing retries.
+mysqldump_fallback() {
+    local rc=1
+    local -a attempt
+
+    db_backup="${BACKUP_ROOT}/db/${db_name}-${stamp}.sql.gz"
+
+    if mysqldump --opt --routines --triggers --databases "$db_name" 2>>"$log_file" | gzip >"$db_backup"; then
+        return 0
+    fi
+
+    [ -n "$db_user" ] || { rm -f "$db_backup"; return 1; }
+    say info "Root has a password here; retrying the dump as ${db_user} from config/autoload."
+    write_defaults_file "$db_user" "$db_pass" "$db_host" "$db_port"
+
+    attempt=(--routines --triggers --no-tablespaces)
+    while :; do
+        if mysqldump --defaults-file="$defaults_file" --opt "${attempt[@]}" \
+            --databases "$db_name" 2>>"$log_file" | gzip >"$db_backup"; then
+            [ ${#attempt[@]} -eq 1 ] &&
+                say warning "Dumped without routines or triggers: ${db_user} may not read them."
+            rc=0
+            break
+        fi
+        # Drop --routines --triggers and try once more; those are the privileges
+        # an application user is most often denied.
+        [ ${#attempt[@]} -gt 1 ] || break
+        attempt=(--no-tablespaces)
+    done
+
+    # The option file holds the password in clear, so it does not outlive the dump.
+    rm -f "$defaults_file"
+    defaults_file=""
+    [ $rc -eq 0 ] || rm -f "$db_backup"
+    return $rc
+}
+
+# Sets db_backup to whatever was written.
+dump_database() {
+    db_tools_dump && return 0
+    mysqldump_fallback
 }
 
 # What version an instance is on. A checkout knows from git; an rsynced tree
@@ -274,7 +388,9 @@ upgrade_instance() {
     app_path="$1"
     local position="$2" total="$3"
     local deploy_mode ref_before ref_after lock_before branch remote_url dirty
-    local config_stash config_backup db_name db_backup folder_backup
+    local config_stash config_backup db_backup folder_backup
+    # Dynamically scoped, so dump_database and write_defaults_file see them.
+    local db_name db_user db_pass db_host db_port defaults_file=""
 
     if [ -e "$app_path/.git" ]; then
         deploy_mode="git"
@@ -295,22 +411,21 @@ upgrade_instance() {
         { fail "Could not archive config/autoload for ${app_path}."; return 1; }
     say success "Configuration backed up to ${config_backup}"
 
-    db_name="$(resolve_db_name)"
+    { read -r db_name; read -r db_user; read -r db_pass; read -r db_host; read -r db_port; } < <(resolve_db_config)
     [ -n "$db_name" ] || say warning "Could not resolve the database name from config/autoload."
 
     if [ "$skip_backups" = false ] && [ -n "$db_name" ]; then
-        db_backup="${BACKUP_ROOT}/db/${db_name}-${stamp}.sql.gz"
-        if [ -f "$db_backup" ]; then
-            # Two instances sharing one database, which MIGRATION.md documents.
+        # Two instances sharing one database, which MIGRATION.md documents. The
+        # archive name is db-tools' to choose, so track what has been dumped
+        # rather than testing for a path this run would have picked.
+        if printf '%s\n' "${dumped_dbs[@]}" | grep -Fxq "$db_name"; then
             say info "Database ${db_name} already dumped this run."
         else
             print info "Dumping database ${db_name}..."
-            # Root over the unix socket, the same way MIGRATION.md dumps it — no
-            # credentials to dig out of the config.
-            if mysqldump --opt --routines --triggers --databases "$db_name" 2>>"$log_file" | gzip >"$db_backup"; then
+            if dump_database; then
+                dumped_dbs+=("$db_name")
                 say success "Database backed up to ${db_backup} ($(du -h "$db_backup" | cut -f1))"
             else
-                rm -f "$db_backup"
                 say warning "Database dump failed. Check ${log_file}."
                 ask_yes_no "Continue upgrading ${app_path} without a database backup" "no" ||
                     { fail "Skipped ${app_path}: no database backup."; return 1; }
@@ -575,6 +690,7 @@ fi
 
 declare -a upgraded=()
 declare -a failed=()
+declare -a dumped_dbs=()
 
 for i in "${!app_paths[@]}"; do
     if upgrade_instance "${app_paths[$i]}" "$((i + 1))" "${#app_paths[@]}"; then
