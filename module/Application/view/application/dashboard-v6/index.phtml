@@ -1783,18 +1783,22 @@ $userMappingType = $sessionLogin->userMappingType;
 			endDate: moment(),
 			maxDate: moment(),
 			ranges: {
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract('days', 1), moment().subtract('days', 1)],
-				'Last 7 Days': [moment().subtract('days', 6), moment()],
-				'Last 30 Days': [moment().subtract('days', 29), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
+				'<?= $this->translate('Today'); ?>': [moment(), moment()],
+				'<?= $this->translate('Yesterday'); ?>': [moment().subtract('days', 1), moment().subtract('days', 1)],
+				'<?= $this->translate('Last 7 Days'); ?>': [moment().subtract('days', 6), moment()],
+				'<?= $this->translate('Last 30 Days'); ?>': [moment().subtract('days', 29), moment()],
+				'<?= $this->translate('This Month'); ?>': [moment().startOf('month'), moment().endOf('month')],
+				'<?= $this->translate('Last Month'); ?>': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')],
+				'<?= $this->translate('Last 6 Months'); ?>': [moment().subtract('months', 6), moment()],
+				'<?= $this->translate('Last 12 Months'); ?>': [moment().subtract('months', 12), moment()],
+				'<?= $this->translate('Last 18 Months'); ?>': [moment().subtract('months', 18), moment()],
+				'<?= $this->translate('Last 2 Years'); ?>': [moment().subtract('years', 2), moment()]
 			},
 		},
-			function (start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+		function (start, end) {
+			startDate = start.format('YYYY-MM-DD');
+			endDate = end.format('YYYY-MM-DD');
+		});
 		<?php
 		$startDate = date('d-M-Y');
 		$endDate = date('d-M-Y', strtotime('-30 days', strtotime($startDate)));
