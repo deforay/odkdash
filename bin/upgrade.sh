@@ -118,12 +118,28 @@ run_git() {
     git -c safe.directory='*' -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
 }
 
-# An odkdash tree, as opposed to any other Laminas app sharing the server.
+# An odkdash tree, as opposed to any other Laminas app sharing the server. The
+# composer.json name is the discriminating marker. bin/migrate is deliberately
+# NOT required: it only landed in May 2026, and installs old enough to lack it
+# are precisely the ones that need upgrading. The deploy puts it there.
 is_odkdash_path() {
     [ -f "$1/composer.json" ] &&
     grep -q '"deforay/odkdash"' "$1/composer.json" 2>/dev/null &&
-    [ -f "$1/bin/migrate" ] &&
     [ -f "$1/public/index.php" ]
+}
+
+# Which part of the check failed, so a rejected path says why rather than
+# leaving the operator to guess at three conditions.
+why_not_odkdash() {
+    if [ ! -f "$1/composer.json" ]; then
+        echo "no composer.json there"
+    elif ! grep -q '"deforay/odkdash"' "$1/composer.json" 2>/dev/null; then
+        echo "composer.json is not deforay/odkdash"
+    elif [ ! -f "$1/public/index.php" ]; then
+        echo "no public/index.php"
+    else
+        echo "unknown reason"
+    fi
 }
 
 checksum() {
@@ -530,7 +546,8 @@ if [ "$upgrade_all" = true ]; then
 else
     target_path="${target_path:-/var/www/odkdash}"
     target_path="$(cd "$target_path" 2>/dev/null && pwd)" || die "Path not found: ${target_path}"
-    is_odkdash_path "$target_path" || die "${target_path} does not look like an odkdash installation."
+    is_odkdash_path "$target_path" ||
+        die "${target_path} does not look like an odkdash installation ($(why_not_odkdash "$target_path"))."
     app_paths=("$target_path")
 fi
 
