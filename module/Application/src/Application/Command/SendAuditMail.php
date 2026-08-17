@@ -17,6 +17,11 @@ class SendAuditMail extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->setDescription('Send queued audit notification mail for v6 forms');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commonService->sendAuditMail();

@@ -19,6 +19,11 @@ class SyncCentralV3 extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->setDescription('Sync ODK Central spirt (v3) submissions');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Long-running CLI: lift web defaults so a big backlog doesn't trip

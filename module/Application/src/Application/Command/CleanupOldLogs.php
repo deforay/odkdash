@@ -38,6 +38,8 @@ class CleanupOldLogs extends Command
 
     protected function configure(): void
     {
+        $this->setDescription('Prune old api_logs and form_dump rows, and their body files');
+
         $this->addOption('days', null, InputOption::VALUE_REQUIRED, 'Delete rows older than N days', (string) self::DEFAULT_DAYS);
         $this->addOption('api-logs-floor', null, InputOption::VALUE_REQUIRED, 'Minimum api_logs rows to retain', (string) self::API_LOGS_FLOOR);
         $this->addOption('form-dump-floor', null, InputOption::VALUE_REQUIRED, 'Minimum form_dump rows to retain', (string) self::FORM_DUMP_FLOOR);

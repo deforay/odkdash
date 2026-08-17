@@ -18,6 +18,11 @@ class SendTempMail extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->setDescription('Flush pending outbound mail from the queue');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->commonService->sendTempMail();

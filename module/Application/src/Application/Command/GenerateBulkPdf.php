@@ -17,6 +17,11 @@ class GenerateBulkPdf extends Command
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this->setDescription('Generate queued bulk PDF exports for v3 and v6 forms');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->odkFormService->getDownloadDataList();
