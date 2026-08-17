@@ -340,9 +340,6 @@ return array(
         ),
     ),
     'service_manager' => [
-        'abstract_factories' => [
-            'Laminas\Cache\Service\StorageCacheAbstractServiceFactory',
-        ],
         'factories' => [
             'DbAdapter' => function ($container) {
                 // Configuration for the database connection
