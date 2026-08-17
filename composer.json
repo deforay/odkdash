@@ -45,15 +45,34 @@
     },
     "scripts": {
         "serve": "php -S 0.0.0.0:8080 -t public",
-        "migrate": "php bin/migrate",
-        "migrate-status": "php bin/migrate --status",
-        "migrate-dry-run": "php bin/migrate --dry-run"
+        "migrate": "@php bin/migrate",
+        "migrate-status": "@php bin/migrate --status",
+        "migrate-dry-run": "@php bin/migrate --dry-run",
+        "housekeeping": "@php bin/console cleanup-old-logs",
+        "audits-unlinked": "@php bin/console audits:unlinked",
+        "cron": "crunz schedule:run",
+        "cron-list": "crunz schedule:list",
+        "post-update": [
+            "@php bin/migrate || true",
+            "@php bin/console cleanup-old-logs || true"
+        ],
+        "refresh": [
+            "git refresh",
+            "@composer install",
+            "@composer post-update"
+        ]
     },
     "scripts-descriptions": {
         "serve": "Start the built-in PHP web server and serve the application.",
         "migrate": "Apply pending database migrations.",
         "migrate-status": "Show current DB version and pending migrations.",
-        "migrate-dry-run": "Preview pending migration statements without executing."
+        "migrate-dry-run": "Preview pending migration statements without executing.",
+        "housekeeping": "Prune old api_logs and form_dump rows, and their body files.",
+        "audits-unlinked": "List v6 audits with no facility link (hidden from location-mapped users).",
+        "cron": "Run due scheduled tasks (crunz). Meant to be called every minute from the crontab.",
+        "cron-list": "List the scheduled tasks defined in tasks/.",
+        "post-update": "Post-deploy steps: apply migrations, then housekeeping. Each is allowed to fail without aborting the rest.",
+        "refresh": "Full update: rebase onto origin, reinstall dependencies, then run post-update."
     },
     "config": {
         "allow-plugins": {
