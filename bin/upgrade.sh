@@ -482,6 +482,17 @@ upgrade_instance() {
     rm -rf "$config_stash"
     say success "This deployment's config/autoload restored over the new tree."
 
+    # global.php carries db.driver and the DSN, and is gitignored — instances
+    # that were updated by hand with git lost it when it became global.dist.php.
+    # Seed it so migrate fails on a wrong DB name rather than a missing driver.
+    if [ ! -f "$app_path/config/autoload/global.php" ] &&
+       [ -f "$app_path/config/autoload/global.dist.php" ]; then
+        cp -a "$app_path/config/autoload/global.dist.php" \
+              "$app_path/config/autoload/global.php" ||
+            { fail "Could not seed config/autoload/global.php for ${app_path}."; return 1; }
+        say warning "config/autoload/global.php was missing; copied from global.dist.php. Check the DSN's dbname before trusting it."
+    fi
+
     ref_after="$(installed_ref)"
     if [ "$ref_before" = "$ref_after" ]; then
         say info "Already up to date at ${ref_after}."

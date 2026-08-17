@@ -52,6 +52,26 @@ $serviceManager = new ServiceManager();
 $serviceManager->setService('ApplicationConfig', $configuration);
 $serviceManager->get('ModuleManager')->loadModules();
 
+// db.driver and the DSN live in config/autoload/global.php, which is gitignored
+// and copied from global.dist.php during setup. When it is absent the adapter
+// factory throws "createDriver expects a driver key" with a Laminas stack trace
+// that says nothing about the real cause, so check for it here instead.
+$mergedDb = $serviceManager->get('config')['db'] ?? [];
+if (!is_array($mergedDb) || !isset($mergedDb['driver'])) {
+    $configDir = dirname(__DIR__) . '/config/autoload';
+    fwrite(STDERR, "Error: no database driver in the merged config.\n");
+    if (!is_file($configDir . '/global.php')) {
+        fwrite(STDERR, "  config/autoload/global.php is missing. It holds db.driver and the DSN,\n");
+        fwrite(STDERR, "  and is gitignored, so a git update or fresh clone will not create it.\n");
+        fwrite(STDERR, "  Copy the template and set the database name:\n");
+        fwrite(STDERR, "    cp config/autoload/global.dist.php config/autoload/global.php\n");
+    } else {
+        fwrite(STDERR, "  config/autoload/global.php exists but defines no 'driver' key under 'db'.\n");
+        fwrite(STDERR, "  Compare it against config/autoload/global.dist.php.\n");
+    }
+    exit(1);
+}
+
 /** @var Adapter $adapter */
 $adapter = $serviceManager->get(Adapter::class);
 
