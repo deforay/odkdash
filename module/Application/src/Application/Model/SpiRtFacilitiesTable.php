@@ -368,10 +368,16 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = [];
 
-            $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(\'' . $aRow['facility_id'] . '\',\'facilityId\');getAuditData(\'' . $aRow['facility_id'] . '\',\'facilityid\');">' . $aRow['facility_id'] . '</a>';
-            $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(\'' . $aRow['facility_name'] . '\',\'facilityName\');getAuditData(\'' . $aRow['facility_name'] . '\',\'facilityname\');">' . $aRow['facility_name'] . '</a>';
-            $row[] = $aRow['email'];
-            $row[] = $aRow['contact_person'];
+            /* Both of these go into a JS argument list inside an onclick, so hand
+             * quoting them broke on any facility whose name carries an apostrophe.
+             * json_encode makes the JS string literal, escapeHtml makes that safe
+             * inside the attribute, and the browser undoes the second on the way in. */
+            $facilityId = CommonService::escapeHtml(json_encode((string) $aRow['facility_id']));
+            $facilityName = CommonService::escapeHtml(json_encode((string) $aRow['facility_name']));
+            $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(' . $facilityId . ',\'facilityId\');getAuditData(' . $facilityId . ',\'facilityid\');">' . CommonService::escapeHtml($aRow['facility_id']) . '</a>';
+            $row[] = '<a href="javascript:void(0)" onclick="getTestingPoint(' . $facilityName . ',\'facilityName\');getAuditData(' . $facilityName . ',\'facilityname\');">' . CommonService::escapeHtml($aRow['facility_name']) . '</a>';
+            $row[] = CommonService::escapeHtml($aRow['email']);
+            $row[] = CommonService::escapeHtml($aRow['contact_person']);
             if ($update) {
                 $edit = '<a href="/facility/edit/' . base64_encode($aRow['id']) . '" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
                 $row[] = $edit;

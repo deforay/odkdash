@@ -180,9 +180,9 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\ProvincesController', 'edit');
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = ucwords($aRow['geo_name']);
-            $row[] = $aRow['geo_code'];
-            $row[] = ucwords($aRow['geo_status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['geo_name']));
+            $row[] = CommonService::escapeHtml($aRow['geo_code']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['geo_status']));
             if ($update) {
                 $row[] = '<a href="/provinces/edit/' . base64_encode($aRow['geo_id']) . '" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
             }
@@ -383,10 +383,10 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\ProvincesController', 'edit');
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = ucwords($aRow['geo_name']);
-            $row[] = $aRow['geo_code'];
-            $row[] = ucwords($aRow['province']);
-            $row[] = ucwords($aRow['geo_status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['geo_name']));
+            $row[] = CommonService::escapeHtml($aRow['geo_code']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['province']));
+            $row[] = CommonService::escapeHtml(ucwords($aRow['geo_status']));
             if ($update) {
                 $row[] = '<a href="/district/edit/' . base64_encode($aRow['geo_id']) . '" style="margin-right: 2px;" title="Edit"><i class="fa fa-pencil"> Edit</i></a>';
             }

@@ -6,6 +6,7 @@ use Laminas\Db\Sql\Sql;
 use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
 use Application\Model\BaseTableGateway;
+use Application\Service\CommonService;
 
 class RolesTable extends BaseTableGateway
 {
@@ -172,9 +173,9 @@ class RolesTable extends BaseTableGateway
         $update = (bool) $acl->isAllowed($role, 'Application\Controller\RolesController', 'edit');
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = ucwords($aRow['role_name']);
-            $row[] = $aRow['role_code'];
-            $row[] = ucwords($aRow['status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['role_name']));
+            $row[] = CommonService::escapeHtml($aRow['role_code']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             if ($update) {
                 if ($aRow['role_code'] === 'SA') {
                     // Super Admin is locked — show a non-actionable indicator

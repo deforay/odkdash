@@ -185,9 +185,11 @@ class EventLogTable extends AbstractTableGateway
         );
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = ucwords($aRow['event_type']);
-            $row[] = ucwords($aRow['action']);
-            $row[] = ucwords($aRow['resource_name']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['event_type']));
+            $row[] = CommonService::escapeHtml(ucwords($aRow['action']));
+            /* resource_name is whatever the logged record was called — a facility
+             * name reaches here straight from an ODK submission. */
+            $row[] = CommonService::escapeHtml(ucwords($aRow['resource_name']));
             $row[] = ucwords(date('d-M-Y H:i:s', strtotime($aRow['date_time'])));
             $output['aaData'][] = $row;
         }

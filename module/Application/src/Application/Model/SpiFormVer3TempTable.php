@@ -165,16 +165,16 @@ class SpiFormVer3TempTable extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = [];
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
-            $row[] = '<input type="checkbox" class="checkSpiv3Data" name="chk[]" id="chk' . $aRow['id'] . '"  value="' . $aRow['id'] . '" onclick="getValidateId(this);"  />';
-            $row[] = $aRow['facilityname'];
-            $row[] = $aRow['auditroundno'];
+            $row[] = '<input type="checkbox" class="checkSpiv3Data" name="chk[]" id="chk' . (int) $aRow['id'] . '"  value="' . (int) $aRow['id'] . '" onclick="getValidateId(this);"  />';
+            $row[] = CommonService::escapeHtml($aRow['facilityname']);
+            $row[] = CommonService::escapeHtml($aRow['auditroundno']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-            $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-            $row[] = $aRow['testingpointtype'];
-            $row[] = $aRow['level'] . $level;
-            $row[] = $aRow['affiliation'];
+            $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
+            $row[] = CommonService::escapeHtml($aRow['level'] . $level);
+            $row[] = CommonService::escapeHtml($aRow['affiliation']);
             $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-            $row[] = ucwords($aRow['status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             $output['aaData'][] = $row;
         }
         //get count of exist data

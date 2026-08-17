@@ -141,8 +141,8 @@ class GlobalTable extends AbstractTableGateway
         );
         foreach ($rResult as $aRow) {
             $row = [];
-            $row[] = ucwords($aRow['display_name']);
-            $row[] = $aRow['global_value'];
+            $row[] = CommonService::escapeHtml(ucwords($aRow['display_name']));
+            $row[] = CommonService::escapeHtml($aRow['global_value']);
             $output['aaData'][] = $row;
         }
         return $output;

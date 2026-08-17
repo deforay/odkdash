@@ -436,9 +436,9 @@ class UsersTable extends AbstractTableGateway
         foreach ($rResult as $aRow) {
             $row = [];
 
-            $row[] = ucwords($aRow['first_name'] . " " . $aRow['last_name']);
-            $row[] = $aRow['email'];
-            $row[] = ucwords($aRow['status']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['first_name'] . " " . $aRow['last_name']));
+            $row[] = CommonService::escapeHtml($aRow['email']);
+            $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             $actionStr = '';
             if ($update) {
                 $editStr = '<a href="/users/edit/' . base64_encode($aRow['id']) . '" class="btn btn-info btn-xs" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
