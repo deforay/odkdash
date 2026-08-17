@@ -2003,15 +2003,18 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row['DT_RowId'] = $aRow['id'];
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
             $row[] = '';
+            /* Escaped because DataTables writes this cell as HTML and the name arrives
+             * verbatim from the ODK submission, so a crafted facility name would run
+             * as script for everyone viewing the list. */
+            $facilityName = htmlspecialchars(trim((string) $aRow['facilityname']), ENT_QUOTES, 'UTF-8');
             if (empty($aRow['facility'])) {
                 /* Carries no facility link, so location filters cannot place it. It is
                  * listed anyway rather than hidden; assigning a facility on the edit
                  * screen clears the flag. Blank-named audits show the flag alone. */
-                $facilityName = trim((string) $aRow['facilityname']);
                 $row[] = ($facilityName != '' ? $facilityName . ' ' : '')
                     . '<span class="label label-warning" title="Not linked to a facility, so location filters cannot see it. Edit the audit to assign one.">Unassigned facility</span>';
             } else {
-                $row[] = $aRow['facilityname'];
+                $row[] = $facilityName;
             }
 
             $row[] = $aRow['auditroundno'];
@@ -2054,6 +2057,15 @@ class SpiFormVer6Table extends AbstractTableGateway
         //get duplicate value
         $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
+        /* Audits with no facility link, counted across the whole instance rather than
+         * the current filters, the way the duplicate count works. They are the rows
+         * `audits:unlinked` reports; the banner gives them a way in from the UI. */
+        $ulResult = $dbAdapter->query(
+            'SELECT COUNT(*) AS c FROM `spi_form_v_6` spiv6
+              WHERE spiv6.status != "deleted" AND ' . self::UNLINKED_AUDIT,
+            $dbAdapter::QUERY_MODE_EXECUTE
+        )->current();
+
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
         $output['levelZeroCount'] = count($levelZero);
         $output['levelOneCount'] = count($levelOne);
@@ -2062,6 +2074,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $output['levelFourCount'] = count($levelFour);
         $output['eDate'] = $eResult['assesmentofaudit'];
         $output['duplicate'] = count($dpResult);
+        $output['unassigned'] = (int) ($ulResult['c'] ?? 0);
         return $output;
     }
 
@@ -2070,7 +2083,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         // echo "sj";die;
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`,`testingpointname`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function fetchAllSubmissionsDatas($parameters, $acl)

@@ -60,11 +60,103 @@ $userMappingType = $sessionLogin->userMappingType;
   </div>
 
   <div class="main-content">
+    <!-- Data problems that need a human, gathered above the listing instead of
+         scattered as coloured buttons. Each row says what is wrong, what it costs,
+         and how to fix it. Rows and the card hide themselves when their count is
+         zero, so a clean instance shows nothing here at all. -->
+    <div id="needsAttention" class="needs-attention" style="display:none;">
+      <div class="na-header">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <?= $this->translate('Needs attention'); ?>
+        <span class="na-count" id="naCount">0</span>
+      </div>
+
+      <?php
+      /* The problem is shown to everyone who can open the page — a viewer who
+       * cannot see it cannot report it either. Only the action is gated, on the
+       * privilege that actually performs the fix, and the closing sentence changes
+       * so a viewer is told who to ask rather than to do something they cannot. */
+      $canEditAudits = $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit');
+      $canResolveDuplicates = $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'duplicate');
+      ?>
+
+      <div class="na-item" id="naUnassigned" style="display:none;">
+        <?php if ($canEditAudits) { ?>
+          <a href="javascript:void(0);" onclick="showUnassignedAudits();" class="na-action">
+            &rarr; <?= $this->translate('Show them'); ?>
+          </a>
+        <?php } else { ?>
+          <span class="na-readonly"><?= $this->translate('needs an editor'); ?></span>
+        <?php } ?>
+        <div class="na-icon"><i class="fa fa-hospital-o" aria-hidden="true"></i></div>
+        <div class="na-body">
+          <div class="na-title">
+            <span id="naUnassignedCount">0</span> <span id="naUnassignedLabel"></span>
+          </div>
+          <div class="na-desc">
+            <?= $this->translate('Location filters cannot place them, so they stay invisible to anyone mapped to a country, province or district.'); ?>
+            <?= $canEditAudits
+              ? $this->translate('Open each audit and assign its facility.')
+              : $this->translate('Someone who can edit audits needs to assign each one a facility.'); ?>
+          </div>
+        </div>
+      </div>
+
+      <div class="na-item" id="naDuplicates" style="display:none;">
+        <?php if ($canResolveDuplicates) { ?>
+          <a href="/spi-v6/duplicate" class="na-action">
+            &rarr; <?= $this->translate('Review & resolve'); ?>
+          </a>
+        <?php } else { ?>
+          <span class="na-readonly"><?= $this->translate('needs an editor'); ?></span>
+        <?php } ?>
+        <div class="na-icon"><i class="fa fa-files-o" aria-hidden="true"></i></div>
+        <div class="na-body">
+          <div class="na-title">
+            <span id="naDuplicatesCount">0</span> <span id="naDuplicatesLabel"></span>
+          </div>
+          <div class="na-desc">
+            <?= $this->translate('The same ODK submission was received more than once, so these audits are counted twice in every total and chart.'); ?>
+            <?= $canResolveDuplicates
+              ? $this->translate('Review each and remove the extra copy.')
+              : $this->translate('Someone who can resolve duplicates needs to remove the extra copies.'); ?>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="widget widget-fullwidth widget-small" style="padding:5px;">
       <div class="row">
         <div class="col-sm-12">
           <div class="panel panel-default">
-            <div class="panel-body">
+            <!-- The filters fill the screen before a single audit is visible, so the
+                 panel starts closed. The badge reports how many are set, otherwise a
+                 filtered list looks like the whole list. -->
+            <!-- One toolbar: filter control on the left, page actions on the right.
+                 These used to sit on three separate bands at three different sizes. -->
+            <div class="panel-heading clearfix" style="padding:8px 10px;">
+              <div class="pull-left">
+                <button type="button" id="toggleFilters" class="btn btn-primary btn-sm">
+                  <i class="fa fa-filter" aria-hidden="true"></i>
+                  <?= $this->translate('Filters'); ?>
+                  <!-- Plain text, not a .badge: bootstrap hides an empty badge and
+                       recolours it per button variant, which rendered it as a blank dot. -->
+                  <span id="activeFilterCount"></span>
+                  <i id="toggleFiltersCaret" class="fa fa-caret-down" aria-hidden="true"></i>
+                </button>
+                <button type="button" id="clearFilters" class="btn btn-link btn-sm" style="display:none;">
+                  <?= $this->translate('Clear all'); ?>
+                </button>
+              </div>
+              <div class="pull-right">
+                <a href="/spi-v6/download-files" target="_blank" class="btn btn-default btn-sm"
+                  style="text-decoration:none;">
+                  <i class="fa fa-cloud-download" aria-hidden="true"></i>
+                  <?= $this->translate('Download Audits in Bulk'); ?>
+                </a>
+              </div>
+            </div>
+            <div class="panel-body" id="filterPanel" style="display:none;">
               <form role="form" class="form-horizontal">
                 <div class="form-group">
                   <label for="date" class="col-sm-2 control-label"><?= $this->translate('Date Range'); ?></label>
@@ -143,8 +235,6 @@ $userMappingType = $sessionLogin->userMappingType;
                       <?php } ?>
                     </select>
                   </div>
-                </div>
-                <div class="form-group">
                   <label for="testPoint"
                     class="col-sm-2 control-label"><?= $this->translate('Type of Testing Point'); ?></label>
                   <div class=" col-lg-4">
@@ -157,9 +247,6 @@ $userMappingType = $sessionLogin->userMappingType;
                       <?php } ?>
                     </select>
                   </div>
-                  <div class="form-group">
-                    <div class="testPointNameSection"></div>
-                  </div>
                 </div>
                 <div class="form-group">
                   <label for="showAudits" class="col-sm-2 control-label"><?= $this->translate('Show Audits'); ?></label>
@@ -170,8 +257,6 @@ $userMappingType = $sessionLogin->userMappingType;
                       <option value="no"><?= $this->translate('Not yet Printed'); ?></option>
                     </select>
                   </div>
-                </div>
-                <div class="form-group">
                   <label for="facilityLink" class="col-sm-2 control-label"><?= $this->translate('Facility Link'); ?></label>
                   <div class=" col-lg-4">
                     <select class="form-control" id="facilityLink">
@@ -179,6 +264,9 @@ $userMappingType = $sessionLogin->userMappingType;
                       <option value="unassigned"><?= $this->translate('Unassigned facility only'); ?></option>
                     </select>
                   </div>
+                </div>
+                <div class="form-group">
+                  <div class="testPointNameSection"></div>
                 </div>
                 <div class="form-group" style="text-align:center;">
                   <button type="button" onclick="search();"
@@ -191,13 +279,6 @@ $userMappingType = $sessionLogin->userMappingType;
                 </div>
               </form>
             </div>
-            <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'duplicate')) { ?>
-              <a id="duplicate" href="/spi-v6/duplicate"
-                class="btn btn-danger btn-sm"><?= $this->translate('Duplicates'); ?> (0)</a>&nbsp;&nbsp;
-            <?php } ?>
-            <a href="/spi-v6/download-files" target="_blank" class="btn btn-success btn-sm"
-              style="text-decoration:none;float:right;"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download
-              Audits in Bulk </a>
           </div>
         </div>
       </div>
@@ -291,6 +372,7 @@ $userMappingType = $sessionLogin->userMappingType;
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/dataTables.bootstrap.min.js'); ?>"></script>
 <script src="<?php echo $this->basePath('assets/js/daterangepicker.js'); ?>" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/jquery.blockUI.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->basePath('assets/js/filter-highlighter.js'); ?>"></script>
 <script type="text/javascript">
   table = null;
 
@@ -324,6 +406,12 @@ $userMappingType = $sessionLogin->userMappingType;
       function (start, end) {
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
+        /* This build of daterangepicker reports through this callback rather than
+         * firing apply.daterangepicker, so the highlighter never hears about a date
+         * being picked and the field stayed unhighlighted until some other filter
+         * changed. Tell it directly. */
+        filterHighlighter.refresh();
+        updateFilterCount();
       });
     table = $('#example').DataTable({
       "bProcessing": true,
@@ -397,7 +485,7 @@ $userMappingType = $sessionLogin->userMappingType;
             $("#level2").html(json.levelTwoCount);
             $("#level3").html(json.levelThreeCount);
             $("#level4").html(json.levelFourCount + "&nbsp;");
-            $("#duplicate").html("Duplicates (" + json.duplicate + ")");
+            updateNeedsAttention(json.unassigned, json.duplicate);
             fnCallback(json);
           }
         });
@@ -443,6 +531,103 @@ $userMappingType = $sessionLogin->userMappingType;
       tags: false
     });
     getLocations();
+
+    /* The filter panel filled the screen before a single audit was visible, so it
+       starts closed and the audit list is what you land on. Hiding filters hides
+       what they are doing, so the badge counts the ones that are set — otherwise a
+       filtered list is indistinguishable from the whole list. The open/closed
+       choice is remembered for people who keep it open. */
+    var FILTER_IDS = ['#date', '#auditRndNo', '#affiliation', '#scoreLevel', '#country',
+      '#province', '#district', '#testPoint', '#showAudits', '#facilityLink'];
+
+    function updateFilterCount() {
+      var n = 0;
+      $.each(FILTER_IDS, function (i, id) {
+        var v = $(id).val();
+        if ($.isArray(v)) {
+          // "All" is an empty-valued option inside the multi-selects.
+          if ($.grep(v, function (x) { return x !== '' && x !== null; }).length) {
+            n++;
+          }
+        } else if (v !== '' && v !== null && typeof v !== 'undefined') {
+          n++;
+        }
+      });
+      $('#activeFilterCount').text(n > 0 ? ' (' + n + ')' : '');
+      $('#clearFilters').toggle(n > 0);
+    }
+
+    function setFilterPanel(open) {
+      $('#filterPanel').toggle(open);
+      $('#toggleFiltersCaret')
+        .toggleClass('fa-caret-down', !open)
+        .toggleClass('fa-caret-up', open);
+      try {
+        localStorage.setItem('spiV6FiltersOpen', open ? '1' : '0');
+      } catch (e) { /* private browsing; the panel just forgets */ }
+    }
+
+    $('#toggleFilters').on('click', function () {
+      setFilterPanel($('#filterPanel').is(':hidden'));
+    });
+
+    $('#clearFilters').on('click', function () {
+      $('#date').val('');
+      $('#auditRndNo, #affiliation, #scoreLevel, #testPoint, #showAudits, #facilityLink').val('');
+      $('#country, #province, #district').val(null).trigger('change');
+      $('.testPointNameSection').empty();
+      updateFilterCount();
+      // Clearing by script fires no event for the plain controls, so highlight by hand.
+      filterHighlighter.refresh();
+      search();
+    });
+
+    /* Highlights each control that holds a value, so an open panel shows which
+       filters are doing the filtering. The badge covers the closed case. */
+    var filterHighlighter = initFilterHighlighter('#filterPanel');
+
+    $(document).on('change', FILTER_IDS.join(',') + ', #testPointName', updateFilterCount);
+
+    /* Exposed on window because the card's handlers live outside this closure.
+       Each row hides itself at zero, and the card hides when no row is left, so a
+       clean instance renders nothing above the table. */
+    window.updateNeedsAttention = function (unassigned, duplicates) {
+      unassigned = parseInt(unassigned, 10) || 0;
+      duplicates = parseInt(duplicates, 10) || 0;
+
+      $('#naUnassignedCount').text(unassigned);
+      $('#naUnassignedLabel').text(unassigned === 1
+        ? <?= json_encode($this->translate('audit is not linked to a facility')); ?>
+        : <?= json_encode($this->translate('audits are not linked to a facility')); ?>);
+      $('#naUnassigned').toggle(unassigned > 0);
+
+      $('#naDuplicatesCount').text(duplicates);
+      $('#naDuplicatesLabel').text(duplicates === 1
+        ? <?= json_encode($this->translate('duplicate submission')); ?>
+        : <?= json_encode($this->translate('duplicate submissions')); ?>);
+      $('#naDuplicates').toggle(duplicates > 0);
+
+      /* Counted from the data, not with :visible. The card itself is still hidden
+         at this point, and jQuery reports every descendant of a hidden element as
+         not visible, so the count came back 0 and the card never opened. */
+      var shown = (unassigned > 0 ? 1 : 0) + (duplicates > 0 ? 1 : 0);
+      $('#naCount').text(shown);
+      $('#needsAttention').toggle(shown > 0);
+    };
+
+    window.showUnassignedAudits = function () {
+      $('#facilityLink').val('unassigned');
+      updateFilterCount();
+      filterHighlighter.refresh();
+      search();
+    };
+
+    var filtersOpen = null;
+    try {
+      filtersOpen = localStorage.getItem('spiV6FiltersOpen');
+    } catch (e) { /* as above */ }
+    setFilterPanel(filtersOpen === '1');
+    updateFilterCount();
   });
 
   function approveStatus(id) {
