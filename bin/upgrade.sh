@@ -4,7 +4,13 @@
 #
 # Run it straight from the repo:
 #
-#   curl -fsSL "https://raw.githubusercontent.com/deforay/odkdash/master/bin/upgrade.sh?v=$(date +%s)" | sudo bash -s -- -A
+#   sudo bash -c "$(curl -fsSL "https://raw.githubusercontent.com/deforay/odkdash/master/bin/upgrade.sh?v=$(date +%s)")" -- -A
+#
+# Note the shape: the script is an argument, not stdin. Piping it in as
+# `curl ... | sudo bash` breaks the prompts. Where sudoers sets use_pty — the
+# default on Ubuntu 22.04 and sudo 1.9.14+ — sudo runs the script on a pty it
+# owns and feeds that pty from its own stdin, which is the curl pipe, so the
+# prompt reaches you but your answer never reaches the script.
 #
 # Every instance is deployed the same way, as ept's upgrade does it: a shallow
 # source mirror is refreshed once per run and rsynced over the tree, with .git
@@ -27,12 +33,14 @@
 # Trees too old to carry db-tools fall back to mysqldump and a .sql.gz.
 #
 # Usage:
-#   sudo bin/upgrade.sh [-A] [-p PATH] [-b] [-y]
+#   sudo bin/upgrade.sh [-A] [-p PATH] [-b] [-f] [-y]
 #
 # Options:
 #   -A       upgrade every odkdash instance found in /var/www
 #   -p PATH  upgrade one instance (default /var/www/odkdash)
 #   -b       skip the backups (the config/autoload tarball is always taken)
+#   -f       also copy the whole app folder aside first. Off by default: it is
+#            the slowest step by far, and the code comes back from git anyway
 #   -y       non-interactive: every prompt takes its default, which is the safe
 #            answer, so a failed backup stops that instance rather than plough on
 #
@@ -51,6 +59,7 @@ stamp="$(date +'%Y%m%d-%H%M%S')"
 
 REPO_GIT_URL="https://github.com/deforay/odkdash.git"
 REPO_TARBALL_URL="https://codeload.github.com/deforay/odkdash/tar.gz/refs/heads/master"
+REPO_SCRIPT_URL="https://raw.githubusercontent.com/deforay/odkdash/master/bin/upgrade.sh"
 SRC_DIR="${ODKDASH_SRC_DIR:-/usr/local/lib/odkdash/src}"
 SEARCH_DIR="/var/www"
 BACKUP_ROOT="/var/odkdash-backup"
@@ -89,15 +98,29 @@ fail() {
     return 1
 }
 
-# Prompts read from /dev/tty, not stdin, so they still work when the script is
-# piped in from curl. Without a terminal at all — cron, CI — the default wins.
+# A terminal that takes our prompt but never returns an answer. See ask_yes_no.
+prompt_is_deaf=false
+
+# Prompts read from the terminal, not stdin, because the script itself arrives
+# on stdin when it is piped in from curl. Without a terminal at all — cron,
+# CI — the default wins.
 ask_yes_no() {
     local question="$1" default="${2:-no}" answer
 
     # Probe by opening the terminal rather than testing for it. /dev/tty exists
     # under cron and in containers but cannot be opened, and the failed
     # redirect prints noise of its own.
-    if [ "$assume_defaults" = true ] || ! { exec 3<>/dev/tty; } 2>/dev/null; then
+    if [ "$assume_defaults" = true ] || [ "$prompt_is_deaf" = true ]; then
+        print info "${question}? [auto: ${default}]"
+        [ "$default" = "yes" ]
+        return
+    fi
+
+    # Real stdin first: it is the terminal for every invocation except the
+    # curl pipe, and unlike /dev/tty it cannot be some other process's pty.
+    if [ -t 0 ]; then
+        exec 3<&0
+    elif ! { exec 3<>/dev/tty; } 2>/dev/null; then
         print info "${question}? [auto: ${default}]"
         [ "$default" = "yes" ]
         return
@@ -110,7 +133,16 @@ ask_yes_no() {
     printf "%s? [default: %s, auto in 60s] " "$question" "$default" >&3
     if ! read -r -t 60 answer <&3; then
         printf '\n' >&3
-        print info "No input. Using the default: ${default}"
+        # /dev/tty can be writable and still deliver nothing. Under
+        # `curl | sudo bash` with sudoers' use_pty — the default on Ubuntu
+        # 22.04 and sudo 1.9.14+ — the script runs on a pty sudo owns and sudo
+        # feeds that pty from its own stdin, which is the curl pipe. The prompt
+        # appears, the terminal echoes what you type, and the answer goes to
+        # the shell that launched curl. It will not start working on the next
+        # question, so stop spending a minute apiece to ask it.
+        prompt_is_deaf=true
+        say warning "No answer reached this script in 60s; taking the default for this and every later question."
+        say warning "If you did type one, the pipe swallowed it. Run it as: sudo bash -c \"\$(curl -fsSL ${REPO_SCRIPT_URL})\" -- -A"
         answer="$default"
     fi
     exec 3>&-
@@ -434,10 +466,13 @@ upgrade_instance() {
         say info "Skipping database backup (-b)."
     fi
 
-    # The deploy overwrites whatever is in the tree, with nothing to fall back
-    # on, so offer a copy of it first.
-    if [ "$skip_backups" = false ]; then
-        if ask_yes_no "Back up ${app_path} before overwriting it" "yes"; then
+    # The deploy overwrites the tree, so offer a copy of it — but default to
+    # skipping. On an instance with a large public/ this rsync is the slowest
+    # step of the whole upgrade, and it is the least valuable copy of the three:
+    # the code comes back from git, config/autoload is already tarballed above,
+    # and the deploy neither deletes untracked files nor touches uploads.
+    if [ "$skip_backups" = false ] && [ "$backup_folder" = true ]; then
+        if ask_yes_no "Back up ${app_path} before overwriting it (slow)" "no"; then
             folder_backup="${BACKUP_ROOT}/www/$(basename "$app_path")-${stamp}"
             print info "Copying ${app_path} to ${folder_backup}..."
             rsync -a --exclude 'public/temporary/' --exclude 'vendor/' \
@@ -590,13 +625,15 @@ app_path=""
 target_path=""
 upgrade_all=false
 skip_backups=false
+backup_folder=false
 assume_defaults=false
 
-while getopts ":Ap:by" opt; do
+while getopts ":Ap:bfy" opt; do
     case $opt in
         A) upgrade_all=true ;;
         p) target_path="$OPTARG" ;;
         b) skip_backups=true ;;
+        f) backup_folder=true ;;
         y) assume_defaults=true ;;
         *) : ;;
     esac
