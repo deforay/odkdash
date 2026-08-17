@@ -1715,12 +1715,12 @@ class OdkFormService
                 $counter = count($params['idList']);
                 for ($i = 0; $i < $counter; $i++) {
                     $result = $db->updateFormStatus($params['idList'][$i], 'approved');
-                    $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
+                    $facilityDb->addFacilityBasedOnForm($params['idList'][$i], 6);
                 }
             }
             if (isset($params['id'])) {
                 $result = $db->updateFormStatus($params['id'], 'approved');
-                $facilityDb->addFacilityBasedOnForm($params['id']);
+                $facilityDb->addFacilityBasedOnForm($params['id'], 6);
             }
             if ($result > 0) {
                 $adapter->commit();
