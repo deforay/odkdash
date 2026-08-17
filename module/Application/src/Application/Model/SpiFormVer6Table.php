@@ -1657,6 +1657,72 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
+    /**
+     * Audits that carry no facility link, same definition as `audits:unlinked`.
+     *
+     * Every location filter reaches an audit through spi_form_v_6.facility, so a
+     * row with that column empty belongs to no location at all.
+     */
+    private const UNLINKED_AUDIT = '(spiv6.facility IS NULL OR spiv6.facility = 0)';
+
+    /**
+     * Scope a select over spi_form_v_6, aliased 'spiv6', to the user's locations.
+     *
+     * The joins are LEFT and every scope also admits UNLINKED_AUDIT, so an audit
+     * with no facility surfaces rather than vanishing. Dropping those is what kept
+     * 383 approved audits off the Malawi list before 1.2.3, and the four still
+     * unlinked there can only be fixed by someone who can see them: the listing
+     * flags them, the Facility Link filter pulls up just those, and assigning a
+     * facility on the edit screen returns the audit to its location. The joined
+     * columns are never read back, so a NULL side costs nothing.
+     *
+     * The scope goes on the total count as well as the filtered query. A location
+     * mapping is a permission boundary, not a search filter, and leaving it off the
+     * total is what produced counts like "0 of 0 (filtered from 3009)".
+     *
+     * Still a primary key lookup on the facilities side, as 1.2.4 intended.
+     *
+     * @param \Laminas\Db\Sql\Select $query
+     * @return \Laminas\Db\Sql\Select
+     */
+    private function applyV6LocationScope($query, $parameters, $loginContainer)
+    {
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
+            $mappedIds = '"' . implode('", "', $loginContainer->userMappedIds) . '"';
+            // Mapping exists
+            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+                // User mapped by country: show mapped country data and all related provinces and districts
+                $query = $query->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'), 'left')
+                    ->where('(f.country IN (' . $mappedIds . ') OR ' . self::UNLINKED_AUDIT . ')');
+            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                // User mapped by province: show only mapped provinces
+                $query = $query->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'), 'left')
+                    ->where('(f.province IN (' . $mappedIds . ') OR ' . self::UNLINKED_AUDIT . ')');
+            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                // User mapped by district: show only mapped districts
+                $query = $query->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'), 'left')
+                    ->where('(f.district IN (' . $mappedIds . ') OR ' . self::UNLINKED_AUDIT . ')');
+            }
+        }
+        if (isset($parameters['country']) && $parameters['country'] != '') {
+            $query = $query->join(array('f1' => 'spi_rt_3_facilities'), 'f1.id=spiv6.facility', array('country'), 'left')
+                ->where('(f1.country IN (' . $parameters['country'] . ') OR ' . self::UNLINKED_AUDIT . ')');
+        }
+        if (isset($parameters['province']) && $parameters['province'] != '') {
+            $query = $query->join(array('f2' => 'spi_rt_3_facilities'), 'f2.id=spiv6.facility', array('province'), 'left')
+                ->where('(f2.province IN (' . $parameters['province'] . ') OR ' . self::UNLINKED_AUDIT . ')');
+        }
+        if (isset($parameters['district']) && $parameters['district'] != '') {
+            $query = $query->join(array('f3' => 'spi_rt_3_facilities'), 'f3.id=spiv6.facility', array('district'), 'left')
+                ->where('(f3.district IN (' . $parameters['district'] . ') OR ' . self::UNLINKED_AUDIT . ')');
+        }
+        if (isset($parameters['facilityLink']) && $parameters['facilityLink'] == 'unassigned') {
+            $query = $query->where(self::UNLINKED_AUDIT);
+        }
+
+        return $query;
+    }
+
     public function fetchAllSubmissionsDetails($parameters, $acl)
     {
         $loginContainer = new Container('credo');
@@ -1665,7 +1731,7 @@ class SpiFormVer6Table extends AbstractTableGateway
          */
         $queryContainer = new Container('query');
         $aColumns = array('spiv6.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
-        $orderColumns = array('spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv3.status');
+        $orderColumns = array('spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
 
         /*
          * Paging
@@ -1816,35 +1882,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
 
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
-                // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where('f.country IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
-                // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where('f.province IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
-                // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where('f.district IN ("' . implode('", "', $loginContainer->userMappedIds) . '")');
-            }
-        }
-        if (isset($parameters['country']) && $parameters['country'] != '') {
-            $sQuery = $sQuery->join(array('f1' => 'spi_rt_3_facilities'), 'f1.id=spiv6.facility', array('country'))
-                ->where('f1.country IN (' . $parameters['country'] . ')');
-        }
-        if (isset($parameters['province']) && $parameters['province'] != '') {
-            $sQuery = $sQuery->join(array('f2' => 'spi_rt_3_facilities'), 'f2.id=spiv6.facility', array('province'))
-                ->where('f2.province IN (' . $parameters['province'] . ')');
-        }
-        if (isset($parameters['district']) && $parameters['district'] != '') {
-            $sQuery = $sQuery->join(array('f3' => 'spi_rt_3_facilities'), 'f3.id=spiv6.facility', array('district'))
-                ->where('f3.district IN (' . $parameters['district'] . ')');
-        }
-
+        $sQuery = $this->applyV6LocationScope($sQuery, $parameters, $loginContainer);
 
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
@@ -1917,6 +1955,9 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
             }
         }
+
+        $tQuery = $this->applyV6LocationScope($tQuery, $parameters, $loginContainer);
+
         if (!empty($loginContainer->token)) {
             $tQuery = $tQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
         }
@@ -1962,7 +2003,16 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row['DT_RowId'] = $aRow['id'];
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
             $row[] = '';
-            $row[] = $aRow['facilityname'];
+            if (empty($aRow['facility'])) {
+                /* Carries no facility link, so location filters cannot place it. It is
+                 * listed anyway rather than hidden; assigning a facility on the edit
+                 * screen clears the flag. Blank-named audits show the flag alone. */
+                $facilityName = trim((string) $aRow['facilityname']);
+                $row[] = ($facilityName != '' ? $facilityName . ' ' : '')
+                    . '<span class="label label-warning" title="Not linked to a facility, so location filters cannot see it. Edit the audit to assign one.">Unassigned facility</span>';
+            } else {
+                $row[] = $aRow['facilityname'];
+            }
 
             $row[] = $aRow['auditroundno'];
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);

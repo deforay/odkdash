@@ -171,6 +171,15 @@ $userMappingType = $sessionLogin->userMappingType;
                     </select>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label for="facilityLink" class="col-sm-2 control-label"><?= $this->translate('Facility Link'); ?></label>
+                  <div class=" col-lg-4">
+                    <select class="form-control" id="facilityLink">
+                      <option value=""><?= $this->translate('All'); ?></option>
+                      <option value="unassigned"><?= $this->translate('Unassigned facility only'); ?></option>
+                    </select>
+                  </div>
+                </div>
                 <div class="form-group" style="text-align:center;">
                   <button type="button" onclick="search();"
                     class="btn btn-space btn-primary"><?= $this->translate('Search'); ?></button>&nbsp;
@@ -369,6 +378,10 @@ $userMappingType = $sessionLogin->userMappingType;
         aoData.push({
           "name": "showAudits",
           "value": $("#showAudits").val()
+        });
+        aoData.push({
+          "name": "facilityLink",
+          "value": $("#facilityLink").val()
         });
         $.ajax({
           "dataType": 'json',
