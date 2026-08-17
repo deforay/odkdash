@@ -553,7 +553,8 @@ upgrade_instance() {
     chown -R "$web_user":"$web_user" "$app_path"
     chmod -R u+rwX,g+rwX "$app_path/var" "$app_path/data/cache" "$app_path/public/temporary" \
         "$app_path/public/uploads" "$app_path/uploads" "$app_path/backup"
-    chmod +x "$app_path/cron.sh" "$app_path/bin/migrate" "$app_path/bin/upgrade.sh" 2>/dev/null
+    chmod +x "$app_path/cron.sh" "$app_path/bin/migrate" "$app_path/bin/console" \
+        "$app_path/bin/upgrade.sh" 2>/dev/null
 
     say success "Ownership set to ${web_user} and runtime directories made writable."
 

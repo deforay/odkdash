@@ -388,7 +388,9 @@ return array(
             __DIR__ . '/../view',
         ],
     ],
-    'laminas-cli' => [
+    // Read by bin/console. Each name maps to a class the service manager
+    // builds; the name is bound onto the command at construction.
+    'console' => [
         'commands' => [
             'send-mail' => SendTempMail::class,
             'send-audit-mail' => SendAuditMail::class,

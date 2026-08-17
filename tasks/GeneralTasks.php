@@ -62,7 +62,7 @@ $schedule->run('vendor/bin/db-tools backup --retention=7')
 // Only registered if custom.global.php has a real spirrt project URL —
 // otherwise the command would auth-fail every tick against empty creds.
 if ($hasOdkProject($customConfig, 'spirrt')) {
-    $schedule->run('vendor/bin/laminas sync-central-v6')
+    $schedule->run('php bin/console sync-central-v6')
         ->everyMinute()
         ->timezone($timezone)
         ->description('Sync ODK Central spirrt (v6) submissions')
@@ -71,7 +71,7 @@ if ($hasOdkProject($customConfig, 'spirrt')) {
 
 // ─── ODK Central sync (v3 forms) — every minute ───
 if ($hasOdkProject($customConfig, 'spirt')) {
-    $schedule->run('vendor/bin/laminas sync-central-v3')
+    $schedule->run('php bin/console sync-central-v3')
         ->everyMinute()
         ->timezone($timezone)
         ->description('Sync ODK Central spirt (v3) submissions')
@@ -82,7 +82,7 @@ if ($hasOdkProject($customConfig, 'spirt')) {
 // Every minute; skip entirely when SMTP isn't configured so the box
 // doesn't churn through cron logs trying to talk to an empty server.
 if ($hasEmailConfig($customConfig)) {
-    $schedule->run('vendor/bin/laminas send-mail')
+    $schedule->run('php bin/console send-mail')
         ->everyMinute()
         ->timezone($timezone)
         ->description('Flush pending outbound mail')
@@ -93,7 +93,7 @@ if ($hasEmailConfig($customConfig)) {
 // Trims api_logs and form_dump to rows newer than 365 days, but always
 // keeps a floor of recent rows even if older so a low-activity site
 // doesn't end up with empty audit pages.
-$schedule->run('vendor/bin/laminas cleanup-old-logs')
+$schedule->run('php bin/console cleanup-old-logs')
     ->sundays()
     ->at('03:30')
     ->timezone($timezone)
