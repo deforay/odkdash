@@ -5,11 +5,18 @@ use Application\Session\Container;
 $sessionLogin = new Container('credo');
 $role = $sessionLogin->roleCode;
 $acl = $this->layout()->acl;
-if ($acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status')) {
-  $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center","bSortable":false}';
-} else {
-  $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
-}
+$canApprove = $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status');
+$canAct = $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf')
+  || $canApprove
+  || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit')
+  || $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'delete');
+
+/* Column 0 is the bulk-approve checkbox. It is hidden rather than omitted for
+   roles that cannot approve, so every other column keeps its index and the sort
+   and search maps in the model stay aligned. */
+$selectColumn = '{"sClass":"center","bSortable":false,"bVisible":' . ($canApprove ? 'true' : 'false') . '}';
+$baseColumns = '{"sClass":"center details-control","bSortable":false},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"},{"sClass":"center"}';
+$editAction = $selectColumn . ',' . $baseColumns . ($canAct ? ',{"sClass":"center","bSortable":false}' : '');
 $userMappingType = $sessionLogin->userMappingType;
 ?>
 <link rel="stylesheet" type="text/css"
@@ -147,6 +154,17 @@ $userMappingType = $sessionLogin->userMappingType;
                 <button type="button" id="clearFilters" class="btn btn-link btn-sm" style="display:none;">
                   <?= $this->translate('Clear all'); ?>
                 </button>
+                <?php if ($canApprove) { ?>
+                  <!-- Replaces the dual listbox on manage-facility: tick the pending
+                       rows and approve them together. Hidden until something is
+                       ticked, so it stays out of the way on a list with nothing
+                       pending. -->
+                  <button type="button" id="approveSelected" class="btn btn-success btn-sm" style="display:none;">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <?= $this->translate('Approve selected'); ?>
+                    <span id="approveSelectedCount"></span>
+                  </button>
+                <?php } ?>
               </div>
               <div class="pull-right">
                 <a href="/spi-v6/download-files" target="_blank" class="btn btn-default btn-sm"
@@ -287,6 +305,12 @@ $userMappingType = $sessionLogin->userMappingType;
         class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
         <thead>
           <tr>
+            <th style="width:2%;">
+              <?php if ($canApprove) { ?>
+                <input type="checkbox" id="approveSelectAll"
+                  title="<?= $this->translate('Select all pending audits on this page'); ?>">
+              <?php } ?>
+            </th>
             <th></th>
             <th><?= $this->translate('Facility Name'); ?></th>
 
@@ -297,8 +321,10 @@ $userMappingType = $sessionLogin->userMappingType;
             <th><?= $this->translate('Affiliation'); ?></th>
             <th style="width:5%;"><?= $this->translate('Audit Score %'); ?></th>
             <th style="width:8%;"><?= $this->translate('Status'); ?></th>
-            <?php if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-pdf') || $acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'approve-status')) { ?>
-              <th><?= $this->translate('Action'); ?></th>
+            <?php /* Was gated on SpiV3Controller while aoColumns used SpiV6, so the
+                     header and the column list could disagree. */ ?>
+            <?php if ($canAct) { ?>
+              <th><?= $this->translate('Actions'); ?></th>
             <?php } ?>
           </tr>
         </thead>
@@ -361,6 +387,55 @@ $userMappingType = $sessionLogin->userMappingType;
     <br>
   </div>
 </div>
+
+<!-- Themed confirmation, replacing window.confirm for the destructive and bulk
+     actions. Driven through confirmDialog() below rather than per-action markup,
+     so the title, body and button wording come from the caller. -->
+<div class="modal fade confirm-modal" id="confirmModal" tabindex="-1" role="dialog"
+  aria-labelledby="confirmModalTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="confirmModalTitle"></h4>
+      </div>
+      <div class="modal-body">
+        <!-- The record leads: its name large, everything else as one quiet line.
+             A six-row table gave every field equal weight and buried the one thing
+             worth reading. -->
+        <div class="cf-name" id="confirmModalName"></div>
+        <div class="cf-meta" id="confirmModalMeta"></div>
+        <p class="cf-warning" id="confirmModalBody"></p>
+
+        <!-- Type-to-confirm. The token gets its own block so copying is an obvious
+             affordance rather than a third identical input in a stack. -->
+        <div id="confirmModalTypeWrap" style="display:none;">
+          <div class="cf-token">
+            <div class="cf-token-label"><?= $this->translate('Type this to confirm'); ?></div>
+            <div class="cf-token-value">
+              <span class="cf-token-text" id="confirmModalToken"></span>
+              <button class="cf-copy" type="button" id="confirmModalCopy">
+                <i class="fa fa-clone" aria-hidden="true"></i>
+                <span id="confirmModalCopyLabel"><?= $this->translate('Copy'); ?></span>
+              </button>
+            </div>
+          </div>
+          <input type="text" class="form-control cf-type" id="confirmModalType" autocomplete="off"
+            placeholder="<?= $this->translate('Type it here to enable the button'); ?>">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          <?= $this->translate('Cancel'); ?>
+        </button>
+        <button type="button" class="btn" id="confirmModalOk"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.1/dist/js/tom-select.complete.min.js"
@@ -425,8 +500,9 @@ $userMappingType = $sessionLogin->userMappingType;
       ],
       "iDisplayLength": 50,
       "pageLength": 50,
+      // Audit Date, index 4 now that the select column sits at 0.
       "aaSorting": [
-        [3, "desc"]
+        [4, "desc"]
       ],
       "sAjaxSource": "<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>",
       "fnServerData": function (sSource, aoData, fnCallback) {
@@ -592,6 +668,55 @@ $userMappingType = $sessionLogin->userMappingType;
 
     $(document).on('change', FILTER_IDS.join(',') + ', #testPointName', updateFilterCount);
 
+    /* Bulk approve. The checkboxes are rebuilt on every draw, so the handlers are
+       delegated and the running count is recomputed rather than tracked. Selection
+       does not survive a redraw, which is why approving redraws last. */
+    function refreshApproveSelection() {
+      var n = $('#example tbody input.approveSelect:checked').length;
+      $('#approveSelectedCount').text(n > 0 ? '(' + n + ')' : '');
+      $('#approveSelected').toggle(n > 0);
+
+      var total = $('#example tbody input.approveSelect').length;
+      $('#approveSelectAll').prop('checked', total > 0 && n === total);
+    }
+
+    $('#example tbody').on('change', 'input.approveSelect', refreshApproveSelection);
+
+    // Rows are replaced on every draw, so the count and the button follow them.
+    $('#example').on('draw.dt', refreshApproveSelection);
+
+    $('#approveSelectAll').on('change', function () {
+      $('#example tbody input.approveSelect').prop('checked', $(this).is(':checked'));
+      refreshApproveSelection();
+    });
+
+    $('#approveSelected').on('click', function () {
+      var ids = $('#example tbody input.approveSelect:checked').map(function () {
+        return this.value;
+      }).get();
+      if (!ids.length) {
+        return;
+      }
+      confirmDialog({
+        title: <?= json_encode($this->translate('Approve selected audits')); ?>,
+        body: ids.length + ' ' + <?= json_encode($this->translate('audits will be marked as final, and a facility created for any that does not have one yet.')); ?>,
+        confirmLabel: <?= json_encode($this->translate('Approve')); ?>
+      }, function () {
+        $.blockUI();
+        $.post("<?php echo $this->url('spi-v6-form', array('action' => 'approve-status')); ?>", {
+          idList: ids
+        },
+          function (data) {
+            $.unblockUI();
+            if (data > 0) {
+              alert("<?= $this->translate('Audit updated successfully'); ?>");
+            }
+            $('#approveSelectAll').prop('checked', false);
+            table.draw(false);
+          });
+      });
+    });
+
     /* Exposed on window because the card's handlers live outside this closure.
        Each row hides itself at zero, and the card hides when no row is left, so a
        clean instance renders nothing above the table. */
@@ -635,8 +760,11 @@ $userMappingType = $sessionLogin->userMappingType;
   });
 
   function approveStatus(id) {
-    conf = confirm("<?= $this->translate('Are you sure you want to approve this audit ?'); ?>");
-    if (conf) {
+    confirmDialog({
+      title: <?= json_encode($this->translate('Approve audit')); ?>,
+      body: <?= json_encode($this->translate('Approving marks the audit as final and creates its facility if it does not exist yet.')); ?>,
+      confirmLabel: <?= json_encode($this->translate('Approve')); ?>
+    }, function () {
       $.post("<?php echo $this->url('spi-v6-form', array('action' => 'approve-status')); ?>", {
         id: id
       },
@@ -646,7 +774,146 @@ $userMappingType = $sessionLogin->userMappingType;
             table.draw();
           }
         });
+    });
+  }
+
+  /**
+   * Themed replacement for window.confirm.
+   *
+   * opts: {title, name, meta, body, confirmLabel, destructive, requireText}. The
+   * record being acted on is named by `name` with `meta` as a quiet detail line.
+   * Pass requireText
+   * for destructive actions and the button stays disabled until that exact text is
+   * typed, so a delete cannot be fired by reflex on the wrong row.
+   *
+   * Handlers are bound per call and namespaced, so a dialog dismissed and reopened
+   * for a different row cannot fire the previous row's action.
+   */
+  function confirmDialog(opts, onConfirm) {
+    var $ok = $('#confirmModalOk');
+    var $wrap = $('#confirmModalTypeWrap');
+    var $input = $('#confirmModalType');
+    var token = opts.requireText ? String(opts.requireText) : '';
+
+    $('#confirmModalTitle').text(opts.title);
+    $('#confirmModalBody').text(opts.body || '').toggle(!!opts.body);
+    $ok.text(opts.confirmLabel)
+      .removeClass('cf-go cf-go-safe')
+      .addClass(opts.destructive ? 'cf-go' : 'cf-go-safe');
+
+    $('#confirmModalName').text(opts.name || '').toggle(!!opts.name);
+
+    // meta: short strings shown as one dot-separated line under the name.
+    var $meta = $('#confirmModalMeta').empty();
+    var meta = $.grep(opts.meta || [], function (v) { return $.trim(v || '') !== ''; });
+    $.each(meta, function (i, v) { $meta.append($('<span>').text(v)); });
+    $meta.toggle(meta.length > 0);
+
+    $('#confirmModalToken').text(token);
+    $('#confirmModalCopyLabel').text(<?= json_encode($this->translate('Copy')); ?>);
+    $('#confirmModalCopy').removeClass('cf-copied');
+    $wrap.toggle(!!token);
+    $input.val('').off('input.confirmDialog');
+    $ok.prop('disabled', !!token);
+
+    if (token) {
+      $input.on('input.confirmDialog', function () {
+        $ok.prop('disabled', $.trim(this.value).toUpperCase() !== token.toUpperCase());
+      });
     }
+
+    $('#confirmModalCopy').off('click.confirmDialog').on('click.confirmDialog', function () {
+      var $btn = $(this);
+      var text = $('#confirmModalToken').text();
+      var copied = false;
+
+      /* execCommand needs a selection and is deprecated, but it works without a
+         secure context, which the Clipboard API requires and a plain-HTTP
+         deployment will not have. Try it first, then fall back. */
+      var scratch = document.createElement('textarea');
+      scratch.value = text;
+      scratch.setAttribute('readonly', '');
+      scratch.style.position = 'fixed';
+      scratch.style.opacity = '0';
+      document.body.appendChild(scratch);
+      scratch.select();
+      try {
+        copied = document.execCommand('copy');
+      } catch (e) { /* fall through */ }
+      document.body.removeChild(scratch);
+
+      if (!copied && navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+        copied = true;
+      }
+
+      if (copied) {
+        $('#confirmModalCopyLabel').text(<?= json_encode($this->translate('Copied')); ?>);
+        $btn.addClass('cf-copied');
+      }
+      $input.trigger('focus');
+    });
+
+    $ok.off('click.confirmDialog').on('click.confirmDialog', function () {
+      if ($ok.prop('disabled')) {
+        return;
+      }
+      $('#confirmModal').modal('hide');
+      onConfirm();
+    });
+
+    // Focus the field once the modal has finished animating in.
+    $('#confirmModal').off('shown.bs.modal.confirmDialog')
+      .on('shown.bs.modal.confirmDialog', function () {
+        if (token) {
+          $input.trigger('focus');
+        }
+      })
+      .modal('show');
+  }
+
+  function deleteAudit(auditId, facilityName) {
+    if ($.trim(auditId) == "") {
+      alert("<?= $this->translate('Oops! We have experienced a problem. Please try again!'); ?>");
+      return;
+    }
+
+    /* Spell out which audit this is. The id means nothing to anyone — it is in no
+       column — so the row is named by the columns actually on screen, and the text
+       to type is the facility name. An audit with no facility name falls back to
+       the literal word, since there is nothing else to key it on. */
+    var $cells = $('#' + auditId + ' td');
+    var name = $.trim(facilityName || '');
+    var cell = function (i) { return $.trim($cells.eq(i).text()); };
+
+    confirmDialog({
+      title: <?= json_encode($this->translate('Delete this audit?')); ?>,
+      name: name || <?= json_encode($this->translate('(no facility name)')); ?>,
+      meta: [
+        cell(4),
+        cell(3) ? <?= json_encode($this->translate('Round')); ?> + ' ' + cell(3) : '',
+        cell(5),
+        cell(7) ? <?= json_encode($this->translate('Score')); ?> + ' ' + cell(7) : '',
+        cell(8)
+      ],
+      body: <?= json_encode($this->translate('It will be removed from the list and from every total and chart.')); ?>,
+      confirmLabel: <?= json_encode($this->translate('Delete')); ?>,
+      destructive: true,
+      requireText: name || <?= json_encode($this->translate('DELETE')); ?>
+    }, function () {
+      $.post("<?php echo $this->url('spi-v6-form', array('action' => 'delete')); ?>", {
+        deleteId: auditId
+      },
+        function (data) {
+          if (data == 0) {
+            alert("<?= $this->translate('Oops! We have experienced a problem. Please try again!'); ?>");
+          } else {
+            // Redraw rather than drop the row: the counts and the Needs attention
+            // card come from the same response and would otherwise go stale.
+            table.draw(false);
+          }
+        });
+    });
   }
 
   function downloadPdf(formId) {

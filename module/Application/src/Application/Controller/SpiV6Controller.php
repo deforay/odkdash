@@ -143,7 +143,8 @@ class SpiV6Controller extends AbstractActionController
         if ($request->isPost()) {
             $params = $request->getPost();
             $this->odkFormService->updateSpiV6Form($params);
-            return $this->redirect()->toUrl("/spi-v6/manage-facility");
+            // Back to the audit list, which is where editing now starts from.
+            return $this->redirect()->toUrl("/spi-v6");
         } else {
             $id = $this->params()->fromRoute('id');
             $facilitiesResult = $this->odkFormService->getAllFacilityNames();
@@ -235,38 +236,6 @@ class SpiV6Controller extends AbstractActionController
             $configData = $this->commonService->getGlobalConfigDetails();
             $viewModel = new ViewModel();
             $viewModel->setVariables(array('allSubmissions' => $allSubmissions, 'configData' => $configData))
-                ->setTerminal(true);
-            return $viewModel;
-        }
-    }
-
-    public function manageFacilityAction()
-    {
-        /** @var \Laminas\Http\Request $request */
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $param = $request->getPost();
-            $result = $this->odkFormService->getAllSubmissionsDatasV6($param);
-            return $this->getResponse()->setContent(CommonService::jsonEncode($result));
-        } else {
-            $result = $this->odkFormService->getPendingFacilityNamesV6();
-
-            return new ViewModel(array(
-                'pendingFacilityName' => $result,
-            ));
-        }
-    }
-
-    public function mergeFacilityNameAction()
-    {
-        /** @var \Laminas\Http\Request $request */
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $params = $request->getPost();
-
-            $result = $this->odkFormService->mergeFacilityName($params);
-            $viewModel = new ViewModel();
-            $viewModel->setVariables(array('result' => $result))
                 ->setTerminal(true);
             return $viewModel;
         }

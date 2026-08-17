@@ -1730,8 +1730,11 @@ class SpiFormVer6Table extends AbstractTableGateway
          * you want to insert a non-database field (for example a counter or static image)
          */
         $queryContainer = new Container('query');
-        $aColumns = array('spiv6.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
-        $orderColumns = array('spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
+        /* Index 0 is the bulk-approve checkbox and index 1 the row expander; neither
+         * is sortable and neither has a column of its own, but both need an entry so
+         * the DataTables column indices keep lining up with these maps. */
+        $aColumns = array('spiv6.id', 'spiv6.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
+        $orderColumns = array('spiv6.id', 'spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
 
         /*
          * Paging
@@ -1976,6 +1979,12 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $approveStatusAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'approve-status');
 
+        /* Edit is what fixes an audit the Needs attention card points at, so it
+         * belongs on the list itself rather than only on manage-facility. */
+        $editAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit');
+
+        $deleteAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'delete');
+
         $auditScore = 0;
         $levelZero = [];
         $levelOne = [];
@@ -1986,6 +1995,8 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row = [];
             $approve = '';
             $downloadPdf = "";
+            $edit = "";
+            $remove = "";
             $aRow['AUDIT_SCORE_PERCENTAGE'] = (float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0);
             $scorePer = round((float) $aRow['AUDIT_SCORE_PERCENTAGE']);
             $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
@@ -2002,6 +2013,12 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $row['DT_RowId'] = $aRow['id'];
             $level = isset($aRow['level_other']) && $aRow['level_other'] != "" ? " - " . $aRow['level_other'] : '';
+            /* Bulk approve, replacing the dual listbox on manage-facility. Only
+             * pending rows are selectable — approving an approved audit is a no-op
+             * that would still rewrite its facility. */
+            $row[] = ($approveStatusAction && $aRow['status'] == 'pending')
+                ? '<input type="checkbox" class="approveSelect" value="' . (int) $aRow['id'] . '">'
+                : '';
             $row[] = '';
             /* Escaped because DataTables writes this cell as HTML and the name arrives
              * verbatim from the ODK submission, so a crafted facility name would run
@@ -2032,8 +2049,22 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($downloadPdfAction) {
                 $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
             }
-            //$pending = '<br><a href="/spi-v3/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
-            $row[] = $approve . " " . $downloadPdf;
+            if ($editAction) {
+                $edit = '<br><a href="/spi-v6/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
+            }
+            if ($deleteAction) {
+                /* The raw name is handed over rather than scraped from the cell,
+                 * which also carries the "Unassigned facility" badge. json_encode
+                 * makes it a JS string literal, htmlspecialchars makes that safe
+                 * inside the attribute; the browser undoes the second on the way in. */
+                $deleteName = htmlspecialchars(
+                    json_encode(trim((string) $aRow['facilityname'])),
+                    ENT_QUOTES,
+                    'UTF-8'
+                );
+                $remove = '<br><a href="javascript:void(0);" onclick="deleteAudit(' . $aRow['id'] . ', ' . $deleteName . ');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
+            }
+            $row[] = $approve . " " . $downloadPdf . " " . $edit . " " . $remove;
             $row[] = $aRow['PERSONAL_SCORE'];
             $row[] = $aRow['PHYSICAL_SCORE'];
             $row[] = $aRow['SAFETY_SCORE'];
@@ -2084,179 +2115,6 @@ class SpiFormVer6Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCENTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`,`testingpointname`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-    }
-
-    public function fetchAllSubmissionsDatas($parameters, $acl)
-    {
-        $loginContainer = new Container('credo');
-        /* Array of database columns which should be read and sent back to DataTables. Use a space where
-         * you want to insert a non-database field (for example a counter or static image)
-         */
-
-        $aColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'status');
-        $orderColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'status');
-
-        /*
-         * Paging
-         */
-        $sLimit = "";
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sOffset = $parameters['iDisplayStart'];
-            $sLimit = $parameters['iDisplayLength'];
-        }
-
-        /*
-         * Ordering
-         */
-
-        $sOrder = "";
-        if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
-                }
-            }
-            $sOrder = substr_replace($sOrder, "", -1);
-        }
-
-        /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-         */
-
-        $sWhere = "";
-        if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
-            $searchArray = explode(" ", $parameters['sSearch']);
-            $sWhereSub = "";
-            foreach ($searchArray as $search) {
-                if ($sWhereSub == "") {
-                    $sWhereSub .= "(";
-                } else {
-                    $sWhereSub .= " AND (";
-                }
-                $colSize = count($aColumns);
-
-                for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-                }
-                $sWhereSub .= ")";
-            }
-            $sWhere .= $sWhereSub;
-        }
-        /* Individual column filtering */
-        $counter = count($aColumns);
-
-        /* Individual column filtering */
-        for ($i = 0; $i < $counter; $i++) {
-            if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
-                if ($sWhere == "") {
-                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                } else {
-                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                }
-            }
-        }
-
-        /*
-         * SQL queries
-         * Get data to display
-         */
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where('spiv6.status != "deleted"');
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
-        }
-        if (isset($sWhere) && $sWhere != "") {
-            $sQuery->where($sWhere);
-        }
-
-        if (isset($sOrder) && $sOrder != "") {
-            $sQuery->order($sOrder);
-        }
-
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
-        }
-
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-
-        /* Data set length after filtering */
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
-
-        /* Total data set length */
-        $tQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where('spiv6.status != "deleted"');
-        if (!empty($loginContainer->token)) {
-            $tQuery = $tQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
-        }
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
-        $output = [
-            "sEcho" => (int) $parameters['sEcho'],
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iFilteredTotal,
-            "aaData" => [],
-        ];
-        $role = $loginContainer->roleCode;
-        $update = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'edit');
-
-        $delete = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'delete');
-
-        $downloadPdfAction = (bool) $acl->isAllowed($role, 'Application\Controller\SpiV6Controller', 'download-pdf');
-
-        foreach ($rResult as $aRow) {
-            $row = [];
-            $downloadPdf = "";
-            $edit = "";
-            $remove = "";
-            $row['DT_RowId'] = $aRow['id'];
-            $row[] = $aRow['facilityname'];
-            $row[] = $aRow['auditroundno'];
-            $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-            $row[] = $aRow['testingpointtype'];
-            $row[] = $aRow['level'];
-            $row[] = $aRow['affiliation'];
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
-            $row[] = ucwords($aRow['status']);
-            if ($downloadPdfAction) {
-                //$downloadPdf = '<a href="javascript:void(0);" onclick="downloadPdf('.$aRow['id'].')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
-            }
-            if ($update) {
-                $edit = '&nbsp;<a href="/spi-v6/edit/' . $aRow['id'] . '" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>';
-            }
-            if ($delete) {
-                $remove = '&nbsp;<a href="javascript:void(0);" onclick="deleteAudit(' . $aRow['id'] . ');" style="white-space:nowrap;"><i class="fa fa-times"></i> Delete</a>';
-            }
-            $row[] = $edit . " " . $downloadPdf . " " . $remove;
-            $output['aaData'][] = $row;
-        }
-        return $output;
-    }
-
-    public function fetchPendingFacilityNames()
-    {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where(array('spiv6.status' => 'pending'));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function getFormData($id, $pdfDowload = 'no')
@@ -3888,66 +3746,6 @@ class SpiFormVer6Table extends AbstractTableGateway
         return $rResult;
     }
 
-    public function mergeFacilityName($params)
-    {
-        $result = 0;
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $facilityDb = new \Application\Model\SpiRtFacilitiesTable($this->adapter);
-        if (isset($params['editFacilityName']) && trim($params['editFacilityName']) != '') {
-            $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
-                ->where(array('spirt3.facility_name' => $params['defaultFacilityName']));
-            $facilityQueryStr = $sql->buildSqlString($facilityQuery);
-            $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($facilityResult) {
-                $data = array(
-                    'facility_id' => $params['facilityId'],
-                    'facility_name' => $params['editFacilityName'],
-                );
-                $facilityDb->update($data, array('facility_name' => $params['defaultFacilityName']));
-            }
-
-            $aQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('facilityname'))
-                ->where(array('spiv6.facilityname' => $params['defaultFacilityName']));
-            $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($aResult) {
-                $data = array(
-                    'facilityid' => $params['facilityId'],
-                    'facilityname' => $params['editFacilityName'],
-                );
-                $this->update($data, array('facilityname' => $params['defaultFacilityName']));
-            }
-        }
-        $c = count($params['upFaciltyName']);
-        for ($i = 0; $i < $c; $i++) {
-            $aQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('facilityname', 'id'))
-                ->where(array('spiv6.facilityname' => $params['upFaciltyName'][$i]));
-            $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
-            if (count($aResult) > 0) {
-                $counter = count($aResult);
-                for ($k = 0; $k < $counter; $k++) {
-                    $data = array(
-                        'facilityid' => $params['facilityId'],
-                        'facilityname' => $params['editFacilityName'],
-                    );
-                    $result = $this->update($data, array('id' => $aResult[$k]['id']));
-                }
-            }
-            //Update status in Facility table
-            $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
-                ->where(array('spirt3.facility_name' => $params['upFaciltyName'][$i]));
-            $facilityQueryStr = $sql->buildSqlString($facilityQuery);
-            $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($facilityResult) {
-                $facilityDb->update(array('status' => 'deleted'), array('facility_name' => $params['upFaciltyName'][$i]));
-            }
-        }
-        return $result;
-    }
-
     //get all faciltiy name
     public function fetchAllFacilityNames()
     {
@@ -4178,15 +3976,42 @@ class SpiFormVer6Table extends AbstractTableGateway
         $result = 0;
         $deleteId = trim((string) ($params['deleteId'] ?? ''));
         if ($deleteId !== '') {
+            /* Read the audit before it goes, so the log can name what was deleted.
+             * The id on its own is no help afterwards: it is shown in no column, and
+             * once the row reads "deleted" nothing in the log says which site it
+             * belonged to. */
+            $sql = new Sql($this->adapter);
+            $before = $this->adapter->query(
+                $sql->buildSqlString(
+                    $sql->select()
+                        ->from(['spiv6' => 'spi_form_v_6'])
+                        ->columns(['facilityname', 'assesmentofaudit', 'auditroundno', 'status'])
+                        ->where(['spiv6.id' => $deleteId])
+                ),
+                $this->adapter::QUERY_MODE_EXECUTE
+            )->current();
+
             $result = $this->update(['status' => 'deleted'], ['id' => $deleteId]);
             if ($result > 0) {
                 $loginContainer = new Container('credo');
                 $userName = $loginContainer->login ?? 'system';
                 $eventTable = new EventLogTable($this->adapter);
+
+                $detail = $userName . ' deleted SPI-RRT record #' . $deleteId;
+                if ($before) {
+                    $facility = trim((string) $before['facilityname']);
+                    $detail .= ' - ' . ($facility !== '' ? $facility : '(no facility name)')
+                        . ', ' . CommonService::humanReadableDateFormat($before['assesmentofaudit'])
+                        . ', round ' . (trim((string) $before['auditroundno']) !== '' ? $before['auditroundno'] : '-')
+                        . ', was ' . $before['status'];
+                }
+
                 $eventTable->addEventLog(
                     '',
                     'delete',
-                    $userName . ' deleted SPI-RRT record #' . $deleteId,
+                    // action is varchar(255); trim rather than let MySQL cut it off
+                    // mid-word, since a long facility name would push the rest out.
+                    mb_substr($detail, 0, 255),
                     'SPI-RRT'
                 );
             }

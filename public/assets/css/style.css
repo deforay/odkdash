@@ -18335,3 +18335,136 @@ select,
         margin: 10px 0 0 26px;
     }
 }
+
+/* Confirmation dialog for destructive actions.
+   Self-contained rather than leaning on .btn-danger, because the theme sets
+   .btn-danger:focus to #3598DC — a blue copied from the primary button — which
+   turned the Delete button blue the moment it took focus. */
+.confirm-modal .modal-header {
+    background-color: #fdf3f3;
+    border-bottom: 1px solid #f0d3d3;
+}
+
+.confirm-modal .modal-title {
+    color: #a12622;
+    font-weight: 700;
+}
+
+/* The record being acted on: name first and large, everything else secondary,
+   so what you are about to delete is readable at a glance. */
+.confirm-modal .cf-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: #222;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.confirm-modal .cf-meta {
+    color: #777;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.confirm-modal .cf-meta span+span:before {
+    content: "·";
+    margin: 0 7px;
+    color: #bbb;
+}
+
+.confirm-modal .cf-warning {
+    margin: 16px 0 0;
+    color: #555;
+}
+
+/* The token to type, given its own tinted block so the copy control is not just
+   another control in a stack of identical inputs. */
+.confirm-modal .cf-token {
+    margin-top: 18px;
+    padding: 12px 14px;
+    background-color: #f7f7f9;
+    border: 1px solid #e3e3e8;
+    border-radius: 5px;
+}
+
+.confirm-modal .cf-token-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.confirm-modal .cf-token-value {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.confirm-modal .cf-token-text {
+    flex: 1;
+    font-family: Menlo, Consolas, monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    background: #fff;
+    border: 1px dashed #cfcfd6;
+    border-radius: 4px;
+    padding: 7px 10px;
+    word-break: break-word;
+}
+
+.confirm-modal .cf-copy {
+    border: 1px solid #c9c9d1;
+    background: #fff;
+    border-radius: 4px;
+    padding: 7px 14px;
+    color: #444;
+    white-space: nowrap;
+}
+
+.confirm-modal .cf-copy:hover {
+    background: #eee;
+}
+
+.confirm-modal .cf-copied {
+    color: #3c763d;
+    border-color: #a3c293;
+}
+
+.confirm-modal .cf-type {
+    margin-top: 10px;
+}
+
+/* Own colours, immune to the theme's :focus override. */
+.confirm-modal .cf-go {
+    background-color: #c9302c;
+    border: 1px solid #ac2925;
+    color: #fff;
+}
+
+.confirm-modal .cf-go:hover,
+.confirm-modal .cf-go:focus {
+    background-color: #ac2925;
+    border-color: #8b211e;
+    color: #fff;
+}
+
+.confirm-modal .cf-go[disabled] {
+    background-color: #e0b3b1;
+    border-color: #e0b3b1;
+    color: #fff;
+}
+
+.confirm-modal .cf-go-safe {
+    background-color: #4a934a;
+    border: 1px solid #3d7a3d;
+    color: #fff;
+}
+
+.confirm-modal .cf-go-safe:hover,
+.confirm-modal .cf-go-safe:focus {
+    background-color: #3d7a3d;
+    border-color: #336633;
+    color: #fff;
+}

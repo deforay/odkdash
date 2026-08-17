@@ -50,7 +50,6 @@ return [
         ],
         'Application\\Controller\\SpiV6Controller' => [
             'index' => 'allow',
-            'manage-facility' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
             'delete' => 'allow',
@@ -141,7 +140,6 @@ return [
         ],
         'Application\\Controller\\SpiV6Controller' => [
             'index' => 'allow',
-            'manage-facility' => 'allow',
             'approve-status' => 'allow',
             'corrective-action-pdf' => 'allow',
             'delete' => 'allow',
@@ -232,7 +230,6 @@ return [
         ],
         'Application\\Controller\\SpiV6Controller' => [
             'index' => 'deny',
-            'manage-facility' => 'deny',
             'approve-status' => 'deny',
             'corrective-action-pdf' => 'deny',
             'delete' => 'deny',

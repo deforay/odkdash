@@ -2557,12 +2557,6 @@ class OdkFormService
         }
     }
 
-    public function getAllSubmissionsDatasV6($params)
-    {
-        $db = $this->sm->get('SpiFormVer6Table');
-        $acl = $this->sm->get('AppAcl');
-        return $db->fetchAllSubmissionsDatas($params, $acl);
-    }
 
     public function deleteAuditDataV6($params)
     {
@@ -3016,12 +3010,6 @@ class OdkFormService
     }
 
     //get pending facility names v6
-    public function getPendingFacilityNamesV6()
-    {
-        /** @var SpiFormVer6Table  $db */
-        $db = $this->sm->get('SpiFormVer6Table');
-        return $db->fetchPendingFacilityNames();
-    }
 
     // Finding the odkformsubmissions
 

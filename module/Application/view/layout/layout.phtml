@@ -42,9 +42,10 @@ if (isset($acl) && $acl->isAllowed($role, "Application\Controller\ApiLogsControl
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV3Controller", "manage-facility") && preg_match("/v3/i", $config['web_version'])) {
   $configMenu .= "<li><a href=" . $this->url('spi-v3-form', array('action' => 'manage-facility')) . ">" . $this->translate('SPI-RT v3 Form Data') . "</a></li>";
 }
-if (isset($acl) && $acl->isAllowed($role, "Application\Controller\SpiV6Controller", "manage-facility") && preg_match("/v6/i", $config['web_version'])) {
-  $configMenu .= "<li><a href=" . $this->url('spi-v6-form', array('action' => 'manage-facility')) . ">" . $this->translate('SPI-RT v6 Form Data') . "</a></li>";
-}
+/* The v6 "Form Data" entry pointed at manage-facility, whose edit, delete and
+   bulk approve now live on the audit list itself. That list is already in the
+   main menu as "Audit SPI-RRT", so the entry is dropped rather than repointed.
+   v3 keeps its page and its entry. */
 
 if (isset($acl) && $acl->isAllowed($role, "Application\Controller\AuditTrailController", "index")) {
   $configMenu .= "<li><a href=" . $this->url('audit-trail', array('action' => 'index')) . ">" . $this->translate('Audit Trail') . "</a></li>";
@@ -358,7 +359,6 @@ $googleTag = "GTM-TSMNF9F9";
                     <li class=""><a href="<?php echo $this->url('spi-v3-form', ['action' => 'manage-facility']); ?>"><span><?php echo $this->translate('SPI-RT v3 Form Data'); ?></span></a></li>
                   <?php } elseif (preg_match("/v6/i", $config['web_version'])) { ?>
                     <?php echo $adminMenu; ?>
-                    <li class=""><a href="<?php echo $this->url('spi-v6-form', ['action' => 'manage-facility']); ?>"><span><?php echo $this->translate('SPI-RT v6 Form Data'); ?></span></a></li>
                   <?php } ?>
                 </ul>
               </li>
