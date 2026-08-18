@@ -503,7 +503,6 @@ $userMappingType = $sessionLogin->userMappingType;
       ],
       "sAjaxSource": "<?php echo $this->url('spi-v6-form', array('action' => 'index')); ?>",
       "fnServerData": function (sSource, aoData, fnCallback) {
-        aoData.push({ "name": "sessionHash", "value": $("#sessionHash").val() });
         aoData.push({
           "name": "auditRndNo",
           "value": $("#auditRndNo").val()
@@ -580,7 +579,7 @@ $userMappingType = $sessionLogin->userMappingType;
         row.child.hide();
         tr.removeClass('shown');
       } else {
-        row.child(formatValue(tr.attr('id'), tr.data('session') || '')).show();
+        row.child(formatValue(tr.attr('id'))).show();
         tr.addClass('shown');
       }
     });

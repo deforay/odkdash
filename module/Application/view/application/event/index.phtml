@@ -4,6 +4,15 @@ $eventTypes = $this->eventTypes ?? [];
 <link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/daterangepicker-bs3.css'); ?>" />
 
 <style>
+    .audit-ip {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 11px;
+        color: #94a3b8;
+    }
+    .audit-ua {
+        font-size: 11px;
+        color: #94a3b8;
+    }
     .icon-fingerprint {
         display: inline-block;
         width: 11px;
@@ -504,6 +513,14 @@ $eventTypes = $this->eventTypes ?? [];
     .audit-modal-footer button:hover {
         background: #edf2f7;
     }
+
+    .audit-toolbar {
+        grid-template-columns: 1.1fr 1fr 1.1fr auto;
+    }
+    @media (max-width: 900px) {
+        .audit-toolbar { grid-template-columns: 1fr 1fr; }
+        .audit-toolbar .reset-btn { grid-column: span 2; }
+    }
 </style>
 
 <div class="am-content">
@@ -529,6 +546,10 @@ $eventTypes = $this->eventTypes ?? [];
                             <option value="<?= htmlspecialchars($type); ?>"><?= htmlspecialchars(ucwords(str_replace(['-', '_'], ' ', $type))); ?></option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+                <div class="field">
+                    <label for="sessionHash"><?= $this->translate('Session'); ?></label>
+                    <input type="search" id="sessionHash" placeholder="<?= $this->translate('16-char session hash'); ?>" autocomplete="off" />
                 </div>
                 <button type="button" class="reset-btn" id="resetBtn"><?= $this->translate('Reset'); ?></button>
             </div>
@@ -632,9 +653,20 @@ $eventTypes = $this->eventTypes ?? [];
         startDate: '',
         endDate: '',
         eventType: '',
+        sessionHash: '',
         search: ''
     };
 
+    var sessionHashDebounce;
+    $('#sessionHash').on('input', function() {
+        var val = $(this).val();
+        clearTimeout(sessionHashDebounce);
+        sessionHashDebounce = setTimeout(function() {
+            state.sessionHash = val.trim();
+            state.page = 1;
+            fetchFeed();
+        }, 250);
+    });
     function classifyAction(eventType) {
         var t = (eventType || '').toLowerCase();
         if (t.indexOf('login-failed') !== -1 || t.indexOf('failed') !== -1) return 'failed';
@@ -679,6 +711,32 @@ $eventTypes = $this->eventTypes ?? [];
             .replace(/'/g, '&#039;');
     }
 
+    function parseBrowserOS(ua) {
+        if (!ua) return { browser: '', os: '' };
+        var browser = 'Unknown';
+        var os = '';
+        if (/Edg\//.test(ua)) browser = 'Edge';
+        else if (/OPR\/|Opera/.test(ua)) browser = 'Opera';
+        else if (/Chrome\//.test(ua)) browser = 'Chrome';
+        else if (/Safari\//.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+        else if (/Firefox\//.test(ua)) browser = 'Firefox';
+        else if (/MSIE|Trident/.test(ua)) browser = 'IE';
+        if (/Windows NT 10/.test(ua)) os = 'Windows 10';
+        else if (/Windows NT 11/.test(ua)) os = 'Windows 11';
+        else if (/Windows/.test(ua)) os = 'Windows';
+        else if (/Mac OS X/.test(ua)) os = 'macOS';
+        else if (/Android/.test(ua)) os = 'Android';
+        else if (/iPhone|iPad|iOS/.test(ua)) os = 'iOS';
+        else if (/Linux/.test(ua)) os = 'Linux';
+        return { browser: browser, os: os };
+    }
+
+    function deviceLabel(item) {
+        var p = parseBrowserOS(item.userAgent);
+        if (!p.browser) return '';
+        return p.os ? p.browser + ' on ' + p.os : p.browser;
+    }
+
     function highlight(text, term) {
         var safe = escapeHtml(text);
         if (!term) return safe;
@@ -698,6 +756,20 @@ $eventTypes = $this->eventTypes ?? [];
         var contextHtml = item.eventType
             ? '<span class="audit-context">' + escapeHtml(item.eventType) + '</span>'
             : '';
+        var ipHtml = item.ipAddress
+            ? '<span class="audit-ip" title="IP address">' + escapeHtml(item.ipAddress) + '</span>'
+            : '';
+        var uaShort = deviceLabel(item);
+        var uaHtml = uaShort
+            ? '<span class="audit-ua" title="' + escapeHtml(item.userAgent || uaShort) + '">' + escapeHtml(uaShort) + '</span>'
+            : '';
+        var sessHtml = item.sessionHash
+            ? '<span class="session-pill" data-session="' + escapeHtml(item.sessionHash) + '" '
+            +   'title="' + escapeHtml('<?= $this->translate("Click to filter by this session"); ?>') + '" '
+            +   'onclick="filterBySession(\'' + escapeHtml(item.sessionHash) + '\'); event.stopPropagation();">'
+            +   '<span class="icon-fingerprint"></span>' + escapeHtml(item.sessionHash.substring(0, 8))
+            + '</span>'
+            : '';
         return ''
             + '<div class="audit-item" data-idx="' + idx + '" tabindex="0">'
             +   '<div class="audit-icon ' + actionClass + '">'
@@ -711,6 +783,9 @@ $eventTypes = $this->eventTypes ?? [];
             +         '<span class="audit-user-name">' + highlight(item.userName, term) + '</span>'
             +       '</span>'
             +       contextHtml
+            +       ipHtml
+            +       uaHtml
+            +       sessHtml
             +     '</div>'
             +   '</div>'
             +   '<div class="audit-time" title="' + escapeHtml(item.datetime) + '">' + escapeHtml(item.time) + '</div>'
@@ -737,7 +812,14 @@ $eventTypes = $this->eventTypes ?? [];
         toggleSection('#auditModalRequestSection', '#auditModalRequest', reqLine.trim());
         toggleSection('#auditModalUaSection', '#auditModalUa', item.userAgent);
         toggleSection('#auditModalSessionSection', '#auditModalSession', item.sessionHash);
-
+        if (item.sessionHash) {
+            $('#auditModalSession').css('cursor', 'pointer').off('click.filterSession').on('click.filterSession', function() {
+                filterBySession(item.sessionHash);
+                closeDetail();
+            });
+        } else {
+            $('#auditModalSession').off('click.filterSession').css('cursor', '');
+        }
         $modal.addClass('open');
         document.body.style.overflow = 'hidden';
     }
@@ -906,6 +988,7 @@ $eventTypes = $this->eventTypes ?? [];
         $('#resetBtn').on('click', function() {
             $('#dateRange').val('');
             $('#eventType').val('');
+            $('#sessionHash').val('');
             $('#searchBox').val('');
             $('#searchWrap').removeClass('has-value');
             state = { page: 1, pageSize: state.pageSize, startDate: '', endDate: '', eventType: '', search: '' };
@@ -913,6 +996,13 @@ $eventTypes = $this->eventTypes ?? [];
         });
 
         fetchFeed();
+
+        window.filterBySession = function (hash) {
+            $('#sessionHash').val(hash);
+            state.sessionHash = hash;
+            state.page = 1;
+            fetchFeed();
+        };
     });
 })();
 </script>
