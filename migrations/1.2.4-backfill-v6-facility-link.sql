@@ -44,4 +44,12 @@ UPDATE `spi_form_v_6` v
 CREATE INDEX `idx_v6_facility` ON `spi_form_v_6` (`facility`);
 
 -- Thana 17-Aug-2026
-ALTER TABLE `spi_form_v_6` ADD `session_hash` VARCHAR(16) NULL DEFAULT NULL AFTER `form_metadata`;
+--
+-- form_metadata is another data/alter.sql column that not every instance
+-- applied, and session_hash sat behind it, so the ALTER failed on "Unknown
+-- column 'form_metadata'". Add both here without an AFTER clause: column
+-- position is cosmetic, and an AFTER naming a missing column fails the same
+-- way. The app reads form_metadata through JSON_EXTRACT in the audit list and
+-- the mail queue, so an instance missing it has more broken than this file.
+ALTER TABLE `spi_form_v_6` ADD `form_metadata` JSON NULL DEFAULT NULL;
+ALTER TABLE `spi_form_v_6` ADD `session_hash` VARCHAR(16) NULL DEFAULT NULL;

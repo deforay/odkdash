@@ -643,8 +643,11 @@ foreach ($pending as $m) {
     echo "\n";
 }
 
-$finalDbVersion = $lastVersion;
-$finalAppVersion = $lastVersion;
+// Nothing is stamped when a statement failed, so the summary has to report the
+// version the database is actually left on — the one it came in with. Printing
+// the last file attempted reads as a successful upgrade next to the failures.
+$finalDbVersion = $failed === 0 ? $lastVersion : $dbVersion;
+$finalAppVersion = $finalDbVersion;
 if (!$dryRun && $failed === 0) {
     $appVersion = read_app_version();
     if ($appVersion === '') {

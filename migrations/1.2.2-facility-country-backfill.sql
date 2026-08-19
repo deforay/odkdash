@@ -24,6 +24,15 @@
 -- Idempotent: the WHERE only touches rows that are still unset, and the
 -- JOIN yields nothing when country-name does not resolve.
 
+-- The column itself only ever existed in data/alter.sql (26-Dec-2024). Instances
+-- were expected to have applied that by hand, and at least one had not, so this
+-- backfill died on "Unknown column 'f.country'". Add it here first — bin/migrate
+-- skips the ALTER where the column is already present. No AFTER clause on
+-- purpose: position is cosmetic, and naming a column the instance is also
+-- missing would fail the ALTER for the same reason.
+
+ALTER TABLE `spi_rt_3_facilities` ADD `country` VARCHAR(255) NULL DEFAULT NULL;
+
 UPDATE `spi_rt_3_facilities` f
   JOIN `countries` c
     ON c.country_name = (SELECT global_value FROM `global_config` WHERE global_name = 'country-name')
