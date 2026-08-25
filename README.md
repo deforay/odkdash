@@ -1,7 +1,7 @@
-ODK Dashboard Application
-=======================
+SPI RRT Dashboard Application
+=============================
 
-SPI RRT dashboard. Laminas MVC application on PHP 8.2 or later, MySQL, and Apache.
+Laminas MVC application on PHP 8.2 or later, MySQL, and Apache.
 
 ## Operational scripts
 
