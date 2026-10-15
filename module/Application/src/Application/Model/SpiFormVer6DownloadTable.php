@@ -70,7 +70,7 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
             $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                 ->where('spiv6.status != "deleted"');
             if (isset($queryResult->auditroundno) && $queryResult->auditroundno != '') {
-                $sQuery = $sQuery->where("spiv6.auditroundno='" . $queryResult->auditroundno . "'");
+                $sQuery = $sQuery->where(['spiv6.auditroundno' => $queryResult->auditroundno]);
             }
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
                 $startDate = '';
@@ -82,26 +82,26 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
                     $endDate = CommonService::isoDateFormat(trim($dateField[2]));
                 }
-                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
+                $sQuery->where->greaterThanOrEqualTo('spiv6.assesmentofaudit', $startDate)->lessThanOrEqualTo('spiv6.assesmentofaudit', $endDate);
             }
             if (isset($queryResult->testingpointtype) && $queryResult->testingpointtype != '') {
 
 
                 if (strtolower(trim($queryResult->testingpointtype)) != 'other') {
-                    $sQuery = $sQuery->where("spiv6.testingpointtype='" . $queryResult->testingpointtype . "'");
+                    $sQuery = $sQuery->where(['spiv6.testingpointtype' => $queryResult->testingpointtype]);
                 } else {
-                    $sQuery = $sQuery->where("spiv6.testingpointtype_other='" . $queryResult->testingpointtype . "'");
+                    $sQuery = $sQuery->where(['spiv6.testingpointtype_other' => $queryResult->testingpointtype]);
                 }
             }
             if (isset($queryResult->level) && $queryResult->level != '') {
-                $sQuery = $sQuery->where("spiv6.level='" . $queryResult->level . "'");
+                $sQuery = $sQuery->where(['spiv6.level' => $queryResult->level]);
             }
             if (isset($queryResult->affiliation) && $queryResult->affiliation != '') {
-                $sQuery = $sQuery->where("spiv6.affiliation='" . $queryResult->affiliation . "'");
+                $sQuery = $sQuery->where(['spiv6.affiliation' => $queryResult->affiliation]);
             }
             if (isset($queryResult->level_name) && $queryResult->level_name != '') {
                 $provinces = explode(",", $queryResult->level_name);
-                $sQuery = $sQuery->where('spiv6.level_name IN ("' . implode('", "', $provinces) . '")');
+                $sQuery = $sQuery->where(['spiv6.level_name' => $provinces]);
             }
             if (isset($queryResult->AUDIT_SCORE_PERCENTAGE) && $queryResult->AUDIT_SCORE_PERCENTAGE != '') {
                 if ($queryResult->AUDIT_SCORE_PERCENTAGE == 0) {

@@ -482,6 +482,8 @@ class OdkFormService
                 $adapter->commit();
                 return $result;
             }
+            // Nothing was approved, so nothing done here should stand.
+            $adapter->rollBack();
         } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());
@@ -1731,6 +1733,8 @@ class OdkFormService
                 $adapter->commit();
                 return $result;
             }
+            // Nothing was approved, so nothing done here should stand.
+            $adapter->rollBack();
         } catch (\Exception $exc) {
             $adapter->rollBack();
             error_log($exc->getMessage());

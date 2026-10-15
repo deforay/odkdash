@@ -71,7 +71,7 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                 ->where('spiv3.status != "deleted"');
             if (!empty($queryResult['auditroundno'])) {
-                $sQuery = $sQuery->where("spiv3.auditroundno='" . $queryResult['auditroundno'] . "'");
+                $sQuery = $sQuery->where(['spiv3.auditroundno' => $queryResult['auditroundno']]);
             }
             if (!empty($queryResult['assesmentofaudit'])) {
                 $startDate = '';
@@ -83,27 +83,27 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
                     $endDate = CommonService::isoDateFormat(trim($dateField[2]));
                 }
-                $sQuery = $sQuery->where(array("spiv3.assesmentofaudit >='" . $startDate . "'", "spiv3.assesmentofaudit <='" . $endDate . "'"));
+                $sQuery->where->greaterThanOrEqualTo('spiv3.assesmentofaudit', $startDate)->lessThanOrEqualTo('spiv3.assesmentofaudit', $endDate);
             }
             if (isset($queryResult['testingpointtype']) && $queryResult['testingpointtype'] != '') {
-                $sQuery = $sQuery->where("spiv3.testingpointtype='" . $queryResult['testingpointtype'] . "'");
+                $sQuery = $sQuery->where(['spiv3.testingpointtype' => $queryResult['testingpointtype']]);
                 if (isset($queryResult['testingpointname']) && trim($queryResult['testingpointname']) != '') {
                     if (trim($queryResult['testingpointname']) != 'other') {
-                        $sQuery = $sQuery->where("spiv3.testingpointname='" . $queryResult['testingpointname'] . "'");
+                        $sQuery = $sQuery->where(['spiv3.testingpointname' => $queryResult['testingpointname']]);
                     } else {
-                        $sQuery = $sQuery->where("spiv3.testingpointtype_other='" . $queryResult['testingpointname'] . "'");
+                        $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $queryResult['testingpointname']]);
                     }
                 }
             }
             if (isset($queryResult['level']) && $queryResult['level'] != '') {
-                $sQuery = $sQuery->where("spiv3.level='" . $queryResult['level'] . "'");
+                $sQuery = $sQuery->where(['spiv3.level' => $queryResult['level']]);
             }
             if (isset($queryResult['affiliation']) && $queryResult['affiliation'] != '') {
-                $sQuery = $sQuery->where("spiv3.affiliation='" . $queryResult['affiliation'] . "'");
+                $sQuery = $sQuery->where(['spiv3.affiliation' => $queryResult['affiliation']]);
             }
             if (isset($queryResult['level_name']) && $queryResult['level_name'] != '') {
                 $provinces = explode(",", $queryResult['level_name']);
-                $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
+                $sQuery = $sQuery->where(['spiv3.level_name' => $provinces]);
             }
 
             if (isset($queryResult['AUDIT_SCORE_PERCANTAGE']) && $queryResult['AUDIT_SCORE_PERCANTAGE'] != '') {

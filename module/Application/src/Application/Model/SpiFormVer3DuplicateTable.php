@@ -32,14 +32,23 @@ class SpiFormVer3DuplicateTable extends AbstractTableGateway
     public function removeAuditData($params)
     {
         $result = false;
+        // One audit at a time: an array would select one row to archive but
+        // delete every id in it.
+        $id = $params['id'] ?? null;
+        if (!is_scalar($id) || trim((string) $id) === '') {
+            return false;
+        }
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $dResult = $dbAdapter->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'spi_form_v_3_duplicate'", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $dResult = $dbAdapter->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'spi_form_v_3_duplicate'", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         if (count($dResult) > 0) {
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                ->where('spiv3.id = "' . $params['id'] . '"');
+                ->where(['spiv3.id' => $id]);
             $sQueryStr = $sql->buildSqlString($sQuery);
             $aResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            if (!$aResult) {
+                return false;
+            }
             $data = [];
             foreach ($dResult as $dData) {
                 $data[$dData['COLUMN_NAME']] = $aResult[$dData['COLUMN_NAME']];
@@ -52,9 +61,9 @@ class SpiFormVer3DuplicateTable extends AbstractTableGateway
             $selectString = $sql->buildSqlString($insert);
             $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
             if ($result) {
-                $spiver3table = new \Application\Model\SpiFormVer3Table($dbAdapter);
-                $spiver3table->delete(array('id' => $params['id']));
-                return $params['id'];
+                $auditTable = new \Application\Model\SpiFormVer3Table($dbAdapter);
+                $auditTable->delete(['id' => $id]);
+                return $id;
             }
         }
         return $result;

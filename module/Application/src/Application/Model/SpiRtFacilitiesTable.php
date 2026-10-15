@@ -589,14 +589,12 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
         if (isset($params['facility']) && count($params['facility']) > 0) {
             $result = 1;
-            $counter = count($params['facility']);
-            if (isset($params['district']) && trim($params['district']) != '') {
-                for ($f = 0; $f < $counter; $f++) {
-                    $this->update(array('province' => $provinceId, 'district' => $districtId), array('facility_name' => $params['facility'][$f]));
-                }
-            } else {
-                for ($f = 0; $f < $counter; $f++) {
-                    $this->update(array('province' => $provinceId), array('facility_name' => $params['facility'][$f]));
+            // Only what was chosen is written: a province or district left blank
+            // keeps the facility's current value instead of clearing it.
+            $data = array_filter(['province' => $provinceId, 'district' => $districtId], fn($value) => $value !== null);
+            if ($data !== []) {
+                foreach ($params['facility'] as $facilityName) {
+                    $this->update($data, ['facility_name' => $facilityName]);
                 }
             }
 
