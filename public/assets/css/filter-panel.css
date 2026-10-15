@@ -1,0 +1,132 @@
+/* Collapsible filter panel (assets/js/filter-panel.js). Ported from vlsm, so a
+   filter panel looks the same in both apps. Header row: title, what the panel
+   is filtered to, and the toggle. */
+.filter-panel-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 45px;
+    margin: -15px -15px 15px;
+    padding: 8px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.filter-panel.filter-panel-collapsed .filter-panel-header {
+    margin-bottom: 0;
+}
+
+.filter-panel-title {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.filter-panel-toggle {
+    flex: 0 0 auto;
+    margin-left: auto;
+    color: #777;
+}
+
+.filter-panel-summary {
+    display: none;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.filter-panel.filter-panel-collapsed .filter-panel-summary.is-visible {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.filter-panel-count {
+    display: none;
+    min-width: 20px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: #3c8dbc;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.filter-panel:not(.filter-panel-collapsed) .filter-panel-count.is-visible {
+    display: inline-block;
+}
+
+.filter-panel-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    max-width: 100%;
+    padding: 2px 9px;
+    border: 1px solid #d2e3ef;
+    border-radius: 12px;
+    background: #f2f8fc;
+    color: #333;
+    font-size: 12px;
+    line-height: 18px;
+    cursor: pointer;
+}
+
+.filter-panel-chip:hover,
+.filter-panel-chip:focus {
+    border-color: #3c8dbc;
+    background: #e3f0f8;
+    outline: none;
+}
+
+.filter-panel-chip-label {
+    color: #72777c;
+    white-space: nowrap;
+}
+
+.filter-panel-chip-value {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-panel-chip-remove {
+    margin: 0 -4px 0 2px;
+    padding: 0 4px;
+    border-radius: 50%;
+    color: #72777c;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 16px;
+}
+
+.filter-panel-chip-remove:hover,
+.filter-panel-chip-remove:focus {
+    background: #c9dbe8;
+    color: #a94442;
+    outline: none;
+}
+
+.filter-panel .filter-actions {
+    display: flow-root;
+    padding-top: 10px;
+}
+
+.filter-panel .filter-actions .btn {
+    margin-right: 5px;
+}
+
+/* Folded, there is nothing to search or reset; only the buttons that still
+   make sense stay, and Expand Filters takes their place. */
+.filter-panel.filter-panel-collapsed .filter-actions .btn:not(.filter-export):not(.filter-keep):not(.filter-expand),
+.filter-panel .filter-actions .filter-expand {
+    display: none;
+}
+
+.filter-panel.filter-panel-collapsed .filter-actions .filter-expand {
+    display: inline-block;
+}
