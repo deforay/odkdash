@@ -1,7 +1,7 @@
 SPI RRT Dashboard Application
 =============================
 
-Laminas MVC application on PHP 8.2 or later, MySQL, and Apache.
+Laminas MVC application on PHP 8.4 or later, MySQL, and Apache.
 
 ## Operational scripts
 
@@ -10,6 +10,7 @@ Laminas MVC application on PHP 8.2 or later, MySQL, and Apache.
 | `bin/upgrade.sh` | Upgrades an installed instance to the latest master |
 | `bin/remote-backup.sh` | Sets up scheduled off-machine backups of the database and configuration |
 | `bin/migrate` | Applies pending database migrations |
+| `bin/console` | Runs maintenance commands; `php bin/console list` shows them |
 | `cron.sh` | Runs the crunz scheduler, one crontab entry per server |
 
 ## How to upgrade an installation
@@ -126,6 +127,19 @@ cd /var/www/odkdash && sudo -u www-data php bin/migrate
 To preview the statements without running them, pass `--dry-run`. See
 `migrations/README.md` for the migration file format.
 
+## How to reset a user's password
+
+Run the command from the installation directory, naming the user by login or
+email:
+
+```bash
+cd /var/www/odkdash && sudo -u www-data php bin/console reset-password admin
+```
+
+It asks for the new password twice without showing it. This works when no
+administrator can log in to the web interface. On a development machine,
+`composer reset-password admin` does the same.
+
 ## How to schedule the crunz jobs
 
 Add one entry to the `www-data` crontab:
@@ -136,3 +150,11 @@ Add one entry to the `www-data` crontab:
 
 `bin/upgrade.sh` adds this entry when it is missing. The schedule itself lives in
 `tasks/GeneralTasks.php`.
+
+## Before you push a change
+
+Run `composer qc`. It validates `composer.json`, lints every PHP file and shell
+script, runs PHPStan against its baseline, and audits the dependencies. Then run
+`bin/dev/review` for an adversarial review of the change.
+`docs/engineering-standards.md` sets out the bar a change is held to and how to
+configure the review.
