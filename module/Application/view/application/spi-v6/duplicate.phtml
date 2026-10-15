@@ -19,7 +19,7 @@ use \Application\Service\CommonService;
       <table id="example" class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
         <thead>
           <tr>
-            <th><?= $this->translate('Facility Name<'); ?>/th>
+            <th><?= $this->translate('Facility Name'); ?></th>
             <th style="width:8%;"><?= $this->translate('Audit Round Number'); ?></th>
             <th style="width:10%;"><?= $this->translate('Audit Date'); ?></th>
             <th style="width:10%;"><?= $this->translate('Testing Point Name'); ?></th>
@@ -33,43 +33,30 @@ use \Application\Service\CommonService;
         </thead>
         <tbody>
           <?php
-          if (count($result) > 0) {
-            foreach ($result as $duplicate) {
+          // Rows arrive grouped by meta-instance-id, oldest first: the first
+          // copy in each group is kept, every later copy can be removed.
+          $previousInstanceId = null;
+          foreach ($result as $duplicate) {
+            $isFirstCopy = $duplicate['meta-instance-id'] !== $previousInstanceId;
+            $previousInstanceId = $duplicate['meta-instance-id'];
           ?>
-              <tr>
-                <td><?php echo $duplicate['facilityname']; ?></td>
-                <td><?php echo $duplicate['auditroundno']; ?></td>
-                <td><?php echo CommonService::humanReadableDateFormat($duplicate['assesmentofaudit']); ?></td>
-                <td><?php echo $duplicate['testingpointname']; ?></td>
-                <td><?php echo $duplicate['testingpointtype']; ?></td>
-                <td><?php echo $duplicate['level']; ?></td>
-                <td><?php echo $duplicate['affiliation']; ?></td>
-                <td><?php echo round($duplicate['AUDIT_SCORE_PERCENTAGE'], 2); ?></td>
-                <td><?php echo $duplicate['status']; ?></td>
-                <td></td>
-              </tr>
-              <?php
-              for ($i = 0; $i < ($duplicate['c'] - 1); $i++) {
-              ?>
-                <tr id="<?php echo $duplicate['id']; ?>">
-                  <td><?php echo $duplicate['facilityname']; ?></td>
-                  <td><?php echo $duplicate['auditroundno']; ?></td>
-                  <td><?php echo CommonService::humanReadableDateFormat($duplicate['assesmentofaudit']); ?></td>
-                  <td><?php echo $duplicate['testingpointname']; ?></td>
-                  <td><?php echo $duplicate['testingpointtype']; ?></td>
-                  <td><?php echo $duplicate['level']; ?></td>
-                  <td><?php echo $duplicate['affiliation']; ?></td>
-                  <td><?php echo round($duplicate['AUDIT_SCORE_PERCENTAGE'], 2); ?></td>
-                  <td><?php echo $duplicate['status']; ?></td>
-                  <td><a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="removeData('<?php echo $duplicate['id']; ?>');">Remove</a></td>
-                </tr>
-            <?php
-              }
-            }
-          } else {
-            ?>
-            <tr>
-              <td colspan="10" class="dataTables_empty"><?= $this->translate('No Data Available'); ?></td>
+            <tr id="audit-<?php echo (int) $duplicate['id']; ?>">
+              <td><?php echo $this->escapeHtml($duplicate['facilityname']); ?></td>
+              <td><?php echo $this->escapeHtml($duplicate['auditroundno']); ?></td>
+              <td><?php echo CommonService::humanReadableDateFormat($duplicate['assesmentofaudit']); ?></td>
+              <td><?php echo $this->escapeHtml($duplicate['testingpointname']); ?></td>
+              <td><?php echo $this->escapeHtml($duplicate['testingpointtype']); ?></td>
+              <td><?php echo $this->escapeHtml($duplicate['level']); ?></td>
+              <td><?php echo $this->escapeHtml($duplicate['affiliation']); ?></td>
+              <td><?php echo round((float) ($duplicate['AUDIT_SCORE_PERCENTAGE']), 2); ?></td>
+              <td><?php echo $this->escapeHtml($duplicate['status']); ?></td>
+              <td>
+                <?php if ($isFirstCopy) { ?>
+                  <?= $this->translate('Kept'); ?>
+                <?php } else { ?>
+                  <a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="removeData(<?php echo (int) $duplicate['id']; ?>);"><?= $this->translate('Remove'); ?></a>
+                <?php } ?>
+              </td>
             </tr>
           <?php } ?>
         </tbody>
@@ -86,19 +73,22 @@ use \Application\Service\CommonService;
 <script type="text/javascript">
   table = null;
   $(document).ready(function() {
-    table = $('#example').DataTable();
+    // Keep the server's grouping so copies of one audit stay together.
+    table = $('#example').DataTable({
+      order: [],
+      language: { emptyTable: "<?= $this->translate('No Data Available'); ?>" }
+    });
   });
 
   function removeData(id) {
     var conf = confirm("<?= $this->translate('Are you sure you want to remove this duplicate audit?'); ?>");
     if (conf) {
-        $.post("<?php echo $this->url('spi-v6-form', array('action' => 'remove-audit')); ?>", { id: id }, function(data) {
-            if (data > 0) {
-                alert("<?= $this->translate('Audit removed successfully'); ?>");
-                $("#" + id).hide();
-            }
-        });
+      $.post("<?php echo $this->url('spi-v6-form', array('action' => 'remove-audit')); ?>", { id: id }, function(data) {
+        if (data > 0) {
+          alert("<?= $this->translate('Audit removed successfully'); ?>");
+          table.row('#audit-' + id).remove().draw(false);
+        }
+      });
     }
-}
-
+  }
 </script>

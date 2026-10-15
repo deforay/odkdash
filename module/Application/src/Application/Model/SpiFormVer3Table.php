@@ -1531,7 +1531,12 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        return $dbAdapter->query("SELECT `meta-instance-id`,`id`,`facilityname`,`status`,`auditroundno`,`AUDIT_SCORE_PERCANTAGE`,`affiliation`,`level`,`assesmentofaudit`,`testingpointtype`,`testingpointname`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        // Every copy of each duplicated submission, oldest first, so the view can
+        // keep the first copy and offer the rest for removal by their own id.
+        return $dbAdapter->query("SELECT s.`meta-instance-id`, s.`id`, s.`facilityname`, s.`status`, s.`auditroundno`, s.`AUDIT_SCORE_PERCANTAGE`, s.`affiliation`, s.`level`, s.`assesmentofaudit`, s.`testingpointtype`, s.`testingpointname`
+            FROM spi_form_v_3 s
+            INNER JOIN (SELECT `meta-instance-id` FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING COUNT(*) > 1) d ON d.`meta-instance-id` = s.`meta-instance-id`
+            ORDER BY s.`meta-instance-id`, s.`id`", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
 
     public function fetchAllSubmissionsDatas($parameters, $acl)
