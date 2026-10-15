@@ -18,6 +18,8 @@ use Application\Command\GenerateBulkPdfFactory;
 use Application\Command\CleanupOldLogsFactory;
 use Application\Command\AuditsUnlinked;
 use Application\Command\AuditsUnlinkedFactory;
+use Application\Command\ResetPassword;
+use Application\Command\ResetPasswordFactory;
 
 return array(
     'router' => array(
@@ -370,6 +372,7 @@ return array(
             GenerateBulkPdf::class => GenerateBulkPdfFactory::class,
             CleanupOldLogs::class => CleanupOldLogsFactory::class,
             AuditsUnlinked::class => AuditsUnlinkedFactory::class,
+            ResetPassword::class => ResetPasswordFactory::class,
         ]
     ],
     'translator' => [
@@ -415,6 +418,7 @@ return array(
             'generate-bulk-pdf' => GenerateBulkPdf::class,
             'cleanup-old-logs' => CleanupOldLogs::class,
             'audits:unlinked' => AuditsUnlinked::class,
+            'reset-password' => ResetPassword::class,
         ],
     ],
 );

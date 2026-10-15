@@ -50,6 +50,7 @@
         "migrate-dry-run": "@php bin/migrate --dry-run",
         "housekeeping": "@php bin/console cleanup-old-logs",
         "audits-unlinked": "@php bin/console audits:unlinked",
+        "reset-password": "@php bin/console reset-password",
         "cron": "crunz schedule:run",
         "cron-list": "crunz schedule:list",
         "post-update": [
