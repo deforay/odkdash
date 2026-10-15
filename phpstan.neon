@@ -1,0 +1,44 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - module/Application/src
+        - module/Application/Module.php
+        - module/Application/config
+        - config
+        - tasks
+        - bin/console
+        - bin/migrate
+        - db-tools.php
+        - init_autoloader.php
+    excludePaths:
+        - config/autoload/*.local.php (?)
+    fileExtensions:
+        - php
+    # APPLICATION_PATH and the other path constants are defined here, and the app
+    # loads it through the config glob, which PHPStan does not follow.
+    bootstrapFiles:
+        - config/autoload/constants.global.php
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    # Framework magic PHPStan cannot resolve structurally. Ignored by pattern rather
+    # than baselined per file, so the baseline does not drift every time someone
+    # writes another query or reads another session key.
+    ignoreErrors:
+        # The adapter is fetched typed as AdapterInterface, but the runtime object is
+        # always Laminas\Db\Adapter\Adapter, which has query() and QUERY_MODE_EXECUTE.
+        -
+            message: '#^Call to an undefined method Laminas\\Db\\Adapter\\AdapterInterface::query\(\)\.$#'
+        -
+            message: '#^Access to undefined constant Laminas\\Db\\Adapter\\AdapterInterface::QUERY_MODE_EXECUTE\.$#'
+        -
+            message: '#^Parameter \#\d+ \$\w+ of class Application\\Model\\\w+ constructor expects Laminas\\Db\\Adapter\\Adapter, Laminas\\Db\\Adapter\\AdapterInterface given\.$#'
+        # The session container exposes keys through __get/__set.
+        -
+            message: '#^Access to an undefined property Application\\Session\\Container::\$\w+\.$#'
+        # getRequest() is typed as Stdlib\RequestInterface; in a controller the
+        # runtime object is the HTTP request, which has isPost() and getPost().
+        -
+            message: '#^Call to an undefined method Laminas\\Stdlib\\RequestInterface::(isPost|getPost|getQuery|isXmlHttpRequest)\(\)\.$#'

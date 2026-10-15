@@ -1,0 +1,1003 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^PHPDoc tag @var for variable \$adapter contains unknown class Adapter\.$#'
+			identifier: class.notFound
+			count: 1
+			path: bin/migrate
+
+		-
+			message: '#^Parameter \#1 \$adapter of function handle_idempotent_ddl expects Laminas\\Db\\Adapter\\Adapter, Adapter given\.$#'
+			identifier: argument.type
+			count: 1
+			path: bin/migrate
+
+		-
+			message: '#^Parameter \#1 \$adapter of function read_global_config expects Laminas\\Db\\Adapter\\Adapter, Adapter given\.$#'
+			identifier: argument.type
+			count: 1
+			path: bin/migrate
+
+		-
+			message: '#^Parameter \#1 \$adapter of function run_sql expects Laminas\\Db\\Adapter\\Adapter, Adapter given\.$#'
+			identifier: argument.type
+			count: 1
+			path: bin/migrate
+
+		-
+			message: '#^Parameter \#1 \$adapter of function stamp_global_config expects Laminas\\Db\\Adapter\\Adapter, Adapter given\.$#'
+			identifier: argument.type
+			count: 3
+			path: bin/migrate
+
+		-
+			message: '#^Array has 2 duplicate keys with value ''Application'' \(''Application'', ''Application''\)\.$#'
+			identifier: array.duplicateKey
+			count: 1
+			path: config/autoload/global.dist.php
+
+		-
+			message: '#^Array has 2 duplicate keys with value ''Application'' \(''Application'', ''Application''\)\.$#'
+			identifier: array.duplicateKey
+			count: 1
+			path: config/autoload/global.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\View\\Model\\ModelInterface\:\:\$acl\.$#'
+			identifier: property.notFound
+			count: 2
+			path: module/Application/Module.php
+
+		-
+			message: '#^Variable \$session in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: module/Application/Module.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Db\\Adapter\\Driver\\StatementInterface\|Laminas\\Db\\ResultSet\\ResultSet\:\:getAffectedRows\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Command/AuditsUnlinked.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:getHeaders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Controller/ApiLogsController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:setStatusCode\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Controller/ApiLogsController.php
+
+		-
+			message: '#^Method Application\\Controller\\AuditTrailController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/AuditTrailController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\RequestInterface\:\:getServer\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: module/Application/src/Application/Controller/ClientErrorController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:getHeaders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Controller/ClientErrorController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:setStatusCode\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: module/Application/src/Application/Controller/ClientErrorController.php
+
+		-
+			message: '#^Method Application\\Controller\\ClientErrorController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Stdlib\\ResponseInterface\.$#'
+			identifier: return.type
+			count: 3
+			path: module/Application/src/Application/Controller/ClientErrorController.php
+
+		-
+			message: '#^Variable \$auditRoundNo might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Controller/CommonController.php
+
+		-
+			message: '#^Variable \$id might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Controller/CommonController.php
+
+		-
+			message: '#^Method Application\\Controller\\ConfigController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/ConfigController.php
+
+		-
+			message: '#^Method Application\\Controller\\CronController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/CronController.php
+
+		-
+			message: '#^Method Application\\Controller\\DistrictController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/DistrictController.php
+
+		-
+			message: '#^Method Application\\Controller\\EmailController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Http\\Response\.$#'
+			identifier: return.type
+			count: 2
+			path: module/Application/src/Application/Controller/EmailController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:getHeaders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Controller/EventController.php
+
+		-
+			message: '#^Method Application\\Controller\\EventController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Stdlib\\ResponseInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: module/Application/src/Application/Controller/EventController.php
+
+		-
+			message: '#^Method Application\\Controller\\FacilityController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/FacilityController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:getHeaders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Controller/LogViewerController.php
+
+		-
+			message: '#^Method Application\\Controller\\LogViewerController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Stdlib\\ResponseInterface\.$#'
+			identifier: return.type
+			count: 1
+			path: module/Application/src/Application/Controller/LogViewerController.php
+
+		-
+			message: '#^Method Application\\Controller\\LoginController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Http\\Response\.$#'
+			identifier: return.type
+			count: 2
+			path: module/Application/src/Application/Controller/LoginController.php
+
+		-
+			message: '#^Method Application\\Controller\\ProvincesController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/ProvincesController.php
+
+		-
+			message: '#^Method Application\\Controller\\RolesController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/RolesController.php
+
+		-
+			message: '#^Variable \$request in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 1
+			path: module/Application/src/Application/Controller/SpiV3Controller.php
+
+		-
+			message: '#^Call to static method jsonEncode\(\) on an unknown class Application\\Controller\\CommonService\.$#'
+			identifier: class.notFound
+			count: 1
+			path: module/Application/src/Application/Controller/SpiV3ReportsController.php
+
+		-
+			message: '#^Method Application\\Controller\\UsersController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: module/Application/src/Application/Controller/UsersController.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Db\\Sql\\Predicate\\Predicate\:\:columns\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Model/ApiLogsTable.php
+
+		-
+			message: '#^Parameter \#1 \$sqlObject of method Laminas\\Db\\Sql\\Sql\:\:prepareStatementForSqlObject\(\) expects Laminas\\Db\\Sql\\PreparableSqlInterface, Laminas\\Db\\Sql\\Predicate\\Predicate given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Model/ApiLogsTable.php
+
+		-
+			message: '#^Variable \$metaInstance in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/AuditSpiFormV3Table.php
+
+		-
+			message: '#^Variable \$metaInstance in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/AuditSpiFormV6Table.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Db\\ResultSet\\ResultSetInterface\:\:toArray\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: module/Application/src/Application/Model/CountriesTable.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\AdapterInterface\:\:\$platform\.$#'
+			identifier: property.notFound
+			count: 1
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Access to constant COLUMNS on an unknown class Zend\\Db\\Sql\\Select\.$#'
+			identifier: class.notFound
+			count: 1
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Access to constant JOIN_LEFT on an unknown class Zend\\Db\\Sql\\Select\.$#'
+			identifier: class.notFound
+			count: 1
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Caught class Application\\Model\\Throwable not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Instantiated class Zend\\Db\\Sql\\Expression not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Method Application\\Model\\EventLogTable\:\:eventLogColumns\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/EventLogTable.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 2
+			path: module/Application/src/Application/Model/GeographicalDivisionsTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 2
+			path: module/Application/src/Application/Model/GeographicalDivisionsTable.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/GlobalTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/GlobalTable.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/RolesTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/RolesTable.php
+
+		-
+			message: '#^Variable \$endDate might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3DownloadTable.php
+
+		-
+			message: '#^Variable \$startDate might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3DownloadTable.php
+
+		-
+			message: '#^Variable \$data might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3DuplicateTable.php
+
+		-
+			message: '#^Argument of an invalid type string supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''NumberofTester'' on array\{content\: ''record'', formId\: mixed, formVersion\: mixed, meta\-instance\-id\: mixed, meta\-model\-version\: '''', meta\-ui\-version\: '''', meta\-submission\-date\: mixed, meta\-is\-complete\: ''1'', \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''avgMonthTesting'' on array\{content\: ''record'', formId\: mixed, formVersion\: mixed, meta\-instance\-id\: mixed, meta\-model\-version\: '''', meta\-ui\-version\: '''', meta\-submission\-date\: mixed, meta\-is\-complete\: ''1'', \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''content'' does not exist on ''0''\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''data'' does not exist on ''0''\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''formId'' does not exist on ''0''\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''formVersion'' does not exist on ''0''\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Offset ''token'' does not exist on ''0''\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Parameter \#2 \$flags of function json_encode expects int, true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Right side of \|\| is always false\.$#'
+			identifier: booleanOr.rightAlwaysFalse
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Variable \$aColumns might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Variable \$level might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Variable \$orderColumns might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 6
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 6
+			path: module/Application/src/Application/Model/SpiFormVer3Table.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3TempTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer3TempTable.php
+
+		-
+			message: '#^Variable \$endDate might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6DownloadTable.php
+
+		-
+			message: '#^Variable \$startDate might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6DownloadTable.php
+
+		-
+			message: '#^Variable \$data might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6DuplicateTable.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$facility\.$#'
+			identifier: property.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$facilityid\.$#'
+			identifier: property.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$facilityname\.$#'
+			identifier: property.notFound
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Loose comparison using \!\= between non\-empty\-string and '''' will always evaluate to true\.$#'
+			identifier: notEqual.alwaysTrue
+			count: 4
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Offset ''AUDIT_SCORE…'' on non\-empty\-array\<''Accuracy''\|''affiliation''\|''affiliation_other''\|''Altitude''\|''assesmentofaudit''\|''AUDIT_SCORE…''\|''auditEndTime''\|''auditorSignature''\|''AuditRequiredScore''\|''auditroundno''\|''auditStartTime''\|''client_negative_HIV''\|''client_negative_HIV…''\|''client_newly_HIV''\|''client_newly_HIV_PM''\|''client_newly_HIV_PQ''\|''client_positive_HIV…''\|''client_recent_RTRI''\|''client_recent_RTRI…''\|''client_tested_HIV''\|''client_tested_HIV_PM''\|''client_tested_HIV_PQ''\|''content''\|''correctiveaction''\|''D0_D_1_DIAGNOSED…''\|''D0_D_2_CANDIDATE…''\|''D0_D_3_ELIGIBLE…''\|''D0_D_4_ELIGIBLE_AND…''\|''D0_D_5_DOCUMENTED…''\|''D0_D_6…''\|''D0_D_7…''\|''D0_D_8…''\|''D0_N_1_DIAGNOSED…''\|''D0_N_2_CANDIDATE…''\|''D0_N_3_ELIGIBLE…''\|''D0_N_4_ELIGIBLE_AND…''\|''D0_N_5_DOCUMENTED…''\|''D0_N_6…''\|''D0_N_7…''\|''D0_N_8…''\|''D0_S_1_DIAGNOSED…''\|''D0_S_2_CANDIDATE…''\|''D0_S_3_ELIGIBLE…''\|''D0_S_4_ELIGIBLE_AND…''\|''D0_S_5_DOCUMENTED…''\|''D0_S_6…''\|''D0_S_7…''\|''D0_S_8…''\|''deviceid''\|''district''\|''DO_SURVEILLANCE''\|''durationaudit''\|''end''\|''endofsurvey''\|''EQA_C_7_1_PT…''\|''EQA_C_7_2_TESTING…''\|''EQA_C_7_3_REVIEW…''\|''EQA_C_7_4_FEEDBACK…''\|''EQA_C_7_5_IMPLEMENT…''\|''EQA_C_7_6_RECEIVE…''\|''EQA_C_7_7_FEEDBACK…''\|''EQA_C_7_8_TESTERS…''\|''EQA_DISPLAY''\|''EQA_Q_7_1_PT…''\|''EQA_Q_7_2_TESTING…''\|''EQA_Q_7_3_REVIEW…''\|''EQA_Q_7_4_FEEDBACK…''\|''EQA_Q_7_5_IMPLEMENT…''\|''EQA_Q_7_6_RECEIVE…''\|''EQA_Q_7_7_FEEDBACK…''\|''EQA_Q_7_8_TESTERS…''\|''EQA_SCORE''\|''EQAPHOTO''\|''facilityid''\|''facilityname''\|''FINAL_AUDIT_SCORE''\|''formId''\|''formVersion''\|''info1''\|''info10''\|''info11''\|''info12''\|''info177''\|''info178''\|''info179''\|''info17a''\|''info180''\|''info181''\|''info182''\|''info183''\|''info2''\|''info21''\|''info22''\|''info23''\|''info24''\|''info25''\|''info26''\|''info4''\|''info5''\|''info6''\|''INSTANCE''\|''instanceID''\|''instanceName''\|''Latitude''\|''level''\|''level_other''\|''Longitude''\|''MAX_AUDIT_SCORE''\|''meta\-date\-marked\-as…''\|''meta\-instance\-id''\|''meta\-is\-complete''\|''meta\-model\-version''\|''meta\-submission\-date''\|''meta\-ui\-version''\|''name_auditor2''\|''name_auditor_lead''\|''NumberofTester''\|''performrtritesting''\|''PERSONAL_C_1_10…''\|''PERSONAL_C_1_1_HIV…''\|''PERSONAL_C_1_2_HIV…''\|''PERSONAL_C_1_3_EQA…''\|''PERSONAL_C_1_4_QC…''\|''PERSONAL_C_1_5…''\|''PERSONAL_C_1_6…''\|''PERSONAL_C_1_7_HIV…''\|''PERSONAL_C_1_8…''\|''PERSONAL_C_1_9…''\|''PERSONAL_Display''\|''PERSONAL_Q_1_10…''\|''PERSONAL_Q_1_1_HIV…''\|''PERSONAL_Q_1_2_HIV…''\|''PERSONAL_Q_1_3_EQA…''\|''PERSONAL_Q_1_4_QC…''\|''PERSONAL_Q_1_5…''\|''PERSONAL_Q_1_6…''\|''PERSONAL_Q_1_7_HIV…''\|''PERSONAL_Q_1_8…''\|''PERSONAL_Q_1_9…''\|''PERSONAL_SCORE''\|''PERSONALPHOTO''\|''personincharge''\|''PHYSICAL_C_2_1…''\|''PHYSICAL_C_2_2…''\|''PHYSICAL_C_2_3…''\|''PHYSICAL_C_2_4_TEST…''\|''PHYSICAL_C_2_5…''\|''PHYSICAL_Display''\|''PHYSICAL_Q_2_1…''\|''PHYSICAL_Q_2_2…''\|''PHYSICAL_Q_2_3…''\|''PHYSICAL_Q_2_4_TEST…''\|''PHYSICAL_Q_2_5…''\|''PHYSICAL_SCORE''\|''physicaladdress''\|''PHYSICALPHOTO''\|''POST_C_6_1…''\|''POST_C_6_2_ELEMENTS…''\|''POST_C_6_3_PAGE…''\|''POST_C_6_4_INVALID…''\|''POST_C_6_5…''\|''POST_C_6_6…''\|''POST_C_6_7…''\|''POST_C_6_8_REGISTER…''\|''POST_C_6_9…''\|''POST_DISPLAY''\|''POST_Q_6_1…''\|''POST_Q_6_2_ELEMENTS…''\|''POST_Q_6_3_PAGE…''\|''POST_Q_6_4_INVALID…''\|''POST_Q_6_5…''\|''POST_Q_6_6…''\|''POST_Q_6_7…''\|''POST_Q_6_8_REGISTER…''\|''POST_Q_6_9…''\|''POST_SCORE''\|''POSTTESTPHOTO''\|''PRE_C_4_10_SOPS…''\|''PRE_C_4_11_BLOOD…''\|''PRE_C_4_12_CLIENT…''\|''PRE_C_4_13_CLIENT…''\|''PRE_C_4_1_NATIONAL…''\|''PRE_C_4_2_HIV…''\|''PRE_C_4_3_TEST…''\|''PRE_C_4_4_TEST…''\|''PRE_C_4_5_APPROVED…''\|''PRE_C_4_6_HIV_KITS…''\|''PRE_C_4_7_KIT…''\|''PRE_C_4_8_STOCK…''\|''PRE_C_4_9…''\|''PRE_Q_4_10_SOPS…''\|''PRE_Q_4_11_BLOOD…''\|''PRE_Q_4_12_CLIENT…''\|''PRE_Q_4_13_CLIENT…''\|''PRE_Q_4_1_NATIONAL…''\|''PRE_Q_4_2_HIV…''\|''PRE_Q_4_3_TEST…''\|''PRE_Q_4_4_TEST…''\|''PRE_Q_4_5_APPROVED…''\|''PRE_Q_4_6_HIV_KITS…''\|''PRE_Q_4_7_KIT…''\|''PRE_Q_4_8_STOCK…''\|''PRE_Q_4_9…''\|''PRETEST_Display''\|''PRETEST_SCORE''\|''PRETESTPHOTO''\|''RTRI_C_8_10…''\|''RTRI_C_8_11_INVALID…''\|''RTRI_C_8_1_TESTERS…''\|''RTRI_C_8_2_TESTERS…''\|''RTRI_C_8_3_JOBAIDS…''\|''RTRI_C_8_4…''\|''RTRI_C_8_5_RTRI_KIT…''\|''RTRI_C_8_6_RTRI…''\|''RTRI_C_8_7_RTRI…''\|''RTRI_C_8_8_QC…''\|''RTRI_C_8_9_QC…''\|''RTRI_DISPLAY''\|''RTRI_Q_8_10…''\|''RTRI_Q_8_11_INVALID…''\|''RTRI_Q_8_1_TESTERS…''\|''RTRI_Q_8_2_TESTERS…''\|''RTRI_Q_8_3_JOBAIDS…''\|''RTRI_Q_8_4…''\|''RTRI_Q_8_5_RTRI_KIT…''\|''RTRI_Q_8_6_RTRI…''\|''RTRI_Q_8_7_RTRI…''\|''RTRI_Q_8_8_QC…''\|''RTRI_Q_8_9_QC…''\|''RTRI_SCORE''\|''RTRIPHOTO''\|''S0_C_1_SURVEILLANCE…''\|''S0_C_2_COUNSELORS…''\|''S0_C_3_TESTS…''\|''S0_C_4_PROCESS…''\|''S0_C_5_RESULTS…''\|''S0_C_6_PROTOCOL…''\|''S0_C_7_DOCUMENTING…''\|''S0_Q_1_SURVEILLANCE…''\|''S0_Q_2_COUNSELORS…''\|''S0_Q_3_TESTS…''\|''S0_Q_4_PROCESS…''\|''S0_Q_5_RESULTS…''\|''S0_Q_6_PROTOCOL…''\|''S0_Q_7_DOCUMENTING…''\|''SAFETY_C_3_10…''\|''SAFETY_C_3_1…''\|''SAFETY_C_3_2…''\|''SAFETY_C_3_3…''\|''SAFETY_C_3_4_PPE…''\|''SAFETY_C_3_5_PPE…''\|''SAFETY_C_3_6_WATER…''\|''SAFETY_C_3_7…''\|''SAFETY_C_3_8…''\|''SAFETY_C_3_9…''\|''SAFETY_DISPLAY''\|''SAFETY_Q_3_10…''\|''SAFETY_Q_3_1…''\|''SAFETY_Q_3_2…''\|''SAFETY_Q_3_3…''\|''SAFETY_Q_3_4_PPE…''\|''SAFETY_Q_3_5_PPE…''\|''SAFETY_Q_3_6_WATER…''\|''SAFETY_Q_3_7…''\|''SAFETY_Q_3_8…''\|''SAFETY_Q_3_9…''\|''SAFETY_SCORE''\|''SAFETYPHOTO''\|''sitecode''\|''sitephoto''\|''sitephoto2''\|''staffaudited''\|''start''\|''status''\|''subscriberid''\|''SUMMARY_NOT_AVL''\|''TEST_C_5_1…''\|''TEST_C_5_2_TIMERS…''\|''TEST_C_5_3_SAMPLE…''\|''TEST_C_5_4_TESTING…''\|''TEST_C_5_5_QUALITY…''\|''TEST_C_5_6_QC…''\|''TEST_C_5_7…''\|''TEST_C_5_8…''\|''TEST_C_5_9_REVIEW…''\|''TEST_DISPLAY''\|''TEST_Q_5_1…''\|''TEST_Q_5_2_TIMERS…''\|''TEST_Q_5_3_SAMPLE…''\|''TEST_Q_5_4_TESTING…''\|''TEST_Q_5_5_QUALITY…''\|''TEST_Q_5_6_QC…''\|''TEST_Q_5_7…''\|''TEST_Q_5_8…''\|''TEST_Q_5_9_REVIEW…''\|''TEST_SCORE''\|''testingpointname''\|''testingpointtype''\|''testingpointtype…''\|''TESTPHOTO''\|''text_image''\|''today''\|''uuid'', mixed\> on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Offset ''nameOfAuditor2'' on non\-empty\-array\<''Accuracy''\|''affiliation''\|''affiliation_other''\|''Altitude''\|''assesmentofaudit''\|''AUDIT_SCORE…''\|''auditEndTime''\|''auditorSignature''\|''AuditRequiredScore''\|''auditroundno''\|''auditStartTime''\|''client_negative_HIV''\|''client_negative_HIV…''\|''client_newly_HIV''\|''client_newly_HIV_PM''\|''client_newly_HIV_PQ''\|''client_positive_HIV…''\|''client_recent_RTRI''\|''client_recent_RTRI…''\|''client_tested_HIV''\|''client_tested_HIV_PM''\|''client_tested_HIV_PQ''\|''content''\|''correctiveaction''\|''D0_D_1_DIAGNOSED…''\|''D0_D_2_CANDIDATE…''\|''D0_D_3_ELIGIBLE…''\|''D0_D_4_ELIGIBLE_AND…''\|''D0_D_5_DOCUMENTED…''\|''D0_D_6…''\|''D0_D_7…''\|''D0_D_8…''\|''D0_N_1_DIAGNOSED…''\|''D0_N_2_CANDIDATE…''\|''D0_N_3_ELIGIBLE…''\|''D0_N_4_ELIGIBLE_AND…''\|''D0_N_5_DOCUMENTED…''\|''D0_N_6…''\|''D0_N_7…''\|''D0_N_8…''\|''D0_S_1_DIAGNOSED…''\|''D0_S_2_CANDIDATE…''\|''D0_S_3_ELIGIBLE…''\|''D0_S_4_ELIGIBLE_AND…''\|''D0_S_5_DOCUMENTED…''\|''D0_S_6…''\|''D0_S_7…''\|''D0_S_8…''\|''deviceid''\|''district''\|''DO_SURVEILLANCE''\|''durationaudit''\|''end''\|''endofsurvey''\|''EQA_C_7_1_PT…''\|''EQA_C_7_2_TESTING…''\|''EQA_C_7_3_REVIEW…''\|''EQA_C_7_4_FEEDBACK…''\|''EQA_C_7_5_IMPLEMENT…''\|''EQA_C_7_6_RECEIVE…''\|''EQA_C_7_7_FEEDBACK…''\|''EQA_C_7_8_TESTERS…''\|''EQA_DISPLAY''\|''EQA_Q_7_1_PT…''\|''EQA_Q_7_2_TESTING…''\|''EQA_Q_7_3_REVIEW…''\|''EQA_Q_7_4_FEEDBACK…''\|''EQA_Q_7_5_IMPLEMENT…''\|''EQA_Q_7_6_RECEIVE…''\|''EQA_Q_7_7_FEEDBACK…''\|''EQA_Q_7_8_TESTERS…''\|''EQA_SCORE''\|''EQAPHOTO''\|''facilityid''\|''facilityname''\|''FINAL_AUDIT_SCORE''\|''formId''\|''formVersion''\|''info1''\|''info10''\|''info11''\|''info12''\|''info177''\|''info178''\|''info179''\|''info17a''\|''info180''\|''info181''\|''info182''\|''info183''\|''info2''\|''info21''\|''info22''\|''info23''\|''info24''\|''info25''\|''info26''\|''info4''\|''info5''\|''info6''\|''INSTANCE''\|''instanceID''\|''instanceName''\|''Latitude''\|''level''\|''level_other''\|''Longitude''\|''MAX_AUDIT_SCORE''\|''meta\-date\-marked\-as…''\|''meta\-instance\-id''\|''meta\-is\-complete''\|''meta\-model\-version''\|''meta\-submission\-date''\|''meta\-ui\-version''\|''name_auditor2''\|''name_auditor_lead''\|''NumberofTester''\|''performrtritesting''\|''PERSONAL_C_1_10…''\|''PERSONAL_C_1_1_HIV…''\|''PERSONAL_C_1_2_HIV…''\|''PERSONAL_C_1_3_EQA…''\|''PERSONAL_C_1_4_QC…''\|''PERSONAL_C_1_5…''\|''PERSONAL_C_1_6…''\|''PERSONAL_C_1_7_HIV…''\|''PERSONAL_C_1_8…''\|''PERSONAL_C_1_9…''\|''PERSONAL_Display''\|''PERSONAL_Q_1_10…''\|''PERSONAL_Q_1_1_HIV…''\|''PERSONAL_Q_1_2_HIV…''\|''PERSONAL_Q_1_3_EQA…''\|''PERSONAL_Q_1_4_QC…''\|''PERSONAL_Q_1_5…''\|''PERSONAL_Q_1_6…''\|''PERSONAL_Q_1_7_HIV…''\|''PERSONAL_Q_1_8…''\|''PERSONAL_Q_1_9…''\|''PERSONAL_SCORE''\|''PERSONALPHOTO''\|''personincharge''\|''PHYSICAL_C_2_1…''\|''PHYSICAL_C_2_2…''\|''PHYSICAL_C_2_3…''\|''PHYSICAL_C_2_4_TEST…''\|''PHYSICAL_C_2_5…''\|''PHYSICAL_Display''\|''PHYSICAL_Q_2_1…''\|''PHYSICAL_Q_2_2…''\|''PHYSICAL_Q_2_3…''\|''PHYSICAL_Q_2_4_TEST…''\|''PHYSICAL_Q_2_5…''\|''PHYSICAL_SCORE''\|''physicaladdress''\|''PHYSICALPHOTO''\|''POST_C_6_1…''\|''POST_C_6_2_ELEMENTS…''\|''POST_C_6_3_PAGE…''\|''POST_C_6_4_INVALID…''\|''POST_C_6_5…''\|''POST_C_6_6…''\|''POST_C_6_7…''\|''POST_C_6_8_REGISTER…''\|''POST_C_6_9…''\|''POST_DISPLAY''\|''POST_Q_6_1…''\|''POST_Q_6_2_ELEMENTS…''\|''POST_Q_6_3_PAGE…''\|''POST_Q_6_4_INVALID…''\|''POST_Q_6_5…''\|''POST_Q_6_6…''\|''POST_Q_6_7…''\|''POST_Q_6_8_REGISTER…''\|''POST_Q_6_9…''\|''POST_SCORE''\|''POSTTESTPHOTO''\|''PRE_C_4_10_SOPS…''\|''PRE_C_4_11_BLOOD…''\|''PRE_C_4_12_CLIENT…''\|''PRE_C_4_13_CLIENT…''\|''PRE_C_4_1_NATIONAL…''\|''PRE_C_4_2_HIV…''\|''PRE_C_4_3_TEST…''\|''PRE_C_4_4_TEST…''\|''PRE_C_4_5_APPROVED…''\|''PRE_C_4_6_HIV_KITS…''\|''PRE_C_4_7_KIT…''\|''PRE_C_4_8_STOCK…''\|''PRE_C_4_9…''\|''PRE_Q_4_10_SOPS…''\|''PRE_Q_4_11_BLOOD…''\|''PRE_Q_4_12_CLIENT…''\|''PRE_Q_4_13_CLIENT…''\|''PRE_Q_4_1_NATIONAL…''\|''PRE_Q_4_2_HIV…''\|''PRE_Q_4_3_TEST…''\|''PRE_Q_4_4_TEST…''\|''PRE_Q_4_5_APPROVED…''\|''PRE_Q_4_6_HIV_KITS…''\|''PRE_Q_4_7_KIT…''\|''PRE_Q_4_8_STOCK…''\|''PRE_Q_4_9…''\|''PRETEST_Display''\|''PRETEST_SCORE''\|''PRETESTPHOTO''\|''RTRI_C_8_10…''\|''RTRI_C_8_11_INVALID…''\|''RTRI_C_8_1_TESTERS…''\|''RTRI_C_8_2_TESTERS…''\|''RTRI_C_8_3_JOBAIDS…''\|''RTRI_C_8_4…''\|''RTRI_C_8_5_RTRI_KIT…''\|''RTRI_C_8_6_RTRI…''\|''RTRI_C_8_7_RTRI…''\|''RTRI_C_8_8_QC…''\|''RTRI_C_8_9_QC…''\|''RTRI_DISPLAY''\|''RTRI_Q_8_10…''\|''RTRI_Q_8_11_INVALID…''\|''RTRI_Q_8_1_TESTERS…''\|''RTRI_Q_8_2_TESTERS…''\|''RTRI_Q_8_3_JOBAIDS…''\|''RTRI_Q_8_4…''\|''RTRI_Q_8_5_RTRI_KIT…''\|''RTRI_Q_8_6_RTRI…''\|''RTRI_Q_8_7_RTRI…''\|''RTRI_Q_8_8_QC…''\|''RTRI_Q_8_9_QC…''\|''RTRI_SCORE''\|''RTRIPHOTO''\|''S0_C_1_SURVEILLANCE…''\|''S0_C_2_COUNSELORS…''\|''S0_C_3_TESTS…''\|''S0_C_4_PROCESS…''\|''S0_C_5_RESULTS…''\|''S0_C_6_PROTOCOL…''\|''S0_C_7_DOCUMENTING…''\|''S0_Q_1_SURVEILLANCE…''\|''S0_Q_2_COUNSELORS…''\|''S0_Q_3_TESTS…''\|''S0_Q_4_PROCESS…''\|''S0_Q_5_RESULTS…''\|''S0_Q_6_PROTOCOL…''\|''S0_Q_7_DOCUMENTING…''\|''SAFETY_C_3_10…''\|''SAFETY_C_3_1…''\|''SAFETY_C_3_2…''\|''SAFETY_C_3_3…''\|''SAFETY_C_3_4_PPE…''\|''SAFETY_C_3_5_PPE…''\|''SAFETY_C_3_6_WATER…''\|''SAFETY_C_3_7…''\|''SAFETY_C_3_8…''\|''SAFETY_C_3_9…''\|''SAFETY_DISPLAY''\|''SAFETY_Q_3_10…''\|''SAFETY_Q_3_1…''\|''SAFETY_Q_3_2…''\|''SAFETY_Q_3_3…''\|''SAFETY_Q_3_4_PPE…''\|''SAFETY_Q_3_5_PPE…''\|''SAFETY_Q_3_6_WATER…''\|''SAFETY_Q_3_7…''\|''SAFETY_Q_3_8…''\|''SAFETY_Q_3_9…''\|''SAFETY_SCORE''\|''SAFETYPHOTO''\|''sitecode''\|''sitephoto''\|''sitephoto2''\|''staffaudited''\|''start''\|''status''\|''subscriberid''\|''SUMMARY_NOT_AVL''\|''TEST_C_5_1…''\|''TEST_C_5_2_TIMERS…''\|''TEST_C_5_3_SAMPLE…''\|''TEST_C_5_4_TESTING…''\|''TEST_C_5_5_QUALITY…''\|''TEST_C_5_6_QC…''\|''TEST_C_5_7…''\|''TEST_C_5_8…''\|''TEST_C_5_9_REVIEW…''\|''TEST_DISPLAY''\|''TEST_Q_5_1…''\|''TEST_Q_5_2_TIMERS…''\|''TEST_Q_5_3_SAMPLE…''\|''TEST_Q_5_4_TESTING…''\|''TEST_Q_5_5_QUALITY…''\|''TEST_Q_5_6_QC…''\|''TEST_Q_5_7…''\|''TEST_Q_5_8…''\|''TEST_Q_5_9_REVIEW…''\|''TEST_SCORE''\|''testingpointname''\|''testingpointtype''\|''testingpointtype…''\|''TESTPHOTO''\|''text_image''\|''today''\|''uuid'', mixed\> on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Parameter \#2 \$flags of function json_encode expects int, true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$aColumns might not be defined\.$#'
+			identifier: variable.undefined
+			count: 18
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$approveStatus on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$level might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$orderColumns might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 8
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 8
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Variable \$scorePer in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 10
+			path: module/Application/src/Application/Model/SpiFormVer6Table.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Db\\ResultSet\\ResultSetInterface\:\:current\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
+
+		-
+			message: '#^Variable \$districtId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
+
+		-
+			message: '#^Variable \$provinceId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
+
+		-
+			message: '#^Variable \$table might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
+
+		-
+			message: '#^Call to an undefined method Laminas\\Db\\ResultSet\\ResultSetInterface\:\:toArray\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Model/UserCountryMapTable.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$contact_no\.$#'
+			identifier: property.notFound
+			count: 2
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$password\.$#'
+			identifier: property.notFound
+			count: 2
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Variable \$redirect in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 2
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Variable \$userMappedIdsArray might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Variable \$userMappingType might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Model/UsersTable.php
+
+		-
+			message: '#^Loose comparison using \=\= between non\-empty\-string and '''' will always evaluate to false\.$#'
+			identifier: equal.alwaysFalse
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Parameter \#1 \$limit of method Laminas\\Db\\Sql\\Select\:\:limit\(\) expects int, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Parameter \#1 \$num of function base_convert expects string, int\<0, 36\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Path in include\(\) "/Users/amitdugar/www/odkdash\\config/autoload/local\.php" is not a file or it does not exist\.$#'
+			identifier: include.fileNotFound
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Result of \|\| is always false\.$#'
+			identifier: booleanOr.alwaysFalse
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between DateTimeImmutable and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Variable \$dateTime in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: module/Application/src/Application/Service/CommonService.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 6
+			path: module/Application/src/Application/Service/FacilityService.php
+
+		-
+			message: '#^Variable \$notAdded might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/FacilityService.php
+
+		-
+			message: '#^Variable \$total might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/FacilityService.php
+
+		-
+			message: '#^Parameter \#5 \$ln of method TCPDF\:\:Cell\(\) expects int, false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/FpdiExtends.php
+
+		-
+			message: '#^Parameter \#7 \$fill of method TCPDF\:\:Cell\(\) expects bool, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/FpdiExtends.php
+
+		-
+			message: '#^Call to an undefined method GuzzleHttp\\Exception\\RequestException\:\:getResponse\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Service/GuzzleApiLogMiddleware.php
+
+		-
+			message: '#^Parameter \#3 \$quality of function imagepng expects int, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/ImageResize.php
+
+		-
+			message: '#^Variable \$optimalHeight might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/ImageResize.php
+
+		-
+			message: '#^Variable \$optimalWidth might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/ImageResize.php
+
+		-
+			message: '#^Parameter \#3 \$quality of function imagepng expects int, float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/ImageResizeService.php
+
+		-
+			message: '#^Variable \$optimalHeight might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/ImageResizeService.php
+
+		-
+			message: '#^Variable \$optimalWidth might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/ImageResizeService.php
+
+		-
+			message: '#^Binary operation "\." between ''Export\-'' and array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Call to an undefined method Application\\Model\\SpiFormVer3Table\:\:getAllLabels\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Constant PDF_HEADER_LOGO not found\.$#'
+			identifier: constant.notFound
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Constant PDF_HEADER_LOGO_WIDTH not found\.$#'
+			identifier: constant.notFound
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Expression "\$language" on a separate line does not do anything\.$#'
+			identifier: expr.resultUnused
+			count: 4
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\<0, 999999\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#1 \$w of method TCPDF\:\:writeHTMLCell\(\) expects float, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#3 \$fill of method TCPDF\:\:writeHTML\(\) expects bool, int given\.$#'
+			identifier: argument.type
+			count: 20
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#3 \$x of method TCPDF\:\:writeHTMLCell\(\) expects float\|null, string given\.$#'
+			identifier: argument.type
+			count: 6
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#4 \$y of method TCPDF\:\:writeHTMLCell\(\) expects float\|null, string given\.$#'
+			identifier: argument.type
+			count: 12
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#5 \$cell of method TCPDF\:\:writeHTML\(\) expects bool, int given\.$#'
+			identifier: argument.type
+			count: 20
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#8 \$fill of method TCPDF\:\:writeHTMLCell\(\) expects bool, int given\.$#'
+			identifier: argument.type
+			count: 10
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Result of method CpChart\\Image\:\:autoOutput\(\) \(void\) is used\.$#'
+			identifier: method.void
+			count: 5
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Result of method CpChart\\Image\:\:render\(\) \(void\) is used\.$#'
+			identifier: method.void
+			count: 3
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-empty\-array\<array\<mixed\>\> and array\{\} will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Undefined variable\: \$sOrder$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Undefined variable\: \$sWhere$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$excelName might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$fieldNames might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$folderPath might not be defined\.$#'
+			identifier: variable.undefined
+			count: 4
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$fromDate might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$headerName might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$headerRow might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$heading might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$l might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$level might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$output might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$outputScore might not be defined\.$#'
+			identifier: variable.undefined
+			count: 29
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$result might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$sOrder in isset\(\) is never defined\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$sWhere in isset\(\) is never defined\.$#'
+			identifier: isset.variable
+			count: 1
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$scorePer in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 5
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$toDate might not be defined\.$#'
+			identifier: variable.undefined
+			count: 12
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Variable \$value in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 3
+			path: module/Application/src/Application/Service/OdkFormService.php
+
+		-
+			message: '#^Parameter \#2 \$h of method TCPDF\:\:writeHTMLCell\(\) expects float, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: module/Application/src/Application/Service/TcpdfExtends.php
+
+		-
+			message: '#^Parameter \#5 \$h of method TCPDF\:\:Image\(\) expects float, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/TcpdfExtends.php
+
+		-
+			message: '#^Parameter \#5 \$ln of method TCPDF\:\:Cell\(\) expects int, false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/TcpdfExtends.php
+
+		-
+			message: '#^Parameter \#7 \$fill of method TCPDF\:\:Cell\(\) expects bool, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: module/Application/src/Application/Service/TcpdfExtends.php
+
+		-
+			message: '#^Offset ''samesite'' on array\{lifetime\: int\<0, max\>, path\: non\-falsy\-string, domain\: string, secure\: bool, httponly\: bool, samesite\: ''Lax''\|''lax''\|''None''\|''none''\|''Strict''\|''strict''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: module/Application/src/Application/Session/SessionStorage.php
