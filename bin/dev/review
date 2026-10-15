@@ -1,0 +1,367 @@
+#!/usr/bin/env bash
+#
+# review — run the adversarial review pass with this repository's standing brief.
+#
+# Usage:
+#   bin/dev/review                 # review the working branch against master
+#   bin/dev/review <commit-sha>    # review one commit
+#   bin/dev/review --uncommitted   # review the working tree before committing
+#   bin/dev/review --pending       # list commits not yet recorded as reviewed
+#   bin/dev/review --since-last    # review everything since the last recorded commit
+#   bin/dev/review --mark [sha]    # record a commit (default HEAD) as reviewed
+#
+#   --verify may precede any of the review forms, and REVIEW_VERIFY=1 in .env makes it
+#   the default. It adds a second pass whose only job is to refute the first one's
+#   findings.
+#
+# The last three keep a ledger of what has already been through a review, so the answer to
+# "where do I start?" is a command rather than a memory. Without it the honest options are
+# re-reviewing commits that were already read, or skipping ones that were not. The ledger is
+# per-clone and never committed — see LEDGER below.
+#
+# The reviewing CLI is named by $REVIEW_AGENT rather than hard-coded, so the repository
+# carries no vendor name and the reviewer can be swapped without editing anything here.
+#
+# The brief is EXTRACTED from docs/engineering-standards.md §1 rather than duplicated here.
+# Two copies of a review checklist means the one nobody edits is the one that gets used.
+set -euo pipefail
+
+cd "$(dirname "$0")/../.."
+
+# Falls back to the untracked .env, so the reviewer's name and the ledger's location live on
+# the machine rather than in a shell profile — and never in the repository. Only these keys
+# are read: the reviewing CLI has no business inheriting database credentials to read a diff.
+read_env() {
+    [ -f .env ] || return 0
+    awk -v key="$1" -F= '$0 ~ "^[[:space:]]*" key "[[:space:]]*=" {
+        sub(/^[^=]*=[[:space:]]*/, ""); gsub(/^["'\'']|["'\'']$/, ""); print; exit }' .env
+}
+
+# Deliberately NOT in the repository. What one machine has already read is that machine's
+# business, and committing it would put a bookmark that changes on every review into the
+# history of the code being reviewed — and into every instance's deployment. It lives inside the
+# .git directory instead: local by construction, never committed, never deployed, and gone
+# when the clone is. Set REVIEW_LEDGER in .env to keep it somewhere that outlives a clone.
+LEDGER="${REVIEW_LEDGER:-$(read_env REVIEW_LEDGER)}"
+# --git-common-dir rather than --git-dir: in a linked worktree the latter points at
+# .git/worktrees/<name>, which would give every worktree a ledger of its own and make
+# a commit read in one look unread from another.
+[ -n "$LEDGER" ] || LEDGER="$(git rev-parse --git-common-dir)/reviewed-commits.txt"
+
+# Where an empty ledger starts. Reviewing the whole history to bootstrap would be days of
+# work nobody asked for; this is the recent past, and anything older is deemed shipped.
+BOOTSTRAP_COMMITS=10
+
+# The newest commit in the ledger that is still reachable — a rebase or a squash-merge can
+# leave a recorded SHA that no longer exists, and resuming from a dangling ref would fail
+# every git command downstream of it. Reads bottom-up and takes the first that resolves.
+last_reviewed() {
+    [ -f "$LEDGER" ] || return 0
+    local sha
+    while read -r sha _; do
+        case "$sha" in ''|\#*) continue ;; esac
+        # An ancestor of HEAD, not merely a commit that exists. A recorded sha
+        # can drop off this branch -- an amend or a rebase leaves the old object
+        # behind, and the shared ledger also carries entries from other
+        # worktrees' branches. Either way `thatSha..HEAD` is not a range of
+        # anything, and --since-last would re-read commits already recorded
+        # while missing ones that are not.
+        if git merge-base --is-ancestor "$sha" HEAD 2>/dev/null; then
+            echo "$sha"
+            return 0
+        fi
+    done < <(tac "$LEDGER" 2>/dev/null || tail -r "$LEDGER")
+}
+
+# The commits on HEAD that the ledger does not account for, oldest first.
+pending_range() {
+    local last
+    last="$(last_reviewed)"
+    if [ -n "$last" ]; then
+        echo "${last}..HEAD"
+    else
+        echo "HEAD~${BOOTSTRAP_COMMITS}..HEAD"
+    fi
+}
+
+mark_reviewed() {
+    local sha subject
+    sha="$(git rev-parse "${1:-HEAD}")"
+    if [ -f "$LEDGER" ] && grep -q "^$sha " "$LEDGER"; then
+        echo "Already recorded: $(git log -1 --format='%h %s' "$sha")"
+        return 0
+    fi
+    subject="$(git log -1 --format='%s' "$sha")"
+    printf '%s\t%s\t%s\n' "$sha" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$subject" >> "$LEDGER"
+    echo "Recorded as reviewed: $(git log -1 --format='%h %s' "$sha")"
+}
+
+# A second pass that only tries to refute the first one's findings.
+#
+# One pass that both finds AND reports has nothing pushing back on it, and that is where
+# the false positives live: a run of this script once produced four sentences resting on a
+# claim about a function the reviewer had not opened. Refutation is a different job from
+# discovery -- it is cheap, it is bounded by the number of findings rather than by the size
+# of the diff, and the second reader starts from "this is probably wrong" rather than from
+# its own reasoning.
+#
+# Off unless asked, because it doubles the cost of a run and a two-line diff does not
+# need it. REVIEW_VERIFY=1 in .env turns it on for good.
+VERIFY="${REVIEW_VERIFY:-}"
+[ -n "$VERIFY" ] || VERIFY="$(read_env REVIEW_VERIFY)"
+[ -n "$VERIFY" ] || VERIFY=0
+if [ "${1:-}" = "--verify" ]; then
+    VERIFY=1
+    shift
+fi
+
+case "${1:-}" in
+    --pending)
+        RANGE="$(pending_range)"
+        if [ -z "$(git log --format='%h' "$RANGE" 2>/dev/null)" ]; then
+            echo "Nothing pending — the ledger is level with HEAD."
+            exit 0
+        fi
+        echo "Not yet recorded as reviewed ($RANGE):"
+        git log --reverse --format='  %h  %s' "$RANGE"
+        exit 0
+        ;;
+    --mark)
+        mark_reviewed "${2:-HEAD}"
+        exit 0
+        ;;
+esac
+
+[ -n "${REVIEW_AGENT:-}" ]                || REVIEW_AGENT="$(read_env REVIEW_AGENT)"
+[ -n "${REVIEW_AGENT_STDIN:-}" ]          || REVIEW_AGENT_STDIN="$(read_env REVIEW_AGENT_STDIN)"
+# A second reviewer for when the first is out of usage. Optional; see run_with_fallback.
+[ -n "${REVIEW_AGENT_FALLBACK:-}" ]       || REVIEW_AGENT_FALLBACK="$(read_env REVIEW_AGENT_FALLBACK)"
+[ -n "${REVIEW_AGENT_FALLBACK_STDIN:-}" ] || REVIEW_AGENT_FALLBACK_STDIN="$(read_env REVIEW_AGENT_FALLBACK_STDIN)"
+[ -n "${REVIEW_LIMIT_PATTERN:-}" ]        || REVIEW_LIMIT_PATTERN="$(read_env REVIEW_LIMIT_PATTERN)"
+[ -n "$REVIEW_LIMIT_PATTERN" ]            || REVIEW_LIMIT_PATTERN='usage limit|rate limit|quota'
+
+if [ -z "${REVIEW_AGENT:-}" ]; then
+    echo "REVIEW_AGENT is not set — it names the CLI that performs the review." >&2
+    echo "Set it in the untracked .env:   REVIEW_AGENT='<your-review-cli> <subcommand>'" >&2
+    echo "or in your shell profile:       export REVIEW_AGENT='<your-review-cli> <subcommand>'" >&2
+    exit 1
+fi
+
+BRIEF="$(awk '/^\*\*The review brief/{found=1; next} found && /^> /{sub(/^> /,""); gsub(/^"|"$/,""); print; exit}' \
+    docs/engineering-standards.md)"
+
+if [ -z "$BRIEF" ]; then
+    echo "Could not extract the review brief from docs/engineering-standards.md §1." >&2
+    echo "Has the '**The review brief**' heading changed?" >&2
+    exit 1
+fi
+
+# The reviewer reads the repository itself, so it gets pointers rather than pasted files.
+# Naming where the invariants live is the difference between a review of this system and a
+# review of some PHP: without them it cannot know that a v6 query skipping the user's
+# location mapping, or a submission value reaching a grid cell unescaped, is a bug rather
+# than a style choice. Several of these invariants live in code rather than prose, so the
+# pointers name the code.
+CONTEXT="Before reviewing, read these for the rules this codebase is held to:
+- docs/engineering-standards.md — the bar, and what counts as a finding
+- module/Application/Module.php — service wiring, and the onBootstrap gate that checks
+  every route against the role allow-list
+- module/Application/src/Application/Model/Acl.php — that allow-list
+- module/Application/src/Application/Model/SpiFormVer6Table.php — applyV6LocationScope:
+  how a user mapped to countries, provinces or districts is kept to their own audits
+- module/Application/src/Application/Service/CommonService.php — escapeHtml, the helper
+  every ODK submission value passes through before it reaches a grid cell or a PDF
+- migrations/README.md and bin/migrate — every schema change belongs in migrations/, must
+  replay on a fresh install, and comes with a version bump in composer.json
+- module/Application/config/module.config.php — routes, and the console commands under
+  the 'console' key
+
+A finding is a defect with a failure scenario: concrete inputs or state, and the wrong
+output or lost data that results. A deliberate trade-off already recorded in these
+documents is a rebuttal, not a fix — say so rather than reporting it.
+
+$BRIEF"
+
+# The scope travels inside the prompt rather than as a --base/--commit flag: those flags
+# select a built-in review mode and are mutually exclusive with custom instructions, and
+# the instructions are the entire point of this script.
+MARK_AFTER=""
+case "${1:-}" in
+    --uncommitted) SCOPE="Review the staged, unstaged and untracked changes in the working tree (\`git status\`, \`git diff\`, \`git diff --cached\`)." ;;
+    --since-last)
+        RANGE="$(pending_range)"
+        if [ -z "$(git log --format='%h' "$RANGE" 2>/dev/null)" ]; then
+            echo "Nothing to review — the ledger is level with HEAD."
+            exit 0
+        fi
+        # Resolved to concrete SHAs now, not after the reviewer returns. A review
+        # takes minutes, and HEAD can move under it — a parallel session landing a
+        # commit is exactly how this went wrong the first time it ran, marking a
+        # commit nobody had read and dropping one that had been. What is recorded
+        # afterwards is this list, whatever HEAD has become.
+        MARK_AFTER="$(git log --reverse --format='%H' "$RANGE")"
+        SCOPE="Review the changes introduced by these commits together: \`git diff ${RANGE%%..*}..HEAD\`, with
+\`git log --reverse --format='%h %s' $RANGE\` for what each one was for. Judge them as one body of
+work — a defect introduced in one commit and fixed in a later one is not a finding. Ignore code
+outside that diff except where you need it to judge the diff."
+        ;;
+    "")            SCOPE="Review the changes on the current branch relative to master: \`git diff master...HEAD\`. Ignore code outside that diff except where you need it to judge the diff." ;;
+    *)             SCOPE="Review the changes introduced by commit $1: \`git show $1\`. Ignore code outside that diff except where you need it to judge the diff." ;;
+esac
+
+PROMPT="$SCOPE
+
+$CONTEXT"
+
+# Scratch files for this run, removed however it ends. Spelled out rather than `mktemp -t`,
+# whose meaning differs between BSD and GNU: BSD takes a prefix, GNU takes a template and
+# insists on the trailing Xs.
+SCRATCH="$(mktemp -d "${TMPDIR:-/tmp}/review.XXXXXX")"
+trap 'rm -rf "$SCRATCH"' EXIT
+
+# REVIEW_AGENT is a command line, not just a binary, so a reviewer that wants a subcommand
+# and one that wants a flag are both a setting rather than an edit here. Word-splitting is
+# intended. Reviewers that read the prompt from stdin get REVIEW_AGENT_STDIN=1.
+# shellcheck disable=SC2086
+run_direct() {
+    if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+        printf '%s' "$1" | $REVIEW_AGENT
+    else
+        $REVIEW_AGENT "$1"
+    fi
+}
+
+# One run of one reviewer, for when a fallback is configured. Output still streams, and
+# copies go to $4 (both streams, to recognise a refusal for lack of usage) and $4.out
+# (stdout alone: the findings). fd 3 carries stdout past the pipe that copies stderr, since
+# bash 3.2 has no process substitution to wait on. The reviewer's output is a pipe here,
+# not a terminal, which is why this path is taken only when there is a fallback to use.
+# shellcheck disable=SC2086
+attempt() {
+    local agent="$1" stdin="$2" prompt="$3" log="$4"
+    if [ "$stdin" = "1" ]; then
+        { { printf '%s' "$prompt" | $agent | tee -a "$log" "$log.out"; } 2>&1 1>&3 | tee -a "$log" >&2; } 3>&1
+    else
+        { { $agent "$prompt" | tee -a "$log" "$log.out"; } 2>&1 1>&3 | tee -a "$log" >&2; } 3>&1
+    fi
+}
+
+# With a fallback configured: runs the review, and when the reviewer stops because it is out
+# of usage -- a non-zero exit AND a message matching REVIEW_LIMIT_PATTERN, so a finding that
+# merely mentions a limit cannot trigger it -- runs the same prompt through
+# REVIEW_AGENT_FALLBACK, which then handles the rest of the run, verify pass included. The
+# stdout of the reviewer that finished is left in $SCRATCH/findings, so nothing a refused
+# reviewer printed can pass for a finding.
+#
+# A failed run still stops the script (set -e), so an abandoned or refused review never
+# advances the bookmark.
+run_with_fallback() {
+    local log="$SCRATCH/run.$RANDOM" status=0
+    if [ -f "$SCRATCH/fallback" ]; then
+        attempt "$REVIEW_AGENT_FALLBACK" "$REVIEW_AGENT_FALLBACK_STDIN" "$1" "$log" || status=$?
+    else
+        attempt "$REVIEW_AGENT" "$REVIEW_AGENT_STDIN" "$1" "$log" || status=$?
+        if [ "$status" -ne 0 ] && grep -qiE "$REVIEW_LIMIT_PATTERN" "$log"; then
+            echo >&2
+            echo "── the reviewer is out of usage: continuing with REVIEW_AGENT_FALLBACK ──────────" >&2
+            echo >&2
+            : > "$SCRATCH/fallback"
+            log="$log.fallback"
+            status=0
+            attempt "$REVIEW_AGENT_FALLBACK" "$REVIEW_AGENT_FALLBACK_STDIN" "$1" "$log" || status=$?
+        fi
+    fi
+    # A review always says something. A reviewer that exits cleanly with nothing on stdout
+    # was stopped before it could review -- one refused a command it needed, and still
+    # exited 0 -- so the run has not been reviewed and must not reach the ledger.
+    if [ "$status" -eq 0 ] && [ ! -s "$log.out" ]; then
+        echo "The reviewer exited without printing a review, so nothing was reviewed." >&2
+        status=1
+    fi
+    [ "$status" -ne 0 ] || cp "$log.out" "$SCRATCH/findings"
+    return "$status"
+}
+
+# Without a fallback nothing changes from before: the reviewer runs directly on the
+# terminal, exec'd where there is no ledger to write afterwards.
+if [ -z "$REVIEW_AGENT_FALLBACK" ] && [ "$VERIFY" != "1" ] && [ -z "$MARK_AFTER" ]; then
+    # shellcheck disable=SC2086
+    if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+        printf '%s' "$PROMPT" | exec $REVIEW_AGENT
+    else
+        exec $REVIEW_AGENT "$PROMPT"
+    fi
+fi
+
+# The reviewer for one pass: directly, or through the fallback when one is configured.
+run_reviewer() {
+    if [ -n "$REVIEW_AGENT_FALLBACK" ]; then
+        run_with_fallback "$1"
+    else
+        run_direct "$1"
+    fi
+}
+
+if [ "$VERIFY" != "1" ]; then
+    run_reviewer "$PROMPT"
+else
+    # The first pass is kept, because the second one needs to read it. It still streams,
+    # so the wait feels the same as an unverified run.
+    FINDINGS="$SCRATCH/findings"
+    if [ -n "$REVIEW_AGENT_FALLBACK" ]; then
+        run_with_fallback "$PROMPT"
+    else
+        run_direct "$PROMPT" | tee "$FINDINGS"
+    fi
+
+    if [ ! -s "$FINDINGS" ]; then
+        echo
+        echo "The first pass returned nothing, so there is nothing to verify."
+    else
+        echo
+        echo "── verifying ──────────────────────────────────────────────────────────────────"
+        echo
+
+        # Deliberately one-sided. This pass is not asked whether the findings are good, it
+        # is asked to break them, and the wording says so -- a reader invited to "check"
+        # a claim mostly agrees with it. Its own evidence is held to the same bar the
+        # brief sets for a finding, so a refutation that cannot cite a line is no better
+        # than the claim it is trying to kill.
+        VERIFY_PROMPT="A review pass on this repository produced the findings below. Your only
+job is to try to REFUTE each one. Do not add findings of your own, do not restate them, and do
+not soften them into suggestions.
+
+For each finding, open the code it cites and answer with one of:
+  CONFIRMED   file:line and the quoted line that proves the defect is real
+  REFUTED     file:line and the quoted line that shows the claim is wrong, or that names the
+              premise it rests on and shows that premise is false
+  UNVERIFIED  you could not find the line either way -- say what you looked for
+
+A finding whose premise is a claim about code is refuted the moment that code says otherwise,
+however plausible the reasoning built on it. A deliberate trade-off recorded in the commit
+message, in a comment, or in docs/engineering-standards.md is refuted too: it is a rebuttal
+rather than a defect.
+
+Finish with the surviving findings only, in severity order, each with its evidence. Say
+plainly how many you refuted and why. If every finding is refuted, say that.
+
+$SCOPE
+
+The findings to refute:
+
+$(cat "$FINDINGS")"
+
+        run_reviewer "$VERIFY_PROMPT"
+    fi
+fi
+
+# Only --since-last has a list to record. The other forms reach here too now that a
+# verified run cannot exec, so the ledger block has to say so rather than rely on having
+# been unreachable.
+if [ -n "$MARK_AFTER" ]; then
+    echo
+    for sha in $MARK_AFTER; do
+        mark_reviewed "$sha"
+    done
+    echo "Ledger updated: $LEDGER"
+fi
