@@ -130,3 +130,18 @@
 .filter-panel.filter-panel-collapsed .filter-actions .filter-expand {
     display: inline-block;
 }
+
+/* The theme's btn-default is nearly white on white; this is the one way back
+   into a folded panel, so it has to be seen. */
+.filter-panel .filter-actions .filter-expand {
+    border: 1px solid #3c8dbc;
+    background: #f2f8fc;
+    color: #2a6a8f;
+    font-weight: 600;
+}
+
+.filter-panel .filter-actions .filter-expand:hover,
+.filter-panel .filter-actions .filter-expand:focus {
+    background: #3c8dbc;
+    color: #fff;
+}
