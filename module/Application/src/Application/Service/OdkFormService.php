@@ -2862,7 +2862,7 @@ class OdkFormService
             $output = [];
             $spreadsheet = new Spreadsheet();
             $writer = new Xlsx($spreadsheet);
-            $filename = 'facility-report-v6' . date('d-M-Y-H-i-s') . '.xlsx';
+            $filename = 'facility-report-v6-' . date('d-M-Y-H-i-s') . '.xlsx';
             //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
             $sql = new Sql($dbAdapter);

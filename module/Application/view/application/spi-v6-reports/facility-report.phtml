@@ -382,25 +382,29 @@ $userMappingType = $loginContainer->userMappingType;
 		filterHighlighter = initFilterHighlighter('#filterPanel');
 	});
 
+	// The export re-runs the query the table last loaded, so it carries the
+	// same filters; only the date range is sent, for the sheet's heading.
 	function exportFacility() {
-		// $.blockUI({
-		// 	message: '<h1>Loading...</h1>'
-		// });
-		var dateRange = $("#dateRange").val();
+		$.blockUI({
+			message: '<h1><?= $this->translate('Loading'); ?>...</h1>'
+		});
 		$.post("<?php echo $this->url('spi-v6-reports', array('action' => 'export-facility-report')); ?>", {
-			dateRange: dateRange
+			dateRange: $("#dateRange").val()
 		},
 			function (data) {
-				console.log(data);
-				return false;
-				if (data == "" || data == null || data == undefined) {
+				data = $.trim(data);
+				if (data === "") {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
-					document.location.href = '/temporary/' + data;
+					document.location.href = '<?php echo $this->basePath('temporary'); ?>/' + encodeURIComponent(data);
 				}
-				// $.unblockUI();
+			})
+			.fail(function () {
+				alert('<?= $this->translate('Unable to generate download'); ?>');
+			})
+			.always(function () {
+				$.unblockUI();
 			});
-
 	}
 
 	function getReport() {
