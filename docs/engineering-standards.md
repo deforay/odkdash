@@ -83,7 +83,7 @@ without running a review.
 
 ## 4. Before you push
 
-- `php -l` clean on every changed PHP file.
+- `composer qc` clean: composer.json valid, every PHP file and shell script lints, no security advisories.
 - `php bin/migrate --dry-run` clean when a migration changed.
 - `bin/dev/review` run, and every finding addressed or rebutted.
 - Shell scripts under `bin/` run, not just read. `bash -n` proves syntax and nothing else.

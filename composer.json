@@ -51,6 +51,13 @@
         "housekeeping": "@php bin/console cleanup-old-logs",
         "audits-unlinked": "@php bin/console audits:unlinked",
         "reset-password": "@php bin/console reset-password",
+        "lint": "find module config public tasks -name '*.php' -print0 | xargs -0 -P 8 -n 1 php -d display_errors=stderr -l > /dev/null && for f in bin/console bin/migrate; do php -l $f > /dev/null || exit 1; done && for f in bin/*.sh bin/dev/review cron.sh; do bash -n $f || exit 1; done",
+        "qc": [
+            "Composer\\Config::disableProcessTimeout",
+            "@composer validate --no-check-publish",
+            "@lint",
+            "@composer audit --abandoned=report"
+        ],
         "cron": "crunz schedule:run",
         "cron-list": "crunz schedule:list",
         "post-update": [
@@ -73,7 +80,9 @@
         "cron": "Run due scheduled tasks (crunz). Meant to be called every minute from the crontab.",
         "cron-list": "List the scheduled tasks defined in tasks/.",
         "post-update": "Post-deploy steps: apply migrations, then housekeeping. Each is allowed to fail without aborting the rest.",
-        "refresh": "Full update: rebase onto origin, reinstall dependencies, then run post-update."
+        "refresh": "Full update: rebase onto origin, reinstall dependencies, then run post-update.",
+        "lint": "Syntax-check every PHP file and shell script.",
+        "qc": "Validate composer.json, lint, and audit dependencies."
     },
     "config": {
         "allow-plugins": {
