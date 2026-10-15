@@ -312,19 +312,26 @@ $googleTag = "GTM-TSMNF9F9";
             </li>
           <?php } ?>
 
-          <?php if (isset($acl) && ($acl->isAllowed($role, "Application\Controller\SpiV3ReportsController", "facility-report") || ($acl->isAllowed($role, "Application\Controller\SpiV6ReportsController", "facility-report")))) { ?>
-
+          <?php
+          // One report links straight to it; more than one opens a submenu.
+          $reportLinks = [];
+          if (isset($acl) && preg_match("/v3/i", $config['web_version']) && $acl->isAllowed($role, "Application\Controller\SpiV3ReportsController", "facility-report")) {
+            $reportLinks[] = [$this->url('spi-v3-reports', ['action' => 'facility-report']), $this->translate('SPI-RT Facility Report')];
+          }
+          if (isset($acl) && preg_match("/v6/i", $config['web_version']) && $acl->isAllowed($role, "Application\Controller\SpiV6ReportsController", "facility-report")) {
+            $reportLinks[] = [$this->url('spi-v6-reports', ['action' => 'facility-report']), $this->translate('SPI-RRT Facility Report')];
+          }
+          ?>
+          <?php if (count($reportLinks) === 1) { ?>
+            <li class="parent"><a href="<?php echo $reportLinks[0][0]; ?>"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a></li>
+          <?php } elseif (count($reportLinks) > 1) { ?>
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a>
               <ul class="sub-menu">
-                <?php if (preg_match("/v3/i", $config['web_version']) && ($acl->isAllowed($role, "Application\Controller\SpiV3ReportsController", "facility-report"))) { ?>
-                  <li><a href="<?php echo $this->url('spi-v3-reports', array('action' => 'facility-report')); ?>"><?php echo $this->translate('SPI-RT Facility Report'); ?></a></li>
-                <?php } ?>
-                <?php if (preg_match("/v6/i", $config['web_version']) && ($acl->isAllowed($role, "Application\Controller\SpiV6ReportsController", "facility-report"))) { ?>
-                  <li><a href="<?php echo $this->url('spi-v6-reports', ['action' => 'facility-report']); ?>"><?php echo $this->translate('SPI-RRT Facility Report'); ?></a></li>
+                <?php foreach ($reportLinks as [$href, $label]) { ?>
+                  <li><a href="<?php echo $href; ?>"><?php echo $label; ?></a></li>
                 <?php } ?>
               </ul>
             </li>
-
           <?php } ?>
 
           <?php if (trim($emailMenu) != "") { ?>
