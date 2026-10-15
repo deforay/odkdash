@@ -643,6 +643,8 @@ class UsersTable extends AbstractTableGateway
         } else {
             $userLocationMapResult = [];
         }
+        $userMappedIdsArray = null;
+        $userMappingType = null;
         foreach ($userLocationMapResult as $ulMap) {
             $userMappedIdsArray[] = $ulMap['location_id'];
             $userMappingType = $ulMap['mapping_type'];

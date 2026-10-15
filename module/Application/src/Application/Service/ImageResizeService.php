@@ -82,6 +82,8 @@ class ImageResizeService {
                 $optimalWidth = $optionArray['optimalWidth'];
                 $optimalHeight = $optionArray['optimalHeight'];
                 break;
+            default:
+                throw new \InvalidArgumentException("Unknown resize option '$option'");
         }
         return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
     }

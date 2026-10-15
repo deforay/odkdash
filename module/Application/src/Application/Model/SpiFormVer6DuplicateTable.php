@@ -40,6 +40,7 @@ class SpiFormVer6DuplicateTable extends AbstractTableGateway
                 ->where('spiv6.id = "' . $params['id'] . '"');
             $sQueryStr = $sql->buildSqlString($sQuery);
             $aResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $data = [];
             foreach ($dResult as $dData) {
                 $data[$dData['COLUMN_NAME']] = $aResult[$dData['COLUMN_NAME']];
             }

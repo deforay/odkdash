@@ -3132,6 +3132,9 @@ class SpiFormVer3Table extends AbstractTableGateway
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
+        // An unrecognised source matches no columns rather than failing on them.
+        $aColumns = [];
+        $orderColumns = [];
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'testingpointname', 'avgMonthTesting', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'testingpointname', 'avgMonthTesting', 'NumberofTester', 'AUDIT_SCORE_PERCANTAGE');
@@ -3404,6 +3407,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         $levelFour = [];
         foreach ($rResult as $aRow) {
             $row = [];
+            // Reset per row: a row without a score would otherwise show the previous row's level.
+            $level = null;
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += $aRow['AUDIT_SCORE_PERCANTAGE'];
                 if (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40) {

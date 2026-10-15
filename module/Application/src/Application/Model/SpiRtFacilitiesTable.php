@@ -49,6 +49,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $table = 'spi_form_v_6';
         } elseif ($formVersion == 6) {
             $table = 'spi_form_v_6';
+        } else {
+            throw new \InvalidArgumentException("Unknown form version '$formVersion'");
         }
 
         $query = $sql->select()->from($table)
@@ -566,6 +568,8 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $currentDateTime = CommonService::getDateTime();
 
         $geographicalDivisionsTable = new GeographicalDivisionsTable($dbAdapter);
+        $provinceId = null;
+        $districtId = null;
         if (isset($params['province']) && trim($params['province']) == 'other') {
             if (trim($params['provinceName']) != "") {
                 $provinceId = $geographicalDivisionsTable->addProvinceByFacility(trim($params['provinceName']));

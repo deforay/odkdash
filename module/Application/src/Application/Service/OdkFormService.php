@@ -118,6 +118,8 @@ class OdkFormService
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
+                $fromDate = '';
+                $toDate = '';
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
                     $fromDate = $dateRangeDate[0];
                 }
@@ -163,6 +165,8 @@ class OdkFormService
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $output = [];
+            $outputScore = [];
             if (!empty($sResult)) {
                 $auditScore = 0;
                 $levelZero = [];
@@ -462,6 +466,7 @@ class OdkFormService
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer3Table');
+            $result = 0;
             if (isset($params['idList']) && $params['idList'] != '') {
                 $counter = count($params['idList']);
                 for ($i = 0; $i < $counter; $i++) {
@@ -513,6 +518,8 @@ class OdkFormService
             $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
+                $fromDate = '';
+                $toDate = '';
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
                     $fromDate = $dateRangeDate[0];
                 }
@@ -790,6 +797,7 @@ class OdkFormService
             //Convert the JSON string back into an array.
             $decoded = json_decode($fileContents, true);
             $language = $configData['language'];
+            $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
             foreach ($result['formResult'] as $formData) {
                 // create new PDF document
                 $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -822,11 +830,6 @@ class OdkFormService
                 // set image scale factor
                 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-                // set some language-dependent strings (optional)
-                if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-                    require_once dirname(__FILE__) . '/lang/eng.php';
-                    $pdf->setLanguageArray($l);
-                }
                 // ---------------------------------------------------------
 
                 // set font
@@ -1316,6 +1319,7 @@ class OdkFormService
                 $pdf->writeHTML($partCTable, true, 0, true, 0);
                 $summationExp = explode(PHP_EOL, $decoded[$language]['/SPI_RT/SUMMARY/info12:label']);
                 $facilityName = '';
+                $heading = '';
                 if (isset($summationExp[0]) && trim($summationExp[0]) != "") {
                     $heading = $summationExp[0];
                 }
@@ -1471,7 +1475,6 @@ class OdkFormService
                 if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf")) {
                     mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf");
                 }
-                $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath);
                 }
@@ -1562,6 +1565,7 @@ class OdkFormService
             $row = $rowIterator->current();
             $cellIterator = $row->getCellIterator();
             $cellIterator->setIterateOnlyExistingCells(false);
+            $headerName = [];
             foreach ($cellIterator as $cell) {
                 $header = explode(":", $cell->getValue());
                 $headerName[] = end($header);
@@ -1711,6 +1715,7 @@ class OdkFormService
             //$facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer6Table');
+            $result = 0;
             if (isset($params['idList']) && $params['idList'] != '') {
                 $counter = count($params['idList']);
                 for ($i = 0; $i < $counter; $i++) {
@@ -1751,6 +1756,8 @@ class OdkFormService
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
+                $fromDate = '';
+                $toDate = '';
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
                     $fromDate = $dateRangeDate[0];
                 }
@@ -1839,16 +1846,11 @@ class OdkFormService
             if (!empty($loginContainer->token)) {
                 $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
             }
-            if (isset($sWhere) && $sWhere != "") {
-                $sQuery->where($sWhere);
-            }
-
-            if (isset($sOrder) && $sOrder != "") {
-                $sQuery->order($sOrder);
-            }
             $sQueryStr = $sql->buildSqlString($sQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
+            $output = [];
+            $outputScore = [];
             if (!empty($sResult)) {
                 $auditScore = 0;
                 $levelZero = [];
@@ -1970,6 +1972,8 @@ class OdkFormService
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
+                $fromDate = '';
+                $toDate = '';
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
                     $fromDate = $dateRangeDate[0];
                 }
@@ -2015,6 +2019,8 @@ class OdkFormService
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
+            $output = [];
+            $outputScore = [];
             if (!empty($sResult)) {
                 $auditScore = 0;
                 $sQ1Score = 0;
@@ -2858,6 +2864,8 @@ class OdkFormService
             $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
+                $fromDate = '';
+                $toDate = '';
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
                     $fromDate = $dateRangeDate[0];
                 }
@@ -3562,6 +3570,7 @@ class OdkFormService
             //Convert the JSON string back into an array.
             $decoded = json_decode($fileContents, true);
             $language = $configData['language'];
+            $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
             foreach ($result['formResult'] as $formData) {
                 // create new PDF document
                 $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -3594,11 +3603,6 @@ class OdkFormService
                 // set image scale factor
                 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-                // set some language-dependent strings (optional)
-                if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-                    require_once dirname(__FILE__) . '/lang/eng.php';
-                    $pdf->setLanguageArray($l);
-                }
                 // ---------------------------------------------------------
 
                 // set font
@@ -4989,6 +4993,7 @@ class OdkFormService
                 $pdf->writeHTML($partCTable, true, 0, true, 0);
                 $summationExp = explode(PHP_EOL, $decoded[$language]['/SPI_RT/SUMMARY/info12:label']);
                 $facilityName = '';
+                $heading = '';
                 if (isset($summationExp[0]) && trim($summationExp[0]) != "") {
                     $heading = $summationExp[0];
                 }
@@ -5238,7 +5243,6 @@ class OdkFormService
                 if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf")) {
                     mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf");
                 }
-                $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
                 if (!file_exists($folderPath)) {
                     mkdir($folderPath);
                 }
@@ -5298,6 +5302,8 @@ class OdkFormService
             $displayDate = "";
             if (isset($params[4]['value']) && ($params[4]['value'] != "")) {
                 $dateRangeDate = explode(" - ", $params[4]['value']);
+                $fromDate = '';
+                $toDate = '';
                 if (isset($dateRangeDate[0]) && trim($dateRangeDate[0]) != "") {
                     $fromDate = $dateRangeDate[0];
                 }
@@ -5326,6 +5332,10 @@ class OdkFormService
             $levelThree = [];
             $levelFour = [];
 
+            // An unrecognised source exports an empty sheet rather than failing.
+            $excelName = 'audit-export';
+            $headerRow = [];
+            $fieldNames = [];
             if ($source == 'apall') { // source
                 $headerRow = ['Overall Audit Performance'];
                 $excelName = 'overall-audit-performance';
@@ -5364,6 +5374,7 @@ class OdkFormService
             foreach ($rResult as $aRow) {
                 $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
                 $row = [];
+                $level = null;
                 if ($source == 'hv' || $source == 'la' || $source == 'apall' || $source == 'apl180' || $source == 'ap') {
                     $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
                     if (isset($scorePer) && $scorePer < 40) {

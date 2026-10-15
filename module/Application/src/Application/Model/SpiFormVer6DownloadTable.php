@@ -73,6 +73,8 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
                 $sQuery = $sQuery->where("spiv6.auditroundno='" . $queryResult->auditroundno . "'");
             }
             if (isset($queryResult->assesmentofaudit) && $queryResult->assesmentofaudit != '') {
+                $startDate = '';
+                $endDate = '';
                 $dateField = explode(" ", $queryResult->assesmentofaudit);
                 if (isset($dateField[0]) && trim($dateField[0]) != "") {
                     $startDate = CommonService::isoDateFormat(trim($dateField[0]));

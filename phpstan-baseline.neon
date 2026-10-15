@@ -103,18 +103,6 @@ parameters:
 			path: module/Application/src/Application/Controller/ClientErrorController.php
 
 		-
-			message: '#^Variable \$auditRoundNo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Controller/CommonController.php
-
-		-
-			message: '#^Variable \$id might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Controller/CommonController.php
-
-		-
 			message: '#^Method Application\\Controller\\ConfigController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
 			identifier: return.missing
 			count: 1
@@ -319,24 +307,6 @@ parameters:
 			path: module/Application/src/Application/Model/RolesTable.php
 
 		-
-			message: '#^Variable \$endDate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3DownloadTable.php
-
-		-
-			message: '#^Variable \$startDate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3DownloadTable.php
-
-		-
-			message: '#^Variable \$data might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3DuplicateTable.php
-
-		-
 			message: '#^Argument of an invalid type string supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -397,24 +367,6 @@ parameters:
 			path: module/Application/src/Application/Model/SpiFormVer3Table.php
 
 		-
-			message: '#^Variable \$aColumns might not be defined\.$#'
-			identifier: variable.undefined
-			count: 6
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
-			message: '#^Variable \$level might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
-			message: '#^Variable \$orderColumns might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
 			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.variable
 			count: 6
@@ -437,24 +389,6 @@ parameters:
 			identifier: isset.variable
 			count: 1
 			path: module/Application/src/Application/Model/SpiFormVer3TempTable.php
-
-		-
-			message: '#^Variable \$endDate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer6DownloadTable.php
-
-		-
-			message: '#^Variable \$startDate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer6DownloadTable.php
-
-		-
-			message: '#^Variable \$data might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer6DuplicateTable.php
 
 		-
 			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$facility\.$#'
@@ -499,27 +433,9 @@ parameters:
 			path: module/Application/src/Application/Model/SpiFormVer6Table.php
 
 		-
-			message: '#^Variable \$aColumns might not be defined\.$#'
-			identifier: variable.undefined
-			count: 18
-			path: module/Application/src/Application/Model/SpiFormVer6Table.php
-
-		-
 			message: '#^Variable \$approveStatus on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.variable
 			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer6Table.php
-
-		-
-			message: '#^Variable \$level might not be defined\.$#'
-			identifier: variable.undefined
-			count: 6
-			path: module/Application/src/Application/Model/SpiFormVer6Table.php
-
-		-
-			message: '#^Variable \$orderColumns might not be defined\.$#'
-			identifier: variable.undefined
-			count: 3
 			path: module/Application/src/Application/Model/SpiFormVer6Table.php
 
 		-
@@ -547,18 +463,6 @@ parameters:
 			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
 
 		-
-			message: '#^Variable \$districtId might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
-
-		-
-			message: '#^Variable \$provinceId might not be defined\.$#'
-			identifier: variable.undefined
-			count: 3
-			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
-
-		-
 			message: '#^Variable \$sOrder in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.variable
 			count: 1
@@ -568,12 +472,6 @@ parameters:
 			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.variable
 			count: 1
-			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
-
-		-
-			message: '#^Variable \$table might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
 			path: module/Application/src/Application/Model/SpiRtFacilitiesTable.php
 
 		-
@@ -615,18 +513,6 @@ parameters:
 		-
 			message: '#^Variable \$sWhere in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.variable
-			count: 1
-			path: module/Application/src/Application/Model/UsersTable.php
-
-		-
-			message: '#^Variable \$userMappedIdsArray might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Model/UsersTable.php
-
-		-
-			message: '#^Variable \$userMappingType might not be defined\.$#'
-			identifier: variable.undefined
 			count: 1
 			path: module/Application/src/Application/Model/UsersTable.php
 
@@ -685,18 +571,6 @@ parameters:
 			path: module/Application/src/Application/Service/FacilityService.php
 
 		-
-			message: '#^Variable \$notAdded might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/FacilityService.php
-
-		-
-			message: '#^Variable \$total might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/FacilityService.php
-
-		-
 			message: '#^Parameter \#5 \$ln of method TCPDF\:\:Cell\(\) expects int, false given\.$#'
 			identifier: argument.type
 			count: 1
@@ -721,43 +595,19 @@ parameters:
 			path: module/Application/src/Application/Service/ImageResize.php
 
 		-
-			message: '#^Variable \$optimalHeight might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/ImageResize.php
-
-		-
-			message: '#^Variable \$optimalWidth might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/ImageResize.php
-
-		-
 			message: '#^Parameter \#3 \$quality of function imagepng expects int, float given\.$#'
 			identifier: argument.type
 			count: 1
 			path: module/Application/src/Application/Service/ImageResizeService.php
 
 		-
-			message: '#^Variable \$optimalHeight might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/ImageResizeService.php
-
-		-
-			message: '#^Variable \$optimalWidth might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/ImageResizeService.php
-
-		-
-			message: '#^Binary operation "\." between ''Export\-'' and array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
+			message: '#^Binary operation "\." between ''Export\-'' and array\{\}\|array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: module/Application/src/Application/Service/OdkFormService.php
 
 		-
-			message: '#^Binary operation "\." between non\-falsy\-string and array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
+			message: '#^Binary operation "\." between non\-falsy\-string and array\{\}\|array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: module/Application/src/Application/Service/OdkFormService.php
@@ -835,12 +685,6 @@ parameters:
 			path: module/Application/src/Application/Service/OdkFormService.php
 
 		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
 			message: '#^Result of method CpChart\\Image\:\:autoOutput\(\) \(void\) is used\.$#'
 			identifier: method.void
 			count: 5
@@ -859,111 +703,9 @@ parameters:
 			path: module/Application/src/Application/Service/OdkFormService.php
 
 		-
-			message: '#^Undefined variable\: \$sOrder$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Undefined variable\: \$sWhere$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$excelName might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$fieldNames might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$folderPath might not be defined\.$#'
-			identifier: variable.undefined
-			count: 4
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$fromDate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 12
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$headerName might not be defined\.$#'
-			identifier: variable.undefined
-			count: 6
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$headerRow might not be defined\.$#'
-			identifier: variable.undefined
-			count: 3
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$heading might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$l might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$level might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$output might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$outputScore might not be defined\.$#'
-			identifier: variable.undefined
-			count: 29
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$result might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$sOrder in isset\(\) is never defined\.$#'
-			identifier: isset.variable
-			count: 1
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$sWhere in isset\(\) is never defined\.$#'
-			identifier: isset.variable
-			count: 1
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
 			message: '#^Variable \$scorePer in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.variable
 			count: 5
-			path: module/Application/src/Application/Service/OdkFormService.php
-
-		-
-			message: '#^Variable \$toDate might not be defined\.$#'
-			identifier: variable.undefined
-			count: 12
 			path: module/Application/src/Application/Service/OdkFormService.php
 
 		-

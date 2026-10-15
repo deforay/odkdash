@@ -67,9 +67,10 @@ class CommonController extends AbstractActionController
     {
         /** @var \Laminas\Http\Request $request */
         $request = $this->getRequest();
+        $auditRoundNo = [];
+        $id = null;
         if ($request->isPost()) {
             $params = $request->getPost();
-            $auditRoundNo = [];
             $id = $params['inpId'];
             if (trim($params["formVersion"]) == 'v3') {
                 $auditRoundNo = $this->odkFormService->getSpiV3FormAuditNo();

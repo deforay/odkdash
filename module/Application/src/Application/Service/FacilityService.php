@@ -447,6 +447,8 @@ class FacilityService
             $container = new Container('alert');
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $uploadOption = $params['uploadOption'];
+            $total = 0;
+            $notAdded = 0;
 
             if (isset($_FILES['facilitiesInfo']['name']) && !empty($_FILES['facilitiesInfo']['name'])) {
                 if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {

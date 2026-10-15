@@ -4577,6 +4577,9 @@ class SpiFormVer6Table extends AbstractTableGateway
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
+        // An unrecognised source matches no columns rather than failing on them.
+        $aColumns = [];
+        $orderColumns = [];
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'testingpointname', 'client_tested_HIV_PM', 'NumberofTester');
@@ -4874,6 +4877,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $scorePer = (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
             $auditScore += $scorePer;
             $row = [];
+            $level = null;
 
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 if ($scorePer < 40) {
@@ -4951,6 +4955,9 @@ class SpiFormVer6Table extends AbstractTableGateway
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
+        // An unrecognised source matches no columns rather than failing on them.
+        $aColumns = [];
+        $orderColumns = [];
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE');
@@ -5265,6 +5272,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $levelFour = [];
         foreach ($rResult as $aRow) {
             $row = [];
+            $level = null;
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
                 if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
@@ -5352,6 +5360,9 @@ class SpiFormVer6Table extends AbstractTableGateway
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
          * you want to insert a non-database field (for example a counter or static image)
          */
+        // An unrecognised source matches no columns rather than failing on them.
+        $aColumns = [];
+        $orderColumns = [];
         if ($parameters['source'] == 'hv') {
             $aColumns = array("DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'facilityname', 'NumberofTester');
             $orderColumns = array('assesmentofaudit', 'facilityname', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE');
@@ -5676,6 +5687,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $levelFour = [];
         foreach ($rResult as $aRow) {
             $row = [];
+            $level = null;
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
                 if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
