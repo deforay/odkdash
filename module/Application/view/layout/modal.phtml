@@ -1,6 +1,8 @@
 <?php
+use Application\Service\CommonService;
 use Application\Session\Container;
 $container = new Container('alert');
+$sessionLogin = new Container('credo');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +12,7 @@ $container = new Container('alert');
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="<?php echo $this->basePath('assets/img/favicon.png'); ?>">
-    <title><?php echo $this->translate('Malawi Dashboard for Quality Improvement of HIV Rapid Testing'); ?></title>
+    <title><?php echo CommonService::escapeHtml($sessionLogin->countryName); ?> <?= $this->translate('Dashboard for Quality Improvement of HIV Rapid Testing'); ?></title>
 
     <style type="text/css">
       .mandatory {
