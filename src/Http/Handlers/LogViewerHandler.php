@@ -1,11 +1,16 @@
 <?php
 
-namespace Application\Controller;
+declare(strict_types=1);
 
-use Application\Service\Logger;
+namespace App\Http\Handlers;
+
+use App\View\ViewRenderer;
 use Application\Service\CommonService;
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\View\Model\ViewModel;
+use Application\Service\Logger;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Admin-only log viewer. Lists log files under var/log/ and tails the
@@ -18,7 +23,7 @@ use Laminas\View\Model\ViewModel;
  * in the 1.1.2 migration. Only superadmin (role_id 1) gets the privilege
  * by default; other roles must be granted via Manage Roles.
  */
-class LogViewerController extends AbstractActionController
+final class LogViewerHandler implements RequestHandlerInterface
 {
     private const int MAX_LINES = 5000;
     private const int DEFAULT_LINES = 500;
@@ -27,41 +32,41 @@ class LogViewerController extends AbstractActionController
 
     private string $logDir;
 
-    public function __construct(Logger $logger)
-    {
+    public function __construct(
+        private readonly ResponseFactoryInterface $responses,
+        private readonly ViewRenderer $view,
+        Logger $logger,
+    ) {
         $this->logDir = $logger->getLogDir();
     }
 
-    public function indexAction()
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $request = $this->getRequest();
         $files = $this->listFiles();
+        $isPost = $request->getMethod() === 'POST';
+        $query = $request->getQueryParams();
 
-        if ($request->isPost() || $this->params()->fromQuery('format') === 'json') {
-            $file = (string) ($request->isPost()
-                ? $request->getPost('file', '')
-                : $this->params()->fromQuery('file', ''));
-            $lines = (int) ($request->isPost()
-                ? $request->getPost('lines', self::DEFAULT_LINES)
-                : $this->params()->fromQuery('lines', self::DEFAULT_LINES));
-            $search = trim((string) ($request->isPost()
-                ? $request->getPost('q', '')
-                : $this->params()->fromQuery('q', '')));
+        if ($isPost || ($query['format'] ?? null) === 'json') {
+            $input = $isPost ? (array) $request->getParsedBody() : $query;
+            $file = (string) ($input['file'] ?? '');
+            $lines = (int) ($input['lines'] ?? self::DEFAULT_LINES);
+            $search = trim((string) ($input['q'] ?? ''));
 
             $payload = $this->tailPayload($files, $file, $lines, $search);
 
-            $response = $this->getResponse();
-            $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-            $response->setContent(CommonService::jsonEncode($payload));
+            $response = $this->responses->createResponse()->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write(CommonService::jsonEncode($payload));
             return $response;
         }
 
-        return new ViewModel([
+        $response = $this->responses->createResponse()->withHeader('Content-Type', 'text/html; charset=UTF-8');
+        $response->getBody()->write($this->view->page('application/log-viewer/index', [
             'files' => $files,
             'logDir' => $this->logDir,
             'defaultLines' => self::DEFAULT_LINES,
             'maxLines' => self::MAX_LINES,
-        ]);
+        ]));
+        return $response;
     }
 
     /**

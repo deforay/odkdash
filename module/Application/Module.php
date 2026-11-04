@@ -241,13 +241,6 @@ class Module
                         return new \Application\Controller\LoginController($userService);
                     }
                 },
-                'Application\Controller\LogViewerController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $logger = $diContainer->get('Logger');
-                        return new \Application\Controller\LogViewerController($logger);
-                    }
-                },
                 'Application\Controller\ApiLogsController' => new class {
                     public function __invoke($diContainer)
                     {
@@ -713,6 +706,11 @@ class Module
         return [
             'invokables' => [
                 'humanReadableDateFormat' => 'Application\View\Helper\HumanReadableDateFormat',
+            ],
+            // Pages moved to Slim have no Laminas route. This lets url() on a
+            // Laminas page still link to them.
+            'delegators' => [
+                \Laminas\View\Helper\Url::class => [\App\View\SlimAwareUrlDelegator::class],
             ],
             'factories' => [
                 'GlobalConfigHelper' => new class {

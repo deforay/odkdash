@@ -5,9 +5,24 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Http\Handlers\ClientErrorHandler;
+use App\Http\Handlers\LogViewerHandler;
+use App\Http\Middlewares\AccessMiddleware;
 use App\Http\Middlewares\ErrorMiddleware;
+use App\Services\LaminasBridge;
+use App\View\UrlHelper;
+use App\View\ViewHelpers;
+use App\View\ViewRenderer;
+use Application\I18n\Translator;
 use Application\Service\Logger;
+use Application\Session\Container as Session;
+use Application\View\Helper\GetCountryDetailsByIdHelper;
+use Application\View\Helper\GlobalConfigHelper;
+use Application\View\Helper\HumanReadableDateFormat;
+use Application\View\Helper\Translate;
 use DI\Container;
+use Laminas\Escaper\Escaper;
+use Laminas\Router\Http\TreeRouteStack;
+use Laminas\ServiceManager\ServiceManager;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,6 +44,8 @@ use function DI\autowire;
  */
 final class Kernel
 {
+    private static ?self $current = null;
+
     private function __construct(
         private readonly App $app,
         private readonly ServerRequestInterface $request,
@@ -37,33 +54,106 @@ final class Kernel
 
     public static function fromGlobals(): self
     {
+        $appRoot = dirname(__DIR__, 2);
+        $basePath = self::basePath();
+
         $container = new Container([
             ResponseFactoryInterface::class => static fn(): ResponseFactoryInterface => new ResponseFactory(),
+
+            LaminasBridge::class => static fn(): LaminasBridge => new LaminasBridge(
+                $appRoot,
+                static fn(ServiceManager $services) => self::applyLocale($services),
+            ),
 
             // Same channels the Laminas service manager hands out as 'Logger'
             // and 'ClientErrorLogger'. Neither needs Laminas to build.
             Logger::class => static fn(): Logger => new Logger(),
             'ClientErrorLogger' => static fn(): Logger => new Logger(channel: 'client-errors'),
 
+            ViewRenderer::class => static fn(ContainerInterface $c): ViewRenderer => new ViewRenderer(
+                $appRoot . '/module/Application/view',
+                $c->get(ViewHelpers::class),
+            ),
+            ViewHelpers::class => static fn(ContainerInterface $c): ViewHelpers => self::viewHelpers($c, $basePath),
+            UrlHelper::class => static function (ContainerInterface $c) use ($basePath): UrlHelper {
+                $app = $c->get(App::class);
+
+                return new UrlHelper(
+                    $app->getRouteCollector(),
+                    $app->getRouteCollector()->getRouteParser(),
+                    static function () use ($c, $basePath): TreeRouteStack {
+                        $router = $c->get(LaminasBridge::class)->get('HttpRouter');
+                        $router->setBaseUrl($basePath);
+
+                        return $router;
+                    },
+                );
+            },
+
             ErrorMiddleware::class => autowire(),
+            AccessMiddleware::class => autowire(),
+
             ClientErrorHandler::class => static fn(ContainerInterface $c): ClientErrorHandler => new ClientErrorHandler(
                 $c->get(ResponseFactoryInterface::class),
                 $c->get('ClientErrorLogger'),
             ),
+            LogViewerHandler::class => autowire(),
         ]);
 
         AppFactory::setContainer($container);
         $app = AppFactory::create();
-        $app->setBasePath(self::basePath());
+        $app->setBasePath($basePath);
+        $container->set(App::class, $app);
 
-        $app->any('/client-errors', ClientErrorHandler::class);
+        // Route names are the old Laminas route names, so $this->url() calls
+        // in the templates keep working when a page moves.
+        $app->any('/client-errors', ClientErrorHandler::class)
+            ->setName('client-errors')
+            ->setArgument('access', 'public');
 
+        $app->map(['GET', 'POST'], '/log-viewer', LogViewerHandler::class)
+            ->setName('log-viewer')
+            ->setArgument('resource', 'Application\Controller\LogViewerController')
+            ->setArgument('privilege', 'index');
+
+        // Slim runs the middleware added last first. The order a request
+        // meets them is: errors, routing, body parsing, access, handler.
+        $app->add(AccessMiddleware::class);
+        $app->addBodyParsingMiddleware();
         $app->addRoutingMiddleware();
         $app->add(ErrorMiddleware::class);
 
         $request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
 
-        return new self($app, $request);
+        return self::$current = new self($app, $request);
+    }
+
+    /**
+     * The Kernel public/index.php built for this request, or null outside a
+     * web request. The Laminas url() helper reaches Slim routes through it.
+     */
+    public static function current(): ?self
+    {
+        return self::$current;
+    }
+
+    /**
+     * Builds the URL for a Slim route, or returns null when no Slim route has
+     * that name.
+     *
+     * @param array<string, mixed> $params
+     * @param array<string, mixed> $query
+     */
+    public function urlFor(string $name, array $params = [], array $query = []): ?string
+    {
+        $routes = $this->app->getRouteCollector();
+        try {
+            $routes->getNamedRoute($name);
+        } catch (\RuntimeException) {
+            return null;
+        }
+
+        return $routes->getRouteParser()->urlFor($name, array_map('strval', $params), $query);
     }
 
     /**
@@ -84,6 +174,50 @@ final class Kernel
     public function run(): void
     {
         $this->app->run($this->request);
+    }
+
+    /**
+     * The helpers the templates call. Names and signatures match the Laminas
+     * helpers they replace.
+     */
+    private static function viewHelpers(ContainerInterface $c, string $basePath): ViewHelpers
+    {
+        $laminas = static fn(): LaminasBridge => $c->get(LaminasBridge::class);
+        $escaper = static fn(): Escaper => new Escaper('utf-8');
+
+        return new ViewHelpers([
+            'translate' => static fn(): Translate => new Translate($laminas()->get('translator')),
+            'basePath' => static fn(): \Closure => static fn(?string $file = null): string
+                => $basePath . ($file !== null ? '/' . ltrim($file, '/') : ''),
+            'url' => static fn(): UrlHelper => $c->get(UrlHelper::class),
+            'escapeHtml' => static fn(): \Closure => static fn(mixed $value): string
+                => $escaper()->escapeHtml((string) $value),
+            'escapeHtmlAttr' => static fn(): \Closure => static fn(mixed $value): string
+                => $escaper()->escapeHtmlAttr((string) $value),
+            'humanReadableDateFormat' => static fn(): HumanReadableDateFormat => new HumanReadableDateFormat(),
+            'GlobalConfigHelper' => static fn(): GlobalConfigHelper
+                => new GlobalConfigHelper($laminas()->get('GlobalTable')),
+            'GetCountryDetailsByIdHelper' => static fn(): GetCountryDetailsByIdHelper
+                => new GetCountryDetailsByIdHelper($laminas()->get('CountriesTable')),
+            // Laminas collected titles for the layout to print. The layouts
+            // never print them, so a call outputs nothing.
+            'headTitle' => static fn(): \Closure => static fn(mixed ...$ignored): string => '',
+        ]);
+    }
+
+    /**
+     * Sets the translator's locale, as Module::initTranslator does: the
+     * user's chosen language, or the instance default from global_config.
+     */
+    private static function applyLocale(ServiceManager $services): void
+    {
+        /** @var Translator $translator */
+        $translator = $services->get('translator');
+        $language = (new Session('credo'))->language;
+        if (empty($language)) {
+            $language = $services->get('GlobalTable')->getGlobalValue('language');
+        }
+        $translator->setLocale((string) $language)->setFallbackLocale('en_US');
     }
 
     /**

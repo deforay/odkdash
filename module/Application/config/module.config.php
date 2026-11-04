@@ -79,16 +79,6 @@ return array(
                     ),
                 ),
             ),
-            'log-viewer' => array(
-                'type' => 'Literal',
-                'options' => array(
-                    'route' => '/log-viewer',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\LogViewerController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'api-logs' => array(
                 'type' => 'segment',
                 'options' => array(
