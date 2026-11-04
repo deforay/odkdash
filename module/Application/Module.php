@@ -122,7 +122,6 @@ class Module
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
             && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ClientErrorController'
         ) {
             if (empty($session) || empty($session->userId)) {
                 $url = $e->getRouter()->assemble([], ['name' => 'login']);
@@ -240,13 +239,6 @@ class Module
                     {
                         $userService = $diContainer->get('UserService');
                         return new \Application\Controller\LoginController($userService);
-                    }
-                },
-                'Application\Controller\ClientErrorController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $clientErrorLogger = $diContainer->get('ClientErrorLogger');
-                        return new \Application\Controller\ClientErrorController($clientErrorLogger);
                     }
                 },
                 'Application\Controller\LogViewerController' => new class {
@@ -417,13 +409,6 @@ class Module
                     public function __invoke($diContainer)
                     {
                         return new Logger();
-                    }
-                },
-                'ClientErrorLogger' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        return new Logger(channel: 'client-errors');
                     }
                 },
                 'AppAcl' => new class

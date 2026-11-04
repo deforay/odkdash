@@ -79,16 +79,6 @@ return array(
                     ),
                 ),
             ),
-            'client-errors' => array(
-                'type' => 'Literal',
-                'options' => array(
-                    'route' => '/client-errors',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ClientErrorController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'log-viewer' => array(
                 'type' => 'Literal',
                 'options' => array(

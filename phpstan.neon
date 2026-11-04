@@ -4,6 +4,7 @@ includes:
 parameters:
     level: 5
     paths:
+        - src
         - module/Application/src
         - module/Application/Module.php
         - module/Application/config

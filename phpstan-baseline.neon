@@ -79,30 +79,6 @@ parameters:
 			path: module/Application/src/Application/Controller/AuditTrailController.php
 
 		-
-			message: '#^Call to an undefined method Laminas\\Stdlib\\RequestInterface\:\:getServer\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: module/Application/src/Application/Controller/ClientErrorController.php
-
-		-
-			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:getHeaders\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: module/Application/src/Application/Controller/ClientErrorController.php
-
-		-
-			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:setStatusCode\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: module/Application/src/Application/Controller/ClientErrorController.php
-
-		-
-			message: '#^Method Application\\Controller\\ClientErrorController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Stdlib\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 3
-			path: module/Application/src/Application/Controller/ClientErrorController.php
-
-		-
 			message: '#^Method Application\\Controller\\ConfigController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
 			identifier: return.missing
 			count: 1
