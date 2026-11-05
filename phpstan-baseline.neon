@@ -61,46 +61,10 @@ parameters:
 			path: module/Application/src/Application/Command/AuditsUnlinked.php
 
 		-
-			message: '#^Method Application\\Controller\\AuditTrailController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
-			identifier: return.missing
-			count: 1
-			path: module/Application/src/Application/Controller/AuditTrailController.php
-
-		-
-			message: '#^Method Application\\Controller\\ConfigController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
-			identifier: return.missing
-			count: 1
-			path: module/Application/src/Application/Controller/ConfigController.php
-
-		-
 			message: '#^Method Application\\Controller\\CronController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
 			identifier: return.missing
 			count: 1
 			path: module/Application/src/Application/Controller/CronController.php
-
-		-
-			message: '#^Method Application\\Controller\\DistrictController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
-			identifier: return.missing
-			count: 1
-			path: module/Application/src/Application/Controller/DistrictController.php
-
-		-
-			message: '#^Method Application\\Controller\\EmailController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Http\\Response\.$#'
-			identifier: return.type
-			count: 2
-			path: module/Application/src/Application/Controller/EmailController.php
-
-		-
-			message: '#^Call to an undefined method Laminas\\Stdlib\\ResponseInterface\:\:getHeaders\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: module/Application/src/Application/Controller/EventController.php
-
-		-
-			message: '#^Method Application\\Controller\\EventController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Stdlib\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: module/Application/src/Application/Controller/EventController.php
 
 		-
 			message: '#^Method Application\\Controller\\FacilityController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
