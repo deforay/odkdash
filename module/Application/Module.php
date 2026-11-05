@@ -116,13 +116,23 @@ class Module
         /** @var \Laminas\Http\Request $request */
         $request = $e->getRequest();
 
-        if (
-            !$request->isXmlHttpRequest()
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\LoginController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\IndexController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverController'
-            && $e->getRouteMatch()->getParam('controller') != 'Application\Controller\ReceiverSpiV6Controller'
-        ) {
+        $isPublic = in_array($e->getRouteMatch()->getParam('controller'), [
+            'Application\Controller\LoginController',
+            'Application\Controller\IndexController',
+            'Application\Controller\ReceiverController',
+            'Application\Controller\ReceiverSpiV6Controller',
+        ], true);
+
+        // Without a login, a script request gets a 401. A page load gets
+        // the redirect to the login page below.
+        if (!$isPublic && $request->isXmlHttpRequest() && empty($session->userId)) {
+            /** @var \Laminas\Http\PhpEnvironment\Response $response */
+            $response = $e->getResponse();
+            $response->setStatusCode(401);
+            return $response;
+        }
+
+        if (!$request->isXmlHttpRequest() && !$isPublic) {
             if (empty($session) || empty($session->userId)) {
                 $url = $e->getRouter()->assemble([], ['name' => 'login']);
                 /** @var \Laminas\Http\PhpEnvironment\Response $response */
