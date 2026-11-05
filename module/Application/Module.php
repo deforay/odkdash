@@ -345,6 +345,11 @@ class Module
     public function getServiceConfig()
     {
         return array(
+            // Pages moved to Slim have no Laminas route. This adds them to
+            // the router, so links and redirects to them still assemble.
+            'delegators' => [
+                \Laminas\Router\Http\TreeRouteStack::class => [\App\Routing\SlimRoutesDelegator::class],
+            ],
             'factories' => array(
                 'Logger' => new class
                 {
@@ -655,11 +660,6 @@ class Module
         return [
             'invokables' => [
                 'humanReadableDateFormat' => 'Application\View\Helper\HumanReadableDateFormat',
-            ],
-            // Pages moved to Slim have no Laminas route. This lets url() on a
-            // Laminas page still link to them.
-            'delegators' => [
-                \Laminas\View\Helper\Url::class => [\App\View\SlimAwareUrlDelegator::class],
             ],
             'factories' => [
                 'GlobalConfigHelper' => new class {

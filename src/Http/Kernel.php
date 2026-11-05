@@ -209,28 +209,17 @@ final class Kernel
 
     /**
      * The Kernel public/index.php built for this request, or null outside a
-     * web request. The Laminas url() helper reaches Slim routes through it.
+     * web request. The Laminas router reaches Slim routes through it.
      */
     public static function current(): ?self
     {
         return self::$current;
     }
 
-    /**
-     * Builds the URL for a Slim route, or returns null when no Slim route has
-     * that name.
-     *
-     * @param array<string, mixed> $params
-     * @param array<string, mixed> $query
-     */
-    public function urlFor(string $name, array $params = [], array $query = []): ?string
+    /** URL building for Slim routes. The Laminas router reaches it through SlimRoutesDelegator. */
+    public function urls(): SlimUrls
     {
-        $urls = $this->app->getContainer()?->get(SlimUrls::class);
-        if (!$urls instanceof SlimUrls || !$urls->has($name)) {
-            return null;
-        }
-
-        return $urls->build($name, $params, $query);
+        return $this->app->getContainer()->get(SlimUrls::class);
     }
 
     /**

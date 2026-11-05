@@ -55,18 +55,35 @@ final class SlimUrls
         return isset($this->patterns[$name]);
     }
 
+    /** @return list<string> */
+    public function names(): array
+    {
+        return array_keys($this->patterns);
+    }
+
     /**
      * @param array<string, mixed> $params
      * @param array<string, mixed> $query
      */
     public function build(string $name, array $params = [], array $query = []): string
     {
+        $url = $this->routes->getBasePath() . $this->path($name, $params);
+
+        return $query === [] ? $url : $url . '?' . http_build_query($query);
+    }
+
+    /**
+     * The path below the base path.
+     *
+     * @param array<string, mixed> $params
+     */
+    public function path(string $name, array $params = []): string
+    {
         $pattern = $this->patterns[$name] ?? throw new RuntimeException(sprintf('No Slim route named "%s".', $name));
 
         $merged = array_merge($pattern['defaults'], $params);
-        $url = $this->routes->getBasePath() . self::buildPath($pattern['parts'], $merged, $pattern['defaults'], false);
 
-        return $query === [] ? $url : $url . '?' . http_build_query($query);
+        return self::buildPath($pattern['parts'], $merged, $pattern['defaults'], false);
     }
 
     /**
