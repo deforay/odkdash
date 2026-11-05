@@ -130,46 +130,6 @@ return array(
                     ),
                 ),
             ),
-            'spi-v3-reports' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v3-reports[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3ReportsController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'spi-v6-reports' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v6-reports[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6ReportsController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'dashboard' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/dashboard[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\DashboardController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'dashboard-v6' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/dashboard-v6[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\DashboardV6Controller',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'view-data' => array(
                 'type' => 'literal',
                 'options' => array(

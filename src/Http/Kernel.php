@@ -8,12 +8,16 @@ use App\Http\Handlers\ApiLogsHandler;
 use App\Http\Handlers\AuditTrailHandler;
 use App\Http\Handlers\ClientErrorHandler;
 use App\Http\Handlers\CommonHandler;
+use App\Http\Handlers\DashboardHandler;
+use App\Http\Handlers\DashboardV6Handler;
 use App\Http\Handlers\ConfigHandler;
 use App\Http\Handlers\DistrictHandler;
 use App\Http\Handlers\EmailHandler;
 use App\Http\Handlers\EventHandler;
 use App\Http\Handlers\ProvincesHandler;
 use App\Http\Handlers\RolesHandler;
+use App\Http\Handlers\SpiV3ReportsHandler;
+use App\Http\Handlers\SpiV6ReportsHandler;
 use App\Http\Handlers\UsersHandler;
 use App\Http\Handlers\LogViewerHandler;
 use App\Http\Middlewares\AccessMiddleware;
@@ -126,6 +130,10 @@ final class Kernel
             DistrictHandler::class => autowire(),
             EmailHandler::class => autowire(),
             CommonHandler::class => autowire(),
+            DashboardHandler::class => autowire(),
+            DashboardV6Handler::class => autowire(),
+            SpiV3ReportsHandler::class => autowire(),
+            SpiV6ReportsHandler::class => autowire(),
             Responder::class => autowire(),
 
             // Services that still come from the Laminas service manager,
@@ -180,6 +188,12 @@ final class Kernel
             ['email', '/email[/:action][/][:id]', EmailHandler::class, 'EmailController', ''],
             ['common', '/common[/:action][/][:id]', CommonHandler::class, 'CommonController',
                 'index,get-audit-location-based-on-form,generate-password'],
+            ['dashboard', '/dashboard[/:action][/][:id]', DashboardHandler::class, 'DashboardController', ''],
+            ['dashboard-v6', '/dashboard-v6[/:action][/][:id]', DashboardV6Handler::class, 'DashboardV6Controller', ''],
+            ['spi-v3-reports', '/spi-v3-reports[/:action][/][:id]', SpiV3ReportsHandler::class, 'SpiV3ReportsController',
+                'export-facility-report'],
+            ['spi-v6-reports', '/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController',
+                'export-facility-report'],
         ];
         foreach ($controllers as [$name, $laminasPattern, $handler, $controller, $loginOnly]) {
             $urls->register($name, $laminasPattern, ['action' => 'index']);
