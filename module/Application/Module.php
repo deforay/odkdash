@@ -267,21 +267,6 @@ class Module
                         return new \Application\Controller\LoginController($userService);
                     }
                 },
-                'Application\Controller\SpiV3ReportsController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\SpiV3ReportsController($odkFormService);
-                    }
-                },
-                'Application\Controller\SpiV6ReportsController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\SpiV6ReportsController($odkFormService, $provinceService);
-                    }
-                },
                 'Application\Controller\SpiV3Controller' => new class {
                     public function __invoke($diContainer)
                     {
@@ -299,14 +284,6 @@ class Module
                         return new \Application\Controller\SpiV6Controller($odkFormService, $commonService, $provinceService);
                     }
                 },
-                'Application\Controller\CronController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $commonService = $diContainer->get('CommonService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\CronController($commonService, $odkFormService);
-                    }
-                },
                 'Application\Controller\FacilityController' => new class {
                     public function __invoke($diContainer)
                     {
@@ -314,21 +291,6 @@ class Module
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
                         return new \Application\Controller\FacilityController($facilityService, $odkFormService, $provinceService);
-                    }
-                },
-                'Application\Controller\DashboardController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\DashboardController($odkFormService);
-                    }
-                },
-                'Application\Controller\DashboardV6Controller' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\DashboardV6Controller($odkFormService, $provinceService);
                     }
                 },
             ],
