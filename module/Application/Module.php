@@ -284,15 +284,6 @@ class Module
                         return new \Application\Controller\SpiV6Controller($odkFormService, $commonService, $provinceService);
                     }
                 },
-                'Application\Controller\FacilityController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $facilityService = $diContainer->get('FacilityService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\FacilityController($facilityService, $odkFormService, $provinceService);
-                    }
-                },
             ],
         ];
     }

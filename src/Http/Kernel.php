@@ -14,6 +14,7 @@ use App\Http\Handlers\ConfigHandler;
 use App\Http\Handlers\DistrictHandler;
 use App\Http\Handlers\EmailHandler;
 use App\Http\Handlers\EventHandler;
+use App\Http\Handlers\FacilityHandler;
 use App\Http\Handlers\ProvincesHandler;
 use App\Http\Handlers\RolesHandler;
 use App\Http\Handlers\SpiV3ReportsHandler;
@@ -134,6 +135,7 @@ final class Kernel
             DashboardV6Handler::class => autowire(),
             SpiV3ReportsHandler::class => autowire(),
             SpiV6ReportsHandler::class => autowire(),
+            FacilityHandler::class => autowire(),
             Responder::class => autowire(),
 
             // Services that still come from the Laminas service manager,
@@ -194,6 +196,7 @@ final class Kernel
                 'export-facility-report'],
             ['spi-v6-reports', '/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController',
                 'export-facility-report'],
+            ['spi-facility', '/facility[/:action][/][:id]', FacilityHandler::class, 'FacilityController', ''],
         ];
         foreach ($controllers as [$name, $laminasPattern, $handler, $controller, $loginOnly]) {
             $urls->register($name, $laminasPattern, ['action' => 'index']);
@@ -208,6 +211,10 @@ final class Kernel
                 $route->setArgument('login-only', $loginOnly);
             }
         }
+
+        // A second Laminas name for one facility URL. The spi-facility route
+        // serves the path, so only the URL is registered.
+        $urls->register('upload-facility', '/facility/upload-facility');
 
         // Slim runs the middleware added last first. The order a request
         // meets them is: errors, routing, body parsing, access, handler.

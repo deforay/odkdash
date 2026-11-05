@@ -109,27 +109,6 @@ return array(
                     ),
                 ),
             ),
-            'spi-facility' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/facility[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\FacilityController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-
-            'upload-facility' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/facility/upload-facility',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\FacilityController',
-                        'action' => 'upload-facility',
-                    ),
-                ),
-            ),
             'view-data' => array(
                 'type' => 'literal',
                 'options' => array(

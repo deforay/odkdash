@@ -61,12 +61,6 @@ parameters:
 			path: module/Application/src/Application/Command/AuditsUnlinked.php
 
 		-
-			message: '#^Method Application\\Controller\\FacilityController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but return statement is missing\.$#'
-			identifier: return.missing
-			count: 1
-			path: module/Application/src/Application/Controller/FacilityController.php
-
-		-
 			message: '#^Method Application\\Controller\\LoginController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Http\\Response\.$#'
 			identifier: return.type
 			count: 2
