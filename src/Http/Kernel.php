@@ -5,7 +5,13 @@ declare(strict_types=1);
 namespace App\Http;
 
 use App\Http\Handlers\ApiLogsHandler;
+use App\Http\Handlers\AuditTrailHandler;
 use App\Http\Handlers\ClientErrorHandler;
+use App\Http\Handlers\CommonHandler;
+use App\Http\Handlers\ConfigHandler;
+use App\Http\Handlers\DistrictHandler;
+use App\Http\Handlers\EmailHandler;
+use App\Http\Handlers\EventHandler;
 use App\Http\Handlers\ProvincesHandler;
 use App\Http\Handlers\RolesHandler;
 use App\Http\Handlers\UsersHandler;
@@ -18,7 +24,10 @@ use App\View\ViewHelpers;
 use App\View\ViewRenderer;
 use Application\I18n\Translator;
 use Application\Model\ApiLogsTable;
+use Application\Service\AuditTrailService;
 use Application\Service\CommonService;
+use Application\Service\EventService;
+use Application\Service\FacilityService;
 use Application\Service\OdkFormService;
 use Application\Service\ProvinceService;
 use Application\Service\RoleService;
@@ -111,13 +120,22 @@ final class Kernel
             RolesHandler::class => autowire(),
             UsersHandler::class => autowire(),
             ProvincesHandler::class => autowire(),
+            ConfigHandler::class => autowire(),
+            EventHandler::class => autowire(),
+            AuditTrailHandler::class => autowire(),
+            DistrictHandler::class => autowire(),
+            EmailHandler::class => autowire(),
+            CommonHandler::class => autowire(),
             Responder::class => autowire(),
 
             // Services that still come from the Laminas service manager,
             // under the keys Module.php registers them with.
             ...self::fromLaminas([
                 ApiLogsTable::class => 'ApiLogsTable',
+                AuditTrailService::class => 'AuditTrailService',
                 CommonService::class => 'CommonService',
+                EventService::class => 'EventService',
+                FacilityService::class => 'FacilityService',
                 OdkFormService::class => 'OdkFormService',
                 ProvinceService::class => 'ProvinceService',
                 RoleService::class => 'RoleService',
@@ -155,6 +173,13 @@ final class Kernel
             ['roles', '/roles[/:action][/][:id]', RolesHandler::class, 'RolesController', ''],
             ['users', '/users[/:action][/][:id]', UsersHandler::class, 'UsersController', 'check-password'],
             ['provinces', '/provinces[/:action][/][:id]', ProvincesHandler::class, 'ProvincesController', 'getDistrictByProvince'],
+            ['district', '/district[/:action][/][:id]', DistrictHandler::class, 'DistrictController', ''],
+            ['config', '/config[/:action][/][:id]', ConfigHandler::class, 'ConfigController', ''],
+            ['event-log', '/event-log[/:action][/][:id]', EventHandler::class, 'EventController', ''],
+            ['audit-trail', '/audit-trail[/:action][/][:id]', AuditTrailHandler::class, 'AuditTrailController', ''],
+            ['email', '/email[/:action][/][:id]', EmailHandler::class, 'EmailController', ''],
+            ['common', '/common[/:action][/][:id]', CommonHandler::class, 'CommonController',
+                'index,multiple-field-validation,get-audit-location-based-on-form,generate-password'],
         ];
         foreach ($controllers as [$name, $laminasPattern, $handler, $controller, $loginOnly]) {
             $urls->register($name, $laminasPattern, ['action' => 'index']);

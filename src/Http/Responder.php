@@ -76,6 +76,12 @@ final class Responder
         return $this->responses->createResponse(302)->withHeader('Location', ($this->url)($route, $params));
     }
 
+    /** What $this->redirect()->toUrl() did: the URL as given. */
+    public function redirectToUrl(string $url): ResponseInterface
+    {
+        return $this->responses->createResponse(302)->withHeader('Location', $url);
+    }
+
     public function status(int $status): ResponseInterface
     {
         return $this->responses->createResponse($status);

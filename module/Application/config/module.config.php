@@ -150,56 +150,6 @@ return array(
                     ),
                 ),
             ),
-            'common' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/common[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\CommonController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'event-log' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/event-log[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\EventController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'audit-trail' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/audit-trail[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\AuditTrailController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'config' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/config[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ConfigController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'email' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/email[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\EmailController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'dashboard' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -259,16 +209,6 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'view-data-section-zero-protocol-v6',
-                    ),
-                ),
-            ),
-            'district' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/district[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\DistrictController',
-                        'action' => 'index',
                     ),
                 ),
             ),

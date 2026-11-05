@@ -299,27 +299,12 @@ class Module
                         return new \Application\Controller\SpiV6Controller($odkFormService, $commonService, $provinceService);
                     }
                 },
-                'Application\Controller\CommonController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $commonService = $diContainer->get('CommonService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\CommonController($commonService, $odkFormService);
-                    }
-                },
                 'Application\Controller\CronController' => new class {
                     public function __invoke($diContainer)
                     {
                         $commonService = $diContainer->get('CommonService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\CronController($commonService, $odkFormService);
-                    }
-                },
-                'Application\Controller\ConfigController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $commonService = $diContainer->get('CommonService');
-                        return new \Application\Controller\ConfigController($commonService);
                     }
                 },
                 'Application\Controller\FacilityController' => new class {
@@ -329,29 +314,6 @@ class Module
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
                         return new \Application\Controller\FacilityController($facilityService, $odkFormService, $provinceService);
-                    }
-                },
-                'Application\Controller\EmailController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $facilityService = $diContainer->get('FacilityService');
-                        $commonService = $diContainer->get('CommonService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\EmailController($facilityService, $odkFormService, $commonService);
-                    }
-                },
-                'Application\Controller\EventController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $eventService = $diContainer->get('EventService');
-                        return new \Application\Controller\EventController($eventService);
-                    }
-                },
-                'Application\Controller\AuditTrailController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $auditTrailService = $diContainer->get('AuditTrailService');
-                        return new \Application\Controller\AuditTrailController($auditTrailService);
                     }
                 },
                 'Application\Controller\DashboardController' => new class {
@@ -367,13 +329,6 @@ class Module
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
                         return new \Application\Controller\DashboardV6Controller($odkFormService, $provinceService);
-                    }
-                },
-                'Application\Controller\DistrictController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\DistrictController($provinceService);
                     }
                 },
             ],
