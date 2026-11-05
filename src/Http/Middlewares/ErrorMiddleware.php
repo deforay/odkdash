@@ -4,23 +4,33 @@ declare(strict_types=1);
 
 namespace App\Http\Middlewares;
 
+use App\Http\Responder;
+use App\Services\LaminasBridge;
 use Application\Service\Logger;
-use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Exception\HttpException;
+use Slim\Exception\HttpNotFoundException;
 use Throwable;
 
 /**
- * Logs uncaught exceptions to the app log, as Module::onBootstrap does for
- * the Laminas side, and answers with a bare status instead of a stack trace.
+ * Turns exceptions into the error pages Laminas showed, and logs the
+ * unexpected ones to the app log as Module::onBootstrap does.
+ *
+ * A missing action renders error/404 and any other exception renders
+ * error/index, both inside the layout, with the variables the Laminas
+ * strategies set. Exception details appear only when
+ * view_manager.display_exceptions is on. If the error page itself fails,
+ * the response is the bare status code.
  */
 final class ErrorMiddleware implements MiddlewareInterface
 {
+    /** Built on demand: a working request never needs the view layer. */
     public function __construct(
-        private readonly ResponseFactoryInterface $responses,
+        private readonly ContainerInterface $container,
         private readonly Logger $logger,
     ) {
     }
@@ -29,12 +39,49 @@ final class ErrorMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
+        } catch (HttpNotFoundException $e) {
+            return $this->page(404, 'error/404', [
+                'message' => 'Page not found.',
+                'reason' => 'error-controller-invalid',
+                'display_not_found_reason' => false,
+                'exception' => $e,
+            ]);
         } catch (HttpException $e) {
-            return $this->responses->createResponse($e->getCode());
+            return $this->respond()->status($e->getCode());
         } catch (Throwable $e) {
             $this->logger->logException($e, sprintf('[dispatch.error] %s', (string) $request->getUri()));
 
-            return $this->responses->createResponse(500);
+            return $this->page(500, 'error/index', [
+                'message' => 'An error occurred during execution; please try again later.',
+                'exception' => $e,
+            ]);
         }
+    }
+
+    /** @param array<string, mixed> $variables */
+    private function page(int $status, string $template, array $variables): ResponseInterface
+    {
+        try {
+            $variables['display_exceptions'] = $this->displayExceptions();
+            $page = $this->respond()->page($template, $variables);
+
+            return $page->withStatus($status);
+        } catch (Throwable $e) {
+            $this->logger->logException($e, sprintf('Rendering %s failed', $template));
+
+            return $this->respond()->status($status);
+        }
+    }
+
+    private function displayExceptions(): bool
+    {
+        $config = $this->container->get(LaminasBridge::class)->get('config');
+
+        return !empty($config['view_manager']['display_exceptions']);
+    }
+
+    private function respond(): Responder
+    {
+        return $this->container->get(Responder::class);
     }
 }

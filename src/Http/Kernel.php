@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http;
 
+use App\Http\Handlers\ApiLogsHandler;
 use App\Http\Handlers\ClientErrorHandler;
+use App\Http\Handlers\ProvincesHandler;
+use App\Http\Handlers\RolesHandler;
+use App\Http\Handlers\UsersHandler;
 use App\Http\Handlers\LogViewerHandler;
 use App\Http\Middlewares\AccessMiddleware;
 use App\Http\Middlewares\ErrorMiddleware;
@@ -13,6 +17,12 @@ use App\View\UrlHelper;
 use App\View\ViewHelpers;
 use App\View\ViewRenderer;
 use Application\I18n\Translator;
+use Application\Model\ApiLogsTable;
+use Application\Service\CommonService;
+use Application\Service\OdkFormService;
+use Application\Service\ProvinceService;
+use Application\Service\RoleService;
+use Application\Service\UserService;
 use Application\Service\Logger;
 use Application\Session\Container as Session;
 use Application\View\Helper\GetCountryDetailsByIdHelper;
@@ -75,12 +85,11 @@ final class Kernel
                 $c->get(ViewHelpers::class),
             ),
             ViewHelpers::class => static fn(ContainerInterface $c): ViewHelpers => self::viewHelpers($c, $basePath),
+            SlimUrls::class => static fn(ContainerInterface $c): SlimUrls
+                => new SlimUrls($c->get(App::class)->getRouteCollector()),
             UrlHelper::class => static function (ContainerInterface $c) use ($basePath): UrlHelper {
-                $app = $c->get(App::class);
-
                 return new UrlHelper(
-                    $app->getRouteCollector(),
-                    $app->getRouteCollector()->getRouteParser(),
+                    $c->get(SlimUrls::class),
                     static function () use ($c, $basePath): TreeRouteStack {
                         $router = $c->get(LaminasBridge::class)->get('HttpRouter');
                         $router->setBaseUrl($basePath);
@@ -98,6 +107,22 @@ final class Kernel
                 $c->get('ClientErrorLogger'),
             ),
             LogViewerHandler::class => autowire(),
+            ApiLogsHandler::class => autowire(),
+            RolesHandler::class => autowire(),
+            UsersHandler::class => autowire(),
+            ProvincesHandler::class => autowire(),
+            Responder::class => autowire(),
+
+            // Services that still come from the Laminas service manager,
+            // under the keys Module.php registers them with.
+            ...self::fromLaminas([
+                ApiLogsTable::class => 'ApiLogsTable',
+                CommonService::class => 'CommonService',
+                OdkFormService::class => 'OdkFormService',
+                ProvinceService::class => 'ProvinceService',
+                RoleService::class => 'RoleService',
+                UserService::class => 'UserService',
+            ]),
         ]);
 
         AppFactory::setContainer($container);
@@ -105,16 +130,45 @@ final class Kernel
         $app->setBasePath($basePath);
         $container->set(App::class, $app);
 
-        // Route names are the old Laminas route names, so $this->url() calls
-        // in the templates keep working when a page moves.
+        // Route names are the old Laminas route names, and each route
+        // registers the Laminas pattern it replaced, so $this->url() calls in
+        // the templates produce the same links after a page moves.
+        $urls = $container->get(SlimUrls::class);
+
+        $urls->register('client-errors', '/client-errors');
         $app->any('/client-errors', ClientErrorHandler::class)
             ->setName('client-errors')
             ->setArgument('access', 'public');
 
+        $urls->register('log-viewer', '/log-viewer');
         $app->map(['GET', 'POST'], '/log-viewer', LogViewerHandler::class)
             ->setName('log-viewer')
             ->setArgument('resource', 'Application\Controller\LogViewerController')
             ->setArgument('privilege', 'index');
+
+        // Ported controllers. Laminas patterns of the form
+        // /x[/:action][/][:id] become /x[/[{action}[/[{id}]]]] in Slim,
+        // which matches /x, /x/, /x/edit, /x/edit/ and /x/edit/<id>.
+        $controllers = [
+            // name, Laminas pattern, handler, ACL resource, login-only actions
+            ['api-logs', '/api-logs[/:action]', ApiLogsHandler::class, 'ApiLogsController', ''],
+            ['roles', '/roles[/:action][/][:id]', RolesHandler::class, 'RolesController', ''],
+            ['users', '/users[/:action][/][:id]', UsersHandler::class, 'UsersController', 'check-password'],
+            ['provinces', '/provinces[/:action][/][:id]', ProvincesHandler::class, 'ProvincesController', 'getDistrictByProvince'],
+        ];
+        foreach ($controllers as [$name, $laminasPattern, $handler, $controller, $loginOnly]) {
+            $urls->register($name, $laminasPattern, ['action' => 'index']);
+            $pattern = strtr($laminasPattern, [
+                '[/:action][/][:id]' => '[/[{action}[/[{id}]]]]',
+                '[/:action]' => '[/{action}]',
+            ]);
+            $route = $app->any($pattern, $handler)
+                ->setName($name)
+                ->setArgument('resource', 'Application\\Controller\\' . $controller);
+            if ($loginOnly !== '') {
+                $route->setArgument('login-only', $loginOnly);
+            }
+        }
 
         // Slim runs the middleware added last first. The order a request
         // meets them is: errors, routing, body parsing, access, handler.
@@ -146,14 +200,12 @@ final class Kernel
      */
     public function urlFor(string $name, array $params = [], array $query = []): ?string
     {
-        $routes = $this->app->getRouteCollector();
-        try {
-            $routes->getNamedRoute($name);
-        } catch (\RuntimeException) {
+        $urls = $this->app->getContainer()?->get(SlimUrls::class);
+        if (!$urls instanceof SlimUrls || !$urls->has($name)) {
             return null;
         }
 
-        return $routes->getRouteParser()->urlFor($name, array_map('strval', $params), $query);
+        return $urls->build($name, $params, $query);
     }
 
     /**
@@ -174,6 +226,23 @@ final class Kernel
     public function run(): void
     {
         $this->app->run($this->request);
+    }
+
+    /**
+     * PHP-DI definitions that fetch each class from the Laminas service
+     * manager by its key there.
+     *
+     * @param array<class-string, string> $map
+     * @return array<class-string, \Closure>
+     */
+    private static function fromLaminas(array $map): array
+    {
+        $definitions = [];
+        foreach ($map as $class => $key) {
+            $definitions[$class] = static fn(ContainerInterface $c): object => $c->get(LaminasBridge::class)->get($key);
+        }
+
+        return $definitions;
     }
 
     /**

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\View;
 
+use App\Http\SlimUrls;
 use Closure;
 use Laminas\Router\RouteStackInterface;
 use RuntimeException;
-use Slim\Interfaces\RouteCollectorInterface;
-use Slim\Interfaces\RouteParserInterface;
 
 /**
  * $this->url(name, params, options), across both routers.
@@ -24,8 +23,7 @@ final class UrlHelper
 
     /** @param Closure(): RouteStackInterface $laminasRouterFactory */
     public function __construct(
-        private readonly RouteCollectorInterface $slimRoutes,
-        private readonly RouteParserInterface $slimRouteParser,
+        private readonly SlimUrls $slimUrls,
         private readonly Closure $laminasRouterFactory,
     ) {
     }
@@ -42,8 +40,8 @@ final class UrlHelper
 
         $query = $options['query'] ?? [];
 
-        if ($this->isSlimRoute($name)) {
-            return $this->slimRouteParser->urlFor($name, array_map('strval', $params), $query);
+        if ($this->slimUrls->has($name)) {
+            return $this->slimUrls->build($name, $params, $query);
         }
 
         $this->laminasRouter ??= ($this->laminasRouterFactory)();
@@ -54,16 +52,5 @@ final class UrlHelper
         }
 
         return $this->laminasRouter->assemble($params, $routeOptions);
-    }
-
-    private function isSlimRoute(string $name): bool
-    {
-        try {
-            $this->slimRoutes->getNamedRoute($name);
-
-            return true;
-        } catch (RuntimeException) {
-            return false;
-        }
     }
 }
