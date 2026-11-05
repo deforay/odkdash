@@ -7,6 +7,7 @@ namespace App\Http\Handlers;
 use App\Http\Responder;
 use Application\Service\CommonService;
 use Application\Service\OdkFormService;
+use InvalidArgumentException;
 use Laminas\Stdlib\Parameters;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,18 +30,13 @@ final class CommonHandler extends ActionHandler
     {
         $result = '';
         if ($this->isPost($request)) {
-            $result = $this->commonService->checkFieldValidations($this->post($request));
+            try {
+                $result = $this->commonService->checkFieldValidations($this->post($request));
+            } catch (InvalidArgumentException) {
+                return $this->respond->status(400);
+            }
         }
         return $this->respond->fragment('application/common/index', ['result' => $result]);
-    }
-
-    public function multipleFieldValidationAction(ServerRequestInterface $request): ResponseInterface
-    {
-        $result = '';
-        if ($this->isPost($request)) {
-            $result = $this->commonService->checkMultipleFieldValidations($this->post($request));
-        }
-        return $this->respond->fragment('application/common/multiple-field-validation', ['result' => $result]);
     }
 
     public function auditLocationsAction(ServerRequestInterface $request): ResponseInterface

@@ -49,46 +49,49 @@ class CommonService
         return $randomString;
     }
 
-    public function checkFieldValidations($params)
-    {
+    /**
+     * Columns the add and edit forms check for duplicates, by table, with
+     * each table's primary key. Nothing else can be queried.
+     */
+    private const array UNIQUE_FIELDS = [
+        'geographical_divisions' => ['key' => 'geo_id', 'fields' => ['geo_name']],
+        'roles' => ['key' => 'role_id', 'fields' => ['role_code', 'role_name']],
+        'spi_rt_3_facilities' => ['key' => 'id', 'fields' => ['facility_name']],
+        'users' => ['key' => 'id', 'fields' => ['login', 'email', 'contact_no']],
+    ];
 
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-        $configResult = $this->sm->get('Config');
-        $tableName = $params['tableName'];
-        $fieldName = $params['fieldName'];
-        $value = trim($params['value']);
-        $fnct = $params['fnct'];
-        try {
-            $sql = new Sql($adapter);
-            if ($fnct == '' || $fnct == 'null') {
-                $select = $sql->select()->from($tableName)->where(array($fieldName => $value));
-                //$statement=$adapter->query('SELECT * FROM '.$tableName.' WHERE '.$fieldName." = '".$value."'");
-                $statement = $sql->prepareStatementForSqlObject($select);
-                $result = $statement->execute();
-                $data = count($result);
-            } else {
-                $table = explode("##", $fnct);
-                if ($fieldName == 'password') {
-                    //Password encrypted
-                    $password = sha1($value . $configResult["password"]["salt"]);
-                    $select = $sql->select()->from($tableName)->where(array($fieldName => $password, $table[0] => $table[1]));
-                    $statement = $sql->prepareStatementForSqlObject($select);
-                    $result = $statement->execute();
-                    $data = count($result);
-                } else {
-                    // first trying $table[1] without quotes. If this does not work, then in catch we try with single quotes
-                    //$statement=$adapter->query('SELECT * FROM '.$tableName.' WHERE '.$fieldName." = '".$value."' and ".$table[0]."!=".$table[1] );
-                    $select = $sql->select()->from($tableName)->where(array("$fieldName='$value'", "$table[0]!=$table[1]"));
-                    $statement = $sql->prepareStatementForSqlObject($select);
-                    $result = $statement->execute();
-                    $data = count($result);
-                }
-            }
-            return $data;
-        } catch (Exception $exc) {
-            error_log($exc->getMessage());
-            error_log($exc->getTraceAsString());
+    /**
+     * Counts the rows that already hold a value, for the duplicate checks
+     * on the add and edit forms. On an edit form, fnct is
+     * "<primary key>##<id>" and the row being edited is not counted.
+     *
+     * @throws \InvalidArgumentException for a table, column or key the
+     *     forms do not use
+     */
+    public function checkFieldValidations($params): int
+    {
+        $tableName = (string) $params['tableName'];
+        $fieldName = (string) $params['fieldName'];
+        $value = trim((string) $params['value']);
+        $fnct = (string) $params['fnct'];
+
+        $table = self::UNIQUE_FIELDS[$tableName] ?? null;
+        if ($table === null || !in_array($fieldName, $table['fields'], true)) {
+            throw new \InvalidArgumentException('Not a checked field.');
         }
+
+        $sql = new Sql($this->sm->get('Laminas\Db\Adapter\Adapter'));
+        $select = $sql->select()->from($tableName)->where([$fieldName => $value]);
+
+        if ($fnct !== '' && $fnct !== 'null') {
+            [$key, $id] = array_pad(explode('##', $fnct, 2), 2, '');
+            if ($key !== $table['key']) {
+                throw new \InvalidArgumentException('Not the primary key.');
+            }
+            $select->where->notEqualTo($key, $id);
+        }
+
+        return count($sql->prepareStatementForSqlObject($select)->execute());
     }
 
     public static function verifyIfDateValid($date): bool
@@ -336,27 +339,6 @@ class CommonService
     public static function getCurrentTime($timezone = null)
     {
         return self::getDateTime('H:i', $timezone);
-    }
-
-    public function checkMultipleFieldValidations($params)
-    {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-        $jsonData = $params['json_data'];
-        $tableName = $jsonData['tableName'];
-        $sql = new Sql($adapter);
-        $select = $sql->select()->from($tableName);
-        foreach ($jsonData['columns'] as $val) {
-            if ($val['column_value'] != "") {
-                $select->where($val['column_name'] . "=" . "'" . $val['column_value'] . "'");
-            }
-        }
-        //edit
-        if (isset($jsonData['tablePrimaryKeyValue']) && $jsonData['tablePrimaryKeyValue'] != null && $jsonData['tablePrimaryKeyValue'] != "null") {
-            $select->where($jsonData['tablePrimaryKeyId'] . "!=" . $jsonData['tablePrimaryKeyValue']);
-        }
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return count($result);
     }
 
     public function getAllConfig($params)
