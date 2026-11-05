@@ -200,6 +200,22 @@ class Module
             $acl = $diContainer->get('AppAcl');
             $viewModel->acl = $acl;
             $session->acl = serialize($acl);
+
+            // Record script requests the ACL does not grant, so the grants
+            // can be reviewed in the log viewer.
+            if (!$isPublic) {
+                $resource = $e->getRouteMatch()->getParam('controller');
+                $privilege = $e->getRouteMatch()->getParam('action');
+                if (!$acl->hasResource($resource) || !$acl->isAllowed($session->roleCode, $resource, $privilege)) {
+                    $diContainer->get('Logger')->warning('ACL denies script request', [
+                        'role' => $session->roleCode,
+                        'resource' => $resource,
+                        'privilege' => $privilege,
+                        'uri' => $request->getUriString(),
+                        'user_id' => $session->userId,
+                    ]);
+                }
+            }
         }
     }
 
