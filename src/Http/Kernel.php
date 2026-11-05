@@ -179,7 +179,7 @@ final class Kernel
             ['audit-trail', '/audit-trail[/:action][/][:id]', AuditTrailHandler::class, 'AuditTrailController', ''],
             ['email', '/email[/:action][/][:id]', EmailHandler::class, 'EmailController', ''],
             ['common', '/common[/:action][/][:id]', CommonHandler::class, 'CommonController',
-                'index,multiple-field-validation,get-audit-location-based-on-form,generate-password'],
+                'index,get-audit-location-based-on-form,generate-password'],
         ];
         foreach ($controllers as [$name, $laminasPattern, $handler, $controller, $loginOnly]) {
             $urls->register($name, $laminasPattern, ['action' => 'index']);
