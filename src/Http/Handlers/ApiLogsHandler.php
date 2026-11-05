@@ -1,15 +1,18 @@
 <?php
 
-namespace Application\Controller;
+declare(strict_types=1);
 
+namespace App\Http\Handlers;
+
+use App\Http\Responder;
 use Application\Model\ApiLogsTable;
 use Application\Service\CommonService;
 use ArchiveUtil\ArchiveUtility;
-use Laminas\Mvc\Controller\AbstractActionController;
-use Laminas\View\Model\ViewModel;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Admin viewer for the api_logs table. The same controller serves:
+ * Admin viewer for the api_logs table. The same handler serves:
  *
  *   GET  /api-logs                              → HTML page
  *   GET  /api-logs?format=json (with filters)   → list rows
@@ -21,25 +24,27 @@ use Laminas\View\Model\ViewModel;
  * disk compressed; the show action calls ArchiveUtility::decompressToString
  * to inflate them on demand so the DB row stays small.
  */
-class ApiLogsController extends AbstractActionController
+final class ApiLogsHandler extends ActionHandler
 {
-    public function __construct(private readonly ApiLogsTable $apiLogsTable)
-    {
+    public function __construct(
+        private readonly Responder $respond,
+        private readonly ApiLogsTable $apiLogsTable,
+    ) {
     }
 
-    public function indexAction()
+    public function indexAction(ServerRequestInterface $request): ResponseInterface
     {
-        if ($this->params()->fromQuery('format') === 'json') {
-            return $this->jsonResponse($this->apiLogsTable->fetchList($this->collectListParams()));
+        if (($request->getQueryParams()['format'] ?? null) === 'json') {
+            return $this->jsonResponse($this->apiLogsTable->fetchList($this->collectListParams($request)));
         }
-        return new ViewModel([
+        return $this->respond->page('application/api-logs/index', [
             'sources' => $this->apiLogsTable->fetchSources(),
         ]);
     }
 
-    public function showAction()
+    public function showAction(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (string) $this->params()->fromQuery('id', '');
+        $id = (string) ($request->getQueryParams()['id'] ?? '');
         if ($id === '') {
             return $this->jsonResponse(['error' => 'missing id'], 400);
         }
@@ -54,15 +59,15 @@ class ApiLogsController extends AbstractActionController
         return $this->jsonResponse($row);
     }
 
-    public function statsAction()
+    public function statsAction(ServerRequestInterface $request): ResponseInterface
     {
-        $hours = max(1, min(168, (int) $this->params()->fromQuery('hours', 24)));
+        $hours = max(1, min(168, (int) ($request->getQueryParams()['hours'] ?? 24)));
         return $this->jsonResponse($this->apiLogsTable->fetchStats($hours));
     }
 
-    private function collectListParams(): array
+    private function collectListParams(ServerRequestInterface $request): array
     {
-        $q = $this->params()->fromQuery();
+        $q = $request->getQueryParams();
         return [
             'page'     => $q['page']     ?? 1,
             'per_page' => $q['per_page'] ?? 50,
@@ -90,12 +95,8 @@ class ApiLogsController extends AbstractActionController
         }
     }
 
-    private function jsonResponse(mixed $data, int $status = 200)
+    private function jsonResponse(mixed $data, int $status = 200): ResponseInterface
     {
-        $response = $this->getResponse();
-        $response->setStatusCode($status);
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/json');
-        $response->setContent(CommonService::jsonEncode($data));
-        return $response;
+        return $this->respond->json(CommonService::jsonEncode($data), $status);
     }
 }

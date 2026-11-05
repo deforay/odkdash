@@ -79,16 +79,6 @@ return array(
                     ),
                 ),
             ),
-            'api-logs' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/api-logs[/:action]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ApiLogsController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'login' => array(
                 'type'    => 'segment',
                 'options' => array(
@@ -170,16 +160,6 @@ return array(
                     ),
                 ),
             ),
-            'roles' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/roles[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\RolesController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'event-log' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -196,16 +176,6 @@ return array(
                     'route' => '/audit-trail[/:action][/][:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\AuditTrailController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'users' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/users[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\UsersController',
                         'action' => 'index',
                     ),
                 ),
@@ -289,16 +259,6 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'view-data-section-zero-protocol-v6',
-                    ),
-                ),
-            ),
-            'provinces' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/provinces[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ProvincesController',
-                        'action' => 'index',
                     ),
                 ),
             ),

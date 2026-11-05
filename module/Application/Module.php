@@ -267,13 +267,6 @@ class Module
                         return new \Application\Controller\LoginController($userService);
                     }
                 },
-                'Application\Controller\ApiLogsController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $apiLogsTable = $diContainer->get('ApiLogsTable');
-                        return new \Application\Controller\ApiLogsController($apiLogsTable);
-                    }
-                },
                 'Application\Controller\SpiV3ReportsController' => new class {
                     public function __invoke($diContainer)
                     {
@@ -338,17 +331,6 @@ class Module
                         return new \Application\Controller\FacilityController($facilityService, $odkFormService, $provinceService);
                     }
                 },
-                'Application\Controller\UsersController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $userService = $diContainer->get('UserService');
-                        $roleService = $diContainer->get('RoleService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        $commonService = $diContainer->get('CommonService');
-                        $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\UsersController($userService, $roleService, $odkFormService, $commonService, $provinceService);
-                    }
-                },
                 'Application\Controller\EmailController' => new class {
                     public function __invoke($diContainer)
                     {
@@ -356,13 +338,6 @@ class Module
                         $commonService = $diContainer->get('CommonService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\EmailController($facilityService, $odkFormService, $commonService);
-                    }
-                },
-                'Application\Controller\RolesController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $roleService = $diContainer->get('RoleService');
-                        return new \Application\Controller\RolesController($roleService);
                     }
                 },
                 'Application\Controller\EventController' => new class {
@@ -392,13 +367,6 @@ class Module
                         $odkFormService = $diContainer->get('OdkFormService');
                         $provinceService = $diContainer->get('ProvinceService');
                         return new \Application\Controller\DashboardV6Controller($odkFormService, $provinceService);
-                    }
-                },
-                'Application\Controller\ProvincesController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $provinceService = $diContainer->get('ProvinceService');
-                        return new \Application\Controller\ProvincesController($provinceService);
                     }
                 },
                 'Application\Controller\DistrictController' => new class {
