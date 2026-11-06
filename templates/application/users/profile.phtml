@@ -24,7 +24,7 @@
                                         name="firstName" id="firstName" 
                                         title="<?= $this->translate('Please enter the first name'); ?>" value="<?php echo $this->escapeHtml($result->first_name); ?>">
                                     <input type="hidden" class="form-control isRequired" id="userId" name="userId" 
-                                        value="<?php echo base64_encode($result->id); ?>"/>
+                                        value="<?php echo $this->escapeHtml(base64_encode($result->id)); ?>"/>
                                 </div>
                                 <div class="form-group col-lg-6">
                                     <label><?= $this->translate('Last Name'); ?></label>
@@ -37,14 +37,14 @@
                                     <input type="tel" placeholder="<?= $this->translate('Enter Mobile Number'); ?>" maxlength="10" 
                                         onkeypress="return isNumberKey(event);" class="form-control" name="mobile_no" id="mobile_no" 
                                         title="<?= $this->translate('Please enter the mobile number'); ?>" 
-                                        onblur="checkNameValidation('users', 'contact_no', this, '<?php echo 'id##' . $result->id; ?>', '<?= $this->translate('Entered mobile number is already exist.'); ?>')" 
+                                        onblur="checkNameValidation('users', 'contact_no', this, '<?php echo $this->escapeHtml('id##' . $result->id); ?>', '<?= $this->translate('Entered mobile number is already exist.'); ?>')" 
                                         value="<?php echo $this->escapeHtml($result->contact_no); ?>">
                                 </div>
                                 <div class="form-group col-lg-6">
                                     <label><?= $this->translate('Email'); ?></label>
                                     <input type="text" placeholder="<?= $this->translate('Email'); ?>" class="form-control isEmail" name="email" id="email" 
                                         title="<?= $this->translate('Please enter the email id'); ?>" 
-                                        onblur="checkNameValidation('users', 'email', this, '<?php echo 'id##' . $result->id; ?>', '<?= $this->translate('Entered mail id is already exist.'); ?>')" 
+                                        onblur="checkNameValidation('users', 'email', this, '<?php echo $this->escapeHtml('id##' . $result->id); ?>', '<?= $this->translate('Entered mail id is already exist.'); ?>')" 
                                         value="<?php echo $this->escapeHtml($result->email); ?>">
                                 </div>
                                 <div class="form-group col-lg-6" style="margin-right:50%;">
@@ -76,7 +76,7 @@
                                                 <?php if (isset($result->user_image) && $result->user_image != '') { ?>
                                                     <input type="hidden" name="existImage" id="existImage" value="<?php echo $this->escapeHtml($result->user_image); ?>"/>
                                                 <?php } ?>
-                                                <input type="hidden" name="removedImage" id="removedImage" value="<?php echo $result->user_image ?? ''; ?>"/>
+                                                <input type="hidden" name="removedImage" id="removedImage" value="<?php echo $this->escapeHtml($result->user_image ?? ''); ?>"/>
                                             </div>
                                         </div>
                                     </div>

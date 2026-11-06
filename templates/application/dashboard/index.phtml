@@ -147,7 +147,7 @@ $config = $this->GlobalConfigHelper();
 												continue;
 											}
 										?>
-											<option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo ucwords($levelName['province']); ?></option>
+											<option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo $this->escapeHtml(ucwords($levelName['province'])); ?></option>
 										<?php
 										}
 										?>
@@ -179,7 +179,7 @@ $config = $this->GlobalConfigHelper();
 										<?php
 										foreach ($testingPointResult as $val) {
 										?>
-											<option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+											<option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>"><?php echo $this->escapeHtml(ucwords($val['testingPointType'])); ?></option>
 										<?php
 										}
 										?>
@@ -218,8 +218,8 @@ $config = $this->GlobalConfigHelper();
 						</div>
 					</div>
 					<div class="row chart-info">
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['oldestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['newestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perf1[0]['oldestDate'])); ?></span></div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perf1[0]['newestDate'])); ?></span></div>
 						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perf1[0]['totalDataPoints']); ?></span></div>
 					</div>
 				</div>
@@ -242,8 +242,8 @@ $config = $this->GlobalConfigHelper();
 						</div>
 					</div>
 					<div class="row chart-info">
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['oldestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['newestDate']) ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast180[0]['oldestDate'])); ?></span></div>
+						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast180[0]['newestDate'])); ?></span></div>
 						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perflast180[0]['totalDataPoints']); ?></span></div>
 					</div>
 				</div>
@@ -277,8 +277,8 @@ $config = $this->GlobalConfigHelper();
 							</div>
 						</div>
 						<div class="row chart-info">
-							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['oldestDate']) ?></span></div>
-							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['newestDate']) ?></span></div>
+							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast30[0]['oldestDate'])); ?></span></div>
+							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast30[0]['newestDate'])); ?></span></div>
 							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perflast30[0]['totalDataPoints']); ?></span></div>
 						</div>
 					</div>
@@ -519,10 +519,10 @@ $config = $this->GlobalConfigHelper();
 									<tr>
 										<td><?php echo $this->escapeHtml($row['facilityid']); ?></td>
 										<td><?php echo $this->escapeHtml($row['facilityname']); ?></td>
-										<td><?php echo $this->humanReadableDateFormat($row['assesmentofaudit']); ?></td>
-										<td><?php echo $this->humanReadableDateFormat($row['today']); ?></td>
-										<td><?php echo (isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype']); ?> - <?php echo $this->escapeHtml($row['testingpointtype']); ?></td>
-										<td><?php echo ucfirst($row['status']); ?></td>
+										<td><?php echo $this->escapeHtml($this->humanReadableDateFormat($row['assesmentofaudit'])); ?></td>
+										<td><?php echo $this->escapeHtml($this->humanReadableDateFormat($row['today'])); ?></td>
+										<td><?php echo $this->escapeHtml((isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype'])); ?> - <?php echo $this->escapeHtml($row['testingpointtype']); ?></td>
+										<td><?php echo $this->escapeHtml(ucfirst($row['status'])); ?></td>
 
 										<?php if ($update || $approve || $email) { ?>
 											<td>
@@ -531,7 +531,7 @@ $config = $this->GlobalConfigHelper();
 												?> <a href="/spi-v3/edit/<?php echo $this->escapeHtml($row['id']); ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
-													<a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
+													<a href="/email/index/<?php echo $this->escapeHtml(base64_encode($row['id'])); ?>"><i class="fa fa-envelope"></i> Mail</a>
 												<?php
 												}
 

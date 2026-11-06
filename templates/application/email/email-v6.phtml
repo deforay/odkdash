@@ -48,7 +48,7 @@
                                             if (isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
                                                 foreach ($facilityName['uniqueName'] as $facilities) {
                                             ?>
-                                                    <option value="<?php echo $this->escapeHtml($facilities['facilityname']); ?>" <?php if (isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected" <?php } ?>><?php echo ucwords($facilities['facilityname']); ?></option>
+                                                    <option value="<?php echo $this->escapeHtml($facilities['facilityname']); ?>" <?php if (isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected" <?php } ?>><?php echo $this->escapeHtml(ucwords($facilities['facilityname'])); ?></option>
                                             <?php }
                                             } ?>
                                         </select>
@@ -69,7 +69,7 @@
                                                 <?php if (isset($facilityResult['auditsResult']) && count($facilityResult['auditsResult']) > 0) {
                                                     foreach ($facilityResult['auditsResult'] as $audits) {
                                                 ?>
-                                                        <option value="<?php echo $this->escapeHtml($audits['id']); ?>" <?php echo ($ids == base64_encode($audits['id'])) ? 'selected=selected' : ''; ?>><?php echo $audits['testingpointname'] . ' - ' . $audits['assesmentofaudit']; ?></option>
+                                                        <option value="<?php echo $this->escapeHtml($audits['id']); ?>" <?php echo ($ids == base64_encode($audits['id'])) ? 'selected=selected' : ''; ?>><?php echo $this->escapeHtml($audits['testingpointname'] . ' - ' . $audits['assesmentofaudit']); ?></option>
                                                 <?php }
                                                 } ?>
                                             </select>

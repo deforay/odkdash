@@ -2,7 +2,7 @@
     <?php
     foreach($result as $districtName){
     ?>
-    <option value="<?php echo $this->escapeHtml($districtName['district']); ?>"><?php echo ucwords($districtName['district']); ?></option>
+    <option value="<?php echo $this->escapeHtml($districtName['district']); ?>"><?php echo $this->escapeHtml(ucwords($districtName['district'])); ?></option>
     <?php
         }
     ?>

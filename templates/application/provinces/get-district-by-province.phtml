@@ -1,7 +1,7 @@
 <?php
 $district='<option value="">--Select--</option>';
 foreach($result as $val){
-    $district.='<option value="'.base64_encode($val['geo_id']).'">'.$val['geo_name'].'</option>';
+    $district.='<option value="'.base64_encode($val['geo_id']).'">'.\Application\Service\CommonService::escapeHtml($val['geo_name']).'</option>';
 }
 $district.='<option value="other">' . $this->translate('Other') . '</option>';
 

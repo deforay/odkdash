@@ -38,12 +38,12 @@
                 <div class="form-group">
                   <label for="auditDate" class="col-sm-2 control-label"><?= $this->translate('Date of Audit (dd/mm/yyyy)'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                    <input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" name="auditDate" class="form-control datepicker" value="<?php echo $this->escapeHtml($this->humanReadableDateFormat($formData['assesmentofaudit'])); ?>" readonly>
                   </div>
                   <label for="auditRound" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
                   <div class=" col-lg-4">
                     <input type="text" placeholder="<?= $this->translate('Audit Round No'); ?>" name="auditRound" class="form-control" value="<?php echo $this->escapeHtml($formData['auditroundno']); ?>">
-                    <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
+                    <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo $this->escapeHtml(base64_encode($formData['id'])); ?>">
                   </div>
                 </div>
 
@@ -56,32 +56,32 @@
                       if (isset($facilities['allName']) && count($facilities['allName']) > 0) {
                         foreach ($facilities['allName'] as $facilities) {
                       ?>
-                          <option value="<?php echo base64_encode($facilities['id']); ?>" <?php echo (isset($formData['facilityInfo']->fId) && $formData['facilityInfo']->fId == $facilities['id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($facilities['facility_name']); ?></option>
+                          <option value="<?php echo $this->escapeHtml(base64_encode($facilities['id'])); ?>" <?php echo (isset($formData['facilityInfo']->fId) && $formData['facilityInfo']->fId == $facilities['id']) ? 'selected="selected"' : ''; ?>><?php echo $this->escapeHtml(ucwords($facilities['facility_name'])); ?></option>
                       <?php }
                       } ?>
                     </select>
                   </div>
                   <label for="testingFacilityName" class="col-sm-2 control-label"><?= $this->translate('Testing Facility Name'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Testing Facility Name'); ?>" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fName)) ? $formData['facilityInfo']->fName : ''; ?>" onblur="copyFacilityName(this.value)">
+                    <input type="text" placeholder="<?= $this->translate('Testing Facility Name'); ?>" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fName)) ? $formData['facilityInfo']->fName : ''); ?>" onblur="copyFacilityName(this.value)">
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="testingFacilityId" class="col-sm-2 control-label"><?= $this->translate('Testing Facility ID'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Testing Facility ID'); ?>" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo (isset($formData['facilityInfo']->ffId)) ? $formData['facilityInfo']->ffId : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Testing Facility ID'); ?>" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->ffId)) ? $formData['facilityInfo']->ffId : ''); ?>">
                   </div>
                   <label for="email" class="col-sm-2 control-label"><?= $this->translate('Email'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Email'); ?>" name="email" id="email" class="form-control isEmail" value="<?php echo (isset($formData['facilityInfo']->fEmail)) ? $formData['facilityInfo']->fEmail : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Email'); ?>" name="email" id="email" class="form-control isEmail" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fEmail)) ? $formData['facilityInfo']->fEmail : ''); ?>">
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="contactPerson" class="col-sm-2 control-label"><?= $this->translate('Name of the Contact Person'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fCPerson)) ? $formData['facilityInfo']->fCPerson : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fCPerson)) ? $formData['facilityInfo']->fCPerson : ''); ?>">
                   </div>
                   <label for="district" class="col-sm-2 control-label"><?= $this->translate('District'); ?></label>
                   <div class=" col-lg-4">
@@ -91,7 +91,7 @@
                       <?php
                       foreach ($districtList as $district) {
                       ?>
-                        <option value="<?php echo $this->escapeHtml($district['name']); ?>" <?php echo (isset($formData['facilityInfo']->fDistrict) && $formData['facilityInfo']->fDistrict == $district['name']) ? "selected='selected'" : '' ?>><?php echo trim($district['name']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($district['name']); ?>" <?php echo (isset($formData['facilityInfo']->fDistrict) && $formData['facilityInfo']->fDistrict == $district['name']) ? "selected='selected'" : '' ?>><?php echo $this->escapeHtml(trim($district['name'])); ?></option>
                       <?php
                       }
                       ?>
@@ -111,7 +111,7 @@
                       <?php
                       foreach ($provinceList as $province) {
                       ?>
-                        <option value="<?php echo $this->escapeHtml($province['province']); ?>" <?php echo (isset($formData['facilityInfo']->fProvince) && $formData['facilityInfo']->fProvince == $province['province']) ? "selected='selected'" : '' ?>><?php echo trim($province['province']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($province['province']); ?>" <?php echo (isset($formData['facilityInfo']->fProvince) && $formData['facilityInfo']->fProvince == $province['province']) ? "selected='selected'" : '' ?>><?php echo $this->escapeHtml(trim($province['province'])); ?></option>
                       <?php
                       }
                       ?>
@@ -121,14 +121,14 @@
                   </div>
                   <label for="latitude" class="col-sm-2 control-label"><?= $this->translate('Latitude'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLatitude)) ? $formData['facilityInfo']->fLatitude : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fLatitude)) ? $formData['facilityInfo']->fLatitude : ''); ?>">
                   </div>
                 </div>
 
                 <div class="form-group ">
                   <label for="longitude" class="col-sm-2 control-label"><?= $this->translate('Longitude'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLongitude)) ? $formData['facilityInfo']->fLongitude : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fLongitude)) ? $formData['facilityInfo']->fLongitude : ''); ?>">
                   </div>
                   <label for="testingPointName" class="col-sm-2 control-label"><?= $this->translate('Testing Point Name'); ?></label>
                   <div class="col-lg-4">
@@ -236,8 +236,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_1']) && $formData['PERSONAL_Q_1_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_1"><?php echo ($formData['PERSONAL_C_1_1']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_1']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_1"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_1'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_1'])); ?></td>
                         </tr>
 
                         <tr>
@@ -252,8 +252,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_2']) && $formData['PERSONAL_Q_1_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_2"><?php echo ($formData['PERSONAL_C_1_2']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_2']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_2"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_2'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_2'])); ?></td>
                         </tr>
 
                         <tr>
@@ -268,8 +268,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_3']) && $formData['PERSONAL_Q_1_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_3"><?php echo ($formData['PERSONAL_C_1_3']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_3']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_3"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_3'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_3'])); ?></td>
                         </tr>
 
                         <tr>
@@ -284,8 +284,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_4']) && $formData['PERSONAL_Q_1_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_4"><?php echo ($formData['PERSONAL_C_1_4']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_4']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_4"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_4'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_4'])); ?></td>
                         </tr>
 
                         <tr>
@@ -300,8 +300,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_5']) && $formData['PERSONAL_Q_1_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_5"><?php echo ($formData['PERSONAL_C_1_5']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_5']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_5"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_5'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_5'])); ?></td>
                         </tr>
 
                         <tr>
@@ -316,8 +316,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_6']) && $formData['PERSONAL_Q_1_6'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_6"><?php echo ($formData['PERSONAL_C_1_6']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_6']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_6"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_6'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_6'])); ?></td>
                         </tr>
 
                         <tr>
@@ -332,8 +332,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_7']) && $formData['PERSONAL_Q_1_7'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_7"><?php echo ($formData['PERSONAL_C_1_7']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_7']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_7"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_7'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_7'])); ?></td>
                         </tr>
 
                         <tr>
@@ -348,8 +348,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_8']) && $formData['PERSONAL_Q_1_8'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_8"><?php echo ($formData['PERSONAL_C_1_8']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_8']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_8"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_8'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_8'])); ?></td>
                         </tr>
 
                         <tr>
@@ -364,8 +364,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_9']) && $formData['PERSONAL_Q_1_9'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_9"><?php echo ($formData['PERSONAL_C_1_9']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_9']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_9"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_9'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_9'])); ?></td>
                         </tr>
 
                         <tr>
@@ -380,8 +380,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PERSONAL_Q_1_10']) && $formData['PERSONAL_Q_1_10'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="personal_c_1_10"><?php echo ($formData['PERSONAL_C_1_10']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_10']); ?></td>
+                          <td><textarea class="form-control" name="personal_c_1_10"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_10'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_10'])); ?></td>
                         </tr>
 
                         <tr>
@@ -427,8 +427,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_1']) && $formData['PHYSICAL_Q_2_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="physical_c_2_1"><?php echo ($formData['PHYSICAL_C_2_1']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_1']); ?></td>
+                          <td><textarea class="form-control" name="physical_c_2_1"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_1'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_1'])); ?></td>
                         </tr>
                         <tr>
                           <td>2.2</td>
@@ -442,8 +442,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_2']) && $formData['PHYSICAL_Q_2_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="physical_c_2_2"><?php echo ($formData['PHYSICAL_C_2_2']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_2']); ?></td>
+                          <td><textarea class="form-control" name="physical_c_2_2"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_2'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_2'])); ?></td>
                         </tr>
                         <tr>
                           <td>2.3</td>
@@ -457,8 +457,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_3']) && $formData['PHYSICAL_Q_2_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="physical_c_2_3"><?php echo ($formData['PHYSICAL_C_2_3']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_3']); ?></td>
+                          <td><textarea class="form-control" name="physical_c_2_3"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_3'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_3'])); ?></td>
                         </tr>
                         <tr>
                           <td>2.4</td>
@@ -472,8 +472,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_4']) && $formData['PHYSICAL_Q_2_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="physical_c_2_4"><?php echo ($formData['PHYSICAL_C_2_4']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_4']); ?></td>
+                          <td><textarea class="form-control" name="physical_c_2_4"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_4'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_4'])); ?></td>
                         </tr>
                         <tr>
                           <td>2.5</td>
@@ -487,8 +487,8 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PHYSICAL_Q_2_5']) && $formData['PHYSICAL_Q_2_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="physical_c_2_5"><?php echo ($formData['PHYSICAL_C_2_5']); ?></textarea></td>
-                          <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_5']); ?></td>
+                          <td><textarea class="form-control" name="physical_c_2_5"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_5'])); ?></textarea></td>
+                          <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_5'])); ?></td>
                         </tr>
                         <tr>
                           <td colspan="6" style="font-weight:bold;"><?= $this->translate('2.0 PHYSICAL FACILITY SCORE'); ?></td>
@@ -532,7 +532,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_1']) && $formData['SAFETY_Q_3_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_1"><?php echo ($formData['SAFETY_C_3_1']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_1"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_1'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_1']); ?></td>
                         </tr>
                         <tr>
@@ -547,7 +547,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_2']) && $formData['SAFETY_Q_3_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_2"><?php echo ($formData['SAFETY_C_3_2']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_2"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_2'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_2']); ?></td>
                         </tr>
                         <tr>
@@ -562,7 +562,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_3']) && $formData['SAFETY_Q_3_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_3"><?php echo ($formData['SAFETY_C_3_3']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_3"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_3'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_3']); ?></td>
                         </tr>
                         <tr>
@@ -577,7 +577,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_4']) && $formData['SAFETY_Q_3_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_4"><?php echo ($formData['SAFETY_C_3_4']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_4"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_4'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_4']); ?></td>
                         </tr>
                         <tr>
@@ -592,7 +592,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_5']) && $formData['SAFETY_Q_3_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_5"><?php echo ($formData['SAFETY_C_3_5']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_5"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_5'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_5']); ?></td>
                         </tr>
                         <tr>
@@ -607,7 +607,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_6']) && $formData['SAFETY_Q_3_6'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_6"><?php echo ($formData['SAFETY_C_3_6']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_6"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_6'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_6']); ?></td>
                         </tr>
                         <tr>
@@ -622,7 +622,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_7']) && $formData['SAFETY_Q_3_7'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_7"><?php echo ($formData['SAFETY_C_3_7']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_7"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_7'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_7']); ?></td>
                         </tr>
                         <tr>
@@ -637,7 +637,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_8']) && $formData['SAFETY_Q_3_8'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_8"><?php echo ($formData['SAFETY_C_3_8']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_8"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_8'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_8']); ?></td>
                         </tr>
                         <tr>
@@ -652,7 +652,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_9']) && $formData['SAFETY_Q_3_9'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_9"><?php echo ($formData['SAFETY_C_3_9']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_9"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_9'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_9']); ?></td>
                         </tr>
                         <tr>
@@ -667,7 +667,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_10']) && $formData['SAFETY_Q_3_10'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_10"><?php echo ($formData['SAFETY_C_3_10']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_10"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_10'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_10']); ?></td>
                         </tr>
                         <tr>
@@ -682,7 +682,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['SAFETY_Q_3_11']) && $formData['SAFETY_Q_3_11'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="safety_c_3_11"><?php echo ($formData['SAFETY_C_3_11']); ?></textarea></td>
+                          <td><textarea class="form-control" name="safety_c_3_11"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_11'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_11']); ?></td>
                         </tr>
                         <tr>
@@ -727,7 +727,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_1']) && $formData['PRE_Q_4_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_1"><?php echo ($formData['PRE_C_4_1']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_1"><?php echo $this->escapeHtml(($formData['PRE_C_4_1'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_1']); ?></td>
                         </tr>
                         <tr>
@@ -742,7 +742,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_2']) && $formData['PRE_Q_4_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_2"><?php echo ($formData['PRE_C_4_2']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_2"><?php echo $this->escapeHtml(($formData['PRE_C_4_2'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_2']); ?></td>
                         </tr>
                         <tr>
@@ -757,7 +757,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_3']) && $formData['PRE_Q_4_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_3"><?php echo ($formData['PRE_C_4_3']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_3"><?php echo $this->escapeHtml(($formData['PRE_C_4_3'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_3']); ?></td>
                         </tr>
                         <tr>
@@ -772,7 +772,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_4']) && $formData['PRE_Q_4_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_4"><?php echo ($formData['PRE_C_4_4']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_4"><?php echo $this->escapeHtml(($formData['PRE_C_4_4'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_4']); ?></td>
                         </tr>
                         <tr>
@@ -787,7 +787,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_5']) && $formData['PRE_Q_4_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_5"><?php echo ($formData['PRE_C_4_5']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_5"><?php echo $this->escapeHtml(($formData['PRE_C_4_5'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_5']); ?></td>
                         </tr>
                         <tr>
@@ -802,7 +802,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_6']) && $formData['PRE_Q_4_6'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_6"><?php echo ($formData['PRE_C_4_6']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_6"><?php echo $this->escapeHtml(($formData['PRE_C_4_6'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_6']); ?></td>
                         </tr>
                         <tr>
@@ -817,7 +817,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_7']) && $formData['PRE_Q_4_7'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_7"><?php echo ($formData['PRE_C_4_7']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_7"><?php echo $this->escapeHtml(($formData['PRE_C_4_7'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_7']); ?></td>
                         </tr>
                         <tr>
@@ -832,7 +832,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_8']) && $formData['PRE_Q_4_8'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_8"><?php echo ($formData['PRE_C_4_8']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_8"><?php echo $this->escapeHtml(($formData['PRE_C_4_8'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_8']); ?></td>
                         </tr>
                         <tr>
@@ -847,7 +847,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_9']) && $formData['PRE_Q_4_9'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_9"><?php echo ($formData['PRE_C_4_9']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_9"><?php echo $this->escapeHtml(($formData['PRE_C_4_9'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_9']); ?></td>
                         </tr>
                         <tr>
@@ -862,7 +862,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_10']) && $formData['PRE_Q_4_10'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_10"><?php echo ($formData['PRE_C_4_10']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_10"><?php echo $this->escapeHtml(($formData['PRE_C_4_10'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_10']); ?></td>
                         </tr>
                         <tr>
@@ -877,7 +877,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_11']) && $formData['PRE_Q_4_11'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_11"><?php echo ($formData['PRE_C_4_11']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_11"><?php echo $this->escapeHtml(($formData['PRE_C_4_11'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_11']); ?></td>
                         </tr>
                         <tr>
@@ -892,7 +892,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['PRE_Q_4_12']) && $formData['PRE_Q_4_12'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="pre_c_4_12"><?php echo ($formData['PRE_C_4_12']); ?></textarea></td>
+                          <td><textarea class="form-control" name="pre_c_4_12"><?php echo $this->escapeHtml(($formData['PRE_C_4_12'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_12']); ?></td>
                         </tr>
                         <tr>
@@ -937,7 +937,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_1']) && $formData['TEST_Q_5_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_1"><?php echo ($formData['TEST_C_5_1']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_1"><?php echo $this->escapeHtml(($formData['TEST_C_5_1'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_1']); ?></td>
                         </tr>
                         <tr>
@@ -952,7 +952,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_2']) && $formData['TEST_Q_5_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_2"><?php echo ($formData['TEST_C_5_2']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_2"><?php echo $this->escapeHtml(($formData['TEST_C_5_2'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_2']); ?></td>
                         </tr>
                         <tr>
@@ -967,7 +967,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_3']) && $formData['TEST_Q_5_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_3"><?php echo ($formData['TEST_C_5_3']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_3"><?php echo $this->escapeHtml(($formData['TEST_C_5_3'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_3']); ?></td>
                         </tr>
                         <tr>
@@ -982,7 +982,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_4']) && $formData['TEST_Q_5_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_4"><?php echo ($formData['TEST_C_5_4']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_4"><?php echo $this->escapeHtml(($formData['TEST_C_5_4'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_4']); ?></td>
                         </tr>
                         <tr>
@@ -997,7 +997,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_5']) && $formData['TEST_Q_5_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_5"><?php echo ($formData['TEST_C_5_5']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_5"><?php echo $this->escapeHtml(($formData['TEST_C_5_5'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_5']); ?></td>
                         </tr>
                         <tr>
@@ -1012,7 +1012,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_6']) && $formData['TEST_Q_5_6'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_6"><?php echo ($formData['TEST_C_5_6']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_6"><?php echo $this->escapeHtml(($formData['TEST_C_5_6'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_6']); ?></td>
                         </tr>
                         <tr>
@@ -1027,7 +1027,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_7']) && $formData['TEST_Q_5_7'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_7"><?php echo ($formData['TEST_C_5_7']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_7"><?php echo $this->escapeHtml(($formData['TEST_C_5_7'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_7']); ?></td>
                         </tr>
                         <tr>
@@ -1042,7 +1042,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_8']) && $formData['TEST_Q_5_8'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_8"><?php echo ($formData['TEST_C_5_8']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_8"><?php echo $this->escapeHtml(($formData['TEST_C_5_8'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_8']); ?></td>
                         </tr>
                         <tr>
@@ -1057,7 +1057,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['TEST_Q_5_9']) && $formData['TEST_Q_5_9'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="test_c_5_9"><?php echo ($formData['TEST_C_5_9']); ?></textarea></td>
+                          <td><textarea class="form-control" name="test_c_5_9"><?php echo $this->escapeHtml(($formData['TEST_C_5_9'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_9']); ?></td>
                         </tr>
 
@@ -1103,7 +1103,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_1']) && $formData['POST_Q_6_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_1"><?php echo ($formData['POST_C_6_1']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_1"><?php echo $this->escapeHtml(($formData['POST_C_6_1'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_1']); ?></td>
                         </tr>
                         <tr>
@@ -1118,7 +1118,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_2']) && $formData['POST_Q_6_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_2"><?php echo ($formData['POST_C_6_2']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_2"><?php echo $this->escapeHtml(($formData['POST_C_6_2'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_2']); ?></td>
                         </tr>
                         <tr>
@@ -1133,7 +1133,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_3']) && $formData['POST_Q_6_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_3"><?php echo ($formData['POST_C_6_3']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_3"><?php echo $this->escapeHtml(($formData['POST_C_6_3'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_3']); ?></td>
                         </tr>
                         <tr>
@@ -1148,7 +1148,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_4']) && $formData['POST_Q_6_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_4"><?php echo ($formData['POST_C_6_4']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_4"><?php echo $this->escapeHtml(($formData['POST_C_6_4'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_4']); ?></td>
                         </tr>
                         <tr>
@@ -1163,7 +1163,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_5']) && $formData['POST_Q_6_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_5"><?php echo ($formData['POST_C_6_5']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_5"><?php echo $this->escapeHtml(($formData['POST_C_6_5'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_5']); ?></td>
                         </tr>
                         <tr>
@@ -1178,7 +1178,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_6']) && $formData['POST_Q_6_6'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_6"><?php echo ($formData['POST_C_6_6']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_6"><?php echo $this->escapeHtml(($formData['POST_C_6_6'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_6']); ?></td>
                         </tr>
                         <tr>
@@ -1193,7 +1193,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_7']) && $formData['POST_Q_6_7'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_7"><?php echo ($formData['POST_C_6_7']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_7"><?php echo $this->escapeHtml(($formData['POST_C_6_7'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_7']); ?></td>
                         </tr>
                         <tr>
@@ -1208,7 +1208,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_8']) && $formData['POST_Q_6_8'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_8"><?php echo ($formData['POST_C_6_8']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_8"><?php echo $this->escapeHtml(($formData['POST_C_6_8'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_8']); ?></td>
                         </tr>
                         <tr>
@@ -1223,7 +1223,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['POST_Q_6_9']) && $formData['POST_Q_6_9'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="post_C_6_9"><?php echo ($formData['POST_C_6_9']); ?></textarea></td>
+                          <td><textarea class="form-control" name="post_C_6_9"><?php echo $this->escapeHtml(($formData['POST_C_6_9'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_9']); ?></td>
                         </tr>
 
@@ -1269,7 +1269,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_1']) && $formData['EQA_Q_7_1'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_1"><?php echo ($formData['EQA_C_7_1']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_1"><?php echo $this->escapeHtml(($formData['EQA_C_7_1'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_1']); ?></td>
                         </tr>
                         <tr>
@@ -1284,7 +1284,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_2']) && $formData['EQA_Q_7_2'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_2"><?php echo ($formData['EQA_C_7_2']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_2"><?php echo $this->escapeHtml(($formData['EQA_C_7_2'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_2']); ?></td>
                         </tr>
                         <tr>
@@ -1299,7 +1299,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_3']) && $formData['EQA_Q_7_3'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_3"><?php echo ($formData['EQA_C_7_3']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_3"><?php echo $this->escapeHtml(($formData['EQA_C_7_3'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_3']); ?></td>
                         </tr>
                         <tr>
@@ -1314,7 +1314,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_4']) && $formData['EQA_Q_7_4'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_4"><?php echo ($formData['EQA_C_7_4']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_4"><?php echo $this->escapeHtml(($formData['EQA_C_7_4'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_4']); ?></td>
                         </tr>
                         <tr>
@@ -1329,7 +1329,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_5']) && $formData['EQA_Q_7_5'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_5"><?php echo ($formData['EQA_C_7_5']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_5"><?php echo $this->escapeHtml(($formData['EQA_C_7_5'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_5']); ?></td>
                         </tr>
                         <tr>
@@ -1344,7 +1344,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_6']) && $formData['EQA_Q_7_6'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_6"><?php echo ($formData['EQA_C_7_6']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_6"><?php echo $this->escapeHtml(($formData['EQA_C_7_6'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_6']); ?></td>
                         </tr>
                         <tr>
@@ -1359,7 +1359,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_7']) && $formData['EQA_Q_7_7'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_7"><?php echo ($formData['EQA_C_7_7']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_7"><?php echo $this->escapeHtml(($formData['EQA_C_7_7'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_7']); ?></td>
                         </tr>
                         <tr>
@@ -1374,7 +1374,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_8']) && $formData['EQA_Q_7_8'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_8"><?php echo ($formData['EQA_C_7_8']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_8"><?php echo $this->escapeHtml(($formData['EQA_C_7_8'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_8']); ?></td>
                         </tr>
                         <tr>
@@ -1394,7 +1394,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_9']) && $formData['EQA_Q_7_9'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_9"><?php echo ($formData['EQA_C_7_9']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_9"><?php echo $this->escapeHtml(($formData['EQA_C_7_9'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_9']); ?></td>
                         </tr>
                         <tr>
@@ -1409,7 +1409,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_10']) && $formData['EQA_Q_7_10'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_10"><?php echo ($formData['EQA_C_7_10']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_10"><?php echo $this->escapeHtml(($formData['EQA_C_7_10'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_10']); ?></td>
                         </tr>
                         <tr>
@@ -1424,7 +1424,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_11']) && $formData['EQA_Q_7_11'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_11"><?php echo ($formData['EQA_C_7_11']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_11"><?php echo $this->escapeHtml(($formData['EQA_C_7_11'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_11']); ?></td>
                         </tr>
                         <tr>
@@ -1439,7 +1439,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_12']) && $formData['EQA_Q_7_12'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_12"><?php echo ($formData['EQA_C_7_12']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_12"><?php echo $this->escapeHtml(($formData['EQA_C_7_12'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_12']); ?></td>
                         </tr>
                         <tr>
@@ -1454,7 +1454,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_13']) && $formData['EQA_Q_7_13'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_13"><?php echo ($formData['EQA_C_7_13']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_13"><?php echo $this->escapeHtml(($formData['EQA_C_7_13'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_13']); ?></td>
                         </tr>
                         <tr>
@@ -1469,7 +1469,7 @@
                           <td style="text-align:center;">
                             <?php echo (isset($formData['EQA_Q_7_14']) && $formData['EQA_Q_7_14'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                           </td>
-                          <td><textarea class="form-control" name="eqa_c_7_14"><?php echo ($formData['EQA_C_7_14']); ?></textarea></td>
+                          <td><textarea class="form-control" name="eqa_c_7_14"><?php echo $this->escapeHtml(($formData['EQA_C_7_14'])); ?></textarea></td>
                           <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_14']); ?></td>
                         </tr>
 

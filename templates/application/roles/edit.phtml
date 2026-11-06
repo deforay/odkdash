@@ -144,12 +144,12 @@ $isSuperAdmin = isset($result->role_code) && $result->role_code === 'SA';
 							<form role="form" name="addRoleInformation" id="addRoleInformation" method="post" action="<?php echo $this->url('roles', array('action' => 'edit')); ?>" autocomplete="off">
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Role Name'); ?> <span class="mandatory">*</span> </label>
-									<input type="text" placeholder="<?= $this->translate('Role Name'); ?>" class="form-control isRequired" name="roleName" id="roleName" title="<?= $this->translate('Please enter the role name'); ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $result->role_id; ?>', 'This name already exists. Please choose another name.')" value="<?php echo $this->escapeHtml($result->role_name); ?>">
-									<input type="hidden" class="form-control isRequired" id="roleId" name="roleId" value="<?php echo base64_encode($result->role_id); ?>" />
+									<input type="text" placeholder="<?= $this->translate('Role Name'); ?>" class="form-control isRequired" name="roleName" id="roleName" title="<?= $this->translate('Please enter the role name'); ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo $this->escapeHtml("role_id##" . $result->role_id); ?>', 'This name already exists. Please choose another name.')" value="<?php echo $this->escapeHtml($result->role_name); ?>">
+									<input type="hidden" class="form-control isRequired" id="roleId" name="roleId" value="<?php echo $this->escapeHtml(base64_encode($result->role_id)); ?>" />
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Role Code'); ?> <span class="mandatory">*</span></label>
-									<input type="text" placeholder="<?= $this->translate('Role Code'); ?>" class="form-control isRequired" name="roleCode" id="roleCode" title="<?= $this->translate('Please enter role code'); ?>" onblur="checkNameValidation('roles', 'role_code', this,'<?php echo "role_id##" . $result->role_id; ?>', 'Already exist this code . Please choose another code.')" value="<?php echo $this->escapeHtml($result->role_code); ?>">
+									<input type="text" placeholder="<?= $this->translate('Role Code'); ?>" class="form-control isRequired" name="roleCode" id="roleCode" title="<?= $this->translate('Please enter role code'); ?>" onblur="checkNameValidation('roles', 'role_code', this,'<?php echo $this->escapeHtml("role_id##" . $result->role_id); ?>', 'Already exist this code . Please choose another code.')" value="<?php echo $this->escapeHtml($result->role_code); ?>">
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Description'); ?></label>
@@ -206,15 +206,15 @@ $isSuperAdmin = isset($result->role_code) && $result->role_code === 'SA';
 													$disabledAttr = $isSuperAdmin ? ' disabled' : '';
 													?>
 													<div class="col-md-3 privilege-div">
-														<strong class="privilege-label"><?php echo ucwords($privilege['display_name']); ?></strong>
+														<strong class="privilege-label"><?php echo $this->escapeHtml(ucwords($privilege['display_name'])); ?></strong>
 														<br>
 														<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
 															<?php
-																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" ' . $allowChecked . $disabledAttr . '>';
-																echo '<label for="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="' . $allowStyle . '">' . $translate('Yes') . '</label>';
+																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" ' . $allowChecked . $disabledAttr . '>';
+																echo '<label for="selectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" class="' . $allowStyle . '">' . $translate('Yes') . '</label>';
 
-																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" ' . $denyChecked . $disabledAttr . '>';
-																echo '<label for="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="' . $denyStyle . '">' . $translate('No') . '</label>';
+																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" ' . $denyChecked . $disabledAttr . '>';
+																echo '<label for="unselectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" class="' . $denyStyle . '">' . $translate('No') . '</label>';
 															?>
 														</div>
 													</div>
@@ -228,7 +228,7 @@ $isSuperAdmin = isset($result->role_code) && $result->role_code === 'SA';
 												<tr class="togglerTr">
 													<th style="background-color:#eee;">
 														<div class="card-header">
-															<h4 class="card-title" style="font-weight: bold;"><?php echo ucwords($value['display_name']); ?></h4>
+															<h4 class="card-title" style="font-weight: bold;"><?php echo $this->escapeHtml(ucwords($value['display_name'])); ?></h4>
 															<div class="card-actions">
 																<?php if (!$isSuperAdmin): ?>
 																	<div class="super-switch privilege-switch pull-right">
@@ -252,7 +252,7 @@ $isSuperAdmin = isset($result->role_code) && $result->role_code === 'SA';
 														<?php if (!empty($value['children'])): ?>
 															<?php foreach ($value['children'] as $child): ?>
 																<div class="child-resource-section">
-																	<h5 class="child-resource-heading"><?php echo ucwords($child['display_name']); ?></h5>
+																	<h5 class="child-resource-heading"><?php echo $this->escapeHtml(ucwords($child['display_name'])); ?></h5>
 																	<div class="row">
 																		<?php $renderPrivileges($child['privileges'], $child['resource_id'], $resourceResult, $translate, $isSuperAdmin); ?>
 																	</div>

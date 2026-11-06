@@ -62,15 +62,15 @@ $partDTitle = '<p style="font-weight:bold;line-height:30px;">' . $this->translat
 $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
-$partDtableBox1 .= '<tr><td>' . $this->translate('Facility Name:') . $formData['facilityname'] . '</td></tr><tr><td>' . $this->translate('Site Type:') . $formData['testingpointtype'];
+$partDtableBox1 .= '<tr><td>' . $this->translate('Facility Name:') . \Application\Service\CommonService::escapeHtml($formData['facilityname']) . '</td></tr><tr><td>' . $this->translate('Site Type:') . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
 $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
 $partDtableBox1 .= "</td></tr>";
-$partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name:') . $formData['staffaudited'] . "</td></tr>";
+$partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name:') . \Application\Service\CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
 $partDtableBox1 .= '</table>';
 $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
 $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox2 .= '<tr><td>' . $this->translate('No. of Tester(s)') .': ' . $formData['NumberofTester'] . '</td></tr><tr><td>' . $this->translate('Duration of Audit') .': ' . $formData['durationaudit'] . "</td></tr>";
+$partDtableBox2 .= '<tr><td>' . $this->translate('No. of Tester(s)') .': ' . \Application\Service\CommonService::escapeHtml($formData['NumberofTester']) . '</td></tr><tr><td>' . $this->translate('Duration of Audit') .': ' . \Application\Service\CommonService::escapeHtml($formData['durationaudit']) . "</td></tr>";
 $partDtableBox2 .= '</table>';
 
 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
@@ -96,8 +96,8 @@ if ($scorePer < 40) {
 }
 
 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox3 .= '<tr><td>' . $this->translate('Total points scored (exclude N/A) =') . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= '<tr><td>' . $this->translate('Total score expected =') . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+$partDtableBox3 .= '<tr><td>' . $this->translate('Total points scored (exclude N/A) =') . \Application\Service\CommonService::escapeHtml($formData['FINAL_AUDIT_SCORE']) . "</td></tr>";
+$partDtableBox3 .= '<tr><td>' . $this->translate('Total score expected =') . \Application\Service\CommonService::escapeHtml($formData['MAX_AUDIT_SCORE']) . "</td></tr>";
 $partDtableBox3 .= '<tr><td>% ' . $this->translate('Score =') . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3 .= '</table>';
 
@@ -121,17 +121,17 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
   $correctiveActions = json_decode($formData['correctiveaction'], true);
   foreach ($correctiveActions as $ca) {
     $partDTable .= '<tr>';
-    $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-    $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
+    $partDTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($ca['sectionno']) . '</td>';
+    $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['deficiency']) . '</td>';
     $partDTable .= '<td style="text-align:center;">';
     $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
     $partDTable .= '</td>';
     $partDTable .= '<td style="text-align:center;">';
     $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
     $partDTable .= '</td>';
-    $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
-    $partDTable .= '<td>' . $ca['action'] . '</td>';
-    $partDTable .= '<td>' . $ca['timeline'] . '</td>';
+    $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['auditorcomment']) . '</td>';
+    $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['action']) . '</td>';
+    $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['timeline']) . '</td>';
     $partDTable .= '</tr>';
   }
 } else {
@@ -144,7 +144,7 @@ $pdf->writeHTML($partDTable, true, 0, true, 0);
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
 $signBox1 .= '<tr><td>' . $this->translate('Staff Audited Signature:') . '</td></tr>';
-$signBox1 .= '<tr><td>' . $this->translate('Person in Charge Name and Signature :') . $formData['personincharge'] . "</td></tr>";
+$signBox1 .= '<tr><td>' . $this->translate('Person in Charge Name and Signature :') . \Application\Service\CommonService::escapeHtml($formData['personincharge']) . "</td></tr>";
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 
