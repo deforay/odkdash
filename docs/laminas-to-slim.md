@@ -1,8 +1,8 @@
 # From Laminas MVC to Slim: where the code lives now
 
-odkdash is moving off laminas-mvc one controller at a time. During the move both frameworks run in the same app. This page explains the new layout for anyone who knows the Laminas one.
+odkdash moved off laminas-mvc one controller at a time. Every page now runs on Slim. Laminas still provides the services, the models and the database layer. This page explains the new layout for anyone who knows the Laminas one.
 
-The short version: controllers move from `module/` to `src/`, and templates moved from `module/Application/view/` to `templates/`. Services, models and config stay where they are.
+The short version: controllers moved from `module/` to `src/`, and templates moved from `module/Application/view/` to `templates/`. Services, models and config stay where they are.
 
 ## How a request is served
 
@@ -70,7 +70,9 @@ The route name, the pattern and the defaults do not change:
 - The pattern builds URLs exactly as Laminas built them. `Kernel::SLIM_TAILS` turns it into the Slim pattern.
 - `defaults.controller` is the ACL resource, the value `Module::preSetter()` checked.
 
-A route without a `handler` is registered for URL building only. A route with `'public' => true` needs no login.
+A route without a `handler` is registered for URL building only. A route with `'public' => true` needs no login. Only the landing page and the login pages are public.
+
+A route whose Laminas pattern `Kernel::SLIM_TAILS` cannot express gives its Slim pattern in a `slim` key. The landing page is the one case. Its Laminas pattern matched any single path segment, such as `/foo`, so its Slim pattern is `/[{id}]`. It must stay the last route. FastRoute refuses a fixed path such as `/login` declared after `/{id}`. The app then fails on every request.
 
 ## What a controller becomes
 
@@ -139,11 +141,11 @@ The `.phtml` files moved from `module/Application/view/` to `templates/` with th
 
 The files themselves are the same. `ViewRenderer` runs them with the same variables and the same helper names: `$this->url()`, `$this->translate()`, `$this->layout()->acl` and the others. A template does not know which framework rendered it.
 
-Route names did not change either. A template that calls `$this->url('spi-v3-form', ...)` works on both sides. Laminas code can still build URLs for moved routes, because `src/Routing/SlimRoutesDelegator.php` adds every Slim route to the Laminas router. `redirect()->toRoute('dashboard')` in `LoginController` works even though the dashboard is on Slim.
+Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a template builds the same URL as before.
 
 ## Access control
 
-`AccessMiddleware` replaces `Module::preSetter()` for Slim routes. It applies the same ACL from the same tables, with three differences:
+`AccessMiddleware` replaces `Module::preSetter()`. It applies the same ACL from the same tables, with three differences:
 
 - **The ACL applies to AJAX requests too.** `preSetter()` checked only the login on AJAX requests.
 - **Helper actions inherit access from their pages.** A helper is an action that a page's JavaScript calls and that has no row in the `privileges` table, such as a table feed or a dropdown fill. A role that may open a page that calls the helper may call the helper. `bin/dev/helper-access` builds the list of callers from the templates into `config/helper-access.php`. Run it after a template starts calling a new helper. `composer qc` fails when the file is out of date.
@@ -151,9 +153,13 @@ Route names did not change either. A template that calls `$this->url('spi-v3-for
 
 ## What is still on Laminas
 
-These controllers remain in `module/Application/src/Application/Controller/`:
+No controller or route is left on Laminas. These pieces remain:
 
-- `SpiV6Controller`, the next to move.
-- `LoginController`, `IndexController`, `ReceiverController` and `ReceiverSpiV6Controller`. They are public, so they move last.
+- `public/index.php` still falls through to Laminas MVC when no Slim route matches. Laminas then answers with its 404 page.
+- `Module.php` still wires the services, and `Module::preSetter()` still exists.
+- `src/Routing/` adds the Slim routes to the Laminas router, so code that builds URLs through Laminas keeps working.
+- The services, models and table gateways use laminas-db and laminas-servicemanager.
 
-When the last one moves, `public/index.php` stops falling through to Laminas, and laminas-mvc leaves `composer.json`. The services and models can then move to `src/` at their own pace.
+The next step removes laminas-mvc and the router from the request path. The services and models then move off the remaining Laminas packages at their own pace.
+
+The ODK push receivers, `/receiver` and `/receiver-spi-v6`, were removed rather than moved. Submissions come from ODK Central through the `sync-central` commands.
