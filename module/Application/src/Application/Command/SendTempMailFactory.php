@@ -2,13 +2,12 @@
 
 namespace Application\Command;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Application\Command\SendTempMail;
 
-class SendTempMailFactory implements FactoryInterface
+class SendTempMailFactory
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container)
     {
         $commonService = $container->get('CommonService');
         return new SendTempMail($commonService);

@@ -14,7 +14,7 @@ App\Http\Kernel::fromGlobals()->run();
 
 A path with no route answers the `error/404` page, which `ErrorMiddleware` renders as Laminas did.
 
-Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` builds a laminas-servicemanager from `Module::getServiceConfig()` and the merged config. `bin/console` and `bin/migrate` build theirs with the same `LaminasBridge::build()`.
+Slim handlers reuse the existing services through PHP-DI. `src/Services/ServiceDefinitions.php` turns the factories in `Module::getServiceConfig()` into PHP-DI definitions, under the same string keys, so `$this->sm->get('CommonService')` keeps working. The Kernel, `bin/console` and `bin/migrate` build their containers from the same definitions.
 
 ## Old and new locations
 
@@ -22,7 +22,7 @@ Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` build
 |---|---|---|
 | Front controller | `public/index.php` | `public/index.php` |
 | Autoloading | `init_autoloader.php` | `vendor/autoload.php` |
-| Module list and config merge | `config/application.config.php` and the module manager | `LaminasBridge::config()` |
+| Module list and config merge | `config/application.config.php` and the module manager | `ServiceDefinitions::config()` |
 | Routes | `router.routes` in `module/Application/config/module.config.php` | `src/Http/Routes/Application.php`, one file per module |
 | Controllers | `module/Application/src/Application/Controller/` | `src/Http/Handlers/` |
 | Controller factories | anonymous classes in `Module::getControllerConfig()` | none: PHP-DI reads the constructor |
@@ -34,7 +34,7 @@ Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` build
 | Templates | `module/Application/view/` | `templates/` |
 | Services | `module/Application/src/Application/Service/` | unchanged |
 | Models and table gateways | `module/Application/src/Application/Model/` | unchanged |
-| Service wiring | `Module::getServiceConfig()` | unchanged, read by `LaminasBridge::build()` |
+| Service wiring | `Module::getServiceConfig()` and laminas-servicemanager | `Module::getServiceConfig()`, read by `ServiceDefinitions::definitions()` into PHP-DI |
 | Console commands | `bin/console` | unchanged |
 
 `src/` uses the `App\` namespace. `module/` keeps the `Application\` namespace.
@@ -151,25 +151,25 @@ Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a t
 
 ## What is still on Laminas
 
-No controller, route, module or MVC event is left. Two packages remain, and they bring a third, laminas-stdlib, which the app no longer calls itself:
+No controller, route, module or MVC event is left. One package remains, laminas-db, and it brings laminas-stdlib, which the app no longer calls itself:
 
 | Package | Used by | Next step |
 |---|---|---|
-| laminas-servicemanager | `LaminasBridge` and the factories in `Module::getServiceConfig()` | Move the factories to PHP-DI. |
-| laminas-db | The models and table gateways | Replace with Doctrine DBAL or PDO, one model at a time. This is the last step. |
+| laminas-db | The models and table gateways | Replace with Doctrine DBAL or PDO, one model at a time. |
 
-Two packages are gone:
+Three packages are gone:
+
+- laminas-servicemanager. `ServiceDefinitions` registers every service with PHP-DI under its old key. The factories in `Module::getServiceConfig()` are invokable objects, and `DI\factory()` passes them the container as their first argument, so their bodies did not change. psr/container moved to version 2, which laminas-servicemanager had blocked.
 
 - laminas-escaper. `App\View\Escape` replaces it. Its output matched Laminas on 200,011 random strings, invalid UTF-8 included.
-- laminas-stdlib as a direct dependency. `App\Http\Parameters` replaces `Parameters` with the same behaviour: null for a missing key, and property access. `LaminasBridge::merge()` replaces `ArrayUtils::merge()`. The merged config and the registered services are identical.
+- laminas-stdlib as a direct dependency. `App\Http\Parameters` replaces `Parameters` with the same behaviour: null for a missing key, and property access. `ServiceDefinitions::merge()` replaces `ArrayUtils::merge()`. The merged config and the registered services are identical.
 
-`LaminasBridge::config()` merges the config in the order the module manager merged it:
+`ServiceDefinitions::config()` merges the config in the order the module manager merged it:
 
-1. laminas-db's adapter services.
-2. `module/Application/config/module.config.php`.
-3. `config/autoload/global.php`, then `*.global.php`, then `local.php`, then `*.local.php`.
+1. `module/Application/config/module.config.php`.
+2. `config/autoload/global.php`, then `*.global.php`, then `local.php`, then `*.local.php`.
 
-A later file overrides an earlier one, as before. `config/autoload/` did not change.
+A later file overrides an earlier one, as before. `config/autoload/` did not change. Servers' `global.php` still holds a `service_manager` key naming laminas-db's `AdapterServiceFactory`. Nothing reads it any more. `ServiceDefinitions` builds the adapter the same way, as `new Adapter($config['db'])`.
 
 Composer lists `module/Application/Module.php` in its `classmap`. The module manager used to load it.
 

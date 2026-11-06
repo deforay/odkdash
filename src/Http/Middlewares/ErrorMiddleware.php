@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Middlewares;
 
 use App\Http\Responder;
-use App\Services\LaminasBridge;
 use Application\Service\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -75,7 +74,7 @@ final class ErrorMiddleware implements MiddlewareInterface
 
     private function displayExceptions(): bool
     {
-        $config = $this->container->get(LaminasBridge::class)->get('config');
+        $config = $this->container->get('config');
 
         return !empty($config['view_manager']['display_exceptions']);
     }
