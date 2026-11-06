@@ -89,16 +89,6 @@ return array(
                     ),
                 ),
             ),
-            'spi-v3-form' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v3[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3Controller',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'spi-v6-form' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -106,16 +96,6 @@ return array(
                     'defaults' => array(
                         'controller' => 'Application\Controller\SpiV6Controller',
                         'action' => 'index',
-                    ),
-                ),
-            ),
-            'view-data' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/view-data',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV3Controller',
-                        'action' => 'view-data',
                     ),
                 ),
             ),

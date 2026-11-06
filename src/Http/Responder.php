@@ -48,6 +48,22 @@ final class Responder
         return $this->html($this->view->render($template, $variables));
     }
 
+    /**
+     * A template that sends its own headers, such as a TCPDF Output(..., 'I')
+     * that sets application/pdf with header(). The response sets no
+     * Content-Type, so the emitter does not replace the template's.
+     *
+     * @param array<string, mixed> $variables
+     */
+    public function output(string $template, array $variables = []): ResponseInterface
+    {
+        $body = $this->view->render($template, $variables);
+        $response = $this->responses->createResponse();
+        $response->getBody()->write($body);
+
+        return $response;
+    }
+
     /** A body as is: what $this->getResponse()->setContent() did. */
     public function html(string $body, int $status = 200): ResponseInterface
     {

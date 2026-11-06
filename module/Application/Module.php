@@ -267,14 +267,6 @@ class Module
                         return new \Application\Controller\LoginController($userService);
                     }
                 },
-                'Application\Controller\SpiV3Controller' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $commonService = $diContainer->get('CommonService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\SpiV3Controller($odkFormService, $commonService);
-                    }
-                },
                 'Application\Controller\SpiV6Controller' => new class {
                     public function __invoke($diContainer)
                     {
