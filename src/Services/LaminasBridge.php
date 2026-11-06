@@ -8,7 +8,6 @@ use Application\Module;
 use Closure;
 use Laminas\Db\ConfigProvider as DbConfigProvider;
 use Laminas\ServiceManager\ServiceManager;
-use Laminas\Stdlib\ArrayUtils;
 
 /**
  * Gives Slim handlers, bin/console and bin/migrate the existing Laminas
@@ -48,12 +47,12 @@ final class LaminasBridge
     public static function config(string $appRoot): array
     {
         $config = ['service_manager' => (new DbConfigProvider())->getDependencyConfig()];
-        $config = ArrayUtils::merge($config, (new Module())->getConfig());
+        $config = self::merge($config, (new Module())->getConfig());
 
         $dir = $appRoot . '/config/autoload';
         foreach (['global.php', '*.global.php', 'local.php', '*.local.php'] as $pattern) {
             foreach (glob($dir . '/' . $pattern) ?: [] as $file) {
-                $config = ArrayUtils::merge($config, require $file);
+                $config = self::merge($config, require $file);
             }
         }
 
@@ -69,7 +68,7 @@ final class LaminasBridge
     {
         $config = self::config($appRoot);
 
-        $services = ArrayUtils::merge((new Module())->getServiceConfig(), $config['service_manager'] ?? []);
+        $services = self::merge((new Module())->getServiceConfig(), $config['service_manager'] ?? []);
         $services['services']['config'] = $config;
         $services['aliases']['Config'] = 'config';
 
@@ -95,5 +94,31 @@ final class LaminasBridge
     public function get(string $name): mixed
     {
         return $this->serviceManager()->get($name);
+    }
+
+    /**
+     * Merges config arrays as Laminas ArrayUtils::merge() did. A list item
+     * from $b is appended. Two arrays under one string key are merged.
+     * Anything else from $b replaces the value in $a.
+     *
+     * @param array<array-key, mixed> $a
+     * @param array<array-key, mixed> $b
+     * @return array<array-key, mixed>
+     */
+    private static function merge(array $a, array $b): array
+    {
+        foreach ($b as $key => $value) {
+            if (!array_key_exists($key, $a)) {
+                $a[$key] = $value;
+            } elseif (is_int($key)) {
+                $a[] = $value;
+            } elseif (is_array($value) && is_array($a[$key])) {
+                $a[$key] = self::merge($a[$key], $value);
+            } else {
+                $a[$key] = $value;
+            }
+        }
+
+        return $a;
     }
 }
