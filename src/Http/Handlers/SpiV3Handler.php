@@ -347,8 +347,18 @@ final class SpiV3Handler extends ActionHandler
     public function viewBulkDownloadsAction(ServerRequestInterface $request): ResponseInterface
     {
         return $this->respond->page('application/spi-v3/view-bulk-downloads', [
-            'result' => $this->odkFormService->getBulkDownloadsFiles(),
+            'result' => $this->odkFormService->getBulkDownloads('v3'),
         ]);
+    }
+
+    /** One bulk download archive, for its requester or a Super Admin. Anyone else gets 404. */
+    public function bulkFileAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $path = $this->odkFormService->getBulkDownloadPath('v3', $this->routeParam($request, 'id'));
+        if ($path === null) {
+            return $this->respond->status(404);
+        }
+        return $this->respond->file($path, 'application/zip');
     }
 
     /** What a Laminas action that returned null rendered. */

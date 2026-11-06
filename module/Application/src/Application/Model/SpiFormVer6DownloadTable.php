@@ -133,4 +133,50 @@ class SpiFormVer6DownloadTable extends AbstractTableGateway
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
     }
+
+    /**
+     * The signed-in user's bulk download requests, newest first, with the
+     * requester's login. A Super Admin sees everyone's.
+     */
+    public function fetchRequestsForUser(): array
+    {
+        $loginContainer = new Container('credo');
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from(['d' => $this->table])
+            ->join(['u' => 'users'], 'u.id=d.user', ['login'], 'left')
+            ->order('d.r_download_id DESC');
+        if ($loginContainer->roleCode !== 'SA') {
+            $query->where(['d.user' => (int) $loginContainer->userId]);
+        }
+        return $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->toArray();
+    }
+
+    /**
+     * The archive name of one request and the audit ids in it, if
+     * the signed-in user made the request or is a Super Admin. Null for
+     * anyone else, so another user's request reads as missing.
+     *
+     * @return array{file_name: string, audit_ids: string}|null
+     */
+    public function fetchArchiveForUser(mixed $requestId): ?array
+    {
+        if (!is_scalar($requestId) || preg_match('/^\d+$/', (string) $requestId) !== 1) {
+            return null;
+        }
+        $loginContainer = new Container('credo');
+        if (empty($loginContainer->userId)) {
+            return null;
+        }
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from($this->table)->columns(['file_name', 'audit_ids'])
+            ->where(['r_download_id' => (string) $requestId]);
+        if ($loginContainer->roleCode !== 'SA') {
+            $query->where(['user' => (int) $loginContainer->userId]);
+        }
+        $row = $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->current();
+        if (!$row || $row['file_name'] === null || $row['file_name'] === '') {
+            return null;
+        }
+        return ['file_name' => (string) $row['file_name'], 'audit_ids' => (string) $row['audit_ids']];
+    }
 }

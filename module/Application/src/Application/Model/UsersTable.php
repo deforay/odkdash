@@ -579,15 +579,43 @@ class UsersTable extends AbstractTableGateway
         return $this->update($data, array('id' => $userId));
     }
 
-    public function userEventLog($sResult)
+    /**
+     * The scope of an active user who is not signed in, such as the
+     * requester of a queued bulk download. Null when the user is missing or
+     * inactive, so the caller can refuse rather than fall back to all access.
+     *
+     * @return array{roleCode: string, token: list<string>, userMappedIds: ?list<string>, userMappingType: ?string}|null
+     */
+    public function scopeOf(int $userId): ?array
     {
-        $dbAdapter = $this->adapter;
-        $userLocationMapTable = new UserLocationMapTable($dbAdapter);
         $sql = new Sql($this->adapter);
-        $gTable = new GlobalTable($dbAdapter);
-        $trackTable = new EventLogTable($dbAdapter);
-        $loginContainer = new Container('credo');
-        $userLocationMapResult = $userLocationMapTable->fetchSelectedLocation($sResult->id);
+        $query = $sql->select()->from(['u' => 'users'])->columns([])
+            ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', [])
+            ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_code'])
+            ->where(['u.id' => $userId, 'u.status' => 'active']);
+        $user = $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->current();
+        if (!$user) {
+            return null;
+        }
+        return ['roleCode' => (string) $user['role_code']] + $this->scopeFor($userId, (string) $user['role_code']);
+    }
+
+    /**
+     * The token and location limits the login puts in the session.
+     *
+     * @return array{token: list<string>, userMappedIds: ?list<string>, userMappingType: ?string}
+     */
+    private function scopeFor(int $userId, string $roleCode): array
+    {
+        // A Super Admin has all access: no location mapping and no token
+        // restriction, whatever is assigned on the user screen. That is also
+        // who sees the audits whose location cannot be resolved, to fix them.
+        if ($roleCode === 'SA') {
+            return ['token' => [], 'userMappedIds' => null, 'userMappingType' => null];
+        }
+        $dbAdapter = $this->adapter;
+        $sql = new Sql($this->adapter);
+        $userLocationMapResult = (new UserLocationMapTable($dbAdapter))->fetchSelectedLocation($userId);
 
         if (!empty($userLocationMapResult)) {
             // Convert object to array if needed
@@ -610,7 +638,7 @@ class UsersTable extends AbstractTableGateway
         $token = [];
         $userTokenQuery = $sql->select()->from(['u_t_map' => 'user_token_map'])
             ->columns(['token'])
-            ->where(['user_id' => $sResult->id])
+            ->where(['user_id' => $userId])
             ->order("token ASC");
         $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
         $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -618,14 +646,16 @@ class UsersTable extends AbstractTableGateway
             $token[] = $userToken['token'];
         }
 
-        // A Super Admin has all access: no location mapping and no token
-        // restriction, whatever is assigned on the user screen. That is also
-        // who sees the audits whose location cannot be resolved, to fix them.
-        if ($sResult->role_code === 'SA') {
-            $token = [];
-            $userMappedIdsArray = null;
-            $userMappingType = null;
-        }
+        return ['token' => $token, 'userMappedIds' => $userMappedIdsArray, 'userMappingType' => $userMappingType];
+    }
+
+    public function userEventLog($sResult)
+    {
+        $dbAdapter = $this->adapter;
+        $gTable = new GlobalTable($dbAdapter);
+        $trackTable = new EventLogTable($dbAdapter);
+        $loginContainer = new Container('credo');
+        $scope = $this->scopeFor((int) $sResult->id, (string) $sResult->role_code);
 
         $language = $gTable->getGlobalValue('language');
         if (isset($sResult->language) && !empty($sResult->language)) {
@@ -639,9 +669,9 @@ class UsersTable extends AbstractTableGateway
         $loginContainer->login = $sResult->login;
         $loginContainer->roleCode = $sResult->role_code;
         $loginContainer->roleId = $sResult->role_id;
-        $loginContainer->token = $token;
-        $loginContainer->userMappedIds = $userMappedIdsArray;
-        $loginContainer->userMappingType = $userMappingType;
+        $loginContainer->token = $scope['token'];
+        $loginContainer->userMappedIds = $scope['userMappedIds'];
+        $loginContainer->userMappingType = $scope['userMappingType'];
         $loginContainer->userImage = $sResult->user_image;
         $subject = '';
         $eventType = 'login in';

@@ -3,7 +3,6 @@
 namespace Application\Service;
 
 use DateTime;
-use ZipArchive;
 use CpChart\Data;
 use DateTimeZone;
 use CpChart\Image;
@@ -790,7 +789,13 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer3DownloadTable');
         $result = $db->fetchDownloadDataList();
-        if (count($result['formResult']) > 0) {
+        if (!$result['downloadResult']) {
+            return;
+        }
+        $requestId = (int) $result['downloadResult']['r_download_id'];
+        $scope = $this->sm->get('UsersTable')->scopeOf((int) $result['downloadResult']['user']);
+        $forms = $this->auditsInScope($result['formResult'], $scope, $this->sm->get('SpiFormVer3Table'));
+        if (count($forms) > 0) {
             //get config details
             $globalDb = $this->sm->get('GlobalTable');
             $configData = $globalDb->getGlobalConfig();
@@ -799,8 +804,8 @@ class OdkFormService
             //Convert the JSON string back into an array.
             $decoded = json_decode($fileContents, true);
             $language = $configData['language'];
-            $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
-            foreach ($result['formResult'] as $formData) {
+            $folderPath = self::bulkDownloadFolder('v3-request-' . $requestId);
+            foreach ($forms as $formData) {
                 // create new PDF document
                 $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
                 $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
@@ -1473,13 +1478,8 @@ class OdkFormService
                 $signBox2 .= '</table>';
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
                 //Close and output PDF document
-                $fileName = "SPI-RT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
-                if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf")) {
-                    mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf");
-                }
-                if (!file_exists($folderPath)) {
-                    mkdir($folderPath);
-                }
+                // The audit id keeps two PDFs written in the same second apart.
+                $fileName = "SPI-RT-CHECKLIST-" . (int) $formData['id'] . '-' . date('d-M-Y-H-i-s') . ".pdf";
                 $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
                 //============================================================+
@@ -1487,11 +1487,11 @@ class OdkFormService
                 //============================================================+
             }
             //zip part
-            $zip = new ZipArchive();
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
-            CommonService::zipFolder($folderPath, $zipFileName);
+            $zipFileName = 'SPI-RT-audits-bulk-download-' . $requestId . '-' . date('d-m-y-h-i-s') . ".zip";
+            CommonService::zipFolder($folderPath, self::bulkDownloadFolder() . DIRECTORY_SEPARATOR . $zipFileName);
             // now we can remove the $folderPath
             CommonService::rmdirRecursive($folderPath);
+            $db->update(['file_name' => $zipFileName, 'audit_ids' => implode(',', array_map('intval', array_column($forms, 'id')))], ['r_download_id' => $requestId]);
         }
     }
 
@@ -3584,7 +3584,13 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer6DownloadTable');
         $result = $db->fetchDownloadDataList();
-        if (count($result['formResult']) > 0) {
+        if (!$result['downloadResult']) {
+            return;
+        }
+        $requestId = (int) $result['downloadResult']['r_download_id'];
+        $scope = $this->sm->get('UsersTable')->scopeOf((int) $result['downloadResult']['user']);
+        $forms = $this->auditsInScope($result['formResult'], $scope, $this->sm->get('SpiFormVer6Table'));
+        if (count($forms) > 0) {
             //get config details
             $globalDb = $this->sm->get('GlobalTable');
             $configData = $globalDb->getGlobalConfig();
@@ -3593,8 +3599,8 @@ class OdkFormService
             //Convert the JSON string back into an array.
             $decoded = json_decode($fileContents, true);
             $language = $configData['language'];
-            $folderPath = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'audits-bulk-download';
-            foreach ($result['formResult'] as $formData) {
+            $folderPath = self::bulkDownloadFolder('v6-request-' . $requestId);
+            foreach ($forms as $formData) {
                 // create new PDF document
                 $pdf = new TcpdfExtends(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
                 $pdf->setSchemeName(ucwords($configData['header']), $configData['logo']);
@@ -5262,41 +5268,103 @@ class OdkFormService
                 $signBox2 .= '</table>';
                 $pdf->writeHTMLCell(80, 18, 115, '', $signBox2, 1, 1, 0, true, 'L');
                 //Close and output PDF document
-                $fileName = "SPI-RRT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
-                if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf")) {
-                    mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "bulk-pdf");
-                }
-                if (!file_exists($folderPath)) {
-                    mkdir($folderPath);
-                }
+                // The audit id keeps two PDFs written in the same second apart.
+                $fileName = "SPI-RRT-CHECKLIST-" . (int) $formData['id'] . '-' . date('d-M-Y-H-i-s') . ".pdf";
                 $filePath = $folderPath . DIRECTORY_SEPARATOR . $fileName;
                 $pdf->Output($filePath, "F");
             }
-            $zipFileName = TEMP_UPLOAD_PATH . '/bulk-pdf/' . 'SPI-RRT-audits-bulk-download-' . date('d-m-y-h-i-s') . ".zip";
-            CommonService::zipFolder($folderPath, $zipFileName);
+            $zipFileName = 'SPI-RRT-audits-bulk-download-' . $requestId . '-' . date('d-m-y-h-i-s') . ".zip";
+            CommonService::zipFolder($folderPath, self::bulkDownloadFolder() . DIRECTORY_SEPARATOR . $zipFileName);
             // now we can remove the $folderPath
             CommonService::rmdirRecursive($folderPath);
+            $db->update(['file_name' => $zipFileName, 'audit_ids' => implode(',', array_map('intval', array_column($forms, 'id')))], ['r_download_id' => $requestId]);
         }
     }
 
-    public function getBulkDownloadsFiles()
+    /**
+     * The bulk download requests the signed-in user made, newest first. A
+     * Super Admin sees everyone's.
+     */
+    public function getBulkDownloads(string $version): array
     {
-        $directory = TEMP_UPLOAD_PATH . "/bulk-pdf/";
-        // Check if directory exists and is readable
-        if (!is_dir($directory) || !is_readable($directory)) {
-            return []; // Return an empty array if directory is invalid
+        return $this->bulkDownloadTable($version)->fetchRequestsForUser();
+    }
+
+    /**
+     * The archive of one bulk download request, if the signed-in user made
+     * the request or is a Super Admin. Null otherwise, and when the file is
+     * gone.
+     */
+    public function getBulkDownloadPath(string $version, mixed $requestId): ?string
+    {
+        $archive = $this->bulkDownloadTable($version)->fetchArchiveForUser($requestId);
+        if ($archive === null) {
+            return null;
         }
-
-        $files = scandir($directory);
-
-        // Ensure $files is valid
-        if ($files === false) {
-            return []; // Return an empty array if scandir fails
+        // The archive is served only while every audit in it is still in the
+        // user's scope. A changed mapping or token, or an audit moved to
+        // another facility, refuses it, and the user requests a new one. The
+        // scope is read from the database, not the session, so a change
+        // applies without waiting for the next login.
+        $scope = $this->sm->get('UsersTable')->scopeOf((int) (new Container('credo'))->userId);
+        $forms = array_map(fn(string $id): array => ['id' => $id], array_filter(explode(',', $archive['audit_ids']), fn(string $id): bool => $id !== ''));
+        $auditTable = $this->sm->get($version === 'v3' ? 'SpiFormVer3Table' : 'SpiFormVer6Table');
+        if ($scope === null || $forms === [] || count($this->auditsInScope($forms, $scope, $auditTable)) !== count($forms)) {
+            return null;
         }
-        // Remove . and .. from the list
-        $files = array_diff($files, array('.', '..'));
+        $path = self::bulkDownloadFolder() . DIRECTORY_SEPARATOR . basename($archive['file_name']);
+        return is_file($path) ? $path : null;
+    }
 
-        return $files;
+    private function bulkDownloadTable(string $version): \Application\Model\SpiFormVer3DownloadTable|\Application\Model\SpiFormVer6DownloadTable
+    {
+        return match ($version) {
+            'v3' => $this->sm->get('SpiFormVer3DownloadTable'),
+            'v6' => $this->sm->get('SpiFormVer6DownloadTable'),
+            default => throw new \InvalidArgumentException("Unknown form version $version"),
+        };
+    }
+
+    /**
+     * Where bulk download archives live, or a subfolder of it, created on
+     * first use. It sits outside the web root, so an archive is reachable
+     * only through the download action and its requester check.
+     */
+    private static function bulkDownloadFolder(string $subfolder = ''): string
+    {
+        $folder = APPLICATION_PATH . '/var/bulk-pdf' . ($subfolder === '' ? '' : DIRECTORY_SEPARATOR . $subfolder);
+        if (!is_dir($folder) && !mkdir($folder, 0775, true) && !is_dir($folder)) {
+            throw new \RuntimeException("Cannot create $folder");
+        }
+        return $folder;
+    }
+
+    /**
+     * The audits of a queued bulk download that its requester may see. The
+     * command runs with no one signed in, so the check runs under the
+     * requester's scope (UsersTable::scopeOf()), the same check that guards
+     * opening one audit. A requester who is gone or inactive has a null scope
+     * and gets nothing.
+     *
+     * @param array<int, array<string, mixed>> $forms
+     * @param array<string, mixed>|null $scope
+     * @return list<array<string, mixed>>
+     */
+    private function auditsInScope(array $forms, ?array $scope, SpiFormVer3Table|SpiFormVer6Table $table): array
+    {
+        if ($scope === null) {
+            return [];
+        }
+        $session = new Container('credo');
+        $signedIn = $_SESSION['credo'];
+        foreach ($scope as $key => $value) {
+            $session->$key = $value;
+        }
+        try {
+            return array_values(array_filter($forms, fn(array $form): bool => $table->auditInScope($form['id'] ?? null)));
+        } finally {
+            $_SESSION['credo'] = $signedIn;
+        }
     }
 
     public function getAllProvince()

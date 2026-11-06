@@ -507,6 +507,14 @@ return array (
         1 => 'index',
       ),
     ),
+    'bulkfile' => 
+    array (
+      0 => 
+      array (
+        0 => 'Application\\Controller\\SpiV3Controller',
+        1 => 'view-bulk-downloads',
+      ),
+    ),
     'delete' => 
     array (
       0 => 
@@ -781,6 +789,14 @@ return array (
       array (
         0 => 'Application\\Controller\\DashboardV6Controller',
         1 => 'index',
+      ),
+    ),
+    'bulkfile' => 
+    array (
+      0 => 
+      array (
+        0 => 'Application\\Controller\\SpiV6Controller',
+        1 => 'view-bulk-downloads',
       ),
     ),
     'correctiveactionpdf' => 
