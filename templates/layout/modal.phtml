@@ -41,7 +41,7 @@ $sessionLogin = new Container('credo');
             <?php
             if (isset($container->alertMsg) && $container->alertMsg != "") {
                 ?>
-                alert("<?php echo $container->alertMsg; ?>");
+                alert(<?php echo \Application\Service\CommonService::jsonEncode($container->alertMsg); ?>);
                 <?php
                 $container->alertMsg = "";
                 unset($container->alertMsg);

@@ -57,8 +57,8 @@ $userMappingType = $loginContainer->userMappingType;
 											<?php
 											foreach ($spiV3auditRoundNo as $auditRoundNo) {
 												?>
-												<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
-													<?php echo $auditRoundNo['auditroundno']; ?>
+												<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
+													<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>
 												</option>
 												<?php
 											}
@@ -99,7 +99,7 @@ $userMappingType = $loginContainer->userMappingType;
 											title="Please select the country">
 											<option value=""><?= $this->translate('All'); ?></option>
 											<?php foreach ($locationResult['countries'] as $row) { ?>
-												<option value="<?php echo $row['country_id']; ?>">
+												<option value="<?php echo $this->escapeHtml($row['country_id']); ?>">
 													<?php echo ucwords($row['country_name']); ?>
 												</option>
 											<?php } ?>
@@ -111,7 +111,7 @@ $userMappingType = $loginContainer->userMappingType;
 										<select class="form-control" multiple="multiple" id="province">
 											<option value=""><?= $this->translate('All'); ?></option>
 											<?php foreach ($locationResult['provinces'] as $val) { ?>
-												<option value="<?php echo $val['geo_id']; ?>">
+												<option value="<?php echo $this->escapeHtml($val['geo_id']); ?>">
 													<?php echo ucwords($val['geo_name']); ?>
 												</option>
 											<?php } ?>
@@ -123,7 +123,7 @@ $userMappingType = $loginContainer->userMappingType;
 										<select class="form-control" id="district" multiple="multiple">
 											<option value=""><?= $this->translate('All'); ?></option>
 											<?php foreach ($locationResult['districts'] as $val) { ?>
-												<option value="<?php echo $val['geo_id']; ?>">
+												<option value="<?php echo $this->escapeHtml($val['geo_id']); ?>">
 													<?php echo ucwords($val['geo_name']); ?>
 												</option>
 											<?php } ?>
@@ -136,7 +136,7 @@ $userMappingType = $loginContainer->userMappingType;
 											onchange="getTestingPointTypeNames();">
 											<option value=""><?= $this->translate('All'); ?></option>
 											<?php foreach ($testingPointResult as $val) { ?>
-												<option value="<?php echo $val['testingPointType']; ?>">
+												<option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>">
 													<?php echo ucwords($val['testingPointType']); ?>
 												</option>
 											<?php } ?>

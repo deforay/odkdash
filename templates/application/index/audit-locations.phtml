@@ -6,9 +6,9 @@ $icon = $this->basePath('assets/img/map-points/dark-green.png');
 <script type="text/javascript" src="<?php echo $this->basePath('assets/js/leaflet.js'); ?>"></script>
 <script>
 	$(document).ready(function() {
-		var lat = "<?php echo $configData['latitude']; ?>";
-		var log = "<?php echo $configData['longitude']; ?>";
-		var zoomLevel = "<?php echo $configData['dashboard_map_zoomlevel'] ?? '4'; ?>";
+		var lat = <?php echo \Application\Service\CommonService::jsonEncode($configData['latitude'] ?? ''); ?>;
+		var log = <?php echo \Application\Service\CommonService::jsonEncode($configData['longitude'] ?? ''); ?>;
+		var zoomLevel = <?php echo \Application\Service\CommonService::jsonEncode($configData['dashboard_map_zoomlevel'] ?? '4'); ?>;
 
 		var LeafIcon = L.Icon.extend({});
 		var map = L.map('map', {
@@ -47,11 +47,11 @@ $icon = $this->basePath('assets/img/map-points/dark-green.png');
 					$icon = $this->basePath('assets/img/map-points/red.png');
 				}
 		?>
-				var marker = L.marker(["<?php echo $row['Latitude'] ?>", "<?php echo $row['Longitude'] ?>"], {
+				var marker = L.marker([<?php echo \Application\Service\CommonService::jsonEncode($row['Latitude']); ?>, <?php echo \Application\Service\CommonService::jsonEncode($row['Longitude']); ?>], {
 						icon: new LeafIcon({
 							iconUrl: "<?php echo $icon; ?>"
 						})
-					}).bindPopup("<?php echo addslashes($row['facilityname']); ?>")
+					}).bindPopup(<?php echo \Application\Service\CommonService::jsonEncode(\Application\Service\CommonService::escapeHtml($row['facilityname'])); ?>)
 					.addTo(map).on('mouseover', function(e) {
 						this.openPopup();
 					})

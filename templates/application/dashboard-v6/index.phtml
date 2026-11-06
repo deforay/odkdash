@@ -95,7 +95,7 @@ $userMappingType = $sessionLogin->userMappingType;
 <div class="am-content">
 	<div class="page-head">
 		<span style="">
-			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?>
+			<h2 style="font-weight:bold;"><?php echo $this->escapeHtml($sessionLogin->countryName); ?>
 				<?= $this->translate('SPI-RRT Audits'); ?><a id="showFilterBtn"
 					class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;"
 					onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a>
@@ -170,7 +170,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										title="Please select the country">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['countries'] as $row) { ?>
-											<option value="<?php echo $row['country_id']; ?>">
+											<option value="<?php echo $this->escapeHtml($row['country_id']); ?>">
 												<?php echo ucwords($row['country_name']); ?></option>
 										<?php } ?>
 									</select>
@@ -181,7 +181,7 @@ $userMappingType = $sessionLogin->userMappingType;
 									<select class="" id="province" multiple="multiple">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['provinces'] as $val) { ?>
-											<option value="<?php echo $val['geo_id']; ?>">
+											<option value="<?php echo $this->escapeHtml($val['geo_id']); ?>">
 												<?php echo ucwords($val['geo_name']); ?></option>
 										<?php } ?>
 									</select>
@@ -194,7 +194,7 @@ $userMappingType = $sessionLogin->userMappingType;
 									<select class="form-control" id="district" multiple="multiple">
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['districts'] as $val) { ?>
-											<option value="<?php echo $val['geo_id']; ?>">
+											<option value="<?php echo $this->escapeHtml($val['geo_id']); ?>">
 												<?php echo ucwords($val['geo_name']); ?></option>
 										<?php } ?>
 									</select>
@@ -221,7 +221,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($testingPointResult as $val) {
 											?>
-											<option value="<?php echo $val['testingPointType']; ?>">
+											<option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>">
 												<?php echo ucwords($val['testingPointType']); ?></option>
 											<?php
 										}
@@ -274,7 +274,7 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 						<div class="col-xs-4" style="text-align:center;"><span
 								class="title"><?= $this->translate('No. of Audits'); ?></span><span
-								class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+								class="number"><?php echo $this->escapeHtml($perf1[0]['totalDataPoints']); ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -308,7 +308,7 @@ $userMappingType = $sessionLogin->userMappingType;
 						</div>
 						<div class="col-xs-4" style="text-align:center;"><span
 								class="title"><?php echo $this->translate('No. of Audits'); ?></span><span
-								class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+								class="number"><?php echo $this->escapeHtml($perflast180[0]['totalDataPoints']); ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -355,7 +355,7 @@ $userMappingType = $sessionLogin->userMappingType;
 							</div>
 							<div class="col-xs-4" style="text-align:center;"><span
 									class="title"><?= $this->translate('No. of Audits'); ?></span><span
-									class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+									class="number"><?php echo $this->escapeHtml($perflast30[0]['totalDataPoints']); ?></span></div>
 						</div>
 					</div>
 				</div>
@@ -439,7 +439,7 @@ $userMappingType = $sessionLogin->userMappingType;
 									<?php
 									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 										?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 											<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 										</option>
 										<?php
@@ -485,7 +485,7 @@ $userMappingType = $sessionLogin->userMappingType;
 									<?php
 									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 										?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 											<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 										</option>
 										<?php
@@ -530,7 +530,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 											</option>
 											<?php
@@ -578,7 +578,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 											</option>
 											<?php
@@ -618,7 +618,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 											</option>
 											<?php
@@ -637,7 +637,7 @@ $userMappingType = $sessionLogin->userMappingType;
 							</div>
 						</div>
 
-						<div id="auditLocations" style="height:<?php echo $config['dashboard_map_height']; ?>px;">
+						<div id="auditLocations" style="height:<?php echo $this->escapeHtml($config['dashboard_map_height']); ?>px;">
 
 						</div>
 					</div>
@@ -666,7 +666,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 											</option>
 											<?php
@@ -712,7 +712,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 											</option>
 											<?php
@@ -751,7 +751,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<?php
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
-											<option value="<?php echo $auditRoundNo['auditroundno']; ?>">
+											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
 												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
 											</option>
 											<?php
@@ -849,8 +849,8 @@ $userMappingType = $sessionLogin->userMappingType;
 
 									?>
 									<tr>
-										<td><?php echo $row['facilityid']; ?></td>
-										<td><?php echo $row['facilityname']; ?></td>
+										<td><?php echo $this->escapeHtml($row['facilityid']); ?></td>
+										<td><?php echo $this->escapeHtml($row['facilityname']); ?></td>
 										<td><?php echo $this->humanReadableDateFormat($row['assesmentofaudit']); ?></td>
 										<td><?php echo $this->humanReadableDateFormat($row['today']); ?></td>
 										<td><?php echo ucfirst($row['status']); ?></td>
@@ -859,7 +859,7 @@ $userMappingType = $sessionLogin->userMappingType;
 											<td>
 												<?php
 												if ($update) {
-													?> <a href="/spi-v6/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i
+													?> <a href="/spi-v6/edit/<?php echo $this->escapeHtml($row['id']); ?>" style="white-space:nowrap;"><i
 															class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
@@ -870,7 +870,7 @@ $userMappingType = $sessionLogin->userMappingType;
 
 												if ($row['status'] == 'pending' && $approve) { ?>
 													<a href="javascript:void(0);"
-														onclick="approveStatus('<?php echo $row['id']; ?>')"
+														onclick="approveStatus('<?php echo $this->escapeHtml($row['id']); ?>')"
 														style="white-space:nowrap;"><i class="fa fa-check"></i>
 														Approve</a>&nbsp;&nbsp;
 												<?php } ?>
@@ -1306,7 +1306,7 @@ $userMappingType = $sessionLogin->userMappingType;
 
 			$barData[] = "{ y : " . round((float) ($row['AUDIT_SCORE_PERCENTAGE']), 2) . ", color : '" . $color . "' }";
 			//$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
-			$labNameData[] = ("'" . addslashes($row['facilityname']) . "'");
+			$labNameData[] = ("'" . addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname'])) . "'");
 			//$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
 		}
@@ -1960,7 +1960,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
 			// $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			// $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname'])) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
 		}
 
@@ -1990,7 +1990,7 @@ $userMappingType = $sessionLogin->userMappingType;
 			$highVolumeLevelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
 			$highVolumeData[] = (isset($row['client_tested_HIV_PM']) ? $row['client_tested_HIV_PM'] : 0);
 			$highVolumeTesterData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$highVolumeLabNameData[] = addslashes($row['facilityname']);
+			$highVolumeLabNameData[] = addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname']));
 			$counter++;
 		}
 

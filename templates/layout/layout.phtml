@@ -92,7 +92,7 @@ $googleTag = "GTM-TSMNF9F9";
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="shortcut icon" href="<?php echo $this->basePath('assets/img/favicon.png'); ?>">
-  <title><?php echo $sessionLogin->countryName; ?> <?= $this->translate('Dashboard for Quality Improvement of HIV Rapid Testing'); ?> </title>
+  <title><?php echo $this->escapeHtml($sessionLogin->countryName); ?> <?= $this->translate('Dashboard for Quality Improvement of HIV Rapid Testing'); ?> </title>
 
   <style type="text/css">
 
@@ -323,7 +323,7 @@ $googleTag = "GTM-TSMNF9F9";
           }
           ?>
           <?php if (count($reportLinks) === 1) { ?>
-            <li class="parent"><a href="<?php echo $reportLinks[0][0]; ?>"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a></li>
+            <li class="parent"><a href="<?php echo $this->escapeHtml($reportLinks[0][0]); ?>"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a></li>
           <?php } elseif (count($reportLinks) > 1) { ?>
             <li class="parent"><a href="#"><i class="icon s7-graph"></i><span><?php echo $this->translate('Reports'); ?></span></a>
               <ul class="sub-menu">
@@ -413,7 +413,7 @@ $googleTag = "GTM-TSMNF9F9";
       <?php
       if (isset($container->alertMsg) && $container->alertMsg != "") {
       ?>
-        alert("<?php echo $container->alertMsg; ?>");
+        alert(<?php echo \Application\Service\CommonService::jsonEncode($container->alertMsg); ?>);
       <?php
         $container->alertMsg = "";
         unset($container->alertMsg);

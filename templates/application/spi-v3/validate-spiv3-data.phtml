@@ -52,7 +52,7 @@ $editAction = '{"sClass":"center details-control","bSortable":false},{"sClass":"
               }
               foreach ($tokenResults as $token) {
               ?>
-                <option value="<?php echo $token['token']; ?>" <?php echo $selected; ?>><?php echo $token['token']; ?></option>
+                <option value="<?php echo $this->escapeHtml($token['token']); ?>" <?php echo $selected; ?>><?php echo $this->escapeHtml($token['token']); ?></option>
               <?php
               }
               ?>

@@ -21,20 +21,20 @@
                   <form role="form" name="editFacilityInfo" id="editFacilityInfo" method="post" action="<?php echo $this->url('spi-facility', array('action' => 'edit')); ?>" autocomplete="off" >
                     <div class="form-group col-lg-6">
                       <label><?= $this->translate('Facility Id'); ?></label>
-                      <input type="text" placeholder="<?= $this->translate('Facility Id'); ?>" class="form-control isRequired" name="facilityId" id="facilityId" title="<?= $this->translate('Please enter the facility id'); ?>" value="<?php echo $result->facility_id; ?>">
+                      <input type="text" placeholder="<?= $this->translate('Facility Id'); ?>" class="form-control isRequired" name="facilityId" id="facilityId" title="<?= $this->translate('Please enter the facility id'); ?>" value="<?php echo $this->escapeHtml($result->facility_id); ?>">
                       <input type="hidden" class="form-control isRequired" name="rowId" id="rowId" value="<?php echo base64_encode($result->id); ?>">
                     </div>
                     <div class="form-group col-lg-6">
                       <label><?= $this->translate('Facility Name'); ?></label>
-                      <input type="text" placeholder="<?= $this->translate('Facility Name'); ?>" class="form-control isRequired" name="facilityName" id="facilityName" title="<?= $this->translate('Please enter the facility name'); ?>" value="<?php echo $result->facility_name; ?>" onblur="checkNameValidation('spi_rt_3_facilities','facility_name', this,'<?php echo "id##" .$result->id; ?>','This name already exists. Please choose another name.')">
+                      <input type="text" placeholder="<?= $this->translate('Facility Name'); ?>" class="form-control isRequired" name="facilityName" id="facilityName" title="<?= $this->translate('Please enter the facility name'); ?>" value="<?php echo $this->escapeHtml($result->facility_name); ?>" onblur="checkNameValidation('spi_rt_3_facilities','facility_name', this,'<?php echo "id##" .$result->id; ?>','This name already exists. Please choose another name.')">
                     </div>
                     <div class="form-group col-lg-6">
                       <label><?= $this->translate('Email'); ?></label>
-                      <input type="text" placeholder="<?= $this->translate('Email'); ?>" class="form-control isEmail" name="email" id="email" value="<?php echo $result->email; ?>">
+                      <input type="text" placeholder="<?= $this->translate('Email'); ?>" class="form-control isEmail" name="email" id="email" value="<?php echo $this->escapeHtml($result->email); ?>">
                     </div>
                     <div class="form-group col-lg-6">
                       <label><?= $this->translate('Name of the Contact Person'); ?></label>
-                      <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" class="form-control" name="contactPerson" id="contactPerson" value="<?php echo $result->contact_person; ?>">
+                      <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" class="form-control" name="contactPerson" id="contactPerson" value="<?php echo $this->escapeHtml($result->contact_person); ?>">
                     </div>
 					<div class="form-group col-lg-6">
                       	<label><?= $this->translate('Country'); ?></label>
@@ -73,11 +73,11 @@
                     </div>
 					<div class="form-group col-lg-6">
                       <label><?= $this->translate('Latitude'); ?></label>
-                      <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" class="form-control" name="latitude" id="latitude" value="<?php echo $result->latitude; ?>">
+                      <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" class="form-control" name="latitude" id="latitude" value="<?php echo $this->escapeHtml($result->latitude); ?>">
                     </div>
 					<div class="form-group col-lg-6">
                       <label><?= $this->translate('Longitude'); ?></label>
-                      <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" class="form-control" name="longitude" id="longitude" value="<?php echo $result->longitude; ?>">
+                      <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" class="form-control" name="longitude" id="longitude" value="<?php echo $this->escapeHtml($result->longitude); ?>">
                     </div>
                     <div class="spacer  col-lg-12">
                       <button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Submit'); ?></button>

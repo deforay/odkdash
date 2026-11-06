@@ -22,7 +22,7 @@
                                     <label><?= $this->translate('First Name'); ?> <span class="mandatory">*</span></label>
                                     <input type="text" placeholder="<?= $this->translate('First Name'); ?>" class="form-control isRequired" 
                                         name="firstName" id="firstName" 
-                                        title="<?= $this->translate('Please enter the first name'); ?>" value="<?php echo $result->first_name; ?>">
+                                        title="<?= $this->translate('Please enter the first name'); ?>" value="<?php echo $this->escapeHtml($result->first_name); ?>">
                                     <input type="hidden" class="form-control isRequired" id="userId" name="userId" 
                                         value="<?php echo base64_encode($result->id); ?>"/>
                                 </div>
@@ -30,7 +30,7 @@
                                     <label><?= $this->translate('Last Name'); ?></label>
                                     <input type="text" placeholder="<?= $this->translate('Last Name'); ?>" class="form-control" 
                                         name="lastName" id="lastName" 
-                                        title="<?= $this->translate('Please enter the last name'); ?>" value="<?php echo $result->last_name; ?>">
+                                        title="<?= $this->translate('Please enter the last name'); ?>" value="<?php echo $this->escapeHtml($result->last_name); ?>">
                                 </div>
                                 <div class="form-group col-lg-6">
                                     <label><?= $this->translate('Mobile Number'); ?></label>
@@ -38,14 +38,14 @@
                                         onkeypress="return isNumberKey(event);" class="form-control" name="mobile_no" id="mobile_no" 
                                         title="<?= $this->translate('Please enter the mobile number'); ?>" 
                                         onblur="checkNameValidation('users', 'contact_no', this, '<?php echo 'id##' . $result->id; ?>', '<?= $this->translate('Entered mobile number is already exist.'); ?>')" 
-                                        value="<?php echo $result->contact_no; ?>">
+                                        value="<?php echo $this->escapeHtml($result->contact_no); ?>">
                                 </div>
                                 <div class="form-group col-lg-6">
                                     <label><?= $this->translate('Email'); ?></label>
                                     <input type="text" placeholder="<?= $this->translate('Email'); ?>" class="form-control isEmail" name="email" id="email" 
                                         title="<?= $this->translate('Please enter the email id'); ?>" 
                                         onblur="checkNameValidation('users', 'email', this, '<?php echo 'id##' . $result->id; ?>', '<?= $this->translate('Entered mail id is already exist.'); ?>')" 
-                                        value="<?php echo $result->email; ?>">
+                                        value="<?php echo $this->escapeHtml($result->email); ?>">
                                 </div>
                                 <div class="form-group col-lg-6" style="margin-right:50%;">
                                     <label><?= $this->translate('User Image'); ?></label>
@@ -54,7 +54,7 @@
                                             <div class="fileinput fileinput-new fileinputCat" data-provides="fileinput" id="fileinputDiv">
                                                 <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
                                                     <?php if (isset($result->user_image) && $result->user_image != '') { ?>
-                                                        <img src="<?php echo $result->user_image; ?>"/>
+                                                        <img src="<?php echo $this->escapeHtml($result->user_image); ?>"/>
                                                     <?php } else { ?>
                                                         <img src="http://www.placehold.it/200x150/3c8dbc/fff&text=<?= $this->translate('Image'); ?>"/>
                                                     <?php } ?>
@@ -74,7 +74,7 @@
                                                         data-dismiss="fileinput"><?= $this->translate('Remove'); ?></a>
                                                 </div>
                                                 <?php if (isset($result->user_image) && $result->user_image != '') { ?>
-                                                    <input type="hidden" name="existImage" id="existImage" value="<?php echo $result->user_image; ?>"/>
+                                                    <input type="hidden" name="existImage" id="existImage" value="<?php echo $this->escapeHtml($result->user_image); ?>"/>
                                                 <?php } ?>
                                                 <input type="hidden" name="removedImage" id="removedImage" value="<?php echo $result->user_image ?? ''; ?>"/>
                                             </div>

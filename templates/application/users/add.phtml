@@ -62,7 +62,7 @@ foreach ($tokenResults as $token) {
 										<?php
 										foreach ($roleResults as $role) {
 										?>
-											<option value="<?php echo $role['role_id']; ?>"><?php echo ucwords($role['role_name']); ?></option>
+											<option value="<?php echo $this->escapeHtml($role['role_id']); ?>"><?php echo ucwords($role['role_name']); ?></option>
 										<?php
 										}
 										?>
@@ -102,7 +102,7 @@ foreach ($tokenResults as $token) {
 									<label><?= $this->translate('Countries'); ?></label>
 									<select multiple="multiple" name="country[]" id="country" placeholder="<?= $this->translate('Please select country.'); ?>">
 										<?php foreach($countries as $row){ ?>
-											<option value="<?php echo $row['country_id'];?>"><?php echo ucwords($row['country_name']);?></option>
+											<option value="<?php echo $this->escapeHtml($row['country_id']); ?>"><?php echo ucwords($row['country_name']);?></option>
 										<?php } ?>
 									</select>
 								</div>
@@ -110,7 +110,7 @@ foreach ($tokenResults as $token) {
 									<label><?= $this->translate('Provinces'); ?></label>
 									<select multiple="multiple" name="province[]" id="province" placeholder="<?= $this->translate('Please select province.'); ?>">
 										<?php foreach($provinces as $row){ ?>
-											<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
+											<option value="<?php echo $this->escapeHtml($row['geo_id']); ?>"><?php echo ucwords($row['geo_name']);?></option>
 										<?php } ?>
 									</select>
 								</div>
@@ -118,7 +118,7 @@ foreach ($tokenResults as $token) {
 									<label><?= $this->translate('Districts'); ?></label>
 									<select multiple="multiple" name="district[]" id="district" placeholder="<?= $this->translate('Please select district.'); ?>">
 										<?php foreach($districts as $row){ ?>
-											<option value="<?php echo $row['geo_id'];?>"><?php echo ucwords($row['geo_name']);?></option>
+											<option value="<?php echo $this->escapeHtml($row['geo_id']); ?>"><?php echo ucwords($row['geo_name']);?></option>
 										<?php } ?>
 									</select>
 								</div>

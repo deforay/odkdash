@@ -83,7 +83,7 @@ $config = $this->GlobalConfigHelper();
 <div class="am-content">
 	<div class="page-head">
 		<span>
-			<h2 style="font-weight:bold;"><?php echo $sessionLogin->countryName ?> SPI-RT Audits<a id="showFilterBtn" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;" onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a></h2>
+			<h2 style="font-weight:bold;"><?php echo $this->escapeHtml($sessionLogin->countryName); ?> SPI-RT Audits<a id="showFilterBtn" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;letter-spacing:0.5px;" onclick="hideAdvanceSearch('showFilterBtn','advanceFilter');"><span><?= $this->translate('Show Advanced Options'); ?></span></a></h2>
 		</span>
 	</div>
 	<div class="main-content">
@@ -147,7 +147,7 @@ $config = $this->GlobalConfigHelper();
 												continue;
 											}
 										?>
-											<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+											<option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo ucwords($levelName['province']); ?></option>
 										<?php
 										}
 										?>
@@ -179,7 +179,7 @@ $config = $this->GlobalConfigHelper();
 										<?php
 										foreach ($testingPointResult as $val) {
 										?>
-											<option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+											<option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>"><?php echo ucwords($val['testingPointType']); ?></option>
 										<?php
 										}
 										?>
@@ -220,7 +220,7 @@ $config = $this->GlobalConfigHelper();
 					<div class="row chart-info">
 						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['oldestDate']) ?></span></div>
 						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['newestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perf1[0]['totalDataPoints']); ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -244,7 +244,7 @@ $config = $this->GlobalConfigHelper();
 					<div class="row chart-info">
 						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['oldestDate']) ?></span></div>
 						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span class="title"><?php echo $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['newestDate']) ?></span></div>
-						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast180[0]['totalDataPoints']; ?></span></div>
+						<div class="col-xs-4" style="text-align:center;"><span class="title"><?php echo $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perflast180[0]['totalDataPoints']); ?></span></div>
 					</div>
 				</div>
 			</div>
@@ -279,7 +279,7 @@ $config = $this->GlobalConfigHelper();
 						<div class="row chart-info">
 							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('From Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['oldestDate']) ?></span></div>
 							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span class="title"><?= $this->translate('To Date'); ?></span><span class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['newestDate']) ?></span></div>
-							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perflast30[0]['totalDataPoints']; ?></span></div>
+							<div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perflast30[0]['totalDataPoints']); ?></span></div>
 						</div>
 					</div>
 				</div>
@@ -348,7 +348,7 @@ $config = $this->GlobalConfigHelper();
 									<?php
 									foreach ($spiV3auditRoundNo as $auditRoundNo) {
 									?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
 									<?php
 									}
 									?>
@@ -388,7 +388,7 @@ $config = $this->GlobalConfigHelper();
 									<?php
 									foreach ($spiV3auditRoundNo as $auditRoundNo) {
 									?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
 									<?php
 									}
 									?>
@@ -421,7 +421,7 @@ $config = $this->GlobalConfigHelper();
 									<?php
 									foreach ($spiV3auditRoundNo as $auditRoundNo) {
 									?>
-										<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
+										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>"> <?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?></option>
 									<?php
 									}
 									?>
@@ -517,18 +517,18 @@ $config = $this->GlobalConfigHelper();
 
 								?>
 									<tr>
-										<td><?php echo $row['facilityid']; ?></td>
-										<td><?php echo $row['facilityname']; ?></td>
+										<td><?php echo $this->escapeHtml($row['facilityid']); ?></td>
+										<td><?php echo $this->escapeHtml($row['facilityname']); ?></td>
 										<td><?php echo $this->humanReadableDateFormat($row['assesmentofaudit']); ?></td>
 										<td><?php echo $this->humanReadableDateFormat($row['today']); ?></td>
-										<td><?php echo (isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype']); ?> - <?php echo $row['testingpointtype']; ?></td>
+										<td><?php echo (isset($row['testingpointname']) && $row['testingpointname'] != "" ? $row['testingpointname'] : $row['testingpointtype']); ?> - <?php echo $this->escapeHtml($row['testingpointtype']); ?></td>
 										<td><?php echo ucfirst($row['status']); ?></td>
 
 										<?php if ($update || $approve || $email) { ?>
 											<td>
 												<?php
 												if ($update) {
-												?> <a href="/spi-v3/edit/<?php echo $row['id']; ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
+												?> <a href="/spi-v3/edit/<?php echo $this->escapeHtml($row['id']); ?>" style="white-space:nowrap;"><i class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
 													<a href="/email/index/<?php echo base64_encode($row['id']); ?>"><i class="fa fa-envelope"></i> Mail</a>
@@ -536,7 +536,7 @@ $config = $this->GlobalConfigHelper();
 												}
 
 												if ($row['status'] == 'pending' && $approve) { ?>
-													<a href="javascript:void(0);" onclick="approveStatus('<?php echo $row['id']; ?>')" style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;
+													<a href="javascript:void(0);" onclick="approveStatus('<?php echo $this->escapeHtml($row['id']); ?>')" style="white-space:nowrap;"><i class="fa fa-check"></i> Approve</a>&nbsp;&nbsp;
 												<?php } ?>
 											</td>
 
@@ -973,7 +973,7 @@ $config = $this->GlobalConfigHelper();
 
 			$barData[] = "{ y : " . round($percentage, 2) . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . addslashes($row['testingpointname']) . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname'])) . " <br> Testing Point Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['testingpointname'])) . "<br>'");
 			$counter++;
 		}
 		?>
@@ -1514,7 +1514,7 @@ $config = $this->GlobalConfigHelper();
 			$levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			$testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
-			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . addslashes($row['testingpointname']) . "<br>'");
+			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname'])) . " <br> Testing Point Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['testingpointname'])) . "<br>'");
 			$counter++;
 		}
 		?>

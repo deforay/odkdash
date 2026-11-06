@@ -48,7 +48,7 @@
                                             if (isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
                                                 foreach ($facilityName['uniqueName'] as $facilities) {
                                             ?>
-                                                    <option value="<?php echo $facilities['facilityname']; ?>" <?php if (isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected" <?php } ?>><?php echo ucwords($facilities['facilityname']); ?></option>
+                                                    <option value="<?php echo $this->escapeHtml($facilities['facilityname']); ?>" <?php if (isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected" <?php } ?>><?php echo ucwords($facilities['facilityname']); ?></option>
                                             <?php }
                                             } ?>
                                         </select>
@@ -57,8 +57,8 @@
                                 <div class="row facilityProfile" <?php if (!isset($facilityResult['fResult']->facility_name)) { ?>style="display:none;" <?php } ?>>
                                     <div class="form-group col-lg-6">
                                         <label><?= $this->translate('Facility Email Address'); ?> <span class="mandatory">*</span></label>
-                                        <input type="hidden" class="" name="facilityName" id="facilityName" <?php if (isset($facilityResult['fResult']->facility_name)) { ?>value="<?php echo $facilityResult['fResult']->facility_name; ?>" <?php } ?> />
-                                        <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="<?= $this->translate('Enter Email Address'); ?>" title="<?= $this->translate('Please enter facility email address'); ?>" <?php if (isset($facilityResult['fResult']->facility_name)) { ?> value="<?php echo $facilityResult['fResult']->email; ?>" <?php } ?> />
+                                        <input type="hidden" class="" name="facilityName" id="facilityName" <?php if (isset($facilityResult['fResult']->facility_name)) { ?>value="<?php echo $this->escapeHtml($facilityResult['fResult']->facility_name); ?>" <?php } ?> />
+                                        <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="<?= $this->translate('Enter Email Address'); ?>" title="<?= $this->translate('Please enter facility email address'); ?>" <?php if (isset($facilityResult['fResult']->facility_name)) { ?> value="<?php echo $this->escapeHtml($facilityResult['fResult']->email); ?>" <?php } ?> />
                                     </div>
                                 </div>
                                 <div class="row">
@@ -69,7 +69,7 @@
                                                 <?php if (isset($facilityResult['auditsResult']) && count($facilityResult['auditsResult']) > 0) {
                                                     foreach ($facilityResult['auditsResult'] as $audits) {
                                                 ?>
-                                                        <option value="<?php echo $audits['id']; ?>" <?php echo ($ids == base64_encode($audits['id'])) ? 'selected=selected' : ''; ?>><?php echo $audits['testingpointname'] . ' - ' . $audits['assesmentofaudit']; ?></option>
+                                                        <option value="<?php echo $this->escapeHtml($audits['id']); ?>" <?php echo ($ids == base64_encode($audits['id'])) ? 'selected=selected' : ''; ?>><?php echo $audits['testingpointname'] . ' - ' . $audits['assesmentofaudit']; ?></option>
                                                 <?php }
                                                 } ?>
                                             </select>

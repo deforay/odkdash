@@ -31,7 +31,7 @@
 											<?php
 											foreach ($spiV3auditRoundNo as $auditRoundNo) {
 											?>
-												<option value="<?php echo $auditRoundNo['auditroundno']; ?>"> <?php echo $auditRoundNo['auditroundno']; ?></option>
+												<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>"> <?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?></option>
 											<?php
 											}
 											?>
@@ -72,7 +72,7 @@
 											<?php
 											foreach ($levelNamesResult as $levelName) {
 											?>
-												<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+												<option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo ucwords($levelName['province']); ?></option>
 											<?php
 											}
 											?>
@@ -84,7 +84,7 @@
 											<?php
 											foreach ($levelNamesResult as $levelName) {
 											?>
-												<option value="<?php echo $levelName['province']; ?>"><?php echo ucwords($levelName['province']); ?></option>
+												<option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo ucwords($levelName['province']); ?></option>
 											<?php
 											}
 											?>
