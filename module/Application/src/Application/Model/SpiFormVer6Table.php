@@ -4534,11 +4534,6 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sQuery->where(['spiv3.level' => $parameters['level']]);
                 $tQuery = $tQuery->where(['spiv3.level' => $parameters['level']]);
             }
-            if (isset($parameters['province']) && $parameters['province'] != '') {
-                $provinces = explode(",", $parameters['province']);
-                $sQuery = $sQuery->where(['spiv3.level_name' => CommonService::inList($provinces)]);
-                $tQuery = $tQuery->where(['spiv3.level_name' => CommonService::inList($provinces)]);
-            }
             if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
                 $sQuery = $sQuery->where(['spiv3.affiliation' => $parameters['affiliation']]);
                 $tQuery = $tQuery->where(['spiv3.affiliation' => $parameters['affiliation']]);
@@ -4902,11 +4897,6 @@ class SpiFormVer6Table extends AbstractTableGateway
             if (isset($parameters['level']) && $parameters['level'] != '') {
                 $sQuery = $sQuery->where(['spiv3.level' => $parameters['level']]);
                 $tQuery = $tQuery->where(['spiv3.level' => $parameters['level']]);
-            }
-            if (isset($parameters['province']) && $parameters['province'] != '') {
-                $provinces = explode(",", $parameters['province']);
-                $sQuery = $sQuery->where(['spiv3.level_name' => CommonService::inList($provinces)]);
-                $tQuery = $tQuery->where(['spiv3.level_name' => CommonService::inList($provinces)]);
             }
             if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
                 $sQuery = $sQuery->where(['spiv3.affiliation' => $parameters['affiliation']]);
