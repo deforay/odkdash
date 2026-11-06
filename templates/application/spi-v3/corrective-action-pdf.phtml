@@ -63,7 +63,7 @@ $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
 $partDtableBox1 .= '<tr><td>' . $this->translate('Facility Name:') . \Application\Service\CommonService::escapeHtml($formData['facilityname']) . '</td></tr><tr><td>' . $this->translate('Site Type:') . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
-$partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
+$partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "");
 $partDtableBox1 .= "</td></tr>";
 $partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name:') . \Application\Service\CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
 $partDtableBox1 .= '</table>';

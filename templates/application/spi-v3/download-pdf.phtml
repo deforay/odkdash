@@ -95,7 +95,7 @@ $testingTab .= '</tr>';
 $testingTab .= '<tr>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['testingpointname']) . '</td>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
-$testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
+$testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "") . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
@@ -104,10 +104,10 @@ $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . \Application\Service\CommonService::escapeHtml($formData['level']);
-$testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "") . ':' . $formData['level_name'];
+$testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . \Application\Service\CommonService::escapeHtml($formData['level_other']) : "") . ':' . \Application\Service\CommonService::escapeHtml($formData['level_name']);
 $testingTab .= '</td>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . \Application\Service\CommonService::escapeHtml($formData['affiliation']);
-$testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
+$testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . \Application\Service\CommonService::escapeHtml($formData['affiliation_other']) : "");
 $testingTab .= '</td>';
 $testingTab .= '</tr>';
 
@@ -178,8 +178,8 @@ for ($i = 1; $i < 11; $i++) {
     $partBTable .= (isset($formData['PERSONAL_Q_1_' . $i]) && $formData['PERSONAL_Q_1_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['PERSONAL_C_1_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 
@@ -211,8 +211,8 @@ for ($i = 1; $i < 6; $i++) {
     $partBTable .= (isset($formData['PHYSICAL_Q_2_' . $i]) && $formData['PHYSICAL_Q_2_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_C_2_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_Q_2_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 
@@ -243,8 +243,8 @@ for ($i = 1; $i < 12; $i++) {
     $partBTable .= (isset($formData['SAFETY_Q_3_' . $i]) && $formData['SAFETY_Q_3_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['SAFETY_C_3_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 $partBTable .= '<tr>';
@@ -273,8 +273,8 @@ for ($i = 1; $i < 13; $i++) {
     $partBTable .= (isset($formData['PRE_Q_4_' . $i]) && $formData['PRE_Q_4_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['PRE_C_4_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 
@@ -305,8 +305,8 @@ for ($i = 1; $i < 10; $i++) {
     $partBTable .= (isset($formData['TEST_Q_5_' . $i]) && $formData['TEST_Q_5_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['TEST_C_5_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_1']) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_1'])) . '</td>';
     $partBTable .= '</tr>';
 }
 $partBTable .= '<tr>';
@@ -336,8 +336,8 @@ for ($i = 1; $i < 10; $i++) {
     $partBTable .= (isset($formData['POST_Q_6_' . $i]) && $formData['POST_Q_6_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['POST_C_6_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 $partBTable .= '<tr>';
@@ -366,8 +366,8 @@ for ($i = 1; $i < 9; $i++) {
     $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['EQA_C_7_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 
@@ -391,8 +391,8 @@ for ($i = 9; $i < 15; $i++) {
     $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "";
     $partBTable .= '</td>';
 
-    $partBTable .= '<td>' . ($formData['EQA_C_7_' . $i]) . '</td>';
-    $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_' . $i]) . '</td>';
+    $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_' . $i])) . '</td>';
+    $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_' . $i])) . '</td>';
     $partBTable .= '</tr>';
 }
 $partBTable .= '<tr>';
@@ -585,9 +585,9 @@ if ($language == 'Portuguese') {
 } else {
     $partDtableBox1 .= "Site Type:";
 }
-$partDtableBox1 .= $formData['testingpointtype'];
+$partDtableBox1 .= \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
 
-$partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
+$partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "");
 $partDtableBox1 .= "</td></tr>";
 $partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . \Application\Service\CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
 $partDtableBox1 .= '</table>';

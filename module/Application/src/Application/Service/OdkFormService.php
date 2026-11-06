@@ -844,47 +844,47 @@ class OdkFormService
 
                 $testingTab .= '<tr>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . CommonService::escapeHtml($formData['auditroundno']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $formData['facilityname'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . CommonService::escapeHtml($formData['facilityname']) . '</td>';
                 if ($language == 'Portuguese') {
-                    $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $formData['facilityid'] . '</td>';
+                    $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . CommonService::escapeHtml($formData['facilityid']) . '</td>';
                 } elseif ($language == 'Spanish') {
-                    $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $formData['facilityid'] . '</td>';
+                    $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . CommonService::escapeHtml($formData['facilityid']) . '</td>';
                 } else {
-                    $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $formData['facilityid'] . '</td>';
+                    $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . CommonService::escapeHtml($formData['facilityid']) . '</td>';
                 }
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . $formData['testingpointtype'];
-                $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . CommonService::escapeHtml($formData['testingpointname']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . CommonService::escapeHtml($formData['testingpointtype']);
+                $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . CommonService::escapeHtml($formData['testingpointtype_other']) : "") . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . $formData['locationaddress'] . '</td>';
+                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . CommonService::escapeHtml($formData['locationaddress']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . $formData['level'];
-                $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "") . ':' . $formData['level_name'];
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . CommonService::escapeHtml($formData['level']);
+                $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . CommonService::escapeHtml($formData['level_other']) : "") . ':' . CommonService::escapeHtml($formData['level_name']);
                 $testingTab .= '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . $formData['affiliation'];
-                $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . CommonService::escapeHtml($formData['affiliation']);
+                $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . CommonService::escapeHtml($formData['affiliation_other']) : "");
                 $testingTab .= '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . $formData['NumberofTester'] . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . $formData['avgMonthTesting'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . CommonService::escapeHtml($formData['NumberofTester']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . CommonService::escapeHtml($formData['avgMonthTesting']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . $formData['name_auditor_lead'] . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . $formData['name_auditor2'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . CommonService::escapeHtml($formData['name_auditor_lead']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . CommonService::escapeHtml($formData['name_auditor2']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '</table>';
@@ -943,14 +943,14 @@ class OdkFormService
                     $partBTable .= (isset($formData['PERSONAL_Q_1_' . $i]) && $formData['PERSONAL_Q_1_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['PERSONAL_C_1_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['PERSONAL_C_1_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['PERSONAL_Q_1_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONAL_Display:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['PERSONAL_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '<tr>';
@@ -975,14 +975,14 @@ class OdkFormService
                     $partBTable .= (isset($formData['PHYSICAL_Q_2_' . $i]) && $formData['PHYSICAL_Q_2_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['PHYSICAL_C_2_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['PHYSICAL_Q_2_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICAL_Display:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['PHYSICAL_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '<tr>';
@@ -1006,13 +1006,13 @@ class OdkFormService
                     $partBTable .= (isset($formData['SAFETY_Q_3_' . $i]) && $formData['SAFETY_Q_3_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['SAFETY_C_3_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['SAFETY_C_3_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['SAFETY_Q_3_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETY_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['SAFETY_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '<tr>';
@@ -1036,14 +1036,14 @@ class OdkFormService
                     $partBTable .= (isset($formData['PRE_Q_4_' . $i]) && $formData['PRE_Q_4_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['PRE_C_4_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['PRE_C_4_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['PRE_Q_4_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETEST_Display:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['PRETEST_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '<tr>';
@@ -1067,13 +1067,13 @@ class OdkFormService
                     $partBTable .= (isset($formData['TEST_Q_5_' . $i]) && $formData['TEST_Q_5_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['TEST_C_5_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_1']) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['TEST_C_5_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['TEST_Q_5_1'])) . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TEST_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['TEST_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '<tr>';
@@ -1097,13 +1097,13 @@ class OdkFormService
                     $partBTable .= (isset($formData['POST_Q_6_' . $i]) && $formData['POST_Q_6_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['POST_C_6_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['POST_C_6_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['POST_Q_6_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POST_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['POST_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '<tr>';
@@ -1127,8 +1127,8 @@ class OdkFormService
                     $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['EQA_C_7_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['EQA_C_7_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['EQA_Q_7_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
 
@@ -1152,13 +1152,13 @@ class OdkFormService
                     $partBTable .= (isset($formData['EQA_Q_7_' . $i]) && $formData['EQA_Q_7_' . $i] == "0") ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "";
                     $partBTable .= '</td>';
 
-                    $partBTable .= '<td>' . ($formData['EQA_C_7_' . $i]) . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_' . $i]) . '</td>';
+                    $partBTable .= '<td>' . (CommonService::escapeHtml($formData['EQA_C_7_' . $i])) . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($formData['EQA_Q_7_' . $i])) . '</td>';
                     $partBTable .= '</tr>';
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQA_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['EQA_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 $partBTable .= '</table>';
@@ -1336,7 +1336,7 @@ class OdkFormService
                 $pdf->writeHTML($partDTitle, true, 0, true, 0);
 
                 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
-                $partDtableBox1 .= "<tr><td>" . $facilityName . $formData['facilityname'] . "</td></tr>";
+                $partDtableBox1 .= "<tr><td>" . $facilityName . CommonService::escapeHtml($formData['facilityname']) . "</td></tr>";
 
                 $partDtableBox1 .= "<tr><td>";
                 if ($language == 'Portuguese') {
@@ -1346,16 +1346,16 @@ class OdkFormService
                 } else {
                     $partDtableBox1 .= "Site Type:";
                 }
-                $partDtableBox1 .= $formData['testingpointtype'];
+                $partDtableBox1 .= CommonService::escapeHtml($formData['testingpointtype']);
 
-                $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
+                $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . CommonService::escapeHtml($formData['testingpointtype_other']) : "");
                 $partDtableBox1 .= "</td></tr>";
-                $partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . $formData['staffaudited'] . "</td></tr>";
+                $partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
                 $partDtableBox1 .= '</table>';
                 $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
                 $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-                $partDtableBox2 .= "<tr><td>" . $noOfTester . ": " . $formData['NumberofTester'] . "</td></tr><tr><td>" . $decoded[$language]['/SPI_RT/durationaudit:label'] . $formData['durationaudit'] . "</td></tr>";
+                $partDtableBox2 .= "<tr><td>" . $noOfTester . ": " . CommonService::escapeHtml($formData['NumberofTester']) . "</td></tr><tr><td>" . $decoded[$language]['/SPI_RT/durationaudit:label'] . CommonService::escapeHtml($formData['durationaudit']) . "</td></tr>";
                 $partDtableBox2 .= '</table>';
 
                 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
@@ -1386,8 +1386,8 @@ class OdkFormService
                 }
 
                 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-                $partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-                $partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+                $partDtableBox3 .= "<tr><td>" . $totPointScored . CommonService::escapeHtml($formData['FINAL_AUDIT_SCORE']) . "</td></tr>";
+                $partDtableBox3 .= "<tr><td>" . $totExpectScored . CommonService::escapeHtml($formData['MAX_AUDIT_SCORE']) . "</td></tr>";
                 $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
                 $partDtableBox3 .= '</table>';
 
@@ -1415,17 +1415,17 @@ class OdkFormService
                     $correctiveActions = json_decode($formData['correctiveaction'], true);
                     foreach ($correctiveActions as $ca) {
                         $partDTable .= '<tr>';
-                        $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-                        $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
+                        $partDTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($ca['sectionno']) . '</td>';
+                        $partDTable .= '<td>' . CommonService::escapeHtml($ca['deficiency']) . '</td>';
                         $partDTable .= '<td style="text-align:center;">';
                         $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "");
                         $partDTable .= '</td>';
                         $partDTable .= '<td style="text-align:center;">';
                         $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'black-tick.png" width="20">' : "");
                         $partDTable .= '</td>';
-                        $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
-                        $partDTable .= '<td>' . $ca['action'] . '</td>';
-                        $partDTable .= '<td>' . $ca['timeline'] . '</td>';
+                        $partDTable .= '<td>' . CommonService::escapeHtml($ca['auditorcomment']) . '</td>';
+                        $partDTable .= '<td>' . CommonService::escapeHtml($ca['action']) . '</td>';
+                        $partDTable .= '<td>' . CommonService::escapeHtml($ca['timeline']) . '</td>';
                         $partDTable .= '</tr>';
                     }
                 } else {
@@ -1438,7 +1438,7 @@ class OdkFormService
 
                 $signBox1 = '<table cellspacing="0" cellpadding="4">';
                 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '</td></tr>';
-                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
+                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . CommonService::escapeHtml($formData["personincharge"]) . '</td></tr>';
                 $signBox1 .= '</table>';
                 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 
@@ -3619,77 +3619,77 @@ class OdkFormService
 
                 $testingTab .= '<tr>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . CommonService::humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . CommonService::escapeHtml($formData['auditroundno']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . $formData['facilityname'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/facilityname:label'] . '</b> ' . CommonService::escapeHtml($formData['facilityname']) . '</td>';
                 if ($language == 'Portuguese') {
-                    $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . $formData['facilityid'] . '</td>';
+                    $testingTab .= '<td><b>Identificacao do local de testagem </b>(se aplicavel): ' . CommonService::escapeHtml($formData['facilityid']) . '</td>';
                 } elseif ($language == 'Spanish') {
-                    $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . $formData['facilityid'] . '</td>';
+                    $testingTab .= '<td><b>Tipo de sitio de pruebas </b>(seleccione uno): ' . CommonService::escapeHtml($formData['facilityid']) . '</td>';
                 } else {
-                    $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . $formData['facilityid'] . '</td>';
+                    $testingTab .= '<td><b>Testing Facility ID</b>(if applicable) : ' . CommonService::escapeHtml($formData['facilityid']) . '</td>';
                 }
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
                 //$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
-                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . $formData['testingpointtype'];
-                $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
+                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . CommonService::escapeHtml($formData['testingpointtype']);
+                $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . CommonService::escapeHtml($formData['testingpointtype_other']) : "") . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . $formData['locationaddress'] . '</td>';
+                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . CommonService::escapeHtml($formData['locationaddress']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . $formData['level'];
-                $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "") . ':' . $formData['level_name'];
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . CommonService::escapeHtml($formData['level']);
+                $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . CommonService::escapeHtml($formData['level_other']) : "") . ':' . CommonService::escapeHtml($formData['level_name']);
                 $testingTab .= '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . $formData['affiliation'];
-                $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . CommonService::escapeHtml($formData['affiliation']);
+                $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . CommonService::escapeHtml($formData['affiliation_other']) : "");
                 $testingTab .= '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . $formData['NumberofTester'] . '</td>';
+                $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . CommonService::escapeHtml($formData['NumberofTester']) . '</td>';
                 //$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . $formData['avgMonthTesting'] . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . $formData['name_auditor_lead'] . '</td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . $formData['name_auditor2'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . CommonService::escapeHtml($formData['name_auditor_lead']) . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . CommonService::escapeHtml($formData['name_auditor2']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/clients_tested_hiv:label'] . '</b></td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_tested_HIV_PM'] . '<br/>';
-                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . $formData['client_tested_HIV_PQ'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . CommonService::escapeHtml($formData['client_tested_HIV_PM']) . '<br/>';
+                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . CommonService::escapeHtml($formData['client_tested_HIV_PQ']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/new_hiv:label'] . '</b></td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_newly_HIV_PM'] . '<br/>';
-                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . $formData['client_newly_HIV_PQ'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . CommonService::escapeHtml($formData['client_newly_HIV_PM']) . '<br/>';
+                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</b>' . CommonService::escapeHtml($formData['client_newly_HIV_PQ']) . '</td>';
                 $testingTab .= '</tr>';
 
                 $testingTab .= '<tr>';
                 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/hiv_negative:label'] . '</b></td>';
-                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_negative_HIV_PM'] . '<br/>';
-                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_negative_HIV_PQ'] . '</td>';
+                $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . CommonService::escapeHtml($formData['client_negative_HIV_PM']) . '<br/>';
+                $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . CommonService::escapeHtml($formData['client_negative_HIV_PQ']) . '</td>';
                 $testingTab .= '</tr>';
                 if (strtolower($formData['performrtritesting']) == 'yes') {
                     $testingTab .= '<tr>';
                     $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/newly_identified_positives:label'] . '</b></td>';
-                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_positive_HIV_RTRI_PM'] . '<br/>';
-                    $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_positive_HIV_RTRI_PQ'] . '</td>';
+                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . CommonService::escapeHtml($formData['client_positive_HIV_RTRI_PM']) . '<br/>';
+                    $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . CommonService::escapeHtml($formData['client_positive_HIV_RTRI_PQ']) . '</td>';
                     $testingTab .= '</tr>';
 
                     $testingTab .= '<tr>';
                     $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/recent_identified_positives:label'] . '</b></td>';
-                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . $formData['client_recent_RTRI_PM'] . '<br/>';
-                    $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . $formData['client_recent_RTRI_PQ'] . '</td>';
+                    $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_month:label'] . '</b>' . CommonService::escapeHtml($formData['client_recent_RTRI_PM']) . '<br/>';
+                    $testingTab .= '   <b>' . $decoded[$language]['/SPI_RT/TESTSITE/per_quarter:label'] . '</br>' . CommonService::escapeHtml($formData['client_recent_RTRI_PQ']) . '</td>';
                     $testingTab .= '</tr>';
                 }
                 $testingTab .= '</table>';
@@ -3831,7 +3831,7 @@ class OdkFormService
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONAL_Display:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['PERSONAL_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PERSONALPHOTO'] != '') {
                     $imagePath = $mediaFilePath . DIRECTORY_SEPARATOR . $formData['PERSONALPHOTO'];
@@ -3918,7 +3918,7 @@ class OdkFormService
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICAL_Display:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['PHYSICAL_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PHYSICALPHOTO'] != '') {
@@ -4028,7 +4028,7 @@ class OdkFormService
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETY_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['SAFETY_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['SAFETYPHOTO'] != '') {
@@ -4153,7 +4153,7 @@ class OdkFormService
 
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETEST_Display:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['PRETEST_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['PRETESTPHOTO'] != '') {
@@ -4261,7 +4261,7 @@ class OdkFormService
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TEST_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['TEST_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['TESTPHOTO'] != '') {
@@ -4369,7 +4369,7 @@ class OdkFormService
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POST_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['POST_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['POSTTESTPHOTO'] != '') {
@@ -4470,7 +4470,7 @@ class OdkFormService
                 }
                 $partBTable .= '<tr>';
                 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQA_DISPLAY:label'] . '</td>';
-                $partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
+                $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['EQA_SCORE']) . '</td>';
                 $partBTable .= '</tr>';
 
                 if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['EQAPHOTO'] != '') {
@@ -4598,7 +4598,7 @@ class OdkFormService
                     }
                     $partBTable .= '<tr nobr="true">';
                     $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/INFECTIONSUR/RTRI_DISPLAY:label'] . '</td>';
-                    $partBTable .= '<td style="text-align:center;">' . $formData['RTRI_SCORE'] . '</td>';
+                    $partBTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($formData['RTRI_SCORE']) . '</td>';
                     $partBTable .= '</tr>';
 
                     if (!empty($configData['embed_images_in_audit_pdf']) && $configData['embed_images_in_audit_pdf'] == "yes" && $formData['RTRIPHOTO'] != '') {
@@ -5013,7 +5013,7 @@ class OdkFormService
 
                 $pdf->SetAutoPageBreak(false, 0);
                 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
-                $partDtableBox1 .= "<tr><td>" . $facilityName . $formData['facilityname'] . "</td></tr>";
+                $partDtableBox1 .= "<tr><td>" . $facilityName . CommonService::escapeHtml($formData['facilityname']) . "</td></tr>";
 
                 $partDtableBox1 .= "<tr><td>";
                 if ($language == 'Portuguese') {
@@ -5023,16 +5023,16 @@ class OdkFormService
                 } else {
                     $partDtableBox1 .= "Site Type:";
                 }
-                $partDtableBox1 .= $formData['testingpointtype'];
+                $partDtableBox1 .= CommonService::escapeHtml($formData['testingpointtype']);
 
-                $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
+                $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . CommonService::escapeHtml($formData['testingpointtype_other']) : "");
                 $partDtableBox1 .= "</td></tr>";
-                $partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . $formData['staffaudited'] . "</td></tr>";
+                $partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
                 $partDtableBox1 .= '</table>';
                 $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
                 $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-                $partDtableBox2 .= "<tr><td>" . $noOfTester . ": " . $formData['NumberofTester'] . "</td></tr><tr><td>" . $decoded[$language]['/SPI_RT/durationaudit:label'] . $formData['durationaudit'] . "</td></tr>";
+                $partDtableBox2 .= "<tr><td>" . $noOfTester . ": " . CommonService::escapeHtml($formData['NumberofTester']) . "</td></tr><tr><td>" . $decoded[$language]['/SPI_RT/durationaudit:label'] . CommonService::escapeHtml($formData['durationaudit']) . "</td></tr>";
                 $partDtableBox2 .= '</table>';
 
                 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
@@ -5058,8 +5058,8 @@ class OdkFormService
                 }
 
                 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-                $partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-                $partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+                $partDtableBox3 .= "<tr><td>" . $totPointScored . CommonService::escapeHtml($formData['FINAL_AUDIT_SCORE']) . "</td></tr>";
+                $partDtableBox3 .= "<tr><td>" . $totExpectScored . CommonService::escapeHtml($formData['MAX_AUDIT_SCORE']) . "</td></tr>";
                 $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
                 $partDtableBox3 .= '</table>';
 
@@ -5101,17 +5101,17 @@ class OdkFormService
                         foreach ($correctiveActions as $ca) {
                             $rowStyle = ($ca['correction'] == 'Immediate') ? 'color:red;' : '';
                             $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
-                            $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-                            $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
+                            $partDTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($ca['sectionno']) . '</td>';
+                            $partDTable .= '<td>' . CommonService::escapeHtml($ca['deficiency']) . '</td>';
                             $partDTable .= '<td style="text-align:center;">';
                             $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
                             $partDTable .= '</td>';
                             $partDTable .= '<td style="text-align:center;">';
                             $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
                             $partDTable .= '</td>';
-                            $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
-                            $partDTable .= '<td>' . $ca['action'] . '</td>';
-                            $partDTable .= '<td>' . $ca['timeline'] . '</td>';
+                            $partDTable .= '<td>' . CommonService::escapeHtml($ca['auditorcomment']) . '</td>';
+                            $partDTable .= '<td>' . CommonService::escapeHtml($ca['action']) . '</td>';
+                            $partDTable .= '<td>' . CommonService::escapeHtml($ca['timeline']) . '</td>';
                             $partDTable .= '</tr>';
                         }
                     } else {
@@ -5155,17 +5155,17 @@ class OdkFormService
                                     $data = $correctiveActions[$key];
                                     $rowStyle = ($type == 'IMMEDIATE') ? 'color:red;' : '';
                                     $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
-                                    $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
-                                    $partDTable .= '<td>' . ($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
+                                    $partDTable .= '<td style="text-align:center;">' . (CommonService::escapeHtml($data[$category . '_SECTIONNO_' . $type] ?? '')) . '</td>';
+                                    $partDTable .= '<td>' . (CommonService::escapeHtml($data[$category . '_DEFICIENCY_' . $type] ?? '')) . '</td>';
                                     $partDTable .= '<td style="text-align:center;">';
                                     $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
                                     $partDTable .= '</td>';
                                     $partDTable .= '<td style="text-align:center;">';
                                     $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
                                     $partDTable .= '</td>';
-                                    $partDTable .= '<td>' . ($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
-                                    $partDTable .= '<td>' . ($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
-                                    $partDTable .= '<td>' . ($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
+                                    $partDTable .= '<td>' . (CommonService::escapeHtml($data[$category . '_ACTION_' . $type] ?? '')) . '</td>';
+                                    $partDTable .= '<td>' . (CommonService::escapeHtml($data[$category . '_RECOMMENDATIONS_' . $type] ?? '')) . '</td>';
+                                    $partDTable .= '<td>' . (CommonService::escapeHtml($data[$category . '_TIMELINE_' . $type] ?? '')) . '</td>';
                                     $partDTable .= '</tr>';
                                 }
                             }
@@ -5199,8 +5199,8 @@ class OdkFormService
                 }
 
                 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>' . $formData['staffaudited'] . '</td></tr>';
-                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
+                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '<br>' . CommonService::escapeHtml($formData['staffaudited']) . '</td></tr>';
+                $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . CommonService::escapeHtml($formData["personincharge"]) . '</td></tr>';
                 $signBox1 .= '</table>';
                 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 

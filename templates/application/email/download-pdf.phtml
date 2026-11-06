@@ -80,7 +80,7 @@ if (!empty($formData)) {
   $testingTab .= '<tr>';
   $testingTab .= '<td><b>' . $this->translate('Testing Point Name') . ' : </b> ' . \Application\Service\CommonService::escapeHtml($formData['testingpointname']) . '</td>';
   $testingTab .= '<td><b>' . $this->translate('Type of testing point') . ' : </b>' . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
-  $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
+  $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "") . '</td>';
   $testingTab .= '</tr>';
 
   $testingTab .= '<tr>';
@@ -89,10 +89,10 @@ if (!empty($formData)) {
 
   $testingTab .= '<tr>';
   $testingTab .= '<td><b>' . $this->translate('Level') . '</b> <br/>' . \Application\Service\CommonService::escapeHtml($formData['level']);
-  $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? $this->translate("Other") . " - " . $formData['level_other'] : "") . ':' . $formData['level_name'];
+  $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? $this->translate("Other") . " - " . \Application\Service\CommonService::escapeHtml($formData['level_other']) : "") . ':' . \Application\Service\CommonService::escapeHtml($formData['level_name']);
   $testingTab .= '</td>';
   $testingTab .= '<td><b>' . $this->translate('Affiliation') . '</b><br/>' . \Application\Service\CommonService::escapeHtml($formData['affiliation']);
-  $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ?  $this->translate("Other"). " : " . $formData['affiliation_other'] : "");
+  $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ?  $this->translate("Other"). " : " . \Application\Service\CommonService::escapeHtml($formData['affiliation_other']) : "");
   $testingTab .= '</td>';
   $testingTab .= '</tr>';
 
@@ -149,8 +149,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_1']) && $formData['PERSONAL_Q_1_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_1'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -168,8 +168,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_2']) && $formData['PERSONAL_Q_1_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_2'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -187,8 +187,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_3']) && $formData['PERSONAL_Q_1_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_3'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -207,8 +207,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_4']) && $formData['PERSONAL_Q_1_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -226,8 +226,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_5']) && $formData['PERSONAL_Q_1_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -245,8 +245,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_6']) && $formData['PERSONAL_Q_1_6'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_6']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_6']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_6'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_6'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -265,8 +265,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_7']) && $formData['PERSONAL_Q_1_7'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_7']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_7']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_7'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_7'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -284,8 +284,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_8']) && $formData['PERSONAL_Q_1_8'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_8']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_8']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_8'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_8'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -303,8 +303,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_9']) && $formData['PERSONAL_Q_1_9'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_9']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_9']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_9'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_9'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -322,8 +322,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PERSONAL_Q_1_10']) && $formData['PERSONAL_Q_1_10'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PERSONAL_C_1_10']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PERSONAL_Q_1_10']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_C_1_10'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PERSONAL_Q_1_10'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -352,8 +352,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PHYSICAL_Q_2_1']) && $formData['PHYSICAL_Q_2_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_C_2_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_Q_2_1'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -372,8 +372,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PHYSICAL_Q_2_2']) && $formData['PHYSICAL_Q_2_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_C_2_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_Q_2_2'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -391,8 +391,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PHYSICAL_Q_2_3']) && $formData['PHYSICAL_Q_2_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_C_2_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_Q_2_3'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -411,8 +411,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PHYSICAL_Q_2_4']) && $formData['PHYSICAL_Q_2_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_C_2_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_Q_2_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -430,8 +430,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PHYSICAL_Q_2_5']) && $formData['PHYSICAL_Q_2_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PHYSICAL_C_2_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PHYSICAL_Q_2_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_C_2_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PHYSICAL_Q_2_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -460,8 +460,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_1']) && $formData['SAFETY_Q_3_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_1'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -479,8 +479,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_2']) && $formData['SAFETY_Q_3_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_2'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -499,8 +499,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_3']) && $formData['SAFETY_Q_3_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_3'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -518,8 +518,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_4']) && $formData['SAFETY_Q_3_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -537,8 +537,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_5']) && $formData['SAFETY_Q_3_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -556,8 +556,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_6']) && $formData['SAFETY_Q_3_6'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_6']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_6']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_6'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_6'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -575,8 +575,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_7']) && $formData['SAFETY_Q_3_7'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_7']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_7']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_7'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_7'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -595,8 +595,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_8']) && $formData['SAFETY_Q_3_8'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_8']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_8']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_8'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_8'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -614,8 +614,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_9']) && $formData['SAFETY_Q_3_9'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_9']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_9']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_9'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_9'])) . '</td>';
   $partBTable .= '</tr>';
 
 
@@ -634,8 +634,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_10']) && $formData['SAFETY_Q_3_10'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_10']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_10']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_10'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_10'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -653,8 +653,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['SAFETY_Q_3_11']) && $formData['SAFETY_Q_3_11'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['SAFETY_C_3_11']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['SAFETY_Q_3_11']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_C_3_11'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['SAFETY_Q_3_11'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -683,8 +683,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_1']) && $formData['PRE_Q_4_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_1'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -702,8 +702,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_2']) && $formData['PRE_Q_4_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_2'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -721,8 +721,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_3']) && $formData['PRE_Q_4_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_3'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -740,8 +740,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_4']) && $formData['PRE_Q_4_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -759,8 +759,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_5']) && $formData['PRE_Q_4_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -778,8 +778,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_6']) && $formData['PRE_Q_4_6'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_6']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_6']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_6'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_6'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -797,8 +797,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_7']) && $formData['PRE_Q_4_7'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_7']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_7']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_7'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_7'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -816,8 +816,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_8']) && $formData['PRE_Q_4_8'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_8']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_8']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_8'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_8'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -835,8 +835,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_9']) && $formData['PRE_Q_4_9'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_9']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_9']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_9'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_9'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -854,8 +854,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_10']) && $formData['PRE_Q_4_10'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_10']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_10']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_10'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_10'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -873,8 +873,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_11']) && $formData['PRE_Q_4_11'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_11']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_11']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_11'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_11'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -892,8 +892,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['PRE_Q_4_12']) && $formData['PRE_Q_4_12'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['PRE_C_4_12']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['PRE_Q_4_12']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['PRE_C_4_12'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['PRE_Q_4_12'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -922,8 +922,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_1']) && $formData['TEST_Q_5_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_1'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -941,8 +941,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_2']) && $formData['TEST_Q_5_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_2'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -960,8 +960,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_3']) && $formData['TEST_Q_5_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_3'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -979,8 +979,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_4']) && $formData['TEST_Q_5_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -998,8 +998,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_5']) && $formData['TEST_Q_5_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1017,8 +1017,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_6']) && $formData['TEST_Q_5_6'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_6']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_6']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_6'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_6'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1036,8 +1036,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_7']) && $formData['TEST_Q_5_7'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_7']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_7']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_7'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_7'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1055,8 +1055,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_8']) && $formData['TEST_Q_5_8'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_8']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_8']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_8'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_8'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1074,8 +1074,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['TEST_Q_5_9']) && $formData['TEST_Q_5_9'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['TEST_C_5_9']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['TEST_Q_5_9']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['TEST_C_5_9'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['TEST_Q_5_9'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1104,8 +1104,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_1']) && $formData['POST_Q_6_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_1'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1123,8 +1123,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_2']) && $formData['POST_Q_6_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_2'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1142,8 +1142,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_3']) && $formData['POST_Q_6_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_3'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1161,8 +1161,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_4']) && $formData['POST_Q_6_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1180,8 +1180,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_5']) && $formData['POST_Q_6_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1199,8 +1199,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_6']) && $formData['POST_Q_6_6'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_6']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_6']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_6'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_6'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1218,8 +1218,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_7']) && $formData['POST_Q_6_7'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_7']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_7']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_7'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_7'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1237,8 +1237,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_8']) && $formData['POST_Q_6_8'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_8']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_8']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_8'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_8'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1256,8 +1256,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['POST_Q_6_9']) && $formData['POST_Q_6_9'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['POST_C_6_9']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['POST_Q_6_9']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['POST_C_6_9'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['POST_Q_6_9'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1286,8 +1286,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_1']) && $formData['EQA_Q_7_1'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_1']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_1']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_1'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_1'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1305,8 +1305,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_2']) && $formData['EQA_Q_7_2'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_2']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_2']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_2'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_2'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1324,8 +1324,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_3']) && $formData['EQA_Q_7_3'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_3']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_3']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_3'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_3'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1343,8 +1343,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_4']) && $formData['EQA_Q_7_4'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_4']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_4']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_4'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_4'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1362,8 +1362,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_5']) && $formData['EQA_Q_7_5'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_5']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_5']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_5'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_5'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1381,8 +1381,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_6']) && $formData['EQA_Q_7_6'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_6']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_6']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_6'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_6'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1400,8 +1400,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_7']) && $formData['EQA_Q_7_7'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_7']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_7']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_7'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_7'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1419,8 +1419,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_8']) && $formData['EQA_Q_7_8'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_8']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_8']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_8'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_8'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1442,8 +1442,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_9']) && $formData['EQA_Q_7_9'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_9']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_9']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_9'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_9'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1461,8 +1461,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_10']) && $formData['EQA_Q_7_10'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_10']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_10']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_10'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_10'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1480,8 +1480,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_11']) && $formData['EQA_Q_7_11'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_11']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_11']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_11'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_11'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1499,8 +1499,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_12']) && $formData['EQA_Q_7_12'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_12']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_12']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_12'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_12'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1518,8 +1518,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_13']) && $formData['EQA_Q_7_13'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_13']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_13']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_13'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_13'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1537,8 +1537,8 @@ if (!empty($formData)) {
   $partBTable .= (isset($formData['EQA_Q_7_14']) && $formData['EQA_Q_7_14'] == "0") ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "";
   $partBTable .= '</td>';
 
-  $partBTable .= '<td>' . ($formData['EQA_C_7_14']) . '</td>';
-  $partBTable .= '<td style="text-align:center;">' . ($formData['EQA_Q_7_14']) . '</td>';
+  $partBTable .= '<td>' . (\Application\Service\CommonService::escapeHtml($formData['EQA_C_7_14'])) . '</td>';
+  $partBTable .= '<td style="text-align:center;">' . (\Application\Service\CommonService::escapeHtml($formData['EQA_Q_7_14'])) . '</td>';
   $partBTable .= '</tr>';
 
   $partBTable .= '<tr>';
@@ -1608,7 +1608,7 @@ if (!empty($formData)) {
 
   $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
   $partDtableBox1 .= '<tr><td>' . $this->translate('Facility Name:') . \Application\Service\CommonService::escapeHtml($formData['facilityname']) . '</td></tr><tr><td>' . $this->translate('Site Type:') . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
-  $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
+  $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "");
   $partDtableBox1 .= "</td></tr>";
   $partDtableBox1 .= '<tr><td>' . $this->translate('Staff Audited Name:') . \Application\Service\CommonService::escapeHtml($formData['staffaudited']) . '</td></tr>';
   $partDtableBox1 .= '</table>';
