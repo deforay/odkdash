@@ -1,12 +1,8 @@
-
-<style>
-.link {
-    font-size: 16px;
-    padding-left:7%;
-    line-height:2.428571;
-}
-</style>
-<link rel="stylesheet" type="text/css" href="<?php echo $this->basePath('assets/css/dataTables.bootstrap.min.css'); ?>" />
+<?php
+// Rows from getBulkDownloads('v6'): the signed-in user's requests, or
+// everyone's for a Super Admin. The link goes through bulk-file, which checks
+// the requester again before sending the archive.
+?>
 <div class="am-content">
   <div class="page-head">
     <h2><?= $this->translate('View Bulk Downloads'); ?></h2>
@@ -14,14 +10,40 @@
 
   <div class="main-content">
     <div class="widget widget-fullwidth widget-small" style="padding:5px;">
-    <?php
-        if(count($result)>0){ 
-            $tempPath = "/temporary/bulk-pdf/";
-            foreach($result as $file){
-                echo '<a href="' . $tempPath . $file . '" class="link">' . $file . '</a><br>';
-            }
-        }
-        ?>
+      <?php if (count($result) === 0) { ?>
+        <p><?= $this->translate('No bulk downloads yet.'); ?></p>
+      <?php } else { ?>
+        <table class="table table-bordered table-condensed table-striped">
+          <thead>
+            <tr>
+              <th><?= $this->translate('Request'); ?></th>
+              <th><?= $this->translate('Requested by'); ?></th>
+              <th><?= $this->translate('Audit Round No'); ?></th>
+              <th><?= $this->translate('Audit Date'); ?></th>
+              <th><?= $this->translate('Archive'); ?></th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($result as $row) { ?>
+              <tr>
+                <td><?= (int) $row['r_download_id']; ?></td>
+                <td><?= $this->escapeHtml((string) ($row['login'] ?? '')); ?></td>
+                <td><?= $this->escapeHtml((string) ($row['auditroundno'] ?? $this->translate('All'))); ?></td>
+                <td><?= $this->escapeHtml((string) ($row['assesmentofaudit'] ?? $this->translate('All'))); ?></td>
+                <td>
+                  <?php if (!empty($row['file_name'])) { ?>
+                    <a href="<?= $this->url('spi-v6-form', ['action' => 'bulk-file', 'id' => (int) $row['r_download_id']]); ?>"><?= $this->escapeHtml((string) $row['file_name']); ?></a>
+                  <?php } elseif ((int) $row['download_status'] === 0) { ?>
+                    <?= $this->translate('Queued'); ?>
+                  <?php } else { ?>
+                    <?= $this->translate('No file'); ?>
+                  <?php } ?>
+                </td>
+              </tr>
+            <?php } ?>
+          </tbody>
+        </table>
+      <?php } ?>
     </div>
   </div>
 </div>
