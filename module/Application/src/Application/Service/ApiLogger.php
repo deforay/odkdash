@@ -12,7 +12,7 @@ use Ramsey\Uuid\Uuid;
  * Called from GuzzleApiLogMiddleware wrapped around the Guzzle clients
  * built inside OdkFormService::syncOdkCentralV3 / syncOdkCentralV6.
  *
- * Inbound HTTP requests (admin pages, /receiver pushes) intentionally do
+ * Inbound HTTP requests (admin pages) intentionally do
  * NOT come through here — event_log + form_dump already cover those.
  *
  * Bodies are written as compressed files under var/api-logs/ (outside

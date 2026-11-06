@@ -63,19 +63,6 @@ class OdkFormService
         return $stack;
     }
 
-    public function saveSpiFormVer3($params)
-    {
-        /** @var SpiFormVer3Table  $db */
-        $db = $this->sm->get('SpiFormVer3Table');
-        return $db->saveData($params);
-    }
-
-    public function saveSpiFormVer6($params)
-    {
-        $db = $this->sm->get('SpiFormVer6Table');
-        return $db->saveData($params);
-    }
-
     public function getPerformance($params)
     {
         /** @var SpiFormVer3Table  $db */
