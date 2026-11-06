@@ -70,7 +70,7 @@ The route name, the pattern and the defaults do not change:
 - The pattern builds URLs exactly as Laminas built them. `Kernel::SLIM_TAILS` turns it into the Slim pattern.
 - `defaults.controller` is the ACL resource, the value `Module::preSetter()` checked.
 
-A route without a `handler` is registered for URL building only. A route with `'public' => true` needs no login. Only the landing page and the login pages are public.
+A route without a `handler` is registered for URL building only. A route with `'public' => true` needs no login. Only the landing page and the login page are public.
 
 A route whose Laminas pattern `Kernel::SLIM_TAILS` cannot express gives its Slim pattern in a `slim` key. The landing page is the one case. Its Laminas pattern matched any single path segment, such as `/foo`, so its Slim pattern is `/[{id}]`. It must stay the last route. FastRoute refuses a fixed path such as `/login` declared after `/{id}`. The app then fails on every request.
 

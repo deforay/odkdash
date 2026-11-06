@@ -69,19 +69,7 @@ class UsersTable extends AbstractTableGateway
         if ($sResult && $passwordValidation) {
             $userMappedIdsArray = [];
             $userMappingType = '';
-            $sendLoginOtp = $gTable->getGlobalValue('login_otp');
-            if ($sendLoginOtp == "yes") {
-                if (trim($sResult->contact_no) != "") {
-                    $this->updateUserOtp($sResult->id, trim($sResult->contact_no));
-                    $loginContainer->otpId = $sResult->id;
-                    return 'validate-otp';
-                } else {
-                    $container->alertMsg = 'Please contact your admin,Unable to sent OTP your number';
-                    return 'login';
-                }
-            } else {
-                return $this->userEventLog($sResult);
-            }
+            return $this->userEventLog($sResult);
         } else {
             $reason = $sResult ? 'invalid password' : 'unknown user';
             $trackTable->addEventLog('', 'login-failed', "Failed login for '{$username}' ({$reason})", 'login');
@@ -584,42 +572,6 @@ class UsersTable extends AbstractTableGateway
         $password = $this->passwordHash($params['newPassword']);
         $data = array('password' => $password);
         return $this->update($data, array('id' => $userId));
-    }
-
-    public function updateUserOtp($userId, $mobileNo)
-    {
-        $userOtp = CommonService::generateOTP();
-        $otpData = array('otp' => $userOtp, 'otp_generated_datetime' => CommonService::getDateTime());
-        $this->update($otpData, array("id" => $userId));
-    }
-
-    public function validateUserOtp($otp, $expiry = 30)
-    {
-        if (trim($otp) != "") {
-            $sql = new Sql($this->adapter);
-            $loginContainer = new Container('credo');
-            $container = new Container('alert');
-            $dbAdapter = $this->adapter;
-            $query = $sql->select()->from(['u' => 'users'])
-                ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
-                ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
-                ->where(['u.id' => $loginContainer->otpId, 'otp' => $otp, 'u.status' => 'active']);
-            $queryStr = $sql->buildSqlString($query);
-            $sResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($sResult) {
-                $userMappedIdsArray = [];
-                $userMappingType = '';
-                if (!$this->select(array('TIMESTAMPDIFF(MINUTE, otp_generated_datetime, now()) <= ' . $expiry, 'id' => $loginContainer->otpId))) {
-                    $container->alertMsg = 'The sms code has expired. Please re-send the OTP';
-                    return 'login';
-                }
-
-                return $this->userEventLog($sResult);
-            } else {
-                $container->alertMsg = 'Please enter valid otp';
-                return 'validate-otp';
-            }
-        }
     }
 
     public function userEventLog($sResult)

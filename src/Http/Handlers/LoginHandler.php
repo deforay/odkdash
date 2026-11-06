@@ -11,8 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Login, the one-time password step and logout. No login is needed. After
- * each step UserService names the route to go to next.
+ * Login and logout. No login is needed. After login, UserService names
+ * the route to go to next.
  */
 final class LoginHandler extends ActionHandler
 {
@@ -31,17 +31,6 @@ final class LoginHandler extends ActionHandler
             return $this->respond->redirect('dashboard');
         }
         return $this->respond->fragment('application/login/index');
-    }
-
-    public function validateOtpAction(ServerRequestInterface $request): ResponseInterface
-    {
-        if ($this->isPost($request)) {
-            $otp = trim((string) $this->post($request)['otp']);
-            // An empty code returns no route. Laminas then redirected to the
-            // current route, the OTP page.
-            return $this->respond->redirect($this->userService->validateUserOtp($otp) ?? 'validate-otp');
-        }
-        return $this->respond->fragment('application/login/validate-otp');
     }
 
     public function logoutAction(ServerRequestInterface $request): ResponseInterface
