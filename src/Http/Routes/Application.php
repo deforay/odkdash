@@ -42,12 +42,6 @@ use App\Http\Handlers\SpiV3ReportsHandler;
 use App\Http\Handlers\SpiV6ReportsHandler;
 use App\Http\Handlers\UsersHandler;
 
-$controller = static fn(string $route, string $handler, string $controller): array => [
-    'route' => $route,
-    'handler' => $handler,
-    'defaults' => ['controller' => 'Application\\Controller\\' . $controller, 'action' => 'index'],
-];
-
 return [
     'client-errors' => [
         'route' => '/client-errors',
@@ -60,27 +54,91 @@ return [
         'defaults' => ['controller' => 'Application\\Controller\\LogViewerController', 'action' => 'index'],
         'methods' => ['GET', 'POST'],
     ],
-    'api-logs' => $controller('/api-logs[/:action]', ApiLogsHandler::class, 'ApiLogsController'),
-    'roles' => $controller('/roles[/:action][/][:id]', RolesHandler::class, 'RolesController'),
-    'users' => $controller('/users[/:action][/][:id]', UsersHandler::class, 'UsersController'),
-    'provinces' => $controller('/provinces[/:action][/][:id]', ProvincesHandler::class, 'ProvincesController'),
-    'district' => $controller('/district[/:action][/][:id]', DistrictHandler::class, 'DistrictController'),
-    'config' => $controller('/config[/:action][/][:id]', ConfigHandler::class, 'ConfigController'),
-    'event-log' => $controller('/event-log[/:action][/][:id]', EventHandler::class, 'EventController'),
-    'audit-trail' => $controller('/audit-trail[/:action][/][:id]', AuditTrailHandler::class, 'AuditTrailController'),
-    'email' => $controller('/email[/:action][/][:id]', EmailHandler::class, 'EmailController'),
-    'common' => $controller('/common[/:action][/][:id]', CommonHandler::class, 'CommonController'),
-    'dashboard' => $controller('/dashboard[/:action][/][:id]', DashboardHandler::class, 'DashboardController'),
-    'dashboard-v6' => $controller('/dashboard-v6[/:action][/][:id]', DashboardV6Handler::class, 'DashboardV6Controller'),
-    'spi-v3-reports' => $controller('/spi-v3-reports[/:action][/][:id]', SpiV3ReportsHandler::class, 'SpiV3ReportsController'),
-    'spi-v6-reports' => $controller('/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController'),
-    'spi-facility' => $controller('/facility[/:action][/][:id]', FacilityHandler::class, 'FacilityController'),
+    'api-logs' => [
+        'route' => '/api-logs[/:action]',
+        'handler' => ApiLogsHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\ApiLogsController', 'action' => 'index'],
+    ],
+    'roles' => [
+        'route' => '/roles[/:action][/][:id]',
+        'handler' => RolesHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\RolesController', 'action' => 'index'],
+    ],
+    'users' => [
+        'route' => '/users[/:action][/][:id]',
+        'handler' => UsersHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\UsersController', 'action' => 'index'],
+    ],
+    'provinces' => [
+        'route' => '/provinces[/:action][/][:id]',
+        'handler' => ProvincesHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\ProvincesController', 'action' => 'index'],
+    ],
+    'district' => [
+        'route' => '/district[/:action][/][:id]',
+        'handler' => DistrictHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\DistrictController', 'action' => 'index'],
+    ],
+    'config' => [
+        'route' => '/config[/:action][/][:id]',
+        'handler' => ConfigHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\ConfigController', 'action' => 'index'],
+    ],
+    'event-log' => [
+        'route' => '/event-log[/:action][/][:id]',
+        'handler' => EventHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\EventController', 'action' => 'index'],
+    ],
+    'audit-trail' => [
+        'route' => '/audit-trail[/:action][/][:id]',
+        'handler' => AuditTrailHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\AuditTrailController', 'action' => 'index'],
+    ],
+    'email' => [
+        'route' => '/email[/:action][/][:id]',
+        'handler' => EmailHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\EmailController', 'action' => 'index'],
+    ],
+    'common' => [
+        'route' => '/common[/:action][/][:id]',
+        'handler' => CommonHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\CommonController', 'action' => 'index'],
+    ],
+    'dashboard' => [
+        'route' => '/dashboard[/:action][/][:id]',
+        'handler' => DashboardHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\DashboardController', 'action' => 'index'],
+    ],
+    'dashboard-v6' => [
+        'route' => '/dashboard-v6[/:action][/][:id]',
+        'handler' => DashboardV6Handler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\DashboardV6Controller', 'action' => 'index'],
+    ],
+    'spi-v3-reports' => [
+        'route' => '/spi-v3-reports[/:action][/][:id]',
+        'handler' => SpiV3ReportsHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV3ReportsController', 'action' => 'index'],
+    ],
+    'spi-v6-reports' => [
+        'route' => '/spi-v6-reports[/:action][/][:id]',
+        'handler' => SpiV6ReportsHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV6ReportsController', 'action' => 'index'],
+    ],
+    'spi-facility' => [
+        'route' => '/facility[/:action][/][:id]',
+        'handler' => FacilityHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\FacilityController', 'action' => 'index'],
+    ],
     // A second name for one facility URL. spi-facility serves the path.
     'upload-facility' => [
         'route' => '/facility/upload-facility',
         'defaults' => ['controller' => 'Application\\Controller\\FacilityController', 'action' => 'upload-facility'],
     ],
-    'spi-v3-form' => $controller('/spi-v3[/:action][/][:id]', SpiV3Handler::class, 'SpiV3Controller'),
+    'spi-v3-form' => [
+        'route' => '/spi-v3[/:action][/][:id]',
+        'handler' => SpiV3Handler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV3Controller', 'action' => 'index'],
+    ],
     // The dashboards link to the V3 approved audits page by this name.
     'view-data' => [
         'route' => '/view-data',
