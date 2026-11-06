@@ -4216,27 +4216,27 @@ class SpiFormVer6Table extends AbstractTableGateway
             // Mapping exists
             if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array())
                     ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array())
                     ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
             } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array())
                     ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array())
                     ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
             } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array())
                     ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array())
                     ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($parameters['country']) && $parameters['country'] != '') || (isset($parameters['province']) && $parameters['province'] != '') || (isset($parameters['district']) && $parameters['district'] != '')) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'));
-            $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'));
+            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array());
+            $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array());
 
             // Apply filters dynamically
             if (isset($parameters['country']) && $parameters['country'] != '') {
@@ -4262,34 +4262,55 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery->where($sWhere);
         }
 
+        /*
+         * The figures above the table cover every filtered audit, not only
+         * the page, so they come from their own query over the filtered set.
+         * The score column is text: "+ 0" reads it as PHP's (float) did.
+         */
+        $isScored = in_array($parameters['source'], ['hv', 'la', 'apall', 'apl180', 'ap'], true);
+        $summaryColumns = ['filtered' => new Expression('COUNT(*)')];
+        if ($isScored) {
+            $score = 'COALESCE(t.AUDIT_SCORE_PERCENTAGE + 0, 0)';
+            $summaryColumns['scoreTotal'] = new Expression("SUM($score)");
+            $summaryColumns['levelZero'] = new Expression("SUM($score < 40)");
+            $summaryColumns['levelOne'] = new Expression("SUM($score >= 40 AND $score < 60)");
+            $summaryColumns['levelTwo'] = new Expression("SUM($score >= 60 AND $score < 80)");
+            $summaryColumns['levelThree'] = new Expression("SUM($score >= 80 AND $score < 90)");
+            $summaryColumns['levelFour'] = new Expression("SUM($score >= 90)");
+        }
+        $summaryQuery = $sql->select()->from(['t' => $sQuery])->columns($summaryColumns);
+        $summary = $dbAdapter->query($sql->buildSqlString($summaryQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $iFilteredTotal = (int) $summary['filtered'];
+
+        $totalQuery = $sql->select()->from(['t' => $tQuery])->columns(['total' => new Expression('COUNT(*)')]);
+        $iTotal = (int) $dbAdapter->query($sql->buildSqlString($totalQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current()['total'];
+
         if (trim($sOrder) === 'desc') {
             $sOrder = '';
         }
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
         }
+        // Rows that tie on the sort column come back in no fixed order, so a
+        // page could repeat or skip one. The last sort key is unique per row:
+        // the audit date for the sources grouped by it, the id for the rest.
+        if ($parameters['source'] == 'ad' || $parameters['source'] == 'apspi') {
+            $sQuery->order('spiv3.assesmentofaudit DESC');
+        } else {
+            $sQuery->order('spiv3.id DESC');
+        }
 
-        // if (isset($sLimit) && isset($sOffset)) {
-        //     $sQuery->limit($sLimit);
-        //     $sQuery->offset($sOffset);
-        // }
+        // The export reads every filtered audit, so it keeps the query without the page limit.
+        $queryContainer->exportViewDataV6Query = clone $sQuery;
 
-        $queryContainer->exportViewDataV6Query = $sQuery;
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //print_r($sQueryStr)
+        if (isset($sLimit) && $sLimit !== '' && isset($sOffset)) {
+            $sQuery->limit((int) $sLimit);
+            $sQuery->offset((int) $sOffset);
+        }
+
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
 
-        /* Total data set length */
-
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        // print_r($rResult); die;
-        $iTotal = count($tResult);
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -4297,37 +4318,22 @@ class SpiFormVer6Table extends AbstractTableGateway
             "aaData" => array(),
         );
 
-        /* Data set length after filtering */
-
-        $auditScore = 0;
-        $levelZero = 0;
-        $levelOne = 0;
-        $levelTwo = 0;
-        $levelThree = 0;
-        $levelFour = 0;
-
         foreach ($rResult as $aRow) {
-            $scorePer = (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
-            $auditScore += $scorePer;
             $row = [];
             $level = null;
 
-            if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
+            if ($isScored) {
+                $scorePer = (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
                 if ($scorePer < 40) {
                     $level = 0;
-                    $levelZero++;
-                } elseif ($scorePer >= 40 && $scorePer < 60) {
+                } elseif ($scorePer < 60) {
                     $level = 1;
-                    $levelOne++;
-                } elseif ($scorePer >= 60 && $scorePer < 80) {
+                } elseif ($scorePer < 80) {
                     $level = 2;
-                    $levelTwo++;
-                } elseif ($scorePer >= 80 && $scorePer < 90) {
+                } elseif ($scorePer < 90) {
                     $level = 3;
-                    $levelThree++;
-                } elseif ($scorePer >= 90) {
+                } else {
                     $level = 4;
-                    $levelFour++;
                 }
             }
 
@@ -4342,7 +4348,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
                 $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0), 2);
                 $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
             } elseif ($parameters['source'] == 'ad') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
@@ -4372,12 +4378,12 @@ class SpiFormVer6Table extends AbstractTableGateway
             $output['aaData'][] = $row;
         }
 
-        $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
-        $output['levelZeroCount'] = $levelZero;
-        $output['levelOneCount'] = $levelOne;
-        $output['levelTwoCount'] = $levelTwo;
-        $output['levelThreeCount'] = $levelThree;
-        $output['levelFourCount'] = $levelFour;
+        $output['avgAuditScore'] = ($iFilteredTotal > 0) ? round((float) ($summary['scoreTotal'] ?? 0) / $iFilteredTotal, 2) : 0;
+        $output['levelZeroCount'] = (int) ($summary['levelZero'] ?? 0);
+        $output['levelOneCount'] = (int) ($summary['levelOne'] ?? 0);
+        $output['levelTwoCount'] = (int) ($summary['levelTwo'] ?? 0);
+        $output['levelThreeCount'] = (int) ($summary['levelThree'] ?? 0);
+        $output['levelFourCount'] = (int) ($summary['levelFour'] ?? 0);
 
         return $output;
     }
