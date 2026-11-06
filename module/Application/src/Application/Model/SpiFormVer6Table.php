@@ -1621,9 +1621,15 @@ class SpiFormVer6Table extends AbstractTableGateway
             /* Bulk approve, replacing the dual listbox on manage-facility. Only
              * pending rows are selectable — approving an approved audit is a no-op
              * that would still rewrite its facility. */
-            $row[] = ($approveStatusAction && $aRow['status'] == 'pending')
-                ? '<input type="checkbox" class="approveSelect" value="' . (int) $aRow['id'] . '">'
-                : '';
+            // A disabled box on the other rows shows what the column is for.
+            // It has no approveSelect class, so select-all and the count skip it.
+            if (!$approveStatusAction) {
+                $row[] = '';
+            } elseif ($aRow['status'] == 'pending') {
+                $row[] = '<input type="checkbox" class="approveSelect" value="' . (int) $aRow['id'] . '">';
+            } else {
+                $row[] = '<input type="checkbox" disabled="disabled">';
+            }
             $row[] = '';
             /* Escaped because DataTables writes this cell as HTML and the name arrives
              * verbatim from the ODK submission, so a crafted facility name would run

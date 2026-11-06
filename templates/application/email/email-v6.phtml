@@ -12,6 +12,63 @@
     .select2-container .select2-selection--single {
         height: 40px;
     }
+
+    .email-form {
+        max-width: 960px;
+    }
+
+    .email-form .form-section-title {
+        margin: 0 0 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 15px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .email-form .form-section + .form-section {
+        margin-top: 12px;
+    }
+
+    .email-form .help-block {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #888;
+    }
+
+    /* One height for the facility, filter and audit pickers. */
+    .email-form select.form-control,
+    .email-form input.form-control {
+        height: 40px;
+    }
+
+    .email-form .select2-container .select2-selection--single .select2-selection__rendered {
+        padding-top: 0;
+        padding-bottom: 0;
+        line-height: 38px;
+    }
+
+    .email-form .select2-container .select2-selection--single .select2-selection__arrow,
+    .email-form .select2-container .select2-selection--single .select2-selection__clear {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .email-form .ts-wrapper .ts-control {
+        min-height: 40px;
+        padding-top: 8px;
+    }
+
+    .email-form #message {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    .email-form .form-actions {
+        margin-top: 8px;
+        padding-top: 16px;
+        border-top: 1px solid #e5e5e5;
+    }
 </style>
 <script src="<?php echo $this->basePath('assets/js/jquery.js'); ?>" type="text/javascript"></script>
 <script src="<?php echo $this->basePath('assets/js/jquery-ui.min.js'); ?>" type="text/javascript"></script>
@@ -28,67 +85,75 @@
                 <div class="col-sm-12">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <form role="form" name="addEailInformation" id="addEailInformation" method="post" enctype="multipart/form-data" action="<?php echo $this->url('email', array('action' => 'email-v6')); ?>" autocomplete="off">
-                                <div class="row">
-                                    <div class="form-group col-lg-6">
-                                        <label for="showEmailAudits"><?= $this->translate('Show Audits'); ?></label>
-                                        <select class="form-control" id="showEmailAudits" title="<?= $this->translate('Please select the show emailed audits'); ?>" onchange="getEmailAudits();">
-                                            <option value=""><?= $this->translate('All'); ?></option>
-                                            <option value="yes"><?= $this->translate('Already emailed'); ?></option>
-                                            <option value="no"><?= $this->translate('Not yet emailed'); ?></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-lg-6">
-                                        <label><?= $this->translate('Facility'); ?> <span class="mandatory">*</span></label>
-                                        <select class="form-control isRequired select2" name="facility" id="facility" title="<?= $this->translate('Please select the facility'); ?>" onchange="getSelectedFacilitesAudits(this.value);">
-                                            <option value="">-- <?= $this->translate('Select Facility'); ?> --</option>
-                                            <?php
-                                            if (isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
-                                                foreach ($facilityName['uniqueName'] as $facilities) {
-                                            ?>
-                                                    <option value="<?php echo $this->escapeHtml($facilities['facilityname']); ?>" <?php if (isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected" <?php } ?>><?php echo $this->escapeHtml(ucwords($facilities['facilityname'])); ?></option>
-                                            <?php }
-                                            } ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row facilityProfile" <?php if (!isset($facilityResult['fResult']->facility_name)) { ?>style="display:none;" <?php } ?>>
-                                    <div class="form-group col-lg-6">
-                                        <label><?= $this->translate('Facility Email Address'); ?> <span class="mandatory">*</span></label>
-                                        <input type="hidden" class="" name="facilityName" id="facilityName" <?php if (isset($facilityResult['fResult']->facility_name)) { ?>value="<?php echo $this->escapeHtml($facilityResult['fResult']->facility_name); ?>" <?php } ?> />
-                                        <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="<?= $this->translate('Enter Email Address'); ?>" title="<?= $this->translate('Please enter facility email address'); ?>" <?php if (isset($facilityResult['fResult']->facility_name)) { ?> value="<?php echo $this->escapeHtml($facilityResult['fResult']->email); ?>" <?php } ?> />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-lg-6">
-                                        <label><?= $this->translate('Choose Audits'); ?> </label>
-                                        <div id="ajaxAudit">
-                                            <select class="" name="audits[]" id="audits" multiple="multiple" title="<?= $this->translate('Please select the audits'); ?>">
-                                                <?php if (isset($facilityResult['auditsResult']) && count($facilityResult['auditsResult']) > 0) {
-                                                    foreach ($facilityResult['auditsResult'] as $audits) {
+                            <form role="form" class="email-form" name="addEailInformation" id="addEailInformation" method="post" enctype="multipart/form-data" action="<?php echo $this->url('email', array('action' => 'email-v6')); ?>" autocomplete="off">
+                                <div class="form-section">
+                                    <h4 class="form-section-title"><?= $this->translate('Recipient'); ?></h4>
+                                    <div class="row">
+                                        <div class="form-group col-md-8">
+                                            <label for="facility"><?= $this->translate('Facility'); ?> <span class="mandatory">*</span></label>
+                                            <select class="form-control isRequired select2" name="facility" id="facility" title="<?= $this->translate('Please select the facility'); ?>" onchange="getSelectedFacilitesAudits(this.value);">
+                                                <option value="">-- <?= $this->translate('Select Facility'); ?> --</option>
+                                                <?php
+                                                if (isset($facilityName['uniqueName']) && count($facilityName['uniqueName']) > 0) {
+                                                    foreach ($facilityName['uniqueName'] as $facilities) {
                                                 ?>
-                                                        <option value="<?php echo $this->escapeHtml($audits['id']); ?>" <?php echo ($ids == base64_encode($audits['id'])) ? 'selected=selected' : ''; ?>><?php echo $this->escapeHtml($audits['testingpointname'] . ' - ' . $audits['assesmentofaudit']); ?></option>
+                                                        <option value="<?php echo $this->escapeHtml($facilities['facilityname']); ?>" <?php if (isset($facilityResult['fResult']->facility_name) && $facilityResult['fResult']->facility_name == $facilities['facilityname']) { ?> selected="selected" <?php } ?>><?php echo $this->escapeHtml(ucwords($facilities['facilityname'])); ?></option>
                                                 <?php }
                                                 } ?>
                                             </select>
                                         </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="showEmailAudits"><?= $this->translate('Show Audits'); ?></label>
+                                            <select class="form-control" id="showEmailAudits" title="<?= $this->translate('Please select the show emailed audits'); ?>" onchange="getEmailAudits();">
+                                                <option value=""><?= $this->translate('All'); ?></option>
+                                                <option value="yes"><?= $this->translate('Already emailed'); ?></option>
+                                                <option value="no"><?= $this->translate('Not yet emailed'); ?></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row facilityProfile" <?php if (!isset($facilityResult['fResult']->facility_name)) { ?>style="display:none;" <?php } ?>>
+                                        <div class="form-group col-md-8">
+                                            <label for="emailAddress"><?= $this->translate('Facility Email Address'); ?> <span class="mandatory">*</span></label>
+                                            <input type="hidden" class="" name="facilityName" id="facilityName" <?php if (isset($facilityResult['fResult']->facility_name)) { ?>value="<?php echo $this->escapeHtml($facilityResult['fResult']->facility_name); ?>" <?php } ?> />
+                                            <input type="text" class="form-control isEmail isRequired" name="emailAddress" id="emailAddress" placeholder="<?= $this->translate('Enter Email Address'); ?>" title="<?= $this->translate('Please enter facility email address'); ?>" <?php if (isset($facilityResult['fResult']->facility_name)) { ?> value="<?php echo $this->escapeHtml($facilityResult['fResult']->email); ?>" <?php } ?> />
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-lg-6">
-                                        <label><?= $this->translate('Message'); ?> <span class="mandatory">*</span></label>
-                                        <textarea class="form-control isRequired" name="message" id="message" placeholder="<?= $this->translate('Enter Your Message'); ?>" title="<?= $this->translate('Please type your message'); ?>" style="min-width:550px;min-height:120px;max-width:550px;max-height:160px;"></textarea>
+
+                                <div class="form-section">
+                                    <h4 class="form-section-title"><?= $this->translate('Audits and message'); ?></h4>
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label for="audits"><?= $this->translate('Choose Audits'); ?></label>
+                                            <div id="ajaxAudit">
+                                                <select class="" name="audits[]" id="audits" multiple="multiple" title="<?= $this->translate('Please select the audits'); ?>">
+                                                    <?php if (isset($facilityResult['auditsResult']) && count($facilityResult['auditsResult']) > 0) {
+                                                        foreach ($facilityResult['auditsResult'] as $audits) {
+                                                    ?>
+                                                            <option value="<?php echo $this->escapeHtml($audits['id']); ?>" <?php echo ($ids == base64_encode($audits['id'])) ? 'selected=selected' : ''; ?>><?php echo $this->escapeHtml($audits['testingpointname'] . ' - ' . $audits['assesmentofaudit']); ?></option>
+                                                    <?php }
+                                                    } ?>
+                                                </select>
+                                            </div>
+                                            <p class="help-block"><?= $this->translate('Each selected audit is sent as a PDF report.'); ?></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label for="message"><?= $this->translate('Message'); ?> <span class="mandatory">*</span></label>
+                                            <textarea class="form-control isRequired" name="message" id="message" rows="6" placeholder="<?= $this->translate('Enter Your Message'); ?>" title="<?= $this->translate('Please type your message'); ?>"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-12">
+                                            <label for="attchement"><?= $this->translate('Attachments'); ?></label>
+                                            <input type="file" class="" name="attchement[]" id="attchement" multiple="multiple" title="<?= $this->translate('Please choose file'); ?>" />
+                                            <p class="help-block"><?= $this->translate('Optional. You can choose more than one file.'); ?></p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-lg-6">
-                                        <label><?= $this->translate('Attachments'); ?> </label>
-                                        <input type="file" class="" name="attchement[]" id="attchement" multiple="multiple" title="<?= $this->translate('Please choose file'); ?>" />
-                                    </div>
-                                </div>
-                                <div class="spacer  col-lg-12">
+
+                                <div class="form-actions">
                                     <button type="button" onclick="validateNow()" class="btn btn-space btn-primary"><?= $this->translate('Send'); ?></button>
                                     <a href="<?php echo $this->url('email', array('action' => 'email-v6')); ?>" class="btn btn-space btn-default"><?= $this->translate('Cancel'); ?></a>
                                 </div>
@@ -109,7 +174,7 @@
         //initialize the javascript
         $(".select2").select2({
             width: '100%',
-            placeholder: '',
+            placeholder: '<?= $this->translate('Select Facility'); ?>',
             allowClear: true,
             tags: false
         });
@@ -167,7 +232,7 @@
                 $("#ajaxAudit").html(splitData[0]);
                 $(".select2").select2({
                     width: '100%',
-                    placeholder: '',
+                    placeholder: '<?= $this->translate('Select Facility'); ?>',
                     allowClear: true,
                     tags: false
                 });
