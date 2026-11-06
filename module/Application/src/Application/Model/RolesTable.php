@@ -21,7 +21,10 @@ class RolesTable extends BaseTableGateway
 
     public function addRolesDetails($params)
     {
-
+        // Only the seeded Super Admin role may carry the SA code.
+        if (trim((string) $params['roleCode']) === 'SA') {
+            return 0;
+        }
         if (trim($params['roleName']) != "") {
             $rolesdata = array(
                 'category_id' => 1,
@@ -39,14 +42,22 @@ class RolesTable extends BaseTableGateway
     public function updateRolesDetails($params)
     {
         if (trim($params['roleName']) != "" && trim($params['roleId']) != "") {
-            $roleId = base64_decode($params['roleId']);
+            $roleId = (int) base64_decode($params['roleId']);
+            // The Super Admin role cannot be renamed, deactivated or stripped,
+            // and no other role can take its code: Acl.php grants SA everything.
+            $sql = new Sql($this->adapter);
+            $currentQuery = $sql->select()->from('roles')->columns(['role_code'])->where(['role_id' => $roleId]);
+            $current = $this->adapter->query($sql->buildSqlString($currentQuery), $this->adapter::QUERY_MODE_EXECUTE)->toArray();
+            if ($current === [] || $current[0]['role_code'] === 'SA' || trim((string) $params['roleCode']) === 'SA') {
+                return 0;
+            }
             $rolesdata = array(
                 'role_name' => $params['roleName'],
                 'role_code' => $params['roleCode'],
                 'description' => $params['description'],
                 'status' => $params['status']
             );
-            $this->update($rolesdata, array('role_id=' . $roleId));
+            $this->update($rolesdata, ['role_id' => $roleId]);
             return $roleId;
         }
     }

@@ -1307,13 +1307,16 @@ class SpiFormVer6Table extends AbstractTableGateway
     /**
      * Scope a select over spi_form_v_6, aliased 'spiv6', to the user's locations.
      *
-     * The joins are LEFT and every scope also admits UNLINKED_AUDIT, so an audit
-     * with no facility surfaces rather than vanishing. Dropping those is what kept
-     * 383 approved audits off the Malawi list before 1.2.3, and the four still
-     * unlinked there can only be fixed by someone who can see them: the listing
-     * flags them, the Facility Link filter pulls up just those, and assigning a
-     * facility on the edit screen returns the audit to its location. The joined
-     * columns are never read back, so a NULL side costs nothing.
+     * A mapped user sees the mapped locations only. An audit whose location
+     * cannot be resolved (no facility, a facility that is gone, or a facility
+     * without that level) belongs to no location, so only a Super Admin sees
+     * it: a Super Admin has no mapping (UsersTable::userEventLog()). The
+     * listing flags those audits, the Facility Link filter pulls up just
+     * those, and assigning a facility on the edit screen returns the audit to
+     * its location.
+     *
+     * The location filters below still admit UNLINKED_AUDIT, so filtering the
+     * list does not hide the audits a Super Admin has to fix.
      *
      * The scope goes on the total count as well as the filtered query. A location
      * mapping is a permission boundary, not a search filter, and leaving it off the
@@ -1332,15 +1335,15 @@ class SpiFormVer6Table extends AbstractTableGateway
             if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
                 $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'), 'left')
-                    ->where(self::inOrUnlinked('fm.country', $mappedIds));
+                    ->where(['fm.country' => $mappedIds]);
             } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
                 $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'), 'left')
-                    ->where(self::inOrUnlinked('fm.province', $mappedIds));
+                    ->where(['fm.province' => $mappedIds]);
             } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
                 $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'), 'left')
-                    ->where(self::inOrUnlinked('fm.district', $mappedIds));
+                    ->where(['fm.district' => $mappedIds]);
             }
         }
         if (isset($parameters['country']) && $parameters['country'] != '') {

@@ -91,8 +91,41 @@ class UsersTable extends AbstractTableGateway
         return password_hash($password, PASSWORD_BCRYPT, $options);
     }
 
+    /**
+     * Only a Super Admin may change a Super Admin account or give anyone the
+     * Super Admin role. Without this, anyone allowed to edit users could
+     * promote themselves, demote a Super Admin, or reset a Super Admin's
+     * password and sign in as them.
+     *
+     * @param int $targetUserId the account being changed, 0 for a new one
+     * @param mixed $newRoleId the role being assigned, null when unchanged
+     */
+    private function mayManage(int $targetUserId, mixed $newRoleId): bool
+    {
+        if ((new Container('credo'))->roleCode === 'SA') {
+            return true;
+        }
+        $sql = new Sql($this->adapter);
+        $saRole = $sql->select()->from('roles')->columns(['role_id'])->where(['role_code' => 'SA']);
+        $saRoleIds = array_map('intval', array_column($this->adapter->query($sql->buildSqlString($saRole), Adapter::QUERY_MODE_EXECUTE)->toArray(), 'role_id'));
+        if ($newRoleId !== null && in_array((int) $newRoleId, $saRoleIds, true)) {
+            return false;
+        }
+        if ($targetUserId > 0 && $saRoleIds !== []) {
+            $current = $sql->select()->from('user_role_map')->columns(['role_id'])
+                ->where(['user_id' => $targetUserId, 'role_id' => $saRoleIds]);
+            if ($this->adapter->query($sql->buildSqlString($current), Adapter::QUERY_MODE_EXECUTE)->count() > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function addUserDetails($params, $configResult)
     {
+        if (!$this->mayManage(0, $params['roleId'] ?? null)) {
+            return 0;
+        }
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $userRoleMap = new UserRoleMapTable($dbAdapter);
@@ -195,6 +228,9 @@ class UsersTable extends AbstractTableGateway
         $userTokenMap = new UserTokenMapTable($dbAdapter);
         $userLocationMap = new UserLocationMapTable($dbAdapter);
         $userId = base64_decode($params['userId']);
+        if (!$this->mayManage((int) $userId, $params['roleId'] ?? null)) {
+            return 0;
+        }
         if (isset($params['password']) && $params['password'] != '') {
             $password = $this->passwordHash($params['password']);
             $data = array('password' => $password);
@@ -444,7 +480,8 @@ class UsersTable extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $userId = base64_decode($params['userId']);
+        // The profile is the signed-in user's own, whatever id the form sends.
+        $userId = (new Container('credo'))->userId;
         if (!empty($userId)) {
             $data = array(
                 'first_name' => $params['firstName'],
@@ -534,6 +571,9 @@ class UsersTable extends AbstractTableGateway
     public function resetPassword($params)
     {
         $userId = base64_decode($params->userId);
+        if (!$this->mayManage((int) $userId, null)) {
+            return 0;
+        }
         $password = $this->passwordHash($params['newPassword']);
         $data = array('password' => $password);
         return $this->update($data, array('id' => $userId));
@@ -576,6 +616,15 @@ class UsersTable extends AbstractTableGateway
         $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         foreach ($userTokenResult as $userToken) {
             $token[] = $userToken['token'];
+        }
+
+        // A Super Admin has all access: no location mapping and no token
+        // restriction, whatever is assigned on the user screen. That is also
+        // who sees the audits whose location cannot be resolved, to fix them.
+        if ($sResult->role_code === 'SA') {
+            $token = [];
+            $userMappedIdsArray = null;
+            $userMappingType = null;
         }
 
         $language = $gTable->getGlobalValue('language');

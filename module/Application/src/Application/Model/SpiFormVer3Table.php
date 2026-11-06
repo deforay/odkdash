@@ -4,9 +4,6 @@ namespace Application\Model;
 
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Predicate\In;
-use Laminas\Db\Sql\Predicate\Literal;
-use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\Sql\Expression;
 use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
@@ -30,16 +27,13 @@ class SpiFormVer3Table extends AbstractTableGateway
 
     protected $table = 'spi_form_v_3';
 
-    /** An audit with no facility, which no location filter can reach. */
-    private const UNLINKED_AUDIT = '(spiv3.facility IS NULL OR spiv3.facility = 0)';
-
     /**
      * Limits an audit query, aliased spiv3, to the locations the user is
      * mapped to. Every query restricted by the user's tokens gets this too.
      *
-     * The join is LEFT and the scope also admits UNLINKED_AUDIT, as in V6's
-     * applyV6LocationScope(): an audit with no facility stays visible so
-     * someone can link it, rather than vanishing from every mapped user.
+     * An audit whose location cannot be resolved belongs to no location, so a
+     * mapped user does not see it. A Super Admin has no mapping and sees it
+     * (UsersTable::userEventLog()), as in V6's applyV6LocationScope().
      */
     private static function applyV3LocationScope(Select $query): Select
     {
@@ -57,11 +51,8 @@ class SpiFormVer3Table extends AbstractTableGateway
             // A mapping type this code does not know shows nothing rather than everything.
             return $query->where('1 = 0');
         }
-        return $query->join(['fm' => 'spi_rt_3_facilities'], 'fm.id=spiv3.facility', [], Select::JOIN_LEFT)
-            ->where(new PredicateSet([
-                new In($column, CommonService::inList($loginContainer->userMappedIds)),
-                new Literal(self::UNLINKED_AUDIT),
-            ], PredicateSet::OP_OR));
+        return $query->join(['fm' => 'spi_rt_3_facilities'], 'fm.id=spiv3.facility', [])
+            ->where([$column => CommonService::inList($loginContainer->userMappedIds)]);
     }
     protected $adapter;
 
