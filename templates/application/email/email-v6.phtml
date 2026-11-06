@@ -123,11 +123,11 @@
         if (isset($ids) && trim($ids) != '') {
             $xplodeIds = explode("#", base64_decode($ids));
             if (count($xplodeIds) > 1) { ?>
-                if (getCookie('dpdf') == null || getCookie('dpdf') != '<?php echo $ids; ?>') {
+                if (getCookie('dpdf') == null || getCookie('dpdf') != <?php echo \Application\Service\CommonService::jsonEncode($ids); ?>) {
                     <?php for ($d = 1; $d < count($xplodeIds); $d++) { ?>
-                        generatePdf('<?php echo $xplodeIds[0]; ?>', '<?php echo $xplodeIds[$d]; ?>');
+                        generatePdf(<?php echo \Application\Service\CommonService::jsonEncode($xplodeIds[0]); ?>, <?php echo \Application\Service\CommonService::jsonEncode($xplodeIds[$d]); ?>);
                     <?php } ?>
-                    setCookie('dpdf', '<?php echo $ids; ?>');
+                    setCookie('dpdf', <?php echo \Application\Service\CommonService::jsonEncode($ids); ?>);
                 }
         <?php }
         }
