@@ -8,6 +8,8 @@ use Ramsey\Uuid\Uuid;
 use DateTimeImmutable;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
+use Laminas\Db\Sql\Predicate\Expression as PredicateExpression;
+use Laminas\Db\Sql\Predicate\PredicateSet;
 use Application\Session\Container;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -697,6 +699,66 @@ class CommonService
         $options |= JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR;
 
         return json_encode($data, $options, $depth);
+    }
+
+    /**
+     * The values of a multi-select filter, for a bound IN list:
+     * ->where(['f.country' => CommonService::inList($params['country'])]).
+     *
+     * The pages send a selection either as an array or as a comma-separated
+     * string such as "3,7". The list is never empty, because laminas-db
+     * renders an empty list as IN (), which is a SQL error. An empty
+     * selection becomes [''] and matches nothing.
+     *
+     * @return list<string>
+     */
+    public static function inList(mixed $values): array
+    {
+        if (is_array($values)) {
+            $list = array_map('strval', array_values($values));
+        } else {
+            $list = array_values(array_filter(
+                array_map('trim', explode(',', (string) $values)),
+                static fn(string $value): bool => $value !== ''
+            ));
+        }
+
+        return $list === [] ? [''] : $list;
+    }
+
+    /**
+     * The DataTables search box and column filters as one bound predicate,
+     * or null when neither is set. Pass the result to $select->where().
+     *
+     * Each word of sSearch must appear in at least one column. Each
+     * sSearch_N filter must appear in column N. $columns are the table's own
+     * $aColumns, never request data, because they are written into the SQL.
+     *
+     * @param list<string> $columns
+     */
+    public static function dataTablesSearch(array $columns, mixed $parameters): ?PredicateSet
+    {
+        $search = new PredicateSet();
+
+        $words = (string) ($parameters['sSearch'] ?? '');
+        if ($words !== '') {
+            foreach (explode(' ', $words) as $word) {
+                $anyColumn = new PredicateSet([], PredicateSet::OP_OR);
+                foreach ($columns as $column) {
+                    $anyColumn->addPredicate(new PredicateExpression($column . ' LIKE ?', ['%' . $word . '%']), PredicateSet::OP_OR);
+                }
+                $search->addPredicate($anyColumn);
+            }
+        }
+
+        foreach (array_values($columns) as $i => $column) {
+            $filter = (string) ($parameters['sSearch_' . $i] ?? '');
+            if (($parameters['bSearchable_' . $i] ?? '') == 'true' && $filter !== '') {
+                $search->addPredicate(new PredicateExpression($column . ' LIKE ?', ['%' . $filter . '%']));
+            }
+        }
+
+        return count($search) > 0 ? $search : null;
     }
 
     /**

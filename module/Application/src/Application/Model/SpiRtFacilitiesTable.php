@@ -274,42 +274,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         * on very large tables, and MySQL's regex functionality is very limited
         */
 
-        $sWhere = "";
-        if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
-            $searchArray = explode(" ", $parameters['sSearch']);
-            $sWhereSub = "";
-            foreach ($searchArray as $search) {
-                if ($sWhereSub == "") {
-                    $sWhereSub .= "(";
-                } else {
-                    $sWhereSub .= " AND (";
-                }
-                $colSize = count($aColumns);
-
-                for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-                }
-                $sWhereSub .= ")";
-            }
-            $sWhere .= $sWhereSub;
-        }
-        /* Individual column filtering */
-        $counter = count($aColumns);
-
-        /* Individual column filtering */
-        for ($i = 0; $i < $counter; $i++) {
-            if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
-                if ($sWhere == "") {
-                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                } else {
-                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                }
-            }
-        }
+        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
 
         /*
         * SQL queries
@@ -325,7 +290,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             ->join(array('gd' => 'geographical_divisions'), 'spirt3.district=gd.geo_id', array('district' => 'geo_name'), 'left')
             ->where('spirt3.status != "deleted"');
 
-        if (isset($sWhere) && $sWhere != "") {
+        if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
 
@@ -431,7 +396,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $fQuery = $sql->select()->from('spi_rt_3_facilities')->where('facility_id = "' . $params['testingFacilityId'] . '" OR facility_name = "' . $params['testingFacilityName'] . '"');
+        $fQuery = $sql->select()->from('spi_rt_3_facilities')->where(['(facility_id = ? OR facility_name = ?)' => [$params['testingFacilityId'], $params['testingFacilityName']]]);
         $fQueryStr = $sql->buildSqlString($fQuery);
         $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($fResult) {
@@ -644,7 +609,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $adapter = $this->adapter;
             $sql = new Sql($adapter);
             $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                ->where('spirt3.province like "%' . $searchStr . '%"')
+                ->where(['spirt3.province LIKE ?' => '%' . $searchStr . '%'])
                 ->group('spirt3.province');
             $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
             $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
@@ -665,7 +630,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $adapter = $this->adapter;
             $sql = new Sql($adapter);
             $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                ->where('spirt3.district like "%' . $searchStr . '%"')
+                ->where(['spirt3.district LIKE ?' => '%' . $searchStr . '%'])
                 ->group('spirt3.district');
             $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
             $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
@@ -706,9 +671,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 ->order('spirt3.district ASC');
 
             if (!empty($params['province']) && is_array($params['province'])) {
-                $sQuery = $sQuery->where('spirt3.province IN ("' . implode('", "', $params['province']) . '") AND spirt3.district not like "" AND spirt3.district is not null');
+                $sQuery = $sQuery->where(['spirt3.province' => CommonService::inList($params['province'])])->where('spirt3.district not like "" AND spirt3.district is not null');
             } elseif (!empty($params['province']) && !is_array($params['province'])) {
-                $sQuery = $sQuery->where('spirt3.province="' . $params['province'] . '" AND spirt3.district not like "" AND spirt3.district is not null');
+                $sQuery = $sQuery->where(['spirt3.province' => $params['province']])->where('spirt3.district not like "" AND spirt3.district is not null');
             }
 
             $sQueryStr = $sql->buildSqlString($sQuery);
