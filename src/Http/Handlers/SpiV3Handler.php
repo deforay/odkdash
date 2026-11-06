@@ -46,14 +46,22 @@ final class SpiV3Handler extends ActionHandler
 
     public function exportAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'export', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('export');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/export', [
             'allSubmissions' => $this->odkFormService->exportAllSubmissions($params),
         ]);
     }
 
     public function approveStatusAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'approve-status', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('approve-status');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/approve-status', [
             'result' => $this->odkFormService->approveFormStatus($params),
         ]);
     }
@@ -101,7 +109,11 @@ final class SpiV3Handler extends ActionHandler
 
     public function auditPerformanceAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'audit-performance', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('audit-performance');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/audit-performance', [
             'auditRoundWiseData' => $this->odkFormService->getAuditRoundWiseData($params),
             'perf1' => $this->odkFormService->getPerformance($params),
         ]);
@@ -109,7 +121,11 @@ final class SpiV3Handler extends ActionHandler
 
     public function worstPerformanceAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'worst-performance', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('worst-performance');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/worst-performance', [
             'zeroCounts' => $this->odkFormService->getZeroQuestionCounts($params),
             'spiV3Labels' => $this->odkFormService->getSpiV3FormLabels(),
             'limitBar' => $params['limitBar'],
@@ -118,7 +134,11 @@ final class SpiV3Handler extends ActionHandler
 
     public function auditLocationsAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'audit-locations', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('audit-locations');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/audit-locations', [
             'allSubmissions' => $this->odkFormService->getAllApprovedSubmissionLocation($params),
             'configData' => $this->commonService->getGlobalConfigDetails(),
         ]);
@@ -139,7 +159,11 @@ final class SpiV3Handler extends ActionHandler
     /** Called from the facility name modal on the facility list. */
     public function mergeFacilityNameAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'merge-facility-name', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('merge-facility-name');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/merge-facility-name', [
             'result' => $this->odkFormService->mergeFacilityName($params),
         ]);
     }
@@ -151,21 +175,33 @@ final class SpiV3Handler extends ActionHandler
 
     public function deleteAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'delete', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('delete');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/delete', [
             'result' => $this->odkFormService->deleteAuditData($params),
         ]);
     }
 
     public function spirtv3DatewiseAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'spirtv3-datewise', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('spirtv3-datewise');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/spirtv3-datewise', [
             'perflast30' => $this->odkFormService->getPerformanceLast30Days($params),
         ]);
     }
 
     public function testingVolumeDatewiseAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'testing-volume-datewise', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('testing-volume-datewise');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/testing-volume-datewise', [
             'testingVolume' => $this->odkFormService->getAllApprovedTestingVolume($params),
         ]);
     }
@@ -195,21 +231,32 @@ final class SpiV3Handler extends ActionHandler
 
     public function getTestingPointTypeNamesAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'get-testing-point-type-names', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('get-testing-point-type-names');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/get-testing-point-type-names', [
             'result' => $this->odkFormService->getTestingPointTypeNamesByType($params),
         ]);
     }
 
     public function downloadSpiderChartAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'download-spider-chart', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('download-spider-chart');
+        }
+        return $this->respond->fragment('application/spi-v3/download-spider-chart', [
             'configData' => $this->commonService->getGlobalConfigDetails(),
         ]);
     }
 
     public function exportAsPdfAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'export-as-pdf', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('export-as-pdf');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/export-as-pdf', [
             'result' => $this->odkFormService->getAllSubmissionsDetails($params),
             'configData' => $this->commonService->getGlobalConfigDetails(),
             'argument' => $params,
@@ -225,14 +272,22 @@ final class SpiV3Handler extends ActionHandler
 
     public function removeAuditAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'remove-audit', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('remove-audit');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/remove-audit', [
             'result' => $this->odkFormService->removeAudit($params),
         ]);
     }
 
     public function saveDownloadDataAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'save-download-data', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('save-download-data');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/save-download-data', [
             'result' => $this->odkFormService->addDownloadData($params),
         ]);
     }
@@ -247,7 +302,11 @@ final class SpiV3Handler extends ActionHandler
 
     public function getDistrictByProvinceAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'get-district-by-province', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('get-district-by-province');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/get-district-by-province', [
             'result' => $this->odkFormService->getDistrictData($params),
             'params' => $params,
         ]);
@@ -276,7 +335,11 @@ final class SpiV3Handler extends ActionHandler
 
     public function addSpiv3ValidateDataAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->postOnly($request, 'add-spiv3-validate-data', fn($params) => [
+        if (!$this->isPost($request)) {
+            return $this->fallback('add-spiv3-validate-data');
+        }
+        $params = $this->post($request);
+        return $this->respond->fragment('application/spi-v3/add-spiv3-validate-data', [
             'result' => $this->odkFormService->addValidateSpiv3Data($params),
         ]);
     }
@@ -288,19 +351,9 @@ final class SpiV3Handler extends ActionHandler
         ]);
     }
 
-    /**
-     * A terminal template on POST, built from the posted data. Any other
-     * method renders the template inside the layout with no variables: what
-     * a Laminas action that returned null did.
-     *
-     * @param callable(\Laminas\Stdlib\Parameters): array<string, mixed> $variables
-     */
-    private function postOnly(ServerRequestInterface $request, string $action, callable $variables): ResponseInterface
+    /** What a Laminas action that returned null rendered. */
+    private function fallback(string $action): ResponseInterface
     {
-        $template = 'application/spi-v3/' . $action;
-        if (!$this->isPost($request)) {
-            return $this->respond->page($template);
-        }
-        return $this->respond->fragment($template, $variables($this->post($request)));
+        return $this->respond->page('application/spi-v3/' . $action);
     }
 }
