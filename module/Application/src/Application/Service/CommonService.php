@@ -718,34 +718,4 @@ class CommonService
         return htmlspecialchars((string) ($value ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
-    /**
-     * Generate a numeric OTP.
-     *
-     * @param int  $digits              Length of the OTP (e.g., 4–8)
-     * @param bool $allowLeadingZero    If false, first digit will be 1–9
-     */
-    public static function generateOtp(int $digits = 6, bool $allowLeadingZero = true): string
-    {
-        if ($digits < 1) {
-            throw new \InvalidArgumentException('OTP length must be >= 1');
-        }
-
-        $otp = '';
-
-        if ($allowLeadingZero || $digits === 1) {
-            // All digits 0–9
-            for ($i = 0; $i < $digits; $i++) {
-                $otp .= (string) random_int(0, 9);
-            }
-            return $otp;
-        }
-
-        // First digit 1–9 to avoid leading zero
-        $otp .= (string) random_int(1, 9);
-        for ($i = 1; $i < $digits; $i++) {
-            $otp .= (string) random_int(0, 9);
-        }
-
-        return $otp;
-    }
 }

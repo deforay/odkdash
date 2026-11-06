@@ -186,8 +186,4 @@ class UserService
         }
     }
     
-    public function validateUserOtp($otp)
-    {
-        return $this->usersTable->validateUserOtp($otp);
-    }
 }

@@ -19,7 +19,7 @@ declare(strict_types=1);
  * - slim: the Slim pattern, for the rare route whose Laminas pattern
  *   Kernel::SLIM_TAILS cannot express. See "home".
  * - public: true for a route that needs no login. Only the landing page and
- *   the login pages are public.
+ *   the login page are public.
  * - methods: the HTTP methods. All of them when absent.
  *
  * The Kernel loads every file in this folder. A project with several
@@ -190,11 +190,6 @@ return [
         'handler' => LoginHandler::class,
         'defaults' => ['controller' => 'Application\\Controller\\LoginController', 'action' => 'index'],
         'public' => true,
-    ],
-    // A second name for one login URL. The login route serves the path.
-    'validate-otp' => [
-        'route' => '/login/validate-otp',
-        'defaults' => ['controller' => 'Application\\Controller\\LoginController', 'action' => 'validate-otp'],
     ],
     // The public landing page. Its Laminas pattern also matched any single
     // path segment, such as /index or /foo. That segment became the id. The

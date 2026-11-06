@@ -319,15 +319,9 @@ parameters:
 			path: module/Application/src/Application/Model/UserCountryMapTable.php
 
 		-
-			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$contact_no\.$#'
-			identifier: property.notFound
-			count: 2
-			path: module/Application/src/Application/Model/UsersTable.php
-
-		-
 			message: '#^Access to an undefined property Laminas\\Db\\Adapter\\Driver\\ResultInterface\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 3
+			count: 1
 			path: module/Application/src/Application/Model/UsersTable.php
 
 		-
