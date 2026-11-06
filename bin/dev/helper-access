@@ -29,8 +29,10 @@ $controller = static fn(string $slug): string
 // Route name => [path prefix, resource]: the Slim routes, then the segment
 // routes still on Laminas.
 $routes = [];
-foreach (Kernel::CONTROLLERS as $name => [$pattern, , $resource]) {
-    $routes[$name] = [strstr($pattern, '[', true), 'Application\\Controller\\' . $resource];
+foreach (Kernel::routes() as $name => $route) {
+    if (isset($route['handler'], $route['defaults']['controller']) && str_contains($route['route'], ':action')) {
+        $routes[$name] = [strstr($route['route'], '[', true), $route['defaults']['controller']];
+    }
 }
 $config = require 'module/Application/config/module.config.php';
 foreach ($config['router']['routes'] as $name => $route) {
