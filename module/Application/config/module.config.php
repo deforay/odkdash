@@ -22,14 +22,6 @@ use Application\Command\ResetPassword;
 use Application\Command\ResetPasswordFactory;
 
 return array(
-    'router' => array(
-        'routes' => array(
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-        ),
-    ),
     'service_manager' => [
         'factories' => [
             'DbAdapter' => function ($container) {
@@ -72,26 +64,12 @@ return array(
         ],
     ],
     'view_manager' => [
-        // display_exceptions / display_not_found_reason default to false so
-        // production users never see stack traces, vendor paths, or SQL
-        // fragments on a 500 / 404 page. Override locally for dev by adding
-        // 'view_manager.display_exceptions' => true in
-        // config/autoload/local.php (which is git-ignored).
+        // ErrorMiddleware reads display_exceptions. It defaults to false, so
+        // production users never see stack traces, vendor paths or SQL on a
+        // 500 page. Set 'view_manager.display_exceptions' => true in the
+        // git-ignored config/autoload/local.php to see them locally.
         'display_not_found_reason' => false,
         'display_exceptions' => false,
-        'doctype' => 'HTML5',
-        'not_found_template' => 'error/404',
-        'exception_template' => 'error/index',
-        'template_map' => [
-            'layout/home' => __DIR__ . '/../../../templates/layout/home.phtml',
-            'layout/layout' => __DIR__ . '/../../../templates/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../../../templates/application/index/index.phtml',
-            'error/404' => __DIR__ . '/../../../templates/error/404.phtml',
-            'error/index' => __DIR__ . '/../../../templates/error/index.phtml',
-        ],
-        'template_path_stack' => [
-            __DIR__ . '/../../../templates',
-        ],
     ],
     // Read by bin/console. Each name maps to a class the service manager
     // builds; the name is bound onto the command at construction.

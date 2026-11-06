@@ -26,21 +26,11 @@ require 'vendor/autoload.php';
 $controller = static fn(string $slug): string
     => 'Application\\Controller\\' . str_replace(' ', '', ucwords(str_replace('-', ' ', $slug))) . 'Controller';
 
-// Route name => [path prefix, resource]: the Slim routes, then the segment
-// routes still on Laminas.
+// Route name => [path prefix, resource], for each route with an {action}.
 $routes = [];
 foreach (Kernel::routes() as $name => $route) {
     if (isset($route['handler'], $route['defaults']['controller']) && str_contains($route['route'], ':action')) {
         $routes[$name] = [strstr($route['route'], '[', true), $route['defaults']['controller']];
-    }
-}
-$config = require 'module/Application/config/module.config.php';
-foreach ($config['router']['routes'] as $name => $route) {
-    $pattern = $route['options']['route'] ?? '';
-    // A route with no literal prefix, such as the landing page's, would
-    // match every path.
-    if (!isset($routes[$name]) && str_contains($pattern, '[/:action]') && !str_starts_with($pattern, '[')) {
-        $routes[$name] = [strstr($pattern, '[', true), $route['options']['defaults']['controller']];
     }
 }
 

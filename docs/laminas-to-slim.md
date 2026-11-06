@@ -1,23 +1,18 @@
 # From Laminas MVC to Slim: where the code lives now
 
-odkdash moved off laminas-mvc one controller at a time. Every page now runs on Slim. Laminas still provides the services, the models and the database layer. This page explains the new layout for anyone who knows the Laminas one.
+odkdash moved off laminas-mvc one controller at a time. Every request now runs on Slim, and the Laminas MVC application no longer starts. Laminas still provides the services, the models and the database layer. This page explains the new layout for anyone who knows the Laminas one.
 
 The short version: controllers moved from `module/` to `src/`, and templates moved from `module/Application/view/` to `templates/`. Services, models and config stay where they are.
 
 ## How a request is served
 
-Both frameworks share one front controller, `public/index.php`:
+`public/index.php` runs the Slim app:
 
 ```php
-$kernel = App\Http\Kernel::fromGlobals();
-if ($kernel->handles()) {
-    $kernel->run();       // Slim serves the request
-    return;
-}
-Laminas\Mvc\Application::init(require_once 'config/application.config.php')->run();
+App\Http\Kernel::fromGlobals()->run();
 ```
 
-`Kernel::handles()` asks Slim whether one of its routes matches the path. If one matches, Slim answers. Otherwise the request goes to Laminas exactly as before. No list of moved paths exists anywhere else. A route in `src/Http/Routes/` is a moved route.
+A path with no route answers the `error/404` page, which `ErrorMiddleware` renders as Laminas did.
 
 Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads the Laminas service manager without starting MVC, the same way `bin/console` does. `OdkFormService`, the table gateways and the translator are the same objects on both sides.
 
@@ -25,7 +20,7 @@ Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads
 
 | What | Laminas location | Slim location |
 |---|---|---|
-| Front controller | `public/index.php` | `public/index.php` (asks Slim first) |
+| Front controller | `public/index.php` | `public/index.php` |
 | Routes | `router.routes` in `module/Application/config/module.config.php` | `src/Http/Routes/Application.php`, one file per module |
 | Controllers | `module/Application/src/Application/Controller/` | `src/Http/Handlers/` |
 | Controller factories | anonymous classes in `Module::getControllerConfig()` | none: PHP-DI reads the constructor |
@@ -153,13 +148,13 @@ Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a t
 
 ## What is still on Laminas
 
-No controller or route is left on Laminas. These pieces remain:
+No controller, route or MVC event is left. These pieces remain:
 
-- `public/index.php` still falls through to Laminas MVC when no Slim route matches. Laminas then answers with its 404 page.
-- `Module.php` still wires the services, and `Module::preSetter()` still exists.
-- `src/Routing/` adds the Slim routes to the Laminas router, so code that builds URLs through Laminas keeps working.
-- The services, models and table gateways use laminas-db and laminas-servicemanager.
+- `LaminasBridge` boots the Laminas service manager, as `bin/console` does. The services, models and table gateways come from it.
+- `Module::getServiceConfig()` wires those services.
+- The models use laminas-db.
+- The four view helpers in `module/Application/src/Application/View/Helper/` extend laminas-view classes.
 
-The next step removes laminas-mvc and the router from the request path. The services and models then move off the remaining Laminas packages at their own pace.
+The next step moves the service factories to PHP-DI. The services and models then move off the remaining Laminas packages one at a time.
 
-The ODK push receivers, `/receiver` and `/receiver-spi-v6`, were removed rather than moved. Submissions come from ODK Central through the `sync-central` commands.
+The ODK push receivers, `/receiver` and `/receiver-spi-v6`, were removed rather than moved. Submissions come from ODK Central through the `sync-central` commands. The login OTP step was removed as well. No instance used it.
