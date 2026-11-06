@@ -21,25 +21,17 @@ declare(strict_types=1);
  */
 
 chdir(dirname(__DIR__));
-require_once 'init_autoloader.php';
+require_once 'vendor/autoload.php';
 
-use Laminas\Mvc\Service\ServiceManagerConfig;
-use Laminas\ServiceManager\ServiceManager;
+use App\Services\LaminasBridge;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
 
-// The same bootstrap bin/migrate uses, and the same one laminas-cli did:
-// build the service manager and load modules, but do not call
-// Application::bootstrap(). Its onBootstrap listeners read global_config out
-// of the database, which a console command should not depend on. Commands
-// therefore see exactly the container they saw before.
-$configuration = require 'config/application.config.php';
-$serviceManager = new ServiceManager();
-(new ServiceManagerConfig($configuration['service_manager'] ?? []))
-    ->configureServiceManager($serviceManager);
-$serviceManager->setService('ApplicationConfig', $configuration);
-$serviceManager->get('ModuleManager')->loadModules();
+// The same service manager the web app and bin/migrate use, without the
+// web app's locale step. That step reads global_config out of the database,
+// which a console command should not depend on.
+$serviceManager = LaminasBridge::build(getcwd());
 
 $commands = $serviceManager->get('config')['console']['commands'] ?? [];
 

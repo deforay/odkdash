@@ -2,10 +2,9 @@
 
 namespace Application\View\Helper;
 
-use Laminas\View\Helper\AbstractHelper;
 
 
-class GlobalConfigHelper extends AbstractHelper
+class GlobalConfigHelper
 {
 
     private $globalTable;

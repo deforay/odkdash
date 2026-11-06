@@ -1,6 +1,6 @@
 # From Laminas MVC to Slim: where the code lives now
 
-odkdash moved off laminas-mvc one controller at a time. Every request now runs on Slim, and the Laminas MVC application no longer starts. Laminas still provides the services, the models and the database layer. This page explains the new layout for anyone who knows the Laminas one.
+odkdash moved off laminas-mvc one controller at a time. Every request now runs on Slim, and laminas-mvc is no longer installed. Four Laminas packages remain, for the services and the database layer. See [What is still on Laminas](#what-is-still-on-laminas). This page explains the new layout for anyone who knows the Laminas one.
 
 The short version: controllers moved from `module/` to `src/`, and templates moved from `module/Application/view/` to `templates/`. Services, models and config stay where they are.
 
@@ -14,13 +14,15 @@ App\Http\Kernel::fromGlobals()->run();
 
 A path with no route answers the `error/404` page, which `ErrorMiddleware` renders as Laminas did.
 
-Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads the Laminas service manager without starting MVC, the same way `bin/console` does. `OdkFormService`, the table gateways and the translator are the same objects on both sides.
+Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` builds a laminas-servicemanager from `Module::getServiceConfig()` and the merged config. `bin/console` and `bin/migrate` build theirs with the same `LaminasBridge::build()`.
 
 ## Old and new locations
 
 | What | Laminas location | Slim location |
 |---|---|---|
 | Front controller | `public/index.php` | `public/index.php` |
+| Autoloading | `init_autoloader.php` | `vendor/autoload.php` |
+| Module list and config merge | `config/application.config.php` and the module manager | `LaminasBridge::config()` |
 | Routes | `router.routes` in `module/Application/config/module.config.php` | `src/Http/Routes/Application.php`, one file per module |
 | Controllers | `module/Application/src/Application/Controller/` | `src/Http/Handlers/` |
 | Controller factories | anonymous classes in `Module::getControllerConfig()` | none: PHP-DI reads the constructor |
@@ -29,10 +31,10 @@ Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads
 | `ViewModel`, `redirect()` | Laminas MVC | `src/Http/Responder.php` |
 | View rendering | Laminas `PhpRenderer` | `src/View/ViewRenderer.php` and `Template.php` |
 | View helpers (`url`, `translate`, …) | `view_helpers` config | `Kernel::viewHelpers()` |
-| Templates | `module/Application/view/` | `templates/`, used by both frameworks |
+| Templates | `module/Application/view/` | `templates/` |
 | Services | `module/Application/src/Application/Service/` | unchanged |
 | Models and table gateways | `module/Application/src/Application/Model/` | unchanged |
-| Service wiring | `Module::getServiceConfig()` | unchanged |
+| Service wiring | `Module::getServiceConfig()` | unchanged, read by `LaminasBridge::build()` |
 | Console commands | `bin/console` | unchanged |
 
 `src/` uses the `App\` namespace. `module/` keeps the `Application\` namespace.
@@ -132,11 +134,12 @@ A handler names its template in full. Laminas derived it from the controller and
 
 ## Templates moved, but did not change
 
-The `.phtml` files moved from `module/Application/view/` to `templates/` with their folders intact. Laminas finds them there through `template_map` and `template_path_stack` in `module.config.php`. Template names did not change: `'application/spi-v3/index'` is `templates/application/spi-v3/index.phtml`. The `application/` folder is the module name, as Laminas named it.
+The `.phtml` files moved from `module/Application/view/` to `templates/` with their folders intact. Template names did not change: `'application/spi-v3/index'` is `templates/application/spi-v3/index.phtml`. The `application/` folder is the module name, as Laminas named it.
 
 The files themselves are the same. `ViewRenderer` runs them with the same variables and the same helper names: `$this->url()`, `$this->translate()`, `$this->layout()->acl` and the others. A template does not know which framework rendered it.
 
 Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a template builds the same URL as before.
+
 
 ## Access control
 
@@ -148,13 +151,23 @@ Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a t
 
 ## What is still on Laminas
 
-No controller, route or MVC event is left. These pieces remain:
+No controller, route, module or MVC event is left. Four packages remain:
 
-- `LaminasBridge` boots the Laminas service manager, as `bin/console` does. The services, models and table gateways come from it.
-- `Module::getServiceConfig()` wires those services.
-- The models use laminas-db.
-- The four view helpers in `module/Application/src/Application/View/Helper/` extend laminas-view classes.
+| Package | Used by | Next step |
+|---|---|---|
+| laminas-servicemanager | `LaminasBridge` and the factories in `Module::getServiceConfig()` | Move the factories to PHP-DI. |
+| laminas-db | The models and table gateways | Replace with Doctrine DBAL or PDO, one model at a time. This is the last step. |
+| laminas-stdlib | `Parameters` for POST data, `ArrayUtils::merge()` for the config | Replace once the services read plain arrays. |
+| laminas-escaper | `escapeHtml` and `escapeHtmlAttr` in `Kernel::viewHelpers()` | Replace with plain PHP escaping. |
 
-The next step moves the service factories to PHP-DI. The services and models then move off the remaining Laminas packages one at a time.
+`LaminasBridge::config()` merges the config in the order the module manager merged it:
+
+1. laminas-db's adapter services.
+2. `module/Application/config/module.config.php`.
+3. `config/autoload/global.php`, then `*.global.php`, then `local.php`, then `*.local.php`.
+
+A later file overrides an earlier one, as before. `config/autoload/` did not change.
+
+Composer lists `module/Application/Module.php` in its `classmap`. The module manager used to load it.
 
 The ODK push receivers, `/receiver` and `/receiver-spi-v6`, were removed rather than moved. Submissions come from ODK Central through the `sync-central` commands. The login OTP step was removed as well. No instance used it.

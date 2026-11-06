@@ -6,7 +6,6 @@ use Zend\Debug\Debug;
 use Laminas\Db\Sql\Sql;
 use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Config\Writer\PhpArray;
 use Application\Service\CommonService;
 use Application\Model\BaseTableGateway;
 
