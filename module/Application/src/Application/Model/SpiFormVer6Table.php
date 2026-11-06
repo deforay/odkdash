@@ -928,18 +928,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $params['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $params['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $params['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -1065,18 +1065,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && (isset($params['country']) && $params['country'] == '')) {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && (isset($params['province']) && $params['province'] == '')) {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && (isset($params['district']) && $params['district'] == '')) {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -1239,18 +1239,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && (isset($params['country']) && $params['country'] == '')) {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && (isset($params['country']) && $params['province'] == '')) {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && (isset($params['country']) && $params['district'] == '')) {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -1329,18 +1329,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             $mappedIds = CommonService::inList($loginContainer->userMappedIds);
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $query = $query->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'), 'left')
-                    ->where(self::inOrUnlinked('f.country', $mappedIds));
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'), 'left')
+                    ->where(self::inOrUnlinked('fm.country', $mappedIds));
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $query = $query->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'), 'left')
-                    ->where(self::inOrUnlinked('f.province', $mappedIds));
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'), 'left')
+                    ->where(self::inOrUnlinked('fm.province', $mappedIds));
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $query = $query->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'), 'left')
-                    ->where(self::inOrUnlinked('f.district', $mappedIds));
+                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'), 'left')
+                    ->where(self::inOrUnlinked('fm.district', $mappedIds));
             }
         }
         if (isset($parameters['country']) && $parameters['country'] != '') {
@@ -1866,18 +1866,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && $params['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $params['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $params['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -1983,18 +1983,18 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery = $sQuery->where(['spiv6.affiliation' => $params['affiliation']]);
         }
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && $params['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $params['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $params['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -2116,18 +2116,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && $params['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $params['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $params['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -2249,18 +2249,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && $params['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $params['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $params['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -2784,18 +2784,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if (isset($parameters['country']) && $parameters['country'] != '') {
@@ -2873,18 +2873,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if (isset($parameters['country']) && $parameters['country'] != '') {
@@ -2980,18 +2980,18 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country' && $params['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $params['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $params['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($params['country']) && $params['country'] != '') || (isset($params['province']) && $params['province'] != '') || (isset($params['district']) && $params['district'] != '')) {
@@ -4214,24 +4214,24 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($parameters['country']) && $parameters['country'] != '') || (isset($parameters['province']) && $parameters['province'] != '') || (isset($parameters['district']) && $parameters['district'] != '')) {
@@ -4567,24 +4567,24 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($parameters['country']) && $parameters['country'] != '') || (isset($parameters['province']) && $parameters['province'] != '') || (isset($parameters['district']) && $parameters['district'] != '')) {
@@ -4947,24 +4947,24 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
             // Mapping exists
-            if ($loginContainer->userMappingType === 'country' && $parameters['country'] == '') {
+            if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province' && $parameters['province'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('country', 'province', 'district'))
+                    ->where(['fm.country' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district' && $parameters['district'] == '') {
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('province'))
+                    ->where(['fm.province' => CommonService::inList($loginContainer->userMappedIds)]);
+            } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-                $tQuery = $tQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $sQuery = $sQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
+                $tQuery = $tQuery->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv3.facility', array('district'))
+                    ->where(['fm.district' => CommonService::inList($loginContainer->userMappedIds)]);
             }
         }
         if ((isset($parameters['country']) && $parameters['country'] != '') || (isset($parameters['province']) && $parameters['province'] != '') || (isset($parameters['district']) && $parameters['district'] != '')) {
