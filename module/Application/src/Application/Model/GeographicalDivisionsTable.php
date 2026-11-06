@@ -98,49 +98,14 @@ class GeographicalDivisionsTable extends BaseTableGateway
          * on very large tables, and MySQL's regex functionality is very limited
          */
 
-        $sWhere = "";
-        if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
-            $searchArray = explode(" ", $parameters['sSearch']);
-            $sWhereSub = "";
-            foreach ($searchArray as $search) {
-                if ($sWhereSub == "") {
-                    $sWhereSub .= "(";
-                } else {
-                    $sWhereSub .= " AND (";
-                }
-                $colSize = count($aColumns);
-
-                for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-                }
-                $sWhereSub .= ")";
-            }
-            $sWhere .= $sWhereSub;
-        }
-        /* Individual column filtering */
-        $counter = count($aColumns);
-
-        /* Individual column filtering */
-        for ($i = 0; $i < $counter; $i++) {
-            if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
-                if ($sWhere == "") {
-                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                } else {
-                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                }
-            }
-        }
+        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
 
 
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('geographical_divisions')->where("geo_parent =0 OR geo_parent is NULL");
         //$sQuery=$this->select();
-        if (isset($sWhere) && $sWhere != "") {
+        if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
 
@@ -204,7 +169,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
             ['geo_status' => 'active', 'geo_parent = 0 OR geo_parent IS NULL']
         );
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'province') {
-            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+            $query = $query->where(['geo_id' => CommonService::inList($loginContainer->userMappedIds)]);
         }
         $roleQueryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -296,42 +261,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
          * on very large tables, and MySQL's regex functionality is very limited
          */
 
-        $sWhere = "";
-        if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
-            $searchArray = explode(" ", $parameters['sSearch']);
-            $sWhereSub = "";
-            foreach ($searchArray as $search) {
-                if ($sWhereSub == "") {
-                    $sWhereSub .= "(";
-                } else {
-                    $sWhereSub .= " AND (";
-                }
-                $colSize = count($aColumns);
-
-                for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-                }
-                $sWhereSub .= ")";
-            }
-            $sWhere .= $sWhereSub;
-        }
-        /* Individual column filtering */
-        $counter = count($aColumns);
-
-        /* Individual column filtering */
-        for ($i = 0; $i < $counter; $i++) {
-            if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
-                if ($sWhere == "") {
-                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                } else {
-                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                }
-            }
-        }
+        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
 
         /*
          * SQL queries
@@ -343,7 +273,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
             ->join(array('p' => 'geographical_divisions'), 'p.geo_id=d.geo_parent', array('province' => 'geo_name'))
             ->where("d.geo_parent!='0'");
         //$sQuery=$this->select();
-        if (isset($sWhere) && $sWhere != "") {
+        if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
 
@@ -401,7 +331,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active'))->where("geo_parent!=0");
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'district') {
-            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+            $query = $query->where(['geo_id' => CommonService::inList($loginContainer->userMappedIds)]);
         }
         $queryStr = $sql->buildSqlString($query);
         return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -424,14 +354,14 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active', 'geo_parent' => '0'));
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'province') {
-            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+            $query = $query->where(['geo_id' => CommonService::inList($loginContainer->userMappedIds)]);
         }
         $queryStr = $sql->buildSqlString($query);
         $result['provinces'] = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         $query = $sql->select()->from('geographical_divisions')->order('geo_name')->where(array('geo_status' => 'active'))->where("geo_parent!=0");
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'district') {
-            $query = $query->where('geo_id IN (' . implode(',', $loginContainer->userMappedIds) . ')');
+            $query = $query->where(['geo_id' => CommonService::inList($loginContainer->userMappedIds)]);
         }
         $queryStr = $sql->buildSqlString($query);
         $result['districts'] = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -471,7 +401,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')
-            ->where("geo_name  like '%" . $provinceName . "%'");
+            ->where(['geo_name LIKE ?' => '%' . $provinceName . '%']);
         $queryStr = $sql->buildSqlString($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         // print_r($result); die;
@@ -499,7 +429,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')
-            ->where("geo_name  like '%" . $districtName . "%'");
+            ->where(['geo_name LIKE ?' => '%' . $districtName . '%']);
         $queryStr = $sql->buildSqlString($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($result) {
@@ -535,7 +465,7 @@ class GeographicalDivisionsTable extends BaseTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from('geographical_divisions')
-            ->where("geo_name  like '%" . $district . "%'");
+            ->where(['geo_name LIKE ?' => '%' . $district . '%']);
         $queryStr = $sql->buildSqlString($query);
         $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         if ($result) {

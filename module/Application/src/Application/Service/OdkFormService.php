@@ -1809,16 +1809,16 @@ class OdkFormService
                 ->where('spiv6.status != "deleted"');
 
             if ($params['auditRndNo'] != '') {
-                $sQuery = $sQuery->where("spiv6.auditroundno='" . $params['auditRndNo'] . "'");
+                $sQuery = $sQuery->where(['spiv6.auditroundno' => $params['auditRndNo']]);
             }
             if (trim($startDate) != "" && trim($endDate) != "") {
-                $sQuery = $sQuery->where(array("spiv6.assesmentofaudit >='" . $startDate . "'", "spiv6.assesmentofaudit <='" . $endDate . "'"));
+                $sQuery = $sQuery->where(['spiv6.assesmentofaudit >= ?' => $startDate, 'spiv6.assesmentofaudit <= ?' => $endDate]);
             }
             if ($params['level'] != '') {
-                $sQuery = $sQuery->where("spiv6.level='" . $params['level'] . "'");
+                $sQuery = $sQuery->where(['spiv6.level' => $params['level']]);
             }
             if ($params['affiliation'] != '') {
-                $sQuery = $sQuery->where("spiv6.affiliation='" . $params['affiliation'] . "'");
+                $sQuery = $sQuery->where(['spiv6.affiliation' => $params['affiliation']]);
             }
 
             if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
@@ -1835,7 +1835,7 @@ class OdkFormService
                 }
             }
             if (!empty($loginContainer->token)) {
-                $sQuery = $sQuery->where('spiv6.token IN ("' . implode('", "', $loginContainer->token) . '")');
+                $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
             }
             $sQueryStr = $sql->buildSqlString($sQuery);
             $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();

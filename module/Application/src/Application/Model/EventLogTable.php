@@ -90,42 +90,7 @@ class EventLogTable extends AbstractTableGateway
          * word by word on any field. It's possible to do here, but concerned about efficiency
          * on very large tables, and MySQL's regex functionality is very limited
          */
-        $sWhere = "";
-        if (isset($parameters['sSearch']) && $parameters['sSearch'] != "") {
-            $searchArray = explode(" ", $parameters['sSearch']);
-            $sWhereSub = "";
-            foreach ($searchArray as $search) {
-                if ($sWhereSub == "") {
-                    $sWhereSub .= "(";
-                } else {
-                    $sWhereSub .= " AND (";
-                }
-                $colSize = count($aColumns);
-
-                for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                        $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-                }
-                $sWhereSub .= ")";
-            }
-            $sWhere .= $sWhereSub;
-        }
-        /* Individual column filtering */
-        $counter = count($aColumns);
-
-        /* Individual column filtering */
-        for ($i = 0; $i < $counter; $i++) {
-            if (isset($parameters['bSearchable_' . $i]) && $parameters['bSearchable_' . $i] == "true" && $parameters['sSearch_' . $i] != '') {
-                if ($sWhere == "") {
-                    $sWhere .= $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                } else {
-                    $sWhere .= " AND " . $aColumns[$i] . " LIKE '%" . ($parameters['sSearch_' . $i]) . "%' ";
-                }
-            }
-        }
+        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
 
         /*
          * SQL queries
@@ -148,13 +113,13 @@ class EventLogTable extends AbstractTableGateway
             }
         }
         if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(array("date_time >='" . $startDate . "'", "date_time <='" . $endDate . "'"));
+            $sQuery = $sQuery->where(['date_time >= ?' => $startDate, 'date_time <= ?' => $endDate]);
         }
         if ($parameters['eventType'] != '') {
-            $sQuery = $sQuery->where("event_type like '%" . $parameters['eventType'] . "%'");
+            $sQuery = $sQuery->where(['event_type LIKE ?' => '%' . $parameters['eventType'] . '%']);
         }
 
-        if (isset($sWhere) && $sWhere != "") {
+        if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
 
