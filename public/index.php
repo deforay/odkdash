@@ -19,12 +19,4 @@ if (php_sapi_name() === 'cli-server') {
 // Setup autoloading
 require_once 'init_autoloader.php';
 
-// Pages already moved off laminas-mvc are served by Slim. See src/Http/Kernel.php.
-$kernel = App\Http\Kernel::fromGlobals();
-if ($kernel->handles()) {
-    $kernel->run();
-    return;
-}
-
-// Run the application!
-Laminas\Mvc\Application::init(require_once 'config/application.config.php')->run();
+App\Http\Kernel::fromGlobals()->run();

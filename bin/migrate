@@ -39,12 +39,9 @@ use Laminas\Mvc\Service\ServiceManagerConfig;
 use Laminas\ServiceManager\ServiceManager;
 use PhpMyAdmin\SqlParser\Parser;
 
-// Build the service manager and load modules, but DO NOT call
-// Application::bootstrap() — that triggers Module::onBootstrap listeners,
-// and odkdash's Application module reads global_config during bootstrap
-// (initTranslator). On a fresh DB that table doesn't exist yet, so the
-// migrator would die before doing anything. This mirrors the first half
-// of Application::init() up to (but not including) the bootstrap() call.
+// Build the service manager and load the modules, nothing more. The web
+// request sets the translator's locale from global_config, which does not
+// exist on a fresh database, so the migrator must not do that.
 $configuration = require_once 'config/application.config.php';
 $serviceManager = new ServiceManager();
 (new ServiceManagerConfig($configuration['service_manager'] ?? []))

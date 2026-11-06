@@ -13,8 +13,7 @@ use Symfony\Component\Translation\Translator as SymfonyTranslator;
  *
  * This replaces laminas-i18n's translator and keeps its method names, so the
  * call sites do not change: the views reach it through the translate() view
- * helper, and Module::initTranslator() still chains
- * setLocale()->setFallbackLocale().
+ * helper, and Kernel::applyLocale() chains setLocale()->setFallbackLocale().
  *
  * The catalogue format is unchanged — the same gettext .mo files under
  * module/Application/language, read by Symfony's MoFileLoader. Nothing needs

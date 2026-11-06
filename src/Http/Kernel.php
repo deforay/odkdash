@@ -29,7 +29,6 @@ use Application\View\Helper\HumanReadableDateFormat;
 use Application\View\Helper\Translate;
 use DI\Container;
 use Laminas\Escaper\Escaper;
-use Laminas\Router\Http\TreeRouteStack;
 use Laminas\ServiceManager\ServiceManager;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -38,18 +37,15 @@ use Slim\App;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\Psr7\Factory\ResponseFactory;
-use Slim\Routing\RoutingResults;
 
 use function DI\autowire;
 
 /**
- * The Slim side of the move off laminas-mvc.
+ * Builds the Slim app that serves every request. public/index.php runs it.
  *
- * public/index.php builds this first and asks handles(). Slim serves every
- * request that matches a route registered here. Every other request falls
- * through to the Laminas MVC application. Moving a page across means copying
- * its route from module.config.php to a file in src/Http/Routes/, adding the
- * handler, and removing the route from module.config.php.
+ * The routes live in src/Http/Routes/. A path with no route answers the
+ * error/404 page. Services still come from the Laminas service manager
+ * through LaminasBridge.
  */
 final class Kernel
 {
@@ -66,8 +62,6 @@ final class Kernel
         '[/:action][/][:id]' => '[/[{action}[/[{id}]]]]',
         '[/:action]' => '[/{action}]',
     ];
-
-    private static ?self $current = null;
 
     private function __construct(
         private readonly App $app,
@@ -100,17 +94,7 @@ final class Kernel
             ViewHelpers::class => static fn(ContainerInterface $c): ViewHelpers => self::viewHelpers($c, $basePath),
             SlimUrls::class => static fn(ContainerInterface $c): SlimUrls
                 => new SlimUrls($c->get(App::class)->getRouteCollector()),
-            UrlHelper::class => static function (ContainerInterface $c) use ($basePath): UrlHelper {
-                return new UrlHelper(
-                    $c->get(SlimUrls::class),
-                    static function () use ($c, $basePath): TreeRouteStack {
-                        $router = $c->get(LaminasBridge::class)->get('HttpRouter');
-                        $router->setBaseUrl($basePath);
-
-                        return $router;
-                    },
-                );
-            },
+            UrlHelper::class => static fn(ContainerInterface $c): UrlHelper => new UrlHelper($c->get(SlimUrls::class)),
 
             HelperAccess::class => static fn(): HelperAccess => new HelperAccess($appRoot . '/config/helper-access.php'),
             // Handlers, middleware and the Responder are autowired: PHP-DI
@@ -162,7 +146,7 @@ final class Kernel
 
         $request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
 
-        return self::$current = new self($app, $request);
+        return new self($app, $request);
     }
 
     /**
@@ -233,36 +217,6 @@ final class Kernel
 
         return substr($laminasPattern, 0, $start) . (self::SLIM_TAILS[$tail]
             ?? throw new \RuntimeException(sprintf('No Slim pattern for "%s". Add one to Kernel::SLIM_TAILS.', $laminasPattern)));
-    }
-
-    /**
-     * The Kernel public/index.php built for this request, or null outside a
-     * web request. The Laminas router reaches Slim routes through it.
-     */
-    public static function current(): ?self
-    {
-        return self::$current;
-    }
-
-    /** URL building for Slim routes. The Laminas router reaches it through SlimRoutesDelegator. */
-    public function urls(): SlimUrls
-    {
-        return $this->app->getContainer()->get(SlimUrls::class);
-    }
-
-    /**
-     * True when a Slim route matches the path. A path that matches with the
-     * wrong method still counts, so Slim answers it with a 405 rather than
-     * Laminas answering it with a 404.
-     */
-    public function handles(): bool
-    {
-        $results = $this->app->getRouteResolver()->computeRoutingResults(
-            $this->request->getUri()->getPath(),
-            $this->request->getMethod(),
-        );
-
-        return $results->getRouteStatus() !== RoutingResults::NOT_FOUND;
     }
 
     public function run(): void
