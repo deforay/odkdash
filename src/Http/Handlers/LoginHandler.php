@@ -37,7 +37,9 @@ final class LoginHandler extends ActionHandler
     {
         if ($this->isPost($request)) {
             $otp = trim((string) $this->post($request)['otp']);
-            return $this->respond->redirect($this->userService->validateUserOtp($otp));
+            // An empty code returns no route. Laminas then redirected to the
+            // current route, the OTP page.
+            return $this->respond->redirect($this->userService->validateUserOtp($otp) ?? 'validate-otp');
         }
         return $this->respond->fragment('application/login/validate-otp');
     }
