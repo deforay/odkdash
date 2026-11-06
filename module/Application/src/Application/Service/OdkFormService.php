@@ -435,6 +435,9 @@ class OdkFormService
     {
         /** @var SpiFormVer3Table  $db */
         $db = $this->sm->get('SpiFormVer3Table');
+        if (!$db->auditInScope($id)) {
+            return false;
+        }
         return $db->getFormData($id, $pdf);
     }
 
@@ -457,11 +460,14 @@ class OdkFormService
             if (isset($params['idList']) && $params['idList'] != '') {
                 $counter = count($params['idList']);
                 for ($i = 0; $i < $counter; $i++) {
+                    if (!$db->auditInScope($params['idList'][$i])) {
+                        continue;
+                    }
                     $result = $db->updateFormStatus($params['idList'][$i], 'approved');
                     $facilityDb->addFacilityBasedOnForm($params['idList'][$i]);
                 }
             }
-            if (isset($params['id'])) {
+            if (isset($params['id']) && $db->auditInScope($params['id'])) {
                 $result = $db->updateFormStatus($params['id'], 'approved');
                 $facilityDb->addFacilityBasedOnForm($params['id']);
             }
@@ -681,6 +687,10 @@ class OdkFormService
         $adapter->beginTransaction();
         try {
             $db = $this->sm->get('SpiFormVer3Table');
+            if (!$db->auditInScope(base64_decode((string) ($params['formId'] ?? '')))) {
+                $adapter->rollBack();
+                return 0;
+            }
             $result = $db->updateSpiFormDetails($params);
             if ($result > 0) {
                 $adapter->commit();
@@ -711,6 +721,9 @@ class OdkFormService
     public function deleteAuditData($params)
     {
         $db = $this->sm->get('SpiFormVer3Table');
+        if (!$db->auditInScope($params['deleteId'] ?? null)) {
+            return 0;
+        }
         return $db->deleteAuditRowData($params);
     }
 
@@ -1484,6 +1497,9 @@ class OdkFormService
 
     public function removeAudit($params)
     {
+        if (!$this->sm->get('SpiFormVer3Table')->auditInScope($params['id'] ?? null)) {
+            return false;
+        }
         $db = $this->sm->get('SpiFormVer3DuplicateTable');
         return $db->removeAuditData($params);
     }
@@ -1691,6 +1707,9 @@ class OdkFormService
 
     public function removeAuditV6($params)
     {
+        if (!$this->sm->get('SpiFormVer6Table')->auditInScope($params['id'] ?? null)) {
+            return false;
+        }
         $db = $this->sm->get('SpiFormVer6DuplicateTable');
         return $db->removeAuditData($params);
     }
@@ -1708,11 +1727,14 @@ class OdkFormService
             if (isset($params['idList']) && $params['idList'] != '') {
                 $counter = count($params['idList']);
                 for ($i = 0; $i < $counter; $i++) {
+                    if (!$db->auditInScope($params['idList'][$i])) {
+                        continue;
+                    }
                     $result = $db->updateFormStatus($params['idList'][$i], 'approved');
                     $facilityDb->addFacilityBasedOnForm($params['idList'][$i], 6);
                 }
             }
-            if (isset($params['id'])) {
+            if (isset($params['id']) && $db->auditInScope($params['id'])) {
                 $result = $db->updateFormStatus($params['id'], 'approved');
                 $facilityDb->addFacilityBasedOnForm($params['id'], 6);
             }
@@ -1732,6 +1754,9 @@ class OdkFormService
     public function getSpiV6FormData($id, $pdf = 'no')
     {
         $db = $this->sm->get('SpiFormVer6Table');
+        if (!$db->auditInScope($id)) {
+            return false;
+        }
         return $db->getFormData($id, $pdf);
     }
 
@@ -2540,6 +2565,10 @@ class OdkFormService
         $adapter->beginTransaction();
         try {
             $db = $this->sm->get('SpiFormVer6Table');
+            if (!$db->auditInScope(base64_decode((string) ($params['formId'] ?? '')))) {
+                $adapter->rollBack();
+                return 0;
+            }
             $result = $db->updateSpiV6FormDetails($params);
             if ($result > 0) {
                 $adapter->commit();
@@ -2558,6 +2587,9 @@ class OdkFormService
     public function deleteAuditDataV6($params)
     {
         $db = $this->sm->get('SpiFormVer6Table');
+        if (!$db->auditInScope($params['deleteId'] ?? null)) {
+            return 0;
+        }
         return $db->deleteAuditRowData($params);
     }
 
