@@ -119,8 +119,6 @@ class Module
         $isPublic = in_array($e->getRouteMatch()->getParam('controller'), [
             'Application\Controller\LoginController',
             'Application\Controller\IndexController',
-            'Application\Controller\ReceiverController',
-            'Application\Controller\ReceiverSpiV6Controller',
         ], true);
 
         // Without a login, a script request gets a 401. A page load gets
@@ -244,20 +242,6 @@ class Module
                         $commonService = $diContainer->get('CommonService');
                         $odkFormService = $diContainer->get('OdkFormService');
                         return new \Application\Controller\IndexController($odkFormService, $commonService);
-                    }
-                },
-                'Application\Controller\ReceiverController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\ReceiverController($odkFormService);
-                    }
-                },
-                'Application\Controller\ReceiverSpiV6Controller' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\ReceiverSpiV6Controller($odkFormService);
                     }
                 },
                 'Application\Controller\LoginController' => new class {

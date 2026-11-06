@@ -199,36 +199,6 @@ parameters:
 			path: module/Application/src/Application/Model/SpiFormVer3Table.php
 
 		-
-			message: '#^Offset ''content'' does not exist on ''0''\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
-			message: '#^Offset ''data'' does not exist on ''0''\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
-			message: '#^Offset ''formId'' does not exist on ''0''\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
-			message: '#^Offset ''formVersion'' does not exist on ''0''\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
-			message: '#^Offset ''token'' does not exist on ''0''\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: module/Application/src/Application/Model/SpiFormVer3Table.php
-
-		-
 			message: '#^Parameter \#2 \$flags of function json_encode expects int, true given\.$#'
 			identifier: argument.type
 			count: 1

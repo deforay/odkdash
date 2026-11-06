@@ -59,26 +59,6 @@ return array(
                     ),
                 ),
             ),
-            'odk-receiver' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/receiver[/]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ReceiverController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'odk-receiver-v6' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/receiver-spi-v6[/]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\ReceiverSpiV6Controller',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
             'login' => array(
                 'type'    => 'segment',
                 'options' => array(
