@@ -89,48 +89,6 @@ return array(
                     ),
                 ),
             ),
-            'spi-v6-form' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/spi-v6[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6Controller',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'view-data-v6' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/view-data-v6',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6Controller',
-                        'action' => 'view-data-v6',
-                    ),
-                ),
-            ),
-
-            'view-data-section-zero-v6' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/view-data-section-zero-v6',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6Controller',
-                        'action' => 'view-data-section-zero-v6',
-                    ),
-                ),
-            ),
-
-            'view-data-section-zero-protocol-v6' => array(
-                'type' => 'literal',
-                'options' => array(
-                    'route' => '/view-data-section-zero-protocol-v6',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\SpiV6Controller',
-                        'action' => 'view-data-section-zero-protocol-v6',
-                    ),
-                ),
-            ),
             'validate-otp' => array(
                 'type'    => 'segment',
                 'options' => array(
