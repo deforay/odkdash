@@ -11,7 +11,7 @@ use RuntimeException;
  *
  * Template names resolve as Laminas resolved them through
  * template_path_stack: 'application/log-viewer/index' is
- * module/Application/view/application/log-viewer/index.phtml. Inside a
+ * templates/application/log-viewer/index.phtml. Inside a
  * template, $this is a Template, so $this->translate(), $this->url(),
  * $this->layout()->acl and the other calls the templates make keep working.
  */

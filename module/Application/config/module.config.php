@@ -196,14 +196,14 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => [
-            'layout/home' => __DIR__ . '/../view/layout/home.phtml',
-            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-            'error/404' => __DIR__ . '/../view/error/404.phtml',
-            'error/index' => __DIR__ . '/../view/error/index.phtml',
+            'layout/home' => __DIR__ . '/../../../templates/layout/home.phtml',
+            'layout/layout' => __DIR__ . '/../../../templates/layout/layout.phtml',
+            'application/index/index' => __DIR__ . '/../../../templates/application/index/index.phtml',
+            'error/404' => __DIR__ . '/../../../templates/error/404.phtml',
+            'error/index' => __DIR__ . '/../../../templates/error/index.phtml',
         ],
         'template_path_stack' => [
-            __DIR__ . '/../view',
+            __DIR__ . '/../../../templates',
         ],
     ],
     // Read by bin/console. Each name maps to a class the service manager

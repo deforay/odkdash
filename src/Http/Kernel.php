@@ -119,7 +119,7 @@ final class Kernel
             'ClientErrorLogger' => static fn(): Logger => new Logger(channel: 'client-errors'),
 
             ViewRenderer::class => static fn(ContainerInterface $c): ViewRenderer => new ViewRenderer(
-                $appRoot . '/module/Application/view',
+                $appRoot . '/templates',
                 $c->get(ViewHelpers::class),
             ),
             ViewHelpers::class => static fn(ContainerInterface $c): ViewHelpers => self::viewHelpers($c, $basePath),
