@@ -4333,10 +4333,10 @@ class SpiFormVer6Table extends AbstractTableGateway
                 }
             }
             $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE' => new Expression('ROUND(AUDIT_SCORE_PERCENTAGE)')))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointname', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE' => new Expression('ROUND(AUDIT_SCORE_PERCENTAGE)')))
                 ->where(array('spiv3.status' => 'approved'));
             $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_6'))
-                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE' => new Expression('ROUND(AUDIT_SCORE_PERCENTAGE)')))
+                ->columns(array('facilityid', 'facilityname', 'auditroundno', 'assesmentofaudit', 'client_tested_HIV_PM', 'testingpointtype', 'testingpointname', 'testingpointtype_other', 'level', 'affiliation', 'AUDIT_SCORE_PERCENTAGE' => new Expression('ROUND(AUDIT_SCORE_PERCENTAGE)')))
                 ->where(array('spiv3.status' => 'approved'));
             if ($parameters['source'] == 'apl180') {
                 $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
@@ -4550,11 +4550,11 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = CommonService::escapeHtml($aRow['auditroundno']);
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = CommonService::escapeHtml(ucwords($aRow['testingpointtype']));
-                $row[] = CommonService::escapeHtml(($aRow['testingpointtype'] == 'other') ? ucwords($aRow['testingpointtype_other']) : ucwords($aRow['testingpointname']));
+                $row[] = CommonService::escapeHtml(($aRow['testingpointtype'] == 'other') ? ucwords((string) $aRow['testingpointtype_other']) : ucwords((string) $aRow['testingpointname']));
                 $row[] = CommonService::escapeHtml(ucwords($aRow['level']));
                 $row[] = CommonService::escapeHtml(ucwords($aRow['affiliation']));
                 $row[] = $level; //level
-                $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0), 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = round($aRow['PERSONAL_SCORE'], 2);
