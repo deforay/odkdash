@@ -9,7 +9,7 @@
  *   bin/dev/helper-access           # regenerate the map
  *   bin/dev/helper-access --check   # exit 1 when the map is out of date
  *
- * A template at view/application/<dir>/<name>.phtml is the page
+ * A template at templates/application/<dir>/<name>.phtml is the page
  * <Dir>Controller / <name>. A call is either url('<route>', ['action' => 'x'])
  * or a literal '/<route prefix>/x' path. Lines that start a comment are
  * skipped, so commented-out calls grant nothing.
@@ -42,7 +42,7 @@ foreach ($config['router']['routes'] as $name => $route) {
     }
 }
 
-$viewRoot = 'module/Application/view/application/';
+$viewRoot = 'templates/application/';
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($viewRoot, FilesystemIterator::SKIP_DOTS));
 $map = [];
 foreach ($files as $file) {
