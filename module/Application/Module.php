@@ -14,7 +14,6 @@ use Application\Model\AuditMailTable;
 use Application\Model\CountriesTable;
 use Application\Model\ResourcesTable;
 use Application\Service\EventService;
-use Application\Service\TcpdfExtends;
 use Application\Service\CommonService;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer6Table;
@@ -342,13 +341,6 @@ class Module
                     public function __invoke($diContainer)
                     {
                         return new AuditTrailService($diContainer);
-                    }
-                },
-                'TcpdfExtends' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        return new TcpdfExtends($diContainer);
                     }
                 },
                 'ProvinceService' => new class

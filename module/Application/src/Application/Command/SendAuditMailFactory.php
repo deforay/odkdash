@@ -2,13 +2,12 @@
 
 namespace Application\Command;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Application\Command\SendAuditMail;
 
-class SendAuditMailFactory implements FactoryInterface
+class SendAuditMailFactory
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container)
     {
         $commonService = $container->get('CommonService');
         return new SendAuditMail($commonService);

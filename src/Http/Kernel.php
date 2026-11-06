@@ -7,7 +7,7 @@ namespace App\Http;
 use App\Http\Handlers\ClientErrorHandler;
 use App\Http\Middlewares\AccessMiddleware;
 use App\Http\Middlewares\ErrorMiddleware;
-use App\Services\LaminasBridge;
+use App\Services\ServiceDefinitions;
 use App\View\Escape;
 use App\View\UrlHelper;
 use App\View\ViewHelpers;
@@ -29,7 +29,6 @@ use Application\View\Helper\GlobalConfigHelper;
 use Application\View\Helper\HumanReadableDateFormat;
 use Application\View\Helper\Translate;
 use DI\Container;
-use Laminas\ServiceManager\ServiceManager;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,13 +38,13 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\Psr7\Factory\ResponseFactory;
 
 use function DI\autowire;
+use function DI\get;
 
 /**
  * Builds the Slim app that serves every request. public/index.php runs it.
  *
  * The routes live in src/Http/Routes/. A path with no route answers the
- * error/404 page. Services still come from the Laminas service manager
- * through LaminasBridge.
+ * error/404 page. The services come from ServiceDefinitions.
  */
 final class Kernel
 {
@@ -75,15 +74,15 @@ final class Kernel
         $basePath = self::basePath();
 
         $container = new Container([
+            ...ServiceDefinitions::definitions($appRoot),
+            // The web app's translator speaks the user's language.
+            'translator' => static fn(ContainerInterface $c): Translator
+                => self::applyLocale($c, ServiceDefinitions::translator($c)),
+
             ResponseFactoryInterface::class => static fn(): ResponseFactoryInterface => new ResponseFactory(),
 
-            LaminasBridge::class => static fn(): LaminasBridge => new LaminasBridge(
-                $appRoot,
-                static fn(ServiceManager $services) => self::applyLocale($services),
-            ),
-
-            // Same channels the Laminas service manager hands out as 'Logger'
-            // and 'ClientErrorLogger'. Neither needs Laminas to build.
+            // The same channel as the 'Logger' service, and the client errors
+            // channel.
             Logger::class => static fn(): Logger => new Logger(),
             'ClientErrorLogger' => static fn(): Logger => new Logger(channel: 'client-errors'),
 
@@ -108,9 +107,9 @@ final class Kernel
             ),
             Responder::class => autowire(),
 
-            // Services that still come from the Laminas service manager,
-            // under the keys Module.php registers them with.
-            ...self::fromLaminas([
+            // The handlers ask for services by class. Module.php registers
+            // them under string keys.
+            ...self::byClass([
                 ApiLogsTable::class => 'ApiLogsTable',
                 AuditTrailService::class => 'AuditTrailService',
                 CommonService::class => 'CommonService',
@@ -227,20 +226,14 @@ final class Kernel
     }
 
     /**
-     * PHP-DI definitions that fetch each class from the Laminas service
-     * manager by its key there.
+     * Aliases from each class name to the key Module.php registers it with.
      *
      * @param array<class-string, string> $map
-     * @return array<class-string, \Closure>
+     * @return array<class-string, mixed>
      */
-    private static function fromLaminas(array $map): array
+    private static function byClass(array $map): array
     {
-        $definitions = [];
-        foreach ($map as $class => $key) {
-            $definitions[$class] = static fn(ContainerInterface $c): object => $c->get(LaminasBridge::class)->get($key);
-        }
-
-        return $definitions;
+        return array_map(static fn(string $key): mixed => get($key), $map);
     }
 
     /**
@@ -249,10 +242,9 @@ final class Kernel
      */
     private static function viewHelpers(ContainerInterface $c, string $basePath): ViewHelpers
     {
-        $laminas = static fn(): LaminasBridge => $c->get(LaminasBridge::class);
 
         return new ViewHelpers([
-            'translate' => static fn(): Translate => new Translate($laminas()->get('translator')),
+            'translate' => static fn(): Translate => new Translate($c->get('translator')),
             'basePath' => static fn(): \Closure => static fn(?string $file = null): string
                 => $basePath . ($file !== null ? '/' . ltrim($file, '/') : ''),
             'url' => static fn(): UrlHelper => $c->get(UrlHelper::class),
@@ -262,9 +254,9 @@ final class Kernel
                 => Escape::attr((string) $value),
             'humanReadableDateFormat' => static fn(): HumanReadableDateFormat => new HumanReadableDateFormat(),
             'GlobalConfigHelper' => static fn(): GlobalConfigHelper
-                => new GlobalConfigHelper($laminas()->get('GlobalTable')),
+                => new GlobalConfigHelper($c->get('GlobalTable')),
             'GetCountryDetailsByIdHelper' => static fn(): GetCountryDetailsByIdHelper
-                => new GetCountryDetailsByIdHelper($laminas()->get('CountriesTable')),
+                => new GetCountryDetailsByIdHelper($c->get('CountriesTable')),
             // Laminas collected titles for the layout to print. The layouts
             // never print them, so a call outputs nothing.
             'headTitle' => static fn(): \Closure => static fn(mixed ...$ignored): string => '',
@@ -275,15 +267,15 @@ final class Kernel
      * Sets the translator's locale, as Module::initTranslator does: the
      * user's chosen language, or the instance default from global_config.
      */
-    private static function applyLocale(ServiceManager $services): void
+    private static function applyLocale(ContainerInterface $c, Translator $translator): Translator
     {
-        /** @var Translator $translator */
-        $translator = $services->get('translator');
         $language = (new Session('credo'))->language;
         if (empty($language)) {
-            $language = $services->get('GlobalTable')->getGlobalValue('language');
+            $language = $c->get('GlobalTable')->getGlobalValue('language');
         }
         $translator->setLocale((string) $language)->setFallbackLocale('en_US');
+
+        return $translator;
     }
 
     /**

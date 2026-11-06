@@ -2,12 +2,11 @@
 
 namespace Application\Command;
 
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-class ResetPasswordFactory implements FactoryInterface
+class ResetPasswordFactory
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container)
     {
         return new ResetPassword($container->get('UsersTable'));
     }

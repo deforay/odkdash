@@ -6,11 +6,11 @@ namespace App\Http\Middlewares;
 
 use App\Http\Handlers\ActionHandler;
 use App\Http\HelperAccess;
-use App\Services\LaminasBridge;
 use App\View\UrlHelper;
 use App\View\ViewRenderer;
 use Application\Model\Acl;
 use Application\Session\Container;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -51,7 +51,7 @@ final class AccessMiddleware implements MiddlewareInterface
 {
     public function __construct(
         private readonly ResponseFactoryInterface $responses,
-        private readonly LaminasBridge $laminas,
+        private readonly ContainerInterface $services,
         private readonly ViewRenderer $view,
         private readonly UrlHelper $url,
         private readonly HelperAccess $helpers,
@@ -72,7 +72,7 @@ final class AccessMiddleware implements MiddlewareInterface
         if ($route->getArgument('access') === 'public') {
             $this->rememberCountry($session);
             if (!empty($session->userId)) {
-                $this->view->setLayoutVariable('acl', $this->laminas->get('AppAcl'));
+                $this->view->setLayoutVariable('acl', $this->services->get('AppAcl'));
             }
             return $handler->handle($request);
         }
@@ -101,7 +101,7 @@ final class AccessMiddleware implements MiddlewareInterface
         }
 
         /** @var Acl $acl */
-        $acl = $this->laminas->get('AppAcl');
+        $acl = $this->services->get('AppAcl');
         if (!$this->isAllowed($acl, (string) $session->roleCode, $resource, $privilege)) {
             return $this->responses->createResponse(403);
         }
@@ -122,7 +122,7 @@ final class AccessMiddleware implements MiddlewareInterface
     private function rememberCountry(Container $session): void
     {
         if (empty($session->countryName)) {
-            $config = $this->laminas->get('CommonService')->getGlobalConfigDetails();
+            $config = $this->services->get('CommonService')->getGlobalConfigDetails();
             $session->countryName = $config['country-name'] ?? null;
         }
     }

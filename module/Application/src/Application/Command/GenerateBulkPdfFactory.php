@@ -2,13 +2,12 @@
 
 namespace Application\Command;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Application\Command\GenerateBulkPdf;
 
-class GenerateBulkPdfFactory implements FactoryInterface
+class GenerateBulkPdfFactory
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container)
     {
         $odkFormService = $container->get('OdkFormService');
         return new GenerateBulkPdf($odkFormService);

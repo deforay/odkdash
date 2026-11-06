@@ -13,7 +13,7 @@ declare(strict_types=1);
  *
  * Commands are declared under the 'console' key in
  * module/Application/config/module.config.php, mapping a command name to a
- * class the service manager can build.
+ * class ServiceDefinitions can build.
  *
  * Usage:
  *   php bin/console list             show the available commands
@@ -23,25 +23,25 @@ declare(strict_types=1);
 chdir(dirname(__DIR__));
 require_once 'vendor/autoload.php';
 
-use App\Services\LaminasBridge;
+use App\Services\ServiceDefinitions;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\FactoryCommandLoader;
 
-// The same service manager the web app and bin/migrate use, without the
-// web app's locale step. That step reads global_config out of the database,
+// The same services the web app and bin/migrate use, without the web
+// app's locale step. That step reads global_config out of the database,
 // which a console command should not depend on.
-$serviceManager = LaminasBridge::build(getcwd());
+$services = ServiceDefinitions::container(getcwd());
 
-$commands = $serviceManager->get('config')['console']['commands'] ?? [];
+$commands = $services->get('config')['console']['commands'] ?? [];
 
 // Lazy, so a single command run does not construct the other five and their
 // database adapters. The name lives in the config map rather than on the
 // class — as it did under laminas-cli — so it is bound at construction.
 $factories = [];
 foreach ($commands as $name => $class) {
-    $factories[$name] = static function () use ($serviceManager, $class, $name): Command {
-        $command = $serviceManager->get($class);
+    $factories[$name] = static function () use ($services, $class, $name): Command {
+        $command = $services->get($class);
 
         if (!$command instanceof Command) {
             throw new RuntimeException(sprintf(

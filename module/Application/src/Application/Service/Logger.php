@@ -18,7 +18,7 @@ use Monolog\Handler\RotatingFileHandler;
  * need the recursive context sanitizer or the call-count loop guard.
  *
  * Usage:
- *   $logger = $serviceManager->get('Logger');
+ *   $logger = $container->get('Logger');
  *   $logger->error('boom', ['user' => $userId]);
  *   $logger->logException($throwable);
  */

@@ -32,22 +32,22 @@ declare(strict_types=1);
 chdir(dirname(__DIR__));
 require_once 'vendor/autoload.php';
 
-use App\Services\LaminasBridge;
+use App\Services\ServiceDefinitions;
 use Composer\Semver\Comparator;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Exception\ExceptionInterface as DbException;
 use PhpMyAdmin\SqlParser\Parser;
 
-// The same service manager the web app uses, without the web app's locale
+// The same services the web app uses, without the web app's locale
 // step. That step reads global_config, which does not exist on a fresh
 // database.
-$serviceManager = LaminasBridge::build(getcwd());
+$services = ServiceDefinitions::container(getcwd());
 
 // db.driver and the DSN live in config/autoload/global.php, which is gitignored
 // and copied from global.dist.php during setup. When it is absent the adapter
 // factory throws "createDriver expects a driver key" with a Laminas stack trace
 // that says nothing about the real cause, so check for it here instead.
-$mergedDb = $serviceManager->get('config')['db'] ?? [];
+$mergedDb = $services->get('config')['db'] ?? [];
 if (!is_array($mergedDb) || !isset($mergedDb['driver'])) {
     $configDir = dirname(__DIR__) . '/config/autoload';
     fwrite(STDERR, "Error: no database driver in the merged config.\n");
@@ -64,7 +64,7 @@ if (!is_array($mergedDb) || !isset($mergedDb['driver'])) {
 }
 
 /** @var Adapter $adapter */
-$adapter = $serviceManager->get(Adapter::class);
+$adapter = $services->get(Adapter::class);
 
 const MIG_NOT_HANDLED = 0;
 const MIG_EXECUTED = 1;

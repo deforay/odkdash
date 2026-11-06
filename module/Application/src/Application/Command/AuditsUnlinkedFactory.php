@@ -2,12 +2,11 @@
 
 namespace Application\Command;
 
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-class AuditsUnlinkedFactory implements FactoryInterface
+class AuditsUnlinkedFactory
 {
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container)
     {
         $dbAdapter = $container->get('Laminas\Db\Adapter\Adapter');
         return new AuditsUnlinked($dbAdapter);
