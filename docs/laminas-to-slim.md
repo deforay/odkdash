@@ -17,7 +17,7 @@ if ($kernel->handles()) {
 Laminas\Mvc\Application::init(require_once 'config/application.config.php')->run();
 ```
 
-`Kernel::handles()` asks Slim whether one of its routes matches the path. If one matches, Slim answers. Otherwise the request goes to Laminas exactly as before. No list of moved paths exists anywhere else. A route registered in the Kernel is a moved route.
+`Kernel::handles()` asks Slim whether one of its routes matches the path. If one matches, Slim answers. Otherwise the request goes to Laminas exactly as before. No list of moved paths exists anywhere else. A route in `src/Http/Routes/` is a moved route.
 
 Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads the Laminas service manager without starting MVC, the same way `bin/console` does. `OdkFormService`, the table gateways and the translator are the same objects on both sides.
 
@@ -26,7 +26,7 @@ Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads
 | What | Laminas location | Slim location |
 |---|---|---|
 | Front controller | `public/index.php` | `public/index.php` (asks Slim first) |
-| Routes | `router.routes` in `module/Application/config/module.config.php` | `Kernel::CONTROLLERS` in `src/Http/Kernel.php` |
+| Routes | `router.routes` in `module/Application/config/module.config.php` | `src/Http/Routes/Application.php`, one file per module |
 | Controllers | `module/Application/src/Application/Controller/` | `src/Http/Handlers/` |
 | Controller factories | anonymous classes in `Module::getControllerConfig()` | none: PHP-DI reads the constructor |
 | Login and ACL check | `Module::preSetter()` | `src/Http/Middlewares/AccessMiddleware.php` |
@@ -41,6 +41,36 @@ Slim handlers reuse the Laminas services. `src/Services/LaminasBridge.php` loads
 | Console commands | `bin/console` | unchanged |
 
 `src/` uses the `App\` namespace. `module/` keeps the `Application\` namespace.
+
+## Routes keep the Laminas format
+
+A route in `src/Http/Routes/Application.php` is its entry from `module.config.php` with a `handler` key added:
+
+```php
+// module.config.php
+'roles' => [
+    'type' => 'segment',
+    'options' => [
+        'route' => '/roles[/:action][/][:id]',
+        'defaults' => ['controller' => 'Application\Controller\RolesController', 'action' => 'index'],
+    ],
+],
+
+// src/Http/Routes/Application.php
+'roles' => [
+    'route' => '/roles[/:action][/][:id]',
+    'handler' => RolesHandler::class,
+    'defaults' => ['controller' => 'Application\Controller\RolesController', 'action' => 'index'],
+],
+```
+
+The route name, the pattern and the defaults do not change:
+
+- The name is what `$this->url('roles')` uses, on both sides.
+- The pattern builds URLs exactly as Laminas built them. `Kernel::SLIM_TAILS` turns it into the Slim pattern.
+- `defaults.controller` is the ACL resource, the value `Module::preSetter()` checked.
+
+A route without a `handler` is registered for URL building only. A route with `'public' => true` needs no login.
 
 ## What a controller becomes
 

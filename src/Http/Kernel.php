@@ -4,24 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http;
 
-use App\Http\Handlers\ApiLogsHandler;
-use App\Http\Handlers\AuditTrailHandler;
 use App\Http\Handlers\ClientErrorHandler;
-use App\Http\Handlers\CommonHandler;
-use App\Http\Handlers\DashboardHandler;
-use App\Http\Handlers\DashboardV6Handler;
-use App\Http\Handlers\ConfigHandler;
-use App\Http\Handlers\DistrictHandler;
-use App\Http\Handlers\EmailHandler;
-use App\Http\Handlers\EventHandler;
-use App\Http\Handlers\FacilityHandler;
-use App\Http\Handlers\ProvincesHandler;
-use App\Http\Handlers\RolesHandler;
-use App\Http\Handlers\SpiV3Handler;
-use App\Http\Handlers\SpiV3ReportsHandler;
-use App\Http\Handlers\SpiV6ReportsHandler;
-use App\Http\Handlers\UsersHandler;
-use App\Http\Handlers\LogViewerHandler;
 use App\Http\Middlewares\AccessMiddleware;
 use App\Http\Middlewares\ErrorMiddleware;
 use App\Services\LaminasBridge;
@@ -64,32 +47,24 @@ use function DI\autowire;
  *
  * public/index.php builds this first and asks handles(). Slim serves every
  * request that matches a route registered here. Every other request falls
- * through to the Laminas MVC application. Moving a page across means adding
- * its route here and removing it from module.config.php.
+ * through to the Laminas MVC application. Moving a page across means copying
+ * its route from module.config.php to a file in src/Http/Routes/, adding the
+ * handler, and removing the route from module.config.php.
  */
 final class Kernel
 {
     /**
-     * Ported controllers: route name => [Laminas pattern, handler, ACL
-     * resource]. bin/dev/helper-access reads this table too.
+     * The Slim pattern for each Laminas optional tail the routes use.
+     *
+     * FastRoute allows optional parts only at the end of a pattern, nested,
+     * so /x[/:action][/][:id] becomes /x[/[{action}[/[{id}]]]]. That matches
+     * /x, /x/, /x/edit, /x/edit/ and /x/edit/5, which covers every URL
+     * Laminas builds for the route. A pattern with a tail not listed here
+     * stops the app with an error naming it. Add its line here.
      */
-    public const array CONTROLLERS = [
-        'api-logs' => ['/api-logs[/:action]', ApiLogsHandler::class, 'ApiLogsController'],
-        'roles' => ['/roles[/:action][/][:id]', RolesHandler::class, 'RolesController'],
-        'users' => ['/users[/:action][/][:id]', UsersHandler::class, 'UsersController'],
-        'provinces' => ['/provinces[/:action][/][:id]', ProvincesHandler::class, 'ProvincesController'],
-        'district' => ['/district[/:action][/][:id]', DistrictHandler::class, 'DistrictController'],
-        'config' => ['/config[/:action][/][:id]', ConfigHandler::class, 'ConfigController'],
-        'event-log' => ['/event-log[/:action][/][:id]', EventHandler::class, 'EventController'],
-        'audit-trail' => ['/audit-trail[/:action][/][:id]', AuditTrailHandler::class, 'AuditTrailController'],
-        'email' => ['/email[/:action][/][:id]', EmailHandler::class, 'EmailController'],
-        'common' => ['/common[/:action][/][:id]', CommonHandler::class, 'CommonController'],
-        'dashboard' => ['/dashboard[/:action][/][:id]', DashboardHandler::class, 'DashboardController'],
-        'dashboard-v6' => ['/dashboard-v6[/:action][/][:id]', DashboardV6Handler::class, 'DashboardV6Controller'],
-        'spi-v3-reports' => ['/spi-v3-reports[/:action][/][:id]', SpiV3ReportsHandler::class, 'SpiV3ReportsController'],
-        'spi-v6-reports' => ['/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController'],
-        'spi-facility' => ['/facility[/:action][/][:id]', FacilityHandler::class, 'FacilityController'],
-        'spi-v3-form' => ['/spi-v3[/:action][/][:id]', SpiV3Handler::class, 'SpiV3Controller'],
+    private const array SLIM_TAILS = [
+        '[/:action][/][:id]' => '[/[{action}[/[{id}]]]]',
+        '[/:action]' => '[/{action}]',
     ];
 
     private static ?self $current = null;
@@ -138,6 +113,8 @@ final class Kernel
             },
 
             HelperAccess::class => static fn(): HelperAccess => new HelperAccess($appRoot . '/config/helper-access.php'),
+            // Handlers, middleware and the Responder are autowired: PHP-DI
+            // builds any class without a definition from its constructor.
             ErrorMiddleware::class => autowire(),
             AccessMiddleware::class => autowire(),
 
@@ -145,23 +122,6 @@ final class Kernel
                 $c->get(ResponseFactoryInterface::class),
                 $c->get('ClientErrorLogger'),
             ),
-            LogViewerHandler::class => autowire(),
-            ApiLogsHandler::class => autowire(),
-            RolesHandler::class => autowire(),
-            UsersHandler::class => autowire(),
-            ProvincesHandler::class => autowire(),
-            ConfigHandler::class => autowire(),
-            EventHandler::class => autowire(),
-            AuditTrailHandler::class => autowire(),
-            DistrictHandler::class => autowire(),
-            EmailHandler::class => autowire(),
-            CommonHandler::class => autowire(),
-            DashboardHandler::class => autowire(),
-            DashboardV6Handler::class => autowire(),
-            SpiV3ReportsHandler::class => autowire(),
-            SpiV6ReportsHandler::class => autowire(),
-            FacilityHandler::class => autowire(),
-            SpiV3Handler::class => autowire(),
             Responder::class => autowire(),
 
             // Services that still come from the Laminas service manager,
@@ -189,41 +149,9 @@ final class Kernel
         // the templates produce the same links after a page moves.
         $urls = $container->get(SlimUrls::class);
 
-        $urls->register('client-errors', '/client-errors');
-        $app->any('/client-errors', ClientErrorHandler::class)
-            ->setName('client-errors')
-            ->setArgument('access', 'public');
-
-        $urls->register('log-viewer', '/log-viewer');
-        $app->map(['GET', 'POST'], '/log-viewer', LogViewerHandler::class)
-            ->setName('log-viewer')
-            ->setArgument('resource', 'Application\Controller\LogViewerController')
-            ->setArgument('privilege', 'index');
-
-        // Ported controllers. Laminas patterns of the form
-        // /x[/:action][/][:id] become /x[/[{action}[/[{id}]]]] in Slim,
-        // which matches /x, /x/, /x/edit, /x/edit/ and /x/edit/<id>.
-        foreach (self::CONTROLLERS as $name => [$laminasPattern, $handler, $controller]) {
-            $urls->register($name, $laminasPattern, ['action' => 'index']);
-            $pattern = strtr($laminasPattern, [
-                '[/:action][/][:id]' => '[/[{action}[/[{id}]]]]',
-                '[/:action]' => '[/{action}]',
-            ]);
-            $app->any($pattern, $handler)
-                ->setName($name)
-                ->setArgument('resource', 'Application\\Controller\\' . $controller);
+        foreach (self::routes() as $name => $route) {
+            self::addRoute($app, $urls, $name, $route);
         }
-
-        // A second Laminas name for one facility URL. The spi-facility route
-        // serves the path, so only the URL is registered.
-        $urls->register('upload-facility', '/facility/upload-facility');
-
-        // The dashboards link to the V3 approved audits page by this name.
-        $urls->register('view-data', '/view-data');
-        $app->any('/view-data', SpiV3Handler::class)
-            ->setName('view-data')
-            ->setArgument('resource', 'Application\\Controller\\SpiV3Controller')
-            ->setArgument('action', 'view-data');
 
         // Slim runs the middleware added last first. The order a request
         // meets them is: errors, routing, body parsing, access, handler.
@@ -235,6 +163,75 @@ final class Kernel
         $request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
 
         return self::$current = new self($app, $request);
+    }
+
+    /**
+     * Every route in src/Http/Routes/, keyed by route name. Each file holds
+     * one module's routes in the Laminas route config format. See
+     * Routes/Application.php. bin/dev/helper-access reads them too.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public static function routes(): array
+    {
+        $routes = [];
+        $files = glob(__DIR__ . '/Routes/*.php') ?: [];
+        sort($files);
+        foreach ($files as $file) {
+            foreach (require $file as $name => $route) {
+                if (isset($routes[$name])) {
+                    throw new \RuntimeException(sprintf('Route "%s" is defined twice, again in %s.', $name, $file));
+                }
+                $routes[$name] = $route;
+            }
+        }
+
+        return $routes;
+    }
+
+    /**
+     * Registers one route: its name and Laminas pattern for URL building,
+     * then the Slim route with its ACL resource and defaults.
+     *
+     * @param array<string, mixed> $route
+     */
+    private static function addRoute(App $app, SlimUrls $urls, string $name, array $route): void
+    {
+        $defaults = $route['defaults'] ?? [];
+        $resource = $defaults['controller'] ?? null;
+        unset($defaults['controller']);
+
+        $urls->register($name, $route['route'], $defaults);
+        if (!isset($route['handler'])) {
+            return;
+        }
+        if ($resource === null && empty($route['public'])) {
+            throw new \RuntimeException(sprintf('Route "%s" names no controller and is not public.', $name));
+        }
+
+        $methods = $route['methods'] ?? ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+        $slimRoute = $app->map($methods, self::slimPattern($route['route']), $route['handler'])->setName($name);
+        if (!empty($route['public'])) {
+            $slimRoute->setArgument('access', 'public');
+        } else {
+            $slimRoute->setArgument('resource', $resource);
+        }
+        // A value the URL leaves out, such as the action on /roles.
+        foreach ($defaults as $key => $value) {
+            $slimRoute->setArgument($key, (string) $value);
+        }
+    }
+
+    private static function slimPattern(string $laminasPattern): string
+    {
+        $start = strpos($laminasPattern, '[');
+        if ($start === false) {
+            return $laminasPattern;
+        }
+        $tail = substr($laminasPattern, $start);
+
+        return substr($laminasPattern, 0, $start) . (self::SLIM_TAILS[$tail]
+            ?? throw new \RuntimeException(sprintf('No Slim pattern for "%s". Add one to Kernel::SLIM_TAILS.', $laminasPattern)));
     }
 
     /**
