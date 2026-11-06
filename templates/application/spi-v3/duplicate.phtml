@@ -43,7 +43,7 @@ use \Application\Service\CommonService;
             <tr id="audit-<?php echo (int) $duplicate['id']; ?>">
               <td><?php echo $this->escapeHtml($duplicate['facilityname']); ?></td>
               <td><?php echo $this->escapeHtml($duplicate['auditroundno']); ?></td>
-              <td><?php echo CommonService::humanReadableDateFormat($duplicate['assesmentofaudit']); ?></td>
+              <td><?php echo $this->escapeHtml(CommonService::humanReadableDateFormat($duplicate['assesmentofaudit'])); ?></td>
               <td><?php echo $this->escapeHtml($duplicate['testingpointname']); ?></td>
               <td><?php echo $this->escapeHtml($duplicate['testingpointtype']); ?></td>
               <td><?php echo $this->escapeHtml($duplicate['level']); ?></td>

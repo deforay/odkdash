@@ -151,15 +151,15 @@
 												foreach ($privileges as $privilege) {
 													?>
 													<div class="col-md-3 privilege-div">
-														<strong class="privilege-label"><?php echo ucwords($privilege['display_name']); ?></strong>
+														<strong class="privilege-label"><?php echo $this->escapeHtml(ucwords($privilege['display_name'])); ?></strong>
 														<br>
 														<div class="privilege-switch" style="margin: 30px 0 36px 90px;">
 															<?php
-																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']">';
-																echo '<label for="selectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="normal-label">' . $translate('Yes') . '</label>';
+																echo '<input type="radio" class="selectPrivilege" name="resource[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" value="allow" id="selectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']">';
+																echo '<label for="selectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" class="normal-label">' . $translate('Yes') . '</label>';
 
-																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . $privilege['privilege_name'] . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']">';
-																echo '<label for="unselectPrivilege[' . $resourceId . '][' . $privilege['privilege_name'] . ']" class="deny-label">' . $translate('No') . '</label>';
+																echo '<input type="radio" class="unselectPrivilege" name="resource[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" value="deny" id="unselectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']">';
+																echo '<label for="unselectPrivilege[' . $resourceId . '][' . \Application\Service\CommonService::escapeHtml($privilege['privilege_name']) . ']" class="deny-label">' . $translate('No') . '</label>';
 															?>
 														</div>
 													</div>
@@ -173,7 +173,7 @@
 												<tr class="togglerTr">
 													<th style="background-color:#eee;">
 														<div class="card-header">
-															<h4 class="card-title" style="font-weight: bold;"><?php echo ucwords($value['display_name']); ?></h4>
+															<h4 class="card-title" style="font-weight: bold;"><?php echo $this->escapeHtml(ucwords($value['display_name'])); ?></h4>
 															<div class="card-actions">
 																<div class="super-switch privilege-switch pull-right">
 																	<?php
@@ -195,7 +195,7 @@
 														<?php if (!empty($value['children'])): ?>
 															<?php foreach ($value['children'] as $child): ?>
 																<div class="child-resource-section">
-																	<h5 class="child-resource-heading"><?php echo ucwords($child['display_name']); ?></h5>
+																	<h5 class="child-resource-heading"><?php echo $this->escapeHtml(ucwords($child['display_name'])); ?></h5>
 																	<div class="row">
 																		<?php $renderPrivileges($child['privileges'], $child['resource_id'], $translate); ?>
 																	</div>

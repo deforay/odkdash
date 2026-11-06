@@ -6,7 +6,7 @@ if(count($result) > 0){
     $typeNameData.='<select class="form-control" id="testPointName">';
       $typeNameData.='<option value="">' . $this->translate('All') . '</option>';
             foreach($result as $val){
-              $typeNameData.='<option value="'.$val['testingpointName'].'">'.ucwords($val['testingpointName']).'</option>';
+              $typeNameData.='<option value="'.\Application\Service\CommonService::escapeHtml($val['testingpointName']).'">'.\Application\Service\CommonService::escapeHtml(ucwords($val['testingpointName'])).'</option>';
          }
      $typeNameData.='</select>';
 }

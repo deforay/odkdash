@@ -171,7 +171,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['countries'] as $row) { ?>
 											<option value="<?php echo $this->escapeHtml($row['country_id']); ?>">
-												<?php echo ucwords($row['country_name']); ?></option>
+												<?php echo $this->escapeHtml(ucwords($row['country_name'])); ?></option>
 										<?php } ?>
 									</select>
 								</div>
@@ -182,7 +182,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['provinces'] as $val) { ?>
 											<option value="<?php echo $this->escapeHtml($val['geo_id']); ?>">
-												<?php echo ucwords($val['geo_name']); ?></option>
+												<?php echo $this->escapeHtml(ucwords($val['geo_name'])); ?></option>
 										<?php } ?>
 									</select>
 								</div>
@@ -195,7 +195,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										<option value=""><?= $this->translate('All'); ?></option>
 										<?php foreach ($locationResult['districts'] as $val) { ?>
 											<option value="<?php echo $this->escapeHtml($val['geo_id']); ?>">
-												<?php echo ucwords($val['geo_name']); ?></option>
+												<?php echo $this->escapeHtml(ucwords($val['geo_name'])); ?></option>
 										<?php } ?>
 									</select>
 								</div>
@@ -222,7 +222,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($testingPointResult as $val) {
 											?>
 											<option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>">
-												<?php echo ucwords($val['testingPointType']); ?></option>
+												<?php echo $this->escapeHtml(ucwords($val['testingPointType'])); ?></option>
 											<?php
 										}
 										?>
@@ -266,11 +266,11 @@ $userMappingType = $sessionLogin->userMappingType;
 					<div class="row chart-info">
 						<div class="col-xs-4" style="text-align:center;"><span
 								class="title"><?= $this->translate('From Date'); ?></span><span
-								class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['oldestDate']) ?></span>
+								class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perf1[0]['oldestDate'])); ?></span>
 						</div>
 						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span
 								class="title"><?= $this->translate('To Date'); ?></span><span
-								class="number"><?php echo $this->humanReadableDateFormat($perf1[0]['newestDate']) ?></span>
+								class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perf1[0]['newestDate'])); ?></span>
 						</div>
 						<div class="col-xs-4" style="text-align:center;"><span
 								class="title"><?= $this->translate('No. of Audits'); ?></span><span
@@ -300,11 +300,11 @@ $userMappingType = $sessionLogin->userMappingType;
 					<div class="row chart-info">
 						<div class="col-xs-4" style="text-align:center;"><span
 								class="title"><?php echo $this->translate('From Date'); ?></span><span
-								class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['oldestDate']) ?></span>
+								class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast180[0]['oldestDate'])); ?></span>
 						</div>
 						<div class="col-xs-4" style="text-align:center;padding-left:5px;;"><span
 								class="title"><?php echo $this->translate('To Date'); ?></span><span
-								class="number"><?php echo $this->humanReadableDateFormat($perflast180[0]['newestDate']) ?></span>
+								class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast180[0]['newestDate'])); ?></span>
 						</div>
 						<div class="col-xs-4" style="text-align:center;"><span
 								class="title"><?php echo $this->translate('No. of Audits'); ?></span><span
@@ -347,11 +347,11 @@ $userMappingType = $sessionLogin->userMappingType;
 						<div class="row chart-info">
 							<div class="col-xs-4" style="text-align:center;"><span
 									class="title"><?= $this->translate('From Date'); ?></span><span
-									class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['oldestDate']) ?></span>
+									class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast30[0]['oldestDate'])); ?></span>
 							</div>
 							<div class="col-xs-4" style="text-align:center;padding-left:5px;"><span
 									class="title"><?= $this->translate('To Date'); ?></span><span
-									class="number"><?php echo $this->humanReadableDateFormat($perflast30[0]['newestDate']) ?></span>
+									class="number"><?php echo $this->escapeHtml($this->humanReadableDateFormat($perflast30[0]['newestDate'])); ?></span>
 							</div>
 							<div class="col-xs-4" style="text-align:center;"><span
 									class="title"><?= $this->translate('No. of Audits'); ?></span><span
@@ -440,7 +440,7 @@ $userMappingType = $sessionLogin->userMappingType;
 									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 										?>
 										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-											<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 										</option>
 										<?php
 									}
@@ -486,7 +486,7 @@ $userMappingType = $sessionLogin->userMappingType;
 									foreach ($spiV6auditRoundNo as $auditRoundNo) {
 										?>
 										<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-											<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+											<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 										</option>
 										<?php
 									}
@@ -531,7 +531,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
 											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+												<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 											</option>
 											<?php
 										}
@@ -579,7 +579,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
 											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+												<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 											</option>
 											<?php
 										}
@@ -619,7 +619,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
 											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+												<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 											</option>
 											<?php
 										}
@@ -667,7 +667,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
 											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+												<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 											</option>
 											<?php
 										}
@@ -713,7 +713,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
 											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+												<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 											</option>
 											<?php
 										}
@@ -752,7 +752,7 @@ $userMappingType = $sessionLogin->userMappingType;
 										foreach ($spiV6auditRoundNo as $auditRoundNo) {
 											?>
 											<option value="<?php echo $this->escapeHtml($auditRoundNo['auditroundno']); ?>">
-												<?php echo $auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"; ?>
+												<?php echo $this->escapeHtml($auditRoundNo['auditroundno'] . " (" . $auditRoundNo['rowCount'] . ")"); ?>
 											</option>
 											<?php
 										}
@@ -851,9 +851,9 @@ $userMappingType = $sessionLogin->userMappingType;
 									<tr>
 										<td><?php echo $this->escapeHtml($row['facilityid']); ?></td>
 										<td><?php echo $this->escapeHtml($row['facilityname']); ?></td>
-										<td><?php echo $this->humanReadableDateFormat($row['assesmentofaudit']); ?></td>
-										<td><?php echo $this->humanReadableDateFormat($row['today']); ?></td>
-										<td><?php echo ucfirst($row['status']); ?></td>
+										<td><?php echo $this->escapeHtml($this->humanReadableDateFormat($row['assesmentofaudit'])); ?></td>
+										<td><?php echo $this->escapeHtml($this->humanReadableDateFormat($row['today'])); ?></td>
+										<td><?php echo $this->escapeHtml(ucfirst($row['status'])); ?></td>
 
 										<?php if ($update || $approve || $email) { ?>
 											<td>
@@ -863,7 +863,7 @@ $userMappingType = $sessionLogin->userMappingType;
 															class="fa fa-pencil"></i> Edit</a>&nbsp;
 												<?php }
 												if ($email && ($row['status'] == 'approved')) { ?>
-													<a href="/email/email-v6/<?php echo base64_encode($row['id']); ?>"><i
+													<a href="/email/email-v6/<?php echo $this->escapeHtml(base64_encode($row['id'])); ?>"><i
 															class="fa fa-envelope"></i> Mail</a>
 													<?php
 												}

@@ -476,7 +476,7 @@ foreach ($entries as $e) {
                                     $headline = sprintf($this->translate('Revision %d · %s'), $e['revision'], $label);
                                 }
                             ?>
-                                <div class="audit-item <?= empty($e['changes']) && !$e['isFirst'] ? 'no-changes' : ''; ?>"
+                                <div class="audit-item <?php echo $this->escapeHtml(empty($e['changes']) && !$e['isFirst'] ? 'no-changes' : ''); ?>"
                                      data-search="<?php
                                         $bag = [];
                                         foreach ($e['changes'] as $c) {
@@ -518,7 +518,7 @@ foreach ($entries as $e) {
                                             </div>
                                         <?php endif; ?>
                                     </div>
-                                    <div class="audit-time" title="<?= htmlspecialchars($e['datetime']); ?>"><?= date('g:i a', $e['ts']); ?></div>
+                                    <div class="audit-time" title="<?= htmlspecialchars($e['datetime']); ?>"><?php echo $this->escapeHtml(date('g:i a', $e['ts'])); ?></div>
                                 </div>
                             <?php endforeach; ?>
                         </div>

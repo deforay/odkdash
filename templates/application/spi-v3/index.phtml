@@ -92,7 +92,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                       <?php
                       foreach ($levelNamesResult as $levelName) {
                       ?>
-                        <option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo $this->escapeHtml(ucwords($levelName['province'])); ?></option>
                       <?php
                       }
                       ?>
@@ -104,7 +104,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                       <?php
                       foreach ($levelNamesResult as $levelName) {
                       ?>
-                        <option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo ucwords($levelName['province']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($levelName['province']); ?>"><?php echo $this->escapeHtml(ucwords($levelName['province'])); ?></option>
                       <?php
                       }
                       ?>
@@ -131,7 +131,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                       <?php
                       foreach ($testingPointResult as $val) {
                       ?>
-                        <option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>"><?php echo $this->escapeHtml(ucwords($val['testingPointType'])); ?></option>
                       <?php
                       }
                       ?>

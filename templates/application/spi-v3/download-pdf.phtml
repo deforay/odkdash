@@ -78,7 +78,7 @@ $fName = (isset($formData['facilityInfo']['fName'])) ? ucwords($formData['facili
 $testingTab = '<table border="1" cellspacing="0" cellpadding="5">';
 $testingTab .= '<tr>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/assesmentofaudit:label'] . '</b>' . $langDateFormat . ': ' . $this->humanReadableDateFormat($formData['assesmentofaudit']) . '</td>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . $formData['auditroundno'] . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/auditroundno:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['auditroundno']) . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
@@ -93,32 +93,32 @@ if ($language == 'Portuguese') {
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . $formData['testingpointtype'];
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['testingpointname']) . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
 $testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
-$testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . $formData['locationaddress'] . '</td>';
+$testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/locationaddress:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['locationaddress']) . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . $formData['level'];
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . \Application\Service\CommonService::escapeHtml($formData['level']);
 $testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "") . ':' . $formData['level_name'];
 $testingTab .= '</td>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . $formData['affiliation'];
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . \Application\Service\CommonService::escapeHtml($formData['affiliation']);
 $testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
 $testingTab .= '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . $formData['NumberofTester'] . '</td>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . $formData['avgMonthTesting'] . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/NumberofTester:label'] . '</b>' . \Application\Service\CommonService::escapeHtml($formData['NumberofTester']) . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/avgMonthTesting:label'] . '</b>' . \Application\Service\CommonService::escapeHtml($formData['avgMonthTesting']) . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . $formData['name_auditor_lead'] . '</td>';
-$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . $formData['name_auditor2'] . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor_lead:label'] . '</b>' . \Application\Service\CommonService::escapeHtml($formData['name_auditor_lead']) . '</td>';
+$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/name_auditor2:label'] . '</b>' . \Application\Service\CommonService::escapeHtml($formData['name_auditor2']) . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '</table>';
@@ -185,7 +185,7 @@ for ($i = 1; $i < 11; $i++) {
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PERSONAL/PERSONAL_Display:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['PERSONAL_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['PERSONAL_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 
@@ -218,7 +218,7 @@ for ($i = 1; $i < 6; $i++) {
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PHYSICAL/PHYSICAL_Display:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['PHYSICAL_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['PHYSICAL_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 
@@ -249,7 +249,7 @@ for ($i = 1; $i < 12; $i++) {
 }
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/SAFETY/SAFETY_DISPLAY:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['SAFETY_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['SAFETY_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 $partBTable .= '<tr>';
@@ -280,7 +280,7 @@ for ($i = 1; $i < 13; $i++) {
 
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/PRETEST/PRETEST_Display:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['PRETEST_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['PRETEST_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 
@@ -311,7 +311,7 @@ for ($i = 1; $i < 10; $i++) {
 }
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/TEST/TEST_DISPLAY:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['TEST_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['TEST_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 
@@ -342,7 +342,7 @@ for ($i = 1; $i < 10; $i++) {
 }
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/POSTTEST/POST_DISPLAY:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['POST_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['POST_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 $partBTable .= '<tr>';
@@ -397,7 +397,7 @@ for ($i = 9; $i < 15; $i++) {
 }
 $partBTable .= '<tr>';
 $partBTable .= '<td colspan="5" style="font-weight:bold;">' . $decoded[$language]['/SPI_RT/EQA/EQA_DISPLAY:label'] . '</td>';
-$partBTable .= '<td style="text-align:center;">' . $formData['EQA_SCORE'] . '</td>';
+$partBTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($formData['EQA_SCORE']) . '</td>';
 $partBTable .= '</tr>';
 
 $partBTable .= '</table>';
@@ -589,12 +589,12 @@ $partDtableBox1 .= $formData['testingpointtype'];
 
 $partDtableBox1 .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "");
 $partDtableBox1 .= "</td></tr>";
-$partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . $formData['staffaudited'] . "</td></tr>";
+$partDtableBox1 .= "<tr><td>" . $staffAuditedName . ":" . \Application\Service\CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
 $partDtableBox1 .= '</table>';
 $pdf->writeHTMLCell(50, 26, '', '', $partDtableBox1, 1, 0, 0, true, 'L');
 
 $partDtableBox2 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox2 .= "<tr><td>" . $noOfTester . ": " . $formData['NumberofTester'] . "</td></tr><tr><td>" . $decoded[$language]['/SPI_RT/durationaudit:label'] . $formData['durationaudit'] . "</td></tr>";
+$partDtableBox2 .= "<tr><td>" . $noOfTester . ": " . \Application\Service\CommonService::escapeHtml($formData['NumberofTester']) . "</td></tr><tr><td>" . $decoded[$language]['/SPI_RT/durationaudit:label'] . \Application\Service\CommonService::escapeHtml($formData['durationaudit']) . "</td></tr>";
 $partDtableBox2 .= '</table>';
 
 $pdf->writeHTMLCell(50, 26, 70, '', $partDtableBox2, 1, 0, 0, true, 'L', true);
@@ -625,8 +625,8 @@ if ($scorePer < 40) {
 }
 
 $partDtableBox3 = '<table cellspacing="0" cellpadding="5">';
-$partDtableBox3 .= "<tr><td>" . $totPointScored . $formData['FINAL_AUDIT_SCORE'] . "</td></tr>";
-$partDtableBox3 .= "<tr><td>" . $totExpectScored . $formData['MAX_AUDIT_SCORE'] . "</td></tr>";
+$partDtableBox3 .= "<tr><td>" . $totPointScored . \Application\Service\CommonService::escapeHtml($formData['FINAL_AUDIT_SCORE']) . "</td></tr>";
+$partDtableBox3 .= "<tr><td>" . $totExpectScored . \Application\Service\CommonService::escapeHtml($formData['MAX_AUDIT_SCORE']) . "</td></tr>";
 $partDtableBox3 .= '<tr><td>' . $perScored . "= " . round($formData['AUDIT_SCORE_PERCANTAGE'] ?? $formData['AUDIT_SCORE_PERCENTAGE'], 2) . '% &nbsp; <span style="' . $colorCode . '">  &nbsp;&nbsp;' . $level . '  &nbsp;&nbsp;</span></td></tr>';
 $partDtableBox3 .= '</table>';
 
@@ -654,17 +654,17 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
     $correctiveActions = json_decode($formData['correctiveaction'], true);
     foreach ($correctiveActions as $ca) {
         $partDTable .= '<tr>';
-        $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-        $partDTable .= '<td>' . $ca['deficiency'] . '</td>';
+        $partDTable .= '<td style="text-align:center;">' . \Application\Service\CommonService::escapeHtml($ca['sectionno']) . '</td>';
+        $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['deficiency']) . '</td>';
         $partDTable .= '<td style="text-align:center;">';
         $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "");
         $partDTable .= '</td>';
         $partDTable .= '<td style="text-align:center;">';
         $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . APPLICATION_PATH . '/img/black-tick.png' . '" width="20">' : "");
         $partDTable .= '</td>';
-        $partDTable .= '<td>' . $ca['auditorcomment'] . '</td>';
-        $partDTable .= '<td>' . $ca['action'] . '</td>';
-        $partDTable .= '<td>' . $ca['timeline'] . '</td>';
+        $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['auditorcomment']) . '</td>';
+        $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['action']) . '</td>';
+        $partDTable .= '<td>' . \Application\Service\CommonService::escapeHtml($ca['timeline']) . '</td>';
         $partDTable .= '</tr>';
     }
 } else {
@@ -677,7 +677,7 @@ $pdf->writeHTML($partDTable, true, 0, true, 0);
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
 $signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/staffaudited:label'] . '</td></tr>';
-$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . $formData["personincharge"] . '</td></tr>';
+$signBox1 .= '<tr><td>' . $decoded[$language]['/SPI_RT/personincharge:label'] . \Application\Service\CommonService::escapeHtml($formData["personincharge"]) . '</td></tr>';
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 

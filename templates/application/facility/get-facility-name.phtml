@@ -56,7 +56,7 @@
                                         <?php
                                         foreach ($facilityName['allName'] as $name) {
                                         ?>
-                                            <option value="<?php echo $name['facility_id'] . "##" . $name['facility_name']; ?>"><?php echo $this->escapeHtml($name['facility_name']); ?></option>
+                                            <option value="<?php echo $this->escapeHtml($name['facility_id'] . "##" . $name['facility_name']); ?>"><?php echo $this->escapeHtml($name['facility_name']); ?></option>
                                         <?php
                                         }
                                         ?>

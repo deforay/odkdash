@@ -116,7 +116,7 @@
                                                                 style='font-size:12.0pt;mso-bidi-font-size:11.0pt;font-family:Arial;
   mso-ascii-theme-font:major-latin;mso-hansi-theme-font:major-latin'>(<span
                                                                         class=SpellE>dd</span>/mm/<span class=SpellE>yyyy</span>)<b style='mso-bidi-font-weight:
-  normal'>:</b> <?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?> </span></p>
+  normal'>:</b> <?php echo $this->escapeHtml($this->humanReadableDateFormat($formData['assesmentofaudit'])); ?> </span></p>
 
                                         </td>
                                         <td width=354 style='width:353.95pt;border:solid windowtext 1.0pt;border-left:
@@ -126,7 +126,7 @@
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
   mso-hansi-theme-font:major-latin'><?= $this->translate("Audit Round Number"); ?>: </span></b> <?php
-                                                                                                echo $formData['auditroundno'];
+                                                                                                echo \Application\Service\CommonService::escapeHtml($formData['auditroundno']);
                                                                                                 ?> </p>
                                         </td>
                                 </tr>
@@ -160,7 +160,7 @@
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
   mso-hansi-theme-font:major-latin'><?= $this->translate("Testing Point Name:"); ?></span></b> <?php
-                                                                                                echo $formData['testingpointname'];
+                                                                                                echo \Application\Service\CommonService::escapeHtml($formData['testingpointname']);
                                                                                                 ?></p>
                                         </td>
                                         <td width=354 style='width:353.95pt;border-top:none;border-left:none;
@@ -171,8 +171,8 @@
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
   mso-hansi-theme-font:major-latin'><?= $this->translate("Type of testing point :"); ?></span></b> <?php
-                                                                                                        echo $formData['testingpointtype'];
-                                                                                                        ?> <?php echo ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : ""); ?> </p>
+                                                                                                        echo \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
+                                                                                                        ?> <?php echo $this->escapeHtml(((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "")); ?> </p>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:3;height:19.75pt'>
@@ -183,7 +183,7 @@
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
   mso-hansi-theme-font:major-latin'><?= $this->translate("Location/Address:"); ?></span></b> <?php
-                                                                                                echo $formData['locationaddress'];
+                                                                                                echo \Application\Service\CommonService::escapeHtml($formData['locationaddress']);
                                                                                                 ?></p>
                                         </td>
                                 </tr>
@@ -205,7 +205,7 @@
 
                                                         </b></p>
 
-                                                <?php echo $this->escapeHtml($formData['level']); ?> <?php echo ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : ""); ?> : <?php echo $this->escapeHtml($formData['level_name']); ?>
+                                                <?php echo $this->escapeHtml($formData['level']); ?> <?php echo $this->escapeHtml(((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "")); ?> : <?php echo $this->escapeHtml($formData['level_name']); ?>
                                         </td>
                                         <td width=354 valign="middle" style='width:353.95pt;border-top:none;border-left:
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -221,7 +221,7 @@
 
 
                                                 <?php echo $this->escapeHtml($formData['affiliation']); ?>
-                                                <?php echo ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : ""); ?>
+                                                <?php echo $this->escapeHtml(((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "")); ?>
 
                                         </td>
                                 </tr>
@@ -454,13 +454,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt; text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_1'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt; text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:3;height:28.8pt'>
@@ -506,13 +506,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt; text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_2'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt; text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:4;height:28.8pt'>
@@ -559,13 +559,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_3'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt; text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:5;height:28.8pt'>
@@ -611,13 +611,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_4'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:6;height:28.8pt'>
@@ -663,13 +663,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_5'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:7;height:28.8pt'>
@@ -715,13 +715,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_6'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_6'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:8;height:28.8pt'>
@@ -768,13 +768,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_7'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_7'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:9;height:28.8pt'>
@@ -821,13 +821,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_8'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_8'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:10;height:28.8pt'>
@@ -873,13 +873,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_9'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_9'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:11;height:28.8pt'>
@@ -925,13 +925,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_C_1_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_C_1_10'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PERSONAL_Q_1_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_10'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:12;height:28.8pt'>
@@ -1034,13 +1034,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:16.15pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_C_2_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_1'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:16.15pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_Q_2_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:15;height:28.8pt'>
@@ -1085,13 +1085,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_C_2_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_2'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_Q_2_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:16;height:28.8pt'>
@@ -1136,13 +1136,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_C_2_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_3'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_Q_2_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:17;height:28.8pt'>
@@ -1188,13 +1188,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_C_2_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_4'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_Q_2_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:18;height:28.8pt'>
@@ -1240,13 +1240,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_C_2_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_5'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_Q_2_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:19;height:28.8pt'>
@@ -1276,7 +1276,7 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PHYSICAL_SCORE']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PHYSICAL_SCORE'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:20;height:11.05pt'>
@@ -1350,13 +1350,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:11.05pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_1'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:11.05pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:22;height:28.8pt'>
@@ -1402,13 +1402,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_2'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:23;height:28.75pt'>
@@ -1454,13 +1454,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.75pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_3'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.75pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:24;height:56.65pt'>
@@ -1507,13 +1507,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:56.65pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_4'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:56.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:25;height:28.8pt'>
@@ -1558,13 +1558,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_5'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:26;height:14.5pt'>
@@ -1609,13 +1609,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:14.5pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_6'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:14.5pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_6'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:27;height:14.5pt'>
@@ -1661,13 +1661,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:14.5pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_7'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:14.5pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_7'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:28;height:28.8pt'>
@@ -1712,13 +1712,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_8'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_8'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:29;height:28.8pt'>
@@ -1764,13 +1764,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_9'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_9'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:30;height:28.8pt'>
@@ -1816,13 +1816,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_10'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_10'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:31;height:28.8pt'>
@@ -1869,13 +1869,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_C_3_11']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_C_3_11'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_Q_3_11']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_Q_3_11'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:32;height:28.8pt'>
@@ -1905,7 +1905,7 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['SAFETY_SCORE']); ?>
+                                                <?php echo $this->escapeHtml(($formData['SAFETY_SCORE'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:33;height:11.05pt'>
@@ -1987,13 +1987,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_1'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:35;height:19.0pt'>
@@ -2038,13 +2038,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:19.0pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_2'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:19.0pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:36;height:28.8pt'>
@@ -2091,13 +2091,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_3'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:37;height:28.8pt'>
@@ -2145,13 +2145,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_4'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:38;height:28.8pt'>
@@ -2198,13 +2198,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_5'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:39;height:11.05pt'>
@@ -2251,13 +2251,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:11.05pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_6'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:11.05pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_6'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:40;height:28.8pt'>
@@ -2304,13 +2304,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_7'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_7'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:41;height:17.65pt'>
@@ -2359,13 +2359,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_8'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_8'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:42;height:28.8pt'>
@@ -2412,13 +2412,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_9'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_9'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:43;height:28.8pt'>
@@ -2467,13 +2467,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_10'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_10'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:44;height:28.8pt'>
@@ -2522,13 +2522,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_11']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_11'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_11']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_11'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:45;height:28.8pt'>
@@ -2573,13 +2573,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_C_4_12']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_C_4_12'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRE_Q_4_12']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRE_Q_4_12'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:46;height:25.75pt'>
@@ -2600,7 +2600,7 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:25.75pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['PRETEST_SCORE']); ?>
+                                                <?php echo $this->escapeHtml(($formData['PRETEST_SCORE'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:47;height:11.05pt'>
@@ -2683,13 +2683,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_1'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:49;height:28.8pt'>
@@ -2735,13 +2735,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_2'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:50;height:28.8pt'>
@@ -2789,13 +2789,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_3'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:51;height:17.65pt'>
@@ -2842,13 +2842,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_4'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:52;height:28.8pt'>
@@ -2896,13 +2896,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_5'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:53;height:19.0pt'>
@@ -2949,13 +2949,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:19.0pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_6'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:19.0pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_6'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:54;height:19.0pt'>
@@ -3002,13 +3002,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:19.0pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_7'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:19.0pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_7'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:55;height:28.8pt'>
@@ -3055,13 +3055,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_8'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_8'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:56;height:28.8pt'>
@@ -3108,13 +3108,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_C_5_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_C_5_9'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_Q_5_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_Q_5_9'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:57;height:28.8pt'>
@@ -3134,7 +3134,7 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['TEST_SCORE']); ?>
+                                                <?php echo $this->escapeHtml(($formData['TEST_SCORE'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:58;height:11.05pt'>
@@ -3220,13 +3220,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_1'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:60;height:28.8pt'>
@@ -3276,13 +3276,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_2'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:61;height:28.8pt'>
@@ -3332,13 +3332,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_3'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:62;height:28.8pt'>
@@ -3386,13 +3386,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_4'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:63;height:28.8pt'>
@@ -3439,13 +3439,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_5'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:64;height:28.8pt'>
@@ -3491,13 +3491,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_6'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_6'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:65;height:28.8pt'>
@@ -3545,13 +3545,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_7'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_7'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:66;height:28.8pt'>
@@ -3599,13 +3599,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_8'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_8'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:67;height:28.8pt'>
@@ -3652,13 +3652,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_C_6_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_C_6_9'])); ?>
                                         </td>
                                         <td width=39 valign="middle" style='width:39.0pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_Q_6_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_Q_6_9'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:68;height:28.8pt'>
@@ -3677,7 +3677,7 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['POST_SCORE']); ?>
+                                                <?php echo $this->escapeHtml(($formData['POST_SCORE'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:69;height:19.6pt'>
@@ -3765,13 +3765,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:20.35pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_1'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:20.35pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_1']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_1'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:71;height:28.8pt'>
@@ -3818,13 +3818,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_2'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_2']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_2'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:72;height:28.8pt'>
@@ -3872,13 +3872,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_3'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_3']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_3'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:73;height:28.8pt'>
@@ -3925,13 +3925,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_4'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_4']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_4'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:74;height:28.8pt'>
@@ -3978,13 +3978,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_5'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_5']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_5'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:75;height:17.65pt'>
@@ -4030,13 +4030,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_6'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_6']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_6'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:76;height:28.8pt'>
@@ -4087,13 +4087,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_7'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_7']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_7'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:77;height:28.8pt'>
@@ -4140,13 +4140,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_8'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_8']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_8'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:78;height:28.8pt'>
@@ -4217,13 +4217,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:8.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_9'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:8.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_9']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_9'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:80;height:28.8pt'>
@@ -4271,13 +4271,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_10'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_10']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_10'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:81;height:28.8pt'>
@@ -4325,13 +4325,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_11']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_11'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_11']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_11'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:82;height:28.8pt'>
@@ -4379,13 +4379,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_12']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_12'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_12']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_12'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:83;height:17.65pt'>
@@ -4434,13 +4434,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;height:28.8pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_13']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_13'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;height:28.8pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_13']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_13'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:84;height:17.65pt'>
@@ -4490,13 +4490,13 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:left; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_C_7_14']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_C_7_14'])); ?>
                                         </td>
                                         <td width=39 style='width:39.0pt;border-top:none;border-left:none;border-bottom:
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_Q_7_14']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_Q_7_14'])); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:85;mso-yfti-lastrow:yes;height:17.65pt'>
@@ -4519,7 +4519,7 @@ mso-hansi-theme-font:major-latin'><?= $this->translate("PART B. SPI- RT Checklis
   solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;mso-border-top-alt:
   solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;mso-border-alt:
   solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:17.65pt;text-align:center; vertical-align:middle;'>
-                                                <?php echo ($formData['EQA_SCORE']); ?>
+                                                <?php echo $this->escapeHtml(($formData['EQA_SCORE'])); ?>
                                         </td>
                                 </tr>
                         </table>
@@ -4843,7 +4843,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
   mso-hansi-theme-font:major-latin'><?= $this->translate("Site Type:"); ?></span> <?php echo $this->escapeHtml($formData['testingpointtype']); ?>
-                                                        <?php echo ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : ""); ?>
+                                                        <?php echo $this->escapeHtml(((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "")); ?>
                                                 </p>
                                         </td>
                                         <td width=13 valign="middle" style='width:13.4pt;border:none;border-right:solid windowtext 1.5pt;
@@ -5138,7 +5138,7 @@ mso-hansi-theme-font:major-latin'><span
                                                                 $auditorSignature = json_decode($formData['auditorSignature'], true);
 
                                                                 if (isset($auditorSignature['url']) && $auditorSignature['url'] != "") {
-                                                                        echo "<img src='" . $auditorSignature['url'] . "' >";
+                                                                        echo "<img src='" . \Application\Service\CommonService::escapeHtml($auditorSignature['url']) . "' >";
                                                                 }
                                                         }
                                                         ?>

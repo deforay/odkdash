@@ -3,7 +3,7 @@
     <?php
     foreach($result as $val){
     ?>
-    <option value="<?php echo $this->escapeHtml($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
+    <option value="<?php echo $this->escapeHtml($val['geo_id']); ?>"><?php echo $this->escapeHtml(ucwords($val['geo_name'])); ?></option>
     <?php
         }
     ?>

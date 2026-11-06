@@ -50,12 +50,12 @@
                 <div class="form-group">
                   <label for="auditDate" class="col-sm-2 control-label"><?= $this->translate('Date of Audit (dd/mm/yyyy)'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" name="auditDate" class="form-control datepicker" value="<?php echo $this->humanReadableDateFormat($formData['assesmentofaudit']); ?>" readonly>
+                    <input type="text" placeholder="<?= $this->translate('Enter Date'); ?>" name="auditDate" class="form-control datepicker" value="<?php echo $this->escapeHtml($this->humanReadableDateFormat($formData['assesmentofaudit'])); ?>" readonly>
                   </div>
                   <label for="auditRound" class="col-sm-2 control-label"><?= $this->translate('Audit Round Number'); ?></label>
                   <div class=" col-lg-4">
                     <input type="text" placeholder="<?= $this->translate('Audit Round No'); ?>" name="auditRound" class="form-control" value="<?php echo $this->escapeHtml($formData['auditroundno']); ?>">
-                    <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo base64_encode($formData['id']); ?>">
+                    <input type="hidden" name="formId" id="formId" class="form-control" value="<?php echo $this->escapeHtml(base64_encode($formData['id'])); ?>">
                   </div>
                 </div>
 
@@ -68,44 +68,44 @@
                       if (isset($facilities['allName']) && count($facilities['allName']) > 0) {
                         foreach ($facilities['allName'] as $facilities) {
                       ?>
-                          <option value="<?php echo base64_encode($facilities['id']); ?>" <?php echo (isset($formData['facilityInfo']->fId) && $formData['facilityInfo']->fId == $facilities['id']) ? 'selected="selected"' : ''; ?>><?php echo ucwords($facilities['facility_name']); ?></option>
+                          <option value="<?php echo $this->escapeHtml(base64_encode($facilities['id'])); ?>" <?php echo (isset($formData['facilityInfo']->fId) && $formData['facilityInfo']->fId == $facilities['id']) ? 'selected="selected"' : ''; ?>><?php echo $this->escapeHtml(ucwords($facilities['facility_name'])); ?></option>
                       <?php }
                       } ?>
                     </select>
                   </div>
                   <label for="testingFacilityName" class="col-sm-2 control-label"><?= $this->translate('Testing Facility Name'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Testing Facility Name'); ?>" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fName)) ? $formData['facilityInfo']->fName : ''; ?>" onblur="copyFacilityName(this.value)">
+                    <input type="text" placeholder="<?= $this->translate('Testing Facility Name'); ?>" name="testingFacilityName" id="testingFacilityName" class="form-control" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fName)) ? $formData['facilityInfo']->fName : ''); ?>" onblur="copyFacilityName(this.value)">
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="testingFacilityId" class="col-sm-2 control-label"><?= $this->translate('Testing Facility ID'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Testing Facility ID'); ?>" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo (isset($formData['facilityInfo']->ffId)) ? $formData['facilityInfo']->ffId : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Testing Facility ID'); ?>" name="testingFacilityId" id="testingFacilityId" class="form-control" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->ffId)) ? $formData['facilityInfo']->ffId : ''); ?>">
                   </div>
                   <label for="email" class="col-sm-2 control-label"><?= $this->translate('Email'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Email'); ?>" name="email" id="email" class="form-control isEmail" value="<?php echo (isset($formData['facilityInfo']->fEmail)) ? $formData['facilityInfo']->fEmail : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Email'); ?>" name="email" id="email" class="form-control isEmail" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fEmail)) ? $formData['facilityInfo']->fEmail : ''); ?>">
                   </div>
                 </div>
 
                 <div class="form-group">
                   <label for="contactPerson" class="col-sm-2 control-label"><?= $this->translate('Name of the Contact Person'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo (isset($formData['facilityInfo']->fCPerson)) ? $formData['facilityInfo']->fCPerson : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Name of the Contact Person'); ?>" name="contactPerson" id="contactPerson" class="form-control" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fCPerson)) ? $formData['facilityInfo']->fCPerson : ''); ?>">
                   </div>
 
                   <label for="latitude" class="col-sm-2 control-label"><?= $this->translate('Latitude'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLatitude)) ? $formData['facilityInfo']->fLatitude : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Latitude'); ?>" name="latitude" id="latitude" class="form-control checkNum" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fLatitude)) ? $formData['facilityInfo']->fLatitude : ''); ?>">
                   </div>
                 </div>
 
                 <div class="form-group ">
                   <label for="longitude" class="col-sm-2 control-label"><?= $this->translate('Longitude'); ?></label>
                   <div class=" col-lg-4">
-                    <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo (isset($formData['facilityInfo']->fLongitude)) ? $formData['facilityInfo']->fLongitude : ''; ?>">
+                    <input type="text" placeholder="<?= $this->translate('Longitude'); ?>" name="longitude" id="longitude" class="form-control checkNum" value="<?php echo $this->escapeHtml((isset($formData['facilityInfo']->fLongitude)) ? $formData['facilityInfo']->fLongitude : ''); ?>">
                   </div>
                   <label for="testingPointType" class="col-sm-2 control-label"><?= $this->translate('Type of testing point'); ?></label>
                   <div class="col-lg-4">
@@ -209,8 +209,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_1_HIV_TRAINING']) && $formData['PERSONAL_Q_1_1_HIV_TRAINING'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_1"><?php echo ($formData['PERSONAL_C_1_1_HIV_TRAINING']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_1_HIV_TRAINING']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_1"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_1_HIV_TRAINING'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_1_HIV_TRAINING'])); ?></td>
                           </tr>
 
                           <tr>
@@ -225,8 +225,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_2_HIV_TESTING_REGISTER']) && $formData['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_2"><?php echo ($formData['PERSONAL_C_1_2_HIV_TESTING_REGISTER']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_2_HIV_TESTING_REGISTER']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_2"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_2_HIV_TESTING_REGISTER'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_2_HIV_TESTING_REGISTER'])); ?></td>
                           </tr>
 
                           <tr>
@@ -241,8 +241,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_3_EQA_PT']) && $formData['PERSONAL_Q_1_3_EQA_PT'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_3"><?php echo ($formData['PERSONAL_C_1_3_EQA_PT']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_3_EQA_PT']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_3"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_3_EQA_PT'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_3_EQA_PT'])); ?></td>
                           </tr>
 
                           <tr>
@@ -257,8 +257,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_4_QC_PROCESS']) && $formData['PERSONAL_Q_1_4_QC_PROCESS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_4"><?php echo ($formData['PERSONAL_C_1_4_QC_PROCESS']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_4_QC_PROCESS']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_4"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_4_QC_PROCESS'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_4_QC_PROCESS'])); ?></td>
                           </tr>
 
                           <tr>
@@ -273,8 +273,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_5_SAFETY_MANAGEMENT']) && $formData['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_5"><?php echo ($formData['PERSONAL_C_1_5_SAFETY_MANAGEMENT']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_5_SAFETY_MANAGEMENT']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_5"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_5_SAFETY_MANAGEMENT'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_5_SAFETY_MANAGEMENT'])); ?></td>
                           </tr>
 
                           <tr>
@@ -289,8 +289,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_6_REFRESHER_TRAINING']) && $formData['PERSONAL_Q_1_6_REFRESHER_TRAINING'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_6"><?php echo ($formData['PERSONAL_C_1_6_REFRESHER_TRAINING']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_6_REFRESHER_TRAINING']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_6"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_6_REFRESHER_TRAINING'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_6_REFRESHER_TRAINING'])); ?></td>
                           </tr>
 
                           <tr>
@@ -305,8 +305,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING']) && $formData['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_7"><?php echo ($formData['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_7"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_7_HIV_COMPETENCY_TESTING'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_7_HIV_COMPETENCY_TESTING'])); ?></td>
                           </tr>
 
                           <tr>
@@ -321,8 +321,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION']) && $formData['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_8"><?php echo ($formData['PERSONAL_C_1_8_NATIONAL_CERTIFICATION']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_8"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_8_NATIONAL_CERTIFICATION'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_8_NATIONAL_CERTIFICATION'])); ?></td>
                           </tr>
 
                           <tr>
@@ -337,8 +337,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_9_CERTIFIED_TESTERS']) && $formData['PERSONAL_Q_1_9_CERTIFIED_TESTERS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_9"><?php echo ($formData['PERSONAL_C_1_9_CERTIFIED_TESTERS']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_9_CERTIFIED_TESTERS']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_9"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_9_CERTIFIED_TESTERS'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_9_CERTIFIED_TESTERS'])); ?></td>
                           </tr>
 
                           <tr>
@@ -353,8 +353,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PERSONAL_Q_1_10_RECERTIFIED']) && $formData['PERSONAL_Q_1_10_RECERTIFIED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="personal_c_1_10"><?php echo ($formData['PERSONAL_C_1_10_RECERTIFIED']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PERSONAL_Q_1_10_RECERTIFIED']); ?></td>
+                            <td><textarea class="form-control" name="personal_c_1_10"><?php echo $this->escapeHtml(($formData['PERSONAL_C_1_10_RECERTIFIED'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PERSONAL_Q_1_10_RECERTIFIED'])); ?></td>
                           </tr>
 
                           <tr>
@@ -400,8 +400,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PHYSICAL_Q_2_1_DESIGNATED_HIV_AREA']) && $formData['PHYSICAL_Q_2_1_DESIGNATED_HIV_AREA'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="physical_c_2_1"><?php echo ($formData['PHYSICAL_C_2_1_DESIGNATED_HIV_AREA']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_1_DESIGNATED_HIV_AREA']); ?></td>
+                            <td><textarea class="form-control" name="physical_c_2_1"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_1_DESIGNATED_HIV_AREA'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_1_DESIGNATED_HIV_AREA'])); ?></td>
                           </tr>
                           <tr>
                             <td>2.2</td>
@@ -415,8 +415,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PHYSICAL_Q_2_2_CLEAN_TESTING_AREA']) && $formData['PHYSICAL_Q_2_2_CLEAN_TESTING_AREA'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="physical_c_2_2"><?php echo ($formData['PHYSICAL_C_2_2_CLEAN_TESTING_AREA']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_2_CLEAN_TESTING_AREA']); ?></td>
+                            <td><textarea class="form-control" name="physical_c_2_2"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_2_CLEAN_TESTING_AREA'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_2_CLEAN_TESTING_AREA'])); ?></td>
                           </tr>
                           <tr>
                             <td>2.3</td>
@@ -430,8 +430,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PHYSICAL_Q_2_3_SUFFICIENT_LIGHT_AVAILABILITY']) && $formData['PHYSICAL_Q_2_3_SUFFICIENT_LIGHT_AVAILABILITY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="physical_c_2_3"><?php echo ($formData['PHYSICAL_C_2_3_SUFFICIENT_LIGHT_AVAILABILITY']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_3_SUFFICIENT_LIGHT_AVAILABILITY']); ?></td>
+                            <td><textarea class="form-control" name="physical_c_2_3"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_3_SUFFICIENT_LIGHT_AVAILABILITY'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_3_SUFFICIENT_LIGHT_AVAILABILITY'])); ?></td>
                           </tr>
                           <tr>
                             <td>2.4</td>
@@ -445,8 +445,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PHYSICAL_Q_2_4_TEST_KIT_STORAGE']) && $formData['PHYSICAL_Q_2_4_TEST_KIT_STORAGE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="physical_c_2_4"><?php echo ($formData['PHYSICAL_C_2_4_TEST_KIT_STORAGE']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_4_TEST_KIT_STORAGE']); ?></td>
+                            <td><textarea class="form-control" name="physical_c_2_4"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_4_TEST_KIT_STORAGE'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_4_TEST_KIT_STORAGE'])); ?></td>
                           </tr>
                           <tr>
                             <td>2.5</td>
@@ -460,8 +460,8 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PHYSICAL_Q_2_5_SUFFICIENT_SECURE_STORAGE']) && $formData['PHYSICAL_Q_2_5_SUFFICIENT_SECURE_STORAGE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="physical_c_2_5"><?php echo ($formData['PHYSICAL_C_2_5_SUFFICIENT_SECURE_STORAGE']); ?></textarea></td>
-                            <td style="text-align:center;"><?php echo ($formData['PHYSICAL_Q_2_5_SUFFICIENT_SECURE_STORAGE']); ?></td>
+                            <td><textarea class="form-control" name="physical_c_2_5"><?php echo $this->escapeHtml(($formData['PHYSICAL_C_2_5_SUFFICIENT_SECURE_STORAGE'])); ?></textarea></td>
+                            <td style="text-align:center;"><?php echo $this->escapeHtml(($formData['PHYSICAL_Q_2_5_SUFFICIENT_SECURE_STORAGE'])); ?></td>
                           </tr>
                           <tr>
                             <td colspan="6" style="font-weight:bold;"><?= $this->translate('2.0 PHYSICAL FACILITY SCORE'); ?></td>
@@ -505,7 +505,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_1"><?php echo ($formData['SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_1"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_1_IMPLEMENT_SAFETY_PRACTICES'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_1_IMPLEMENT_SAFETY_PRACTICES']); ?></td>
                           </tr>
                           <tr>
@@ -520,7 +520,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE']) && $formData['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_2"><?php echo ($formData['SAFETY_C_3_2_ACCIDENTAL_EXPOSURE']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_2"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_2_ACCIDENTAL_EXPOSURE'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_2_ACCIDENTAL_EXPOSURE']); ?></td>
                           </tr>
                           <tr>
@@ -535,7 +535,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES']) && $formData['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_3"><?php echo ($formData['SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_3"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_3_PRACTICE_SAFETY_PRACTICES'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_3_PRACTICE_SAFETY_PRACTICES']); ?></td>
                           </tr>
                           <tr>
@@ -550,7 +550,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_4_PPE_AVAILABILITY']) && $formData['SAFETY_Q_3_4_PPE_AVAILABILITY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_4"><?php echo ($formData['SAFETY_C_3_4_PPE_AVAILABILITY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_4"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_4_PPE_AVAILABILITY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_4_PPE_AVAILABILITY']); ?></td>
                           </tr>
                           <tr>
@@ -565,7 +565,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_5_PPE_USED_PROPERLY']) && $formData['SAFETY_Q_3_5_PPE_USED_PROPERLY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_5"><?php echo ($formData['SAFETY_C_3_5_PPE_USED_PROPERLY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_5"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_5_PPE_USED_PROPERLY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_5_PPE_USED_PROPERLY']); ?></td>
                           </tr>
                           <tr>
@@ -580,7 +580,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY']) && $formData['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_6"><?php echo ($formData['SAFETY_C_3_6_WATER_SOAP_AVAILABILITY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_6"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_6_WATER_SOAP_AVAILABILITY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_6_WATER_SOAP_AVAILABILITY']); ?></td>
                           </tr>
                           <tr>
@@ -595,7 +595,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE']) && $formData['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_7"><?php echo ($formData['SAFETY_C_3_7_DISINFECTANT_AVAILABLE']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_7"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_7_DISINFECTANT_AVAILABLE'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_7_DISINFECTANT_AVAILABLE']); ?></td>
                           </tr>
                           <tr>
@@ -610,7 +610,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY']) && $formData['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_8"><?php echo ($formData['SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_8"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_8_DISINFECTANT_LABELED_PROPERLY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_8_DISINFECTANT_LABELED_PROPERLY']); ?></td>
                           </tr>
                           <tr>
@@ -625,7 +625,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_9_SEGREGATION_OF_WASTE']) && $formData['SAFETY_Q_3_9_SEGREGATION_OF_WASTE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_9"><?php echo ($formData['SAFETY_C_3_9_SEGREGATION_OF_WASTE']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_9"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_9_SEGREGATION_OF_WASTE'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_9_SEGREGATION_OF_WASTE']); ?></td>
                           </tr>
                           <tr>
@@ -640,7 +640,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED']) && $formData['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="safety_c_3_10"><?php echo ($formData['SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="safety_c_3_10"><?php echo $this->escapeHtml(($formData['SAFETY_C_3_10_INFECTIOUS_WASTE_EMPTIED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['SAFETY_Q_3_10_INFECTIOUS_WASTE_EMPTIED']); ?></td>
                           </tr>
                           <tr>
@@ -685,7 +685,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_1_NATIONAL_GUIDELINES']) && $formData['PRE_Q_4_1_NATIONAL_GUIDELINES'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_1"><?php echo ($formData['PRE_C_4_1_NATIONAL_GUIDELINES']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_1"><?php echo $this->escapeHtml(($formData['PRE_C_4_1_NATIONAL_GUIDELINES'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_1_NATIONAL_GUIDELINES']); ?></td>
                           </tr>
                           <tr>
@@ -700,7 +700,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_2_HIV_TESTING_ALGORITHM']) && $formData['PRE_Q_4_2_HIV_TESTING_ALGORITHM'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_2"><?php echo ($formData['PRE_C_4_2_HIV_TESTING_ALGORITHM']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_2"><?php echo $this->escapeHtml(($formData['PRE_C_4_2_HIV_TESTING_ALGORITHM'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_2_HIV_TESTING_ALGORITHM']); ?></td>
                           </tr>
                           <tr>
@@ -715,7 +715,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_3_TEST_PROCEDURES_ACCESSIBLE']) && $formData['PRE_Q_4_3_TEST_PROCEDURES_ACCESSIBLE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_3"><?php echo ($formData['PRE_C_4_3_TEST_PROCEDURES_ACCESSIBLE']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_3"><?php echo $this->escapeHtml(($formData['PRE_C_4_3_TEST_PROCEDURES_ACCESSIBLE'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_3_TEST_PROCEDURES_ACCESSIBLE']); ?></td>
                           </tr>
                           <tr>
@@ -730,7 +730,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_4_TEST_PROCEDURES_ACCURATE']) && $formData['PRE_Q_4_4_TEST_PROCEDURES_ACCURATE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_4"><?php echo ($formData['PRE_C_4_4_TEST_PROCEDURES_ACCURATE']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_4"><?php echo $this->escapeHtml(($formData['PRE_C_4_4_TEST_PROCEDURES_ACCURATE'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_4_TEST_PROCEDURES_ACCURATE']); ?></td>
                           </tr>
                           <tr>
@@ -745,7 +745,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_5_APPROVED_KITS_AVAILABLE']) && $formData['PRE_Q_4_5_APPROVED_KITS_AVAILABLE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_5"><?php echo ($formData['PRE_C_4_5_APPROVED_KITS_AVAILABLE']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_5"><?php echo $this->escapeHtml(($formData['PRE_C_4_5_APPROVED_KITS_AVAILABLE'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_5_APPROVED_KITS_AVAILABLE']); ?></td>
                           </tr>
                           <tr>
@@ -760,7 +760,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_6_HIV_KITS_EXPIRATION']) && $formData['PRE_Q_4_6_HIV_KITS_EXPIRATION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_6"><?php echo ($formData['PRE_C_4_6_HIV_KITS_EXPIRATION']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_6"><?php echo $this->escapeHtml(($formData['PRE_C_4_6_HIV_KITS_EXPIRATION'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_6_HIV_KITS_EXPIRATION']); ?></td>
                           </tr>
                           <tr>
@@ -775,7 +775,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_7_KIT_SUPPLIES_AVAILABILITY']) && $formData['PRE_Q_4_7_KIT_SUPPLIES_AVAILABILITY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_7"><?php echo ($formData['PRE_C_4_7_KIT_SUPPLIES_AVAILABILITY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_7"><?php echo $this->escapeHtml(($formData['PRE_C_4_7_KIT_SUPPLIES_AVAILABILITY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_7_KIT_SUPPLIES_AVAILABILITY']); ?></td>
                           </tr>
                           <tr>
@@ -790,7 +790,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_8_STOCK_MANAGEMENT']) && $formData['PRE_Q_4_8_STOCK_MANAGEMENT'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_8"><?php echo ($formData['PRE_C_4_8_STOCK_MANAGEMENT']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_8"><?php echo $this->escapeHtml(($formData['PRE_C_4_8_STOCK_MANAGEMENT'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_8_STOCK_MANAGEMENT']); ?></td>
                           </tr>
                           <tr>
@@ -805,7 +805,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_9_DOCUMENTED_INVENTORY']) && $formData['PRE_Q_4_9_DOCUMENTED_INVENTORY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_9"><?php echo ($formData['PRE_C_4_9_DOCUMENTED_INVENTORY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_9"><?php echo $this->escapeHtml(($formData['PRE_C_4_9_DOCUMENTED_INVENTORY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_9_DOCUMENTED_INVENTORY']); ?></td>
                           </tr>
                           <tr>
@@ -820,7 +820,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_10_SOPS_BLOOD_COLLECTION']) && $formData['PRE_Q_4_10_SOPS_BLOOD_COLLECTION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_10"><?php echo ($formData['PRE_C_4_10_SOPS_BLOOD_COLLECTION']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_10"><?php echo $this->escapeHtml(($formData['PRE_C_4_10_SOPS_BLOOD_COLLECTION'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_10_SOPS_BLOOD_COLLECTION']); ?></td>
                           </tr>
                           <tr>
@@ -835,7 +835,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_11_BLOOD_COLLECTION_SUPPLIES']) && $formData['PRE_Q_4_11_BLOOD_COLLECTION_SUPPLIES'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_11"><?php echo ($formData['PRE_C_4_11_BLOOD_COLLECTION_SUPPLIES']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_11"><?php echo $this->escapeHtml(($formData['PRE_C_4_11_BLOOD_COLLECTION_SUPPLIES'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_11_BLOOD_COLLECTION_SUPPLIES']); ?></td>
                           </tr>
                           <tr>
@@ -850,7 +850,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_12_CLIENT_IDENTIFICATION']) && $formData['PRE_Q_4_12_CLIENT_IDENTIFICATION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_12"><?php echo ($formData['PRE_C_4_12_CLIENT_IDENTIFICATION']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_12"><?php echo $this->escapeHtml(($formData['PRE_C_4_12_CLIENT_IDENTIFICATION'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_12_CLIENT_IDENTIFICATION']); ?></td>
                           </tr>
                           <tr>
@@ -865,7 +865,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['PRE_Q_4_13_CLIENT_ID_RECORDED']) && $formData['PRE_Q_4_13_CLIENT_ID_RECORDED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="pre_c_4_12"><?php echo ($formData['PRE_C_4_13_CLIENT_ID_RECORDED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="pre_c_4_12"><?php echo $this->escapeHtml(($formData['PRE_C_4_13_CLIENT_ID_RECORDED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['PRE_Q_4_13_CLIENT_ID_RECORDED']); ?></td>
                           </tr>
                           <tr>
@@ -910,7 +910,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_1_PROCEDURES_TESTING_ALGORITHM']) && $formData['TEST_Q_5_1_PROCEDURES_TESTING_ALGORITHM'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_1"><?php echo ($formData['TEST_C_5_1_PROCEDURES_TESTING_ALGORITHM']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_1"><?php echo $this->escapeHtml(($formData['TEST_C_5_1_PROCEDURES_TESTING_ALGORITHM'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_1_PROCEDURES_TESTING_ALGORITHM']); ?></td>
                           </tr>
                           <tr>
@@ -925,7 +925,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_2_TIMERS_AVAILABILITY']) && $formData['TEST_Q_5_2_TIMERS_AVAILABILITY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_2"><?php echo ($formData['TEST_C_5_2_TIMERS_AVAILABILITY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_2"><?php echo $this->escapeHtml(($formData['TEST_C_5_2_TIMERS_AVAILABILITY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_2_TIMERS_AVAILABILITY']); ?></td>
                           </tr>
                           <tr>
@@ -940,7 +940,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_3_SAMPLE_DEVICE_ACCURACY']) && $formData['TEST_Q_5_3_SAMPLE_DEVICE_ACCURACY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_3"><?php echo ($formData['TEST_C_5_3_SAMPLE_DEVICE_ACCURACY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_3"><?php echo $this->escapeHtml(($formData['TEST_C_5_3_SAMPLE_DEVICE_ACCURACY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_3_SAMPLE_DEVICE_ACCURACY']); ?></td>
                           </tr>
                           <tr>
@@ -955,7 +955,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_4_TESTING_PROCEDURE_FOLLOWED']) && $formData['TEST_Q_5_4_TESTING_PROCEDURE_FOLLOWED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_4"><?php echo ($formData['TEST_C_5_4_TESTING_PROCEDURE_FOLLOWED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_4"><?php echo $this->escapeHtml(($formData['TEST_C_5_4_TESTING_PROCEDURE_FOLLOWED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_4_TESTING_PROCEDURE_FOLLOWED']); ?></td>
                           </tr>
                           <tr>
@@ -970,7 +970,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_5_QUALITY_CONTROL']) && $formData['TEST_Q_5_5_QUALITY_CONTROL'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_5"><?php echo ($formData['TEST_C_5_5_QUALITY_CONTROL']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_5"><?php echo $this->escapeHtml(($formData['TEST_C_5_5_QUALITY_CONTROL'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_5_QUALITY_CONTROL']); ?></td>
                           </tr>
                           <tr>
@@ -985,7 +985,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_6_QC_RESULTS_RECORDED']) && $formData['TEST_Q_5_6_QC_RESULTS_RECORDED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_6"><?php echo ($formData['TEST_C_5_6_QC_RESULTS_RECORDED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_6"><?php echo $this->escapeHtml(($formData['TEST_C_5_6_QC_RESULTS_RECORDED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_6_QC_RESULTS_RECORDED']); ?></td>
                           </tr>
                           <tr>
@@ -1000,7 +1000,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_7_INCORRECT_QC_RESULTS']) && $formData['TEST_Q_5_7_INCORRECT_QC_RESULTS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_7"><?php echo ($formData['TEST_C_5_7_INCORRECT_QC_RESULTS']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_7"><?php echo $this->escapeHtml(($formData['TEST_C_5_7_INCORRECT_QC_RESULTS'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_7_INCORRECT_QC_RESULTS']); ?></td>
                           </tr>
                           <tr>
@@ -1015,7 +1015,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_8_APPROPRIATE_STEPS_TAKEN']) && $formData['TEST_Q_5_8_APPROPRIATE_STEPS_TAKEN'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_8"><?php echo ($formData['TEST_C_5_8_APPROPRIATE_STEPS_TAKEN']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_8"><?php echo $this->escapeHtml(($formData['TEST_C_5_8_APPROPRIATE_STEPS_TAKEN'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_8_APPROPRIATE_STEPS_TAKEN']); ?></td>
                           </tr>
                           <tr>
@@ -1030,7 +1030,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['TEST_Q_5_9_REVIEW_QC_RECORDS']) && $formData['TEST_Q_5_9_REVIEW_QC_RECORDS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="test_c_5_9"><?php echo ($formData['TEST_C_5_9_REVIEW_QC_RECORDS']); ?></textarea></td>
+                            <td><textarea class="form-control" name="test_c_5_9"><?php echo $this->escapeHtml(($formData['TEST_C_5_9_REVIEW_QC_RECORDS'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['TEST_Q_5_9_REVIEW_QC_RECORDS']); ?></td>
                           </tr>
 
@@ -1076,7 +1076,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_1_STANDARDIZED_HIV_REGISTER']) && $formData['POST_Q_6_1_STANDARDIZED_HIV_REGISTER'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_1"><?php echo ($formData['POST_C_6_1_STANDARDIZED_HIV_REGISTER']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_1"><?php echo $this->escapeHtml(($formData['POST_C_6_1_STANDARDIZED_HIV_REGISTER'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_1_STANDARDIZED_HIV_REGISTER']); ?></td>
                           </tr>
                           <tr>
@@ -1091,7 +1091,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_2_ELEMENTS_CAPTURED_CORRECTLY']) && $formData['POST_Q_6_2_ELEMENTS_CAPTURED_CORRECTLY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_2"><?php echo ($formData['POST_C_6_2_ELEMENTS_CAPTURED_CORRECTLY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_2"><?php echo $this->escapeHtml(($formData['POST_C_6_2_ELEMENTS_CAPTURED_CORRECTLY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_2_ELEMENTS_CAPTURED_CORRECTLY']); ?></td>
                           </tr>
                           <tr>
@@ -1106,7 +1106,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_3_PAGE_TOTAL_SUMMARY']) && $formData['POST_Q_6_3_PAGE_TOTAL_SUMMARY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_3"><?php echo ($formData['POST_C_6_3_PAGE_TOTAL_SUMMARY']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_3"><?php echo $this->escapeHtml(($formData['POST_C_6_3_PAGE_TOTAL_SUMMARY'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_3_PAGE_TOTAL_SUMMARY']); ?></td>
                           </tr>
                           <tr>
@@ -1121,7 +1121,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_4_INVALID_TEST_RESULT_RECORDED']) && $formData['POST_Q_6_4_INVALID_TEST_RESULT_RECORDED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_4"><?php echo ($formData['POST_C_6_4_INVALID_TEST_RESULT_RECORDED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_4"><?php echo $this->escapeHtml(($formData['POST_C_6_4_INVALID_TEST_RESULT_RECORDED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_4_INVALID_TEST_RESULT_RECORDED']); ?></td>
                           </tr>
                           <tr>
@@ -1136,7 +1136,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_5_APPROPRIATE_STEPS_TAKEN']) && $formData['POST_Q_6_5_APPROPRIATE_STEPS_TAKEN'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_5"><?php echo ($formData['POST_C_6_5_APPROPRIATE_STEPS_TAKEN']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_5"><?php echo $this->escapeHtml(($formData['POST_C_6_5_APPROPRIATE_STEPS_TAKEN'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_5_APPROPRIATE_STEPS_TAKEN']); ?></td>
                           </tr>
                           <tr>
@@ -1151,7 +1151,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_6_REGISTERS_REVIEWED']) && $formData['POST_Q_6_6_REGISTERS_REVIEWED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_6"><?php echo ($formData['POST_C_6_6_REGISTERS_REVIEWED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_6"><?php echo $this->escapeHtml(($formData['POST_C_6_6_REGISTERS_REVIEWED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_6_REGISTERS_REVIEWED']); ?></td>
                           </tr>
                           <tr>
@@ -1166,7 +1166,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_7_DOCUMENTS_SECURELY_KEPT']) && $formData['POST_Q_6_7_DOCUMENTS_SECURELY_KEPT'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_7"><?php echo ($formData['POST_C_6_7_DOCUMENTS_SECURELY_KEPT']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_7"><?php echo $this->escapeHtml(($formData['POST_C_6_7_DOCUMENTS_SECURELY_KEPT'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_7_DOCUMENTS_SECURELY_KEPT']); ?></td>
                           </tr>
                           <tr>
@@ -1181,7 +1181,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_8_REGISTER_SECURE_LOCATION']) && $formData['POST_Q_6_8_REGISTER_SECURE_LOCATION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_8"><?php echo ($formData['POST_C_6_8_REGISTER_SECURE_LOCATION']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_8"><?php echo $this->escapeHtml(($formData['POST_C_6_8_REGISTER_SECURE_LOCATION'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_8_REGISTER_SECURE_LOCATION']); ?></td>
                           </tr>
                           <tr>
@@ -1196,7 +1196,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['POST_Q_6_9_REGISTERS_PROPERLY_LABELED']) && $formData['POST_Q_6_9_REGISTERS_PROPERLY_LABELED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="post_C_6_9"><?php echo ($formData['POST_C_6_9_REGISTERS_PROPERLY_LABELED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="post_C_6_9"><?php echo $this->escapeHtml(($formData['POST_C_6_9_REGISTERS_PROPERLY_LABELED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['POST_Q_6_9_REGISTERS_PROPERLY_LABELED']); ?></td>
                           </tr>
 
@@ -1242,7 +1242,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_1_PT_ENROLLMENT']) && $formData['EQA_Q_7_1_PT_ENROLLMENT'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_1"><?php echo ($formData['EQA_C_7_1_PT_ENROLLMENT']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_1"><?php echo $this->escapeHtml(($formData['EQA_C_7_1_PT_ENROLLMENT'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_1_PT_ENROLLMENT']); ?></td>
                           </tr>
                           <tr>
@@ -1257,7 +1257,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_2_TESTING_EQAPT_SAMPLES']) && $formData['EQA_Q_7_2_TESTING_EQAPT_SAMPLES'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_2"><?php echo ($formData['EQA_C_7_2_TESTING_EQAPT_SAMPLES']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_2"><?php echo $this->escapeHtml(($formData['EQA_C_7_2_TESTING_EQAPT_SAMPLES'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_2_TESTING_EQAPT_SAMPLES']); ?></td>
                           </tr>
                           <tr>
@@ -1272,7 +1272,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_3_REVIEW_BEFORE_SUBMISSION']) && $formData['EQA_Q_7_3_REVIEW_BEFORE_SUBMISSION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_3"><?php echo ($formData['EQA_C_7_3_REVIEW_BEFORE_SUBMISSION']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_3"><?php echo $this->escapeHtml(($formData['EQA_C_7_3_REVIEW_BEFORE_SUBMISSION'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_3_REVIEW_BEFORE_SUBMISSION']); ?></td>
                           </tr>
                           <tr>
@@ -1287,7 +1287,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_4_FEEDBACK_RECEIVED_REVIEWED']) && $formData['EQA_Q_7_4_FEEDBACK_RECEIVED_REVIEWED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_4"><?php echo ($formData['EQA_C_7_4_FEEDBACK_RECEIVED_REVIEWED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_4"><?php echo $this->escapeHtml(($formData['EQA_C_7_4_FEEDBACK_RECEIVED_REVIEWED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_4_FEEDBACK_RECEIVED_REVIEWED']); ?></td>
                           </tr>
                           <tr>
@@ -1302,7 +1302,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_5_IMPLEMENT_CORRECTIVE_ACTION']) && $formData['EQA_Q_7_5_IMPLEMENT_CORRECTIVE_ACTION'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_5"><?php echo ($formData['EQA_C_7_5_IMPLEMENT_CORRECTIVE_ACTION']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_5"><?php echo $this->escapeHtml(($formData['EQA_C_7_5_IMPLEMENT_CORRECTIVE_ACTION'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_5_IMPLEMENT_CORRECTIVE_ACTION']); ?></td>
                           </tr>
                           <tr>
@@ -1317,7 +1317,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_6_RECEIVE_PERIODIC_VISITS']) && $formData['EQA_Q_7_6_RECEIVE_PERIODIC_VISITS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_6"><?php echo ($formData['EQA_C_7_6_RECEIVE_PERIODIC_VISITS']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_6"><?php echo $this->escapeHtml(($formData['EQA_C_7_6_RECEIVE_PERIODIC_VISITS'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_6_RECEIVE_PERIODIC_VISITS']); ?></td>
                           </tr>
                           <tr>
@@ -1332,7 +1332,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_7_FEEDBACK_PROVIDED_DOCUMENTED']) && $formData['EQA_Q_7_7_FEEDBACK_PROVIDED_DOCUMENTED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_7"><?php echo ($formData['EQA_C_7_7_FEEDBACK_PROVIDED_DOCUMENTED']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_7"><?php echo $this->escapeHtml(($formData['EQA_C_7_7_FEEDBACK_PROVIDED_DOCUMENTED'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_7_FEEDBACK_PROVIDED_DOCUMENTED']); ?></td>
                           </tr>
                           <tr>
@@ -1347,7 +1347,7 @@
                             <td style="text-align:center;">
                               <?php echo (isset($formData['EQA_Q_7_8_TESTERS_RETRAINED_IN_VISITS']) && $formData['EQA_Q_7_8_TESTERS_RETRAINED_IN_VISITS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                             </td>
-                            <td><textarea class="form-control" name="eqa_c_7_8"><?php echo ($formData['EQA_C_7_8_TESTERS_RETRAINED_IN_VISITS']); ?></textarea></td>
+                            <td><textarea class="form-control" name="eqa_c_7_8"><?php echo $this->escapeHtml(($formData['EQA_C_7_8_TESTERS_RETRAINED_IN_VISITS'])); ?></textarea></td>
                             <td style="text-align:center;"><?php echo $this->escapeHtml($formData['EQA_Q_7_8_TESTERS_RETRAINED_IN_VISITS']); ?></td>
                           </tr>
                           <tr>
@@ -1392,7 +1392,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING']) && $formData['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_1"><?php echo ($formData['RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_1"><?php echo $this->escapeHtml(($formData['RTRI_C_8_1_TESTERS_RECEIVED_RTRI_TRAINING'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_1_TESTERS_RECEIVED_RTRI_TRAINING']); ?></td>
                             </tr>
                             <tr>
@@ -1407,7 +1407,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY']) && $formData['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_2"><?php echo ($formData['RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_2"><?php echo $this->escapeHtml(($formData['RTRI_C_8_2_TESTERS_DEMONSTRATED_COMPETENCY'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_2_TESTERS_DEMONSTRATED_COMPETENCY']); ?></td>
                             </tr>
                             <tr>
@@ -1422,7 +1422,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE']) && $formData['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_3"><?php echo ($formData['RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_3"><?php echo $this->escapeHtml(($formData['RTRI_C_8_3_JOBAIDS_READILY_AVAILABLE'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_3_JOBAIDS_READILY_AVAILABLE']); ?></td>
                             </tr>
                             <tr>
@@ -1438,7 +1438,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE']) && $formData['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_4"><?php echo ($formData['RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_4"><?php echo $this->escapeHtml(($formData['RTRI_C_8_4_SUFFICIENT_SUPPLY_AVAILABLE'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_4_SUFFICIENT_SUPPLY_AVAILABLE']); ?></td>
                             </tr>
                             <tr>
@@ -1453,7 +1453,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_5_RTRI_KIT_STORAGE']) && $formData['RTRI_Q_8_5_RTRI_KIT_STORAGE'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_5"><?php echo ($formData['RTRI_C_8_5_RTRI_KIT_STORAGE']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_5"><?php echo $this->escapeHtml(($formData['RTRI_C_8_5_RTRI_KIT_STORAGE'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_5_RTRI_KIT_STORAGE']); ?></td>
                             </tr>
                             <tr>
@@ -1468,7 +1468,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED']) && $formData['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_6"><?php echo ($formData['RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_6"><?php echo $this->escapeHtml(($formData['RTRI_C_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_6_RTRI_TESTING_PROCEDURE_FOLLOWED']); ?></td>
                             </tr>
                             <tr>
@@ -1483,7 +1483,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED']) && $formData['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_7"><?php echo ($formData['RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_7"><?php echo $this->escapeHtml(($formData['RTRI_C_8_7_RTRI_TESTING_RESULTS_DOCUMENTED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_7_RTRI_TESTING_RESULTS_DOCUMENTED']); ?></td>
                             </tr>
                             <tr>
@@ -1498,7 +1498,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_8_QC_ROUTINELY_USED']) && $formData['RTRI_Q_8_8_QC_ROUTINELY_USED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_8"><?php echo ($formData['RTRI_C_8_8_QC_ROUTINELY_USED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_8"><?php echo $this->escapeHtml(($formData['RTRI_C_8_8_QC_ROUTINELY_USED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_8_QC_ROUTINELY_USED']); ?></td>
                             </tr>
                             <tr>
@@ -1513,7 +1513,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_9_QC_RESULTS_RECORDED']) && $formData['RTRI_Q_8_9_QC_RESULTS_RECORDED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_9"><?php echo ($formData['RTRI_C_8_9_QC_RESULTS_RECORDED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_9"><?php echo $this->escapeHtml(($formData['RTRI_C_8_9_QC_RESULTS_RECORDED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_9_QC_RESULTS_RECORDED']); ?></td>
                             </tr>
                             <tr>
@@ -1528,7 +1528,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED']) && $formData['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_10"><?php echo ($formData['RTRI_C_8_10_INCORRECT_QC_DOCUMENTED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_10"><?php echo $this->escapeHtml(($formData['RTRI_C_8_10_INCORRECT_QC_DOCUMENTED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_10_INCORRECT_QC_DOCUMENTED']); ?></td>
                             </tr>
                             <tr>
@@ -1543,7 +1543,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['RTRI_Q_8_11_INVALID_RTRI_RESULTS']) && $formData['RTRI_Q_8_11_INVALID_RTRI_RESULTS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="rtri_C_8_11"><?php echo ($formData['RTRI_C_8_11_INVALID_RTRI_RESULTS']); ?></textarea></td>
+                              <td><textarea class="form-control" name="rtri_C_8_11"><?php echo $this->escapeHtml(($formData['RTRI_C_8_11_INVALID_RTRI_RESULTS'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['RTRI_Q_8_11_INVALID_RTRI_RESULTS']); ?></td>
                             </tr>
                             <tr>
@@ -1591,7 +1591,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']) && $formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_1"><?php echo ($formData['S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_1"><?php echo $this->escapeHtml(($formData['S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']); ?></td>
                             </tr>
                             <tr>
@@ -1606,7 +1606,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']) && $formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_2"><?php echo ($formData['S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_2"><?php echo $this->escapeHtml(($formData['S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL']); ?></td>
                             </tr>
                             <tr>
@@ -1621,7 +1621,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_3_TESTS_RECORDED_RECENCY']) && $formData['S0_Q_3_TESTS_RECORDED_RECENCY'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_3"><?php echo ($formData['S0_C_3_TESTS_RECORDED_RECENCY']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_3"><?php echo $this->escapeHtml(($formData['S0_C_3_TESTS_RECORDED_RECENCY'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_3_TESTS_RECORDED_RECENCY']); ?></td>
                             </tr>
                             <tr>
@@ -1636,7 +1636,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_4_PROCESS_DOCUMENTED']) && $formData['S0_Q_4_PROCESS_DOCUMENTED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_4"><?php echo ($formData['S0_C_4_PROCESS_DOCUMENTED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_4"><?php echo $this->escapeHtml(($formData['S0_C_4_PROCESS_DOCUMENTED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_4_PROCESS_DOCUMENTED']); ?></td>
                             </tr>
                             <tr>
@@ -1651,7 +1651,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']) && $formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_5"><?php echo ($formData['S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_5"><?php echo $this->escapeHtml(($formData['S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS']); ?></td>
                             </tr>
                             <tr>
@@ -1666,7 +1666,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']) && $formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_6"><?php echo ($formData['S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_6"><?php echo $this->escapeHtml(($formData['S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED']); ?></td>
                             </tr>
                             <tr>
@@ -1681,7 +1681,7 @@
                               <td style="text-align:center;">
                                 <?php echo (isset($formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']) && $formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS'] == "0") ? "<img src='" . $this->basePath('assets/img/black-tick.png') . "' width='20'>" : ""; ?>
                               </td>
-                              <td><textarea class="form-control" name="sur_c_s_7"><?php echo ($formData['S0_C_7_DOCUMENTING_PROTOCOL_ERRORS']); ?></textarea></td>
+                              <td><textarea class="form-control" name="sur_c_s_7"><?php echo $this->escapeHtml(($formData['S0_C_7_DOCUMENTING_PROTOCOL_ERRORS'])); ?></textarea></td>
                               <td style="text-align:center;"><?php echo $this->escapeHtml($formData['S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS']); ?></td>
                             </tr>
                             <tr>
@@ -1715,58 +1715,58 @@
                             <tr>
                               <td>D.1</td>
                               <td><?= $this->translate('Number of persons aged > 15 newly diagnosed with HIV at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_1" value="<?php echo ($formData['D0_N_1_DIAGNOSED_HIV_ABOVE_15']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_1" value="<?php echo ($formData['D0_D_1_DIAGNOSED_HIV_ABOVE_15']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_1" value="<?php echo ($formData['D0_S_1_DIAGNOSED_HIV_ABOVE_15']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_1" value="<?php echo $this->escapeHtml(($formData['D0_N_1_DIAGNOSED_HIV_ABOVE_15'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_1" value="<?php echo $this->escapeHtml(($formData['D0_D_1_DIAGNOSED_HIV_ABOVE_15'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_1" value="<?php echo $this->escapeHtml(($formData['D0_S_1_DIAGNOSED_HIV_ABOVE_15'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.2</td>
                               <td><?= $this->translate('Number of candidates screened for participation in RTRI at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_2" value="<?php echo ($formData['D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_2" value="<?php echo ($formData['D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_2" value="<?php echo ($formData['D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_2" value="<?php echo $this->escapeHtml(($formData['D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_2" value="<?php echo $this->escapeHtml(($formData['D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_2" value="<?php echo $this->escapeHtml(($formData['D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.3</td>
                               <td><?= $this->translate('Number of total eligible candidates at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_3" value="<?php echo ($formData['D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_3" value="<?php echo ($formData['D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_3" value="<?php echo ($formData['D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_3" value="<?php echo $this->escapeHtml(($formData['D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_3" value="<?php echo $this->escapeHtml(($formData['D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_3" value="<?php echo $this->escapeHtml(($formData['D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.4</td>
                               <td><?= $this->translate('Number of eligible candidates at service delivery point who declined during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_4" value="<?php echo ($formData['D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_4" value="<?php echo ($formData['D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_4" value="<?php echo ($formData['D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_4" value="<?php echo $this->escapeHtml(($formData['D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_4" value="<?php echo $this->escapeHtml(($formData['D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_4" value="<?php echo $this->escapeHtml(($formData['D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.5</td>
                               <td><?= $this->translate('Number of candidates with documented reason for refusal at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_5" value="<?php echo ($formData['D0_N_5_DOCUMENTED_AND_REFUSED']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_5" value="<?php echo ($formData['D0_D_5_DOCUMENTED_AND_REFUSED']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_5" value="<?php echo ($formData['D0_S_5_DOCUMENTED_AND_REFUSED']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_5" value="<?php echo $this->escapeHtml(($formData['D0_N_5_DOCUMENTED_AND_REFUSED'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_5" value="<?php echo $this->escapeHtml(($formData['D0_D_5_DOCUMENTED_AND_REFUSED'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_5" value="<?php echo $this->escapeHtml(($formData['D0_S_5_DOCUMENTED_AND_REFUSED'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.6</td>
                               <td><?= $this->translate('Number of participants enrolled in RTRI testing at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_6" value="<?php echo ($formData['D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_6" value="<?php echo ($formData['D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_6" value="<?php echo ($formData['D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_6" value="<?php echo $this->escapeHtml(($formData['D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_6" value="<?php echo $this->escapeHtml(($formData['D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_6" value="<?php echo $this->escapeHtml(($formData['D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.7</td>
                               <td><?= $this->translate('Number of participants incorrectly enrolled (i.e. ineligible) at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_7" value="<?php echo ($formData['D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_7" value="<?php echo ($formData['D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_7" value="<?php echo ($formData['D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_7" value="<?php echo $this->escapeHtml(($formData['D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_7" value="<?php echo $this->escapeHtml(($formData['D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_7" value="<?php echo $this->escapeHtml(($formData['D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'])); ?>" /></td>
                             </tr>
                             <tr>
                               <td>D.8</td>
                               <td><?= $this->translate('Number of eligible participants enrolled with correct consent documentation at service delivery point during review period'); ?></td>
-                              <td><input type="text" class="form-control" name="dati_n_8" value="<?php echo ($formData['D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_d_8" value="<?php echo ($formData['D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
-                              <td><input type="text" class="form-control" name="dati_s_8" value="<?php echo ($formData['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI']); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_n_8" value="<?php echo $this->escapeHtml(($formData['D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_d_8" value="<?php echo $this->escapeHtml(($formData['D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'])); ?>" /></td>
+                              <td><input type="text" class="form-control" name="dati_s_8" value="<?php echo $this->escapeHtml(($formData['D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'])); ?>" /></td>
                             </tr>
                             <tr>
                               <th colspan="5"><?= $this->translate('D.0 HIV-1 RECENT INFECTION SURVEILLANCE USING DATA INDICATORS'); ?> </th>
@@ -1909,7 +1909,7 @@
                             <input type="text" name="sectionNo[]" class="form-control" value="<?php if (empty($ca['sectionno'])) {
                                                                                                 '';
                                                                                               } else {
-                                                                                                echo $ca['sectionno'];
+                                                                                                echo \Application\Service\CommonService::escapeHtml($ca['sectionno']);
                                                                                               } ?>">
                             <input type="hidden" name="rowId[]" class="form-control" value="<?php echo $i; ?>">
                           </td>
@@ -1917,7 +1917,7 @@
                             <input type="text" name="deficiency[]" class="form-control" value="<?php if (empty($ca['deficiency'])) {
                                                                                                   '';
                                                                                                 } else {
-                                                                                                  echo $ca['deficiency'];
+                                                                                                  echo \Application\Service\CommonService::escapeHtml($ca['deficiency']);
                                                                                                 } ?>">
                           </td>
                           <td align="center">
@@ -1933,18 +1933,18 @@
                           <td><textarea class="form-control" name="auditorComment[]"><?php if (empty($ca['auditorcomment'])) {
                                                                                         '';
                                                                                       } else {
-                                                                                        echo $ca['auditorcomment'];
+                                                                                        echo \Application\Service\CommonService::escapeHtml($ca['auditorcomment']);
                                                                                       } ?></textarea></td>
                           <td><textarea class="form-control" name="action[]"><?php if (empty($ca['action'])) {
                                                                                 '';
                                                                               } else {
-                                                                                echo $ca['action'];
+                                                                                echo \Application\Service\CommonService::escapeHtml($ca['action']);
                                                                               } ?></textarea></td>
                           <td>
                             <input type="text" name="timeline[]" class="form-control" value="<?php if (empty($ca['timeline'])) {
                                                                                                 '';
                                                                                               } else {
-                                                                                                echo $ca['timeline'];
+                                                                                                echo \Application\Service\CommonService::escapeHtml($ca['timeline']);
                                                                                               } ?>">
                           </td>
                           <td align="center">
