@@ -3,6 +3,7 @@
 namespace Application\Command;
 
 use Application\Model\ApiLogsTable;
+use Application\Service\CommonService;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\Sql\Sql;
@@ -22,7 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * would wipe the table and read as "broken").
  *
  * For each row deleted we also remove the associated compressed body
- * file on disk so var/api-logs and public/uploads/form_dump don't grow
+ * file on disk so var/api-logs and the form_dump folder don't grow
  * unboundedly.
  */
 class CleanupOldLogs extends Command
@@ -147,7 +148,15 @@ class CleanupOldLogs extends Command
 
         $filesRemoved = 0;
         foreach ($victims as $v) {
-            if (!empty($v['file_path']) && is_file($v['file_path']) && @unlink($v['file_path'])) {
+            if (empty($v['file_path'])) {
+                continue;
+            }
+            // Rows written before bin/upgrade.sh moved the folder still
+            // hold the old path. Look for the file in the folder's new place.
+            $path = is_file($v['file_path'])
+                ? $v['file_path']
+                : CommonService::privateUploadFolder('form_dump') . DIRECTORY_SEPARATOR . basename($v['file_path']);
+            if (is_file($path) && @unlink($path)) {
                 $filesRemoved++;
             }
         }

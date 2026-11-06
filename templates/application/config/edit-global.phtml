@@ -85,7 +85,7 @@
 										<div class="tempfileinput fileinput-new" data-provides="fileinput">
 											<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;">
 												<?php
-												if (isset($config['template_file']) && trim($config['template_file']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $config['template_file'])) {
+												if (isset($config['template_file']) && trim($config['template_file']) != '' && is_file(\Application\Service\CommonService::privateUploadFolder('template') . DIRECTORY_SEPARATOR . basename($config['template_file']))) {
 												?>
 												<?php echo $config['template_file'];
 												} else { ?>
@@ -97,7 +97,7 @@
 													<input type="file" id="template_file" name="template_file" accept=".pdf" title="<?= $this->translate('Please select Template File'); ?>" onchange="getNewTempFile('<?php echo $this->escapeHtml($config['template_file']); ?>');">
 												</span>
 												<?php
-												if (isset($config['template_file']) && trim($config['template_file']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $config['template_file'])) {
+												if (isset($config['template_file']) && trim($config['template_file']) != '' && is_file(\Application\Service\CommonService::privateUploadFolder('template') . DIRECTORY_SEPARATOR . basename($config['template_file']))) {
 												?>
 													<a id="clearTempFile" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearTempFile('<?php echo $this->escapeHtml($config['template_file']); ?>')"><?= $this->translate('Clear'); ?></a>
 												<?php } ?>

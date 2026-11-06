@@ -21,8 +21,9 @@ class FpdiExtends extends TcpdfFpdi // Extend TcpdfFpdi, which includes TCPDF me
         $this->tempTopMargin = $tempTopMargin; // tempTopMargin
         // Ensure $tempTopMargin is an integer
         $this->tempTopMargin = intval($this->tempTopMargin);
-        if (!empty($tempFile) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $tempFile)) {
-            $this->template = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . $tempFile;
+        $templatePath = CommonService::privateUploadFolder('template') . DIRECTORY_SEPARATOR . basename((string) $tempFile);
+        if (!empty($tempFile) && is_file($templatePath)) {
+            $this->template = $templatePath;
         }
         $this->SetY($this->tempTopMargin - 10);
     }

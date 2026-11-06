@@ -545,7 +545,7 @@ class CommonService
 
     public static function saveFormDump($dbAdapter, $params)
     {
-        $storagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'form_dump';
+        $storagePath = self::privateUploadFolder('form_dump');
         if (!file_exists($storagePath)) {
             mkdir($storagePath, 0777, true);
         }
@@ -650,6 +650,26 @@ class CommonService
     public static function tempFolder(string $subfolder = ''): string
     {
         $folder = dirname(__DIR__, 5) . '/var/temporary' . ($subfolder === '' ? '' : DIRECTORY_SEPARATOR . $subfolder);
+        if (!is_dir($folder) && !mkdir($folder, 0775, true) && !is_dir($folder)) {
+            throw new \RuntimeException("Cannot create $folder");
+        }
+        return $folder;
+    }
+
+    /**
+     * An upload folder the app reads from disk only: form_dump,
+     * media-attachments, import-files, facilities or template. It lives in
+     * var/uploads/. A server upgraded from a version that kept it in
+     * UPLOAD_PATH keeps using that copy until bin/upgrade.sh moves it, and
+     * public/.htaccess refuses it meanwhile.
+     */
+    public static function privateUploadFolder(string $name): string
+    {
+        $folder = dirname(__DIR__, 5) . '/var/uploads/' . $name;
+        $legacy = (defined('UPLOAD_PATH') ? UPLOAD_PATH : dirname(__DIR__, 5) . '/public/uploads') . DIRECTORY_SEPARATOR . $name;
+        if (!is_dir($folder) && is_dir($legacy)) {
+            return $legacy;
+        }
         if (!is_dir($folder) && !mkdir($folder, 0775, true) && !is_dir($folder)) {
             throw new \RuntimeException("Cannot create $folder");
         }
