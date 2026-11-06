@@ -43,7 +43,7 @@ if (isset($_GET['total'])) {
 									<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
 										<h3 style="margin-left:100px; color:green;"><?= $this->translate('Total number of records in file :'); ?> <?= htmlspecialchars($_GET['total']); ?> | <?= $this->translate('Number of Facilities added :'); ?> <?= htmlspecialchars($addedRecords); ?> | <?= $this->translate('Number of Facilities not added :'); ?> <?= htmlspecialchars($_GET['notAdded']); ?></h3>
 										<?php if ($_GET['notAdded'] > 0) { ?>
-											<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download><?= $this->translate('Download the Excel Sheet with not uploaded facilities'); ?></a><br><br>
+											<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="<?= $this->escapeHtmlAttr($this->url('download') . '?' . http_build_query(['file' => $_GET['file'] ?? ''])); ?>"><?= $this->translate('Download the Excel Sheet with not uploaded facilities'); ?></a><br><br>
 										<?php } ?>
 									<?php } ?>
 									<div class="row">

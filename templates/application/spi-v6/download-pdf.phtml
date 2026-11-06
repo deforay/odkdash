@@ -1686,10 +1686,10 @@ $pdf->SetAutoPageBreak(true, $autoPageBreakValue);
 //Close and output PDF document
 $fileName = "SPI-RRT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
 if (isset($tempId)) {
-    $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $tempId . DIRECTORY_SEPARATOR . $fileName;
+    $filePath = CommonService::tempFolder('audit-email' . DIRECTORY_SEPARATOR . (int) $tempId) . DIRECTORY_SEPARATOR . $fileName;
     $pdf->Output($filePath, "F");
 } else {
-    $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
+    $filePath = CommonService::tempFolder() . DIRECTORY_SEPARATOR . $fileName;
     //$pdf->Output('example_003.pdf', 'I');
     $pdf->Output($filePath, "I");
 }

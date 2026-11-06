@@ -189,8 +189,8 @@ final class Kernel
         if (!isset($route['handler'])) {
             return;
         }
-        if ($resource === null && empty($route['public'])) {
-            throw new \RuntimeException(sprintf('Route "%s" names no controller and is not public.', $name));
+        if ($resource === null && empty($route['public']) && empty($route['signed_in'])) {
+            throw new \RuntimeException(sprintf('Route "%s" names no controller and is neither public nor signed_in.', $name));
         }
 
         $methods = $route['methods'] ?? ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
@@ -198,6 +198,8 @@ final class Kernel
         $slimRoute = $app->map($methods, $pattern, $route['handler'])->setName($name);
         if (!empty($route['public'])) {
             $slimRoute->setArgument('access', 'public');
+        } elseif (!empty($route['signed_in'])) {
+            $slimRoute->setArgument('access', 'signed-in');
         } else {
             $slimRoute->setArgument('resource', $resource);
         }

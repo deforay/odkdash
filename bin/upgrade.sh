@@ -565,10 +565,34 @@ upgrade_instance() {
         say warning "Migrations still pending. Re-run: (cd ${app_path} && sudo -u ${web_user} php bin/migrate)"
     fi
 
+    # --- old public files ---------------------------------------------------
+    # Exports, PDFs and email attachments are now written to var/temporary/.
+    # Move the attachments of mails still queued, one file at a time, since
+    # the app may have created the new folders already. Then delete the
+    # exports in public/temporary/, which any visitor can fetch. The
+    # attachment folders are never deleted: a file that did not move stays
+    # put. The trailing slash follows a symlinked folder.
+    local old_temp="$app_path/public/temporary/" dir file
+    if [ -d "$old_temp" ]; then
+        for dir in audit-email email; do
+            [ -d "$old_temp$dir" ] || continue
+            (cd "$old_temp$dir" && find . -type f) | while IFS= read -r file; do
+                mkdir -p "$app_path/var/temporary/$dir/$(dirname "$file")" &&
+                    mv -n "$old_temp$dir/$file" "$app_path/var/temporary/$dir/$file"
+            done
+            find "$old_temp$dir" -mindepth 1 -type d -empty -delete 2>>"$log_file"
+            if [ -n "$(find "$old_temp$dir" -type f -print -quit)" ]; then
+                say warning "Some files in ${old_temp}${dir} did not move. Move them to var/temporary/${dir}/ by hand: they are public."
+            fi
+        done
+        find "$old_temp" -mindepth 1 -maxdepth 1 ! -name index.php ! -name audit-email ! -name email \
+            -exec rm -rf {} + 2>>"$log_file" ||
+            say warning "Could not empty ${old_temp}. Delete its files by hand: they are public."
+    fi
+
     # --- permissions --------------------------------------------------------
     # Directories the app writes to at runtime. Git tracks none of their
     # contents, and the rsync deploy excludes them, so they can be missing.
-    local dir
     for dir in var/log var/api-logs var/backups data/cache public/temporary public/uploads uploads backup; do
         mkdir -p "$app_path/$dir"
     done

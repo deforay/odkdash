@@ -330,7 +330,7 @@
 				if (data == "" || data == null || data == undefined) {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
-					document.location.href = '/temporary/' + data;
+					document.location.href = '<?= $this->url('download'); ?>?file=' + encodeURIComponent(data);
 				}
 				$.unblockUI();
 			});

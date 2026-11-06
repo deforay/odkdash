@@ -20,6 +20,8 @@ declare(strict_types=1);
  *   Kernel::SLIM_TAILS cannot express. See "home".
  * - public: true for a route that needs no login. Only the landing page and
  *   the login page are public.
+ * - signed_in: true for a route any signed-in user may call, whatever their
+ *   role. The handler decides what the user gets. Only /download has it.
  * - methods: the HTTP methods. All of them when absent.
  *
  * The Kernel loads every file in this folder. A project with several
@@ -34,6 +36,7 @@ use App\Http\Handlers\ConfigHandler;
 use App\Http\Handlers\DashboardHandler;
 use App\Http\Handlers\DashboardV6Handler;
 use App\Http\Handlers\DistrictHandler;
+use App\Http\Handlers\DownloadHandler;
 use App\Http\Handlers\EmailHandler;
 use App\Http\Handlers\EventHandler;
 use App\Http\Handlers\FacilityHandler;
@@ -53,6 +56,12 @@ return [
         'route' => '/client-errors',
         'handler' => ClientErrorHandler::class,
         'public' => true,
+    ],
+    'download' => [
+        'route' => '/download',
+        'handler' => DownloadHandler::class,
+        'signed_in' => true,
+        'methods' => ['GET'],
     ],
     'log-viewer' => [
         'route' => '/log-viewer',

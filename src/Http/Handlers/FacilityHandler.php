@@ -175,6 +175,7 @@ final class FacilityHandler extends ActionHandler
             'total' => $result['total'],
             'notAdded' => $result['notAdded'],
             'option' => $result['option'],
+            'file' => $result['file'],
         ]));
     }
 

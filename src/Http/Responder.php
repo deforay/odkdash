@@ -99,12 +99,12 @@ final class Responder
         return $this->responses->createResponse(302)->withHeader('Location', $url);
     }
 
-    /** A file on disk as an attachment, streamed rather than read into memory. */
-    public function file(string $path, string $contentType): ResponseInterface
+    /** A file on disk, streamed rather than read into memory. "inline" shows it in the browser. */
+    public function file(string $path, string $contentType, string $disposition = 'attachment'): ResponseInterface
     {
         return $this->responses->createResponse()
             ->withHeader('Content-Type', $contentType)
-            ->withHeader('Content-Disposition', 'attachment; filename="' . basename($path) . '"')
+            ->withHeader('Content-Disposition', $disposition . '; filename="' . basename($path) . '"')
             ->withHeader('Content-Length', (string) filesize($path))
             ->withBody((new StreamFactory())->createStreamFromFile($path));
     }

@@ -965,7 +965,7 @@ $userMappingType = $sessionLogin->userMappingType;
         } else {
           console.log(data);
           $.unblockUI();
-          document.location.href = '/temporary/' + data;
+          document.location.href = '<?= $this->url('download'); ?>?file=' + encodeURIComponent(data);
         }
       });
   }
@@ -995,7 +995,7 @@ $userMappingType = $sessionLogin->userMappingType;
         } else {
           console.log(data);
           $.unblockUI();
-          document.location.href = '/temporary/' + data;
+          document.location.href = '<?= $this->url('download'); ?>?file=' + encodeURIComponent(data);
         }
       });
   }
@@ -1027,7 +1027,7 @@ $userMappingType = $sessionLogin->userMappingType;
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
           $.unblockUI();
-          window.open('/temporary/' + data, '_blank');
+          window.open('<?= $this->url('download'); ?>?file=' + encodeURIComponent(data), '_blank');
         }
       });
   }
