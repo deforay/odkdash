@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Application\View\Helper;
 
 use Application\I18n\Translator;
-use Laminas\View\Helper\AbstractHelper;
 
 /**
  * The translate() helper the views call, ~2900 times.
@@ -14,7 +13,7 @@ use Laminas\View\Helper\AbstractHelper;
  * translator behind it is Application\I18n\Translator, with the same
  * signature, so no view changes.
  */
-class Translate extends AbstractHelper
+class Translate
 {
     public function __construct(private readonly Translator $translator)
     {

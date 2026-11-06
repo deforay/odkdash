@@ -2,10 +2,9 @@
 
 namespace Application\View\Helper;
 
-use Laminas\View\Helper\AbstractHelper;
 
 
-class GetCountryDetailsByIdHelper extends AbstractHelper
+class GetCountryDetailsByIdHelper
 {
 
     private $countriesTable;

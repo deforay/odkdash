@@ -18,8 +18,9 @@
         "hackzilla/password-generator": "^1.7",
         "halaxa/json-machine": "^1.2.6",
         "laminas/laminas-db": "^2.22",
-        "laminas/laminas-mvc": "^3.8",
-        "laminas/laminas-router": "^3.19",
+        "laminas/laminas-escaper": "^2.18",
+        "laminas/laminas-servicemanager": "^3.24",
+        "laminas/laminas-stdlib": "^3.21",
         "monolog/monolog": "^3.12.1",
         "php-di/php-di": "^7.1.1",
         "phpmyadmin/sql-parser": "^6.0.1",
@@ -40,7 +41,10 @@
         "psr-4": {
             "Application\\": "module/Application/src/Application/",
             "App\\": "src/"
-        }
+        },
+        "classmap": [
+            "module/Application/Module.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

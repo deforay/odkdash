@@ -17,6 +17,6 @@ if (php_sapi_name() === 'cli-server') {
 }
 
 // Setup autoloading
-require_once 'init_autoloader.php';
+require_once 'vendor/autoload.php';
 
 App\Http\Kernel::fromGlobals()->run();

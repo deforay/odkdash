@@ -13,7 +13,6 @@ parameters:
         - bin/console
         - bin/migrate
         - db-tools.php
-        - init_autoloader.php
     excludePaths:
         - config/autoload/*.local.php (?)
     fileExtensions:

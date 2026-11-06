@@ -3,9 +3,8 @@
 namespace Application\View\Helper;
 
 use Application\Service\CommonService;
-use Laminas\View\Helper\AbstractHelper;
 
-class HumanReadableDateFormat extends AbstractHelper
+class HumanReadableDateFormat
 {
 
     // $inputFormat = yyyy-mm-dd

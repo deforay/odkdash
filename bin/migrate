@@ -30,24 +30,18 @@ declare(strict_types=1);
  */
 
 chdir(dirname(__DIR__));
-require_once 'init_autoloader.php';
+require_once 'vendor/autoload.php';
 
+use App\Services\LaminasBridge;
 use Composer\Semver\Comparator;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Exception\ExceptionInterface as DbException;
-use Laminas\Mvc\Service\ServiceManagerConfig;
-use Laminas\ServiceManager\ServiceManager;
 use PhpMyAdmin\SqlParser\Parser;
 
-// Build the service manager and load the modules, nothing more. The web
-// request sets the translator's locale from global_config, which does not
-// exist on a fresh database, so the migrator must not do that.
-$configuration = require_once 'config/application.config.php';
-$serviceManager = new ServiceManager();
-(new ServiceManagerConfig($configuration['service_manager'] ?? []))
-    ->configureServiceManager($serviceManager);
-$serviceManager->setService('ApplicationConfig', $configuration);
-$serviceManager->get('ModuleManager')->loadModules();
+// The same service manager the web app uses, without the web app's locale
+// step. That step reads global_config, which does not exist on a fresh
+// database.
+$serviceManager = LaminasBridge::build(getcwd());
 
 // db.driver and the DSN live in config/autoload/global.php, which is gitignored
 // and copied from global.dist.php during setup. When it is absent the adapter
