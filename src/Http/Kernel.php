@@ -17,6 +17,7 @@ use App\Http\Handlers\EventHandler;
 use App\Http\Handlers\FacilityHandler;
 use App\Http\Handlers\ProvincesHandler;
 use App\Http\Handlers\RolesHandler;
+use App\Http\Handlers\SpiV3Handler;
 use App\Http\Handlers\SpiV3ReportsHandler;
 use App\Http\Handlers\SpiV6ReportsHandler;
 use App\Http\Handlers\UsersHandler;
@@ -88,6 +89,7 @@ final class Kernel
         'spi-v3-reports' => ['/spi-v3-reports[/:action][/][:id]', SpiV3ReportsHandler::class, 'SpiV3ReportsController'],
         'spi-v6-reports' => ['/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController'],
         'spi-facility' => ['/facility[/:action][/][:id]', FacilityHandler::class, 'FacilityController'],
+        'spi-v3-form' => ['/spi-v3[/:action][/][:id]', SpiV3Handler::class, 'SpiV3Controller'],
     ];
 
     private static ?self $current = null;
@@ -159,6 +161,7 @@ final class Kernel
             SpiV3ReportsHandler::class => autowire(),
             SpiV6ReportsHandler::class => autowire(),
             FacilityHandler::class => autowire(),
+            SpiV3Handler::class => autowire(),
             Responder::class => autowire(),
 
             // Services that still come from the Laminas service manager,
@@ -215,6 +218,12 @@ final class Kernel
         // serves the path, so only the URL is registered.
         $urls->register('upload-facility', '/facility/upload-facility');
 
+        // The dashboards link to the V3 approved audits page by this name.
+        $urls->register('view-data', '/view-data');
+        $app->any('/view-data', SpiV3Handler::class)
+            ->setName('view-data')
+            ->setArgument('resource', 'Application\\Controller\\SpiV3Controller')
+            ->setArgument('action', 'view-data');
 
         // Slim runs the middleware added last first. The order a request
         // meets them is: errors, routing, body parsing, access, handler.
