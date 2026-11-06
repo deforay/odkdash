@@ -1552,15 +1552,10 @@ class OdkFormService
         $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
         $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $fileName = $ranNumber . "." . $extension;
-        if (!file_exists(UPLOAD_PATH) && !is_dir(UPLOAD_PATH)) {
-            mkdir(APPLICATION_PATH . DIRECTORY_SEPARATOR . "uploads");
-        }
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-file")) {
-            mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files");
-        }
-        if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName) && move_uploaded_file($_FILES['fileName']['tmp_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName)) {
+        $importFolder = CommonService::privateUploadFolder('import-files');
+        if (!file_exists($importFolder . DIRECTORY_SEPARATOR . $fileName) && move_uploaded_file($_FILES['fileName']['tmp_name'], $importFolder . DIRECTORY_SEPARATOR . $fileName)) {
             $db->delete('1');
-            $spreadsheet = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "import-files" . DIRECTORY_SEPARATOR . $fileName);
+            $spreadsheet = IOFactory::load($importFolder . DIRECTORY_SEPARATOR . $fileName);
             $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
             $highestColumm = $spreadsheet->getActiveSheet()->getHighestColumn();
             //$highestColumnIndex = Coordinate::columnIndexFromString($highestColumm);
@@ -3400,7 +3395,7 @@ class OdkFormService
         }
 
         $uuid = str_replace('uuid:', '', $submissionId);
-        $rootDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments';
+        $rootDir = CommonService::privateUploadFolder('media-attachments');
         $subDir  = $rootDir . DIRECTORY_SEPARATOR . $uuid;
         // mkdir checks are batched once per submission rather than once per
         // file; cheap and avoids the race on the inner @mkdir.
@@ -3732,7 +3727,7 @@ class OdkFormService
                 $pdf->writeHTML($testingTab, true, 0, true, 0);
 
                 $uuid = str_replace('uuid:', '', $formData['uuid']);
-                $mediaFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'media-attachments' . DIRECTORY_SEPARATOR . $uuid;
+                $mediaFilePath = CommonService::privateUploadFolder('media-attachments') . DIRECTORY_SEPARATOR . $uuid;
 
                 $partBHeading = '<b>' . $decoded[$language]['/SPI_RT/SPIRT/info4:label'] . '</b>';
 

@@ -1,4 +1,13 @@
 RewriteEngine On
+# The app reads these upload folders from disk and never links to them:
+# raw submissions, audit photos and uploaded spreadsheets and templates.
+# The web server refuses them, and refuses any script under uploads/ or
+# temporary/. The logos and user photos in uploads/ stay public.
+RewriteRule ^uploads/(form_dump|media-attachments|import-files|facilities|template)(/|$) - [F,NC,L]
+RewriteRule ^(uploads|temporary)/.*\.(php\d*|phtml|phar|pht|phps|cgi|pl|py|sh)$ - [F,NC,L]
+# No folder listings there either.
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(uploads|temporary)(/|$) - [F,NC,L]
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
 RewriteCond %{REQUEST_FILENAME} -s [OR]

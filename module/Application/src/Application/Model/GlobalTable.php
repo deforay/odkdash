@@ -176,20 +176,17 @@ class GlobalTable extends AbstractTableGateway
 
         $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedTempFile']);
         $cleanedFileName = CommonService::cleanFileName($fileName);
-        $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR, []);
+        $cleanedFilePath = CommonService::buildSafePath(CommonService::privateUploadFolder('template') . DIRECTORY_SEPARATOR, []);
         if (isset($_POST['removedTempFile']) && trim($_POST['removedTempFile']) != "" && file_exists($cleanedFilePath . $cleanedFileName)) {
             unlink($cleanedFilePath . $cleanedFileName);
             $this->update(array('global_value' => ''), array('global_name' => 'template_file'));
         }
 
         if (isset($_FILES['template_file']['name']) && $_FILES['template_file']['name'] != "") {
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template")) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "template");
-            }
-            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['template_file']['name'], PATHINFO_EXTENSION));
+            $extension = strtolower(pathinfo($_FILES['template_file']['name'], PATHINFO_EXTENSION));
             $string = CommonService::generateRandomString(6) . ".";
             $tempName = "template" . $string . $extension;
-            if (move_uploaded_file($_FILES["template_file"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "template" . DIRECTORY_SEPARATOR . $tempName)) {
+            if (move_uploaded_file($_FILES["template_file"]["tmp_name"], CommonService::privateUploadFolder('template') . DIRECTORY_SEPARATOR . $tempName)) {
                 $this->update(array('global_value' => $tempName), array('global_name' => 'template_file'));
             }
         }

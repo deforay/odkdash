@@ -590,6 +590,37 @@ upgrade_instance() {
             say warning "Could not empty ${old_temp}. Delete its files by hand: they are public."
     fi
 
+    # The app reads these upload folders from var/uploads/, and falls back to
+    # public/uploads/ until they move. public/.htaccess refuses them on the
+    # web either way. Each folder moves only by a rename on one disk, or by
+    # moving the symlink that points at its volume, so no file is copied.
+    # A folder on another disk stays put, and var/uploads/ links to it.
+    local name src dst
+    mkdir -p "$app_path/var/uploads"
+    for name in form_dump media-attachments import-files facilities template; do
+        src="$app_path/public/uploads/$name"
+        dst="$app_path/var/uploads/$name"
+        { [ -e "$src" ] || [ -L "$src" ]; } || continue
+        # Already linked on an earlier upgrade.
+        [ "$(readlink -f "$dst")" = "$(readlink -f "$src")" ] && continue
+        if [ -e "$dst" ] || [ -L "$dst" ]; then
+            # An empty leftover goes quietly. rmdir removes empty folders only.
+            [ ! -L "$src" ] && rmdir "$src" 2>/dev/null && continue
+            say warning "${src} and ${dst} both exist. The app reads ${dst}. Merge ${src} into it by hand."
+            continue
+        fi
+        if [ -L "$src" ]; then
+            ln -s "$(readlink -f "$src")" "$dst" && rm "$src" ||
+                say warning "Could not move the ${src} symlink to ${dst}."
+        elif [ "$(stat -c %d "$src")" = "$(stat -c %d "$app_path/var/uploads")" ]; then
+            mv "$src" "$dst" ||
+                say warning "Could not move ${src} to ${dst}."
+        else
+            ln -s "$(readlink -f "$src")" "$dst" &&
+                say info "${src} is on another disk, so it stays there. ${dst} links to it, and public/.htaccess refuses it on the web."
+        fi
+    done
+
     # --- permissions --------------------------------------------------------
     # Directories the app writes to at runtime. Git tracks none of their
     # contents, and the rsync deploy excludes them, so they can be missing.

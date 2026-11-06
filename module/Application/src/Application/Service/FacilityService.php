@@ -467,16 +467,14 @@ class FacilityService
             $notAdded = 0;
 
             if (isset($_FILES['facilitiesInfo']['name']) && !empty($_FILES['facilitiesInfo']['name'])) {
-                if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities")) {
-                    mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities");
-                }
+                $facilitiesFolder = CommonService::privateUploadFolder('facilities');
 
-                $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['facilitiesInfo']['name'], PATHINFO_EXTENSION));
+                $extension = strtolower(pathinfo($_FILES['facilitiesInfo']['name'], PATHINFO_EXTENSION));
                 $fileName = CommonService::generateRandomString(5) . "." . $extension;
 
-                if (move_uploaded_file($_FILES["facilitiesInfo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities" . DIRECTORY_SEPARATOR . $fileName)) {
+                if (move_uploaded_file($_FILES["facilitiesInfo"]["tmp_name"], $facilitiesFolder . DIRECTORY_SEPARATOR . $fileName)) {
 
-                    $uploadedFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facilities" . DIRECTORY_SEPARATOR . $fileName;
+                    $uploadedFilePath = $facilitiesFolder . DIRECTORY_SEPARATOR . $fileName;
                     $spreadsheet = IOFactory::load($uploadedFilePath);
                     $sheetData = $spreadsheet->getActiveSheet();
 
