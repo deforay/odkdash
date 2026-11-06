@@ -4302,7 +4302,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         // The export reads every filtered audit, so it keeps the query without the page limit.
         $queryContainer->exportViewDataV6Query = clone $sQuery;
 
-        if (isset($sLimit) && $sLimit !== '' && isset($sOffset)) {
+        if ($sLimit !== '') {
             $sQuery->limit((int) $sLimit);
             $sQuery->offset((int) $sOffset);
         }

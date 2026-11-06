@@ -101,7 +101,7 @@ $testingTab .= '</tr>';
 $testingTab .= '<tr>';
 //$testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointname:label'] . '</b> ' . $formData['testingpointname'] . '</td>';
 $testingTab .= '<td colspan="2"><b>' . $decoded[$language]['/SPI_RT/TESTSITE/testingpointtype:label'] . '</b> ' . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
-$testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "") . '</td>';
+$testingTab .= ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "") . '</td>';
 $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
@@ -110,10 +110,10 @@ $testingTab .= '</tr>';
 
 $testingTab .= '<tr>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/level:label'] . '</b> <br/>' . \Application\Service\CommonService::escapeHtml($formData['level']);
-$testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : "") . ':' . $formData['level_other'];
+$testingTab .= ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . \Application\Service\CommonService::escapeHtml($formData['level_other']) : "") . ':' . \Application\Service\CommonService::escapeHtml($formData['level_other']);
 $testingTab .= '</td>';
 $testingTab .= '<td><b>' . $decoded[$language]['/SPI_RT/TESTSITE/affiliation:label'] . '</b><br/>' . \Application\Service\CommonService::escapeHtml($formData['affiliation']);
-$testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : "");
+$testingTab .= ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . \Application\Service\CommonService::escapeHtml($formData['affiliation_other']) : "");
 $testingTab .= '</td>';
 $testingTab .= '</tr>';
 
@@ -221,7 +221,7 @@ $pdf->writeHTML($partDTitle, true, 0, true, 0);
 $partDtableBox1 = '<table cellspacing="0" cellpadding="2">';
 $partDtableBox1 .= "<tr><td>" . $this->translate("Facility Name:") . " " . \Application\Service\CommonService::escapeHtml($formData['facilityname']) . "</td></tr>";
 $partDtableBox1 .= "<tr><td>" . $this->translate("Site Type:") . " " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype']);
-$partDtableBox1 .= (isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : "";
+$partDtableBox1 .= (isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . \Application\Service\CommonService::escapeHtml($formData['testingpointtype_other']) : "";
 $partDtableBox1 .= "</td></tr>";
 $partDtableBox1 .= "<tr><td>" . $this->translate("Staff Audited Name:") . " " . \Application\Service\CommonService::escapeHtml($formData['staffaudited']) . "</td></tr>";
 $partDtableBox1 .= '</table>';

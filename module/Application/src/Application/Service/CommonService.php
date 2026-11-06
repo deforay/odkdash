@@ -644,14 +644,17 @@ class CommonService
 
     public static function embedImage($imagePath)
     {
-        $embedImg = '';
-        if (file_exists($imagePath)) {
-            // Get the embedded image in base64 format
-            $base64Image = base64_encode(file_get_contents($imagePath));
-            $mimeType = mime_content_type($imagePath); // Ensure correct MIME type
-            $embedImg = '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" style="width:100px; height:auto;" />';
+        // The file name comes from the submission, so embed only a file
+        // whose content is an image.
+        if (!is_file($imagePath)) {
+            return '';
         }
-        return $embedImg;
+        $mimeType = mime_content_type($imagePath);
+        if (!is_string($mimeType) || !str_starts_with($mimeType, 'image/')) {
+            return '';
+        }
+        $base64Image = base64_encode(file_get_contents($imagePath));
+        return '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" style="width:100px; height:auto;" />';
     }
 
     /**
