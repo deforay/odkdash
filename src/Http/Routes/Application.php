@@ -39,6 +39,7 @@ use App\Http\Handlers\ProvincesHandler;
 use App\Http\Handlers\RolesHandler;
 use App\Http\Handlers\SpiV3Handler;
 use App\Http\Handlers\SpiV3ReportsHandler;
+use App\Http\Handlers\SpiV6Handler;
 use App\Http\Handlers\SpiV6ReportsHandler;
 use App\Http\Handlers\UsersHandler;
 
@@ -144,5 +145,26 @@ return [
         'route' => '/view-data',
         'handler' => SpiV3Handler::class,
         'defaults' => ['controller' => 'Application\\Controller\\SpiV3Controller', 'action' => 'view-data'],
+    ],
+    'spi-v6-form' => [
+        'route' => '/spi-v6[/:action][/][:id]',
+        'handler' => SpiV6Handler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV6Controller', 'action' => 'index'],
+    ],
+    // The V6 dashboard links to the approved audits pages by these names.
+    'view-data-v6' => [
+        'route' => '/view-data-v6',
+        'handler' => SpiV6Handler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV6Controller', 'action' => 'view-data-v6'],
+    ],
+    'view-data-section-zero-v6' => [
+        'route' => '/view-data-section-zero-v6',
+        'handler' => SpiV6Handler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV6Controller', 'action' => 'view-data-section-zero-v6'],
+    ],
+    'view-data-section-zero-protocol-v6' => [
+        'route' => '/view-data-section-zero-protocol-v6',
+        'handler' => SpiV6Handler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\SpiV6Controller', 'action' => 'view-data-section-zero-protocol-v6'],
     ],
 ];
