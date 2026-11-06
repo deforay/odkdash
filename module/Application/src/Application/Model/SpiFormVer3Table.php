@@ -3,6 +3,10 @@
 namespace Application\Model;
 
 use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Predicate\In;
+use Laminas\Db\Sql\Predicate\Literal;
+use Laminas\Db\Sql\Predicate\PredicateSet;
 use Laminas\Db\Sql\Expression;
 use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
@@ -25,6 +29,40 @@ class SpiFormVer3Table extends AbstractTableGateway
 {
 
     protected $table = 'spi_form_v_3';
+
+    /** An audit with no facility, which no location filter can reach. */
+    private const UNLINKED_AUDIT = '(spiv3.facility IS NULL OR spiv3.facility = 0)';
+
+    /**
+     * Limits an audit query, aliased spiv3, to the locations the user is
+     * mapped to. Every query restricted by the user's tokens gets this too.
+     *
+     * The join is LEFT and the scope also admits UNLINKED_AUDIT, as in V6's
+     * applyV6LocationScope(): an audit with no facility stays visible so
+     * someone can link it, rather than vanishing from every mapped user.
+     */
+    private static function applyV3LocationScope(Select $query): Select
+    {
+        $loginContainer = new Container('credo');
+        if (empty($loginContainer->userMappedIds) || !is_array($loginContainer->userMappedIds) || $loginContainer->userMappingType == '') {
+            return $query;
+        }
+        $column = match ($loginContainer->userMappingType) {
+            'country' => 'fm.country',
+            'province' => 'fm.province',
+            'district' => 'fm.district',
+            default => null,
+        };
+        if ($column === null) {
+            // A mapping type this code does not know shows nothing rather than everything.
+            return $query->where('1 = 0');
+        }
+        return $query->join(['fm' => 'spi_rt_3_facilities'], 'fm.id=spiv3.facility', [], Select::JOIN_LEFT)
+            ->where(new PredicateSet([
+                new In($column, CommonService::inList($loginContainer->userMappedIds)),
+                new Literal(self::UNLINKED_AUDIT),
+            ], PredicateSet::OP_OR));
+    }
     protected $adapter;
 
     public function __construct(Adapter $adapter)
@@ -659,6 +697,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
 
         $sQueryStr = $sql->buildSqlString($sQuery);
         //        die($sQueryStr);
@@ -702,6 +741,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
             $sQuery = $sQuery->where(['spiv3.auditroundno' => $params['auditRndNo']]);
         }
@@ -779,11 +819,12 @@ class SpiFormVer3Table extends AbstractTableGateway
                 'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
                 'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
             ))
-            ->where(array('status' => 'approved'))
+            ->where(array('spiv3.status' => 'approved'))
             ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -798,10 +839,11 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where('spiv3.status != "deleted"')
-            ->order(array("status DESC", "id $sortOrder"));
+            ->order(array("spiv3.status DESC", "spiv3.id $sortOrder"));
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -818,6 +860,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $startDate = '';
         $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -1015,6 +1058,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
@@ -1104,6 +1148,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $tQuery = $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $tQuery = self::applyV3LocationScope($tQuery);
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -1215,8 +1260,8 @@ class SpiFormVer3Table extends AbstractTableGateway
          * you want to insert a non-database field (for example a counter or static image)
          */
 
-        $aColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
-        $orderColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
+        $aColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'spiv3.status');
+        $orderColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'spiv3.status');
 
         /*
          * Paging
@@ -1261,6 +1306,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
@@ -1291,6 +1337,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $tQuery = $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $tQuery = self::applyV3LocationScope($tQuery);
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
         $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
         $iTotal = count($tResult);
@@ -1390,13 +1437,14 @@ class SpiFormVer3Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->order(array("id DESC"));
+            ->order(array("spiv3.id DESC"));
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($params['roundno'])]);
         }
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $startDate = '';
         $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -1527,6 +1575,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $startDate = '';
         $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -1699,11 +1748,12 @@ class SpiFormVer3Table extends AbstractTableGateway
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where(array('status' => 'approved'))
+            ->where(array('spiv3.status' => 'approved'))
             ->order(array("assesmentofaudit $sortOrder"));
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -1815,6 +1865,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
@@ -1899,6 +1950,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $tQuery = $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $tQuery = self::applyV3LocationScope($tQuery);
         if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
             if ($parameters['scoreLevel'] == 0) {
                 $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
@@ -1964,6 +2016,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $startDate = '';
         $endDate = '';
         if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -2211,6 +2264,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         return $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->toArray();
     }
@@ -2227,6 +2281,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         $res = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
         return $res->auditroundno;
@@ -2488,6 +2543,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!empty($loginContainer->token)) {
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -2522,8 +2578,8 @@ class SpiFormVer3Table extends AbstractTableGateway
          * you want to insert a non-database field (for example a counter or static image)
          */
 
-        $aColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
-        $orderColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status');
+        $aColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'spiv3.status');
+        $orderColumns = array('facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'spiv3.status');
 
         /*
          * Paging
@@ -2579,6 +2635,8 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
             $tQuery = $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
+        $tQuery = self::applyV3LocationScope($tQuery);
         if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
@@ -2840,6 +2898,8 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
             $tQuery = $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
+        $sQuery = self::applyV3LocationScope($sQuery);
+        $tQuery = self::applyV3LocationScope($tQuery);
 
         if (trim($startDate) != "" && trim($endDate) != "") {
             $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
