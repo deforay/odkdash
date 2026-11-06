@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middlewares;
 
 use App\Http\Handlers\ActionHandler;
+use App\Http\HelperAccess;
 use App\Services\LaminasBridge;
 use App\View\UrlHelper;
 use App\View\ViewRenderer;
@@ -32,12 +33,10 @@ use Slim\Routing\RouteContext;
  * A route with an {action} placeholder leaves out the privilege: the action
  * named in the URL is the privilege, "index" when absent, as in Laminas.
  *
- * Some actions are only ever called by a page's own JavaScript and have no
- * privilege of their own in the ACL tables. A route lists them in a
- * comma-separated 'login-only' argument, and they need a login and nothing
- * more:
- *
- *     ->setArgument('login-only', 'check-password')
+ * An action with no privilege in the privileges table is a helper that a
+ * page's own JavaScript calls. The role edit screen cannot grant it, so a
+ * role may call it when it may open one of the pages that do
+ * (see HelperAccess). An action with a privilege is decided by the ACL alone.
  *
  * A route anyone may call sets ->setArgument('access', 'public') instead.
  * A route with no resource is a mistake and answers 500.
@@ -52,6 +51,7 @@ final class AccessMiddleware implements MiddlewareInterface
         private readonly LaminasBridge $laminas,
         private readonly ViewRenderer $view,
         private readonly UrlHelper $url,
+        private readonly HelperAccess $helpers,
     ) {
     }
 
@@ -88,10 +88,7 @@ final class AccessMiddleware implements MiddlewareInterface
 
         /** @var Acl $acl */
         $acl = $this->laminas->get('AppAcl');
-        if (
-            !$this->isLoginOnly($route->getArgument('login-only'), $privilege)
-            && (!$acl->hasResource($resource) || !$acl->isAllowed($session->roleCode, $resource, $privilege))
-        ) {
+        if (!$this->isAllowed($acl, (string) $session->roleCode, $resource, $privilege)) {
             return $this->responses->createResponse(403);
         }
 
@@ -109,19 +106,16 @@ final class AccessMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    /** Compares by method name, so every spelling Laminas accepted matches. */
-    private function isLoginOnly(?string $list, string $action): bool
+    private function isAllowed(Acl $acl, string $role, string $resource, string $privilege): bool
     {
-        if ($list === null) {
+        if (!$acl->hasResource($resource)) {
             return false;
         }
-        $method = ActionHandler::methodFor($action);
-        foreach (explode(',', $list) as $entry) {
-            if (ActionHandler::methodFor(trim($entry)) === $method) {
-                return true;
-            }
+        if ($acl->isAllowed($role, $resource, $privilege)) {
+            return true;
         }
 
-        return false;
+        return !$acl->isDefined($resource, $privilege)
+            && $this->helpers->allows($acl, $role, $resource, $privilege);
     }
 }

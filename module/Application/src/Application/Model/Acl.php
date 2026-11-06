@@ -34,6 +34,9 @@ class Acl
     /** @var array<string, true> roles holding a blanket allow */
     private array $allowedEverything = [];
 
+    /** @var array<string, array<string, true>> resource => normalised privilege name */
+    private array $defined = [];
+
     public function __construct($resourceList, $rolesList, $rolePrivileges, $privileges)
     {
         foreach ($resourceList as $res) {
@@ -47,6 +50,7 @@ class Acl
         // Map privileges to resource and privilege names
         $privilegeMap = [];
         foreach ($privileges as $priv) {
+            $this->defined[(string) $priv['resource_id']][self::normalise((string) $priv['privilege_name'])] = true;
             $privilegeMap[$priv['privilege_id']] = [
                 'resource_id' => $priv['resource_id'],
                 'privilege_name' => $priv['privilege_name']
@@ -152,6 +156,21 @@ class Acl
         }
 
         return isset($this->allowed[$role][(string) $resource][(string) $privilege]);
+    }
+
+    /**
+     * True when the privileges table defines this privilege, so the role
+     * edit screen can grant it. Spellings Laminas treated as one action
+     * (get-x, get_x, getX) count as the same privilege.
+     */
+    public function isDefined(string $resource, string $privilege): bool
+    {
+        return isset($this->defined[$resource][self::normalise($privilege)]);
+    }
+
+    public static function normalise(string $name): string
+    {
+        return strtolower(str_replace(['-', '_', '.'], '', $name));
     }
 
     private function addResource($resource): void
