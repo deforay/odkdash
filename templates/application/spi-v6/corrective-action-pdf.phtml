@@ -295,17 +295,17 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
     foreach ($correctiveActions as $ca) {
       $rowStyle = ($ca['correction'] == 'Immediate') ? 'color:red;' : '';
       $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
-      $partDTable .= '<td style="text-align:center;">' . $ca['sectionno'] . '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['deficiency']) . '</td>';
+      $partDTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($ca['sectionno']) . '</td>';
+      $partDTable .= '<td>' . CommonService::escapeHtml($this->translate((string) ($ca['deficiency'] ?? ''))) . '</td>';
       $partDTable .= '<td style="text-align:center;">';
       $partDTable .= ($ca['correction'] == 'Immediate' ? '<img src="' . $this->basePath('assets/img/red-tick.png') . '" width="20">' : "");
       $partDTable .= '</td>';
       $partDTable .= '<td style="text-align:center;">';
       $partDTable .= ($ca['correction'] == 'Followup' ? '<img src="' . $this->basePath('assets/img/black-tick.png') . '" width="20">' : "");
       $partDTable .= '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['auditorcomment']) . '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['action']) . '</td>';
-      $partDTable .= '<td>' . $this->translate($ca['timeline']) . '</td>';
+      $partDTable .= '<td>' . CommonService::escapeHtml($this->translate((string) ($ca['auditorcomment'] ?? ''))) . '</td>';
+      $partDTable .= '<td>' . CommonService::escapeHtml($this->translate((string) ($ca['action'] ?? ''))) . '</td>';
+      $partDTable .= '<td>' . CommonService::escapeHtml($this->translate((string) ($ca['timeline'] ?? ''))) . '</td>';
       $partDTable .= '</tr>';
     }
   } else {
@@ -349,17 +349,17 @@ if (isset($formData['correctiveaction']) && $formData['correctiveaction'] != "" 
           $data = $correctiveActions[$key];
           $rowStyle = ($type == 'IMMEDIATE') ? 'color:red;' : '';
           $partDTable .= '<tr nobr="true" style="' . $rowStyle . '">';
-          $partDTable .= '<td style="text-align:center;">' . ($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . ($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td style="text-align:center;">' . CommonService::escapeHtml($data[$category . '_SECTIONNO_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . CommonService::escapeHtml($data[$category . '_DEFICIENCY_' . $type] ?? '') . '</td>';
           $partDTable .= '<td style="text-align:center;">';
           $partDTable .= ($type == 'IMMEDIATE' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/red-tick.png' . '" width="20">' : "");
           $partDTable .= '</td>';
           $partDTable .= '<td style="text-align:center;">';
           $partDTable .= ($type == 'FOLLOWUP' ? '<img src="' . APPLICATION_PATH . '/public/assets/img/black-tick.png' . '" width="20">' : "");
           $partDTable .= '</td>';
-          $partDTable .= '<td>' . ($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . ($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
-          $partDTable .= '<td>' . ($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . CommonService::escapeHtml($data[$category . '_ACTION_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . CommonService::escapeHtml($data[$category . '_RECOMMENDATIONS_' . $type] ?? '') . '</td>';
+          $partDTable .= '<td>' . CommonService::escapeHtml($data[$category . '_TIMELINE_' . $type] ?? '') . '</td>';
           $partDTable .= '</tr>';
         }
       }
@@ -387,8 +387,8 @@ if (
 }
 
 $signBox1 = '<table cellspacing="0" cellpadding="4">';
-$signBox1 .= '<tr><td>Staff Audited Name: <br>' . $formData['staffaudited'] . '</td></tr>';
-$signBox1 .= "<tr><td>Person in Charge Name: " . $formData['personincharge'] . "</td></tr>";
+$signBox1 .= '<tr><td>Staff Audited Name: <br>' . CommonService::escapeHtml($formData['staffaudited']) . '</td></tr>';
+$signBox1 .= "<tr><td>Person in Charge Name: " . CommonService::escapeHtml($formData['personincharge']) . "</td></tr>";
 $signBox1 .= '</table>';
 $pdf->writeHTMLCell(90, 18, '', '', $signBox1, 1, 0, 0, true, 'L');
 
