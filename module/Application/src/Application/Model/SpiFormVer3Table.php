@@ -2310,11 +2310,23 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
+        // The facility list names the field it filters on, as "facilityid" or
+        // "facilityId". Only these two fields exist.
+        $columns = ['facilityid' => 'spiv3.facilityid', 'facilityname' => 'spiv3.facilityname'];
+        $column = $columns[strtolower((string) ($params['fieldName'] ?? ''))] ?? null;
+        if ($column === null) {
+            return [];
+        }
+        $loginContainer = new Container('credo');
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
-            ->where(array($params['fieldName'] => $params['val']))
+            ->where([$column => $params['val'] ?? ''])
             ->group('auditroundno')
             ->order("auditroundno ASC");
+        if (!empty($loginContainer->token)) {
+            $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
@@ -2466,7 +2478,12 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         $startDate = "";
         $endDate = "";
-        $sQuery = $sql->select()->from('spi_form_v_3')->columns(array('id', 'facilityid', 'facilityname', 'testingpointname', 'testingpointtype', 'assesmentofaudit', 'AUDIT_SCORE_PERCANTAGE'));
+        $loginContainer = new Container('credo');
+        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('id', 'facilityid', 'facilityname', 'testingpointname', 'testingpointtype', 'assesmentofaudit', 'AUDIT_SCORE_PERCANTAGE'));
+        if (!empty($loginContainer->token)) {
+            $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $sQuery = self::applyV3LocationScope($sQuery);
 
         if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityId') {
             $sQuery = $sQuery->where(array('facilityid' => $parameters['val']));
@@ -2498,7 +2515,11 @@ class SpiFormVer3Table extends AbstractTableGateway
         $iFilteredTotal = count($aResultFilterTotal);
 
         /* Total data set length */
-        $tQuery = $sql->select()->from('spi_form_v_3');
+        $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'));
+        if (!empty($loginContainer->token)) {
+            $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $tQuery = self::applyV3LocationScope($tQuery);
         if (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityId') {
             $tQuery = $tQuery->where(array('facilityid' => $parameters['val']));
         } elseif (isset($parameters['fieldName']) && $parameters['fieldName'] == 'facilityName') {
