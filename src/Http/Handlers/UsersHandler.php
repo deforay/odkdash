@@ -6,6 +6,7 @@ namespace App\Http\Handlers;
 
 use App\Http\Responder;
 use Application\Service\CommonService;
+use Application\Session\Container;
 use Application\Service\OdkFormService;
 use Application\Service\ProvinceService;
 use Application\Service\RoleService;
@@ -75,9 +76,10 @@ final class UsersHandler extends ActionHandler
             return $this->respond->redirect('dashboard');
         }
 
-        $id = base64_decode((string) $this->routeParam($request, 'id'));
+        // The profile is the signed-in user's own, whatever id the URL
+        // carries. UsersTable::updateUserProfileDetails() saves to it too.
         return $this->respond->page('application/users/profile', [
-            'result' => $this->userService->getUser($id),
+            'result' => $this->userService->getUser((new Container('credo'))->userId),
         ]);
     }
 
