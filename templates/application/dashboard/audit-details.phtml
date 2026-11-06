@@ -13,7 +13,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
 
 <div class="am-content">
         <div class="page-head">
-          <h2><?= $this->translate('SPI-RT 3.0 Audit Details'); ?> (<?php echo $assesmentOfAuditDate; ?>)</h2>
+          <h2><?= $this->translate('SPI-RT 3.0 Audit Details'); ?> (<?php echo $this->escapeHtml($assesmentOfAuditDate); ?>)</h2>
         </div>
 
         <div class="main-content">
@@ -71,7 +71,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
          "aaSorting": [[ 3, "desc" ]],
          "sAjaxSource": "<?php echo $this->url('dashboard',array('action' => 'audit-details')); ?>",
          "fnServerData": function ( sSource, aoData, fnCallback ) {
-            aoData.push( { "name":"assesmentOfAuditDate","value": '<?php echo $assesmentOfAuditDate; ?>'} );
+            aoData.push( { "name":"assesmentOfAuditDate","value": <?php echo \Application\Service\CommonService::jsonEncode($assesmentOfAuditDate); ?>} );
             $.ajax({
                 "dataType": 'json',
                 "type": "POST",

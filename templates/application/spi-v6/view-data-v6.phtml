@@ -208,7 +208,7 @@
         </form>
       </div>
     <?php } ?>
-    <table id="<?php echo $source; ?>"
+    <table id="<?php echo $this->escapeHtmlAttr($source); ?>"
       class="datatables table table-bordered table-condensed table-striped table-hover table-fw-widget">
       <thead>
         <?php
@@ -400,7 +400,7 @@
         startDate = start.format('YYYY-MM-DD');
         endDate = end.format('YYYY-MM-DD');
       });
-    table = $('#<?php echo $source; ?>').DataTable({
+    table = $('#' + <?php echo \Application\Service\CommonService::jsonEncode($source); ?>).DataTable({
       "bProcessing": true,
       "bServerSide": true,
       "aoColumns": [
@@ -431,15 +431,15 @@
       "fnServerData": function (sSource, aoData, fnCallback) {
         aoData.push({
           "name": "source",
-          "value": '<?php echo $source; ?>'
+          "value": <?php echo \Application\Service\CommonService::jsonEncode($source); ?>
         });
         aoData.push({
           "name": "roundno",
-          "value": '<?php echo $roundno; ?>'
+          "value": <?php echo \Application\Service\CommonService::jsonEncode($roundno); ?>
         });
         aoData.push({
           "name": "drange",
-          "value": '<?php echo $drange; ?>'
+          "value": <?php echo \Application\Service\CommonService::jsonEncode($drange); ?>
         });
         <?php
         if ($source == 'apl180' || $source == 'apall' || $source == 'ap') { ?>
@@ -545,15 +545,15 @@
     var aoData = [];
     aoData.push({
       "name": "source",
-      "value": '<?php echo $source; ?>'
+      "value": <?php echo \Application\Service\CommonService::jsonEncode($source); ?>
     });
     aoData.push({
       "name": "roundno",
-      "value": '<?php echo $roundno; ?>'
+      "value": <?php echo \Application\Service\CommonService::jsonEncode($roundno); ?>
     });
     aoData.push({
       "name": "drange",
-      "value": '<?php echo $drange; ?>'
+      "value": <?php echo \Application\Service\CommonService::jsonEncode($drange); ?>
     });
     <?php
     if ($source == 'apl180' || $source == 'apall' || $source == 'ap') { ?>

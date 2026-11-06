@@ -30,7 +30,7 @@ $isV6 = preg_match("/v6/i", $web_version);
 			<div class="col-md-12" id="righter">
 				<div class="widget widget-map">
 					<div class="widget-head">
-						<input type="hidden" name="inpId" id="inpId" value="<?php echo $nos; ?>" />
+						<input type="hidden" name="inpId" id="inpId" value="<?php echo $this->escapeHtmlAttr($nos); ?>" />
 
 						<span class="title"><b><?= $this->translate('Audit Locations'); ?></b></span>
 
