@@ -55,7 +55,8 @@
         "housekeeping": "@php bin/console cleanup-old-logs",
         "audits-unlinked": "@php bin/console audits:unlinked",
         "reset-password": "@php bin/console reset-password",
-        "lint": "find src module config public tasks -name '*.php' -print0 | xargs -0 -P 8 -n 1 php -d display_errors=stderr -l > /dev/null && for f in bin/console bin/migrate; do php -l $f > /dev/null || exit 1; done && for f in bin/*.sh bin/dev/review cron.sh; do bash -n $f || exit 1; done",
+        "lint": "find src module config public tasks -name '*.php' -print0 | xargs -0 -P 8 -n 1 php -d display_errors=stderr -l > /dev/null && for f in bin/console bin/migrate bin/dev/helper-access; do php -l $f > /dev/null || exit 1; done && for f in bin/*.sh bin/dev/review cron.sh; do bash -n $f || exit 1; done",
+        "helper-access": "@php bin/dev/helper-access",
         "phpstan": "@php vendor/bin/phpstan analyse --memory-limit=2G",
         "phpstan:baseline": "@php vendor/bin/phpstan analyse --generate-baseline phpstan-baseline.neon --memory-limit=2G",
         "qc": [
@@ -63,6 +64,7 @@
             "@composer validate --no-check-publish",
             "@lint",
             "@phpstan",
+            "@php bin/dev/helper-access --check",
             "@composer audit --abandoned=report"
         ],
         "cron": "crunz schedule:run",
@@ -90,6 +92,7 @@
         "refresh": "Full update: rebase onto origin, reinstall dependencies, then run post-update.",
         "lint": "Syntax-check every PHP file and shell script.",
         "qc": "Validate composer.json, lint, run static analysis, and audit dependencies.",
+        "helper-access": "@php bin/dev/helper-access",
         "phpstan": "Static analysis at level 5. Errors already in phpstan-baseline.neon are not reported.",
         "phpstan:baseline": "Regenerate phpstan-baseline.neon from the current code."
     },

@@ -68,6 +68,28 @@ use function DI\autowire;
  */
 final class Kernel
 {
+    /**
+     * Ported controllers: route name => [Laminas pattern, handler, ACL
+     * resource]. bin/dev/helper-access reads this table too.
+     */
+    public const array CONTROLLERS = [
+        'api-logs' => ['/api-logs[/:action]', ApiLogsHandler::class, 'ApiLogsController'],
+        'roles' => ['/roles[/:action][/][:id]', RolesHandler::class, 'RolesController'],
+        'users' => ['/users[/:action][/][:id]', UsersHandler::class, 'UsersController'],
+        'provinces' => ['/provinces[/:action][/][:id]', ProvincesHandler::class, 'ProvincesController'],
+        'district' => ['/district[/:action][/][:id]', DistrictHandler::class, 'DistrictController'],
+        'config' => ['/config[/:action][/][:id]', ConfigHandler::class, 'ConfigController'],
+        'event-log' => ['/event-log[/:action][/][:id]', EventHandler::class, 'EventController'],
+        'audit-trail' => ['/audit-trail[/:action][/][:id]', AuditTrailHandler::class, 'AuditTrailController'],
+        'email' => ['/email[/:action][/][:id]', EmailHandler::class, 'EmailController'],
+        'common' => ['/common[/:action][/][:id]', CommonHandler::class, 'CommonController'],
+        'dashboard' => ['/dashboard[/:action][/][:id]', DashboardHandler::class, 'DashboardController'],
+        'dashboard-v6' => ['/dashboard-v6[/:action][/][:id]', DashboardV6Handler::class, 'DashboardV6Controller'],
+        'spi-v3-reports' => ['/spi-v3-reports[/:action][/][:id]', SpiV3ReportsHandler::class, 'SpiV3ReportsController'],
+        'spi-v6-reports' => ['/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController'],
+        'spi-facility' => ['/facility[/:action][/][:id]', FacilityHandler::class, 'FacilityController'],
+    ];
+
     private static ?self $current = null;
 
     private function __construct(
@@ -113,6 +135,7 @@ final class Kernel
                 );
             },
 
+            HelperAccess::class => static fn(): HelperAccess => new HelperAccess($appRoot . '/config/helper-access.php'),
             ErrorMiddleware::class => autowire(),
             AccessMiddleware::class => autowire(),
 
@@ -177,44 +200,21 @@ final class Kernel
         // Ported controllers. Laminas patterns of the form
         // /x[/:action][/][:id] become /x[/[{action}[/[{id}]]]] in Slim,
         // which matches /x, /x/, /x/edit, /x/edit/ and /x/edit/<id>.
-        $controllers = [
-            // name, Laminas pattern, handler, ACL resource, login-only actions
-            ['api-logs', '/api-logs[/:action]', ApiLogsHandler::class, 'ApiLogsController', ''],
-            ['roles', '/roles[/:action][/][:id]', RolesHandler::class, 'RolesController', ''],
-            ['users', '/users[/:action][/][:id]', UsersHandler::class, 'UsersController', 'check-password'],
-            ['provinces', '/provinces[/:action][/][:id]', ProvincesHandler::class, 'ProvincesController', 'getDistrictByProvince'],
-            ['district', '/district[/:action][/][:id]', DistrictHandler::class, 'DistrictController', ''],
-            ['config', '/config[/:action][/][:id]', ConfigHandler::class, 'ConfigController', ''],
-            ['event-log', '/event-log[/:action][/][:id]', EventHandler::class, 'EventController', ''],
-            ['audit-trail', '/audit-trail[/:action][/][:id]', AuditTrailHandler::class, 'AuditTrailController', ''],
-            ['email', '/email[/:action][/][:id]', EmailHandler::class, 'EmailController', ''],
-            ['common', '/common[/:action][/][:id]', CommonHandler::class, 'CommonController',
-                'index,get-audit-location-based-on-form,generate-password'],
-            ['dashboard', '/dashboard[/:action][/][:id]', DashboardHandler::class, 'DashboardController', ''],
-            ['dashboard-v6', '/dashboard-v6[/:action][/][:id]', DashboardV6Handler::class, 'DashboardV6Controller', ''],
-            ['spi-v3-reports', '/spi-v3-reports[/:action][/][:id]', SpiV3ReportsHandler::class, 'SpiV3ReportsController',
-                'export-facility-report'],
-            ['spi-v6-reports', '/spi-v6-reports[/:action][/][:id]', SpiV6ReportsHandler::class, 'SpiV6ReportsController',
-                'export-facility-report'],
-            ['spi-facility', '/facility[/:action][/][:id]', FacilityHandler::class, 'FacilityController', ''],
-        ];
-        foreach ($controllers as [$name, $laminasPattern, $handler, $controller, $loginOnly]) {
+        foreach (self::CONTROLLERS as $name => [$laminasPattern, $handler, $controller]) {
             $urls->register($name, $laminasPattern, ['action' => 'index']);
             $pattern = strtr($laminasPattern, [
                 '[/:action][/][:id]' => '[/[{action}[/[{id}]]]]',
                 '[/:action]' => '[/{action}]',
             ]);
-            $route = $app->any($pattern, $handler)
+            $app->any($pattern, $handler)
                 ->setName($name)
                 ->setArgument('resource', 'Application\\Controller\\' . $controller);
-            if ($loginOnly !== '') {
-                $route->setArgument('login-only', $loginOnly);
-            }
         }
 
         // A second Laminas name for one facility URL. The spi-facility route
         // serves the path, so only the URL is registered.
         $urls->register('upload-facility', '/facility/upload-facility');
+
 
         // Slim runs the middleware added last first. The order a request
         // meets them is: errors, routing, body parsing, access, handler.
