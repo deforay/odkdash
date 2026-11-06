@@ -1305,6 +1305,34 @@ class SpiFormVer6Table extends AbstractTableGateway
     }
 
     /**
+     * Whether the signed-in user may open or change this audit, under the
+     * same token and location rules as the lists. A Super Admin has neither
+     * restriction, so every audit passes. An id the user cannot reach reads
+     * as missing.
+     */
+    public function auditInScope(mixed $id): bool
+    {
+        // An audit id is digits. MySQL would read "4' OR '1'='1" as 4.
+        if (!is_scalar($id) || preg_match('/^\d+$/', trim((string) $id)) !== 1) {
+            return false;
+        }
+        $loginContainer = new Container('credo');
+        $hasTokens = !empty($loginContainer->token);
+        $hasMapping = !empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '';
+        if (!$hasTokens && !$hasMapping) {
+            return true;
+        }
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from(['spiv6' => 'spi_form_v_6'])->columns(['id'])
+            ->where(['spiv6.id' => trim((string) $id)]);
+        if ($hasTokens) {
+            $query->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $query = $this->applyV6LocationScope($query, [], $loginContainer);
+        return $this->adapter->query($sql->buildSqlString($query), $this->adapter::QUERY_MODE_EXECUTE)->count() > 0;
+    }
+
+    /**
      * Scope a select over spi_form_v_6, aliased 'spiv6', to the user's locations.
      *
      * A mapped user sees the mapped locations only. An audit whose location
@@ -1334,15 +1362,15 @@ class SpiFormVer6Table extends AbstractTableGateway
             // Mapping exists
             if ($loginContainer->userMappingType === 'country') {
                 // User mapped by country: show mapped country data and all related provinces and districts
-                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('country', 'province', 'district'), 'left')
+                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array(), 'left')
                     ->where(['fm.country' => $mappedIds]);
             } elseif ($loginContainer->userMappingType === 'province') {
                 // User mapped by province: show only mapped provinces
-                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('province'), 'left')
+                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array(), 'left')
                     ->where(['fm.province' => $mappedIds]);
             } elseif ($loginContainer->userMappingType === 'district') {
                 // User mapped by district: show only mapped districts
-                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array('district'), 'left')
+                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array(), 'left')
                     ->where(['fm.district' => $mappedIds]);
             }
         }
@@ -3297,13 +3325,19 @@ class SpiFormVer6Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
+        $loginContainer = new Container('credo');
         $uQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))
             ->order('spiv6.facilityname ASC');
+        if (!empty($loginContainer->token)) {
+            $uQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $uQuery = $this->applyV6LocationScope($uQuery, [], $loginContainer);
         $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
             ->where('spirt3.status != "deleted"');
+        $aQuery = SpiRtFacilitiesTable::applyMappingToFacilities($aQuery, 'spirt3');
         $aQueryStr = $sql->buildSqlString($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
@@ -3436,9 +3470,14 @@ class SpiFormVer6Table extends AbstractTableGateway
         if (isset($params['facilityName']) && trim($params['facilityName']) != '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
+            $loginContainer = new Container('credo');
             $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                 ->columns(array('id', 'assesmentofaudit', 'form_metadata'))
                 ->where(array('spiv6.facilityname' => $params['facilityName'], 'spiv6.status' => 'approved'));
+            if (!empty($loginContainer->token)) {
+                $query->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
+            }
+            $query = $this->applyV6LocationScope($query, [], $loginContainer);
             if (isset($params['showEmailAudits']) && $params['showEmailAudits'] != '') {
                 if ($params['showEmailAudits'] == 'yes') {
                     // Query where 'audit_printed' is set to 'yes'

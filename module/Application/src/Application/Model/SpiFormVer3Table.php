@@ -54,6 +54,34 @@ class SpiFormVer3Table extends AbstractTableGateway
         return $query->join(['fm' => 'spi_rt_3_facilities'], 'fm.id=spiv3.facility', [])
             ->where([$column => CommonService::inList($loginContainer->userMappedIds)]);
     }
+
+    /**
+     * Whether the signed-in user may open or change this audit, under the
+     * same token and location rules as the lists. A Super Admin has neither
+     * restriction, so every audit passes. An id the user cannot reach reads
+     * as missing.
+     */
+    public function auditInScope(mixed $id): bool
+    {
+        // An audit id is digits. MySQL would read "4' OR '1'='1" as 4.
+        if (!is_scalar($id) || preg_match('/^\d+$/', trim((string) $id)) !== 1) {
+            return false;
+        }
+        $loginContainer = new Container('credo');
+        $hasTokens = !empty($loginContainer->token);
+        $hasMapping = !empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '';
+        if (!$hasTokens && !$hasMapping) {
+            return true;
+        }
+        $sql = new Sql($this->adapter);
+        $query = $sql->select()->from(['spiv3' => 'spi_form_v_3'])->columns(['id'])
+            ->where(['spiv3.id' => trim((string) $id)]);
+        if ($hasTokens) {
+            $query->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $query = self::applyV3LocationScope($query);
+        return $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->count() > 0;
+    }
     protected $adapter;
 
     public function __construct(Adapter $adapter)
@@ -2371,12 +2399,18 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
-        $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))->order('facilityname ASC');;
+        $loginContainer = new Container('credo');
+        $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname' => new Expression("DISTINCT spiv3.facilityname")))->order('spiv3.facilityname ASC');
+        if (!empty($loginContainer->token)) {
+            $uQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $uQuery = self::applyV3LocationScope($uQuery);
         $uQueryStr = $sql->buildSqlString($uQuery);
         $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
         $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
             ->where('spirt3.status != "deleted"')->order('spirt3.facility_name ASC');
+        $aQuery = SpiRtFacilitiesTable::applyMappingToFacilities($aQuery, 'spirt3');
         $aQueryStr = $sql->buildSqlString($aQuery);
         $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 
@@ -2509,9 +2543,14 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (isset($params['facilityName']) && trim($params['facilityName']) != '') {
             $dbAdapter = $this->adapter;
             $sql = new Sql($this->adapter);
+            $loginContainer = new Container('credo');
             $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
                 ->columns(array('id', 'testingpointname', 'assesmentofaudit'))
                 ->where(array('spiv3.facilityname' => $params['facilityName'], 'spiv3.status' => 'approved'));
+            if (!empty($loginContainer->token)) {
+                $query->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+            }
+            $query = self::applyV3LocationScope($query);
             $queryStr = $sql->buildSqlString($query);
             $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
 

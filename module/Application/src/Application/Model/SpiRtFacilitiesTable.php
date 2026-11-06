@@ -5,6 +5,7 @@ namespace Application\Model;
 use Application\Session\Container;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Sql;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Expression;
 use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\GeographicalDivisionsTable;
@@ -19,6 +20,27 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     protected $table = 'spi_rt_3_facilities';
     protected $adapter;
 
+
+    /**
+     * Limits a query on spi_rt_3_facilities to the user's mapped locations.
+     * A Super Admin has no mapping, so every facility passes. A mapping type
+     * this code does not know matches nothing.
+     */
+    public static function applyMappingToFacilities(Select $query, string $alias): Select
+    {
+        $loginContainer = new Container('credo');
+        if (empty($loginContainer->userMappedIds) || !is_array($loginContainer->userMappedIds) || $loginContainer->userMappingType == '') {
+            return $query;
+        }
+        $column = match ($loginContainer->userMappingType) {
+            'country', 'province', 'district' => $alias . '.' . $loginContainer->userMappingType,
+            default => null,
+        };
+        if ($column === null) {
+            return $query->where('1 = 0');
+        }
+        return $query->where([$column => CommonService::inList($loginContainer->userMappedIds)]);
+    }
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;

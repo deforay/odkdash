@@ -278,14 +278,42 @@ class FacilityService
 
     public function getFacilityProfileByAudit($ids)
     {
+        // The id names an audit, so the user must be able to reach that audit.
+        if (trim((string) $ids) !== '' && !$this->sm->get('SpiFormVer3Table')->auditInScope(base64_decode((string) $ids))) {
+            return [];
+        }
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fetchFacilityProfileByAudit($ids);
+        $result = $facilityDb->fetchFacilityProfileByAudit($ids);
+        // The facility's audits are matched by name, and another location
+        // can have a facility of the same name, so each one is checked too.
+        if (!empty($result['auditsResult'])) {
+            $audits = $this->sm->get('SpiFormVer3Table');
+            $result['auditsResult'] = array_values(array_filter(
+                $result['auditsResult'],
+                static fn(array $audit): bool => $audits->auditInScope($audit['id'])
+            ));
+        }
+        return $result;
     }
 
     public function getFacilityProfileByAuditV6($ids)
     {
+        // The id names an audit, so the user must be able to reach that audit.
+        if (trim((string) $ids) !== '' && !$this->sm->get('SpiFormVer6Table')->auditInScope(base64_decode((string) $ids))) {
+            return [];
+        }
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fetchFacilityProfileByAuditV6($ids);
+        $result = $facilityDb->fetchFacilityProfileByAuditV6($ids);
+        // The facility's audits are matched by name, and another location
+        // can have a facility of the same name, so each one is checked too.
+        if (!empty($result['auditsResult'])) {
+            $audits = $this->sm->get('SpiFormVer6Table');
+            $result['auditsResult'] = array_values(array_filter(
+                $result['auditsResult'],
+                static fn(array $audit): bool => $audits->auditInScope($audit['id'])
+            ));
+        }
+        return $result;
     }
 
     public function getProvinceList()
