@@ -151,14 +151,17 @@ Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a t
 
 ## What is still on Laminas
 
-No controller, route, module or MVC event is left. Four packages remain:
+No controller, route, module or MVC event is left. Two packages remain, and they bring a third, laminas-stdlib, which the app no longer calls itself:
 
 | Package | Used by | Next step |
 |---|---|---|
 | laminas-servicemanager | `LaminasBridge` and the factories in `Module::getServiceConfig()` | Move the factories to PHP-DI. |
 | laminas-db | The models and table gateways | Replace with Doctrine DBAL or PDO, one model at a time. This is the last step. |
-| laminas-stdlib | `Parameters` for POST data, `ArrayUtils::merge()` for the config | Replace once the services read plain arrays. |
-| laminas-escaper | `escapeHtml` and `escapeHtmlAttr` in `Kernel::viewHelpers()` | Replace with plain PHP escaping. |
+
+Two packages are gone:
+
+- laminas-escaper. `App\View\Escape` replaces it. Its output matched Laminas on 200,011 random strings, invalid UTF-8 included.
+- laminas-stdlib as a direct dependency. `App\Http\Parameters` replaces `Parameters` with the same behaviour: null for a missing key, and property access. `LaminasBridge::merge()` replaces `ArrayUtils::merge()`. The merged config and the registered services are identical.
 
 `LaminasBridge::config()` merges the config in the order the module manager merged it:
 

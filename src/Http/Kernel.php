@@ -8,6 +8,7 @@ use App\Http\Handlers\ClientErrorHandler;
 use App\Http\Middlewares\AccessMiddleware;
 use App\Http\Middlewares\ErrorMiddleware;
 use App\Services\LaminasBridge;
+use App\View\Escape;
 use App\View\UrlHelper;
 use App\View\ViewHelpers;
 use App\View\ViewRenderer;
@@ -28,7 +29,6 @@ use Application\View\Helper\GlobalConfigHelper;
 use Application\View\Helper\HumanReadableDateFormat;
 use Application\View\Helper\Translate;
 use DI\Container;
-use Laminas\Escaper\Escaper;
 use Laminas\ServiceManager\ServiceManager;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -250,7 +250,6 @@ final class Kernel
     private static function viewHelpers(ContainerInterface $c, string $basePath): ViewHelpers
     {
         $laminas = static fn(): LaminasBridge => $c->get(LaminasBridge::class);
-        $escaper = static fn(): Escaper => new Escaper('utf-8');
 
         return new ViewHelpers([
             'translate' => static fn(): Translate => new Translate($laminas()->get('translator')),
@@ -258,9 +257,9 @@ final class Kernel
                 => $basePath . ($file !== null ? '/' . ltrim($file, '/') : ''),
             'url' => static fn(): UrlHelper => $c->get(UrlHelper::class),
             'escapeHtml' => static fn(): \Closure => static fn(mixed $value): string
-                => $escaper()->escapeHtml((string) $value),
+                => Escape::html((string) $value),
             'escapeHtmlAttr' => static fn(): \Closure => static fn(mixed $value): string
-                => $escaper()->escapeHtmlAttr((string) $value),
+                => Escape::attr((string) $value),
             'humanReadableDateFormat' => static fn(): HumanReadableDateFormat => new HumanReadableDateFormat(),
             'GlobalConfigHelper' => static fn(): GlobalConfigHelper
                 => new GlobalConfigHelper($laminas()->get('GlobalTable')),

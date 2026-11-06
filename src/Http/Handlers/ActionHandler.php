@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Handlers;
 
-use Laminas\Stdlib\Parameters;
+use App\Http\Parameters;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

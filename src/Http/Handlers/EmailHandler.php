@@ -8,7 +8,7 @@ use App\Http\Responder;
 use Application\Service\CommonService;
 use Application\Service\FacilityService;
 use Application\Service\OdkFormService;
-use Laminas\Stdlib\Parameters;
+use App\Http\Parameters;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
