@@ -242,7 +242,7 @@ class OdkFormService
 
             $xlsx->addSheet($outputData);
             $filename = 'SPI-RT-CHECKLIST-version-3-' . time() . '.xlsx';
-            $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+            $TemporaryFolderPath = CommonService::downloadFile($filename);
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
             $subject = '';
@@ -360,7 +360,7 @@ class OdkFormService
         $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => true));
         $PieChart->drawPieLegend(5, 390);
         $fileName = 'piechart.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "piechart.png");
+        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . "piechart.png");
         return $fileName;
     }
 
@@ -425,7 +425,7 @@ class OdkFormService
 
         /* Render the picture (choose the best way) */
         $fileName = 'radar.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar.png");
+        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . "radar.png");
         return $fileName;
     }
 
@@ -642,7 +642,7 @@ class OdkFormService
                 }
             }
 
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $writer->save(CommonService::downloadFile($filename));
             $subject = '';
             $eventType = 'Export-Facility';
             $action = $userName . ' has exported V3 Facility Report';
@@ -1958,9 +1958,8 @@ class OdkFormService
             $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
 
             $xlsx->addSheet($outputData);
-            $customTempFolderPath = TEMP_UPLOAD_PATH;
             $filename = 'SPI-RRT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xlsx';
-            $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
+            $TemporaryFolderPath = CommonService::downloadFile($filename);
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
             $subject = '';
@@ -2221,9 +2220,8 @@ class OdkFormService
             $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
 
             $xlsx->addSheet($outputData);
-            $customTempFolderPath = TEMP_UPLOAD_PATH;
             $filename = 'SPI-RRT--CHECKLIST-version-6-' . time() . '.xlsx';
-            $TemporaryFolderPath = $customTempFolderPath . DIRECTORY_SEPARATOR . $filename;
+            $TemporaryFolderPath = CommonService::downloadFile($filename);
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
             $subject = '';
@@ -2292,7 +2290,7 @@ class OdkFormService
         $fileName = 'piechart-spiv6.png';
         $myPicture->drawText(540, 200, "Extended AA pass / Splitted", ["R" => 0, "G" => 0, "B" => 0, "Align" => TEXT_ALIGN_TOPMIDDLE]);
         $fileName = 'piechart-spiv6.png';
-        $PieChart->pChartObject->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $PieChart->pChartObject->render(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
 
         return $fileName;
     }
@@ -2356,7 +2354,7 @@ class OdkFormService
         /* Render the picture (choose the best way) */
         $fileName = 'radar-spiv6.png';
         //print_r($fileName);die;
-        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $result = $myPicture->render(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
         return $fileName;
     }
 
@@ -2421,7 +2419,7 @@ class OdkFormService
         /* Render the picture (choose the best way) */
         $fileName = 'radar-section-s0-spiv6.png';
         //print_r($fileName);die;
-        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $result = $myPicture->render(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
         return $fileName;
     }
 
@@ -2487,7 +2485,7 @@ class OdkFormService
         /* Render the picture (choose the best way) */
         $fileName = 'radar-section-d0-spiv6.png';
         //print_r($fileName);die;
-        $result = $myPicture->render(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $result = $myPicture->render(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
         return $fileName;
     }
 
@@ -2689,7 +2687,7 @@ class OdkFormService
 
         /* Render the picture (choose the best way) */
         $fileName = 'radar.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "radar.png");
+        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . "radar.png");
         return $fileName;
     }
 
@@ -2750,7 +2748,7 @@ class OdkFormService
 
         /* Render the picture (choose the best way) */
         $fileName = 'radar-s0-v6.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
         return $fileName;
     }
 
@@ -2811,7 +2809,7 @@ class OdkFormService
 
         /* Render the picture (choose the best way) */
         $fileName = 'radar-d0-v6.png';
-        $result = $myPicture->autoOutput(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName);
+        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
         return $fileName;
     }
 
@@ -2882,7 +2880,6 @@ class OdkFormService
             $spreadsheet = new Spreadsheet();
             $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v6-' . date('d-M-Y-H-i-s') . '.xlsx';
-            //$writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
             $sheet = $spreadsheet->getActiveSheet();
             $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
@@ -3025,7 +3022,7 @@ class OdkFormService
             }
 
             $writer = new Xlsx($spreadsheet);
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $writer->save(CommonService::downloadFile($filename));
             $subject = '';
             $eventType = 'Export-Facility';
             $action = $userName . ' has exported SPI-RRT Facility Report';
@@ -5545,7 +5542,7 @@ class OdkFormService
             $xlsx = new SimpleXLSXGen();
             $xlsx->addSheet($outputData);
             $filename = $excelName . ' - ' . time() . '.xlsx';
-            $TemporaryFolderPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename;
+            $TemporaryFolderPath = CommonService::downloadFile($filename);
             $xlsx->mergeCells('A1:Q1');
             $xlsx->saveAs($TemporaryFolderPath);
             $subject = '';

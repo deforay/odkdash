@@ -2,6 +2,7 @@
 
 use Application\Service\FpdiExtends;
 use Application\Service\TcpdfExtends;
+use Application\Service\CommonService;
 
 if (!empty($formData)) {
   // Extend the TCPDF class to create custom Header and Footer
@@ -1701,7 +1702,7 @@ if (!empty($formData)) {
 
   //Close and output PDF document
   $fileName = "SPI-RT-CHECKLIST-" . date('d-M-Y-H-i-s') . ".pdf";
-  $filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $tempId . DIRECTORY_SEPARATOR . $fileName;
+  $filePath = CommonService::tempFolder('audit-email' . DIRECTORY_SEPARATOR . (int) $tempId) . DIRECTORY_SEPARATOR . $fileName;
   $pdf->Output($filePath, "F");
   //echo $fileName;
   //============================================================+

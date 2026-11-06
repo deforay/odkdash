@@ -105,14 +105,14 @@ if ($h < 52) {
 $pdfContent = '<br><br><br><br><br>';
 $pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
 $pdfContent .= '<tr>';
-$pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('temporary/radar-spiv6.png') . '" alt="PDF" /></td>';
-$pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/piechart-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style1 . '" src="' . CommonService::tempImage('radar-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style2 . '" src="' . CommonService::tempImage('piechart-spiv6.png') . '" alt="PDF" /></td>';
 $pdfContent .= '</tr>';
 $pdfContent .= '</table><br><br><br><br><br><br>';
 $pdfContent .= '<table style="background-color:#fff;margin-bottom:20px;width:100%;">';
 $pdfContent .= '<tr>';
-$pdfContent .= '<td><img style="' . $style1 . '" src="' . $this->basePath('temporary/radar-section-s0-spiv6.png') . '" alt="PDF" /></td>';
-$pdfContent .= '<td><img style="' . $style2 . '" src="' . $this->basePath('temporary/radar-section-d0-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style1 . '" src="' . CommonService::tempImage('radar-section-s0-spiv6.png') . '" alt="PDF" /></td>';
+$pdfContent .= '<td><img style="' . $style2 . '" src="' . CommonService::tempImage('radar-section-d0-spiv6.png') . '" alt="PDF" /></td>';
 $pdfContent .= '</tr>';
 $pdfContent .= '</table><br><br><br><br><br><br><br><br>';
 $pdf->writeHTML($pdfContent, true, 0, true, 0);
@@ -174,7 +174,7 @@ $testingResultAvg .= '</table>';
 
 // print_r($pdfContent);die;
 $pdf->writeHTML($testingResultAvg, true, 0, true, 0);
-$fileName = "SPI-RRT-Summary-" . date('d-m-y-h-i-s');
-$filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
+$fileName = "SPI-RRT-Summary-" . date('d-m-y-h-i-s') . ".pdf";
+$filePath = CommonService::downloadFile($fileName);
 $pdf->Output($filePath, "F");
 echo $fileName;

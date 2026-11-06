@@ -212,9 +212,9 @@ class CommonService
                     $email->subject($subject);
                     $email->html($result['message']);
 
-                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id;
+                    $dirPath = self::tempFolder() . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id;
                     if (is_dir($dirPath)) {
-                        $dh = opendir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id);
+                        $dh = opendir(self::tempFolder() . DIRECTORY_SEPARATOR . "email" . DIRECTORY_SEPARATOR . $id);
                         while (($filename = readdir($dh)) !== false) {
                             if ($filename != "." && $filename != "..") {
                                 $filePath = $dirPath . DIRECTORY_SEPARATOR . $filename;
@@ -293,9 +293,9 @@ class CommonService
                     $email->subject($subject);
                     $email->html($result['message']);
 
-                    $dirPath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id;
+                    $dirPath = self::tempFolder() . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id;
                     if (is_dir($dirPath)) {
-                        $dh = scandir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id);
+                        $dh = scandir(self::tempFolder() . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $id);
                         // while (($filename = readdir($dh)) !== false) {
                         foreach ($dh as $filename => $value) {
                             if (!in_array($value, array(".", ".."))) {
@@ -640,6 +640,76 @@ class CommonService
         }
 
         return mkdir($path, $mode, $recursive);
+    }
+
+    /**
+     * The folder for files the app writes and reads back: exports, chart
+     * images, email attachments. It is outside the web root, so a file
+     * reaches a browser only through the download route.
+     */
+    public static function tempFolder(string $subfolder = ''): string
+    {
+        $folder = dirname(__DIR__, 5) . '/var/temporary' . ($subfolder === '' ? '' : DIRECTORY_SEPARATOR . $subfolder);
+        if (!is_dir($folder) && !mkdir($folder, 0775, true) && !is_dir($folder)) {
+            throw new \RuntimeException("Cannot create $folder");
+        }
+        return $folder;
+    }
+
+    /**
+     * The signed-in user's folder in tempFolder(), for their exports, PDFs
+     * and chart images. Two users who export in the same second get files
+     * with the same name, so each user has a folder of their own.
+     */
+    public static function userFolder(): string
+    {
+        $userId = (int) ((new Container('credo'))->userId ?? 0);
+        if ($userId <= 0) {
+            throw new \RuntimeException('No user is signed in.');
+        }
+        return self::tempFolder('users' . DIRECTORY_SEPARATOR . $userId);
+    }
+
+    /**
+     * The path to write a file that the signed-in user then fetches from
+     * the download route. The browser fetches it right away, so the user's
+     * files older than a day are deleted here.
+     */
+    public static function downloadFile(string $fileName): string
+    {
+        $folder = self::userFolder();
+        foreach (glob($folder . DIRECTORY_SEPARATOR . '*') ?: [] as $old) {
+            if (is_file($old) && filemtime($old) < time() - 86400) {
+                unlink($old);
+            }
+        }
+        return $folder . DIRECTORY_SEPARATOR . basename($fileName);
+    }
+
+    /** The path of a file the signed-in user wrote with downloadFile(), or null. */
+    public static function downloadPath(mixed $fileName): ?string
+    {
+        if (!is_string($fileName) || $fileName === '' || $fileName !== basename($fileName)) {
+            return null;
+        }
+        if (empty((new Container('credo'))->userId)) {
+            return null;
+        }
+        $path = self::userFolder() . DIRECTORY_SEPARATOR . $fileName;
+        return is_file($path) ? $path : null;
+    }
+
+    /**
+     * A data URI for a chart image in userFolder(), for an <img> in a TCPDF
+     * template. TCPDF resolves a path in src against the web root.
+     */
+    public static function tempImage(string $fileName): string
+    {
+        $path = self::userFolder() . DIRECTORY_SEPARATOR . basename($fileName);
+        if (!is_file($path)) {
+            return '';
+        }
+        return 'data:image/png;base64,' . base64_encode((string) file_get_contents($path));
     }
 
     public static function embedImage($imagePath)

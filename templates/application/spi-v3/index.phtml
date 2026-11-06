@@ -438,7 +438,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
           $.unblockUI();
-          document.location.href = '/temporary/' + data;
+          document.location.href = '<?= $this->url('download'); ?>?file=' + encodeURIComponent(data);
         }
       });
   }
@@ -470,7 +470,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
           alert('<?= $this->translate('Unable to generate download'); ?>');
         } else {
           $.unblockUI();
-          window.open('/temporary/' + data, '_blank');
+          window.open('<?= $this->url('download'); ?>?file=' + encodeURIComponent(data), '_blank');
         }
       });
   }

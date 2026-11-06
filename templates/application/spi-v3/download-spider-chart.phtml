@@ -1,6 +1,7 @@
 <?php
 use Application\Service\FpdiExtends;
 use Application\Service\TcpdfExtends;
+use Application\Service\CommonService;
 
 // Check if the template_file is set in $configData
 if (isset($configData['template_file']) && !empty($configData['template_file'])) {
@@ -50,12 +51,12 @@ $pdf->SetFont('times', '', 10);
 // add a page
 $pdf->AddPage();
 
-$pdfContent = '<img src="' . $this->basePath('temporary/radar.png') . '" alt="PDF"/>';
+$pdfContent = '<img src="' . CommonService::tempImage('radar.png') . '" alt="PDF"/>';
 $pdf->writeHTML($pdfContent, true, 0, true, 0);
 
 //Close and output PDF document
 $fileName = "SPI-Radar-" . date('d-M-Y-H-i-s') . ".pdf";
-$filePath = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $fileName;
+$filePath = CommonService::downloadFile($fileName);
 $pdf->Output($filePath, "F");
 echo $fileName;
 //echo $fileName;

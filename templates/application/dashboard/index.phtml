@@ -1475,7 +1475,7 @@ $config = $this->GlobalConfigHelper();
 				if (data == "" || data == null || data == undefined) {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
-					window.open('/temporary/' + data, '_blank');
+					window.open('<?= $this->url('download'); ?>?file=' + encodeURIComponent(data), '_blank');
 				}
 			});
 	}

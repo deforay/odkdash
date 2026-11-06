@@ -39,7 +39,9 @@ use Slim\Routing\RouteContext;
  * (see HelperAccess). An action with a privilege is decided by the ACL alone.
  *
  * A route anyone may call sets ->setArgument('access', 'public') instead.
- * The route files mark it with 'public' => true. A route with no resource
+ * The route files mark it with 'public' => true. A route any signed-in user
+ * may call, whatever the role, sets ->setArgument('access', 'signed-in'). The
+ * route files mark it with 'signed_in' => true. A route with no resource
  * is a mistake and answers 500.
  *
  * AJAX requests without a login get a 401 instead of a redirect to the
@@ -76,7 +78,8 @@ final class AccessMiddleware implements MiddlewareInterface
         }
 
         $resource = $route->getArgument('resource');
-        if ($resource === null) {
+        $signedIn = $route->getArgument('access') === 'signed-in';
+        if ($resource === null && !$signedIn) {
             throw new RuntimeException(sprintf(
                 'Route "%s" names no ACL resource and is not marked public.',
                 $route->getPattern()
@@ -91,6 +94,10 @@ final class AccessMiddleware implements MiddlewareInterface
 
             return $this->responses->createResponse(302)
                 ->withHeader('Location', ($this->url)('login'));
+        }
+
+        if ($signedIn) {
+            return $handler->handle($request);
         }
 
         /** @var Acl $acl */

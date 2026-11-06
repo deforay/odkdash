@@ -396,7 +396,7 @@ $userMappingType = $loginContainer->userMappingType;
 				if (data === "") {
 					alert('<?= $this->translate('Unable to generate download'); ?>');
 				} else {
-					document.location.href = '<?php echo $this->basePath('temporary'); ?>/' + encodeURIComponent(data);
+					document.location.href = '<?= $this->url('download'); ?>?file=' + encodeURIComponent(data);
 				}
 			})
 			.fail(function () {

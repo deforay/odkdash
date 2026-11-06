@@ -139,13 +139,7 @@ class FacilityService
             if ($mailId > 0) {
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if ($result > 0) {
-                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email") && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email")) {
-                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email");
-                    }
-
-                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId) && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId)) {
-                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId);
-                    }
+                    $attachmentFolder = CommonService::tempFolder('audit-email' . DIRECTORY_SEPARATOR . (int) $mailId);
 
                     //Move Attachement File(s)
                     $errorAttachement = 0;
@@ -153,9 +147,9 @@ class FacilityService
                         $counter = count($_FILES['attchement']['name']);
                         for ($attch = 0; $attch < $counter; $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
-                                $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
+                                $extension = strtolower(pathinfo($_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
                                 $fileName = CommonService::generateRandomString(5) . "." . $extension;
-                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
+                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], $attachmentFolder . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;
                                 }
@@ -221,13 +215,7 @@ class FacilityService
             if ($mailId > 0) {
                 $result = $facilityDb->updateFacilityEmailAddress($params);
                 if ($result > 0) {
-                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email") && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email")) {
-                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email");
-                    }
-
-                    if (!file_exists(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId) && !is_dir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId)) {
-                        mkdir(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId);
-                    }
+                    $attachmentFolder = CommonService::tempFolder('audit-email' . DIRECTORY_SEPARATOR . (int) $mailId);
 
                     //Move Attachement File(s)
                     $errorAttachement = 0;
@@ -235,9 +223,9 @@ class FacilityService
                         $counter = count($_FILES['attchement']['name']);
                         for ($attch = 0; $attch < $counter; $attch++) {
                             if (trim($_FILES['attchement']['name'][$attch]) != '') {
-                                $extension = strtolower(pathinfo(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
+                                $extension = strtolower(pathinfo($_FILES['attchement']['name'][$attch], PATHINFO_EXTENSION));
                                 $fileName = CommonService::generateRandomString(5) . "." . $extension;
-                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . "audit-email" . DIRECTORY_SEPARATOR . $mailId . DIRECTORY_SEPARATOR . $fileName)) {
+                                if (move_uploaded_file($_FILES["attchement"]["tmp_name"][$attch], $attachmentFolder . DIRECTORY_SEPARATOR . $fileName)) {
                                 } else {
                                     $errorAttachement += 1;
                                 }
@@ -443,7 +431,7 @@ class FacilityService
             }
 
             $filename = 'facility-list-report-' . date('d-M-Y-H-i-s') . '.xlsx';
-            $writer->save(TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . $filename);
+            $writer->save(CommonService::downloadFile($filename));
             return $filename;
         } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
@@ -591,8 +579,8 @@ class FacilityService
                             $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
                         }
                         $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-                        $filename = TEMP_UPLOAD_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-FACILITY-ROWS.xlsx';
-                        $writer->save($filename);
+                        $incorrectRowsFile = 'INCORRECT-FACILITY-ROWS-' . date('d-M-Y-H-i-s') . '.xlsx';
+                        $writer->save(CommonService::downloadFile($incorrectRowsFile));
                     }
 
                     $container->alertMsg = 'Facilities added successfully';
@@ -605,6 +593,7 @@ class FacilityService
             $result['total'] = $total;
             $result['notAdded'] = $notAdded;
             $result['option'] = $uploadOption;
+            $result['file'] = $incorrectRowsFile ?? '';
             return $result;
         } catch (\Exception $exc) {
             error_log("UPLOAD-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
