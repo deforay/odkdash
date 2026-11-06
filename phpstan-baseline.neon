@@ -61,12 +61,6 @@ parameters:
 			path: module/Application/src/Application/Command/AuditsUnlinked.php
 
 		-
-			message: '#^Method Application\\Controller\\LoginController\:\:indexAction\(\) should return Laminas\\View\\Model\\ViewModel but returns Laminas\\Http\\Response\.$#'
-			identifier: return.type
-			count: 2
-			path: module/Application/src/Application/Controller/LoginController.php
-
-		-
 			message: '#^Call to an undefined method Laminas\\Db\\Sql\\Predicate\\Predicate\:\:columns\(\)\.$#'
 			identifier: method.notFound
 			count: 1

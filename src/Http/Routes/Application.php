@@ -16,7 +16,10 @@ declare(strict_types=1);
  *   the privilege, when the URL names none.
  * - handler: the class that serves the route. Without one, the name is
  *   registered for URL building only.
- * - public: true for a route that needs no login.
+ * - slim: the Slim pattern, for the rare route whose Laminas pattern
+ *   Kernel::SLIM_TAILS cannot express. See "home".
+ * - public: true for a route that needs no login. Only the landing page and
+ *   the login pages are public.
  * - methods: the HTTP methods. All of them when absent.
  *
  * The Kernel loads every file in this folder. A project with several
@@ -34,6 +37,8 @@ use App\Http\Handlers\DistrictHandler;
 use App\Http\Handlers\EmailHandler;
 use App\Http\Handlers\EventHandler;
 use App\Http\Handlers\FacilityHandler;
+use App\Http\Handlers\IndexHandler;
+use App\Http\Handlers\LoginHandler;
 use App\Http\Handlers\LogViewerHandler;
 use App\Http\Handlers\ProvincesHandler;
 use App\Http\Handlers\RolesHandler;
@@ -166,5 +171,40 @@ return [
         'route' => '/view-data-section-zero-protocol-v6',
         'handler' => SpiV6Handler::class,
         'defaults' => ['controller' => 'Application\\Controller\\SpiV6Controller', 'action' => 'view-data-section-zero-protocol-v6'],
+    ],
+    // The landing page's charts post back to these.
+    'homeAuditPerformance' => [
+        'route' => '/audit-performance',
+        'handler' => IndexHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\IndexController', 'action' => 'audit-performance'],
+        'public' => true,
+    ],
+    'homeAuditLocations' => [
+        'route' => '/audit-locations',
+        'handler' => IndexHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\IndexController', 'action' => 'audit-locations'],
+        'public' => true,
+    ],
+    'login' => [
+        'route' => '/login[/:action]',
+        'handler' => LoginHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\LoginController', 'action' => 'index'],
+        'public' => true,
+    ],
+    // A second name for one login URL. The login route serves the path.
+    'validate-otp' => [
+        'route' => '/login/validate-otp',
+        'defaults' => ['controller' => 'Application\\Controller\\LoginController', 'action' => 'validate-otp'],
+    ],
+    // The public landing page. Its Laminas pattern also matched any single
+    // path segment, such as /index or /foo. That segment became the id. The
+    // Slim pattern matches the same paths. It must stay last: FastRoute
+    // refuses a fixed path such as /login declared after /{id}.
+    'home' => [
+        'route' => '/[/:action][/][:id]',
+        'slim' => '/[{id}]',
+        'handler' => IndexHandler::class,
+        'defaults' => ['controller' => 'Application\\Controller\\IndexController', 'action' => 'index'],
+        'public' => true,
     ],
 ];

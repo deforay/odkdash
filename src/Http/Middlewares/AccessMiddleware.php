@@ -39,7 +39,8 @@ use Slim\Routing\RouteContext;
  * (see HelperAccess). An action with a privilege is decided by the ACL alone.
  *
  * A route anyone may call sets ->setArgument('access', 'public') instead.
- * A route with no resource is a mistake and answers 500.
+ * The route files mark it with 'public' => true. A route with no resource
+ * is a mistake and answers 500.
  *
  * AJAX requests without a login get a 401 instead of a redirect to the
  * login page.
@@ -62,7 +63,15 @@ final class AccessMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $session = new Container('credo');
+
+        // A public page needs no login. As in preSetter, a logged-in user
+        // still gets the ACL, which the home layout's menu reads.
         if ($route->getArgument('access') === 'public') {
+            $this->rememberCountry($session);
+            if (!empty($session->userId)) {
+                $this->view->setLayoutVariable('acl', $this->laminas->get('AppAcl'));
+            }
             return $handler->handle($request);
         }
 
@@ -74,8 +83,6 @@ final class AccessMiddleware implements MiddlewareInterface
             ));
         }
         $privilege = $route->getArgument('privilege') ?? ActionHandler::action($request);
-
-        $session = new Container('credo');
 
         if (empty($session->userId)) {
             if ($request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
@@ -96,14 +103,21 @@ final class AccessMiddleware implements MiddlewareInterface
         // ViewModel's acl variable.
         $this->view->setLayoutVariable('acl', $acl);
 
-        // The layouts print the country name. preSetter fills it in on the
-        // first request of a session.
+        $this->rememberCountry($session);
+
+        return $handler->handle($request);
+    }
+
+    /**
+     * The layouts print the country name. preSetter fills it in on the first
+     * request of a session.
+     */
+    private function rememberCountry(Container $session): void
+    {
         if (empty($session->countryName)) {
             $config = $this->laminas->get('CommonService')->getGlobalConfigDetails();
             $session->countryName = $config['country-name'] ?? null;
         }
-
-        return $handler->handle($request);
     }
 
     private function isAllowed(Acl $acl, string $role, string $resource, string $privilege): bool

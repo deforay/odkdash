@@ -236,21 +236,6 @@ class Module
     {
         return [
             'factories' => [
-                'Application\Controller\IndexController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $commonService = $diContainer->get('CommonService');
-                        $odkFormService = $diContainer->get('OdkFormService');
-                        return new \Application\Controller\IndexController($odkFormService, $commonService);
-                    }
-                },
-                'Application\Controller\LoginController' => new class {
-                    public function __invoke($diContainer)
-                    {
-                        $userService = $diContainer->get('UserService');
-                        return new \Application\Controller\LoginController($userService);
-                    }
-                },
             ],
         ];
     }

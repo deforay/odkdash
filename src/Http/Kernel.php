@@ -210,7 +210,8 @@ final class Kernel
         }
 
         $methods = $route['methods'] ?? ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-        $slimRoute = $app->map($methods, self::slimPattern($route['route']), $route['handler'])->setName($name);
+        $pattern = $route['slim'] ?? self::slimPattern($route['route']);
+        $slimRoute = $app->map($methods, $pattern, $route['handler'])->setName($name);
         if (!empty($route['public'])) {
             $slimRoute->setArgument('access', 'public');
         } else {

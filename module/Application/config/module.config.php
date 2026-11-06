@@ -28,57 +28,6 @@ return array(
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
             // using the path /application/:controller/:action
-            'home' => array(
-                'type'    => 'Segment',
-                'options' => array(
-                    'route' => '/[/:action][/][:id]',
-                    'defaults' => array(
-                        'controller'    => 'Application\Controller\IndexController',
-                        'action'        => 'index',
-                    ),
-                ),
-
-            ),
-            'homeAuditPerformance' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/audit-performance',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\IndexController',
-                        'action' => 'audit-performance',
-                    ),
-                ),
-            ),
-            'homeAuditLocations' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/audit-locations',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\IndexController',
-                        'action' => 'audit-locations',
-                    ),
-                ),
-            ),
-            'login' => array(
-                'type'    => 'segment',
-                'options' => array(
-                    'route'    => '/login[/:action]',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\LoginController',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'validate-otp' => array(
-                'type'    => 'segment',
-                'options' => array(
-                    'route'    => '/login/validate-otp',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\LoginController',
-                        'action' => 'validate-otp',
-                    ),
-                ),
-            ),
         ),
     ),
     'service_manager' => [
