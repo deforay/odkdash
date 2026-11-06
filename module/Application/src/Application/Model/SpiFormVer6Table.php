@@ -1641,7 +1641,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             //$row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
             $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
             $row[] = CommonService::escapeHtml($aRow['affiliation']);
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0, 2);
+            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0), 2);
             $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
             if ($aRow['status'] == 'pending' && $approveStatusAction) {
@@ -1680,7 +1680,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             if (trim($aRow['performrtritesting']) == 'Yes') {
                 $t += (float) $aRow['RTRI_SCORE'];
             }
-            $row[] = $t . "(" . round($aRow['AUDIT_SCORE_PERCENTAGE'], 2) . ")";
+            $row[] = $t . "(" . round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2) . ")";
             $output['aaData'][] = $row;
         }
         //get earliest date
@@ -2680,7 +2680,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = CommonService::escapeHtml($aRow['POST_SCORE']);
             $row[] = CommonService::escapeHtml($aRow['EQA_SCORE']);
             $row[] = CommonService::escapeHtml($aRow['FINAL_AUDIT_SCORE']);
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
             $output['aaData'][] = $row;
         }
         return $output;
@@ -2924,7 +2924,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = CommonService::escapeHtml($aRow['EQA_SCORE']);
             $row[] = CommonService::escapeHtml($aRow['RTRI_SCORE']);
             $row[] = CommonService::escapeHtml($aRow['FINAL_AUDIT_SCORE']);
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
             $output['aaData'][] = $row;
         }
         return $output;
@@ -3410,7 +3410,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
             $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
             $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
             if ($downloadPdfAction) {
                 $downloadPdf = '<br><a href="javascript:void(0);" onclick="downloadPdf(' . (int) $aRow['id'] . ')" style="white-space:nowrap;"><i class="fa fa-download"></i> PDF</a>';
             }
@@ -3640,7 +3640,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
             $row[] = CommonService::escapeHtml($aRow['level'] . $level);
             $row[] = CommonService::escapeHtml($aRow['affiliation']);
-            $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
             $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             //$print = '<a href="/spi-v3/print/' . $aRow['id'] . '" target="_blank" style="white-space:nowrap;"><i class="fa fa-print"></i> Print</a>';
 
@@ -4194,9 +4194,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'client_tested_HIV_PM', 'PERSONAL_SCORE' => new Expression('AVG(PERSONAL_SCORE)'), 'PHYSICAL_SCORE' => new Expression('AVG(PHYSICAL_SCORE)'), 'SAFETY_SCORE' => new Expression('AVG(SAFETY_SCORE)'), 'PRETEST_SCORE' => new Expression('AVG(PRETEST_SCORE)'), 'TEST_SCORE' => new Expression('AVG(TEST_SCORE)'), 'POST_SCORE' => new Expression('AVG(POST_SCORE)'), 'EQA_SCORE' => new Expression('AVG(EQA_SCORE)')))
                 ->group('spiv3.assesmentofaudit');
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
-                $xplodRoundNo = explode(",", $parameters['roundno']);
-                $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($xplodRoundNo)]);
-                $tQuery = $tQuery->where(['spiv3.auditroundno' => CommonService::inList($xplodRoundNo)]);
+                $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($parameters['roundno'])]);
+                $tQuery = $tQuery->where(['spiv3.auditroundno' => CommonService::inList($parameters['roundno'])]);
             }
         } else {
             //For Others
@@ -4366,13 +4365,13 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0), 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                $row[] = round($aRow['PERSONAL_SCORE'], 2);
-                $row[] = round($aRow['PHYSICAL_SCORE'], 2);
-                $row[] = round($aRow['SAFETY_SCORE'], 2);
-                $row[] = round($aRow['PRETEST_SCORE'], 2);
-                $row[] = round($aRow['TEST_SCORE'], 2);
-                $row[] = round($aRow['POST_SCORE'], 2);
-                $row[] = round($aRow['EQA_SCORE'], 2);
+                $row[] = round((float) ($aRow['PERSONAL_SCORE']), 2);
+                $row[] = round((float) ($aRow['PHYSICAL_SCORE']), 2);
+                $row[] = round((float) ($aRow['SAFETY_SCORE']), 2);
+                $row[] = round((float) ($aRow['PRETEST_SCORE']), 2);
+                $row[] = round((float) ($aRow['TEST_SCORE']), 2);
+                $row[] = round((float) ($aRow['POST_SCORE']), 2);
+                $row[] = round((float) ($aRow['EQA_SCORE']), 2);
             }
             // Add more data to the row as needed
             $output['aaData'][] = $row;
@@ -4553,9 +4552,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => new Expression('AVG(S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY)'), 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL' => new Expression('AVG(S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL)'), 'S0_Q_3_TESTS_RECORDED_RECENCY' => new Expression('AVG(S0_Q_3_TESTS_RECORDED_RECENCY)'), 'S0_Q_4_PROCESS_DOCUMENTED' => new Expression('AVG(S0_Q_4_PROCESS_DOCUMENTED)'), 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS' => new Expression('AVG(S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS)'), 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED' => new Expression('AVG(S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED)'), 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS' => new Expression('AVG(S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS)')))
                 ->group('spiv3.assesmentofaudit');
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
-                $xplodRoundNo = explode(",", $parameters['roundno']);
-                $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($xplodRoundNo)]);
-                $tQuery = $tQuery->where(['spiv3.auditroundno' => CommonService::inList($xplodRoundNo)]);
+                $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($parameters['roundno'])]);
+                $tQuery = $tQuery->where(['spiv3.auditroundno' => CommonService::inList($parameters['roundno'])]);
             }
         } else {
             //For Others
@@ -4707,7 +4705,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
                 $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
                 $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
             } elseif ($parameters['source'] == 'ad') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
@@ -4722,7 +4720,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = CommonService::escapeHtml(ucwords($aRow['level']));
                 $row[] = CommonService::escapeHtml(ucwords($aRow['affiliation']));
                 $row[] = $level;
-                $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = CommonService::escapeHtml($aRow['S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY']);
@@ -4933,9 +4931,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('assesmentofaudit', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY' => new Expression('AVG(S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY)'), 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL' => new Expression('AVG(S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL)'), 'S0_Q_3_TESTS_RECORDED_RECENCY' => new Expression('AVG(S0_Q_3_TESTS_RECORDED_RECENCY)'), 'S0_Q_4_PROCESS_DOCUMENTED' => new Expression('AVG(S0_Q_4_PROCESS_DOCUMENTED)'), 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS' => new Expression('AVG(S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS)'), 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED' => new Expression('AVG(S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED)'), 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS' => new Expression('AVG(S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS)')))
                 ->group('spiv3.assesmentofaudit');
             if (isset($parameters['roundno']) && $parameters['roundno'] != '') {
-                $xplodRoundNo = explode(",", $parameters['roundno']);
-                $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($xplodRoundNo)]);
-                $tQuery = $tQuery->where(['spiv3.auditroundno' => CommonService::inList($xplodRoundNo)]);
+                $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($parameters['roundno'])]);
+                $tQuery = $tQuery->where(['spiv3.auditroundno' => CommonService::inList($parameters['roundno'])]);
             }
         } else {
             //For Others
@@ -5087,7 +5084,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = CommonService::escapeHtml(ucwords($aRow['facilityname']));
                 $row[] = CommonService::escapeHtml(isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
                 $row[] = CommonService::escapeHtml($aRow['client_tested_HIV_PM'] ?? 0);
             } elseif ($parameters['source'] == 'ad') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
@@ -5102,7 +5099,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $row[] = CommonService::escapeHtml(ucwords($aRow['level']));
                 $row[] = CommonService::escapeHtml(ucwords($aRow['affiliation']));
                 $row[] = $level;
-                $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
             } elseif ($parameters['source'] == 'apspi') {
                 $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                 $row[] = CommonService::escapeHtml($aRow['D0_S_1_DIAGNOSED_HIV_ABOVE_15']);

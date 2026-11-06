@@ -542,7 +542,7 @@ class OdkFormService
                     $row[] = $aRow['POST_SCORE'];
                     $row[] = $aRow['EQA_SCORE'];
                     $row[] = $aRow['FINAL_AUDIT_SCORE'];
-                    $row[] = round($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                    $row[] = round((float) ($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE']), 2);
                     $output[] = $row;
                 }
             }
@@ -5363,7 +5363,7 @@ class OdkFormService
 
             $outputData[] = $fieldNames;
             foreach ($rResult as $aRow) {
-                $scorePer = round($aRow['AUDIT_SCORE_PERCENTAGE']);
+                $scorePer = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']));
                 $row = [];
                 $level = null;
                 if ($source == 'hv' || $source == 'la' || $source == 'apall' || $source == 'apl180' || $source == 'ap') {
@@ -5396,7 +5396,7 @@ class OdkFormService
                     $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
                     $row[] = ucwords($aRow['facilityname']);
                     $row[] = (isset($aRow['testingpointname']) && $aRow['testingpointname'] != "" ? $aRow['testingpointname'] : $aRow['testingpointtype']);
-                    $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                    $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
                     $row[] = (isset($aRow['client_tested_HIV_PM']) ? $aRow['client_tested_HIV_PM'] : 0);
                 } elseif ($source == 'ad') {
                     $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
@@ -5411,16 +5411,16 @@ class OdkFormService
                     $row[] = ucwords($aRow['level']);
                     $row[] = ucwords($aRow['affiliation']);
                     $row[] = $level;
-                    $row[] = round($aRow['AUDIT_SCORE_PERCENTAGE'], 2);
+                    $row[] = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']), 2);
                 } elseif ($source == 'apspi') {
                     $row[] = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                    $row[] = round($aRow['PERSONAL_SCORE'], 2);
-                    $row[] = round($aRow['PHYSICAL_SCORE'], 2);
-                    $row[] = round($aRow['SAFETY_SCORE'], 2);
-                    $row[] = round($aRow['PRETEST_SCORE'], 2);
-                    $row[] = round($aRow['TEST_SCORE'], 2);
-                    $row[] = round($aRow['POST_SCORE'], 2);
-                    $row[] = round($aRow['EQA_SCORE'], 2);
+                    $row[] = round((float) ($aRow['PERSONAL_SCORE']), 2);
+                    $row[] = round((float) ($aRow['PHYSICAL_SCORE']), 2);
+                    $row[] = round((float) ($aRow['SAFETY_SCORE']), 2);
+                    $row[] = round((float) ($aRow['PRETEST_SCORE']), 2);
+                    $row[] = round((float) ($aRow['TEST_SCORE']), 2);
+                    $row[] = round((float) ($aRow['POST_SCORE']), 2);
+                    $row[] = round((float) ($aRow['EQA_SCORE']), 2);
                 }
                 $outputData[] = $row;
             }

@@ -269,7 +269,7 @@ $config = $this->GlobalConfigHelper();
 				$color = '#528A16';
 			}
 
-			$barData[] = "{ y : " . round($row['AUDIT_SCORE_PERCENTAGE'], 2) . ", color : '" . $color . "' }";
+			$barData[] = "{ y : " . round((float) ($row['AUDIT_SCORE_PERCENTAGE']), 2) . ", color : '" . $color . "' }";
 			$volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
 			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes($row['facilityname']) . " <br> Testing Point Name : " . "<br>'");
 			$counter++;
