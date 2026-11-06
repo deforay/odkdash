@@ -14,6 +14,12 @@ use Application\Model\Acl;
  * The role edit screen cannot grant it, so it inherits from its callers: a
  * role that may open any page calling the helper may call the helper.
  *
+ * Inheritance is one hop, on purpose. A parent is a page, and a page has a
+ * privilege of its own, so the ACL alone decides who opens it. A link from
+ * another page, such as the dashboard's window.open() of the audit map,
+ * grants nothing. A role that cannot open the parent cannot reach its
+ * helpers either.
+ *
  * The map is generated from the templates by bin/dev/helper-access into
  * config/helper-access.php. `composer qc` fails when it is out of date.
  */
