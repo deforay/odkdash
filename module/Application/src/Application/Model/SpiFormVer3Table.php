@@ -2808,9 +2808,8 @@ class SpiFormVer3Table extends AbstractTableGateway
                 $tQuery = $tQuery->where(['spiv3.level' => $parameters['level']]);
             }
             if (isset($parameters['province']) && $parameters['province'] != '') {
-                $provinces = explode(",", $parameters['province']);
-                $sQuery = $sQuery->where(['spiv3.level_name' => CommonService::inList($provinces)]);
-                $tQuery = $tQuery->where(['spiv3.level_name' => CommonService::inList($provinces)]);
+                $sQuery = $sQuery->where(['spiv3.level_name' => CommonService::inList($parameters['province'])]);
+                $tQuery = $tQuery->where(['spiv3.level_name' => CommonService::inList($parameters['province'])]);
             }
             if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
                 $sQuery = $sQuery->where(['spiv3.affiliation' => $parameters['affiliation']]);
@@ -2851,30 +2850,50 @@ class SpiFormVer3Table extends AbstractTableGateway
             $sQuery->where($sWhere);
         }
 
+        /*
+         * The figures above the table cover every filtered audit, not only
+         * the page, so they come from their own query over the filtered set.
+         * The score column is text: "+ 0" reads it as PHP did. A level counts
+         * only a score that is set, and an unset score adds 0 to the average.
+         */
+        $isScored = in_array($parameters['source'], ['hv', 'la', 'apall', 'apl180', 'ap'], true);
+        $summaryColumns = ['filtered' => new Expression('COUNT(*)')];
+        if ($isScored) {
+            $isSet = 't.AUDIT_SCORE_PERCANTAGE IS NOT NULL';
+            $score = 'COALESCE(t.AUDIT_SCORE_PERCANTAGE + 0, 0)';
+            $summaryColumns['scoreTotal'] = new Expression("SUM($score)");
+            $summaryColumns['levelZero'] = new Expression("SUM($isSet AND $score < 40)");
+            $summaryColumns['levelOne'] = new Expression("SUM($isSet AND $score >= 40 AND $score < 60)");
+            $summaryColumns['levelTwo'] = new Expression("SUM($isSet AND $score >= 60 AND $score < 80)");
+            $summaryColumns['levelThree'] = new Expression("SUM($isSet AND $score >= 80 AND $score < 90)");
+            $summaryColumns['levelFour'] = new Expression("SUM($isSet AND $score >= 90)");
+        }
+        $summaryQuery = $sql->select()->from(['t' => $sQuery])->columns($summaryColumns);
+        $summary = $dbAdapter->query($sql->buildSqlString($summaryQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $iFilteredTotal = (int) $summary['filtered'];
+
+        $totalQuery = $sql->select()->from(['t' => $tQuery])->columns(['total' => new Expression('COUNT(*)')]);
+        $iTotal = (int) $dbAdapter->query($sql->buildSqlString($totalQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current()['total'];
+
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
         }
-
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
+        // Rows that tie on the sort column come back in no fixed order, so a
+        // page could repeat or skip one. The last sort key is unique per row:
+        // the audit date for the sources grouped by it, the id for the rest.
+        if ($parameters['source'] == 'ad' || $parameters['source'] == 'apspi') {
+            $sQuery->order('spiv3.assesmentofaudit DESC');
+        } else {
+            $sQuery->order('spiv3.id DESC');
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //echo $sQueryStr;die;
+        if (isset($sLimit) && isset($sOffset)) {
+            $sQuery->limit((int) $sLimit);
+            $sQuery->offset((int) $sOffset);
+        }
+
+        $sQueryStr = $sql->buildSqlString($sQuery);
         $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        /* Data set length after filtering */
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
-
-        /* Total data set length */
-
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -2897,33 +2916,22 @@ class SpiFormVer3Table extends AbstractTableGateway
         //$testScore = 0;
         //$postTestScore = 0;
         //$eqaScore = 0;
-        $auditScore = 0;
-        $levelZero = [];
-        $levelOne = [];
-        $levelTwo = [];
-        $levelThree = [];
-        $levelFour = [];
         foreach ($rResult as $aRow) {
             $row = [];
             // Reset per row: a row without a score would otherwise show the previous row's level.
             $level = null;
-            if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
-                $auditScore += $aRow['AUDIT_SCORE_PERCANTAGE'];
-                if (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40) {
+            if ($isScored && isset($aRow['AUDIT_SCORE_PERCANTAGE'])) {
+                $scorePer = $aRow['AUDIT_SCORE_PERCANTAGE'];
+                if ($scorePer < 40) {
                     $level = 0;
-                    $levelZero[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCANTAGE'] < 60) {
+                } elseif ($scorePer < 60) {
                     $level = 1;
-                    $levelOne[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCANTAGE'] < 80) {
+                } elseif ($scorePer < 80) {
                     $level = 2;
-                    $levelTwo[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCANTAGE'] < 90) {
+                } elseif ($scorePer < 90) {
                     $level = 3;
-                    $levelThree[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+                } else {
                     $level = 4;
-                    $levelFour[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
                 }
             }
             if ($parameters['source'] == 'hv') {
@@ -2979,12 +2987,12 @@ class SpiFormVer3Table extends AbstractTableGateway
             }
             $output['aaData'][] = $row;
         }
-        $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
-        $output['levelZeroCount'] = count($levelZero);
-        $output['levelOneCount'] = count($levelOne);
-        $output['levelTwoCount'] = count($levelTwo);
-        $output['levelThreeCount'] = count($levelThree);
-        $output['levelFourCount'] = count($levelFour);
+        $output['avgAuditScore'] = ($iFilteredTotal > 0) ? round((float) ($summary['scoreTotal'] ?? 0) / $iFilteredTotal, 2) : 0;
+        $output['levelZeroCount'] = (int) ($summary['levelZero'] ?? 0);
+        $output['levelOneCount'] = (int) ($summary['levelOne'] ?? 0);
+        $output['levelTwoCount'] = (int) ($summary['levelTwo'] ?? 0);
+        $output['levelThreeCount'] = (int) ($summary['levelThree'] ?? 0);
+        $output['levelFourCount'] = (int) ($summary['levelFour'] ?? 0);
         return $output;
     }
 
