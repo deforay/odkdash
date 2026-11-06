@@ -96,7 +96,7 @@
 												$facility = ucwords($name['facility_name']);
 											}
 										?>
-											<option value="<?php echo $name['facility_name']; ?>"><?php echo $facility; ?></option>
+											<option value="<?php echo $this->escapeHtml($name['facility_name']); ?>"><?php echo $facility; ?></option>
 										<?php
 										}
 										?>

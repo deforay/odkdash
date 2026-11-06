@@ -84,7 +84,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									<input type="text" placeholder="<?= $this->translate('First Name'); ?>"
 										class="form-control isRequired" name="firstName" id="firstName"
 										title="<?= $this->translate('Please enter the first name'); ?>"
-										value="<?php echo $result->first_name; ?>">
+										value="<?php echo $this->escapeHtml($result->first_name); ?>">
 									<input type="hidden" class="form-control isRequired" id="userId" name="userId"
 										value="<?php echo base64_encode($result->id); ?>" />
 								</div>
@@ -93,7 +93,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									<input type="text" placeholder="<?= $this->translate('Last Name'); ?>"
 										class="form-control" name="lastName" id="lastName"
 										title="<?= $this->translate('Please enter the last name'); ?>"
-										value="<?php echo $result->last_name; ?>">
+										value="<?php echo $this->escapeHtml($result->last_name); ?>">
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Login Id'); ?> <span class="mandatory">*</span></label>
@@ -101,7 +101,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 										class="form-control" name="userName" id="userName"
 										title="<?= $this->translate('Please enter the user name'); ?>"
 										onblur="checkNameValidation('users','login', this,'<?php echo "id##" . $result->id; ?>', 'This name already exists. Please choose another name.')"
-										value="<?php echo $result->login; ?>">
+										value="<?php echo $this->escapeHtml($result->login); ?>">
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Password'); ?> <span class="mandatory">*</span></label>
@@ -123,7 +123,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 										name="mobile_no" id="mobile_no"
 										title="<?= $this->translate('Please enter the mobile number'); ?>"
 										onblur="checkNameValidation('users','contact_no', this,'<?php echo "id##" . $result->id; ?>','Entered mobile number is already exist.')"
-										value="<?php echo $result->contact_no; ?>">
+										value="<?php echo $this->escapeHtml($result->contact_no); ?>">
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Email'); ?></label>
@@ -131,7 +131,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 										class="form-control isEmail" name="email" id="email"
 										title="<?= $this->translate('Please enter the email id'); ?>"
 										onblur="checkNameValidation('users','email', this,'<?php echo "id##" . $result->id; ?>','Entered mail id is already exist.')"
-										value="<?php echo $result->email; ?>">
+										value="<?php echo $this->escapeHtml($result->email); ?>">
 								</div>
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Role'); ?> <span class="mandatory">*</span></label>
@@ -141,7 +141,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 										<?php
 										foreach ($roleResults as $role) {
 											?>
-											<option value="<?php echo $role['role_id']; ?>" <?php if ($result->role_id == $role['role_id']) {
+											<option value="<?php echo $this->escapeHtml($role['role_id']); ?>" <?php if ($result->role_id == $role['role_id']) {
 												   echo 'selected=selected';
 											   } ?>><?php echo ucwords($role['role_name']); ?></option>
 											<?php
@@ -196,7 +196,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									<select multiple="multiple" name="country[]" id="country"
 										placeholder="<?= $this->translate('Please select country.'); ?>">
 										<?php foreach ($countries as $row) { ?>
-											<option value="<?php echo $row['country_id']; ?>" <?php echo (in_array($row['country_id'], $userCountryMapArray)) ? "selected='selected'" : ""; ?>>
+											<option value="<?php echo $this->escapeHtml($row['country_id']); ?>" <?php echo (in_array($row['country_id'], $userCountryMapArray)) ? "selected='selected'" : ""; ?>>
 												<?php echo ucwords($row['country_name']); ?>
 											</option>
 										<?php } ?>
@@ -207,7 +207,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									<select multiple="multiple" name="province[]" id="province"
 										placeholder="<?= $this->translate('Please select province.'); ?>">
 										<?php foreach ($provinces as $row) { ?>
-											<option value="<?php echo $row['geo_id']; ?>" <?php echo (in_array($row['geo_id'], $userProvinceMapArray)) ? "selected='selected'" : ""; ?>>
+											<option value="<?php echo $this->escapeHtml($row['geo_id']); ?>" <?php echo (in_array($row['geo_id'], $userProvinceMapArray)) ? "selected='selected'" : ""; ?>>
 												<?php echo ucwords($row['geo_name']); ?>
 											</option>
 										<?php } ?>
@@ -218,7 +218,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 									<select multiple="multiple" name="district[]" id="district"
 										placeholder="<?= $this->translate('Please select district.'); ?>">
 										<?php foreach ($districts as $row) { ?>
-											<option value="<?php echo $row['geo_id']; ?>" <?php echo (in_array($row['geo_id'], $userDistrictMapArray)) ? "selected='selected'" : ""; ?>>
+											<option value="<?php echo $this->escapeHtml($row['geo_id']); ?>" <?php echo (in_array($row['geo_id'], $userDistrictMapArray)) ? "selected='selected'" : ""; ?>>
 												<?php echo ucwords($row['geo_name']); ?>
 											</option>
 										<?php } ?>
@@ -236,7 +236,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 													<?php
 													if (isset($result->user_image) && $result->user_image != '') {
 														?>
-														<img src="<?php echo $result->user_image; ?>" />
+														<img src="<?php echo $this->escapeHtml($result->user_image); ?>" />
 													<?php } else {
 														?>
 														<img src="http://www.placehold.it/200x150/3c8dbc/fff&text= Image" />
@@ -265,7 +265,7 @@ if (isset($result->userToken) && count($result->userToken) > 0) {
 												</div>
 												<?php if (isset($result->user_image) && $result->user_image != '') { ?>
 													<input type="hidden" name="existImage" id="existImage"
-														value="<?php echo $result->user_image; ?>" /><?php
+														value="<?php echo $this->escapeHtml($result->user_image); ?>" /><?php
 												}
 												?>
 												<input type="hidden" name="removedImage" id="removedImage" value="<?php

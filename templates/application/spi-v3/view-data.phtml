@@ -95,7 +95,7 @@
                         foreach ($levelNamesResult as $levelName) {
                           if (trim($levelName['level_name']) != '') {
                         ?>
-                            <option value="<?php echo $levelName['level_name']; ?>"><?php echo ucwords($levelName['level_name']); ?></option>
+                            <option value="<?php echo $this->escapeHtml($levelName['level_name']); ?>"><?php echo ucwords($levelName['level_name']); ?></option>
                         <?php
                           }
                         }
@@ -137,7 +137,7 @@
                         <?php
                         foreach ($testingPointResult as $val) {
                         ?>
-                          <option value="<?php echo $val['testingPointType']; ?>"><?php echo ucwords($val['testingPointType']); ?></option>
+                          <option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>"><?php echo ucwords($val['testingPointType']); ?></option>
                         <?php
                         }
                         ?>

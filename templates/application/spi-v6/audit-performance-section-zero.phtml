@@ -19,7 +19,7 @@
                                                                                                                                                             } else {
                                                                                                                                                                 echo "-";
                                                                                                                                                             } ?></span></div>
-    <div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $perf1[0]['totalDataPoints']; ?></span></div>
+    <div class="col-xs-4" style="text-align:center;"><span class="title"><?= $this->translate('No. of Audits'); ?></span><span class="number"><?php echo $this->escapeHtml($perf1[0]['totalDataPoints']); ?></span></div>
 </div>
 <script>
     $(document).ready(function() {

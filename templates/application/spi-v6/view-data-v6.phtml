@@ -108,7 +108,7 @@
                       <select class="form-control" multiple="multiple" name="country" id="country"
                         title="Please select the country">
                         <?php foreach ($locationResult['countries'] as $row) { ?>
-                          <option value="<?php echo $row['country_id']; ?>"><?php echo ucwords($row['country_name']); ?>
+                          <option value="<?php echo $this->escapeHtml($row['country_id']); ?>"><?php echo ucwords($row['country_name']); ?>
                           </option>
                         <?php } ?>
                       </select>
@@ -120,7 +120,7 @@
                         title="Please select province">
                         <option value="">--Select--</option>
                         <?php foreach ($locationResult['provinces'] as $val) { ?>
-                          <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                          <option value="<?php echo $this->escapeHtml($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
                         <?php } ?>
                       </select>
                     </div>
@@ -133,7 +133,7 @@
                         title="Please select district">
                         <option value="">--Select--</option>
                         <?php foreach ($locationResult['districts'] as $val) { ?>
-                          <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                          <option value="<?php echo $this->escapeHtml($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
                         <?php } ?>
                       </select>
                     </div>
@@ -173,7 +173,7 @@
                         <?php
                         foreach ($testingPointResult as $val) {
                           ?>
-                          <option value="<?php echo $val['testingPointType']; ?>">
+                          <option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>">
                             <?php echo ucwords($val['testingPointType']); ?></option>
                           <?php
                         }

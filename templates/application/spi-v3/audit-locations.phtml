@@ -19,10 +19,10 @@
 				}
 
 		?> {
-					lat: "<?php echo $row['Latitude'] ?>",
-					lon: "<?php echo $row['Longitude'] ?>",
-					title: "<?php echo addslashes($row['facilityname']); ?>",
-					html: "<strong><?php echo addslashes($row['facilityname']); ?></strong>",
+					lat: <?php echo \Application\Service\CommonService::jsonEncode($row['Latitude']); ?>,
+					lon: <?php echo \Application\Service\CommonService::jsonEncode($row['Longitude']); ?>,
+					title: <?php echo \Application\Service\CommonService::jsonEncode($row['facilityname']); ?>,
+					html: "<strong>" + <?php echo \Application\Service\CommonService::jsonEncode(\Application\Service\CommonService::escapeHtml($row['facilityname'])); ?> + "</strong>",
 					//animation: google.maps.Animation.DROP,
 					icon: "<?php echo $icon; ?>"
 				},
@@ -41,7 +41,7 @@
 				mapTypeId: google.maps.MapTypeId.ROADMAP,
 				zoom: 7,
 				//center: myLatLng,
-				set_center: [<?php echo $configData['latitude']; ?>, <?php echo $configData['longitude']; ?>],
+				set_center: [<?php echo (float) $configData['latitude']; ?>, <?php echo (float) $configData['longitude']; ?>],
 				//set_center: [-13.259328, 33.968301],
 				scrollwheel: false
 			}

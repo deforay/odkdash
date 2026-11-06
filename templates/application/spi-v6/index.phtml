@@ -222,7 +222,7 @@ $userMappingType = $sessionLogin->userMappingType;
                       title="<?= $this->translate('Please select the country'); ?>">
                       <option value=""><?= $this->translate('All'); ?></option>
                       <?php foreach ($locationResult['countries'] as $row) { ?>
-                        <option value="<?php echo $row['country_id']; ?>"><?php echo ucwords($row['country_name']); ?>
+                        <option value="<?php echo $this->escapeHtml($row['country_id']); ?>"><?php echo ucwords($row['country_name']); ?>
                         </option>
                       <?php } ?>
                     </select>
@@ -233,7 +233,7 @@ $userMappingType = $sessionLogin->userMappingType;
                     <select class="form-control" multiple="multiple" id="province">
                       <option value=""><?= $this->translate('All'); ?></option>
                       <?php foreach ($locationResult['provinces'] as $val) { ?>
-                        <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -245,7 +245,7 @@ $userMappingType = $sessionLogin->userMappingType;
                     <select class="form-control" id="district" multiple="multiple">
                       <option value=""><?= $this->translate('All'); ?></option>
                       <?php foreach ($locationResult['districts'] as $val) { ?>
-                        <option value="<?php echo $val['geo_id']; ?>"><?php echo ucwords($val['geo_name']); ?></option>
+                        <option value="<?php echo $this->escapeHtml($val['geo_id']); ?>"><?php echo ucwords($val['geo_name']); ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -255,7 +255,7 @@ $userMappingType = $sessionLogin->userMappingType;
                     <select class="form-control" id="testPoint" onchange="getTestingPointTypeNames();">
                       <option value=""><?= $this->translate('All'); ?></option>
                       <?php foreach ($testingPointResult as $val) { ?>
-                        <option value="<?php echo $val['testingPointType']; ?>">
+                        <option value="<?php echo $this->escapeHtml($val['testingPointType']); ?>">
                           <?php echo ucwords($val['testingPointType']); ?>
                         </option>
                       <?php } ?>

@@ -137,7 +137,7 @@
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Testing Facility Name:'); ?></span></b> <?php echo $formData['facilityname']; ?> </p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Testing Facility Name:'); ?></span></b> <?php echo $this->escapeHtml($formData['facilityname']); ?> </p>
                                         </td>
                                         <td width=354 style='width:353.95pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -149,7 +149,7 @@
   mso-hansi-theme-font:major-latin'><?= $this->translate('Testing Facility ID'); ?></span></b> <span
                                                                 style='font-size:12.0pt;mso-bidi-font-size:11.0pt;font-family:Arial;
   mso-ascii-theme-font:major-latin;mso-hansi-theme-font:major-latin'><?= $this->translate('(if
-                applicable)'); ?><b style='mso-bidi-font-weight:normal'></b> : <?php echo $formData['facilityid']; ?> </span></p>
+                applicable)'); ?><b style='mso-bidi-font-weight:normal'></b> : <?php echo $this->escapeHtml($formData['facilityid']); ?> </span></p>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:2;height:29.65pt'>
@@ -205,7 +205,7 @@
 
                                                         </b></p>
 
-                                                <?php echo $formData['level']; ?> <?php echo ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : ""); ?> : <?php echo $formData['level_name']; ?>
+                                                <?php echo $this->escapeHtml($formData['level']); ?> <?php echo ((isset($formData['level_other']) && $formData['level_other'] != "") ? " Other - " . $formData['level_other'] : ""); ?> : <?php echo $this->escapeHtml($formData['level_name']); ?>
                                         </td>
                                         <td width=354 valign="middle" style='width:353.95pt;border-top:none;border-left:
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -220,7 +220,7 @@
                                                 </p>
 
 
-                                                <?php echo $formData['affiliation']; ?>
+                                                <?php echo $this->escapeHtml($formData['affiliation']); ?>
                                                 <?php echo ((isset($formData['affiliation_other']) && $formData['affiliation_other'] != "") ? " Other : " . $formData['affiliation_other'] : ""); ?>
 
                                         </td>
@@ -232,7 +232,7 @@
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'>Number of Testers:'); ?></span></b> <?php echo $formData['NumberofTester']; ?> </p>
+  mso-hansi-theme-font:major-latin'>Number of Testers:'); ?></span></b> <?php echo $this->escapeHtml($formData['NumberofTester']); ?> </p>
                                         </td>
                                         <td width=354 style='width:353.95pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -241,7 +241,7 @@
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Average tested per month:'); ?></span></b> <?php echo $formData['avgMonthTesting']; ?></p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Average tested per month:'); ?></span></b> <?php echo $this->escapeHtml($formData['avgMonthTesting']); ?></p>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:6;mso-yfti-lastrow:yes;height:17.5pt'>
@@ -251,7 +251,7 @@
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Name of the Auditor 1:'); ?></span></b> <?php echo $formData['name_auditor_lead']; ?></p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Name of the Auditor 1:'); ?></span></b> <?php echo $this->escapeHtml($formData['name_auditor_lead']); ?></p>
                                         </td>
                                         <td width=354 style='width:353.95pt;border-top:none;border-left:none;
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -260,7 +260,7 @@
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><b style='mso-bidi-font-weight:normal'><span style='font-size:12.0pt;
   mso-bidi-font-size:11.0pt;font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Name of the Auditor 2:'); ?></span></b> <?php echo $formData['name_auditor2']; ?> </p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Name of the Auditor 2:'); ?></span></b> <?php echo $this->escapeHtml($formData['name_auditor2']); ?> </p>
                                         </td>
                                 </tr>
                         </table>
@@ -960,7 +960,7 @@ normal'><?= $this->translate('No'); ?></b>" <?= $this->translate('response. Stat
   border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:28.8pt;text-align:center'>
-                                                <?php echo $formData['PERSONAL_SCORE'] ?>
+                                                <?php echo $this->escapeHtml($formData['PERSONAL_SCORE']); ?>
                                         </td>
                                 </tr>
                                 <tr style='mso-yfti-irow:13;height:11.05pt'>
@@ -4800,7 +4800,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   border-bottom:none;padding:0cm 5.4pt 0cm 5.4pt;height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'>Facility Name:'); ?></span> <?php echo $formData['facilityname']; ?> </p>
+  mso-hansi-theme-font:major-latin'>Facility Name:'); ?></span> <?php echo $this->escapeHtml($formData['facilityname']); ?> </p>
                                         </td>
                                         <td width=13 valign="middle" style='width:13.4pt;border:none;border-right:solid windowtext 1.5pt;
   mso-border-left-alt:solid black 1.5pt;padding:0cm 5.4pt 0cm 5.4pt;height:
@@ -4815,7 +4815,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('No. of Tester(s):'); ?></span> <?php echo $formData['NumberofTester']; ?></p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('No. of Tester(s):'); ?></span> <?php echo $this->escapeHtml($formData['NumberofTester']); ?></p>
                                         </td>
                                         <td width=13 valign="middle" style='width:13.4pt;border:none;border-right:solid windowtext 1.5pt;
   mso-border-left-alt:solid windowtext 1.5pt;padding:0cm 5.4pt 0cm 5.4pt;
@@ -4830,7 +4830,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Total points scored (exclude N/A)'); ?> = <?php echo $formData['FINAL_AUDIT_SCORE']; ?> <b
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Total points scored (exclude N/A)'); ?> = <?php echo $this->escapeHtml($formData['FINAL_AUDIT_SCORE']); ?> <b
                                                                         style='mso-bidi-font-weight:normal'></b></span></p>
                                         </td>
                                 </tr>
@@ -4840,7 +4840,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   padding:0cm 5.4pt 0cm 5.4pt;height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Site Type:'); ?></span> <?php echo $formData['testingpointtype']; ?>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Site Type:'); ?></span> <?php echo $this->escapeHtml($formData['testingpointtype']); ?>
                                                         <?php echo ((isset($formData['testingpointtype_other']) && $formData['testingpointtype_other'] != "") ? " - " . $formData['testingpointtype_other'] : ""); ?>
                                                 </p>
                                         </td>
@@ -4856,7 +4856,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Duration of Audit:'); ?></span> <?php echo $formData['durationaudit']; ?></p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Duration of Audit:'); ?></span> <?php echo $this->escapeHtml($formData['durationaudit']); ?></p>
                                         </td>
                                         <td width=13 valign="middle" style='width:13.4pt;border:none;border-right:solid windowtext 1.5pt;
   mso-border-left-alt:solid windowtext 1.5pt;padding:0cm 5.4pt 0cm 5.4pt;
@@ -4870,7 +4870,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Total score expected'); ?> = <?php echo $formData['MAX_AUDIT_SCORE']; ?> <span
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Total score expected'); ?> = <?php echo $this->escapeHtml($formData['MAX_AUDIT_SCORE']); ?> <span
                                                                         style="mso-spacerun:yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><b
                                                                         style='mso-bidi-font-weight:normal'></b></span></p>
                                         </td>
@@ -4880,7 +4880,7 @@ mso-hansi-theme-font:major-latin'></span></b></p>
   border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:20.25pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Staff Audited Name'); ?>:</span> <?php echo $formData['staffaudited']; ?></p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Staff Audited Name'); ?>:</span> <?php echo $this->escapeHtml($formData['staffaudited']); ?></p>
                                         </td>
                                         <td width=13 valign="middle" style='width:13.4pt;border:none;border-right:solid windowtext 1.5pt;
   mso-border-left-alt:solid black 1.5pt;padding:0cm 5.4pt 0cm 5.4pt;height:
@@ -5025,13 +5025,13 @@ mso-hansi-theme-font:major-latin'><span
                                                         <td width=58 valign="middle" style='width:57.85pt;border:solid windowtext 1.0pt;
   border-top:none;mso-border-top-alt:solid windowtext .5pt;mso-border-alt:solid windowtext .5pt;
   padding:0cm 5.4pt 0cm 5.4pt;height:22.0pt;text-align:center;'>
-                                                                <?php echo $ca['sectionno']; ?>
+                                                                <?php echo $this->escapeHtml($ca['sectionno']); ?>
                                                         </td>
                                                         <td width=129 valign="middle" style='width:128.8pt;border-top:none;border-left:
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:22.0pt'>
-                                                                <?php echo $ca['deficiency']; ?>
+                                                                <?php echo $this->escapeHtml($ca['deficiency']); ?>
                                                         </td>
                                                         <td width=66 valign="middle" style='width:66.25pt;border-top:none;border-left:
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
@@ -5049,19 +5049,19 @@ mso-hansi-theme-font:major-latin'><span
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:22.0pt'>
-                                                                <?php echo $ca['auditorcomment'] ?>
+                                                                <?php echo $this->escapeHtml($ca['auditorcomment']); ?>
                                                         </td>
                                                         <td width=116 valign="middle" style='width:115.8pt;border-top:none;border-left:
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:22.0pt'>
-                                                                <?php echo $ca['action'] ?>
+                                                                <?php echo $this->escapeHtml($ca['action']); ?>
                                                         </td>
                                                         <td width=104 valign="middle" style='width:104.4pt;border-top:none;border-left:
   none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
   mso-border-top-alt:solid windowtext .5pt;mso-border-left-alt:solid windowtext .5pt;
   mso-border-alt:solid windowtext .5pt;padding:0cm 5.4pt 0cm 5.4pt;height:22.0pt'>
-                                                                <?php echo $ca['timeline'] ?>
+                                                                <?php echo $this->escapeHtml($ca['timeline']); ?>
                                                         </td>
                                                 </tr>
 
@@ -5150,7 +5150,7 @@ mso-hansi-theme-font:major-latin'><span
   none;padding:0cm 5.4pt 0cm 5.4pt;height:29.8pt'>
                                                 <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
   normal'><span style='font-family:Arial;mso-ascii-theme-font:major-latin;
-  mso-hansi-theme-font:major-latin'><?= $this->translate('Person in Charge Name and Signature:'); ?></span> <?php echo $formData['personincharge'] ?></p>
+  mso-hansi-theme-font:major-latin'><?= $this->translate('Person in Charge Name and Signature:'); ?></span> <?php echo $this->escapeHtml($formData['personincharge']); ?></p>
                                         </td>
                                         <td width=12 valign="middle" style='width:11.8pt;border:none;border-right:solid windowtext 1.5pt;
   mso-border-left-alt:solid windowtext 1.5pt;padding:0cm 5.4pt 0cm 5.4pt;

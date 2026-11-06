@@ -13,12 +13,12 @@
 							<form role="form" name="addProvinceInformation" id="addProvinceInformation" method="post" action="<?php echo $this->url('provinces', array('action' => 'edit')); ?>" autocomplete="off">
 								<div class="form-group col-lg-6">
 									<label><?= $this->translate('Province Name'); ?> <span class="mandatory">*</span> </label>
-									<input type="text" class="form-control isRequired" id="provinceName" name="provinceName" placeholder="<?= $this->translate('Province Name'); ?>" title="<?= $this->translate('Please enter Province name'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province name that you entered already exists.Enter another name')" value="<?php echo $result->geo_name; ?>"/>
+									<input type="text" class="form-control isRequired" id="provinceName" name="provinceName" placeholder="<?= $this->translate('Province Name'); ?>" title="<?= $this->translate('Please enter Province name'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province name that you entered already exists.Enter another name')" value="<?php echo $this->escapeHtml($result->geo_name); ?>"/>
 									<input type="hidden" class="form-control isRequired" id="provinceId" name="provinceId" value="<?php echo base64_encode($result->geo_id); ?>"/>
 								</div>
 								<div class="form-group col-lg-6">
 									<label for="provinceCode"><?= $this->translate('Province Code'); ?> <span class="mandatory">*</span></label>
-									<input type="text" class="form-control isRequired" id="provinceCode" name="provinceCode" placeholder="<?= $this->translate('Province code'); ?>" title="<?= $this->translate('Please enter Province code'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province code that you entered already exists.Enter another code')" value="<?php echo $result->geo_code; ?>"/>
+									<input type="text" class="form-control isRequired" id="provinceCode" name="provinceCode" placeholder="<?= $this->translate('Province code'); ?>" title="<?= $this->translate('Please enter Province code'); ?>" onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo "geo_id##" .$result->geo_id; ?>','The province code that you entered already exists.Enter another code')" value="<?php echo $this->escapeHtml($result->geo_code); ?>"/>
 								</div>
 								
 								<div class="form-group col-lg-6">

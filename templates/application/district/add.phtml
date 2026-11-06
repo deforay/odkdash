@@ -27,7 +27,7 @@
 										<?php
 										foreach ($provinceResult as $val) {
 										?>
-										<option value="<?php echo base64_encode($val['geo_id']) ?>"><?php echo $val['geo_name'] ?></option>
+										<option value="<?php echo base64_encode($val['geo_id']) ?>"><?php echo $this->escapeHtml($val['geo_name']); ?></option>
 										<?php
 										}
 										?>

@@ -62,7 +62,7 @@ if ($acl->isAllowed($role, 'Application\Controller\SpiV3Controller', 'download-p
                                                     <?php
                                                     foreach ($pendingFacilityName as $name) {
                                                     ?>
-                                                        <option value="<?php echo $name['id']; ?>"><?php echo $name['facilityname']; ?></option>
+                                                        <option value="<?php echo $this->escapeHtml($name['id']); ?>"><?php echo $this->escapeHtml($name['facilityname']); ?></option>
                                                     <?php
                                                     }
                                                     ?>
