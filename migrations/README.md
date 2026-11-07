@@ -32,10 +32,24 @@ this lives in the legacy `data/alter.sql` and is not re-played).
    minor (`1.1.0`) for new tables/features; major (`2.0.0`) for breaking
    schema changes.
 2. Create `migrations/<version>-<slug>.sql`.
-3. Write plain SQL. The runner uses `PhpMyAdmin\SqlParser` to split, so
-   multi-statement files, triggers, and procedures all work.
-4. Bump `VERSION` to match the new file.
+3. Write plain SQL. The runner splits the file with `PhpMyAdmin\SqlParser`
+   and runs each statement as the file has it. Triggers work.
+4. Bump the `version` in `composer.json` to match the new file.
 5. Run `php bin/migrate --dry-run` to preview, then `php bin/migrate`.
+
+The parser cannot read `PREPARE`, `EXECUTE`, `DEALLOCATE` or `DO`, and it
+splits a procedure body at its inner semicolons. `bin/migrate` refuses a
+file with SQL the parser cannot read and runs none of it. Write
+conditional steps with the idempotent forms below instead.
+
+## Audit trail tables
+
+`audit_spi_form_v_3` and `audit_spi_form_v_6` copy every column of
+`spi_form_v_3` and `spi_form_v_6`. Triggers from 1.2.8 insert each audit's
+columns by position. A migration that adds, drops or changes a column of
+an audit table's source must make the same change to the audit table, in
+the same position. Otherwise every insert, update and delete of an audit
+fails with "Column count doesn't match value count".
 
 ## Idempotency
 
@@ -60,6 +74,11 @@ benign `WARN` (idempotent re-run). `1054` (Unknown column) and `1146`
 (Unknown table) are only `WARN` on schema-change statements; on
 INSERT/UPDATE/DELETE/SELECT they `FAIL` loudly — a typo there would
 otherwise silently skip a real change.
+`CREATE TRIGGER` for a trigger that exists (`1359`), or refused for lack
+of privilege (`1142`, `1227`, `1419`), is a `WARN`. A re-run leaves the
+triggers as they are, and a server whose database user cannot create
+triggers still upgrades, without an audit trail. Write `CREATE TRIGGER`
+without `IF NOT EXISTS`, which MySQL before 8.0.29 cannot parse.
 
 ## Common commands
 
