@@ -2,39 +2,30 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Expression;
+use App\Db\Dbal;
 use Application\Session\Container;
-use Laminas\Db\Adapter\Adapter;
-use Application\Model\EventLogTable;
 use Application\Service\CommonService;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
+use Laminas\Db\Adapter\Adapter;
 
-
-
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class SpiFormVer3DownloadTable extends AbstractTableGateway
+/** Bulk PDF download requests for V3 audits, in r_spi_form_v_3_download. */
+class SpiFormVer3DownloadTable
 {
+    private const string TABLE = 'r_spi_form_v_3_download';
 
-    protected $table = 'r_spi_form_v_3_download';
-    protected $adapter;
+    private readonly Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
     public function addDownloadDataDetails($params)
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $dbAdapter = $this->adapter;
-        $trackTable = new EventLogTable($dbAdapter);
         $province = null;
         if (isset($params['province']) && is_array($params['province']) && $params['province'] !== []) {
             $province = implode(',', $params['province']);
@@ -50,28 +41,35 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
             'level_name' => $province,
             'AUDIT_SCORE_PERCANTAGE' => (isset($params['scoreLevel']) && trim($params['scoreLevel']) != '') ? $params['scoreLevel'] : null
         ];
-        $this->insert($downloadData);
+        $this->db->insert(self::TABLE, $downloadData);
+        $downloadId = (int) $this->db->lastInsertId();
         $subject = '';
         $eventType = 'Export-SPI RT Form 3-PDF';
         $action = $username . ' has exported the SPI RT Form 3 PDF';
         $resourceName = 'SPI-RT-Form-3-PDF';
-        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-        return $this->lastInsertValue;
+        (new EventLogTable($this->adapter))->addEventLog($subject, $eventType, $action, $resourceName);
+        return $downloadId;
     }
 
+    /**
+     * The oldest pending request and the audits that match its filters.
+     * Marks the request as picked up.
+     */
     public function fetchDownloadDataList()
     {
         $result = [];
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 0));
-        $queryStr = $sql->buildSqlString($query);
-        $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $queryResult = $this->db->fetchAssociative('SELECT * FROM ' . self::TABLE . ' WHERE download_status = 0 LIMIT 1') ?: null;
         if ($queryResult) {
-            $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                ->where('spiv3.status != "deleted"');
+            $where = ["spiv3.status != 'deleted'"];
+            $values = [];
+            $types = [];
+            $add = function (string $condition, $value, $type = ParameterType::STRING) use (&$where, &$values, &$types) {
+                $where[] = $condition;
+                $values[] = $value;
+                $types[] = $type;
+            };
             if (!empty($queryResult['auditroundno'])) {
-                $sQuery = $sQuery->where(['spiv3.auditroundno' => $queryResult['auditroundno']]);
+                $add('spiv3.auditroundno = ?', $queryResult['auditroundno']);
             }
             if (!empty($queryResult['assesmentofaudit'])) {
                 $startDate = '';
@@ -83,59 +81,67 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
                     $endDate = CommonService::isoDateFormat(trim($dateField[2]));
                 }
-                $sQuery->where->greaterThanOrEqualTo('spiv3.assesmentofaudit', $startDate)->lessThanOrEqualTo('spiv3.assesmentofaudit', $endDate);
+                $add('spiv3.assesmentofaudit >= ?', $startDate);
+                $add('spiv3.assesmentofaudit <= ?', $endDate);
             }
             if (isset($queryResult['testingpointtype']) && $queryResult['testingpointtype'] != '') {
-                $sQuery = $sQuery->where(['spiv3.testingpointtype' => $queryResult['testingpointtype']]);
+                $add('spiv3.testingpointtype = ?', $queryResult['testingpointtype']);
                 if (isset($queryResult['testingpointname']) && trim($queryResult['testingpointname']) != '') {
                     if (trim($queryResult['testingpointname']) != 'other') {
-                        $sQuery = $sQuery->where(['spiv3.testingpointname' => $queryResult['testingpointname']]);
+                        $add('spiv3.testingpointname = ?', $queryResult['testingpointname']);
                     } else {
-                        $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $queryResult['testingpointname']]);
+                        $add('spiv3.testingpointtype_other = ?', $queryResult['testingpointname']);
                     }
                 }
             }
             if (isset($queryResult['level']) && $queryResult['level'] != '') {
-                $sQuery = $sQuery->where(['spiv3.level' => $queryResult['level']]);
+                $add('spiv3.level = ?', $queryResult['level']);
             }
             if (isset($queryResult['affiliation']) && $queryResult['affiliation'] != '') {
-                $sQuery = $sQuery->where(['spiv3.affiliation' => $queryResult['affiliation']]);
+                $add('spiv3.affiliation = ?', $queryResult['affiliation']);
             }
             if (isset($queryResult['level_name']) && $queryResult['level_name'] != '') {
-                $provinces = explode(",", $queryResult['level_name']);
-                $sQuery = $sQuery->where(['spiv3.level_name' => $provinces]);
+                $add('spiv3.level_name IN (?)', explode(",", $queryResult['level_name']), ArrayParameterType::STRING);
             }
 
             if (isset($queryResult['AUDIT_SCORE_PERCANTAGE']) && $queryResult['AUDIT_SCORE_PERCANTAGE'] != '') {
                 if ($queryResult['AUDIT_SCORE_PERCANTAGE'] == 0) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
+                    $where[] = "spiv3.AUDIT_SCORE_PERCANTAGE < 40";
                 } elseif ($queryResult['AUDIT_SCORE_PERCANTAGE'] == 1) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
+                    $where[] = "spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59";
                 } elseif ($queryResult['AUDIT_SCORE_PERCANTAGE'] == 2) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
+                    $where[] = "spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79";
                 } elseif ($queryResult['AUDIT_SCORE_PERCANTAGE'] == 3) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
+                    $where[] = "spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89";
                 } elseif ($queryResult['AUDIT_SCORE_PERCANTAGE'] == 4) {
-                    $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
+                    $where[] = "spiv3.AUDIT_SCORE_PERCANTAGE >= 90";
                 }
             }
-            $sQueryStr = $sql->buildSqlString($sQuery);
-            $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $result = $this->db->fetchAllAssociative(
+                'SELECT spiv3.* FROM spi_form_v_3 AS spiv3 WHERE ' . implode(' AND ', $where),
+                $values,
+                $types
+            );
             //update download status
-            $this->update(['download_status' => 1], ['r_download_id' => $queryResult['r_download_id']]);
+            $this->db->update(self::TABLE, ['download_status' => 1], ['r_download_id' => $queryResult['r_download_id']]);
         }
         return array('downloadResult' => $queryResult, 'formResult' => $result);
     }
 
-
+    /** The signed-in user's five newest finished requests. */
     public function fetchDownloadFilesRow()
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('r_spi_form_v_3_download')->where(array('download_status' => 1, 'user' => $loginContainer->userId))->order('r_download_id desc')->limit(5);
-        $queryStr = $sql->buildSqlString($query);
-        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative(
+            'SELECT * FROM ' . self::TABLE . ' WHERE download_status = 1 AND user = ? ORDER BY r_download_id desc LIMIT 5',
+            [$loginContainer->userId]
+        );
+    }
+
+    /** Records the archive built for a request and the audits in it. */
+    public function setArchive(int $requestId, string $fileName, string $auditIds): int
+    {
+        return $this->db->update(self::TABLE, ['file_name' => $fileName, 'audit_ids' => $auditIds], ['r_download_id' => $requestId]);
     }
 
     /**
@@ -145,14 +151,13 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
     public function fetchRequestsForUser(): array
     {
         $loginContainer = new Container('credo');
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(['d' => $this->table])
-            ->join(['u' => 'users'], 'u.id=d.user', ['login'], 'left')
-            ->order('d.r_download_id DESC');
+        $sql = 'SELECT d.*, u.login FROM ' . self::TABLE . ' AS d LEFT JOIN users AS u ON u.id = d.user';
+        $values = [];
         if ($loginContainer->roleCode !== 'SA') {
-            $query->where(['d.user' => (int) $loginContainer->userId]);
+            $sql .= ' WHERE d.user = ?';
+            $values[] = (int) $loginContainer->userId;
         }
-        return $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($sql . ' ORDER BY d.r_download_id DESC', $values);
     }
 
     /**
@@ -171,13 +176,13 @@ class SpiFormVer3DownloadTable extends AbstractTableGateway
         if (empty($loginContainer->userId)) {
             return null;
         }
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from($this->table)->columns(['file_name', 'audit_ids'])
-            ->where(['r_download_id' => (string) $requestId]);
+        $sql = 'SELECT file_name, audit_ids FROM ' . self::TABLE . ' WHERE r_download_id = ?';
+        $values = [(string) $requestId];
         if ($loginContainer->roleCode !== 'SA') {
-            $query->where(['user' => (int) $loginContainer->userId]);
+            $sql .= ' AND user = ?';
+            $values[] = (int) $loginContainer->userId;
         }
-        $row = $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->current();
+        $row = $this->db->fetchAssociative($sql, $values);
         if (!$row || $row['file_name'] === null || $row['file_name'] === '') {
             return null;
         }

@@ -3,8 +3,7 @@
 namespace Application\Service;
 
 use ArchiveUtil\ArchiveUtility;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
+use Doctrine\DBAL\Connection;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -34,7 +33,7 @@ final class ApiLogger
         'authorization', 'auth_token', 'secret',
     ];
 
-    public function __construct(private readonly Adapter $dbAdapter)
+    public function __construct(private readonly Connection $db)
     {
     }
 
@@ -67,9 +66,7 @@ final class ApiLogger
             $requestPath  = $this->writeBody($requestId, $requestBody, 'requests');
             $responsePath = $this->writeBody($requestId, $responseBody, 'responses');
 
-            $sql = new Sql($this->dbAdapter);
-            $insert = $sql->insert('api_logs');
-            $insert->values([
+            $this->db->insert('api_logs', [
                 'request_id'         => $requestId,
                 'source'             => substr($source, 0, 64),
                 'method'             => substr($method, 0, 10),
@@ -80,7 +77,6 @@ final class ApiLogger
                 'duration_ms'        => $durationMs,
                 'error'              => $error,
             ]);
-            $this->dbAdapter->query($sql->buildSqlString($insert), $this->dbAdapter::QUERY_MODE_EXECUTE);
             return $requestId;
         } catch (\Throwable $t) {
             @error_log('ApiLogger.logCall failed: ' . $t->getMessage());

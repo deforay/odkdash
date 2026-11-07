@@ -15,6 +15,7 @@ use Application\Service\GuzzleApiLogMiddleware;
 use JsonMachine\Items;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Sql\Sql;
 use CpChart\Chart\Radar;
 use Shuchkin\SimpleXLSXGen;
@@ -34,13 +35,11 @@ class OdkFormService
 {
     public $sm = null;
     public $translator = null;
-    public $adapter = null;
 
     public function __construct($sm)
     {
         $this->sm = $sm;
         $this->translator = $sm->get('translator');
-        $this->adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
     }
 
     public function getServiceManager()
@@ -150,7 +149,7 @@ class OdkFormService
             }
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
             $output = [];
             $outputScore = [];
             if (!empty($sResult)) {
@@ -450,8 +449,8 @@ class OdkFormService
     public function approveFormStatus($params)
     {
         //\Zend\Debug\Debug::dump(count($params['idList']));die;
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $connection = $this->sm->get(Connection::class);
+        $connection->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $db = $this->sm->get('SpiFormVer3Table');
@@ -471,13 +470,15 @@ class OdkFormService
                 $facilityDb->addFacilityBasedOnForm($params['id']);
             }
             if ($result > 0) {
-                $adapter->commit();
+                $connection->commit();
                 return $result;
             }
             // Nothing was approved, so nothing done here should stand.
-            $adapter->rollBack();
+            $connection->rollBack();
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -527,7 +528,7 @@ class OdkFormService
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
 
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
             if (!empty($sResult)) {
 
                 foreach ($sResult as $aRow) {
@@ -682,23 +683,25 @@ class OdkFormService
 
     public function updateSpiForm($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $connection = $this->sm->get(Connection::class);
+        $connection->beginTransaction();
         try {
             $db = $this->sm->get('SpiFormVer3Table');
             if (!$db->auditInScope(base64_decode((string) ($params['formId'] ?? '')))) {
-                $adapter->rollBack();
+                $connection->rollBack();
                 return 0;
             }
             $result = $db->updateSpiFormDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $connection->commit();
                 $container = new Container('alert');
                 $container->alertMsg = 'Form details updated successfully';
                 return $result;
             }
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -1491,7 +1494,7 @@ class OdkFormService
             CommonService::zipFolder($folderPath, self::bulkDownloadFolder() . DIRECTORY_SEPARATOR . $zipFileName);
             // now we can remove the $folderPath
             CommonService::rmdirRecursive($folderPath);
-            $db->update(['file_name' => $zipFileName, 'audit_ids' => implode(',', array_map('intval', array_column($forms, 'id')))], ['r_download_id' => $requestId]);
+            $db->setArchive($requestId, $zipFileName, implode(',', array_map('intval', array_column($forms, 'id'))));
         }
     }
 
@@ -1545,8 +1548,7 @@ class OdkFormService
     {
         $db = $this->sm->get('SpiFormVer3TempTable');
         $dbMain = $this->sm->get('SpiFormVer3Table');
-        $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-        $sql = new Sql($this->adapter);
+        $connection = $this->sm->get(Connection::class);
         $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', $_FILES['fileName']['name']);
         $fileName = str_replace(" ", "-", $fileName);
         $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
@@ -1554,7 +1556,7 @@ class OdkFormService
         $fileName = $ranNumber . "." . $extension;
         $importFolder = CommonService::privateUploadFolder('import-files');
         if (!file_exists($importFolder . DIRECTORY_SEPARATOR . $fileName) && move_uploaded_file($_FILES['fileName']['tmp_name'], $importFolder . DIRECTORY_SEPARATOR . $fileName)) {
-            $db->delete('1');
+            $db->deleteAll();
             $spreadsheet = IOFactory::load($importFolder . DIRECTORY_SEPARATOR . $fileName);
             $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
             $highestColumm = $spreadsheet->getActiveSheet()->getHighestColumn();
@@ -1612,9 +1614,7 @@ class OdkFormService
                         $value = json_encode($auditorSign);
                     }
                     if ($inc == $findInstancePosition) {
-                        $validateQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->where(array('instanceID' => trim($cell->getValue())));
-                        $validateQueryStr = $sql->buildSqlString($validateQuery);
-                        $validateResult = $dbAdapter->query($validateQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                        $validateResult = $connection->fetchOne('SELECT 1 FROM spi_form_v_3 WHERE instanceID = ? LIMIT 1', [trim($cell->getValue())]);
                         if ($validateResult) {
                             $validateData = 1; //exist meta instance id
                         } else {
@@ -1672,7 +1672,7 @@ class OdkFormService
         //$result = $db->fetchDownloadFilesRow();
         $sql = new Sql($dbAdapter);
         $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
-        $result = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $result = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
         $xlsx = new SimpleXLSXGen();
         $output = [];
         $headerRow = ['Facility Name', 'Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
@@ -1712,8 +1712,8 @@ class OdkFormService
     public function approveSpiV6FormStatus($params)
     {
         //\Zend\Debug\Debug::dump(count($params['idList']));die;
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $connection = $this->sm->get(Connection::class);
+        $connection->beginTransaction();
         try {
             //$facilityDb = $this->sm->get('SpiRt5FacilitiesTable');
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
@@ -1734,13 +1734,15 @@ class OdkFormService
                 $facilityDb->addFacilityBasedOnForm($params['id'], 6);
             }
             if ($result > 0) {
-                $adapter->commit();
+                $connection->commit();
                 return $result;
             }
             // Nothing was approved, so nothing done here should stand.
-            $adapter->rollBack();
+            $connection->rollBack();
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -1858,7 +1860,7 @@ class OdkFormService
                 $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
             }
             $sQueryStr = $sql->buildSqlString($sQuery);
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
 
             $output = [];
             $outputScore = [];
@@ -2027,7 +2029,7 @@ class OdkFormService
                 $testPoint = "Type of Testing Point : ";
             }
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
 
             $output = [];
             $outputScore = [];
@@ -2554,23 +2556,25 @@ class OdkFormService
 
     public function updateSpiV6Form($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $connection = $this->sm->get(Connection::class);
+        $connection->beginTransaction();
         try {
             $db = $this->sm->get('SpiFormVer6Table');
             if (!$db->auditInScope(base64_decode((string) ($params['formId'] ?? '')))) {
-                $adapter->rollBack();
+                $connection->rollBack();
                 return 0;
             }
             $result = $db->updateSpiV6FormDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $connection->commit();
                 $container = new Container('alert');
                 $container->alertMsg = 'Form details updated successfully';
                 return $result;
             }
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($connection->isTransactionActive()) {
+                $connection->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -2893,7 +2897,7 @@ class OdkFormService
             }
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
             // print_r(count($sResult)); die;
             if (!empty($sResult)) {
 
@@ -5269,7 +5273,7 @@ class OdkFormService
             CommonService::zipFolder($folderPath, self::bulkDownloadFolder() . DIRECTORY_SEPARATOR . $zipFileName);
             // now we can remove the $folderPath
             CommonService::rmdirRecursive($folderPath);
-            $db->update(['file_name' => $zipFileName, 'audit_ids' => implode(',', array_map('intval', array_column($forms, 'id')))], ['r_download_id' => $requestId]);
+            $db->setArchive($requestId, $zipFileName, implode(',', array_map('intval', array_column($forms, 'id'))));
         }
     }
 
@@ -5406,7 +5410,7 @@ class OdkFormService
             $source = $params[0]['value'];
 
             $sQueryStr = $sql->buildSqlString($queryContainer->exportViewDataV6Query);
-            $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $rResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
 
             $auditScore = 0;
             $levelZero = [];

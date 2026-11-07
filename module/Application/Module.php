@@ -150,8 +150,7 @@ class Module
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new ApiLogger($dbAdapter);
+                        return new ApiLogger($diContainer->get(Connection::class));
                     }
                 },
                 'ResourcesTable' => new class

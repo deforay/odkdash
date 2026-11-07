@@ -11,7 +11,7 @@ class SpiFormVer3DuplicateTable
 {
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Adapter $adapter)
     {
         $this->db = Dbal::connection($adapter);
     }
@@ -40,7 +40,7 @@ class SpiFormVer3DuplicateTable
             $data[$this->db->quoteSingleIdentifier($column)] = $audit[$column];
         }
         $this->db->insert('spi_form_v_3_duplicate', $data);
-        (new SpiFormVer3Table($this->adapter))->delete(['id' => $id]);
+        $this->db->delete('spi_form_v_3', ['id' => $id]);
 
         return $id;
     }

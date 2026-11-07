@@ -6,8 +6,8 @@ use Exception;
 use ZipArchive;
 use Ramsey\Uuid\Uuid;
 use DateTimeImmutable;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Expression;
+use App\Db\Dbal;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Sql\Predicate\Expression as PredicateExpression;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Application\Session\Container;
@@ -82,18 +82,20 @@ class CommonService
             throw new \InvalidArgumentException('Not a checked field.');
         }
 
-        $sql = new Sql($this->sm->get('Laminas\Db\Adapter\Adapter'));
-        $select = $sql->select()->from($tableName)->where([$fieldName => $value]);
+        $db = $this->sm->get(Connection::class);
+        $query = 'SELECT COUNT(*) FROM ' . $db->quoteSingleIdentifier($tableName) . ' WHERE ' . $db->quoteSingleIdentifier($fieldName) . ' = ?';
+        $values = [$value];
 
         if ($fnct !== '' && $fnct !== 'null') {
             [$key, $id] = array_pad(explode('##', $fnct, 2), 2, '');
             if ($key !== $table['key']) {
                 throw new \InvalidArgumentException('Not the primary key.');
             }
-            $select->where->notEqualTo($key, $id);
+            $query .= ' AND ' . $db->quoteSingleIdentifier($key) . ' != ?';
+            $values[] = $id;
         }
 
-        return count($sql->prepareStatementForSqlObject($select)->execute());
+        return (int) $db->fetchOne($query, $values);
     }
 
     public static function verifyIfDateValid($date): bool
@@ -174,8 +176,6 @@ class CommonService
         try {
             $tempMailDb = $this->sm->get('TempMailTable');
             $configResult = $this->sm->get('Config');
-            $dbAdapter = $this->sm->get('Laminas\\Db\\Adapter\\Adapter');
-            $sql = new Sql($dbAdapter);
 
             // Setup SMTP transport using Symfony Mailer DSN
             $ssl = $configResult["email"]["config"]["ssl"];
@@ -191,10 +191,7 @@ class CommonService
             $transport = Transport::fromDsn($dsn);
             $mailer = new Mailer($transport);
 
-            $limit = '10';
-            $mailQuery = $sql->select()->from(array('tm' => 'temp_mail'))->where("status='pending'")->limit($limit);
-            $mailQueryStr = $sql->buildSqlString($mailQuery);
-            $mailResult = $dbAdapter->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $mailResult = $this->sm->get(Connection::class)->fetchAllAssociative("SELECT * FROM temp_mail WHERE status = 'pending' LIMIT 10");
             if (count($mailResult) > 0) {
                 foreach ($mailResult as $result) {
                     $email = new Email();
@@ -250,8 +247,6 @@ class CommonService
             $auditMailDb = $this->sm->get('AuditMailTable');
             $spiFormV6Db = $this->sm->get('SpiFormVer6Table');
             $configResult = $this->sm->get('Config');
-            $dbAdapter = $this->sm->get('Laminas\\Db\\Adapter\\Adapter');
-            $sql = new Sql($dbAdapter);
 
             // Setup SMTP transport using Symfony Mailer DSN
             $ssl = $configResult["email"]["config"]["ssl"];
@@ -267,14 +262,7 @@ class CommonService
             $transport = Transport::fromDsn($dsn);
             $mailer = new Mailer($transport);
 
-            $limit = '10';
-            $mailQuery = $sql->select()
-                ->from(array('a_mail' => 'audit_mails'))
-                ->where("status='pending'")->limit($limit);
-            $mailQueryStr = $sql->buildSqlString($mailQuery);
-            $mailResult = $dbAdapter
-                ->query($mailQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)
-                ->toArray();
+            $mailResult = $this->sm->get(Connection::class)->fetchAllAssociative("SELECT * FROM audit_mails WHERE status = 'pending' LIMIT 10");
 
             if (!empty($mailResult)) {
                 foreach ($mailResult as $result) {
@@ -371,8 +359,8 @@ class CommonService
     public function updateConfig($params)
     {
         $container = new Container('alert');
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $globalDb = $this->sm->get('GlobalTable');
             $updateRes = $globalDb->updateConfigDetails($params);
@@ -382,9 +370,12 @@ class CommonService
             $resourceName = 'global-config-update';
             $eventLogDb = $this->sm->get('EventLogTable');
             $eventLogDb->addEventLog($subject, $eventType, $action, $resourceName);
-            $adapter->commit();
+            $db->commit();
             $container->alertMsg = "Global Config Updated Successfully.";
         } catch (Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -542,12 +533,12 @@ class CommonService
         if (array_key_exists($key, $cache)) {
             return $cache[$key];
         }
-        $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-        $sql = new Sql($dbAdapter);
-        $select = $sql->select()->from($tablename)->where([$fieldname => $fieldValue]);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        $cache[$key] = $result->count() > 0 ? $result->current() : null;
+        $db = $sm->get(Connection::class);
+        $row = $db->fetchAssociative(
+            'SELECT * FROM ' . $db->quoteSingleIdentifier($tablename) . ' WHERE ' . $db->quoteSingleIdentifier($fieldname) . ' = ? LIMIT 1',
+            [$fieldValue]
+        );
+        $cache[$key] = $row ?: null;
         return $cache[$key];
     }
 
@@ -563,38 +554,8 @@ class CommonService
         $dstStem = $storagePath . DIRECTORY_SEPARATOR . Uuid::uuid4()->toString() . '.json';
         $fullPath = ArchiveUtility::compressContent(json_encode($params), $dstStem);
 
-        // SQL Insertion
-        $sql = new Sql($dbAdapter);
-        $insert = $sql->insert('form_dump');
-        $d = array(
-            'file_path' => $fullPath, // Storing the path (with backend-specific extension) instead of the JSON data
-            'received_on' => new Expression("NOW()")
-        );
-
-        $insert->values($d);
-        $selectString = $sql->buildSqlString($insert);
-        $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
-    }
-
-    public static function checkProvinceDistrict($geo_name, $sm = null)
-    {
-        $dbAdapter = $sm->get('Laminas\Db\Adapter\Adapter');
-        $sql = new Sql($dbAdapter);
-        $select = $sql->select()->from('geographical_divisions');
-        $select->where(array('geo_name' => $geo_name));
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        print_r($result);
-        die;
-        if ($result->count() > 0) {
-            print_r(1);
-            die;
-            $currentRow = $result->current(); // Get the current row's data as an array
-            return $currentRow;
-        }
-        print_r(2);
-        die;
-        return 0;
+        // The row holds the file's path, not the JSON.
+        Dbal::connection($dbAdapter)->executeStatement('INSERT INTO form_dump (file_path, received_on) VALUES (?, NOW())', [$fullPath]);
     }
 
     public static function buildSafePath($baseDirectory, array $pathComponents)

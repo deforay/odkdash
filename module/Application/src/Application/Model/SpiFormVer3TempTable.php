@@ -2,28 +2,42 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Sql\Sql;
+use App\Db\Dbal;
 use Application\Session\Container;
-use Laminas\Db\Adapter\Adapter;
 use Application\Service\CommonService;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 
-
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class SpiFormVer3TempTable extends AbstractTableGateway
+class SpiFormVer3TempTable
 {
+    private readonly Connection $db;
 
-    protected $table = 'spi_form_v_3_temp';
-    protected $adapter;
-
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
+    }
+
+    /** Stores one row of an uploaded sheet. The sheet's headers name the columns. */
+    public function insert(array $data): int
+    {
+        // DBAL's insert() does not quote column names, and these hold hyphens.
+        $quoted = [];
+        foreach ($data as $column => $value) {
+            $quoted[$this->db->quoteSingleIdentifier((string) $column)] = $value;
+        }
+        return $this->db->insert('spi_form_v_3_temp', $quoted);
+    }
+
+    public function deleteById($id): int
+    {
+        return $this->db->delete('spi_form_v_3_temp', ['id' => $id]);
+    }
+
+    /** Clears the previous upload. */
+    public function deleteAll(): int
+    {
+        return $this->db->executeStatement('DELETE FROM spi_form_v_3_temp');
     }
 
     public function fetchAllValidateSpiv3Details($parameters)
@@ -72,7 +86,7 @@ class SpiFormVer3TempTable extends AbstractTableGateway
         * SQL queries
         * Get data to display
         */
-        $dbAdapter = $this->adapter;
+        // The builder still writes the search and the sort. DBAL runs the SQL.
         $sql = new Sql($this->adapter);
         $startDate = "";
         $endDate = "";
@@ -101,24 +115,17 @@ class SpiFormVer3TempTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
+        // The export reads this Select after the reset below, so it is unpaged.
         $queryContainer->exportAllDataQuery = $sQuery;
-        //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
 
         /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
-            ->where('spiv3.status != "deleted" and spiv3.spi_data_status=0');
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM spi_form_v_3_temp WHERE status != 'deleted' AND spi_data_status = 0");
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -143,16 +150,9 @@ class SpiFormVer3TempTable extends AbstractTableGateway
             $output['aaData'][] = $row;
         }
         //get count of exist data
-        $totalQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('totalData' => new \Laminas\Db\Sql\Expression("COUNT(*)")))->where('spiv3.status != "deleted"');
-        $totalQueryStr = $sql->buildSqlString($totalQuery); // Get the string of the Sql, instead of the Select-instance
-        $totalResult = $dbAdapter->query($totalQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $output['totalData'] = $this->db->fetchOne("SELECT COUNT(*) FROM spi_form_v_3 WHERE status != 'deleted'");
         //get count of new data
-        $newQuery =  $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))->columns(array('newData' => new \Laminas\Db\Sql\Expression("COUNT(id)")));
-        $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
-        $newResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-
-        $output['totalData'] = $totalResult['totalData'];
-        $output['newData'] = $newResult['newData'];
+        $output['newData'] = $this->db->fetchOne('SELECT COUNT(id) FROM spi_form_v_3_temp');
         return $output;
     }
 }

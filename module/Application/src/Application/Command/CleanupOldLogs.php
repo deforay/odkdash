@@ -4,9 +4,8 @@ namespace Application\Command;
 
 use Application\Model\ApiLogsTable;
 use Application\Service\CommonService;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Expression;
-use Laminas\Db\Sql\Sql;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -32,7 +31,7 @@ class CleanupOldLogs extends Command
     private const API_LOGS_FLOOR = 5000;
     private const DEFAULT_DAYS = 365;
 
-    public function __construct(private readonly Adapter $dbAdapter, private readonly ApiLogsTable $apiLogsTable)
+    public function __construct(private readonly Connection $db, private readonly ApiLogsTable $apiLogsTable)
     {
         parent::__construct();
     }
@@ -70,15 +69,8 @@ class CleanupOldLogs extends Command
     {
         if ($dryRun) {
             // Count-only: rows older than cutoff, excluding floor.
-            $sql = new Sql($this->dbAdapter);
-            $total = (int) ($sql->prepareStatementForSqlObject(
-                $sql->select('api_logs')->columns(['c' => new Expression('COUNT(*)')])
-            )->execute()->current()['c'] ?? 0);
-            $oldCount = (int) ($sql->prepareStatementForSqlObject(
-                $sql->select('api_logs')
-                    ->columns(['c' => new Expression('COUNT(*)')])
-                    ->where(['created_at < ?' => $cutoff->format('Y-m-d H:i:s')])
-            )->execute()->current()['c'] ?? 0);
+            $total = (int) $this->db->fetchOne('SELECT COUNT(*) FROM api_logs');
+            $oldCount = (int) $this->db->fetchOne('SELECT COUNT(*) FROM api_logs WHERE created_at < ?', [$cutoff->format('Y-m-d H:i:s')]);
             $wouldDelete = max(0, min($oldCount, $total - $floor));
             $io->writeln(sprintf('api_logs: total=%d · older-than-cutoff=%d · would-delete=%d (after %d-row floor)',
                 $total, $oldCount, $wouldDelete, $floor));
@@ -99,25 +91,18 @@ class CleanupOldLogs extends Command
 
     private function cleanFormDump(SymfonyStyle $io, \DateTimeImmutable $cutoff, int $floor, bool $dryRun): void
     {
-        $sql = new Sql($this->dbAdapter);
-
         // Find the cutoff effectively in use: the LATER of $cutoff or
         // the received_on of row #($floor+1) ordered newest-first. That
         // guarantees we never go below the floor regardless of dataset.
         $effectiveCutoff = $cutoff->format('Y-m-d H:i:s');
         if ($floor > 0) {
-            $boundary = $sql->select('form_dump')
-                ->columns(['received_on'])
-                ->order('received_on DESC')
-                ->offset($floor)
-                ->limit(1);
-            $boundaryRow = $sql->prepareStatementForSqlObject($boundary)->execute()->current();
-            if ($boundaryRow && !empty($boundaryRow['received_on'])) {
+            $boundary = $this->db->fetchOne("SELECT received_on FROM form_dump ORDER BY received_on DESC LIMIT 1 OFFSET $floor");
+            if (!empty($boundary)) {
                 // If the floor-boundary row is NEWER than our age cutoff,
                 // there aren't enough rows older than the cutoff to need
                 // floor protection — leave $effectiveCutoff as-is. If
                 // it's OLDER, raise the cutoff so the floor wins.
-                $effectiveCutoff = min($effectiveCutoff, $boundaryRow['received_on']);
+                $effectiveCutoff = min($effectiveCutoff, $boundary);
             } else {
                 // Table has <= $floor rows. Nothing to delete.
                 $io->writeln('form_dump: under floor — nothing to delete');
@@ -125,11 +110,7 @@ class CleanupOldLogs extends Command
             }
         }
 
-        $victims = iterator_to_array($sql->prepareStatementForSqlObject(
-            $sql->select('form_dump')
-                ->columns(['id', 'file_path'])
-                ->where(['received_on < ?' => $effectiveCutoff])
-        )->execute());
+        $victims = $this->db->fetchAllAssociative('SELECT id, file_path FROM form_dump WHERE received_on < ?', [$effectiveCutoff]);
 
         if (!$victims) {
             $io->writeln('form_dump: nothing to delete');
@@ -141,10 +122,7 @@ class CleanupOldLogs extends Command
             return;
         }
 
-        $ids = array_column($victims, 'id');
-        $del = $sql->delete('form_dump');
-        $del->where->in('id', $ids);
-        $sql->prepareStatementForSqlObject($del)->execute();
+        $this->db->executeStatement('DELETE FROM form_dump WHERE id IN (?)', [array_column($victims, 'id')], [ArrayParameterType::INTEGER]);
 
         $filesRemoved = 0;
         foreach ($victims as $v) {
