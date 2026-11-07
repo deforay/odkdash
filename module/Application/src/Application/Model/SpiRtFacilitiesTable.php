@@ -2,24 +2,23 @@
 
 namespace Application\Model;
 
+use App\Db\Dbal;
 use Application\Session\Container;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Expression;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Application\Model\GeographicalDivisionsTable;
 use Application\Service\CommonService;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Select;
+use Laminas\Db\Sql\Sql;
 
-
-
-
-class SpiRtFacilitiesTable extends AbstractTableGateway
+class SpiRtFacilitiesTable
 {
+    private readonly Connection $db;
 
-    protected $table = 'spi_rt_3_facilities';
-    protected $adapter;
-
+    public function __construct(private readonly Adapter $adapter)
+    {
+        $this->db = Dbal::connection($adapter);
+    }
 
     /**
      * Limits a query on spi_rt_3_facilities to the user's mapped locations.
@@ -41,9 +40,18 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         }
         return $query->where([$column => CommonService::inList($loginContainer->userMappedIds)]);
     }
-    public function __construct(Adapter $adapter)
+
+    /** Adds a facility and returns its id. */
+    public function insert(array $data): int
     {
-        $this->adapter = $adapter;
+        $this->db->insert('spi_rt_3_facilities', $data);
+        return (int) $this->db->lastInsertId();
+    }
+
+    /** Updates the facilities that match every column in $where. */
+    public function update(array $data, array $where): int
+    {
+        return (int) $this->db->update('spi_rt_3_facilities', $data, $where);
     }
 
     /**
@@ -63,25 +71,17 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
      */
     public function addFacilityBasedOnForm($formId, $formVersion = 3, $createIfMissing = true)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        if ($formVersion == 3) {
-            $table = 'spi_form_v_3';
-        } elseif ($formVersion == 5) {
-            $table = 'spi_form_v_6';
-        } elseif ($formVersion == 6) {
-            $table = 'spi_form_v_6';
-        } else {
-            throw new \InvalidArgumentException("Unknown form version '$formVersion'");
-        }
+        $table = match ((int) $formVersion) {
+            3 => 'spi_form_v_3',
+            5, 6 => 'spi_form_v_6',
+            default => throw new \InvalidArgumentException("Unknown form version '$formVersion'"),
+        };
 
-        $query = $sql->select()->from($table)
-            ->columns(['formId', 'facilityname', 'facilityid', 'district', 'Latitude', 'Longitude'])
-            ->where(array('id' => $formId));
-
-        $queryStr = $sql->buildSqlString($query);
-        $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if ($result == "" || trim((string) ($result['facilityname'] ?? '')) === '') {
+        $result = $this->db->fetchAssociative(
+            "SELECT formId, facilityname, facilityid, district, Latitude, Longitude FROM $table WHERE id = ?",
+            [$formId]
+        );
+        if (!$result || trim((string) ($result['facilityname'] ?? '')) === '') {
             // Nothing to key a facility on. Left unlinked deliberately: one
             // blank-named row would silently collect every such audit.
             return null;
@@ -89,27 +89,26 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
         // Lowest id wins, so a duplicated facility name always resolves the
         // same way here as it does in the 1.2.4 backfill.
-        $fQuery = $sql->select()->from('spi_rt_3_facilities')
-            ->where(array('facility_name' => $result['facilityname']))
-            ->order('id ASC');
+        $facilityId = $this->db->fetchOne(
+            'SELECT id FROM spi_rt_3_facilities WHERE facility_name = ? ORDER BY id ASC LIMIT 1',
+            [$result['facilityname']]
+        );
 
-        $fQueryStr = $sql->buildSqlString($fQuery);
-        $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-
-        if ($fResult != "") {
-            $facilityId = $fResult['id'];
-        } elseif ($createIfMissing) {
+        if ($facilityId === false) {
+            if (!$createIfMissing) {
+                return null;
+            }
             $district = $result['district'];
             $province = 'Unknown';
             if (isset($result['district']) && $result['district'] != '') {
-                $geoTable = new GeographicalDivisionsTable($dbAdapter);
+                $geoTable = new GeographicalDivisionsTable($this->adapter);
                 $res = $geoTable->checkDistrict(trim($result['district']));
                 if ($res) {
                     $district = $res['district'];
                     $province = $res['province'];
                 }
             }
-            $data = [
+            $facilityId = $this->insert([
                 'facility_id' => $result['facilityid'] ?? null,
                 'facility_name' => $result['facilityname'] ?? null,
                 'country' => $this->getInstanceCountryId(),
@@ -117,17 +116,10 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 'district' => $district,
                 'latitude' => $result['Latitude'] ?? null,
                 'longitude' => $result['Longitude'] ?? null
-            ];
-            $this->insert($data);
-            $facilityId = $this->lastInsertValue;
-        } else {
-            return null;
+            ]);
         }
 
-        $update = $sql->update($table)
-            ->set(['facility' => $facilityId])
-            ->where(['id' => $formId]);
-        $dbAdapter->query($sql->buildSqlString($update), $dbAdapter::QUERY_MODE_EXECUTE);
+        $this->db->update($table, ['facility' => $facilityId], ['id' => $formId]);
 
         return $facilityId;
     }
@@ -142,27 +134,20 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
      */
     public function getInstanceCountryId()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $gTable = new GlobalTable($dbAdapter);
+        $gTable = new GlobalTable($this->adapter);
         $countryName = trim((string) $gTable->getGlobalValue('country-name'));
         if ($countryName === '') {
             return null;
         }
-        $query = $sql->select()->from('countries')
-            ->columns(['country_id'])
-            ->where(['country_name' => $countryName]);
-        $queryStr = $sql->buildSqlString($query);
-        $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $countryId = $this->db->fetchOne('SELECT country_id FROM countries WHERE country_name = ?', [$countryName]);
 
-        return $result ? $result['country_id'] : null;
+        return $countryId !== false ? $countryId : null;
     }
 
     public function addFacilityDetails($params)
     {
         if (isset($params['facilityId']) && trim($params['facilityId']) != "") {
-            $dbAdapter = $this->adapter;
-            $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            $geoTable = new GeographicalDivisionsTable($this->adapter);
             $countryId = $provinceId = $districtId = null;
             //Add Country
             if (isset($params['country']) && trim($params['country']) != '') {
@@ -186,10 +171,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 $districtId = base64_decode($params['district']);
             }
 
-            //$province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
-            //$district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
-
-            $data = array(
+            return $this->insert([
                 'facility_id' => $params['facilityId'],
                 'facility_name' => $params['facilityName'],
                 'email' => $params['email'],
@@ -199,21 +181,18 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 'country' => $countryId,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
-            );
-            $this->insert($data);
-            return $lastInsertedId = $this->lastInsertValue;
+            ]);
         }
     }
 
     public function updateFacilityDetails($params)
     {
         if (isset($params['rowId']) && trim($params['rowId']) != "") {
-            $dbAdapter = $this->adapter;
-            $spiv3Db = new SpiFormVer3Table($dbAdapter);
-            $spiv6Db = new SpiFormVer6Table($dbAdapter);
+            $spiv3Db = new SpiFormVer3Table($this->adapter);
+            $spiv6Db = new SpiFormVer6Table($this->adapter);
             $rowId = base64_decode($params['rowId']);
 
-            $geoTable = new GeographicalDivisionsTable($dbAdapter);
+            $geoTable = new GeographicalDivisionsTable($this->adapter);
             //Add Country
             if (isset($params['country']) && trim($params['country']) != '') {
                 $params['country'] = base64_decode($params['country']);
@@ -238,7 +217,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
             $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
             $country = (isset($params['country']) && trim($params['country']) != '') ? $params['country'] : '';
-            $data = array(
+            $this->update([
                 'facility_id' => $params['facilityId'],
                 'facility_name' => $params['facilityName'],
                 'email' => $params['email'],
@@ -248,8 +227,7 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 'country' => $country,
                 'latitude' => $params['latitude'],
                 'longitude' => $params['longitude']
-            );
-            $this->update($data, array('id' => $rowId));
+            ], ['id' => $rowId]);
             $spiv3Db->updateSpiv3FacilityInfo($rowId, $params);
             $spiv6Db->updateSpiv6FacilityInfo($rowId, $params);
             return $rowId;
@@ -258,101 +236,58 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
 
     public function fetchAllFacilities($parameters, $acl)
     {
-
-        /* Array of database columns which should be read and sent back to DataTables. Use a space where
-        * you want to insert a non-database field (for example a counter or static image)
-        */
         $queryContainer = new Container('query');
-        $aColumns = array('facility_id', 'facility_name', 'email', 'contact_person');
-        $orderColumns = array('facility_id', 'facility_name', 'email', 'contact_person');
+        $aColumns = ['facility_id', 'facility_name', 'email', 'contact_person'];
 
-        /*
-        * Paging
-        */
-        $sLimit = "";
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sOffset = $parameters['iDisplayStart'];
-            $sLimit = $parameters['iDisplayLength'];
-        }
-
-        /*
-        * Ordering
-        */
-
-        $sOrder = "";
-        if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
-                }
-            }
-            $sOrder = substr_replace($sOrder, "", -1);
-        }
-
-        /*
-        * Filtering
-        * NOTE this does not match the built-in DataTables filtering which does it
-        * word by word on any field. It's possible to do here, but concerned about efficiency
-        * on very large tables, and MySQL's regex functionality is very limited
-        */
+        $sql = new Sql($this->adapter);
+        $sQuery = $sql->select()->from(['spirt3' => 'spi_rt_3_facilities'])
+            ->columns(['id', 'facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude', 'status'])
+            ->join(['g' => 'geographical_divisions'], 'spirt3.province=g.geo_id', ['province' => 'geo_name'], 'left')
+            ->join(['gd' => 'geographical_divisions'], 'spirt3.district=gd.geo_id', ['district' => 'geo_name'], 'left')
+            ->where("spirt3.status != 'deleted'");
 
         $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
-
-        /*
-        * SQL queries
-        * Get data to display
-        */
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $startDate = "";
-        $endDate = "";
-        $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->columns(['id', 'facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude', 'status'])
-            ->join(array('g' => 'geographical_divisions'), 'spirt3.province=g.geo_id', array('province' => 'geo_name'), 'left')
-            ->join(array('gd' => 'geographical_divisions'), 'spirt3.district=gd.geo_id', array('district' => 'geo_name'), 'left')
-            ->where('spirt3.status != "deleted"');
-
         if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
 
-        if (isset($sOrder) && $sOrder != "") {
-            $sQuery->order($sOrder);
+        if (isset($parameters['iSortCol_0'])) {
+            $sOrder = "";
+            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
+                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
+                }
+            }
+            $sOrder = substr_replace($sOrder, "", -1);
+            if ($sOrder != "") {
+                $sQuery->order($sOrder);
+            }
         }
 
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
+        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
+            $sQuery->limit((int) $parameters['iDisplayLength']);
+            $sQuery->offset((int) $parameters['iDisplayStart']);
         }
 
-        $queryContainer->exportAllFacilityQuery = $sQuery;
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
-        /* Data set length after filtering */
+        // The export runs this query again without the page, so it has every
+        // facility the search matches.
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $queryContainer->exportAllFacilityQuery = $sQuery;
+        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
+        $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM spi_rt_3_facilities WHERE status != 'deleted'");
 
-        /* Total data set length */
-        $tQuery =  $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->where('spirt3.status != "deleted"');
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
-        $output = array(
+        $output = [
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
             "iTotalDisplayRecords" => $iFilteredTotal,
-            "aaData" => array()
-        );
+            "aaData" => []
+        ];
 
         $loginContainer = new Container('credo');
-        $role = $loginContainer->roleCode;
-        $update = (bool) $acl->isAllowed($role, 'Application\Controller\FacilityController', 'edit');
+        $update = (bool) $acl->isAllowed($loginContainer->roleCode, 'Application\Controller\FacilityController', 'edit');
 
         foreach ($rResult as $aRow) {
             $row = [];
@@ -368,77 +303,47 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
             $row[] = CommonService::escapeHtml($aRow['email']);
             $row[] = CommonService::escapeHtml($aRow['contact_person']);
             if ($update) {
-                $edit = '<a href="/facility/edit/' . base64_encode($aRow['id']) . '" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
-                $row[] = $edit;
+                $row[] = '<a href="/facility/edit/' . base64_encode($aRow['id']) . '" title="Edit"><i class="fa fa-pencil"></i> Edit</a>';
             }
             $output['aaData'][] = $row;
         }
         return $output;
     }
 
-    public function fetchFacility($id)
+    /** The facility, as the edit page reads it. */
+    public function fetchFacility($id): ?\ArrayObject
     {
-        return $this->select(array('id' => (int) $id))->current();
+        return $this->facilityById((int) $id);
     }
 
     public function fetchFacilityList($strSearch)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('spi_rt_3_facilities')->where("facility_name like '%$strSearch%'");
-        $queryStr = $sql->buildSqlString($query);
-        $result = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rows = $this->db->fetchAllAssociative(
+            'SELECT id, facility_name FROM spi_rt_3_facilities WHERE facility_name LIKE ?',
+            ['%' . $strSearch . '%']
+        );
         $echoResult = [];
-        foreach ($result as $row) {
-            $echoResult[] = array("id" => $row['id'], "name" => ucwords($row['facility_name']));
+        foreach ($rows as $row) {
+            $echoResult[] = ["id" => $row['id'], "name" => ucwords($row['facility_name'])];
         }
-        return array("result" => $echoResult);
+        return ["result" => $echoResult];
     }
 
     public function updateFacilityInfo($id, $params)
     {
         if ($id > 0) {
-            $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
-            $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
-            $data = array(
-                'facility_id' => $params['testingFacilityId'],
-                'facility_name' => $params['testingFacilityName'],
-                'email' => $params['email'],
-                'contact_person' => $params['contactPerson'],
-                'district' => $district,
-                'province' => $province,
-                'latitude' => $params['latitude'],
-                'longitude' => $params['longitude']
-            );
-            $this->update($data, array('id' => $id));
+            $this->update($this->facilityInfo($params), ['id' => $id]);
         }
     }
 
+    /** The id of the facility with this id or name, added if there is none. */
     public function addFacilityInfo($params)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $fQuery = $sql->select()->from('spi_rt_3_facilities')->where(['(facility_id = ? OR facility_name = ?)' => [$params['testingFacilityId'], $params['testingFacilityName']]]);
-        $fQueryStr = $sql->buildSqlString($fQuery);
-        $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if ($fResult) {
-            return $fResult->id;
-        } else {
-            $province = (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '';
-            $district = (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '';
-            $data = array(
-                'facility_id' => $params['testingFacilityId'],
-                'facility_name' => $params['testingFacilityName'],
-                'email' => $params['email'],
-                'contact_person' => $params['contactPerson'],
-                'district' => $district,
-                'province' => $province,
-                'latitude' => $params['latitude'],
-                'longitude' => $params['longitude']
-            );
-            $this->insert($data);
-            return $this->lastInsertValue;
-        }
+        $id = $this->db->fetchOne(
+            'SELECT id FROM spi_rt_3_facilities WHERE (facility_id = ? OR facility_name = ?) LIMIT 1',
+            [$params['testingFacilityId'], $params['testingFacilityName']]
+        );
+        return $id !== false ? $id : $this->insert($this->facilityInfo($params));
     }
 
     public function updateFacilityEmailAddress($params)
@@ -446,103 +351,34 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $result = 0;
         if (isset($params['facility']) && trim($params['facility']) != '') {
             $result = 1;
-            $this->update(array('email' => $params['emailAddress']), array('facility_name' => $params['facility']));
+            $this->update(['email' => $params['emailAddress']], ['facility_name' => $params['facility']]);
         }
         return $result;
     }
 
     public function fetchFacilityProfileByAudit($ids)
     {
-        $result = [];
-        $fResult = [];
-        $auditsResult = [];
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        if (isset($ids) && trim($ids) != '') {
-            $auditId = base64_decode($ids);
-            $auditQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                ->columns(array('facilityname'))
-                ->where(array('spiv3.id' => $auditId));
-            $auditQueryStr = $sql->buildSqlString($auditQuery);
-            $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($auditResult) {
-                $auditsQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                    ->columns(array('id', 'testingpointname', 'assesmentofaudit'))
-                    ->where(array('spiv3.facilityname' => $auditResult->facilityname, 'spiv3.status' => 'approved'));
-                $auditsQueryStr = $sql->buildSqlString($auditsQuery);
-                $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('facility_name', 'email'))
-                    ->where(array('spirt3.facility_name' => $auditResult->facilityname));
-                $fQueryStr = $sql->buildSqlString($fQuery);
-                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            }
-            $result = array('fResult' => $fResult, 'auditsResult' => $auditsResult);
-        }
-        return $result;
+        return $this->facilityProfile($ids, 'spi_form_v_3', 'id, testingpointname, assesmentofaudit');
     }
 
     public function fetchFacilityProfileByAuditV6($ids)
     {
-        $result = [];
-        $fResult = [];
-        $auditsResult = [];
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        if (isset($ids) && trim($ids) != '') {
-            $auditId = base64_decode($ids);
-            $auditQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array('facilityname'))
-                ->where(array('spiv6.id' => $auditId));
-            $auditQueryStr = $sql->buildSqlString($auditQuery);
-            $auditResult = $dbAdapter->query($auditQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            if ($auditResult) {
-                $auditsQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                    ->columns(array('id', 'assesmentofaudit'))
-                    ->where(array('spiv6.facilityname' => $auditResult->facilityname, 'spiv6.status' => 'approved'));
-                $auditsQueryStr = $sql->buildSqlString($auditsQuery);
-                $auditsResult = $dbAdapter->query($auditsQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('facility_name', 'email'))
-                    ->where(array('spirt3.facility_name' => $auditResult->facilityname));
-                $fQueryStr = $sql->buildSqlString($fQuery);
-                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-            }
-            $result = array('fResult' => $fResult, 'auditsResult' => $auditsResult);
-        }
-        return $result;
+        return $this->facilityProfile($ids, 'spi_form_v_6', 'id, assesmentofaudit');
     }
 
     public function fetchProvinceList()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $provinceQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->columns(array('name' => new Expression("DISTINCT province")));
-        $provinceQueryStr = $sql->buildSqlString($provinceQuery);
-        return $dbAdapter->query($provinceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative('SELECT DISTINCT province AS name FROM spi_rt_3_facilities');
     }
 
     public function fetchDistrictList()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $districtQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->columns(array('name' => new Expression("DISTINCT district")));
-        $districtQueryStr = $sql->buildSqlString($districtQuery);
-        return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative('SELECT DISTINCT district AS name FROM spi_rt_3_facilities');
     }
 
     public function getSpiV3FormUniqueDistrict()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $districtQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->columns(array('name' => new Expression("DISTINCT district")));
-        $districtQueryStr = $sql->buildSqlString($districtQuery);
-        return $dbAdapter->query($districtQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->fetchDistrictList();
     }
 
     public function mapProvince($params)
@@ -550,11 +386,9 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
         $result = 0;
         $loginContainer = new Container('credo');
         $userName = $loginContainer->login;
-        $dbAdapter = $this->adapter;
-        $eventTable = new EventLogTable($dbAdapter);
-        $currentDateTime = CommonService::getDateTime();
+        $eventTable = new EventLogTable($this->adapter);
 
-        $geographicalDivisionsTable = new GeographicalDivisionsTable($dbAdapter);
+        $geographicalDivisionsTable = new GeographicalDivisionsTable($this->adapter);
         $provinceId = null;
         $districtId = null;
         if (isset($params['province']) && trim($params['province']) == 'other') {
@@ -585,37 +419,6 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
                 }
             }
 
-
-            // if(isset($params['provinceName']) && $params['provinceName'] != '') {
-            //     $data = array(
-            //         'geo_name' => $params['provinceName'],
-            //         'geo_code' => $params['provinceName'],
-            //         'geo_parent' => 0,
-            //         'geo_status' => 'active',
-            //         'created_by' => $loginContainer->userId,
-            //         'created_on'	=> $currentDateTime,
-            //         'updated_datetime'	=> $currentDateTime
-            //     );
-            //     $geographicalDivisionsTable->insert($data);
-            //     $insertedId = $geographicalDivisionsTable->lastInsertValue;
-            // }
-
-            // if(isset($params['districtName']) && $params['districtName'] != '') {
-            //     $geo_parent = 0;
-            //     if(isset($params['provinceName']) && $params['provinceName'] != '') {
-            //         $geo_parent = $insertedId;
-            //     }
-            //     $data = array(
-            //         'geo_name' => $params['districtName'],
-            //         'geo_code' => $params['districtName'],
-            //         'geo_parent' => $geo_parent,
-            //         'geo_status' => 'active',
-            //         'created_by' => $loginContainer->userId,
-            //         'created_on'	=> $currentDateTime,
-            //         'updated_datetime'	=> $currentDateTime
-            //     );
-            //     $geographicalDivisionsTable->insert($data);
-            // }
             $subject = '';
             $eventType = 'Map-Province';
             $action = $userName . ' has mapped Province ' . $params['province'];
@@ -628,78 +431,112 @@ class SpiRtFacilitiesTable extends AbstractTableGateway
     public function fecthProvinceData($searchStr)
     {
         if (trim($searchStr) != "") {
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                ->where(['spirt3.province LIKE ?' => '%' . $searchStr . '%'])
-                ->group('spirt3.province');
-            $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-            $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
-            $echoResult = [];
-            foreach ($rResult as $row) {
-                $echoResult[] = array("id" => $row['province'], "text" => ucwords($row['province']));
-            }
-            if (count($echoResult) == 0) {
-                $echoResult[] = array("id" => $searchStr, "text" => $searchStr);
-            }
-            return array("result" => $echoResult);
+            return $this->matchingValues('province', $searchStr);
         }
     }
 
     public function fecthDistrictData($searchStr)
     {
         if (trim($searchStr) != "") {
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                ->where(['spirt3.district LIKE ?' => '%' . $searchStr . '%'])
-                ->group('spirt3.district');
-            $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-            $rResult = $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
-            $echoResult = [];
-            foreach ($rResult as $row) {
-                $echoResult[] = array("id" => $row['district'], "text" => ucwords($row['district']));
-            }
-            if (count($echoResult) == 0) {
-                $echoResult[] = array("id" => $searchStr, "text" => $searchStr);
-            }
-            return array("result" => $echoResult);
+            return $this->matchingValues('district', $searchStr);
         }
     }
 
-    public function fetchFacilityDetails($params)
+    /** The facility the V3 and V6 edit forms pick, as get-facility-details reads it. */
+    public function fetchFacilityDetails($params): ?\ArrayObject
     {
-        return $this->select(array('id' => (int) base64_decode($params['id'])))->current();
+        return $this->facilityById((int) base64_decode($params['id']));
     }
 
     public function fetchAllProvince()
     {
-        $adapter = $this->adapter;
-        $sql = new Sql($adapter);
-        $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('province' => new Expression("DISTINCT province")))
-            ->where('spirt3.province not like "" AND spirt3.province is not null')
-            ->order('spirt3.province ASC');
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        return $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative(
+            "SELECT DISTINCT province FROM spi_rt_3_facilities
+            WHERE province NOT LIKE '' AND province IS NOT NULL
+            ORDER BY province ASC"
+        );
     }
 
+    /** Every district the facilities of the picked provinces have. No province picked means every district. */
     public function fetchDistrictByProvince($params)
     {
         if (isset($params['province']) && is_array($params['province'])) {
-            $adapter = $this->adapter;
-            $sql = new Sql($adapter);
-            $sQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('district' => new Expression("DISTINCT district")))
-                ->where('spirt3.district not like "" AND spirt3.district is not null')
-                ->order('spirt3.district ASC');
-
-            if (!empty($params['province']) && is_array($params['province'])) {
-                $sQuery = $sQuery->where(['spirt3.province' => CommonService::inList($params['province'])])->where('spirt3.district not like "" AND spirt3.district is not null');
-            } elseif (!empty($params['province']) && !is_array($params['province'])) {
-                $sQuery = $sQuery->where(['spirt3.province' => $params['province']])->where('spirt3.district not like "" AND spirt3.district is not null');
+            $sql = "SELECT DISTINCT district FROM spi_rt_3_facilities WHERE district NOT LIKE '' AND district IS NOT NULL";
+            $values = [];
+            $types = [];
+            if (!empty($params['province'])) {
+                $sql .= ' AND province IN (?)';
+                $values[] = CommonService::inList($params['province']);
+                $types[] = ArrayParameterType::STRING;
             }
-
-            $sQueryStr = $sql->buildSqlString($sQuery);
-            return $adapter->query($sQueryStr, $adapter::QUERY_MODE_EXECUTE)->toArray();
+            return $this->db->fetchAllAssociative($sql . ' ORDER BY district ASC', $values, $types);
         }
+    }
+
+    private function facilityById(int $id): ?\ArrayObject
+    {
+        $row = $this->db->fetchAssociative('SELECT * FROM spi_rt_3_facilities WHERE id = ?', [$id]);
+        return $row ? new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS) : null;
+    }
+
+    /** The columns an audit form sends for its facility. */
+    private function facilityInfo($params): array
+    {
+        return [
+            'facility_id' => $params['testingFacilityId'],
+            'facility_name' => $params['testingFacilityName'],
+            'email' => $params['email'],
+            'contact_person' => $params['contactPerson'],
+            'district' => (isset($params['district']) && trim($params['district']) != '') ? $params['district'] : '',
+            'province' => (isset($params['province']) && trim($params['province']) != '') ? $params['province'] : '',
+            'latitude' => $params['latitude'],
+            'longitude' => $params['longitude']
+        ];
+    }
+
+    /**
+     * The facility named on the audit, and that facility's approved audits,
+     * for the email pages. The facility is null when no facility has the name.
+     */
+    private function facilityProfile($ids, string $formTable, string $auditColumns): array
+    {
+        if (!isset($ids) || trim($ids) == '') {
+            return [];
+        }
+        $fResult = [];
+        $auditsResult = [];
+        $facilityName = $this->db->fetchOne("SELECT facilityname FROM $formTable WHERE id = ?", [base64_decode($ids)]);
+        if ($facilityName !== false) {
+            $auditsResult = $this->db->fetchAllAssociative(
+                "SELECT $auditColumns FROM $formTable WHERE facilityname = ? AND status = 'approved'",
+                [$facilityName]
+            );
+            $row = $this->db->fetchAssociative(
+                'SELECT facility_name, email FROM spi_rt_3_facilities WHERE facility_name = ? LIMIT 1',
+                [$facilityName]
+            );
+            $fResult = $row ? new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS) : null;
+        }
+        return ['fResult' => $fResult, 'auditsResult' => $auditsResult];
+    }
+
+    /**
+     * The distinct values of $column that contain $searchStr, for a select2
+     * box. With no match, the search itself is the one choice.
+     */
+    private function matchingValues(string $column, string $searchStr): array
+    {
+        $values = $this->db->fetchFirstColumn(
+            "SELECT $column FROM spi_rt_3_facilities WHERE $column LIKE ? GROUP BY $column",
+            ['%' . $searchStr . '%']
+        );
+        $echoResult = [];
+        foreach ($values as $value) {
+            $echoResult[] = ["id" => $value, "text" => ucwords($value)];
+        }
+        if (count($echoResult) == 0) {
+            $echoResult[] = ["id" => $searchStr, "text" => $searchStr];
+        }
+        return ["result" => $echoResult];
     }
 }
