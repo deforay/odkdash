@@ -20,9 +20,11 @@ use Application\Command\SyncCentralV3;
 use Application\Command\SyncCentralV3Factory;
 use Application\Command\SyncCentralV6;
 use Application\Command\SyncCentralV6Factory;
+use App\Db\SharedPdoDriver;
 use Application\I18n\Translator;
 use Application\Module;
 use DI\Container;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
 use Psr\Container\ContainerInterface;
 
@@ -97,6 +99,9 @@ final class ServiceDefinitions
             'Config' => get('config'),
             // What laminas-db's AdapterServiceFactory built.
             Adapter::class => static fn(ContainerInterface $c): Adapter => new Adapter($c->get('config')['db']),
+            // The same connection as the adapter. See SharedPdoDriver.
+            Connection::class => static fn(ContainerInterface $c): Connection
+                => new Connection([], new SharedPdoDriver($c->get(Adapter::class))),
             'translator' => static fn(ContainerInterface $c): Translator => self::translator($c),
         ];
     }

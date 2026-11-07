@@ -2,49 +2,40 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Laminas\Db\Sql\Sql;
-
-
+use Doctrine\DBAL\Connection;
 
 /**
- * Description of Countries
- *
- * @author amit
+ * The temp_mail queue that bin/console send-temp-mail sends from.
  */
-class TempMailTable extends AbstractTableGateway
+class TempMailTable
 {
+    private const string TABLE = 'temp_mail';
 
-    protected $table = 'temp_mail';
-    protected $adapter;
-
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Connection $db)
     {
-        $this->adapter = $adapter;
     }
 
     public function insertTempMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress)
     {
-        $data = array(
+        $this->db->insert(self::TABLE, [
             'from_full_name' => $fromName,
             'from_mail' => $fromEmailAddress,
             'to_email' => $toEmailAddress,
             'cc' => $cc,
             'subject' => $subject,
-            'message' => $message
-        );
-        $this->insert($data);
-        return $this->lastInsertValue;
+            'message' => $message,
+        ]);
+
+        return $this->db->lastInsertId();
     }
 
     public function updateTempMailStatus($id)
     {
-        return $this->update(array('status' => 'not-sent'), array('temp_id' => $id));
+        return $this->db->update(self::TABLE, ['status' => 'not-sent'], ['temp_id' => $id]);
     }
 
     public function deleteTempMail($id)
     {
-        $this->delete(array('temp_id = ' . $id));
+        $this->db->delete(self::TABLE, ['temp_id' => $id]);
     }
 }

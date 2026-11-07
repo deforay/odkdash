@@ -2,31 +2,24 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Sql\Sql;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\TableGateway\AbstractTableGateway;
+use Laminas\Db\Sql\Sql;
 
-
-
-
-class ResourcesTable extends AbstractTableGateway
+class ResourcesTable
 {
-
-    protected $table = 'resources';
-    protected $adapter;
-
-    public function __construct(Adapter $adapter)
-    {
-        $this->adapter = $adapter;
+    public function __construct(
+        private readonly Adapter $adapter,
+        private readonly Connection $db,
+    ) {
     }
 
     public function fetchAllResourceMap()
     {
-        $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $resourceQuery = $sql->select()->from('resources')
             ->order('display_name');
-        $resourceQueryStr = $sql->buildSqlString($resourceQuery);
-        return $dbAdapter->query($resourceQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+
+        return $this->db->fetchAllAssociative($sql->buildSqlString($resourceQuery));
     }
 }
