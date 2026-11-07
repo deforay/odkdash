@@ -51,6 +51,14 @@ creates them and their triggers, adds any column a migration added to
 current columns. `bin/migrate` runs it after the migrations. A
 migration that changes those tables needs no matching change.
 
+## Run-once scripts
+
+Use a run-once script for a data fix that SQL cannot express, such as merging rows. Put it in `run-once/`, written as `App\RunOnce::run(__FILE__, function (Connection $db): void { ... })`. `src/RunOnce.php` shows the full form.
+
+`bin/migrate` runs each script after the audit trail step. A script that returns is recorded in `s_run_once_scripts_log` and never runs again. A script that throws is not recorded, so the next `bin/migrate` retries it. A failure warns and does not fail the run. `php run-once/<name>.php -f` runs a recorded script again.
+
+Write each script so a second run changes nothing.
+
 ## Idempotency
 
 `bin/migrate` auto-skips these when the target already exists:
