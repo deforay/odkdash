@@ -3,6 +3,7 @@
 namespace Application\Service;
 
 use Application\Session\Container;
+use Doctrine\DBAL\Connection;
 
 class ProvinceService {
 
@@ -17,14 +18,14 @@ class ProvinceService {
     }
 
     public function addProvince($params) {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             
-            $db = $this->sm->get('GeographicalDivisionsTable');
-            $result = $db->addProvinceDetails($params);
+            $geoTable = $this->sm->get('GeographicalDivisionsTable');
+            $result = $geoTable->addProvinceDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
 
                 //<-- Event log
                 $subject = $result;
@@ -36,22 +37,27 @@ class ProvinceService {
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Province added successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
 
     public function updateProvince($params) {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
-            $db = $this->sm->get('GeographicalDivisionsTable');
-            $result = $db->updateProvinceDetails($params);
+            $geoTable = $this->sm->get('GeographicalDivisionsTable');
+            $result = $geoTable->updateProvinceDetails($params);
             if ($result > 0) {
                 
-                $adapter->commit();
+                $db->commit();
                 $subject = $result;
                 //<-- Event log
                 $eventType = 'province-update';
@@ -62,9 +68,13 @@ class ProvinceService {
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Province updated successfully';
+            } else {
+                $db->rollBack();
             }
-            
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -116,13 +126,13 @@ class ProvinceService {
     }
 
     public function addDistrict($params) {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
-            $db = $this->sm->get('GeographicalDivisionsTable');
-            $result = $db->addDistrictDetails($params);
+            $geoTable = $this->sm->get('GeographicalDivisionsTable');
+            $result = $geoTable->addDistrictDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'district-add';
@@ -133,21 +143,26 @@ class ProvinceService {
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'District added successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
 
     public function updateDistrict($params) {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
-            $db = $this->sm->get('GeographicalDivisionsTable');
-            $result = $db->updateDistrictDetails($params);
+            $geoTable = $this->sm->get('GeographicalDivisionsTable');
+            $result = $geoTable->updateDistrictDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 $subject = $result;
                 //<-- Event log
                 $eventType = 'district-update';
@@ -158,9 +173,13 @@ class ProvinceService {
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'District updated successfully';
+            } else {
+                $db->rollBack();
             }
-            
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
