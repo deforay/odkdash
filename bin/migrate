@@ -33,6 +33,10 @@ chdir(dirname(__DIR__));
 require_once 'vendor/autoload.php';
 
 use App\Services\ServiceDefinitions;
+use Application\Command\AuditTrailInstall;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Composer\Semver\Comparator;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Exception\ExceptionInterface as DbException;
@@ -428,6 +432,28 @@ function unparsed_sql(Parser $parser): string
     return substr(implode(' ', $left), 0, 120);
 }
 
+/**
+ * Brings the audit trail tables and triggers in line with the schema the
+ * migrations left (bin/console audit-trail:install). A problem there leaves
+ * the app working but some changes unrecorded, so it warns and does not
+ * fail the run. A dry run prints its SQL instead.
+ */
+function install_audit_trail(ContainerInterface $services, bool $dryRun): void
+{
+    // A dry run previews against the schema as it is now, before any
+    // pending migration.
+    echo $dryRun ? "\nAudit trail (as the schema is now):\n" : "\nAudit trail:\n";
+    try {
+        $status = $services->get(AuditTrailInstall::class)->run(new ArrayInput($dryRun ? ['--dry-run' => true] : []), new ConsoleOutput());
+    } catch (Throwable $e) {
+        fwrite(STDERR, "  {$e->getMessage()}\n");
+        $status = 1;
+    }
+    if ($status !== 0) {
+        fwrite(STDERR, "Warning: the audit trail is not up to date. Fix the error above, then run: php bin/console audit-trail:install\n");
+    }
+}
+
 /* ---------------------- Error classifier ---------------------- */
 
 /**
@@ -587,6 +613,7 @@ if (empty($pending)) {
             }
         }
     }
+    install_audit_trail($services, $dryRun);
     exit(0);
 }
 
@@ -748,5 +775,9 @@ if (!$dryRun) {
     echo "  Failed:       {$failed}\n";
 }
 echo str_repeat('─', 50) . "\n";
+
+if ($dryRun || $failed === 0) {
+    install_audit_trail($services, $dryRun);
+}
 
 exit($failed > 0 ? 1 : 0);

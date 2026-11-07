@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Application\Command\AuditTrailInstall;
+use Application\Command\AuditTrailInstallFactory;
 use Application\Command\AuditsUnlinked;
 use Application\Command\AuditsUnlinkedFactory;
 use Application\Command\CleanupOldLogs;
@@ -53,6 +55,7 @@ final class ServiceDefinitions
         CleanupOldLogs::class => CleanupOldLogsFactory::class,
         AuditsUnlinked::class => AuditsUnlinkedFactory::class,
         ResetPassword::class => ResetPasswordFactory::class,
+        AuditTrailInstall::class => AuditTrailInstallFactory::class,
     ];
 
     /**
