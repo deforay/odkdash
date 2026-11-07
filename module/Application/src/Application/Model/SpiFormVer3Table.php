@@ -2,6 +2,7 @@
 
 namespace Application\Model;
 
+use App\Db\Dbal;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Expression;
@@ -56,6 +57,19 @@ class SpiFormVer3Table extends AbstractTableGateway
     }
 
     /**
+     * Whether the signed-in user sees every audit: no token and no location
+     * mapping, as a Super Admin. auditInScope() passes every audit for them.
+     */
+    public static function seesEveryAudit(): bool
+    {
+        $loginContainer = new Container('credo');
+        $hasTokens = !empty($loginContainer->token);
+        $hasMapping = !empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '';
+
+        return !$hasTokens && !$hasMapping;
+    }
+
+    /**
      * Whether the signed-in user may open or change this audit, under the
      * same token and location rules as the lists. A Super Admin has neither
      * restriction, so every audit passes. An id the user cannot reach reads
@@ -67,12 +81,11 @@ class SpiFormVer3Table extends AbstractTableGateway
         if (!is_scalar($id) || preg_match('/^\d+$/', trim((string) $id)) !== 1) {
             return false;
         }
-        $loginContainer = new Container('credo');
-        $hasTokens = !empty($loginContainer->token);
-        $hasMapping = !empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '';
-        if (!$hasTokens && !$hasMapping) {
+        if (self::seesEveryAudit()) {
             return true;
         }
+        $loginContainer = new Container('credo');
+        $hasTokens = !empty($loginContainer->token);
         $sql = new Sql($this->adapter);
         $query = $sql->select()->from(['spiv3' => 'spi_form_v_3'])->columns(['id'])
             ->where(['spiv3.id' => trim((string) $id)]);
@@ -3466,12 +3479,9 @@ class SpiFormVer3Table extends AbstractTableGateway
 
     public function fetchV3DetailsByMetaInstanceId($metaInstantId)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from('spi_form_v_3')
-            ->where("`meta-instance-id` = '$metaInstantId'");
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        return $rResult;
+        return Dbal::connection($this->adapter)->fetchAssociative(
+            'SELECT * FROM spi_form_v_3 WHERE `meta-instance-id` = ?',
+            [$metaInstantId],
+        );
     }
 }

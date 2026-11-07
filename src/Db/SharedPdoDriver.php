@@ -6,7 +6,7 @@ namespace App\Db;
 
 use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Doctrine\DBAL\Driver\PDO\Connection;
-use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\AdapterInterface;
 use SensitiveParameter;
 
 /**
@@ -23,7 +23,7 @@ use SensitiveParameter;
  */
 final class SharedPdoDriver extends AbstractMySQLDriver
 {
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(private readonly AdapterInterface $adapter)
     {
     }
 

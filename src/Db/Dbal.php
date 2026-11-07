@@ -6,7 +6,7 @@ namespace App\Db;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\Middleware as LoggingMiddleware;
-use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Adapter\AdapterInterface;
 use WeakMap;
 
 /**
@@ -21,10 +21,10 @@ use WeakMap;
  */
 final class Dbal
 {
-    /** @var WeakMap<Adapter, Connection>|null */
+    /** @var WeakMap<AdapterInterface, Connection>|null */
     private static ?WeakMap $connections = null;
 
-    public static function connection(Adapter $adapter): Connection
+    public static function connection(AdapterInterface $adapter): Connection
     {
         self::$connections ??= new WeakMap();
 
@@ -32,7 +32,7 @@ final class Dbal
     }
 
     /** DBAL on the adapter's PDO (see SharedPdoDriver), with the query log when it is on. */
-    private static function open(Adapter $adapter): Connection
+    private static function open(AdapterInterface $adapter): Connection
     {
         $driver = new SharedPdoDriver($adapter);
         $log = QueryLog::fromEnvironment();
