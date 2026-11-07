@@ -1,6 +1,6 @@
 # From Laminas MVC to Slim: where the code lives now
 
-odkdash moved off laminas-mvc one controller at a time. Every request now runs on Slim, and laminas-mvc is no longer installed. Four Laminas packages remain, for the services and the database layer. See [What is still on Laminas](#what-is-still-on-laminas). This page explains the new layout for anyone who knows the Laminas one.
+odkdash moved off laminas-mvc one controller at a time. Every request now runs on Slim, and laminas-mvc is no longer installed. One Laminas package remains, laminas-db, for the database layer. See [What is still on Laminas](#what-is-still-on-laminas). This page explains the new layout for anyone who knows the Laminas one.
 
 The short version: controllers moved from `module/` to `src/`, and templates moved from `module/Application/view/` to `templates/`. Services, models and config stay where they are.
 
@@ -156,6 +156,17 @@ No controller, route, module or MVC event is left. One package remains, laminas-
 | Package | Used by | Next step |
 |---|---|---|
 | laminas-db | The models and table gateways | Replace with Doctrine DBAL or PDO, one model at a time. |
+
+### Moving the models to Doctrine DBAL
+
+The models move to Doctrine DBAL in two stages, one file at a time:
+
+1. Run every query through DBAL. The laminas-db query builders stay, so each query's SQL text does not change. `$adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)->toArray()` becomes `$db->fetchAllAssociative($sql)`. The table gateway's `insert()`, `update()` and `delete()` become the DBAL methods of the same names.
+2. Replace the query builders with DBAL's QueryBuilder or with SQL that binds its values. Each converted query must return the same rows as before.
+
+A model that has finished stage 1 takes a `Doctrine\DBAL\Connection` in its constructor. It no longer extends `AbstractTableGateway`. `TempMailTable` shows a model with no builders, and `ResourcesTable` shows one that keeps a builder until stage 2.
+
+DBAL runs on the PDO connection the Laminas adapter opens, through `App\Db\SharedPdoDriver`. One connection means a transaction a service begins on the adapter also covers the DBAL queries inside it. The adapter still reads `config['db']`, so servers' `config/autoload/` does not change.
 
 Three packages are gone:
 

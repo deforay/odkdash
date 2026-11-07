@@ -8,6 +8,7 @@ use Application\Model\UsersTable;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Model\TempMailTable;
+use Doctrine\DBAL\Connection;
 use Application\Service\RoleService;
 use Application\Service\UserService;
 use Application\Model\AuditMailTable;
@@ -177,16 +178,17 @@ class Module
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new ResourcesTable($dbAdapter);
+                        return new ResourcesTable(
+                            $diContainer->get('Laminas\Db\Adapter\Adapter'),
+                            $diContainer->get(Connection::class),
+                        );
                     }
                 },
                 'TempMailTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new TempMailTable($dbAdapter);
+                        return new TempMailTable($diContainer->get(Connection::class));
                     }
                 },
                 'UserTokenMapTable' => new class
