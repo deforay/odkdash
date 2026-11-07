@@ -158,7 +158,15 @@ class CommonService
     public function insertTempMail($to, $subject, $message, $fromMail, $fromName, $cc, $bcc)
     {
         $tempmailDb = $this->sm->get('TempMailTable');
-        return $tempmailDb->insertTempMailDetails($to, $subject, $message, $fromMail, $fromName, $cc, $bcc);
+        return $tempmailDb->insertTempMailDetails(
+            toEmailAddress: $to,
+            cc: $cc,
+            subject: $subject,
+            message: $message,
+            fromName: $fromName,
+            fromEmailAddress: $fromMail,
+            bcc: $bcc,
+        );
     }
 
     public function sendTempMail()
