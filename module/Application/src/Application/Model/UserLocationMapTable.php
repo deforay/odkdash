@@ -2,24 +2,22 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Sql\Sql;
+use App\Db\Dbal;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Application\Model\BaseTableGateway;
 
-
-class UserLocationMapTable extends BaseTableGateway
+class UserLocationMapTable
 {
-
-    protected $table = 'user_location_map';
-    protected $adapter;
+    private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
-    public function fetchSelectedLocation($id)
+    /** Every location the user is mapped to. */
+    public function fetchSelectedLocation($id): array
     {
-        return $this->selectOne(['user_id' => $id]);
+        return $this->db->fetchAllAssociative('SELECT * FROM user_location_map WHERE user_id = ? ORDER BY id', [$id]);
     }
 }
