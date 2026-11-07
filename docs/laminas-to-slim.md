@@ -174,6 +174,8 @@ DBAL's `insert()` and `update()` do not quote column names. Quote a name that is
 
 DBAL runs on the PDO connection the Laminas adapter opens, through `App\Db\SharedPdoDriver`. One connection means a transaction a service begins on the adapter also covers the DBAL queries inside it. The adapter still reads `config['db']`, so servers' `config/autoload/` does not change.
 
+Move a service's transactions in the same PR as the tables they cover. Begin and commit on the container's `Doctrine\DBAL\Connection`, not on the adapter. DBAL cannot see a transaction begun on the adapter, so its nesting count and `isTransactionActive()` would be wrong. Roll back when the save returns 0 and in the `catch`. `UserService` shows the pattern.
+
 Three packages are gone:
 
 - laminas-servicemanager. `ServiceDefinitions` registers every service with PHP-DI under its old key. The factories in `Module::getServiceConfig()` are invokable objects, and `DI\factory()` passes them the container as their first argument, so their bodies did not change. psr/container moved to version 2, which laminas-servicemanager had blocked.
