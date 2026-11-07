@@ -454,6 +454,40 @@ function install_audit_trail(ContainerInterface $services, bool $dryRun): void
     }
 }
 
+/**
+ * Runs each run-once/*.php script that has not run on this database (see
+ * App\RunOnce). A failed script warns and does not fail the run. The next
+ * bin/migrate retries it. A dry run lists the scripts without running them.
+ */
+function run_once_scripts(bool $dryRun): void
+{
+    $scripts = glob(dirname(__DIR__) . '/run-once/*.php') ?: [];
+    if ($scripts === []) {
+        return;
+    }
+    sort($scripts);
+    echo "\nRun-once scripts:\n";
+    $ran = 0;
+    foreach ($scripts as $script) {
+        $name = basename($script);
+        if ($dryRun) {
+            echo "  {$name}: would run unless already recorded in s_run_once_scripts_log.\n";
+            continue;
+        }
+        passthru(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($script), $status);
+        if ($status === 0) {
+            echo "  {$name}: ran.\n";
+            $ran++;
+        } elseif ($status !== 3) {
+            fwrite(STDERR, "Warning: {$name} failed. The next bin/migrate retries it. To retry now: php run-once/{$name}\n");
+            $ran++;
+        }
+    }
+    if (!$dryRun && $ran === 0) {
+        echo "  All have run before.\n";
+    }
+}
+
 /* ---------------------- Error classifier ---------------------- */
 
 /**
@@ -614,6 +648,7 @@ if (empty($pending)) {
         }
     }
     install_audit_trail($services, $dryRun);
+    run_once_scripts($dryRun);
     exit(0);
 }
 
@@ -778,6 +813,7 @@ echo str_repeat('─', 50) . "\n";
 
 if ($dryRun || $failed === 0) {
     install_audit_trail($services, $dryRun);
+    run_once_scripts($dryRun);
 }
 
 exit($failed > 0 ? 1 : 0);
