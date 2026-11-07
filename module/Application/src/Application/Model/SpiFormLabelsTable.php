@@ -2,43 +2,27 @@
 
 namespace Application\Model;
 
-use Application\Session\Container;
+use App\Db\Dbal;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\Sql\Expression;
-use Laminas\Db\TableGateway\AbstractTableGateway;
 
-
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class SpiFormLabelsTable extends AbstractTableGateway
+/** The V3 form's field labels. */
+class SpiFormLabelsTable
 {
-
-    protected $table = 'spi_v3_form_labels';
-    protected $adapter;
+    private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
-
 
     public function getAllLabels()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_v3_form_labels'));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;//die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
         $response = [];
-        foreach ($rResult as $row) {
+        foreach ($this->db->fetchAllAssociative('SELECT * FROM spi_v3_form_labels') as $row) {
             $response[$row['field']] = array($row['short_label'], $row['label']);
         }
+
         return $response;
     }
 }

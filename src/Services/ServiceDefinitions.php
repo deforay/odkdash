@@ -20,13 +20,12 @@ use Application\Command\SyncCentralV3;
 use Application\Command\SyncCentralV3Factory;
 use Application\Command\SyncCentralV6;
 use Application\Command\SyncCentralV6Factory;
+use App\Db\Dbal;
 use App\Db\QueryLog;
-use App\Db\SharedPdoDriver;
 use Application\I18n\Translator;
 use Application\Module;
 use DI\Container;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Logging\Middleware as LoggingMiddleware;
 use Laminas\Db\Adapter\Adapter;
 use Psr\Container\ContainerInterface;
 
@@ -100,7 +99,7 @@ final class ServiceDefinitions
             'config' => static fn(): array => self::config($appRoot),
             'Config' => get('config'),
             Adapter::class => static fn(ContainerInterface $c): Adapter => self::adapter($c),
-            Connection::class => static fn(ContainerInterface $c): Connection => self::connection($c),
+            Connection::class => static fn(ContainerInterface $c): Connection => Dbal::connection($c->get(Adapter::class)),
             'translator' => static fn(ContainerInterface $c): Translator => self::translator($c),
         ];
     }
@@ -115,18 +114,6 @@ final class ServiceDefinitions
         }
 
         return $adapter;
-    }
-
-    /** DBAL on the adapter's connection (see SharedPdoDriver), with the query log when it is on. */
-    private static function connection(ContainerInterface $c): Connection
-    {
-        $driver = new SharedPdoDriver($c->get(Adapter::class));
-        $log = QueryLog::fromEnvironment();
-        if ($log !== null) {
-            $driver = (new LoggingMiddleware($log))->wrap($driver);
-        }
-
-        return new Connection([], $driver);
     }
 
     /** A container for bin/console and bin/migrate. */

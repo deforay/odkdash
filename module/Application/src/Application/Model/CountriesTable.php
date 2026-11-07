@@ -2,58 +2,57 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Laminas\Db\Sql\Expression;
+use App\Db\Dbal;
 use Application\Session\Container;
-use Application\Service\CommonService;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
 
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class CountriesTable extends AbstractTableGateway
+class CountriesTable
 {
+    private readonly Connection $db;
 
-    protected $table = 'countries';
-    protected $adapter;
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
     public function fetchAllCountries()
     {
-        return $this->select(['status' => 'active'])->toArray();
+        return $this->db->fetchAllAssociative("SELECT * FROM countries WHERE status = 'active'");
     }
 
     public function fetchMapedCountries()
     {
-        $loginContainer = new Container('credo');
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'country') {
-            $result = $this->select(array('status' => 'active', 'country_id IN(' . implode(",", $loginContainer->userMappedIds) . ')'))->toArray();
-        } else {
-            $result = $this->select(array('status' => 'active'))->toArray();
-        }
-
         $response = [];
-        foreach ($result as $row) {
+        foreach ($this->fetchCountries(activeOnly: true) as $row) {
             $response[$row['country_id']] = $row;
         }
+
         return $response;
     }
 
     public function fetchAllMapedCountries()
     {
+        return $this->fetchCountries(activeOnly: false);
+    }
+
+    /** The countries the signed-in user is mapped to, or every country. */
+    private function fetchCountries(bool $activeOnly): array
+    {
+        $where = $activeOnly ? ["status = 'active'"] : [];
+        $params = [];
+        $types = [];
+
         $loginContainer = new Container('credo');
         if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType == 'country') {
-            $result = $this->select(array('country_id IN(' . implode(",", $loginContainer->userMappedIds) . ')'))->toArray();
-        } else {
-            $result = $this->select()->toArray();
+            $where[] = 'country_id IN (?)';
+            $params[] = array_values($loginContainer->userMappedIds);
+            $types[] = ArrayParameterType::INTEGER;
         }
-        return $result;
+
+        $sql = 'SELECT * FROM countries' . ($where !== [] ? ' WHERE ' . implode(' AND ', $where) : '');
+
+        return $this->db->fetchAllAssociative($sql, $params, $types);
     }
 }

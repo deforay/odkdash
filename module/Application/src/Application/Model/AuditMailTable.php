@@ -2,50 +2,46 @@
 
 namespace Application\Model;
 
+use App\Db\Dbal;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Laminas\Db\Sql\Sql;
-
-
 
 /**
- * Description of Countries
- *
- * @author amit
+ * The audit_mails queue that bin/console send-audit-mail sends from.
  */
-class AuditMailTable extends AbstractTableGateway
+class AuditMailTable
 {
+    private const string TABLE = 'audit_mails';
 
-    protected $table = 'audit_mails';
-    protected $adapter;
+    private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
     public function insertAuditMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress, $auditIds)
     {
-        $data = array(
+        $this->db->insert(self::TABLE, [
             'from_full_name' => $fromName,
             'from_mail' => $fromEmailAddress,
             'to_email' => $toEmailAddress,
             'cc' => $cc,
             'subject' => $subject,
             'message' => $message,
-            'audit_ids' => $auditIds
-        );
-        $this->insert($data);
-        return $this->lastInsertValue;
+            'audit_ids' => $auditIds,
+        ]);
+
+        return $this->db->lastInsertId();
     }
 
     public function updateInitialAuditMailStatus($id)
     {
-        return $this->update(array('status' => 'not-sent'), array('mail_id' => $id));
+        return $this->db->update(self::TABLE, ['status' => 'not-sent'], ['mail_id' => $id]);
     }
 
     public function updateAuditMailStatus($id)
     {
-        return $this->update(array('status' => 'sent'), array('mail_id' => $id));
+        return $this->db->update(self::TABLE, ['status' => 'sent'], ['mail_id' => $id]);
     }
 }
