@@ -27,8 +27,6 @@ use Application\Model\AuditSpiFormV3Table;
 use Application\Model\AuditSpiFormV6Table;
 
 
-use Application\Model\SpiForm6LabelsTable;
-use Application\Model\UserCountryMapTable;
 use Application\Service\AuditTrailService;
 use Application\Model\SpiFormVer3TempTable;
 use Application\Model\SpiRtFacilitiesTable;
@@ -108,14 +106,6 @@ class Module
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new SpiFormLabelsTable($dbAdapter);
-                    }
-                },
-                'SpiForm6LabelsTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiForm6LabelsTable($dbAdapter);
                     }
                 },
                 'SpiRtFacilitiesTable' => new class
@@ -253,14 +243,6 @@ class Module
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
                         return new CountriesTable($dbAdapter);
-                    }
-                },
-                'UserCountryMapTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new UserCountryMapTable($dbAdapter);
                     }
                 },
                 'AuditSpiFormV3Table' => new class

@@ -164,7 +164,13 @@ The models move to Doctrine DBAL in two stages, one file at a time:
 1. Run every query through DBAL. The laminas-db query builders stay, so each query's SQL text does not change. `$adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)->toArray()` becomes `$db->fetchAllAssociative($sql)`. The table gateway's `insert()`, `update()` and `delete()` become the DBAL methods of the same names.
 2. Replace the query builders with DBAL's QueryBuilder or with SQL that binds its values. Each converted query must return the same rows as before.
 
-A model that has finished stage 1 takes a `Doctrine\DBAL\Connection` in its constructor. It no longer extends `AbstractTableGateway`. `TempMailTable` shows a model with no builders, and `ResourcesTable` shows one that keeps a builder until stage 2.
+A model that has finished stage 1 no longer extends `AbstractTableGateway`. Models still build each other with `new SomeTable($adapter)`, so a moved model keeps its `Adapter` constructor and gets its connection from `App\Db\Dbal::connection($adapter)`. Every model then shares one `Connection` object. `AuditMailTable` shows the pattern.
+
+A simple query can skip stage 1 and become SQL with bound values directly, as in `CountriesTable`. The rows must match the old query's rows.
+
+DBAL's `insert()` and `update()` do not quote column names. Quote a name that is not a plain word, such as `meta-instance-id`, with `$db->quoteSingleIdentifier()`. `SpiFormVer6DuplicateTable` does this.
+
+`ODKDASH_SQL_LOG=<file>` makes the app log every statement through either library, so two versions of the code can be compared request by request.
 
 DBAL runs on the PDO connection the Laminas adapter opens, through `App\Db\SharedPdoDriver`. One connection means a transaction a service begins on the adapter also covers the DBAL queries inside it. The adapter still reads `config['db']`, so servers' `config/autoload/` does not change.
 
