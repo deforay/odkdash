@@ -2,10 +2,11 @@
 
 namespace Application\Model;
 
+use App\Db\Dbal;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\TableGateway\AbstractTableGateway;
 
 /**
  * Read-side queries for the API Logs viewer. The api_logs table is
@@ -13,14 +14,13 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  * sync-central-v6 outbound calls — writes happen via ApiLogger, not
  * through this class.
  */
-class ApiLogsTable extends AbstractTableGateway
+class ApiLogsTable
 {
-    protected $table = 'api_logs';
-    protected $adapter;
+    private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
     /**
@@ -31,19 +31,9 @@ class ApiLogsTable extends AbstractTableGateway
      */
     public function fetchList(array $params): array
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select($this->table);
+        [$where, $values] = $this->buildWhere($params);
 
-        $where = $this->buildWhere($params);
-        if ($where !== []) {
-            $select->where($where);
-        }
-
-        $countSelect = clone $select;
-        $countSelect->reset(Select::COLUMNS)->reset(Select::ORDER)
-            ->columns(['c' => new \Laminas\Db\Sql\Expression('COUNT(*)')]);
-        $countRow = $sql->prepareStatementForSqlObject($countSelect)->execute()->current();
-        $total = (int) ($countRow['c'] ?? 0);
+        $total = (int) $this->db->fetchOne("SELECT COUNT(*) FROM api_logs $where", $values);
 
         $sortable = ['created_at', 'method', 'url', 'response_code', 'duration_ms', 'source'];
         $sortCol = in_array($params['sort'] ?? '', $sortable, true) ? $params['sort'] : 'created_at';
@@ -51,85 +41,63 @@ class ApiLogsTable extends AbstractTableGateway
 
         $perPage = max(1, min(100, (int) ($params['per_page'] ?? 50)));
         $page = max(1, (int) ($params['page'] ?? 1));
+        $offset = ($page - 1) * $perPage;
 
-        $select->columns([
-            'request_id', 'created_at', 'source', 'method', 'url',
-            'response_code', 'duration_ms', 'error',
-        ])
-            ->order("$sortCol $sortDir")
-            ->offset(($page - 1) * $perPage)
-            ->limit($perPage);
-
-        $rows = iterator_to_array($sql->prepareStatementForSqlObject($select)->execute());
+        $rows = $this->db->fetchAllAssociative(
+            "SELECT request_id, created_at, source, method, url, response_code, duration_ms, error
+            FROM api_logs $where
+            ORDER BY $sortCol $sortDir
+            LIMIT $perPage OFFSET $offset",
+            $values
+        );
 
         return ['rows' => $rows, 'total' => $total];
     }
 
     public function fetchOne(string $requestId): ?array
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select($this->table)->where(['request_id' => $requestId])->limit(1);
-        $row = $sql->prepareStatementForSqlObject($select)->execute()->current();
+        $row = $this->db->fetchAssociative('SELECT * FROM api_logs WHERE request_id = ? LIMIT 1', [$requestId]);
         return $row ?: null;
     }
 
     /** Distinct source tags for the filter dropdown. */
     public function fetchSources(): array
     {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select($this->table)
-            ->columns(['source'])
-            ->where(['source IS NOT NULL'])
-            ->group(['source'])
-            ->order('source ASC');
-        return array_column(iterator_to_array($sql->prepareStatementForSqlObject($select)->execute()), 'source');
+        return $this->db->fetchFirstColumn('SELECT source FROM api_logs WHERE source IS NOT NULL GROUP BY source ORDER BY source ASC');
     }
 
     public function fetchStats(int $hours = 24): array
     {
         $since = (new \DateTimeImmutable("-$hours hours"))->format('Y-m-d H:i:s');
-        $sql = new Sql($this->adapter);
 
-        $totalsSelect = $sql->select($this->table)
-            ->where(['created_at >= ?' => $since])
-            ->columns([
-                'total' => new \Laminas\Db\Sql\Expression('COUNT(*)'),
-                'errors' => new \Laminas\Db\Sql\Expression('SUM(CASE WHEN response_code >= 400 OR error IS NOT NULL THEN 1 ELSE 0 END)'),
-                'avg_duration' => new \Laminas\Db\Sql\Expression('COALESCE(AVG(duration_ms), 0)'),
-            ]);
-        $totals = $sql->prepareStatementForSqlObject($totalsSelect)->execute()->current() ?: [];
+        $totals = $this->db->fetchAssociative(
+            'SELECT COUNT(*) AS total,
+                SUM(CASE WHEN response_code >= 400 OR error IS NOT NULL THEN 1 ELSE 0 END) AS errors,
+                COALESCE(AVG(duration_ms), 0) AS avg_duration
+            FROM api_logs WHERE created_at >= ?',
+            [$since]
+        ) ?: [];
         $total = (int) ($totals['total'] ?? 0);
         $errors = (int) ($totals['errors'] ?? 0);
 
         $p95 = 0;
         if ($total > 0) {
             $offset = (int) max(0, floor($total * 0.05));
-            $p95Select = $sql->select($this->table)
-                ->where(['created_at >= ?' => $since])
-                ->columns(['duration_ms'])
-                ->order('duration_ms DESC')
-                ->offset($offset)
-                ->limit(1);
-            $p95Row = $sql->prepareStatementForSqlObject($p95Select)->execute()->current();
-            $p95 = (int) ($p95Row['duration_ms'] ?? 0);
+            $p95 = (int) $this->db->fetchOne(
+                "SELECT duration_ms FROM api_logs WHERE created_at >= ? ORDER BY duration_ms DESC LIMIT 1 OFFSET $offset",
+                [$since]
+            );
         }
 
-        $topErrSelect = $sql->select($this->table)
-            ->where(['created_at >= ?' => $since])
-            ->where->nest()
-                ->greaterThanOrEqualTo('response_code', 400)
-                ->or
-                ->isNotNull('error')
-            ->unnest();
-        $topErrSelect
-            ->columns([
-                'url', 'response_code',
-                'count' => new \Laminas\Db\Sql\Expression('COUNT(*)'),
-            ])
-            ->group(['url', 'response_code'])
-            ->order('count DESC')
-            ->limit(10);
-        $topErrors = iterator_to_array($sql->prepareStatementForSqlObject($topErrSelect)->execute());
+        $topErrors = $this->db->fetchAllAssociative(
+            'SELECT url, response_code, COUNT(*) AS count
+            FROM api_logs
+            WHERE created_at >= ? AND (response_code >= 400 OR error IS NOT NULL)
+            GROUP BY url, response_code
+            ORDER BY count DESC
+            LIMIT 10',
+            [$since]
+        );
 
         return [
             'total_requests'   => $total,
@@ -150,35 +118,30 @@ class ApiLogsTable extends AbstractTableGateway
      */
     public function purgeOlderThan(\DateTimeImmutable $beforeDate, int $floor): array
     {
-        $sql = new Sql($this->adapter);
-
         $keepIds = [];
         if ($floor > 0) {
-            $keepSelect = $sql->select($this->table)
-                ->columns(['request_id'])
-                ->order('created_at DESC')
-                ->limit($floor);
-            foreach ($sql->prepareStatementForSqlObject($keepSelect)->execute() as $row) {
-                $keepIds[] = $row['request_id'];
-            }
+            $keepIds = $this->db->fetchFirstColumn("SELECT request_id FROM api_logs ORDER BY created_at DESC LIMIT $floor");
         }
 
-        $toDeleteSelect = $sql->select($this->table)
-            ->columns(['request_id', 'request_body_path', 'response_body_path'])
-            ->where(['created_at < ?' => $beforeDate->format('Y-m-d H:i:s')]);
+        $sql = 'SELECT request_id, request_body_path, response_body_path FROM api_logs WHERE created_at < ?';
+        $values = [$beforeDate->format('Y-m-d H:i:s')];
+        $types = [ParameterType::STRING];
         if ($keepIds !== []) {
-            $toDeleteSelect->where->notIn('request_id', $keepIds);
+            $sql .= ' AND request_id NOT IN (?)';
+            $values[] = $keepIds;
+            $types[] = ArrayParameterType::STRING;
         }
-        $victims = iterator_to_array($sql->prepareStatementForSqlObject($toDeleteSelect)->execute());
+        $victims = $this->db->fetchAllAssociative($sql, $values, $types);
 
         if ($victims === []) {
             return ['deleted' => 0, 'paths' => []];
         }
 
-        $ids = array_column($victims, 'request_id');
-        $del = $sql->delete($this->table);
-        $del->where->in('request_id', $ids);
-        $sql->prepareStatementForSqlObject($del)->execute();
+        $this->db->executeStatement(
+            'DELETE FROM api_logs WHERE request_id IN (?)',
+            [array_column($victims, 'request_id')],
+            [ArrayParameterType::STRING]
+        );
 
         return [
             'deleted' => count($victims),
@@ -192,41 +155,51 @@ class ApiLogsTable extends AbstractTableGateway
         ];
     }
 
-    /** @param array<string,mixed> $params */
+    /**
+     * The WHERE clause for the grid's filters and its values.
+     *
+     * @param array<string,mixed> $params
+     * @return array{0: string, 1: list<mixed>}
+     */
     private function buildWhere(array $params): array
     {
         $where = [];
+        $values = [];
         if (!empty($params['method'])) {
-            $where['method'] = strtoupper((string) $params['method']);
+            $where[] = 'method = ?';
+            $values[] = strtoupper((string) $params['method']);
         }
         if (!empty($params['source'])) {
-            $where['source'] = $params['source'];
+            $where[] = 'source = ?';
+            $values[] = $params['source'];
         }
         if (!empty($params['url'])) {
-            $where[] = new \Laminas\Db\Sql\Predicate\Like('url', '%' . $params['url'] . '%');
+            $where[] = 'url LIKE ?';
+            $values[] = '%' . $params['url'] . '%';
         }
         if (!empty($params['status'])) {
             if ($params['status'] === 'error') {
-                $where[] = new \Laminas\Db\Sql\Predicate\PredicateSet([
-                    new \Laminas\Db\Sql\Predicate\Operator('response_code', '>=', 400),
-                    new \Laminas\Db\Sql\Predicate\IsNotNull('error'),
-                ], \Laminas\Db\Sql\Predicate\PredicateSet::OP_OR);
+                $where[] = '(response_code >= 400 OR error IS NOT NULL)';
             } elseif ($params['status'] === 'success') {
-                $where[] = new \Laminas\Db\Sql\Predicate\Operator('response_code', '<', 400);
-                $where[] = new \Laminas\Db\Sql\Predicate\IsNull('error');
+                $where[] = 'response_code < 400 AND error IS NULL';
             } else {
-                $where['response_code'] = (int) $params['status'];
+                $where[] = 'response_code = ?';
+                $values[] = (int) $params['status'];
             }
         }
         if (!empty($params['from'])) {
-            $where[] = new \Laminas\Db\Sql\Predicate\Operator('created_at', '>=', $params['from'] . ' 00:00:00');
+            $where[] = 'created_at >= ?';
+            $values[] = $params['from'] . ' 00:00:00';
         }
         if (!empty($params['to'])) {
-            $where[] = new \Laminas\Db\Sql\Predicate\Operator('created_at', '<=', $params['to'] . ' 23:59:59');
+            $where[] = 'created_at <= ?';
+            $values[] = $params['to'] . ' 23:59:59';
         }
         if (!empty($params['slow'])) {
-            $where[] = new \Laminas\Db\Sql\Predicate\Operator('duration_ms', '>=', (int) $params['slow']);
+            $where[] = 'duration_ms >= ?';
+            $values[] = (int) $params['slow'];
         }
-        return $where;
+
+        return [$where === [] ? '' : 'WHERE ' . implode(' AND ', $where), $values];
     }
 }
