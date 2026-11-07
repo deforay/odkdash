@@ -2,6 +2,7 @@
 
 namespace Application;
 
+use Application\Command\AuditTrailInstall;
 use Application\Command\SendTempMail;
 use Application\Command\SendAuditMail;
 use Application\Command\SyncCentralV3;
@@ -42,6 +43,7 @@ return array(
             'cleanup-old-logs' => CleanupOldLogs::class,
             'audits:unlinked' => AuditsUnlinked::class,
             'reset-password' => ResetPassword::class,
+            'audit-trail:install' => AuditTrailInstall::class,
         ],
     ],
 );

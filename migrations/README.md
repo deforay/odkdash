@@ -44,12 +44,12 @@ conditional steps with the idempotent forms below instead.
 
 ## Audit trail tables
 
-`audit_spi_form_v_3` and `audit_spi_form_v_6` copy every column of
-`spi_form_v_3` and `spi_form_v_6`. Triggers from 1.2.8 insert each audit's
-columns by position. A migration that adds, drops or changes a column of
-an audit table's source must make the same change to the audit table, in
-the same position. Otherwise every insert, update and delete of an audit
-fails with "Column count doesn't match value count".
+`audit_spi_form_v_3` and `audit_spi_form_v_6` keep a copy of each audit
+on every insert, update and delete. `bin/console audit-trail:install`
+creates them and their triggers, adds any column a migration added to
+`spi_form_v_3` or `spi_form_v_6`, and rebuilds the triggers from the
+current columns. `bin/migrate` runs it after the migrations. A
+migration that changes those tables needs no matching change.
 
 ## Idempotency
 
@@ -75,10 +75,9 @@ benign `WARN` (idempotent re-run). `1054` (Unknown column) and `1146`
 INSERT/UPDATE/DELETE/SELECT they `FAIL` loudly — a typo there would
 otherwise silently skip a real change.
 `CREATE TRIGGER` for a trigger that exists (`1359`), or refused for lack
-of privilege (`1142`, `1227`, `1419`), is a `WARN`. A re-run leaves the
-triggers as they are, and a server whose database user cannot create
-triggers still upgrades, without an audit trail. Write `CREATE TRIGGER`
-without `IF NOT EXISTS`, which MySQL before 8.0.29 cannot parse.
+of privilege (`1142`, `1227`, `1419`), is a `WARN`, so a trigger never
+stops an upgrade. Write `CREATE TRIGGER` without `IF NOT EXISTS`, which
+MySQL before 8.0.29 cannot parse.
 
 ## Common commands
 
