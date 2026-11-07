@@ -3,6 +3,7 @@
 namespace Application\Service;
 
 use Application\Session\Container;
+use Doctrine\DBAL\Connection;
 
 class RoleService {
 
@@ -17,15 +18,15 @@ class RoleService {
     }
 
     public function addRoles($params) {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             
             $rolesDb = $this->sm->get('RolesTable');
             $rolesResult = $rolesDb->addRolesDetails($params);
             if ($rolesResult > 0) {
-                $rolesDb->mapRolesPrivileges($params);
-                $adapter->commit();
+                $rolesDb->mapRolesPrivileges((int) $rolesResult, $params);
+                $db->commit();
                 //<-- Event log
                 $subject = $rolesResult;
                 $eventType = 'role-add';
@@ -36,23 +37,27 @@ class RoleService {
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Roles added successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
     }
 
     public function updateRoles($params) {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $rolesDb = $this->sm->get('RolesTable');
             $rolesResult = $rolesDb->updateRolesDetails($params);
             if ($rolesResult > 0) {
-                $rolesDb->mapRolesPrivileges($params);
-                // die;
-                $adapter->commit();
+                $rolesDb->mapRolesPrivileges((int) $rolesResult, $params);
+                $db->commit();
                 $subject = $rolesResult;
                 //<-- Event log
                 $eventType = 'role-update';
@@ -63,9 +68,13 @@ class RoleService {
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Roles updated successfully';
+            } else {
+                $db->rollBack();
             }
-            
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }

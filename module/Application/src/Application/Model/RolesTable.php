@@ -2,40 +2,39 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Sql\Sql;
+use App\Db\Dbal;
 use Application\Session\Container;
-use Laminas\Db\Adapter\Adapter;
-use Application\Model\BaseTableGateway;
 use Application\Service\CommonService;
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 
-class RolesTable extends BaseTableGateway
+class RolesTable
 {
-
-    protected $table = 'roles';
-    protected $adapter;
+    private readonly Adapter $adapter;
+    private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
     public function addRolesDetails($params)
     {
         // Only the seeded Super Admin role may carry the SA code.
-        if (trim((string) $params['roleCode']) === 'SA') {
+        if (trim((string) $params['roleCode']) === 'SA' || $this->codeTaken($params['roleCode'], 0)) {
             return 0;
         }
         if (trim($params['roleName']) != "") {
-            $rolesdata = array(
+            $this->db->insert('roles', [
                 'category_id' => 1,
                 'role_name' => $params['roleName'],
                 'role_code' => $params['roleCode'],
                 'description' => $params['description'],
                 'status' => 'active'
-            );
-
-            $this->insert($rolesdata);
-            return $this->lastInsertValue;
+            ]);
+            return (int) $this->db->lastInsertId();
         }
     }
 
@@ -45,21 +44,30 @@ class RolesTable extends BaseTableGateway
             $roleId = (int) base64_decode($params['roleId']);
             // The Super Admin role cannot be renamed, deactivated or stripped,
             // and no other role can take its code: Acl.php grants SA everything.
-            $sql = new Sql($this->adapter);
-            $currentQuery = $sql->select()->from('roles')->columns(['role_code'])->where(['role_id' => $roleId]);
-            $current = $this->adapter->query($sql->buildSqlString($currentQuery), $this->adapter::QUERY_MODE_EXECUTE)->toArray();
-            if ($current === [] || $current[0]['role_code'] === 'SA' || trim((string) $params['roleCode']) === 'SA') {
+            $currentCode = $this->db->fetchOne('SELECT role_code FROM roles WHERE role_id = ?', [$roleId]);
+            if ($currentCode === false || $currentCode === 'SA' || trim((string) $params['roleCode']) === 'SA' || $this->codeTaken($params['roleCode'], $roleId)) {
                 return 0;
             }
-            $rolesdata = array(
+            $this->db->update('roles', [
                 'role_name' => $params['roleName'],
                 'role_code' => $params['roleCode'],
                 'description' => $params['description'],
                 'status' => $params['status']
-            );
-            $this->update($rolesdata, ['role_id' => $roleId]);
+            ], ['role_id' => $roleId]);
             return $roleId;
         }
+    }
+
+    /**
+     * The ACL knows a role by its code, so two roles with one code would
+     * share their privileges. The form checks this in JavaScript only.
+     */
+    private function codeTaken($roleCode, int $exceptRoleId): bool
+    {
+        return $this->db->fetchOne(
+            'SELECT 1 FROM roles WHERE role_code = ? AND role_id <> ?',
+            [trim((string) $roleCode), $exceptRoleId]
+        ) !== false;
     }
 
     public function fetchAllRoleDetails($parameters, $acl)
@@ -106,10 +114,9 @@ class RolesTable extends BaseTableGateway
          * SQL queries
          * Get data to display
          */
-        $dbAdapter = $this->adapter;
+        // The builder still writes the search and the sort. DBAL runs the SQL.
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('roles')->where("role_code !='daemon'");
-        //$sQuery=$this->select();
         if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
@@ -123,19 +130,15 @@ class RolesTable extends BaseTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //error_log($sQueryForm);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
 
         /* Total data set length */
-        $iTotal = $this->select("role_code !='daemon'")->count();
+        $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM roles WHERE role_code != 'daemon'");
 
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
@@ -168,28 +171,22 @@ class RolesTable extends BaseTableGateway
 
     public function getRolesDetails($id)
     {
-        return $this->selectOne(array('role_id' => (int) $id));
+        $role = $this->db->fetchAssociative('SELECT * FROM roles WHERE role_id = ?', [(int) $id]);
+
+        // The handler and the edit template read the role as $result->role_code.
+        return $role === false ? null : new \ArrayObject($role, \ArrayObject::ARRAY_AS_PROPS);
     }
 
     public function fecthAllActiveRoles()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from('roles')->order('role_name')->where(array('status' => 'active'));
-        $roleQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
-        return $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative("SELECT * FROM roles WHERE status = 'active' ORDER BY role_name");
     }
 
     public function fetchAllRoles()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
+        $resources = $this->db->fetchAllAssociative('SELECT * FROM resources ORDER BY sort_order ASC, display_name ASC');
 
-        $resourceQuery = $sql->select()->from('resources')->order(['sort_order ASC', 'display_name ASC']);
-        $resources = $dbAdapter->query($sql->buildSqlString($resourceQuery), $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-
-        $privQuery = $sql->select()->from('privileges')->order('display_name');
-        $allPrivs = $dbAdapter->query($sql->buildSqlString($privQuery), $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $allPrivs = $this->db->fetchAllAssociative('SELECT * FROM privileges ORDER BY display_name');
         $privsByResource = [];
         foreach ($allPrivs as $p) {
             $privsByResource[$p['resource_id']][] = $p;
@@ -216,111 +213,53 @@ class RolesTable extends BaseTableGateway
         return $tree;
     }
 
-    public function mapRolesPrivileges($params)
+    /**
+     * Replaces the role's privileges with the ones the form allows. Runs
+     * inside RoleService's transaction, so an error undoes the whole save.
+     */
+    public function mapRolesPrivileges(int $roleId, $params): void
     {
-        try {
-            $roleCode = $params['roleCode'];
+        // Super Admin's privileges are locked. Acl.php grants SA everything
+        // at runtime, and the UI disables the privilege toggles for this
+        // role. Refuse to change the map here so a crafted POST cannot strip
+        // privileges either.
+        if ($this->db->fetchOne('SELECT role_code FROM roles WHERE role_id = ?', [$roleId]) === 'SA') {
+            return;
+        }
 
-            // Super Admin's privileges are locked — Acl.php grants SA
-            // everything at runtime, and the UI disables the privilege
-            // toggles for this role. Refuse to mutate the map here so
-            // a crafted POST can't strip privileges either.
-            if ($roleCode === 'SA') {
-                return;
-            }
-
-            $sql = new Sql($this->adapter);
-            $dbAdapter = $this->adapter;
-
-            // Get or insert role
-            $query = $sql->select()->from('roles')->where(array('role_code' => $roleCode));
-            $roleQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
-            $role = $dbAdapter->query($roleQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-            $roleId = $role[0]['role_id'];
-
-            //  delete records before insert
-            $delete = $sql->delete('roles_privileges_map');
-            $delete->where(array('role_id' => $roleId));
-
-            // Execute the delete statement
-            $statement = $sql->prepareStatementForSqlObject($delete);
-            $statement->execute();
-            foreach ($params['resource'] as $resourceName => $privileges) {
-                foreach ($privileges as $key => $privilege) {
-                    if ($privilege === 'allow') {
-                        $query = $sql->select()->from('privileges')->where(array('resource_id' => $resourceName, 'privilege_name' => $key));
-                        $privilegeQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
-                        $privilegeRes = $dbAdapter->query($privilegeQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-                        $privilegeId = $privilegeRes[0]['privilege_id'];
-
-                        $sql = new Sql($dbAdapter);
-
-                        $insert = $sql->insert('roles_privileges_map');
-                        $data = array(
-                            'role_id' => $roleId,
-                            'privilege_id' => $privilegeId
-                        );
-                        $insert->values($data);
-                        $statement = $sql->prepareStatementForSqlObject($insert);
-                        $result = $statement->execute();
-                    }
+        $this->db->delete('roles_privileges_map', ['role_id' => $roleId]);
+        foreach ($params['resource'] ?? [] as $resourceName => $privileges) {
+            foreach ($privileges as $privilegeName => $allowed) {
+                if ($allowed !== 'allow') {
+                    continue;
+                }
+                $privilegeId = $this->db->fetchOne(
+                    'SELECT privilege_id FROM privileges WHERE resource_id = ? AND privilege_name = ?',
+                    [$resourceName, $privilegeName]
+                );
+                // A privilege removed since the form loaded cannot be granted.
+                if ($privilegeId !== false) {
+                    $this->db->insert('roles_privileges_map', ['role_id' => $roleId, 'privilege_id' => $privilegeId]);
                 }
             }
-        } catch (\Exception $exc) {
-
-            error_log($exc->getMessage());
-            error_log($exc->getTraceAsString());
         }
-    }
-
-    public function fetchPrivilegesMap()
-    {
-        $sql = new Sql($this->adapter);
-        $dbAdapter = $this->adapter;
-        $loginContainer = new Container('credo');
-        $roleId = $loginContainer->roleId;
-        $rolePrivmaps = [];
-        if ($roleId != '') {
-            $query = $sql->select()->from('roles_privileges_map')->where(array('role_id' => $roleId));
-            $privMapQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
-            $rolePrivmaps = $dbAdapter->query($privMapQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        }
-        return $rolePrivmaps;
     }
 
     public function fetchPrivilegesMapByRoleId($roleId)
     {
-        $sql = new Sql($this->adapter);
-        $dbAdapter = $this->adapter;
-        $rolePrivmaps = [];
-        if ($roleId != '') {
-            $query = $sql->select()->from('roles_privileges_map')->where(array('role_id' => $roleId));
-            $privMapQueryStr = $sql->buildSqlString($query); // Get the string of the Sql, instead of the Select-instance
-            $rolePrivmaps = $dbAdapter->query($privMapQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        if ($roleId == '') {
+            return [];
         }
-        return $rolePrivmaps;
+        return $this->db->fetchAllAssociative('SELECT * FROM roles_privileges_map WHERE role_id = ?', [$roleId]);
     }
 
     public function getAllPrivilegesMap()
     {
-        $sql = new Sql($this->adapter);
-        $dbAdapter = $this->adapter;
-
-        $selectRolePrivileges = $sql->select()->from('roles_privileges_map')->columns(['role_id', 'privilege_id']);
-        $rolePrivilegesQueryStr = $sql->buildSqlString($selectRolePrivileges);
-        $rolePrivileges = $dbAdapter->query($rolePrivilegesQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $rolePrivileges;
+        return $this->db->fetchAllAssociative('SELECT role_id, privilege_id FROM roles_privileges_map');
     }
 
     public function getAllPrivileges()
     {
-        $sql = new Sql($this->adapter);
-        $dbAdapter = $this->adapter;
-
-        $selectPrivileges = $sql->select()->from('privileges')->columns(['privilege_id', 'resource_id', 'privilege_name']);
-        $privilegesQueryStr = $sql->buildSqlString($selectPrivileges);
-        $privileges = $dbAdapter->query($privilegesQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $privileges;
+        return $this->db->fetchAllAssociative('SELECT privilege_id, resource_id, privilege_name FROM privileges');
     }
 }
-//
