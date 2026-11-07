@@ -2,73 +2,56 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Sql\Sql;
+use App\Db\Dbal;
 use Application\Session\Container;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
-use Application\Model\UserRoleMapTable;
-use Application\Model\UserTokenMapTable;
 use \Application\Service\ImageResizeService;
-use Laminas\Db\TableGateway\AbstractTableGateway;
 use Application\Model\UserLocationMapTable;
 
-
-
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class UsersTable extends AbstractTableGateway
+class UsersTable
 {
-
-    protected $table = 'users';
-    protected $adapter;
+    private readonly Adapter $adapter;
+    private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
 
     public function login($params, $configResult)
     {
         $container = new Container('alert');
-        $loginContainer = new Container('credo');
         $username = $params['username'];
 
-        $dbAdapter = $this->adapter;
-        $gTable = new GlobalTable($dbAdapter);
-        $trackTable = new EventLogTable($dbAdapter);
-        $userLocationMapTable = new UserLocationMapTable($dbAdapter);
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(['u' => 'users'])
-            ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', ['role_id'])
-            ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_name', 'role_code'])
-            ->where(['login' => $username, 'u.status' => 'active']);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-
-        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
-        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $trackTable = new EventLogTable($this->adapter);
+        $sResult = $this->db->fetchAssociative(
+            "SELECT u.*, urm.role_id, r.role_name, r.role_code
+            FROM users u
+            JOIN user_role_map urm ON urm.user_id = u.id
+            JOIN roles r ON r.role_id = urm.role_id
+            WHERE u.login = ? AND u.status = 'active'",
+            [$username]
+        );
 
         $passwordValidation = false;
         if ($sResult) {
-            $passwordValidation = password_verify($params['password'], $sResult->password);
+            $passwordValidation = password_verify($params['password'], $sResult['password']);
         }
 
-        $data = [
-            'last_login_datetime' => CommonService::getDateTime()
-        ];
-        if ($sResult !== false && !empty($sResult)) {
-            $this->update($data, ['id' => $sResult->id]);
+        if ($sResult) {
+            $this->db->update('users', ['last_login_datetime' => CommonService::getDateTime()], ['id' => $sResult['id']]);
         }
 
         if ($sResult && $passwordValidation) {
-            $userMappedIdsArray = [];
-            $userMappingType = '';
             return $this->userEventLog($sResult);
         } else {
             $reason = $sResult ? 'invalid password' : 'unknown user';
@@ -105,16 +88,17 @@ class UsersTable extends AbstractTableGateway
         if ((new Container('credo'))->roleCode === 'SA') {
             return true;
         }
-        $sql = new Sql($this->adapter);
-        $saRole = $sql->select()->from('roles')->columns(['role_id'])->where(['role_code' => 'SA']);
-        $saRoleIds = array_map('intval', array_column($this->adapter->query($sql->buildSqlString($saRole), Adapter::QUERY_MODE_EXECUTE)->toArray(), 'role_id'));
+        $saRoleIds = array_map('intval', $this->db->fetchFirstColumn("SELECT role_id FROM roles WHERE role_code = 'SA'"));
         if ($newRoleId !== null && in_array((int) $newRoleId, $saRoleIds, true)) {
             return false;
         }
         if ($targetUserId > 0 && $saRoleIds !== []) {
-            $current = $sql->select()->from('user_role_map')->columns(['role_id'])
-                ->where(['user_id' => $targetUserId, 'role_id' => $saRoleIds]);
-            if ($this->adapter->query($sql->buildSqlString($current), Adapter::QUERY_MODE_EXECUTE)->count() > 0) {
+            $isSuperAdmin = $this->db->fetchOne(
+                'SELECT 1 FROM user_role_map WHERE user_id = ? AND role_id IN (?)',
+                [$targetUserId, $saRoleIds],
+                [ParameterType::INTEGER, ArrayParameterType::INTEGER]
+            );
+            if ($isSuperAdmin !== false) {
                 return false;
             }
         }
@@ -126,11 +110,6 @@ class UsersTable extends AbstractTableGateway
         if (!$this->mayManage(0, $params['roleId'] ?? null)) {
             return 0;
         }
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $userRoleMap = new UserRoleMapTable($dbAdapter);
-        $userTokenMap = new UserTokenMapTable($dbAdapter);
-        $userLocationMap = new UserLocationMapTable($dbAdapter);
         $password = $this->passwordHash($params['password']);
         $lastInsertId = 0;
         if (isset($params['userName']) && trim($params['userName']) != "") {
@@ -145,39 +124,11 @@ class UsersTable extends AbstractTableGateway
                 'contact_no' => $params['mobile_no'],
                 'created_on' => CommonService::getDateTime()
             );
-            $this->insert($data);
-            $lastInsertId = $this->lastInsertValue;
+            $this->db->insert('users', $data);
+            $lastInsertId = (int) $this->db->lastInsertId();
             if ($lastInsertId > 0) {
-
-                $userRoleMap->insert(array('user_id' => $lastInsertId, 'role_id' => $params['roleId']));
-
-                //Add User-Location
-                if (!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
-                    $locationKey = $params['mappingType'];
-                    if (!empty($params[$locationKey])) {
-                        $data = array_map(function ($location) use ($lastInsertId, $params) {
-                            return [
-                                'user_id' => $lastInsertId,
-                                'location_id' => $location,
-                                'mapping_type' => $params['mappingType']
-                            ];
-                        }, $params[$locationKey]);
-                        if (!empty($data)) {
-                            foreach ($data as $row) {
-                                $userLocationMap->insert($row); // Single row insert
-                            }
-                        }
-                    }
-                }
-
-                //Add User-Token
-                if (isset($params['token']) && trim($params['token']) != '') {
-                    $splitToken = explode(",", $params['token']);
-                    $counter = count($splitToken);
-                    for ($t = 0; $t < $counter; $t++) {
-                        $userTokenMap->insert(array('user_id' => $lastInsertId, 'token' => trim($splitToken[$t])));
-                    }
-                }
+                $this->db->insert('user_role_map', ['user_id' => $lastInsertId, 'role_id' => $params['roleId']]);
+                $this->saveLocationsAndTokens($lastInsertId, $params);
             }
             if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
                 // Sanitize the base directory path
@@ -208,7 +159,7 @@ class UsersTable extends AbstractTableGateway
                         // Save the file path relative to the uploads folder
                         $imageUpName = '/uploads/users/' . $safeFileName;
                         $imageData = array('user_image' => $imageUpName);
-                        $this->update($imageData, array("id" => $lastInsertId));
+                        $this->db->update('users', $imageData, ['id' => $lastInsertId]);
                     }
                 } else {
                     // Handle error if directory creation fails
@@ -222,19 +173,13 @@ class UsersTable extends AbstractTableGateway
 
     public function updateUserDetails($params, $configResult)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $userRoleMap = new UserRoleMapTable($dbAdapter);
-        $userTokenMap = new UserTokenMapTable($dbAdapter);
-        $userLocationMap = new UserLocationMapTable($dbAdapter);
         $userId = base64_decode($params['userId']);
         if (!$this->mayManage((int) $userId, $params['roleId'] ?? null)) {
             return 0;
         }
         if (isset($params['password']) && $params['password'] != '') {
             $password = $this->passwordHash($params['password']);
-            $data = array('password' => $password);
-            $this->update($data, array('id' => $userId));
+            $this->db->update('users', ['password' => $password], ['id' => $userId]);
         }
         if (isset($params['userName']) && trim($params['userName']) != "") {
             $data = array(
@@ -246,39 +191,12 @@ class UsersTable extends AbstractTableGateway
                 'status' => $params['status'],
                 'language' => $params['language']
             );
-            $this->update($data, array('id' => $userId));
+            $this->db->update('users', $data, ['id' => $userId]);
             if ($userId > 0) {
-                $userRoleMap->update(array('role_id' => $params['roleId']), array('user_id' => $userId));
-
-                //Update User-Location
-                $userLocationMap->delete(array('user_id' => $userId));
-                if (!empty($params['mappingType']) && in_array($params['mappingType'], ['country', 'province', 'district'])) {
-                    $locationKey = $params['mappingType'];
-                    if (!empty($params[$locationKey])) {
-                        $data = array_map(function ($location) use ($userId, $params) {
-                            return [
-                                'user_id' => $userId,
-                                'location_id' => $location,
-                                'mapping_type' => $params['mappingType']
-                            ];
-                        }, $params[$locationKey]);
-                        if (!empty($data)) {
-                            foreach ($data as $row) {
-                                $userLocationMap->insert($row); // Single row insert
-                            }
-                        }
-                    }
-                }
-
-                //Update User-Token
-                $userTokenMap->delete(array('user_id' => $userId));
-                if (isset($params['token']) && trim($params['token']) != '') {
-                    $splitToken = explode(",", $params['token']);
-                    $counter = count($splitToken);
-                    for ($t = 0; $t < $counter; $t++) {
-                        $userTokenMap->insert(array('user_id' => $userId, 'token' => trim($splitToken[$t])));
-                    }
-                }
+                $this->db->update('user_role_map', ['role_id' => $params['roleId']], ['user_id' => $userId]);
+                $this->db->delete('user_location_map', ['user_id' => $userId]);
+                $this->db->delete('user_token_map', ['user_id' => $userId]);
+                $this->saveLocationsAndTokens((int) $userId, $params);
             }
             if (isset($params['existImage']) && $params['existImage'] == '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
                 $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $params['existImage']);
@@ -286,7 +204,7 @@ class UsersTable extends AbstractTableGateway
                 $cleanedFilePath = CommonService::buildSafePath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users" . DIRECTORY_SEPARATOR, []);
                 unlink($cleanedFilePath . $cleanedFileName);
                 $imageData = array('user_image' => '');
-                $result = $this->update($imageData, array("id" => $userId));
+                $result = $this->db->update('users', $imageData, ['id' => $userId]);
             }
 
             if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
@@ -318,7 +236,7 @@ class UsersTable extends AbstractTableGateway
                         // Save the file path relative to the uploads folder
                         $imageUpName = '/uploads/users/' . $safeFileName;
                         $imageData = array('user_image' => $imageUpName);
-                        $this->update($imageData, array("id" => $userId));
+                        $this->db->update('users', $imageData, ['id' => $userId]);
                     }
                 } else {
                     // Handle error if directory creation fails
@@ -327,6 +245,23 @@ class UsersTable extends AbstractTableGateway
             }
 
             return $userId;
+        }
+    }
+
+    /** Saves the locations and tokens chosen on the add and edit screens. */
+    private function saveLocationsAndTokens(int $userId, $params): void
+    {
+        $mappingType = $params['mappingType'] ?? '';
+        if (in_array($mappingType, ['country', 'province', 'district'], true) && !empty($params[$mappingType])) {
+            foreach ($params[$mappingType] as $location) {
+                $this->db->insert('user_location_map', ['user_id' => $userId, 'location_id' => $location, 'mapping_type' => $mappingType]);
+            }
+        }
+
+        if (isset($params['token']) && trim($params['token']) != '') {
+            foreach (explode(',', $params['token']) as $token) {
+                $this->db->insert('user_token_map', ['user_id' => $userId, 'token' => trim($token)]);
+            }
         }
     }
 
@@ -376,7 +311,7 @@ class UsersTable extends AbstractTableGateway
          * SQL queries
          * Get data to display
          */
-        $dbAdapter = $this->adapter;
+        // The builder still writes the search and the sort. DBAL runs the SQL.
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('users');
 
@@ -394,22 +329,15 @@ class UsersTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
 
         /* Total data set length */
-        $tQuery = $sql->select()->from('users');
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM users');
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -447,22 +375,17 @@ class UsersTable extends AbstractTableGateway
 
     public function fetchUser($id)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('u' => 'users'))
-            ->join(array('urm' => 'user_role_map'), "urm.user_id=u.id", array('role_id'), 'left')
-            ->where(array('id' => $id));
-        $queryStr = $sql->buildSqlString($query);
-        $queryResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
-        if ($queryResult) {
-            $userTokenQuery = $sql->select()->from(array('u_t_map' => 'user_token_map'))
-                ->columns(array('token'))
-                ->where(array('user_id' => $id))
-                ->order("token ASC");
-            $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
-            $queryResult['userToken'] = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $user = $this->db->fetchAssociative(
+            'SELECT u.*, urm.role_id FROM users u LEFT JOIN user_role_map urm ON urm.user_id = u.id WHERE u.id = ?',
+            [$id]
+        );
+        if ($user === false) {
+            return null;
         }
-        return $queryResult;
+        $user['userToken'] = $this->db->fetchAllAssociative('SELECT token FROM user_token_map WHERE user_id = ? ORDER BY token ASC', [$id]);
+
+        // The templates read the user as $result->name and as $result['name'].
+        return new \ArrayObject($user, \ArrayObject::ARRAY_AS_PROPS);
     }
 
     public function logout($username)
@@ -478,8 +401,6 @@ class UsersTable extends AbstractTableGateway
 
     public function updateUserProfileDetails($params)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         // The profile is the signed-in user's own, whatever id the form sends.
         $userId = (new Container('credo'))->userId;
         if (!empty($userId)) {
@@ -489,7 +410,7 @@ class UsersTable extends AbstractTableGateway
                 'email' => $params['email'],
                 'contact_no' => $params['mobile_no']
             );
-            $this->update($data, array('id' => $userId));
+            $this->db->update('users', $data, ['id' => $userId]);
             if (isset($params['existImage']) && $params['existImage'] == '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users")) {
                 $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $params['removedImage']);
                 $cleanedFileName = CommonService::cleanFileName($fileName);
@@ -497,7 +418,7 @@ class UsersTable extends AbstractTableGateway
 
                 unlink($cleanedFilePath . $cleanedFileName);
                 $imageData = array('user_image' => '');
-                $result = $this->update($imageData, array("id" => $userId));
+                $result = $this->db->update('users', $imageData, ['id' => $userId]);
             }
             if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
                 // Sanitize the base directory path
@@ -528,7 +449,7 @@ class UsersTable extends AbstractTableGateway
                         // Save the file path relative to the uploads folder
                         $imageUpName = '/uploads/users/' . $safeFileName;
                         $imageData = array('user_image' => $imageUpName);
-                        $this->update($imageData, array("id" => $userId));
+                        $this->db->update('users', $imageData, ['id' => $userId]);
                     }
                 } else {
                     // Handle error if directory creation fails
@@ -546,26 +467,14 @@ class UsersTable extends AbstractTableGateway
         $userId = $loginContainer->userId;
         $password = $this->passwordHash($params['newpassword']);
         $data = array('password' => $password);
-        return $this->update($data, array('id' => $userId));
+        return $this->db->update('users', $data, ['id' => $userId]);
     }
 
     public function checkPassword($params)
     {
-        $sql = new Sql($this->adapter);
-        $loginContainer = new Container('credo');
-        $sQuery = $sql->select()->from(array('u' => 'users'))
-            ->where(array('id' => $loginContainer->userId));
-        $sQueryStr = $sql->buildSqlString($sQuery);
+        $hash = $this->db->fetchOne('SELECT password FROM users WHERE id = ?', [(new Container('credo'))->userId]);
 
-        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
-        $sResult = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
-
-        $passwordValidation = false;
-
-        if ($sResult) {
-            $passwordValidation = password_verify($params['password'], $sResult->password);
-        }
-        return $passwordValidation;
+        return is_string($hash) && password_verify($params['password'], $hash);
     }
 
     public function resetPassword($params)
@@ -576,7 +485,18 @@ class UsersTable extends AbstractTableGateway
         }
         $password = $this->passwordHash($params['newPassword']);
         $data = array('password' => $password);
-        return $this->update($data, array('id' => $userId));
+        return $this->db->update('users', $data, ['id' => $userId]);
+    }
+
+    /** The users whose login or email is $user. Used by bin/console reset-password. */
+    public function findByLoginOrEmail(string $user): array
+    {
+        return $this->db->fetchAllAssociative('SELECT id, login, email FROM users WHERE login = ? OR email = ?', [$user, $user]);
+    }
+
+    public function setPasswordHash(int $userId, string $hash): int
+    {
+        return $this->db->update('users', ['password' => $hash], ['id' => $userId]);
     }
 
     /**
@@ -588,16 +508,18 @@ class UsersTable extends AbstractTableGateway
      */
     public function scopeOf(int $userId): ?array
     {
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(['u' => 'users'])->columns([])
-            ->join(['urm' => 'user_role_map'], 'urm.user_id=u.id', [])
-            ->join(['r' => 'roles'], 'r.role_id=urm.role_id', ['role_code'])
-            ->where(['u.id' => $userId, 'u.status' => 'active']);
-        $user = $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->current();
-        if (!$user) {
+        $roleCode = $this->db->fetchOne(
+            "SELECT r.role_code
+            FROM users u
+            JOIN user_role_map urm ON urm.user_id = u.id
+            JOIN roles r ON r.role_id = urm.role_id
+            WHERE u.id = ? AND u.status = 'active'",
+            [$userId]
+        );
+        if ($roleCode === false) {
             return null;
         }
-        return ['roleCode' => (string) $user['role_code']] + $this->scopeFor($userId, (string) $user['role_code']);
+        return ['roleCode' => (string) $roleCode] + $this->scopeFor($userId, (string) $roleCode);
     }
 
     /**
@@ -613,38 +535,14 @@ class UsersTable extends AbstractTableGateway
         if ($roleCode === 'SA') {
             return ['token' => [], 'userMappedIds' => null, 'userMappingType' => null];
         }
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $userLocationMapResult = (new UserLocationMapTable($dbAdapter))->fetchSelectedLocation($userId);
-
-        if (!empty($userLocationMapResult)) {
-            // Convert object to array if needed
-            $userLocationMapResult = (array) $userLocationMapResult;
-
-            // Check if it's a single associative array (not indexed), wrap it in an array
-            if (!isset($userLocationMapResult[0])) {
-                $userLocationMapResult = [$userLocationMapResult];
-            }
-        } else {
-            $userLocationMapResult = [];
-        }
         $userMappedIdsArray = null;
         $userMappingType = null;
-        foreach ($userLocationMapResult as $ulMap) {
+        foreach ((new UserLocationMapTable($this->adapter))->fetchSelectedLocation($userId) as $ulMap) {
             $userMappedIdsArray[] = $ulMap['location_id'];
             $userMappingType = $ulMap['mapping_type'];
         }
 
-        $token = [];
-        $userTokenQuery = $sql->select()->from(['u_t_map' => 'user_token_map'])
-            ->columns(['token'])
-            ->where(['user_id' => $userId])
-            ->order("token ASC");
-        $userTokenQueryStr = $sql->buildSqlString($userTokenQuery);
-        $userTokenResult = $dbAdapter->query($userTokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        foreach ($userTokenResult as $userToken) {
-            $token[] = $userToken['token'];
-        }
+        $token = $this->db->fetchFirstColumn('SELECT token FROM user_token_map WHERE user_id = ? ORDER BY token ASC', [$userId]);
 
         return ['token' => $token, 'userMappedIds' => $userMappedIdsArray, 'userMappingType' => $userMappingType];
     }
@@ -655,27 +553,27 @@ class UsersTable extends AbstractTableGateway
         $gTable = new GlobalTable($dbAdapter);
         $trackTable = new EventLogTable($dbAdapter);
         $loginContainer = new Container('credo');
-        $scope = $this->scopeFor((int) $sResult->id, (string) $sResult->role_code);
+        $scope = $this->scopeFor((int) $sResult['id'], (string) $sResult['role_code']);
 
         $language = $gTable->getGlobalValue('language');
-        if (isset($sResult->language) && !empty($sResult->language)) {
-            $loginContainer->language = $sResult->language;
+        if (isset($sResult['language']) && !empty($sResult['language'])) {
+            $loginContainer->language = $sResult['language'];
         } elseif (!empty($language)) {
             $loginContainer->language = $language;
         } else {
             $loginContainer->language = 'en_US';
         }
-        $loginContainer->userId = $sResult->id;
-        $loginContainer->login = $sResult->login;
-        $loginContainer->roleCode = $sResult->role_code;
-        $loginContainer->roleId = $sResult->role_id;
+        $loginContainer->userId = $sResult['id'];
+        $loginContainer->login = $sResult['login'];
+        $loginContainer->roleCode = $sResult['role_code'];
+        $loginContainer->roleId = $sResult['role_id'];
         $loginContainer->token = $scope['token'];
         $loginContainer->userMappedIds = $scope['userMappedIds'];
         $loginContainer->userMappingType = $scope['userMappingType'];
-        $loginContainer->userImage = $sResult->user_image;
+        $loginContainer->userImage = $sResult['user_image'];
         $subject = '';
         $eventType = 'login in';
-        $action = $sResult->login . ' logged in';
+        $action = $sResult['login'] . ' logged in';
         $resourceName = 'login in';
         $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
 

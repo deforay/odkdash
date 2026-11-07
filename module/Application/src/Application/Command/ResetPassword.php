@@ -32,10 +32,7 @@ class ResetPassword extends Command
         $io = new SymfonyStyle($input, $output);
         $user = trim((string) $input->getArgument('user'));
 
-        $matches = iterator_to_array($this->usersTable->select(function ($select) use ($user) {
-            $select->columns(['id', 'login', 'email'])
-                ->where->equalTo('login', $user)->or->equalTo('email', $user);
-        }));
+        $matches = $this->usersTable->findByLoginOrEmail($user);
 
         if (!$matches) {
             $io->error("No user with login or email '$user'.");
@@ -61,7 +58,7 @@ class ResetPassword extends Command
             return Command::FAILURE;
         }
 
-        $this->usersTable->update(['password' => $hash], ['id' => $match['id']]);
+        $this->usersTable->setPasswordHash((int) $match['id'], $hash);
 
         $io->success("Password updated for {$match['login']}.");
         return Command::SUCCESS;

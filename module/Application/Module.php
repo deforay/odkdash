@@ -18,9 +18,7 @@ use Application\Service\EventService;
 use Application\Service\CommonService;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer6Table;
-use Application\Model\UserRoleMapTable;
 use Application\Service\OdkFormService;
-use Application\Model\UserTokenMapTable;
 use Application\Service\FacilityService;
 use Application\Model\SpiFormLabelsTable;
 use Application\Model\AuditSpiFormV3Table;
@@ -124,14 +122,6 @@ class Module
                         return new RolesTable($dbAdapter);
                     }
                 },
-                'UserRoleMapTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new UserRoleMapTable($dbAdapter);
-                    }
-                },
                 'GlobalTable' => new class
                 {
                     public function __invoke($diContainer)
@@ -179,14 +169,6 @@ class Module
                     public function __invoke($diContainer)
                     {
                         return new TempMailTable($diContainer->get(Connection::class));
-                    }
-                },
-                'UserTokenMapTable' => new class
-                {
-                    public function __invoke($diContainer)
-                    {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new UserTokenMapTable($dbAdapter);
                     }
                 },
                 'AuditMailTable' => new class

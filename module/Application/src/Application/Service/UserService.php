@@ -3,6 +3,7 @@
 namespace Application\Service;
 
 use Application\Session\Container;
+use Doctrine\DBAL\Connection;
 
 class UserService
 {
@@ -29,13 +30,13 @@ class UserService
 
     public function addUser($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $configResult = $this->sm->get('Config');
             $result = $this->usersTable->addUserDetails($params, $configResult);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-add';
@@ -46,8 +47,13 @@ class UserService
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User added successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -55,13 +61,13 @@ class UserService
 
     public function updateUser($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
+        $db = $this->sm->get(Connection::class);
         $configResult = $this->sm->get('Config');
-        $adapter->beginTransaction();
+        $db->beginTransaction();
         try {
             $result = $this->usersTable->updateUserDetails($params, $configResult);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-update';
@@ -72,8 +78,13 @@ class UserService
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User details updated successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -98,12 +109,12 @@ class UserService
 
     public function updateUserProfile($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $result = $this->usersTable->updateUserProfileDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-profile-update';
@@ -114,8 +125,13 @@ class UserService
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'User Profile details updated successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -138,12 +154,12 @@ class UserService
 
     public function updatePassword($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $result = $this->usersTable->updatePassword($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-password-update';
@@ -154,8 +170,13 @@ class UserService
                 //-------->
                 $container = new Container('alert');
                 $container->alertMsg = 'Password changed successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -163,12 +184,12 @@ class UserService
 
     public function resetPassword($params)
     {
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $result = $this->usersTable->resetPassword($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'user-password-reset';
@@ -179,8 +200,13 @@ class UserService
                 //-------->
                 //$container = new Container('alert');
                 //$container->alertMsg = 'Password changed successfully';
+            } else {
+                $db->rollBack();
             }
         } catch (\Exception $exc) {
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
