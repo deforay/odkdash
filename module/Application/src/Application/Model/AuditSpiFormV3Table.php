@@ -22,9 +22,16 @@ class AuditSpiFormV3Table
         $response['auditColumns'] = $this->db->fetchAllAssociative($columnsSql, ['audit_spi_form_v_3']);
         $response['spiColumns'] = $this->db->fetchAllAssociative($columnsSql, ['spi_form_v_3']);
 
-        $metaInstance = trim($parameters['metaInstance']);
-        $response['currentRecord'] = (new SpiFormVer3Table($this->adapter))->fetchV3DetailsByMetaInstanceId($metaInstance);
-        if (isset($metaInstance) && $metaInstance != '') {
+        $audits = new SpiFormVer3Table($this->adapter);
+        $metaInstance = trim((string) ($parameters['metaInstance'] ?? ''));
+        $response['currentRecord'] = $metaInstance !== '' ? $audits->fetchV3DetailsByMetaInstanceId($metaInstance) : false;
+        // A mapped user sees the trail of an audit in their locations only.
+        // A deleted audit has no location left, so only a user who sees
+        // every audit sees its trail. Out of scope reads as not found.
+        $inScope = $response['currentRecord']
+            ? $audits->auditInScope($response['currentRecord']['id'])
+            : SpiFormVer3Table::seesEveryAudit();
+        if ($metaInstance !== '' && $inScope) {
             $response['auditInfo'] = $this->db->fetchAllAssociative(
                 'SELECT * FROM audit_spi_form_v_3 WHERE `meta-instance-id` = ?',
                 [$metaInstance],
