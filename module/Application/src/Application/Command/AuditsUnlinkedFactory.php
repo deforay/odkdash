@@ -2,13 +2,13 @@
 
 namespace Application\Command;
 
+use Doctrine\DBAL\Connection;
 use Psr\Container\ContainerInterface;
 
 class AuditsUnlinkedFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $dbAdapter = $container->get('Laminas\Db\Adapter\Adapter');
-        return new AuditsUnlinked($dbAdapter);
+        return new AuditsUnlinked($container->get(Connection::class));
     }
 }

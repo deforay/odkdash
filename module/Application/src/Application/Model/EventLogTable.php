@@ -2,32 +2,21 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Laminas\Db\Sql\Expression;
+use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Application\Service\RequestContext;
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class EventLogTable extends AbstractTableGateway
+class EventLogTable
 {
+    private readonly Connection $db;
 
-    protected $table = 'event_log';
-    protected $adapter;
-    private static $eventLogColsCache = null;
-    private static $usersNameExprCache = null;
-
-
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
     public function addEventLog($subject, $eventType, $action, $resourceName)
@@ -51,7 +40,7 @@ class EventLogTable extends AbstractTableGateway
             'request_method' => RequestContext::getRequestMethod(),
             'platform'       => RequestContext::getPlatform(),
         );
-        $this->insert($data);
+        $this->db->insert('event_log', $data);
     }
 
     public function fetchAllDetails($parameters)
@@ -96,10 +85,9 @@ class EventLogTable extends AbstractTableGateway
          * SQL queries
          * Get data to display
          */
-        $dbAdapter = $this->adapter;
+        // The builder still writes the search and the sort. DBAL runs the SQL.
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('event_log');
-        $sQueryStr = $sql->buildSqlString($sQuery);
 
         $startDate = '';
         $endDate = '';
@@ -132,18 +120,15 @@ class EventLogTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
 
         /* Total data set length */
-        $iTotal = $this->select()->count();
+        $iTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM event_log');
 
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
@@ -164,154 +149,6 @@ class EventLogTable extends AbstractTableGateway
         return $output;
     }
 
-    private function eventLogColumns()
-    {
-        if (self::$eventLogColsCache !== null) {
-            return self::$eventLogColsCache;
-        }
-        try {
-            $meta = $this->adapter->query('SHOW COLUMNS FROM event_log', $this->adapter::QUERY_MODE_EXECUTE)->toArray();
-            self::$eventLogColsCache = array_flip(array_map(function ($c) { return strtolower($c['Field']); }, $meta));
-        } catch (Throwable $e) {
-            return [];
-        }
-        return self::$eventLogColsCache;
-    }
-
-    /**
-     * Builds a SQL expression for the actor's display name, adapting to whichever
-     * name columns `users` actually has. Falls back to 'User #<id>' if neither
-     * shape is present, rather than silently showing blank names.
-     */
-    private function usersNameExpr()
-    {
-        if (self::$usersNameExprCache !== null) {
-            return self::$usersNameExprCache;
-        }
-        try {
-            $meta = $this->adapter->query('SHOW COLUMNS FROM users', $this->adapter::QUERY_MODE_EXECUTE)->toArray();
-            $cols = array_flip(array_map(function ($c) { return strtolower($c['Field']); }, $meta));
-        } catch (Throwable $e) {
-            $cols = [];
-        }
-        if (isset($cols['first_name']) || isset($cols['last_name'])) {
-            self::$usersNameExprCache = "CONCAT_WS(' ', u.first_name, u.last_name)";
-        } elseif (isset($cols['name'])) {
-            self::$usersNameExprCache = 'u.name';
-        } else {
-            self::$usersNameExprCache = "CONCAT('User #', u.id)";
-        }
-        return self::$usersNameExprCache;
-    }
-
-    private function usersLoginExpr()
-    {
-        // Adjust column name if your users table's login field isn't `email`.
-        return 'u.email';
-    }
-
-    public function fetchEventLogFeed($parameters)
-    {
-        $page = isset($parameters['page']) ? max(1, (int) $parameters['page']) : 1;
-        $pageSize = isset($parameters['pageSize']) ? (int) $parameters['pageSize'] : 25;
-        $pageSize = max(5, min(200, $pageSize));
-        $offset = ($page - 1) * $pageSize;
-
-        $search = trim($parameters['search'] ?? '');
-        $eventType = trim($parameters['eventType'] ?? '');
-        $startDate = '';
-        $endDate = '';
-        if (!empty($parameters['startDate']) && !empty($parameters['endDate'])) {
-            $startDate = CommonService::isoDateFormat($parameters['startDate']);
-            $endDate = CommonService::isoDateFormat($parameters['endDate']);
-        }
-
-        $sql = new Sql($this->adapter);
-        $nameExpr = $this->usersNameExpr();
-        $loginExpr = $this->usersLoginExpr();
-
-        $select = $sql->select()
-            ->from(['el' => 'event_log'])
-            ->columns([
-                'event_type', 'action', 'resource_name', 'subject', 'date_time',
-                'ip_address', 'user_agent', 'session_hash',
-                'request_id', 'request_uri', 'request_method', 'platform', 'actor',
-            ])
-            ->join(
-                ['u' => 'users'],
-                'u.id = el.actor',
-                ['actor_name' => new \Zend\Db\Sql\Expression($nameExpr), 'actor_login' => new \Zend\Db\Sql\Expression($loginExpr)],
-                \Zend\Db\Sql\Select::JOIN_LEFT
-            );
-
-        if ($eventType !== '') {
-            $select->where(['el.event_type' => $eventType]);
-        }
-        if ($startDate !== '' && $endDate !== '') {
-            $select->where("el.date_time >= '{$startDate}' AND el.date_time <= '{$endDate} 23:59:59'");
-        }
-        if ($search !== '') {
-            $q = $this->adapter->platform->quoteValue('%' . $search . '%');
-            $select->where(
-                "el.action LIKE {$q} OR el.resource_name LIKE {$q} OR el.event_type LIKE {$q} "
-                . "OR {$nameExpr} LIKE {$q} OR {$loginExpr} LIKE {$q}"
-            );
-        }
-
-        $countSelect = clone $select;
-        $countSelect->reset(\Zend\Db\Sql\Select::COLUMNS);
-        $countSelect->columns(['c' => new \Zend\Db\Sql\Expression('COUNT(*)')]);
-        $total = (int) $this->adapter->query($sql->buildSqlString($countSelect), $this->adapter::QUERY_MODE_EXECUTE)->current()['c'];
-
-        $select->order('el.date_time DESC')->limit($pageSize)->offset($offset);
-        $rows = $this->adapter->query($sql->buildSqlString($select), $this->adapter::QUERY_MODE_EXECUTE);
-
-        $items = [];
-        foreach ($rows as $row) {
-            $ts = strtotime($row['date_time']);
-            $userName = trim($row['actor_name'] ?? '') !== '' ? $row['actor_name'] : 'System';
-            $items[] = [
-                'action' => CommonService::escapeHtml($row['action']),
-                'eventType' => $row['event_type'],
-                'userName' => CommonService::escapeHtml($userName),
-                'userInitials' => $this->initialsFor($userName),
-                'userLogin' => $row['actor_login'] ?? '',
-                'ipAddress' => $row['ip_address'] ?? '',
-                'userAgent' => $row['user_agent'] ?? '',
-                'sessionHash' => $row['session_hash'] ?? '',
-                'platform' => $row['platform'] ?? '',
-                'requestId' => $row['request_id'] ?? '',
-                'requestMethod' => $row['request_method'] ?? '',
-                'requestUri' => $row['request_uri'] ?? '',
-                'datetime' => $ts ? date('d-M-Y', $ts) : '',
-                'time' => $ts ? date('g:i a', $ts) : '',
-                'dateKey' => $ts ? date('Y-m-d', $ts) : '',
-                'dateLabel' => $ts ? date('D, d M Y', $ts) : '',
-            ];
-        }
-
-        return [
-            'page' => $page,
-            'pageSize' => $pageSize,
-            'total' => $total,
-            'totalPages' => $pageSize > 0 ? (int) ceil($total / $pageSize) : 1,
-            'items' => $items,
-        ];
-    }
-
-    private function initialsFor($name)
-    {
-        $name = trim((string) $name);
-        if ($name === '') return '?';
-        $parts = preg_split('/\s+/', $name);
-        $out = '';
-        foreach ($parts as $p) {
-            if ($p !== '' && ctype_alpha($p[0])) $out .= strtoupper($p[0]);
-            if (strlen($out) >= 2) break;
-        }
-        return $out !== '' ? $out : strtoupper($name[0]);
-    }
-
     public function fetchFeed(array $params): array
     {
         $page = max(1, (int) ($params['page'] ?? 1));
@@ -319,42 +156,44 @@ class EventLogTable extends AbstractTableGateway
         $pageSize = max(10, min(200, $pageSize));
         $offset = ($page - 1) * $pageSize;
 
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($dbAdapter);
-
         $where = [];
+        $values = [];
         if (!empty($params['startDate'])) {
-            $where[] = "e.date_time >= '" . CommonService::isoDateFormat($params['startDate']) . " 00:00:00'";
+            $where[] = 'e.date_time >= ?';
+            $values[] = CommonService::isoDateFormat($params['startDate']) . ' 00:00:00';
         }
         if (!empty($params['endDate'])) {
-            $where[] = "e.date_time <= '" . CommonService::isoDateFormat($params['endDate']) . " 23:59:59'";
+            $where[] = 'e.date_time <= ?';
+            $values[] = CommonService::isoDateFormat($params['endDate']) . ' 23:59:59';
         }
         if (!empty($params['eventType'])) {
-            $safe = preg_replace('/[^A-Za-z0-9_\- ]/', '', (string) $params['eventType']);
-            $where[] = "e.event_type = '" . $safe . "'";
+            $where[] = 'e.event_type = ?';
+            $values[] = (string) $params['eventType'];
         }
         if (!empty($params['actor'])) {
-            $where[] = "e.actor = " . (int) $params['actor'];
+            $where[] = 'e.actor = ?';
+            $values[] = (int) $params['actor'];
         }
         if (!empty($params['search'])) {
-            $term = $dbAdapter->getPlatform()->quoteValue('%' . $params['search'] . '%');
-            $where[] = "(e.action LIKE $term OR e.event_type LIKE $term OR e.resource_name LIKE $term OR u.first_name LIKE $term OR u.last_name LIKE $term OR u.login LIKE $term)";
+            $where[] = '(e.action LIKE ? OR e.event_type LIKE ? OR e.resource_name LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.login LIKE ?)';
+            array_push($values, ...array_fill(0, 6, '%' . $params['search'] . '%'));
         }
         $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
-        $countSql = "SELECT COUNT(*) AS c FROM event_log AS e LEFT JOIN users AS u ON u.id = e.actor $whereSql";
-        $total = (int) ($dbAdapter->query($countSql, $dbAdapter::QUERY_MODE_EXECUTE)->current()['c'] ?? 0);
+        $total = (int) $this->db->fetchOne("SELECT COUNT(*) FROM event_log AS e LEFT JOIN users AS u ON u.id = e.actor $whereSql", $values);
 
-        $rowsSql = "SELECT e.event_id, e.actor, e.subject, e.event_type, e.action, e.resource_name, e.date_time,
-                           e.ip_address, e.user_agent, e.session_hash, e.request_id, e.request_uri,
-                           e.request_method, e.platform,
-                           u.first_name, u.last_name, u.login
-                    FROM event_log AS e
-                    LEFT JOIN users AS u ON u.id = e.actor
-                    $whereSql
-                    ORDER BY e.date_time DESC, e.event_id DESC
-                    LIMIT $pageSize OFFSET $offset";
-        $rows = $dbAdapter->query($rowsSql, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rows = $this->db->fetchAllAssociative(
+            "SELECT e.event_id, e.actor, e.subject, e.event_type, e.action, e.resource_name, e.date_time,
+                    e.ip_address, e.user_agent, e.session_hash, e.request_id, e.request_uri,
+                    e.request_method, e.platform,
+                    u.first_name, u.last_name, u.login
+            FROM event_log AS e
+            LEFT JOIN users AS u ON u.id = e.actor
+            $whereSql
+            ORDER BY e.date_time DESC, e.event_id DESC
+            LIMIT $pageSize OFFSET $offset",
+            $values
+        );
 
         $items = [];
         foreach ($rows as $r) {
@@ -398,9 +237,6 @@ class EventLogTable extends AbstractTableGateway
 
     public function fetchEventTypes(): array
     {
-        $dbAdapter = $this->adapter;
-        $sql = 'SELECT DISTINCT event_type FROM event_log WHERE event_type IS NOT NULL AND event_type <> "" ORDER BY event_type';
-        $rows = $dbAdapter->query($sql, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return array_column($rows, 'event_type');
+        return $this->db->fetchFirstColumn("SELECT DISTINCT event_type FROM event_log WHERE event_type IS NOT NULL AND event_type <> '' ORDER BY event_type");
     }
 }

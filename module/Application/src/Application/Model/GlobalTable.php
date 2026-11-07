@@ -2,27 +2,24 @@
 
 namespace Application\Model;
 
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\TableGateway\AbstractTableGateway;
-use Laminas\Db\Sql\Sql;
+use App\Db\Dbal;
 use Application\Service\CommonService;
+use Doctrine\DBAL\Connection;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Db\Sql\Sql;
 
-
-
-/**
- * Description of Countries
- *
- * @author amit
- */
-class GlobalTable extends AbstractTableGateway
+class GlobalTable
 {
+    private readonly Connection $db;
 
-    protected $table = 'global_config';
-    protected $adapter;
-
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Adapter $adapter)
     {
-        $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
+    }
+
+    private function update(array $data, array $where): int
+    {
+        return $this->db->update('global_config', $data, $where);
     }
 
     public function fetchAllConfig($parameters)
@@ -67,10 +64,9 @@ class GlobalTable extends AbstractTableGateway
          * SQL queries
          * Get data to display
          */
-        $dbAdapter = $this->adapter;
+        // The builder still writes the search and the sort. DBAL runs the SQL.
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from('global_config');
-        //$sQuery=$this->select();
         if ($sWhere !== null) {
             $sQuery->where($sWhere);
         }
@@ -83,19 +79,15 @@ class GlobalTable extends AbstractTableGateway
             $sQuery->offset($sOffset);
         }
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //error_log($sQueryForm);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
 
         /* Total data set length */
-        $iTotal = $this->select()->count();
+        $iTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM global_config');
 
 
         $output = array(
@@ -114,20 +106,7 @@ class GlobalTable extends AbstractTableGateway
     }
     public function getGlobalConfig()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from('global_config');
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        $size = count($configValues);
-        $arr = [];
-        // now we create an associative array so that we can easily create view variables
-        for ($i = 0; $i < $size; $i++) {
-            $arr[$configValues[$i]['global_name']] = $configValues[$i]['global_value'];
-        }
-        // using assign to automatically create view variables
-        // the column names will now become view variables
-        return $arr;
+        return $this->db->fetchAllKeyValue('SELECT global_name, global_value FROM global_config');
     }
 
     public function updateConfigDetails($params)
@@ -207,11 +186,7 @@ class GlobalTable extends AbstractTableGateway
 
     public function getGlobalValue($globalName)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from('global_config')->where(array('global_name' => $globalName));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $configValues = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
-        return $configValues[0]['global_value'];
+        $value = $this->db->fetchOne('SELECT global_value FROM global_config WHERE global_name = ?', [$globalName]);
+        return $value === false ? null : $value;
     }
 }

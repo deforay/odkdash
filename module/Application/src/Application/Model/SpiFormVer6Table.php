@@ -5535,7 +5535,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
                 if ($results->getGeneratedValue() > 0) {
                     $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->adapter);
-                    $spiv3Temp->delete(array('id' => $newResult['id']));
+                    $spiv3Temp->deleteById($newResult['id']);
                 }
             }
         }

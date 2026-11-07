@@ -2,7 +2,7 @@
 
 namespace Application\Command;
 
-use Laminas\Db\Adapter\Adapter;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,7 +26,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class AuditsUnlinked extends Command
 {
-    public function __construct(private readonly Adapter $dbAdapter)
+    public function __construct(private readonly Connection $db)
     {
         parent::__construct();
     }
@@ -44,7 +44,7 @@ class AuditsUnlinked extends Command
         $limit = max(1, (int) $input->getOption('limit'));
 
         if ($input->getOption('fix')) {
-            $linked = $this->dbAdapter->query(
+            $linked = $this->db->executeStatement(
                 'UPDATE `spi_form_v_6` v
                    JOIN (SELECT f.facility_name, MIN(f.id) AS facility_id
                            FROM `spi_rt_3_facilities` f
@@ -52,20 +52,18 @@ class AuditsUnlinked extends Command
                           GROUP BY f.facility_name) pick
                      ON pick.facility_name = v.facilityname
                     SET v.facility = pick.facility_id
-                  WHERE v.facility IS NULL OR v.facility = 0',
-                Adapter::QUERY_MODE_EXECUTE
-            )->getAffectedRows();
+                  WHERE v.facility IS NULL OR v.facility = 0'
+            );
             $io->success(sprintf('Linked %d audit(s) to an existing facility.', $linked));
         }
 
-        $rows = $this->dbAdapter->query(
+        $rows = $this->db->fetchAllAssociative(
             'SELECT v.id, v.facilityname, v.facilityid, v.assesmentofaudit, v.status
                FROM `spi_form_v_6` v
               WHERE v.status <> "deleted"
                 AND (v.facility IS NULL OR v.facility = 0)
-              ORDER BY v.id',
-            Adapter::QUERY_MODE_EXECUTE
-        )->toArray();
+              ORDER BY v.id'
+        );
 
         if (!$rows) {
             $io->success('Every v6 audit is linked to a facility.');
