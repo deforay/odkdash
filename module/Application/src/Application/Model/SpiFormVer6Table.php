@@ -28,10 +28,12 @@ class SpiFormVer6Table extends AbstractTableGateway
 
     protected $table = 'spi_form_v_6';
     protected $adapter;
+    private readonly \Doctrine\DBAL\Connection $db;
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
+        $this->db = Dbal::connection($adapter);
     }
 
 
@@ -42,7 +44,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_v6_form_labels'));
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;//die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         $response = [];
         foreach ($rResult as $row) {
             $response[$row['field']] = array($row['short_label'], $row['label']);
@@ -959,7 +961,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         $auditScore = 0;
         $levelZero = [];
         $levelOne = [];
@@ -1111,7 +1113,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery);
         //die($sQueryStr);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         return $rResult;
     }
@@ -1156,7 +1158,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         return $rResult;
     }
@@ -1190,7 +1192,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         return $rResult;
     }
 
@@ -1283,7 +1285,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         return $rResult;
     }
 
@@ -1552,14 +1554,13 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
         $tQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
@@ -1611,8 +1612,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $tQuery = $tQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -1738,7 +1738,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
         $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
         //get duplicate value
-        $dpResult = $dbAdapter->query("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $dpResult = $this->db->fetchAllAssociative("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1");
 
         /* Audits with no facility link, counted across the whole instance rather than
          * the current filters, the way the duplicate count works. They are the rows
@@ -1768,10 +1768,10 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sql = new Sql($this->adapter);
         // Every copy of each duplicated submission, oldest first, so the view can
         // keep the first copy and offer the rest for removal by their own id.
-        return $dbAdapter->query("SELECT s.`meta-instance-id`, s.`id`, s.`facilityname`, s.`status`, s.`auditroundno`, s.`AUDIT_SCORE_PERCENTAGE`, s.`affiliation`, s.`level`, s.`assesmentofaudit`, s.`testingpointtype`, s.`testingpointname`
+        return $this->db->fetchAllAssociative("SELECT s.`meta-instance-id`, s.`id`, s.`facilityname`, s.`status`, s.`auditroundno`, s.`AUDIT_SCORE_PERCENTAGE`, s.`affiliation`, s.`level`, s.`assesmentofaudit`, s.`testingpointtype`, s.`testingpointname`
             FROM spi_form_v_6 s
             INNER JOIN (SELECT `meta-instance-id` FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING COUNT(*) > 1) d ON d.`meta-instance-id` = s.`meta-instance-id`
-            ORDER BY s.`meta-instance-id`, s.`id`", $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            ORDER BY s.`meta-instance-id`, s.`id`");
     }
 
     public function getFormData($id, $pdfDowload = 'no')
@@ -1847,7 +1847,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->where(['id' => $auditIdArray]);
 
         $queryStr = $sql->buildSqlString($query);
-        $results = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $results = $this->db->fetchAllAssociative($queryStr);
 
         foreach ($results as $row) {
             $this->updateFormMetadata($row['id'], 'audit_email_sent', 'yes', $row['form_metadata']);
@@ -1948,7 +1948,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         $response = [];
 
@@ -2080,7 +2080,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         $responseOfSectionS0 = [];
 
@@ -2214,7 +2214,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         $responseOfSectionS0 = [];
 
@@ -2343,7 +2343,7 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery);
         // echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         $response = [];
 
@@ -2467,7 +2467,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         return $rResult;
     }
 
@@ -2500,7 +2500,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        return $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($sQueryStr);
     }
 
     public function fecthAllApprovedSubmissionsTable($parameters)
@@ -2634,14 +2634,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         $queryContainer->exportQuery = $sQuery;
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
         $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
@@ -2708,8 +2707,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -2876,14 +2874,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         $queryContainer->exportQuery = $sQuery;
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
         $tQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
@@ -2950,8 +2947,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->where(['f3.district' => CommonService::inList($parameters['district'])]);
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -3073,7 +3069,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         return $rResult;
     }
@@ -3313,7 +3309,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         return $rResult;
     }
 
@@ -3328,7 +3324,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->order("auditroundno ASC");
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         return $rResult;
     }
@@ -3346,13 +3342,13 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $uQuery = $this->applyV6LocationScope($uQuery, [], $loginContainer);
         $uQueryStr = $sql->buildSqlString($uQuery);
-        $uResult = $dbAdapter->query($uQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $uResult = $this->db->fetchAllAssociative($uQueryStr);
 
         $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
             ->where('spirt3.status != "deleted"');
         $aQuery = SpiRtFacilitiesTable::applyMappingToFacilities($aQuery, 'spirt3');
         $aQueryStr = $sql->buildSqlString($aQuery);
-        $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $aResult = $this->db->fetchAllAssociative($aQueryStr);
 
         return array('uniqueName' => $uResult, 'allName' => $aResult);
     }
@@ -3428,14 +3424,13 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
         $tQuery = $sql->select()->from('spi_form_v_3');
@@ -3446,8 +3441,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
 
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -3507,7 +3501,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $query->order("id DESC");
             $queryStr = $sql->buildSqlString($query);
-            $audits = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $audits = $this->db->fetchAllAssociative($queryStr);
 
             $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
                 ->columns(array('facility_name', 'email'))
@@ -3530,7 +3524,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
         $sQueryStr = $sql->buildSqlString($sQuery);
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         return count($rResult);
     }
 
@@ -3661,20 +3655,18 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
 
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -3724,7 +3716,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->group('token')
             ->order("token ASC");
         $tokenQueryStr = $sql->buildSqlString($tokenQuery);
-        return $dbAdapter->query($tokenQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($tokenQueryStr);
     }
 
     // public function fetchViewDataDetails($parameters)
@@ -4369,7 +4361,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         }
 
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
 
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
@@ -4688,19 +4680,17 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
 
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -5062,19 +5052,17 @@ class SpiFormVer6Table extends AbstractTableGateway
 
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         // echo $sQueryStr;die;
-        $rResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
+        $rResult = $this->db->fetchAllAssociative($sQueryStr);
         /* Data set length after filtering */
         $sQuery->reset('limit');
         $sQuery->reset('offset');
         $fQuery = $sql->buildSqlString($sQuery);
-        $aResultFilterTotal = $dbAdapter->query($fQuery, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iFilteredTotal = count($aResultFilterTotal);
+        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
 
         /* Total data set length */
 
         $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $tResult = $dbAdapter->query($tQueryStr, $dbAdapter::QUERY_MODE_EXECUTE);
-        $iTotal = count($tResult);
+        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -5197,7 +5185,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             ->order("testingpointtype ASC");
         $queryStr = $sql->buildSqlString($query);
 
-        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($queryStr);
     }
 
     public function fetchTestingPointTypeNamesByTypeV6($params)
@@ -5220,7 +5208,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
             $queryStr = $sql->buildSqlString($query);
             //print_r($queryStr);
-            $typeResult = $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $typeResult = $this->db->fetchAllAssociative($queryStr);
         }
         return $typeResult;
     }
@@ -5238,7 +5226,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         //                       ->columns(array(new Expression('DISTINCT(level_name) as level_name')))
         //                       ->order("level_name ASC");
         //$queryStr = $sql->buildSqlString($query);
-        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($queryStr);
     }
     // public function fetchDistrictData($params)
     // {
@@ -5271,7 +5259,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $query = $query->where('f.district!=""');
         }
         $queryStr = $sql->buildSqlString($query);
-        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($queryStr);
     }
 
     public function addValidateSpiv3Data($params)
@@ -5282,7 +5270,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $newQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
             ->where(['spiv3.id' => CommonService::inList($vId)]);
         $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
-        $totalResult = $dbAdapter->query($newQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        $totalResult = $this->db->fetchAllAssociative($newQueryStr);
         if ($totalResult) {
             foreach ($totalResult as $newResult) {
                 $insert = $sql->insert('spi_form_v_3');
@@ -5576,6 +5564,6 @@ class SpiFormVer6Table extends AbstractTableGateway
         $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('level' => new Expression("DISTINCT level")))->where("level!=''")
             ->order("level ASC");
         $queryStr = $sql->buildSqlString($query);
-        return $dbAdapter->query($queryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+        return $this->db->fetchAllAssociative($queryStr);
     }
 }

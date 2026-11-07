@@ -155,14 +155,16 @@ No controller, route, module or MVC event is left. One package remains, laminas-
 
 | Package | Used by | Next step |
 |---|---|---|
-| laminas-db | The models and table gateways | Replace with Doctrine DBAL or PDO, one model at a time. |
+| laminas-db | `SpiFormVer3Table`, `SpiFormVer6Table` and the DataTables lists | Replace with Doctrine DBAL, in batches by kind of query. |
 
 ### Moving the models to Doctrine DBAL
 
-The models move to Doctrine DBAL in two stages, one file at a time:
+The models move to Doctrine DBAL in two stages:
 
-1. Run every query through DBAL. The laminas-db query builders stay, so each query's SQL text does not change. `$adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)->toArray()` becomes `$db->fetchAllAssociative($sql)`. The table gateway's `insert()`, `update()` and `delete()` become the DBAL methods of the same names.
+1. Run every query through DBAL. The laminas-db query builders stay, so each query's SQL text does not change. `$adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)->toArray()` becomes `$db->fetchAllAssociative($sql)`. A list's `count($result)` becomes `$db->executeQuery($sql)->rowCount()`. The table gateway's `insert()`, `update()` and `delete()` become the DBAL methods of the same names.
 2. Replace the query builders with DBAL's QueryBuilder or with SQL that binds its values. Each converted query must return the same rows as before.
+
+Move a large model in batches by kind of query: the reads that return arrays, then the single-row lookups, then the writes. Each batch then has one kind of difference to look for.
 
 A model that has finished stage 1 no longer extends `AbstractTableGateway`. Models still build each other with `new SomeTable($adapter)`, so a moved model keeps its `Adapter` constructor and gets its connection from `App\Db\Dbal::connection($adapter)`. Every model then shares one `Connection` object. `AuditMailTable` shows the pattern.
 
