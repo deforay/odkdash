@@ -2,9 +2,9 @@
 
 namespace Application\Service;
 
-use Application\Model\GeographicalDivisionsTable;
 use Application\Session\Container;
 use Application\Service\CommonService;
+use Doctrine\DBAL\Connection;
 use Laminas\Db\Sql\Sql;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -13,12 +13,10 @@ class FacilityService
 {
 
     public $sm = null;
-    public $adapter = null;
 
     public function __construct($sm)
     {
         $this->sm = $sm;
-        $this->adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
     }
 
     public function getServiceManager()
@@ -30,13 +28,13 @@ class FacilityService
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $result = $facilityDb->addFacilityDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'facility-add';
@@ -49,8 +47,11 @@ class FacilityService
                 $container->alertMsg = 'Facility details added successfully';
                 return $result;
             }
+            $db->rollBack();
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -60,13 +61,13 @@ class FacilityService
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
             $result = $facilityDb->updateFacilityDetails($params);
             if ($result > 0) {
-                $adapter->commit();
+                $db->commit();
                 //<-- Event log
                 $subject = $result;
                 $eventType = 'facility-update';
@@ -79,8 +80,11 @@ class FacilityService
                 $container->alertMsg = 'Facility details updated successfully';
                 return $result;
             }
+            $db->rollBack();
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -111,10 +115,9 @@ class FacilityService
         $container = new Container('alert');
         $auditMailDb = $this->sm->get('AuditMailTable');
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        $db = $this->sm->get('SpiFormVer3Table');
         $configResult = $this->sm->get('Config');
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $fromName = $configResult['admin']['name'];
             $fromEmailAddress = $configResult['admin']['emailAddress'];
@@ -156,7 +159,7 @@ class FacilityService
                             }
                         }
                     }
-                    $adapter->commit();
+                    $db->commit();
                     if ($errorAttachement > 0) {
                         if ($errorAttachement > 1) {
                             $container->alertMsg = $errorAttachement . 'attachements failed to upload!';
@@ -167,15 +170,19 @@ class FacilityService
                         $container->alertMsg = 'Mail queue added successfully.';
                     }
                 } else {
+                    $db->rollBack();
                     $mailId = 0;
                     $container->alertMsg = 'Error.Please try again!';
                 }
             } else {
+                $db->rollBack();
                 $container->alertMsg = 'Error.Please try again!';
             }
             return $mailId;
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -187,10 +194,9 @@ class FacilityService
         $container = new Container('alert');
         $auditMailDb = $this->sm->get('AuditMailTable');
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        $db = $this->sm->get('SpiFormVer6Table');
         $configResult = $this->sm->get('Config');
-        $adapter = $this->sm->get('Laminas\Db\Adapter\Adapter')->getDriver()->getConnection();
-        $adapter->beginTransaction();
+        $db = $this->sm->get(Connection::class);
+        $db->beginTransaction();
         try {
             $fromName = $configResult['admin']['name'];
             $fromEmailAddress = $configResult['admin']['emailAddress'];
@@ -232,7 +238,7 @@ class FacilityService
                             }
                         }
                     }
-                    $adapter->commit();
+                    $db->commit();
                     if ($errorAttachement > 0) {
                         if ($errorAttachement > 1) {
                             $container->alertMsg = $errorAttachement . 'attachements failed to upload!';
@@ -243,15 +249,19 @@ class FacilityService
                         $container->alertMsg = 'Mail queue added successfully.';
                     }
                 } else {
+                    $db->rollBack();
                     $mailId = 0;
                     $container->alertMsg = 'Error.Please try again!';
                 }
             } else {
+                $db->rollBack();
                 $container->alertMsg = 'Error.Please try again!';
             }
             return $mailId;
         } catch (\Exception $exc) {
-            $adapter->rollBack();
+            if ($db->isTransactionActive()) {
+                $db->rollBack();
+            }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
         }
@@ -335,10 +345,8 @@ class FacilityService
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $output = [];
             $sheet = $spreadsheet->getActiveSheet();
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $sql = new Sql($dbAdapter);
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllFacilityQuery);
-            $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->toArray();
+            $sql = new Sql($this->sm->get('Laminas\Db\Adapter\Adapter'));
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sql->buildSqlString($queryContainer->exportAllFacilityQuery));
             if (!empty($sResult)) {
                 foreach ($sResult as $aRow) {
                     $row = [];
