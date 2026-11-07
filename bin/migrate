@@ -37,6 +37,8 @@ use Composer\Semver\Comparator;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Adapter\Exception\ExceptionInterface as DbException;
 use PhpMyAdmin\SqlParser\Parser;
+use PhpMyAdmin\SqlParser\Statement;
+use PhpMyAdmin\SqlParser\TokenType;
 
 // The same services the web app uses, without the web app's locale
 // step. That step reads global_config, which does not exist on a fresh
@@ -125,6 +127,11 @@ function fetch_column(Adapter $adapter, string $sql, array $params = []): array
 /** Extract the underlying MySQL error code from a wrapped DB exception. */
 function db_error_code(Throwable $e): string
 {
+    // The MySQL error number. A query run directly throws a PDOException
+    // whose code is the SQLSTATE, so read errorInfo, on it or the one it wraps.
+    if ($e instanceof PDOException && isset($e->errorInfo[1])) {
+        return (string) $e->errorInfo[1];
+    }
     $prev = $e->getPrevious();
     if ($prev instanceof PDOException && isset($prev->errorInfo[1])) {
         return (string) $prev->errorInfo[1];
@@ -369,6 +376,58 @@ function handle_idempotent_ddl(Adapter $adapter, string $query): int
     return MIG_NOT_HANDLED;
 }
 
+/**
+ * A statement's SQL as the file has it. The parser's build() rewrites a
+ * statement from what it understood and can drop the rest, such as the
+ * SELECT of CREATE TABLE ... SELECT.
+ */
+function statement_sql(Parser $parser, Statement $statement): string
+{
+    $tokens = $parser->list->tokens;
+    $skip = [TokenType::Whitespace, TokenType::Comment, TokenType::Delimiter];
+    $first = $statement->first;
+    $last = $statement->last;
+    while ($first <= $last && in_array($tokens[$first]->type, $skip, true)) {
+        $first++;
+    }
+    while ($last >= $first && in_array($tokens[$last]->type, $skip, true)) {
+        $last--;
+    }
+
+    $sql = '';
+    for ($i = $first; $i <= $last; $i++) {
+        $sql .= $tokens[$i]->token;
+    }
+
+    return $sql;
+}
+
+/**
+ * The SQL the parser read as no statement, other than whitespace,
+ * comments and delimiters. Empty when it read the whole file.
+ */
+function unparsed_sql(Parser $parser): string
+{
+    $covered = [];
+    foreach ($parser->statements as $statement) {
+        for ($i = $statement->first; $i <= $statement->last; $i++) {
+            $covered[$i] = true;
+        }
+    }
+
+    $left = [];
+    foreach ($parser->list->tokens as $i => $token) {
+        if (isset($covered[$i]) || in_array($token->type, [TokenType::Whitespace, TokenType::Comment, TokenType::Delimiter], true)) {
+            continue;
+        }
+        if (trim((string) $token->token) !== '') {
+            $left[] = $token->token;
+        }
+    }
+
+    return substr(implode(' ', $left), 0, 120);
+}
+
 /* ---------------------- Error classifier ---------------------- */
 
 /**
@@ -393,6 +452,15 @@ function migration_error_is_warnable(string $errorCode, string $statement): bool
 
     $errorCode = trim($errorCode);
     if (in_array($errorCode, $unconditionalWarn, true)) {
+        return true;
+    }
+
+    // A trigger that exists already (1359) stays as it is. A database user
+    // may lack the right to create triggers: the TRIGGER privilege (1142),
+    // or SUPER when binary logging is on (1419, 1227). The audit trail then
+    // stays empty, which must not stop the upgrade.
+    if (in_array($errorCode, ['1142', '1227', '1359', '1419'], true)
+        && preg_match('/^\s*CREATE\s+(DEFINER\s*=\s*\S+\s+)?TRIGGER\b/i', $statement)) {
         return true;
     }
     if (!in_array($errorCode, $conditionalWarn, true)) {
@@ -543,9 +611,18 @@ foreach ($pending as $m) {
 
     $parser = new Parser($sql);
 
+    // The parser leaves out what it cannot read, such as PREPARE, EXECUTE
+    // and DO, without an error. Refuse the file rather than run part of it.
+    $unparsed = unparsed_sql($parser);
+    if ($unparsed !== '') {
+        fwrite(STDERR, "  \033[31mFAIL\033[0m  bin/migrate cannot parse: {$unparsed}\n");
+        fwrite(STDERR, "  Nothing in {$m['file']} was run. Rewrite it without that statement.\n");
+        exit(1);
+    }
+
     $statements = [];
     foreach ($parser->statements as $statement) {
-        $q = trim($statement->build() ?? '');
+        $q = statement_sql($parser, $statement);
         if ($q !== '') {
             $statements[] = $q;
         }
