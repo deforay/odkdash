@@ -2,12 +2,10 @@
 
 namespace Application\Model;
 
+use App\Db\DataTables;
 use App\Db\Dbal;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Expression;
-use Laminas\Db\Sql\Predicate\In;
-use Laminas\Db\Sql\Predicate\Literal;
-use Laminas\Db\Sql\Predicate\PredicateSet;
 use Application\Session\Container;
 use Application\I18n\Translator;
 use Laminas\Db\Adapter\Adapter;
@@ -1087,16 +1085,6 @@ class SpiFormVer6Table
     private const UNLINKED_AUDIT = '(spiv6.facility IS NULL OR spiv6.facility = 0)';
 
     /**
-     * ($column IN ($ids) OR UNLINKED_AUDIT), with the ids bound.
-     *
-     * @param list<string> $ids From CommonService::inList().
-     */
-    private static function inOrUnlinked(string $column, array $ids): PredicateSet
-    {
-        return new PredicateSet([new In($column, $ids), new Literal(self::UNLINKED_AUDIT)], PredicateSet::OP_OR);
-    }
-
-    /**
      * Whether the signed-in user sees every audit: no token and no location
      * mapping, as a Super Admin. auditInScope() passes every audit for them.
      */
@@ -1130,67 +1118,6 @@ class SpiFormVer6Table
         self::addTokenRule($loginContainer, $where, $values);
         [, $joins] = self::addLocationScope([], $loginContainer, $where, $values);
         return $this->db->fetchOne('SELECT spiv6.id FROM spi_form_v_6 AS spiv6' . $joins . ' WHERE ' . implode(' AND ', $where), $values) !== false;
-    }
-
-    /**
-     * Scope a select over spi_form_v_6, aliased 'spiv6', to the user's locations.
-     *
-     * A mapped user sees the mapped locations only. An audit whose location
-     * cannot be resolved (no facility, a facility that is gone, or a facility
-     * without that level) belongs to no location, so only a Super Admin sees
-     * it: a Super Admin has no mapping (UsersTable::userEventLog()). The
-     * listing flags those audits, the Facility Link filter pulls up just
-     * those, and assigning a facility on the edit screen returns the audit to
-     * its location.
-     *
-     * The location filters below still admit UNLINKED_AUDIT, so filtering the
-     * list does not hide the audits a Super Admin has to fix.
-     *
-     * The scope goes on the total count as well as the filtered query. A location
-     * mapping is a permission boundary, not a search filter, and leaving it off the
-     * total is what produced counts like "0 of 0 (filtered from 3009)".
-     *
-     * Still a primary key lookup on the facilities side, as 1.2.4 intended.
-     *
-     * @param \Laminas\Db\Sql\Select $query
-     * @return \Laminas\Db\Sql\Select
-     */
-    private function applyV6LocationScope($query, $parameters, $loginContainer)
-    {
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            $mappedIds = CommonService::inList($loginContainer->userMappedIds);
-            // Mapping exists
-            if ($loginContainer->userMappingType === 'country') {
-                // User mapped by country: show mapped country data and all related provinces and districts
-                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array(), 'left')
-                    ->where(['fm.country' => $mappedIds]);
-            } elseif ($loginContainer->userMappingType === 'province') {
-                // User mapped by province: show only mapped provinces
-                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array(), 'left')
-                    ->where(['fm.province' => $mappedIds]);
-            } elseif ($loginContainer->userMappingType === 'district') {
-                // User mapped by district: show only mapped districts
-                $query = $query->join(array('fm' => 'spi_rt_3_facilities'), 'fm.id=spiv6.facility', array(), 'left')
-                    ->where(['fm.district' => $mappedIds]);
-            }
-        }
-        if (isset($parameters['country']) && $parameters['country'] != '') {
-            $query = $query->join(array('f1' => 'spi_rt_3_facilities'), 'f1.id=spiv6.facility', array('country'), 'left')
-                ->where(self::inOrUnlinked('f1.country', CommonService::inList($parameters['country'])));
-        }
-        if (isset($parameters['province']) && $parameters['province'] != '') {
-            $query = $query->join(array('f2' => 'spi_rt_3_facilities'), 'f2.id=spiv6.facility', array('province'), 'left')
-                ->where(self::inOrUnlinked('f2.province', CommonService::inList($parameters['province'])));
-        }
-        if (isset($parameters['district']) && $parameters['district'] != '') {
-            $query = $query->join(array('f3' => 'spi_rt_3_facilities'), 'f3.id=spiv6.facility', array('district'), 'left')
-                ->where(self::inOrUnlinked('f3.district', CommonService::inList($parameters['district'])));
-        }
-        if (isset($parameters['facilityLink']) && $parameters['facilityLink'] == 'unassigned') {
-            $query = $query->where(self::UNLINKED_AUDIT);
-        }
-
-        return $query;
     }
 
     /** "?, ?, ?" for each of $values. */
@@ -1254,9 +1181,27 @@ class SpiFormVer6Table
     }
 
     /**
-     * applyV6LocationScope() as SQL with bound values. Returns the columns and
-     * the joins to append. The country, province and district filters add
-     * that column of the facility to each row, as the builder did.
+     * Scopes a query over spi_form_v_6, aliased 'spiv6', to the user's locations,
+     * as SQL with bound values. Adds its conditions to $where and $values, and
+     * returns the columns and the joins to append. The country, province and
+     * district filters add that column of the facility to each row.
+     *
+     * A mapped user sees the mapped locations only. An audit whose location
+     * cannot be resolved (no facility, a facility that is gone, or a facility
+     * without that level) belongs to no location, so only a Super Admin sees
+     * it: a Super Admin has no mapping (UsersTable::userEventLog()). The
+     * listing flags those audits, the Facility Link filter pulls up just
+     * those, and assigning a facility on the edit screen returns the audit to
+     * its location.
+     *
+     * The location filters still admit UNLINKED_AUDIT, so filtering the
+     * list does not hide the audits a Super Admin has to fix.
+     *
+     * The scope goes on the total count as well as the filtered query. A location
+     * mapping is a permission boundary, not a search filter, and leaving it off the
+     * total is what produced counts like "0 of 0 (filtered from 3009)".
+     *
+     * Still a primary key lookup on the facilities side, as 1.2.4 intended.
      *
      * @param list<string> $where
      * @param list<mixed> $values
@@ -1358,18 +1303,22 @@ class SpiFormVer6Table
         }
     }
 
-    /** The scoreLevel filter: the score band of levels 0 to 4. */
-    private static function addScoreLevel($params, array &$where): void
+    /**
+     * The scoreLevel filter: the score band of levels 0 to 4. When $rounded,
+     * levels 1 to 4 compare the rounded score, as the submissions list does.
+     */
+    private static function addScoreLevel($params, array &$where, bool $rounded = false): void
     {
         if (!isset($params['scoreLevel']) || $params['scoreLevel'] == '') {
             return;
         }
+        $score = $rounded ? 'ROUND(spiv6.AUDIT_SCORE_PERCENTAGE)' : 'spiv6.AUDIT_SCORE_PERCENTAGE';
         $band = match (true) {
             $params['scoreLevel'] == 0 => 'spiv6.AUDIT_SCORE_PERCENTAGE < 40',
-            $params['scoreLevel'] == 1 => 'spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59',
-            $params['scoreLevel'] == 2 => 'spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79',
-            $params['scoreLevel'] == 3 => 'spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89',
-            $params['scoreLevel'] == 4 => 'spiv6.AUDIT_SCORE_PERCENTAGE >= 90',
+            $params['scoreLevel'] == 1 => "$score >= 40 AND $score <= 59",
+            $params['scoreLevel'] == 2 => "$score >= 60 AND $score <= 79",
+            $params['scoreLevel'] == 3 => "$score >= 80 AND $score <= 89",
+            $params['scoreLevel'] == 4 => "$score >= 90",
             default => null,
         };
         if ($band !== null) {
@@ -1473,198 +1422,56 @@ class SpiFormVer6Table
         $aColumns = array('spiv6.id', 'spiv6.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
         $orderColumns = array('spiv6.id', 'spiv6.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointtype', 'affiliation', 'AUDIT_SCORE_PERCENTAGE', 'spiv6.status');
 
-        /*
-         * Paging
-         */
-        $sLimit = "";
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sOffset = $parameters['iDisplayStart'];
-            $sLimit = $parameters['iDisplayLength'];
-        }
-
-        /*
-         * Ordering
-         */
-
-        $sOrder = "";
-        if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true" && isset($orderColumns[(int) $parameters['iSortCol_' . $i]])) {
-                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ", ";
-                }
-            }
-            $sOrder = rtrim($sOrder, ", ");
-        }
-
-        /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-         */
-
-        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
-
-        /*
-         * SQL queries
-         * Get data to display
-         */
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $startDate = "";
-        $endDate = "";
-        if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
-            $dateField = explode(" ", $parameters['dateRange']);
-            //print_r($proceed_date);die;
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where('spiv6.status != "deleted"');
-        // ->join(array('f'=>'spi_rt_3_facilities'),
-        //                 'f.id=spiv3.facility',
-        //                         array('province','district'),'left');
-
-        if ($parameters['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv6.auditroundno' => $parameters['auditRndNo']]);
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv6.assesmentofaudit >= ?' => $startDate, 'spiv6.assesmentofaudit <= ?' => $endDate]);
-        }
-        // if(isset($parameters['testPoint']) && trim($parameters['testPoint'])!=''){
-        //     $sQuery = $sQuery->where("spiv6.testingpointtype='".$parameters['testPoint']."'");
-        //     if(isset($parameters['testPointName']) && trim($parameters['testPointName'])!= ''){
-        //          if(trim($parameters['testPoint'])!= 'other'){
-        //             $sQuery = $sQuery->where("spiv6.testingpointname='".$parameters['testPointName']."'");
-        //          }else{
-        //             $sQuery = $sQuery->where("spiv6.testingpointtype_other='".$parameters['testPointName']."'");
-        //          }
-        //     }
-        // }
+        // The filters the list and its total share. The total leaves out the
+        // printed filter and the search, as before.
+        $where = ["spiv6.status != 'deleted'"];
+        $values = [];
+        self::addAuditRound($parameters, $where, $values);
+        self::addDateRange($parameters, $where, $values);
         if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
-
             if (trim($parameters['testPoint']) != 'other') {
-                $sQuery = $sQuery->where(['spiv6.testingpointtype' => $parameters['testPoint']]);
+                self::addEquals('spiv6.testingpointtype', $parameters['testPoint'], $where, $values);
             } else {
-                $sQuery = $sQuery->where(['spiv6.testingpointtype_other' => $parameters['testPointName'] ?? '']);
+                self::addEquals('spiv6.testingpointtype_other', $parameters['testPointName'] ?? '', $where, $values);
             }
         }
-        if ($parameters['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv6.affiliation' => $parameters['affiliation']]);
+        if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
+            self::addEquals('spiv6.affiliation', $parameters['affiliation'], $where, $values);
         }
+        self::addScoreLevel($parameters, $where, true);
+        [$columns, $joins] = self::addLocationScope($parameters, $loginContainer, $where, $values);
+        self::addTokenRule($loginContainer, $where, $values);
+        $from = ' FROM spi_form_v_6 AS spiv6' . $joins;
+        $tWhere = $where;
+        $tValues = $values;
 
         if (isset($parameters['showAudits']) && $parameters['showAudits'] != '') {
             if ($parameters['showAudits'] == 'yes') {
-                // Query where 'audit_printed' is set to 'yes'
-                $sQuery = $sQuery->where("JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed')) = 'yes'");
+                // Audits whose report was printed.
+                $where[] = "JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed')) = 'yes'";
             } elseif ($parameters['showAudits'] == 'no') {
-                // Query where 'audit_printed' is not 'yes' or not set
-                $sQuery = $sQuery->where(
-                    "(
-                        JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed')) != 'yes'
-                        OR JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed') IS NULL
-                    )"
-                );
+                // Audits whose report was not printed, or has no record of it.
+                $where[] = "(JSON_UNQUOTE(JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed')) != 'yes'
+                        OR JSON_EXTRACT(spiv6.form_metadata, '$.audit_printed') IS NULL)";
             }
         }
-
-        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
-            if ($parameters['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } elseif ($parameters['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 59");
-            } elseif ($parameters['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
-            } elseif ($parameters['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 89");
-            } elseif ($parameters['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
-            }
-        }
-        $sQuery = $this->applyV6LocationScope($sQuery, $parameters, $loginContainer);
-
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        if ($sWhere !== null) {
-            $sQuery->where($sWhere);
+        [$search, $searchValues] = DataTables::search($aColumns, $parameters);
+        if ($search !== '') {
+            $where[] = $search;
+            array_push($values, ...$searchValues);
         }
 
-        if (isset($sOrder) && $sOrder != "") {
-            $sQuery->order($sOrder);
+        $sql = 'SELECT spiv6.*' . $columns . $from . ' WHERE ' . implode(' AND ', $where);
+        $order = DataTables::order($orderColumns, $parameters);
+        if ($order !== '') {
+            $sql .= ' ORDER BY ' . $order;
         }
-        $queryContainer->exportAllDataQueryV6 = $sQuery;
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
-        }
+        // The export reruns this query without the page.
+        $queryContainer->exportAllDataQueryV6 = ['sql' => $sql, 'values' => $values];
 
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-        //echo $sQueryStr;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-
-        /* Data set length after filtering */
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
-
-        /* Total data set length */
-        $tQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where('spiv6.status != "deleted"');
-        //  ->join(array('f'=>'spi_rt_3_facilities'),
-        //                 'f.id=spiv3.facility',
-        //                 array('province','district'),'left');
-        if ($parameters['auditRndNo'] != '') {
-            $tQuery = $tQuery->where(['spiv6.auditroundno' => $parameters['auditRndNo']]);
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $tQuery = $tQuery->where(['spiv6.assesmentofaudit >= ?' => $startDate, 'spiv6.assesmentofaudit <= ?' => $endDate]);
-        }
-        /*if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '' && strtolower(trim($parameters['testPoint'])) == 'other') {
-            $tQuery = $tQuery->where(['spiv6.testingpointtype' => $parameters['testPoint'] ?? '']);
-        }
-
-        if (strtolower(trim($parameters['testPoint'])) == 'other') {
-            $tQuery = $tQuery->where(['spiv6.testingpointtype_other' => $parameters['testPointName'] ?? '']);
-        }*/
-        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
-
-            if (trim($parameters['testPoint']) != 'other') {
-                $tQuery = $tQuery->where(['spiv6.testingpointtype' => $parameters['testPoint']]);
-            } else {
-                $tQuery = $tQuery->where(['spiv6.testingpointtype_other' => $parameters['testPointName'] ?? '']);
-            }
-        }
-        if ($parameters['affiliation'] != '') {
-            $tQuery = $tQuery->where(['spiv6.affiliation' => $parameters['affiliation']]);
-        }
-
-        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
-            if ($parameters['scoreLevel'] == 0) {
-                $tQuery = $tQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
-            } elseif ($parameters['scoreLevel'] == 1) {
-                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 40 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 59");
-            } elseif ($parameters['scoreLevel'] == 2) {
-                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 60 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 79");
-            } elseif ($parameters['scoreLevel'] == 3) {
-                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 80 AND ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) <= 89");
-            } elseif ($parameters['scoreLevel'] == 4) {
-                $tQuery = $tQuery->where("ROUND(spiv6.AUDIT_SCORE_PERCENTAGE) >= 90");
-            }
-        }
-        $tQuery = $this->applyV6LocationScope($tQuery, $parameters, $loginContainer);
-
-        if (!empty($loginContainer->token)) {
-            $tQuery = $tQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
+        $rResult = $this->db->fetchAllAssociative($sql . DataTables::limit($parameters), $values);
+        $iFilteredTotal = $this->db->executeQuery($sql, $values)->rowCount();
+        $iTotal = $this->db->executeQuery('SELECT spiv6.*' . $columns . $from . ' WHERE ' . implode(' AND ', $tWhere), $tValues)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -1787,14 +1594,16 @@ class SpiFormVer6Table
             $output['aaData'][] = $row;
         }
         //get earliest date
-        $eQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
         // The earliest audit the user may see, scoped as the list is.
-        if (!empty($loginContainer->token)) {
-            $eQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $eQuery = $this->applyV6LocationScope($eQuery, [], $loginContainer);
-        $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
-        $eResult = $this->db->fetchAssociative($eQueryStr);
+        $eWhere = [];
+        $eValues = [];
+        self::addTokenRule($loginContainer, $eWhere, $eValues);
+        [, $eJoins] = self::addLocationScope([], $loginContainer, $eWhere, $eValues);
+        $eResult = $this->db->fetchAssociative(
+            'SELECT spiv6.assesmentofaudit AS assesmentofaudit FROM spi_form_v_6 AS spiv6' . $eJoins
+            . ($eWhere === [] ? '' : ' WHERE ' . implode(' AND ', $eWhere)) . ' ORDER BY assesmentofaudit ASC',
+            $eValues
+        );
         //get duplicate value
         $dpResult = $this->db->fetchAllAssociative("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1");
 
