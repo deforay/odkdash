@@ -41,6 +41,30 @@ class SpiRtFacilitiesTable
         return $query->where([$column => CommonService::inList($loginContainer->userMappedIds)]);
     }
 
+    /**
+     * The user's mapped locations as SQL on spi_rt_3_facilities, and its
+     * values, as applyMappingToFacilities() applies them. '' when the user
+     * has no mapping. A mapping type this code does not know matches nothing.
+     *
+     * @return array{0: string, 1: list<string>}
+     */
+    public static function mappingCondition(string $alias): array
+    {
+        $loginContainer = new Container('credo');
+        if (empty($loginContainer->userMappedIds) || !is_array($loginContainer->userMappedIds) || $loginContainer->userMappingType == '') {
+            return ['', []];
+        }
+        $column = match ($loginContainer->userMappingType) {
+            'country', 'province', 'district' => $alias . '.' . $loginContainer->userMappingType,
+            default => null,
+        };
+        if ($column === null) {
+            return ['1 = 0', []];
+        }
+        $ids = CommonService::inList($loginContainer->userMappedIds);
+        return [$column . ' IN (' . implode(', ', array_fill(0, count($ids), '?')) . ')', $ids];
+    }
+
     /** Adds a facility and returns its id. */
     public function insert(array $data): int
     {
