@@ -16,6 +16,7 @@ use JsonMachine\Items;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\DBAL\Connection;
+use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use CpChart\Chart\Radar;
 use Shuchkin\SimpleXLSXGen;
@@ -149,6 +150,10 @@ class OdkFormService
                 $testPoint = "Type of Testing Point : ";
             }
 
+            if (!$queryContainer->exportAllDataQuery instanceof Select) {
+                // The list this export reruns was not opened in this session.
+                return "";
+            }
             $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
             $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
             $output = [];
@@ -527,6 +532,10 @@ class OdkFormService
                 $displayDate = "";
             }
 
+            if (!$queryContainer->exportQuery instanceof Select) {
+                // The list this export reruns was not opened in this session.
+                return "";
+            }
             $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
 
             $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
@@ -1672,7 +1681,11 @@ class OdkFormService
         //$db = $this->sm->get('SpiFormVer6DownloadTable');
         //$result = $db->fetchDownloadFilesRow();
         $sql = new Sql($dbAdapter);
-        $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
+        if (!$queryContainer->exportAllDataQueryV6 instanceof Select) {
+            // The list this export reruns was not opened in this session.
+            return "";
+        }
+        $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQueryV6);
         $result = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
         $xlsx = new SimpleXLSXGen();
         $output = [];
@@ -2052,7 +2065,11 @@ class OdkFormService
             } else {
                 $testPoint = "Type of Testing Point : ";
             }
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
+            if (!$queryContainer->exportAllDataQueryV6 instanceof Select) {
+                // The list this export reruns was not opened in this session.
+                return "";
+            }
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQueryV6);
             $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
 
             $output = [];
@@ -2920,7 +2937,11 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
+            if (!$queryContainer->exportQueryV6 instanceof Select) {
+                // The list this export reruns was not opened in this session.
+                return "";
+            }
+            $sQueryStr = $sql->buildSqlString($queryContainer->exportQueryV6);
             $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
             // print_r(count($sResult)); die;
             if (!empty($sResult)) {
@@ -5433,6 +5454,10 @@ class OdkFormService
             $testPoint = isset($params[5]['value']) && ($params[5]['value'] != "") ? "Type of Testing Point : " . $params[5]['value'] : "Type of Testing Point : ";
             $source = $params[0]['value'];
 
+            if (!$queryContainer->exportViewDataV6Query instanceof Select) {
+                // The list this export reruns was not opened in this session.
+                return "";
+            }
             $sQueryStr = $sql->buildSqlString($queryContainer->exportViewDataV6Query);
             $rResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
 
