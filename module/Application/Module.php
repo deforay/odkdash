@@ -157,10 +157,7 @@ class Module
                 {
                     public function __invoke($diContainer)
                     {
-                        return new ResourcesTable(
-                            $diContainer->get('Laminas\Db\Adapter\Adapter'),
-                            $diContainer->get(Connection::class),
-                        );
+                        return new ResourcesTable($diContainer->get(Connection::class));
                     }
                 },
                 'TempMailTable' => new class

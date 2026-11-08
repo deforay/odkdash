@@ -2,21 +2,19 @@
 
 namespace Application\Model;
 
+use App\Db\DataTables;
 use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
 
 class RolesTable
 {
-    private readonly Adapter $adapter;
     private readonly Connection $db;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
         $this->db = Dbal::connection($adapter);
     }
 
@@ -78,64 +76,20 @@ class RolesTable
 
         $aColumns = array('role_name', 'role_code', 'status');
 
-        /*
-         * Paging
-         */
-        $sLimit = "";
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sOffset = $parameters['iDisplayStart'];
-            $sLimit = $parameters['iDisplayLength'];
-        }
-
-        /*
-         * Ordering
-         */
-
-        $sOrder = "";
-        if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true" && isset($aColumns[(int) $parameters['iSortCol_' . $i]])) {
-                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ", ";
-                }
-            }
-            $sOrder = rtrim($sOrder, ", ");
-        }
-
-        /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-         */
-
-        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
 
         /*
          * SQL queries
          * Get data to display
          */
-        // The builder still writes the search and the sort. DBAL runs the SQL.
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from('roles')->where("role_code !='daemon'");
-        if ($sWhere !== null) {
-            $sQuery->where($sWhere);
-        }
+        [$search, $values] = DataTables::search($aColumns, $parameters);
+        $where = "role_code != 'daemon'" . ($search !== '' ? " AND $search" : '');
+        $order = DataTables::order($aColumns, $parameters);
 
-        if (isset($sOrder) && $sOrder != "") {
-            $sQuery->order($sOrder);
-        }
-
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
-        }
-
-        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
-
-        /* Data set length after filtering */
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
+        $rResult = $this->db->fetchAllAssociative(
+            "SELECT * FROM roles WHERE $where" . ($order !== '' ? " ORDER BY $order" : '') . DataTables::limit($parameters),
+            $values
+        );
+        $iFilteredTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM roles WHERE $where", $values);
 
         /* Total data set length */
         $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM roles WHERE role_code != 'daemon'");
