@@ -3494,10 +3494,8 @@ class SpiFormVer3Table
 
     public function getLatestFormDate($projectId, $formId)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_3 WHERE central_project_id = ? AND central_form_id = ?";
-        return $dbAdapter->query($query, [$projectId, $formId])->toArray();
+        return $this->db->fetchAllAssociative($query, [$projectId, $formId]);
     }
 
     public function fetchV3DetailsByMetaInstanceId($metaInstantId)
