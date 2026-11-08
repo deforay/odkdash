@@ -214,17 +214,23 @@ class GeographicalDivisionsTable
         }
     }
 
-    /** The geo_id of the first province whose name contains $provinceName, created if there is none. */
+    /** The geo_id of the province named $provinceName, created if there is none. */
     public function addProvinceByFacility($provinceName)
     {
-        $geoId = $this->firstIdByNameLike($provinceName);
+        $geoId = $this->db->fetchOne(
+            "SELECT geo_id FROM geographical_divisions WHERE geo_name = ? AND geo_parent = '0' ORDER BY geo_id LIMIT 1",
+            [$provinceName]
+        );
         return $geoId !== false ? $geoId : $this->insertDivision($provinceName, $provinceName, 0, 'active');
     }
 
-    /** The geo_id of the first division whose name contains $districtName, created under $provinceId if there is none. */
+    /** The geo_id of the district named $districtName under $provinceId, created there if there is none. */
     public function addDistrictByFacility($provinceId, $districtName)
     {
-        $geoId = $this->firstIdByNameLike($districtName);
+        $geoId = $this->db->fetchOne(
+            'SELECT geo_id FROM geographical_divisions WHERE geo_name = ? AND geo_parent = ? ORDER BY geo_id LIMIT 1',
+            [$districtName, (string) $provinceId]
+        );
         return $geoId !== false ? $geoId : $this->insertDivision($districtName, $districtName, $provinceId, 'active');
     }
 
@@ -235,20 +241,17 @@ class GeographicalDivisionsTable
     }
 
     /**
-     * The district whose name contains $district and its province. If there
-     * is none, it adds one with the name as its own geo_parent.
+     * The district named $district and its province, or null if no district
+     * has that name. An unknown district is not added, because its province
+     * is unknown too.
      */
     public function checkDistrict($district)
     {
         $row = $this->db->fetchAssociative(
-            'SELECT geo_id, geo_parent FROM geographical_divisions WHERE geo_name LIKE ? LIMIT 1',
-            ['%' . $district . '%']
+            "SELECT geo_id, geo_parent FROM geographical_divisions WHERE geo_name = ? AND geo_parent <> '0' ORDER BY geo_id LIMIT 1",
+            [$district]
         );
-        if (!$row) {
-            $insertId = $this->insertDivision($district, $district, $district, 'active');
-            $row = $this->db->fetchAssociative('SELECT geo_id, geo_parent FROM geographical_divisions WHERE geo_id = ?', [$insertId]);
-        }
-        return ['district' => $row['geo_id'], 'province' => $row['geo_parent']];
+        return $row ? ['district' => $row['geo_id'], 'province' => $row['geo_parent']] : null;
     }
 
     /**
@@ -274,11 +277,6 @@ class GeographicalDivisionsTable
         }
 
         return $this->db->fetchAllAssociative($sql . ' ORDER BY geo_name ASC', $values, $types);
-    }
-
-    private function firstIdByNameLike(string $name): mixed
-    {
-        return $this->db->fetchOne('SELECT geo_id FROM geographical_divisions WHERE geo_name LIKE ? LIMIT 1', ['%' . $name . '%']);
     }
 
     private function insertDivision($name, $code, $parent, $status): int
