@@ -7105,6 +7105,12 @@ msgstr ""
 "Tableau de bord du Malawi pour l'amélioration de la qualité des tests "
 "rapides de dépistage du VIH"
 
+msgid "Unassigned facility"
+msgstr "Établissement non attribué"
+
+msgid "Not linked to a facility, so location filters cannot see it. Edit the audit to assign one."
+msgstr "Non lié à un établissement, les filtres de lieu ne le voient donc pas. Modifiez l'audit pour en attribuer un."
+
 #~ msgid "Please make sure additional logo image size of: "
 #~ msgstr ""
 #~ "Veillez à ce que la taille de l'image du logo supplémentaire soit de :"

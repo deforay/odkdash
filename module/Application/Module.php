@@ -87,7 +87,7 @@ class Module
                     public function __invoke($diContainer)
                     {
                         $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer6Table($dbAdapter);
+                        return new SpiFormVer6Table($dbAdapter, $diContainer->get('translator'));
                     }
                 },
                 'UsersTable' => new class

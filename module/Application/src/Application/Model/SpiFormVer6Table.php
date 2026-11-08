@@ -9,6 +9,7 @@ use Laminas\Db\Sql\Predicate\In;
 use Laminas\Db\Sql\Predicate\Literal;
 use Laminas\Db\Sql\Predicate\PredicateSet;
 use Application\Session\Container;
+use Application\I18n\Translator;
 use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
@@ -28,9 +29,15 @@ class SpiFormVer6Table
 
     private readonly \Doctrine\DBAL\Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    /** $translator is optional: only the lists render text, and they get the container's. */
+    public function __construct(private readonly Adapter $adapter, private readonly ?Translator $translator = null)
     {
         $this->db = Dbal::connection($adapter);
+    }
+
+    private function translate(string $text): string
+    {
+        return $this->translator?->translate($text) ?? $text;
     }
 
     /**
@@ -1697,7 +1704,8 @@ class SpiFormVer6Table
                  * listed anyway rather than hidden; assigning a facility on the edit
                  * screen clears the flag. Blank-named audits show the flag alone. */
                 $row[] = ($facilityName != '' ? $facilityName . ' ' : '')
-                    . '<span class="label label-warning" title="Not linked to a facility, so location filters cannot see it. Edit the audit to assign one.">Unassigned facility</span>';
+                    . '<span class="label label-warning" title="' . CommonService::escapeHtml($this->translate('Not linked to a facility, so location filters cannot see it. Edit the audit to assign one.')) . '">'
+                    . CommonService::escapeHtml($this->translate('Unassigned facility')) . '</span>';
             } else {
                 $row[] = $facilityName;
             }
