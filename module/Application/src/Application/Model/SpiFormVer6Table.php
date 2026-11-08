@@ -42,12 +42,16 @@ class SpiFormVer6Table
         return (int) $this->db->update(self::TABLE, $this->quoteColumns($set), $this->quoteColumns($where));
     }
 
-    /** Quotes each key, so a column such as `meta-instance-id` works in DBAL's insert and update. */
+    /**
+     * Quotes each key, so a column such as `meta-instance-id` works in DBAL's
+     * insert and update. An array value is written as NULL, as Laminas wrote
+     * it. DBAL would write the text "Array".
+     */
     private function quoteColumns(array $row): array
     {
         $quoted = [];
         foreach ($row as $column => $value) {
-            $quoted[$this->db->quoteSingleIdentifier((string) $column)] = $value;
+            $quoted[$this->db->quoteSingleIdentifier((string) $column)] = is_array($value) ? null : $value;
         }
         return $quoted;
     }
