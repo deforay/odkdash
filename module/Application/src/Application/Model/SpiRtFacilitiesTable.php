@@ -266,12 +266,18 @@ class SpiRtFacilitiesTable
         $queryContainer = new Container('query');
         $aColumns = ['facility_id', 'facility_name', 'email', 'contact_person'];
 
+        // A mapped user sees the facilities in their locations. A user with
+        // no mapping sees every facility.
+        [$scope, $scopeValues] = self::mappingCondition('spirt3');
+        $scopeWhere = "spirt3.status != 'deleted'" . ($scope !== '' ? " AND $scope" : '');
+
         [$search, $values] = DataTables::search($aColumns, $parameters);
+        $values = array_merge($scopeValues, $values);
         $order = DataTables::order($aColumns, $parameters);
         $from = 'FROM spi_rt_3_facilities AS spirt3'
             . ' LEFT JOIN geographical_divisions AS g ON spirt3.province = g.geo_id'
             . ' LEFT JOIN geographical_divisions AS gd ON spirt3.district = gd.geo_id'
-            . " WHERE spirt3.status != 'deleted'" . ($search !== '' ? " AND $search" : '');
+            . " WHERE $scopeWhere" . ($search !== '' ? " AND $search" : '');
         $select = 'SELECT spirt3.id, spirt3.facility_id, spirt3.facility_name, spirt3.email, spirt3.contact_person,'
             . ' spirt3.latitude, spirt3.longitude, spirt3.status, g.geo_name AS province, gd.geo_name AS district '
             . $from . ($order !== '' ? " ORDER BY $order" : '');
@@ -282,7 +288,7 @@ class SpiRtFacilitiesTable
         // facility the search matches.
         $queryContainer->exportAllFacilityQuery = ['sql' => $select, 'values' => $values];
         $iFilteredTotal = (int) $this->db->fetchOne("SELECT COUNT(*) $from", $values);
-        $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM spi_rt_3_facilities WHERE status != 'deleted'");
+        $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM spi_rt_3_facilities AS spirt3 WHERE $scopeWhere", $scopeValues);
 
         $output = [
             "sEcho" => (int) $parameters['sEcho'],
