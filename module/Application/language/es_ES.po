@@ -7261,3 +7261,10 @@ msgid "Malawi Dashboard for Quality Improvement of HIV Rapid Testing"
 msgstr ""
 "Cuadro de mando para la mejora de la calidad de las pruebas rápidas del VIH "
 "en Malawi"
+
+msgid "Unassigned facility"
+msgstr "Instalación sin asignar"
+
+msgid "Not linked to a facility, so location filters cannot see it. Edit the audit to assign one."
+msgstr "No está vinculada a una instalación, por lo que los filtros de ubicación no la ven. Edite la auditoría para asignar una."
+

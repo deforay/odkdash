@@ -6893,6 +6893,12 @@ msgstr ""
 "Malawi Dashboard for Quality Improvement of HIV Rapid Testing (Painel de "
 "controle do Malaui para melhoria da qualidade dos testes rápidos de HIV)"
 
+msgid "Unassigned facility"
+msgstr "Instalação não atribuída"
+
+msgid "Not linked to a facility, so location filters cannot see it. Edit the audit to assign one."
+msgstr "Não está vinculada a uma instalação, por isso os filtros de local não a veem. Edite a auditoria para atribuir uma."
+
 #~ msgid "Province "
 #~ msgstr "Província"
 
