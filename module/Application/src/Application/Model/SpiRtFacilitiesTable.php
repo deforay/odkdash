@@ -98,7 +98,10 @@ class SpiRtFacilitiesTable
             if (!$createIfMissing) {
                 return null;
             }
-            $district = $result['district'];
+            // The columns hold division ids. A district name that matches no
+            // district stays unresolved, so a name that reads as a number
+            // cannot be taken for another district's id.
+            $district = null;
             $province = 'Unknown';
             if (isset($result['district']) && $result['district'] != '') {
                 $geoTable = new GeographicalDivisionsTable($this->adapter);
