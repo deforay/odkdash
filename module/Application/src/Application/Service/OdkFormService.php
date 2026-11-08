@@ -1681,12 +1681,12 @@ class OdkFormService
         //$db = $this->sm->get('SpiFormVer6DownloadTable');
         //$result = $db->fetchDownloadFilesRow();
         $sql = new Sql($dbAdapter);
-        if (!$queryContainer->exportAllDataQueryV6 instanceof Select) {
+        $stored = $queryContainer->exportAllDataQueryV6;
+        if (!is_array($stored)) {
             // The list this export reruns was not opened in this session.
             return "";
         }
-        $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQueryV6);
-        $result = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+        $result = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
         $xlsx = new SimpleXLSXGen();
         $output = [];
         $headerRow = ['Facility Name', 'Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
@@ -2065,12 +2065,12 @@ class OdkFormService
             } else {
                 $testPoint = "Type of Testing Point : ";
             }
-            if (!$queryContainer->exportAllDataQueryV6 instanceof Select) {
+            $stored = $queryContainer->exportAllDataQueryV6;
+            if (!is_array($stored)) {
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQueryV6);
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
 
             $output = [];
             $outputScore = [];

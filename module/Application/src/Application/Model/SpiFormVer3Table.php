@@ -32,7 +32,7 @@ class SpiFormVer3Table
      *
      * An audit whose location cannot be resolved belongs to no location, so a
      * mapped user does not see it. A Super Admin has no mapping and sees it
-     * (UsersTable::userEventLog()), as in V6's applyV6LocationScope().
+     * (UsersTable::userEventLog()), as in V6's addLocationScope().
      */
     private static function applyV3LocationScope(Select $query): Select
     {
