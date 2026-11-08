@@ -3220,8 +3220,10 @@ class SpiFormVer3Table
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $vId = explode(",", $params['validateId']);
+        // Only rows whose instance ID is new, the rows the page lists. Adding a
+        // stored one would make a duplicate audit.
         $newQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
-            ->where(['spiv3.id' => CommonService::inList($vId)]);
+            ->where(['spiv3.id' => CommonService::inList($vId), 'spiv3.spi_data_status' => 0]);
         $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
         $totalResult = $this->db->fetchAllAssociative($newQueryStr);
         if ($totalResult) {
