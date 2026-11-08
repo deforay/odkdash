@@ -12,7 +12,6 @@ use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
 use Application\Model\SpiRtFacilitiesTable;
-use Laminas\Db\TableGateway\AbstractTableGateway;
 
 
 
@@ -23,10 +22,9 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  *
  * @author amit
  */
-class SpiFormVer3Table extends AbstractTableGateway
+class SpiFormVer3Table
 {
-
-    protected $table = 'spi_form_v_3';
+    private const string TABLE = 'spi_form_v_3';
 
     /**
      * Limits an audit query, aliased spiv3, to the locations the user is
@@ -93,16 +91,47 @@ class SpiFormVer3Table extends AbstractTableGateway
             $query->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
         }
         $query = self::applyV3LocationScope($query);
-        return $this->adapter->query($sql->buildSqlString($query), Adapter::QUERY_MODE_EXECUTE)->count() > 0;
+        return $this->db->fetchOne($sql->buildSqlString($query)) !== false;
     }
-    protected $adapter;
 
     private readonly \Doctrine\DBAL\Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Adapter $adapter)
     {
-        $this->adapter = $adapter;
         $this->db = Dbal::connection($adapter);
+    }
+
+    /**
+     * Updates the audits that match $where and returns the number changed.
+     * Column names are quoted, as Laminas quoted them.
+     */
+    private function updateAudits(array $set, array $where): int
+    {
+        return (int) $this->db->update(self::TABLE, $this->quoteColumns($set), $this->quoteColumns($where));
+    }
+
+    /**
+     * Quotes each key, so a column such as `meta-instance-id` works in DBAL's
+     * insert and update. An array value is written as NULL, as Laminas wrote
+     * it. DBAL would write the text "Array".
+     */
+    private function quoteColumns(array $row): array
+    {
+        $quoted = [];
+        foreach ($row as $column => $value) {
+            $quoted[$this->db->quoteSingleIdentifier((string) $column)] = is_array($value) ? null : $value;
+        }
+        return $quoted;
+    }
+
+    /**
+     * One row as Laminas returned it: an object whose columns also read as
+     * properties, or null. Templates read these rows with `->`.
+     */
+    private function fetchRowObject(string $sql): ?\ArrayObject
+    {
+        $row = $this->db->fetchAssociative($sql);
+        return $row === false ? null : new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS);
     }
 
     public function saveOdkCentralData($params, $correctiveActions, $projectId, $formId)
@@ -369,7 +398,6 @@ class SpiFormVer3Table extends AbstractTableGateway
 
                 $sql = new Sql($this->adapter);
 
-                $insert = $sql->insert('spi_form_v_3');
                 if (isset($data['testingpointname']) && trim($data['testingpointname']) == "") {
                     $data['testingpointname'] = $data['testingpointtype'];
                 }
@@ -616,15 +644,12 @@ class SpiFormVer3Table extends AbstractTableGateway
                     'central_form_id' => $formId,
                 );
                 $dbAdapter = $this->adapter;
-                $insert->values($par);
-                $selectString = $sql->buildSqlString($insert);
-                //error_log($selectString);
-                /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
-                $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
+                $this->db->insert(self::TABLE, $this->quoteColumns($par));
+                $insertedId = $this->db->lastInsertId();
 
                 if ($approveStatus == 'approved') {
                     $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
-                    $facilityResult = $facilityDb->addFacilityBasedOnForm($results->getGeneratedValue());
+                    $facilityResult = $facilityDb->addFacilityBasedOnForm($insertedId);
                 }
             } catch (\Exception $e) {
                 error_log($e->getMessage());
@@ -1259,7 +1284,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         //get earliest date
         $eQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
         $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
-        $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $eResult = $this->db->fetchAssociative($eQueryStr);
         //get duplicate value
         $dpResult = $this->db->fetchAllAssociative("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1");
 
@@ -1435,7 +1460,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
             ->where(array('spiv3.id' => $id));
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $sResult = $this->fetchRowObject($sQueryStr);
         if ($sResult) {
             if (trim($sResult['facility']) != '' || trim($sResult['facilityid']) != '' || trim($sResult['facilityname']) != '') {
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
@@ -1448,7 +1473,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                     $fQuery = $fQuery->where(['spirt3.facility_name' => $sResult['facilityname']]);
                 }
                 $fQueryStr = $sql->buildSqlString($fQuery);
-                $sResult['facilityInfo'] = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                $sResult['facilityInfo'] = $this->fetchRowObject($fQueryStr);
             }
             if ($pdfDowload == 'yes') {
                 $subject = '';
@@ -1768,7 +1793,7 @@ class SpiFormVer3Table extends AbstractTableGateway
     {
         if (trim($id) != "" && trim($status) != '') {
             $data = array('status' => $status);
-            $this->update($data, array('id' => $id));
+            $this->updateAudits($data, array('id' => $id));
         }
         return $id;
     }
@@ -2128,8 +2153,10 @@ class SpiFormVer3Table extends AbstractTableGateway
             $eventTable = new EventLogTable($dbAdapter);
             $sql = new Sql($this->adapter);
             $formId = base64_decode($params['formId']);
-            $summationData = [];
+            // Without corrective action rows in the post, the column stays NULL.
+            $summationData = null;
             if (isset($params['sectionNo'])) {
+                $summationData = [];
                 $n = count($params['sectionNo']);
                 for ($i = 0; $i < $n; $i++) {
                     $rowId = $params['rowId'][$i];
@@ -2164,7 +2191,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                     ->columns(array('id'))
                     ->where(['spirt3.facility_name' => $params['testingFacilityName']]);
                 $fQueryStr = $sql->buildSqlString($fQuery);
-                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                $fResult = $this->db->fetchAssociative($fQueryStr);
                 if ($fResult) {
                     $id = $fResult['id'];
                     $facilityDb->updateFacilityInfo($id, $params);
@@ -2272,7 +2299,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 //'AUDIT_SCORE_PERCANTAGE' => $params['auditScorePercentage'],
                 'correctiveaction' => $summationData,
             );
-            $result = $this->update($data, array('id' => $formId));
+            $result = $this->updateAudits($data, array('id' => $formId));
             $subject = '';
             $eventType = 'Update-SPI RT Form 3-Request';
             $action = $user_name . ' has updated the SPI RT Form 3 information';
@@ -2312,8 +2339,8 @@ class SpiFormVer3Table extends AbstractTableGateway
         }
         $sQuery = self::applyV3LocationScope($sQuery);
         $sQueryStr = $sql->buildSqlString($sQuery);
-        $res = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
-        return $res->auditroundno;
+        $res = $this->db->fetchAssociative($sQueryStr);
+        return $res === false ? null : $res['auditroundno'];
     }
 
     public function fetchSpiV3FormFacilityAuditNo($params)
@@ -2359,7 +2386,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
                 ->where(array('spirt3.facility_name' => $params['defaultFacilityName']));
             $facilityQueryStr = $sql->buildSqlString($facilityQuery);
-            $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $facilityResult = $this->db->fetchAssociative($facilityQueryStr);
             if ($facilityResult) {
                 $data = array(
                     'facility_id' => $params['facilityId'],
@@ -2371,13 +2398,13 @@ class SpiFormVer3Table extends AbstractTableGateway
             $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
                 ->where(array('spiv3.facilityname' => $params['defaultFacilityName']));
             $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $aResult = $this->db->fetchAssociative($aQueryStr);
             if ($aResult) {
                 $data = array(
                     'facilityid' => $params['facilityId'],
                     'facilityname' => $params['editFacilityName'],
                 );
-                $this->update($data, array('facilityname' => $params['defaultFacilityName']));
+                $this->updateAudits($data, array('facilityname' => $params['defaultFacilityName']));
             }
         }
         $c = count($params['upFaciltyName']);
@@ -2394,7 +2421,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                         'facilityid' => $params['facilityId'],
                         'facilityname' => $params['editFacilityName'],
                     );
-                    $result1 = $this->update($data, array('id' => $aResult[$k]['id']));
+                    $result1 = $this->updateAudits($data, array('id' => $aResult[$k]['id']));
                 }
             }
 
@@ -2402,7 +2429,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
                 ->where(array('spirt3.facility_name' => $params['upFaciltyName'][$i]));
             $facilityQueryStr = $sql->buildSqlString($facilityQuery);
-            $facilityResult = $dbAdapter->query($facilityQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $facilityResult = $this->db->fetchAssociative($facilityQueryStr);
             if ($facilityResult) {
                 $facilityDb->update(array('status' => 'deleted'), array('facility_name' => $params['upFaciltyName'][$i]));
             }
@@ -2587,7 +2614,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 ->columns(array('facility_name', 'email'))
                 ->where(array('spiv3_fclt.facility_name' => $params['facilityName']));
             $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $aResult = $this->fetchRowObject($aQueryStr);
         }
         return array('audits' => $audits, 'facilityProfile' => $aResult);
     }
@@ -2614,7 +2641,7 @@ class SpiFormVer3Table extends AbstractTableGateway
         $result = 0;
         $deleteId = trim((string) ($params['deleteId'] ?? ''));
         if ($deleteId !== '') {
-            $result = $this->update(['status' => 'deleted'], ['id' => $deleteId]);
+            $result = $this->updateAudits(['status' => 'deleted'], ['id' => $deleteId]);
             if ($result > 0) {
                 $loginContainer = new Container('credo');
                 $userName = $loginContainer->login ?? 'system';
@@ -2986,11 +3013,11 @@ class SpiFormVer3Table extends AbstractTableGateway
             $summaryColumns['levelFour'] = new Expression("SUM($isSet AND $score >= 90)");
         }
         $summaryQuery = $sql->select()->from(['t' => $sQuery])->columns($summaryColumns);
-        $summary = $dbAdapter->query($sql->buildSqlString($summaryQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $summary = $this->db->fetchAssociative($sql->buildSqlString($summaryQuery));
         $iFilteredTotal = (int) $summary['filtered'];
 
         $totalQuery = $sql->select()->from(['t' => $tQuery])->columns(['total' => new Expression('COUNT(*)')]);
-        $iTotal = (int) $dbAdapter->query($sql->buildSqlString($totalQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current()['total'];
+        $iTotal = (int) $this->db->fetchOne($sql->buildSqlString($totalQuery));
 
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
@@ -3194,7 +3221,6 @@ class SpiFormVer3Table extends AbstractTableGateway
         $totalResult = $this->db->fetchAllAssociative($newQueryStr);
         if ($totalResult) {
             foreach ($totalResult as $newResult) {
-                $insert = $sql->insert('spi_form_v_3');
                 if (isset($newResult['testingpointname']) && trim($newResult['testingpointname']) == "") {
                     $newResult['testingpointname'] = $newResult['testingpointtype'];
                 }
@@ -3438,11 +3464,8 @@ class SpiFormVer3Table extends AbstractTableGateway
                     'status' => $newResult['status'],
                 );
                 $dbAdapter = $this->adapter;
-                $insert->values($par);
-                $selectString = $sql->buildSqlString($insert);
-                /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
-                $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
-                if ($results->getGeneratedValue() > 0) {
+                $this->db->insert(self::TABLE, $this->quoteColumns($par));
+                if ($this->db->lastInsertId() > 0) {
                     $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->adapter);
                     $spiv3Temp->deleteById($newResult['id']);
                 }
@@ -3457,7 +3480,7 @@ class SpiFormVer3Table extends AbstractTableGateway
                 'facilityid' => $params['facilityId'],
                 'facilityname' => $params['facilityName'],
             );
-            $this->update($data, array('facility' => $id));
+            $this->updateAudits($data, array('facility' => $id));
         }
         return $id;
     }
