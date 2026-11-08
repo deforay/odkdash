@@ -81,13 +81,18 @@ class SpiFormVer3DownloadTable
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
                     $endDate = CommonService::isoDateFormat(trim($dateField[2]));
                 }
-                $add('spiv3.assesmentofaudit >= ?', $startDate);
-                $add('spiv3.assesmentofaudit <= ?', $endDate);
+                // A range without its end date ("01-Jan-2024") bounds only the start.
+                if (!empty($startDate)) {
+                    $add('spiv3.assesmentofaudit >= ?', $startDate);
+                }
+                if (!empty($endDate)) {
+                    $add('spiv3.assesmentofaudit <= ?', $endDate);
+                }
             }
             if (isset($queryResult['testingpointtype']) && $queryResult['testingpointtype'] != '') {
                 $add('spiv3.testingpointtype = ?', $queryResult['testingpointtype']);
                 if (isset($queryResult['testingpointname']) && trim($queryResult['testingpointname']) != '') {
-                    if (trim($queryResult['testingpointname']) != 'other') {
+                    if (strtolower(trim($queryResult['testingpointtype'])) != 'other') {
                         $add('spiv3.testingpointname = ?', $queryResult['testingpointname']);
                     } else {
                         $add('spiv3.testingpointtype_other = ?', $queryResult['testingpointname']);

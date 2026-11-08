@@ -5,7 +5,6 @@ namespace Application\Model;
 use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Laminas\Db\Adapter\Adapter;
@@ -75,24 +74,23 @@ class SpiFormVer6DownloadTable
                 if (isset($dateField[2]) && trim($dateField[2]) != "") {
                     $endDate = CommonService::isoDateFormat(trim($dateField[2]));
                 }
-                $add('spiv6.assesmentofaudit >= ?', $startDate);
-                $add('spiv6.assesmentofaudit <= ?', $endDate);
+                // A range without its end date ("01-Jan-2024") bounds only the start.
+                if (!empty($startDate)) {
+                    $add('spiv6.assesmentofaudit >= ?', $startDate);
+                }
+                if (!empty($endDate)) {
+                    $add('spiv6.assesmentofaudit <= ?', $endDate);
+                }
             }
             if (isset($queryResult['testingpointtype']) && $queryResult['testingpointtype'] != '') {
-                if (strtolower(trim($queryResult['testingpointtype'])) != 'other') {
-                    $add('spiv6.testingpointtype = ?', $queryResult['testingpointtype']);
-                } else {
-                    $add('spiv6.testingpointtype_other = ?', $queryResult['testingpointtype']);
-                }
+                // An "other" audit stores "other" as its type, so it matches like any type.
+                $add('spiv6.testingpointtype = ?', $queryResult['testingpointtype']);
             }
             if (isset($queryResult['level']) && $queryResult['level'] != '') {
                 $add('spiv6.level = ?', $queryResult['level']);
             }
             if (isset($queryResult['affiliation']) && $queryResult['affiliation'] != '') {
                 $add('spiv6.affiliation = ?', $queryResult['affiliation']);
-            }
-            if (isset($queryResult['level_name']) && $queryResult['level_name'] != '') {
-                $add('spiv6.level_name IN (?)', explode(",", $queryResult['level_name']), ArrayParameterType::STRING);
             }
 
             if (isset($queryResult['AUDIT_SCORE_PERCENTAGE']) && $queryResult['AUDIT_SCORE_PERCENTAGE'] != '') {
