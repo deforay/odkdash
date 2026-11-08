@@ -66,12 +66,7 @@ class SpiFormVer6Table
 
     public function getAllLabels()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_v6_form_labels'));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;//die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $rResult = $this->db->fetchAllAssociative('SELECT * FROM spi_v6_form_labels');
         $response = [];
         foreach ($rResult as $row) {
             $response[$row['field']] = array($row['short_label'], $row['label']);
@@ -1189,34 +1184,16 @@ class SpiFormVer6Table
     public function getAllSubmissionsV6($sortOrder = 'DESC', $limit = 100)
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where('spiv6.status != "deleted"')
-            ->limit($limit)
-            ->order(array("status DESC", "id $sortOrder"));
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country') {
-                // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province') {
-                // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district') {
-                // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-            }
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        // echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return $rResult;
+        $where = ["spiv6.status != 'deleted'"];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        [$columns, $join] = self::addInlineMapping($loginContainer, $where, $values);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv6.*' . $columns . ' FROM spi_form_v_6 AS spiv6' . $join
+            . ' WHERE ' . implode(' AND ', $where)
+            . ' ORDER BY spiv6.status DESC, spiv6.id ' . self::direction($sortOrder) . ' LIMIT ' . (int) $limit,
+            $values
+        );
     }
 
     public function getAllApprovedTestingVolumeV6($params)
@@ -1359,15 +1336,11 @@ class SpiFormVer6Table
             return true;
         }
         $loginContainer = new Container('credo');
-        $hasTokens = !empty($loginContainer->token);
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(['spiv6' => 'spi_form_v_6'])->columns(['id'])
-            ->where(['spiv6.id' => trim((string) $id)]);
-        if ($hasTokens) {
-            $query->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $query = $this->applyV6LocationScope($query, [], $loginContainer);
-        return $this->db->fetchOne($sql->buildSqlString($query)) !== false;
+        $where = ['spiv6.id = ?'];
+        $values = [trim((string) $id)];
+        self::addTokenRule($loginContainer, $where, $values);
+        [, $joins] = self::addLocationScope([], $loginContainer, $where, $values);
+        return $this->db->fetchOne('SELECT spiv6.id FROM spi_form_v_6 AS spiv6' . $joins . ' WHERE ' . implode(' AND ', $where), $values) !== false;
     }
 
     /**
@@ -1429,6 +1402,111 @@ class SpiFormVer6Table
         }
 
         return $query;
+    }
+
+    /** "?, ?, ?" for each of $values. */
+    private static function placeholders(array $values): string
+    {
+        return implode(', ', array_fill(0, count($values), '?'));
+    }
+
+    /**
+     * The user's token rule: audits whose token the user holds. Adds nothing
+     * when the user holds no token.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addTokenRule(Container $loginContainer, array &$where, array &$values): void
+    {
+        if (empty($loginContainer->token)) {
+            return;
+        }
+        $tokens = CommonService::inList($loginContainer->token);
+        $where[] = 'spiv6.token IN (' . self::placeholders($tokens) . ')';
+        array_push($values, ...$tokens);
+    }
+
+    /**
+     * The location mapping several dashboard queries write out in place: an
+     * inner join to the audit's facility, which also adds the facility's
+     * location columns to each row. A country mapping adds country, province
+     * and district. A province or district mapping adds that column only.
+     * Returns the columns and the join, as SQL to append. A mapping type this
+     * code does not know adds nothing, as before.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     * @return array{0: string, 1: string}
+     */
+    private static function addInlineMapping(Container $loginContainer, array &$where, array &$values): array
+    {
+        if (empty($loginContainer->userMappedIds) || !is_array($loginContainer->userMappedIds) || $loginContainer->userMappingType == '') {
+            return ['', ''];
+        }
+        $columns = match ($loginContainer->userMappingType) {
+            'country' => ['country', 'province', 'district'],
+            'province' => ['province'],
+            'district' => ['district'],
+            default => null,
+        };
+        if ($columns === null) {
+            return ['', ''];
+        }
+        $ids = CommonService::inList($loginContainer->userMappedIds);
+        $where[] = 'f.' . $loginContainer->userMappingType . ' IN (' . self::placeholders($ids) . ')';
+        array_push($values, ...$ids);
+        $select = '';
+        foreach ($columns as $column) {
+            $select .= ', f.' . $column . ' AS ' . $column;
+        }
+        return [$select, ' INNER JOIN spi_rt_3_facilities AS f ON f.id = spiv6.facility'];
+    }
+
+    /**
+     * applyV6LocationScope() as SQL with bound values. Returns the columns and
+     * the joins to append. The country, province and district filters add
+     * that column of the facility to each row, as the builder did.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     * @return array{0: string, 1: string}
+     */
+    private static function addLocationScope($parameters, Container $loginContainer, array &$where, array &$values): array
+    {
+        $select = '';
+        $joins = '';
+        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
+            $column = match ($loginContainer->userMappingType) {
+                'country', 'province', 'district' => $loginContainer->userMappingType,
+                default => null,
+            };
+            if ($column !== null) {
+                $ids = CommonService::inList($loginContainer->userMappedIds);
+                $joins .= ' LEFT JOIN spi_rt_3_facilities AS fm ON fm.id = spiv6.facility';
+                $where[] = 'fm.' . $column . ' IN (' . self::placeholders($ids) . ')';
+                array_push($values, ...$ids);
+            }
+        }
+        foreach (['f1' => 'country', 'f2' => 'province', 'f3' => 'district'] as $alias => $column) {
+            if (isset($parameters[$column]) && $parameters[$column] != '') {
+                $ids = CommonService::inList($parameters[$column]);
+                $select .= ', ' . $alias . '.' . $column . ' AS ' . $column;
+                $joins .= ' LEFT JOIN spi_rt_3_facilities AS ' . $alias . ' ON ' . $alias . '.id = spiv6.facility';
+                $where[] = '(' . $alias . '.' . $column . ' IN (' . self::placeholders($ids) . ') OR ' . self::UNLINKED_AUDIT . ')';
+                array_push($values, ...$ids);
+            }
+        }
+        if (isset($parameters['facilityLink']) && $parameters['facilityLink'] == 'unassigned') {
+            $where[] = self::UNLINKED_AUDIT;
+        }
+        return [$select, $joins];
+    }
+
+    /** ASC or DESC from a caller's sort order, as the builder read it. */
+    private static function direction(mixed $sortOrder): string
+    {
+        return strtoupper(trim((string) $sortOrder)) === 'DESC' ? 'DESC' : 'ASC';
     }
 
     public function fetchAllSubmissionsDetails($parameters, $acl)
@@ -1791,9 +1869,6 @@ class SpiFormVer6Table
 
     public function fetchAllV6DuplicateSubmissionsDetails()
     {
-        // echo "sj";die;
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         // Every copy of each duplicated submission, oldest first, so the view can
         // keep the first copy and offer the rest for removal by their own id.
         return $this->db->fetchAllAssociative("SELECT s.`meta-instance-id`, s.`id`, s.`facilityname`, s.`status`, s.`auditroundno`, s.`AUDIT_SCORE_PERCENTAGE`, s.`affiliation`, s.`level`, s.`assesmentofaudit`, s.`testingpointtype`, s.`testingpointname`
@@ -2479,65 +2554,29 @@ class SpiFormVer6Table
     public function fetchAllApprovedSubmissionsV6($sortOrder = 'DESC')
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where(array('spiv6.status' => 'approved'))
-            ->order(array("assesmentofaudit $sortOrder"));
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country') {
-                // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province') {
-                // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district') {
-                // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-            }
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return $rResult;
+        $where = ["spiv6.status = 'approved'"];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        [$columns, $join] = self::addInlineMapping($loginContainer, $where, $values);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv6.*' . $columns . ' FROM spi_form_v_6 AS spiv6' . $join
+            . ' WHERE ' . implode(' AND ', $where) . ' ORDER BY assesmentofaudit ' . self::direction($sortOrder),
+            $values
+        );
     }
 
     public function getHighVolumeSites()
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where(array('spiv6.status' => 'approved'))
-            ->order(array("client_tested_HIV_PM DESC"))
-            ->limit(10);
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            if ($loginContainer->userMappingType === 'country') {
-                // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province') {
-                // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district') {
-                // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-            }
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        return $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv6.status = 'approved'"];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        [$columns, $join] = self::addInlineMapping($loginContainer, $where, $values);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv6.*' . $columns . ' FROM spi_form_v_6 AS spiv6' . $join
+            . ' WHERE ' . implode(' AND ', $where) . ' ORDER BY client_tested_HIV_PM DESC LIMIT 10',
+            $values
+        );
     }
 
     public function fetchAllApprovedV6FormSubmissionsTable($parameters)
@@ -3089,57 +3128,40 @@ class SpiFormVer6Table
     public function fetchSpiV6FormAuditNo()
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->columns(array('assesmentofaudit', 'auditroundno', 'rowCount' => new Expression("COUNT('auditroundno')")))
-            ->group('auditroundno')
-            ->order("auditroundno ASC");
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        if (!empty($loginContainer->userMappedIds) && is_array($loginContainer->userMappedIds) && $loginContainer->userMappingType != '') {
-            // Mapping exists
-            if ($loginContainer->userMappingType === 'country') {
-                // User mapped by country: show mapped country data and all related provinces and districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('country', 'province', 'district'))
-                    ->where(['f.country' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'province') {
-                // User mapped by province: show only mapped provinces
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('province'))
-                    ->where(['f.province' => CommonService::inList($loginContainer->userMappedIds)]);
-            } elseif ($loginContainer->userMappingType === 'district') {
-                // User mapped by district: show only mapped districts
-                $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility', array('district'))
-                    ->where(['f.district' => CommonService::inList($loginContainer->userMappedIds)]);
-            }
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return $rResult;
+        $where = [];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        [$columns, $join] = self::addInlineMapping($loginContainer, $where, $values);
+        return $this->db->fetchAllAssociative(
+            "SELECT spiv6.assesmentofaudit, spiv6.auditroundno, COUNT('auditroundno') AS rowCount" . $columns
+            . ' FROM spi_form_v_6 AS spiv6' . $join
+            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where))
+            . ' GROUP BY auditroundno ORDER BY auditroundno ASC',
+            $values
+        );
     }
 
     //get all faciltiy name
     public function fetchAllFacilityNames()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         $loginContainer = new Container('credo');
-        $uQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('facilityname' => new Expression("DISTINCT facilityname")))
-            ->order('spiv6.facilityname ASC');
-        if (!empty($loginContainer->token)) {
-            $uQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $uQuery = $this->applyV6LocationScope($uQuery, [], $loginContainer);
-        $uQueryStr = $sql->buildSqlString($uQuery);
-        $uResult = $this->db->fetchAllAssociative($uQueryStr);
+        $where = [];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        [$columns, $joins] = self::addLocationScope([], $loginContainer, $where, $values);
+        $uResult = $this->db->fetchAllAssociative(
+            'SELECT DISTINCT facilityname AS facilityname' . $columns . ' FROM spi_form_v_6 AS spiv6' . $joins
+            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where))
+            . ' ORDER BY spiv6.facilityname ASC',
+            $values
+        );
 
-        $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->where('spirt3.status != "deleted"');
-        $aQuery = SpiRtFacilitiesTable::applyMappingToFacilities($aQuery, 'spirt3');
-        $aQueryStr = $sql->buildSqlString($aQuery);
-        $aResult = $this->db->fetchAllAssociative($aQueryStr);
+        $facilityWhere = "spirt3.status != 'deleted'";
+        [$mapped, $mappedIds] = SpiRtFacilitiesTable::mappingCondition('spirt3');
+        if ($mapped !== '') {
+            $facilityWhere .= ' AND ' . $mapped;
+        }
+        $aResult = $this->db->fetchAllAssociative('SELECT spirt3.* FROM spi_rt_3_facilities AS spirt3 WHERE ' . $facilityWhere, $mappedIds);
 
         return array('uniqueName' => $uResult, 'allName' => $aResult);
     }
@@ -3189,17 +3211,10 @@ class SpiFormVer6Table
     public function getSpiV6PendingCount()
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->where('spiv6.status = "pending"');
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return count($rResult);
+        $where = ["spiv6.status = 'pending'"];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        return (int) $this->db->fetchOne('SELECT COUNT(*) FROM spi_form_v_6 AS spiv6 WHERE ' . implode(' AND ', $where), $values);
     }
 
     public function deleteAuditRowData($params)
@@ -4707,56 +4722,32 @@ class SpiFormVer6Table
 
     public function fetchAllTestingPointTypeV6()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-            ->columns(array(new Expression('DISTINCT(testingpointtype) as testingPointType')))
-            ->group('testingpointtype')
-            ->order("testingpointtype ASC");
-        $queryStr = $sql->buildSqlString($query);
-
-        return $this->db->fetchAllAssociative($queryStr);
+        return $this->db->fetchAllAssociative(
+            'SELECT DISTINCT(testingpointtype) AS testingPointType FROM spi_form_v_6 GROUP BY testingpointtype ORDER BY testingpointtype ASC'
+        );
     }
 
     public function fetchTestingPointTypeNamesByTypeV6($params)
     {
-        $typeResult = [];
-        if (isset($params['testingPointType']) && trim($params['testingPointType']) != '') {
-            if ($params['testingPointType'] == 'other') {
-                $column = 'DISTINCT(testingpointtype_other) as testingpointName';
-            } else {
-                $column = 'DISTINCT(testingpointtype) as testingpointName';
-            }
-            $dbAdapter = $this->adapter;
-            $sql = new Sql($this->adapter);
-            $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array(new Expression($column)));
-            if (isset($params['testingPointType']) && trim($params['testingPointType']) != '' && $params['testingPointType'] == 'other') {
-                $query = $query->where('testingpointtype_other IS NOT NULL');
-            } else {
-                $query = $query->where(array('testingpointtype' => $params['testingPointType']));
-            }
-            $queryStr = $sql->buildSqlString($query);
-            //print_r($queryStr);
-            $typeResult = $this->db->fetchAllAssociative($queryStr);
+        if (!isset($params['testingPointType']) || trim($params['testingPointType']) == '') {
+            return [];
         }
-        return $typeResult;
+        if ($params['testingPointType'] == 'other') {
+            return $this->db->fetchAllAssociative(
+                'SELECT DISTINCT(testingpointtype_other) AS testingpointName FROM spi_form_v_6 WHERE testingpointtype_other IS NOT NULL'
+            );
+        }
+        return $this->db->fetchAllAssociative(
+            'SELECT DISTINCT(testingpointtype) AS testingpointName FROM spi_form_v_6 WHERE testingpointtype = ?',
+            [$params['testingPointType']]
+        );
     }
 
     public function fetchSpiV6FormUniqueLevelNames()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('facilityname'))
-            ->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv6.facility');
-        //    ->group("province")
-        //    ->order("province ASC");
-        $queryStr = $sql->buildSqlString($query);
-        //$query = $sql->select()->from(array('spiv6' => 'spi_form_v_3'))
-        //                       ->columns(array(new Expression('DISTINCT(level_name) as level_name')))
-        //                       ->order("level_name ASC");
-        //$queryStr = $sql->buildSqlString($query);
-        return $this->db->fetchAllAssociative($queryStr);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv6.facilityname AS facilityname, f.* FROM spi_form_v_6 AS spiv6 INNER JOIN spi_rt_3_facilities AS f ON f.id = spiv6.facility'
+        );
     }
 
     public function getLatestFormDate($projectId, $formId)
@@ -4787,11 +4778,6 @@ class SpiFormVer6Table
 
     public function fetchSpiV6FormUniqueLevels()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('level' => new Expression("DISTINCT level")))->where("level!=''")
-            ->order("level ASC");
-        $queryStr = $sql->buildSqlString($query);
-        return $this->db->fetchAllAssociative($queryStr);
+        return $this->db->fetchAllAssociative("SELECT DISTINCT level AS level FROM spi_form_v_6 WHERE level != '' ORDER BY level ASC");
     }
 }
