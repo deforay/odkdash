@@ -24,6 +24,7 @@ use Application\Model\EventLogTable;
 use Application\Service\CommonService;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer6Table;
+use Application\Model\SpiRtFacilitiesTable;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -1865,8 +1866,15 @@ class OdkFormService
                 $where[] = 'spiv6.token IN (' . implode(', ', array_fill(0, count($tokens), '?')) . ')';
                 array_push($values, ...$tokens);
             }
+            $from = 'spi_form_v_6 AS spiv6';
+            [$mapped, $mappedIds] = SpiRtFacilitiesTable::mappingCondition('fm');
+            if ($mapped !== '') {
+                $from .= ' LEFT JOIN spi_rt_3_facilities AS fm ON fm.id = spiv6.facility';
+                $where[] = $mapped;
+                array_push($values, ...$mappedIds);
+            }
             $select = implode(', ', array_map(static fn(string $column): string => 'spiv6.' . $db->quoteSingleIdentifier($column), $columns));
-            $sResult = $db->fetchAllAssociative('SELECT ' . $select . ' FROM spi_form_v_6 AS spiv6 WHERE ' . implode(' AND ', $where), $values);
+            $sResult = $db->fetchAllAssociative('SELECT ' . $select . ' FROM ' . $from . ' WHERE ' . implode(' AND ', $where), $values);
 
             $output = [];
             $outputScore = [];
