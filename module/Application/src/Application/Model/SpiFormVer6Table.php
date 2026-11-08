@@ -841,7 +841,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
                     ->where(array('spiv6.uuid' => $data["uuid"]));
                 $sQueryStr = $sql->buildSqlString($sQuery);
-                $sResult = $dbAdapter->query($sQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                $sResult = $this->db->fetchAssociative($sQueryStr);
                 $currentFormId = null;
                 if (empty($sResult) || $data["uuid"] != $sResult["uuid"]) {
                     $insert->values($par);
@@ -1344,7 +1344,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             $query->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
         }
         $query = $this->applyV6LocationScope($query, [], $loginContainer);
-        return $this->adapter->query($sql->buildSqlString($query), $this->adapter::QUERY_MODE_EXECUTE)->count() > 0;
+        return $this->db->fetchOne($sql->buildSqlString($query)) !== false;
     }
 
     /**
@@ -1736,18 +1736,17 @@ class SpiFormVer6Table extends AbstractTableGateway
         //get earliest date
         $eQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
         $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
-        $eResult = $dbAdapter->query($eQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $eResult = $this->db->fetchAssociative($eQueryStr);
         //get duplicate value
         $dpResult = $this->db->fetchAllAssociative("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_6 GROUP BY `meta-instance-id` HAVING c > 1");
 
         /* Audits with no facility link, counted across the whole instance rather than
          * the current filters, the way the duplicate count works. They are the rows
          * `audits:unlinked` reports; the banner gives them a way in from the UI. */
-        $ulResult = $dbAdapter->query(
+        $ulResult = $this->db->fetchAssociative(
             'SELECT COUNT(*) AS c FROM `spi_form_v_6` spiv6
-              WHERE spiv6.status != "deleted" AND ' . self::UNLINKED_AUDIT,
-            $dbAdapter::QUERY_MODE_EXECUTE
-        )->current();
+              WHERE spiv6.status != "deleted" AND ' . self::UNLINKED_AUDIT
+        );
 
         $output['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
         $output['levelZeroCount'] = count($levelZero);
@@ -1783,26 +1782,25 @@ class SpiFormVer6Table extends AbstractTableGateway
         $sQuery = $sql->select()->from(['spiv6' => 'spi_form_v_6'])
             ->where(['spiv6.id' => $id]);
         $sQueryStr = $sql->buildSqlString($sQuery);
-        /** @var \Laminas\Db\Adapter\Driver\ResultInterface $sResult */
-        $sResult = $this->adapter->query($sQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
+        $sResult = $this->fetchRowObject($sQueryStr);
         if ($sResult) {
             $searchFacility = false;
-            if (trim($sResult->facility) != '' || trim($sResult->facilityid) != '' || trim($sResult->facilityname) != '') {
+            if (trim($sResult['facility']) != '' || trim($sResult['facilityid']) != '' || trim($sResult['facilityname']) != '') {
                 $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
                     ->columns(['fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude']);
-                if (isset($sResult->facility) && $sResult->facility > 0) {
-                    $fQuery = $fQuery->where(["spirt3.id" => $sResult->facility]);
+                if (isset($sResult['facility']) && $sResult['facility'] > 0) {
+                    $fQuery = $fQuery->where(["spirt3.id" => $sResult['facility']]);
                     $searchFacility = true;
-                } elseif (isset($sResult->facilityid) && $sResult->facilityid != '') {
-                    $fQuery = $fQuery->where(["spirt3.facility_id" => $sResult->facilityid]);
+                } elseif (isset($sResult['facilityid']) && $sResult['facilityid'] != '') {
+                    $fQuery = $fQuery->where(["spirt3.facility_id" => $sResult['facilityid']]);
                     $searchFacility = true;
-                } elseif (isset($sResult->facilityname) && $sResult->facilityname != '') {
-                    $fQuery = $fQuery->where(["spirt3.facility_name" => $sResult->facilityname]);
+                } elseif (isset($sResult['facilityname']) && $sResult['facilityname'] != '') {
+                    $fQuery = $fQuery->where(["spirt3.facility_name" => $sResult['facilityname']]);
                     $searchFacility = true;
                 }
                 if ($searchFacility) {
                     $fQueryStr = $sql->buildSqlString($fQuery);
-                    $sResult['facilityInfo'] = $this->adapter->query($fQueryStr, $this->adapter::QUERY_MODE_EXECUTE)->current();
+                    $sResult['facilityInfo'] = $this->fetchRowObject($fQueryStr);
                 }
             }
             //if ($pdfDowload == 'yes') {
@@ -1817,6 +1815,16 @@ class SpiFormVer6Table extends AbstractTableGateway
             }
         }
         return $sResult;
+    }
+
+    /**
+     * One row as Laminas returned it: an object whose columns also read as
+     * properties, or null. Templates read these rows with `->`.
+     */
+    private function fetchRowObject(string $sql): ?\ArrayObject
+    {
+        $row = $this->db->fetchAssociative($sql);
+        return $row === false ? null : new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS);
     }
 
     public function updateFormMetadata($id, $key, $value, $formMetaData)
@@ -2887,8 +2895,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                     ->columns(array('id'))
                     ->where(array('spirt3.facility_name' => $params['testingFacilityName']));
                 $fQueryStr = $sql->buildSqlString($fQuery);
-                /** @var \Laminas\Db\Adapter\Driver\ResultInterface $fResult */
-                $fResult = $dbAdapter->query($fQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+                $fResult = $this->db->fetchAssociative($fQueryStr);
                 if ($fResult) {
                     $id = $fResult['id'];
                     $facilityDb->updateFacilityInfo($id, $params);
@@ -3143,7 +3150,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 ->columns(array('facility_name', 'email'))
                 ->where(array('spiv3_fclt.facility_name' => $params['facilityName']));
             $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $dbAdapter->query($aQueryStr, $dbAdapter::QUERY_MODE_EXECUTE)->current();
+            $aResult = $this->fetchRowObject($aQueryStr);
         }
         return array('audits' => $audits, 'facilityProfile' => $aResult);
     }
@@ -3174,15 +3181,14 @@ class SpiFormVer6Table extends AbstractTableGateway
              * once the row reads "deleted" nothing in the log says which site it
              * belonged to. */
             $sql = new Sql($this->adapter);
-            $before = $this->adapter->query(
+            $before = $this->db->fetchAssociative(
                 $sql->buildSqlString(
                     $sql->select()
                         ->from(['spiv6' => 'spi_form_v_6'])
                         ->columns(['facilityname', 'assesmentofaudit', 'auditroundno', 'status'])
                         ->where(['spiv6.id' => $deleteId])
-                ),
-                $this->adapter::QUERY_MODE_EXECUTE
-            )->current();
+                )
+            );
 
             $result = $this->update(['status' => 'deleted'], ['id' => $deleteId]);
             if ($result > 0) {
@@ -3824,11 +3830,11 @@ class SpiFormVer6Table extends AbstractTableGateway
             $summaryColumns['levelFour'] = new Expression("SUM($score >= 90)");
         }
         $summaryQuery = $sql->select()->from(['t' => $sQuery])->columns($summaryColumns);
-        $summary = $dbAdapter->query($sql->buildSqlString($summaryQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current();
+        $summary = $this->db->fetchAssociative($sql->buildSqlString($summaryQuery));
         $iFilteredTotal = (int) $summary['filtered'];
 
         $totalQuery = $sql->select()->from(['t' => $tQuery])->columns(['total' => new Expression('COUNT(*)')]);
-        $iTotal = (int) $dbAdapter->query($sql->buildSqlString($totalQuery), $dbAdapter::QUERY_MODE_EXECUTE)->current()['total'];
+        $iTotal = (int) $this->db->fetchOne($sql->buildSqlString($totalQuery));
 
         if (trim($sOrder) === 'desc') {
             $sOrder = '';
