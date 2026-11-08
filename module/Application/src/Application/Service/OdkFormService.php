@@ -1839,6 +1839,16 @@ class OdkFormService
                 $values[] = $startDate;
                 $values[] = $endDate;
             }
+            // The testing point filter, as the V6 list applies it.
+            if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
+                if (trim($params['testPoint']) != 'other') {
+                    $where[] = 'spiv6.testingpointtype = ?';
+                    $values[] = $params['testPoint'];
+                } else {
+                    $where[] = 'spiv6.testingpointtype_other = ?';
+                    $values[] = $params['testPointName'] ?? '';
+                }
+            }
             if ($params['level'] != '') {
                 $where[] = 'spiv6.level = ?';
                 $values[] = $params['level'];

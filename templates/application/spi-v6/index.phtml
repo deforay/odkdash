@@ -979,6 +979,7 @@ $userMappingType = $sessionLogin->userMappingType;
     //var province = $('#province').val();
     var scoreLevel = $('#scoreLevel').val();
     var testPoint = $('#testPoint').val();
+    var testPointName = $('#testPointName').val();
     $.post("<?php echo $this->url('spi-v6-form', array('action' => 'exportSAndD')); ?>", {
       dateRange: dateRange,
       auditRndNo: auditRndNo,
@@ -986,7 +987,8 @@ $userMappingType = $sessionLogin->userMappingType;
       affiliation: affiliation,
       // province: province,
       scoreLevel: scoreLevel,
-      testPoint: testPoint
+      testPoint: testPoint,
+      testPointName: testPointName
     },
       function (data) {
         if (data == "" || data == null || data == undefined) {
