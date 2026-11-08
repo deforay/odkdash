@@ -14,7 +14,6 @@ use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
 use Application\Model\SpiRtFacilitiesTable;
-use Laminas\Db\TableGateway\AbstractTableGateway;
 
 
 
@@ -23,17 +22,34 @@ use Laminas\Db\TableGateway\AbstractTableGateway;
  *
  * @author amit
  */
-class SpiFormVer6Table extends AbstractTableGateway
+class SpiFormVer6Table
 {
+    private const string TABLE = 'spi_form_v_6';
 
-    protected $table = 'spi_form_v_6';
-    protected $adapter;
     private readonly \Doctrine\DBAL\Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(private readonly Adapter $adapter)
     {
-        $this->adapter = $adapter;
         $this->db = Dbal::connection($adapter);
+    }
+
+    /**
+     * Updates the audits that match $where and returns the number changed.
+     * Column names are quoted, as Laminas quoted them.
+     */
+    private function updateAudits(array $set, array $where): int
+    {
+        return (int) $this->db->update(self::TABLE, $this->quoteColumns($set), $this->quoteColumns($where));
+    }
+
+    /** Quotes each key, so a column such as `meta-instance-id` works in DBAL's insert and update. */
+    private function quoteColumns(array $row): array
+    {
+        $quoted = [];
+        foreach ($row as $column => $value) {
+            $quoted[$this->db->quoteSingleIdentifier((string) $column)] = $value;
+        }
+        return $quoted;
     }
 
 
@@ -513,7 +529,6 @@ class SpiFormVer6Table extends AbstractTableGateway
 
                 $sql = new Sql($this->adapter);
 
-                $insert = $sql->insert('spi_form_v_6');
                 if (isset($data['testingpointname']) && trim($data['testingpointname']) == "") {
                     $data['testingpointname'] = $data['testingpointtype'];
                 }
@@ -844,11 +859,8 @@ class SpiFormVer6Table extends AbstractTableGateway
                 $sResult = $this->db->fetchAssociative($sQueryStr);
                 $currentFormId = null;
                 if (empty($sResult) || $data["uuid"] != $sResult["uuid"]) {
-                    $insert->values($par);
-                    $selectString = $sql->buildSqlString($insert);
-                    /** @var \Laminas\Db\Adapter\Driver\ResultInterface $results */
-                    $results = $dbAdapter->query($selectString, $dbAdapter::QUERY_MODE_EXECUTE);
-                    $currentFormId = $results->getGeneratedValue();
+                    $this->db->insert(self::TABLE, $this->quoteColumns($par));
+                    $currentFormId = $this->db->lastInsertId();
                 } else {
                     //Lost manually updated data for auto syn update
                     //$this->update($par, array('uuid' => $data["uuid"]));
@@ -1840,7 +1852,7 @@ class SpiFormVer6Table extends AbstractTableGateway
         $existingMetadata[$key] = $value;
         $updateData = ['form_metadata' => json_encode($existingMetadata)];
 
-        $this->update($updateData, ['id' => $id]);
+        $this->updateAudits($updateData, ['id' => $id]);
     }
 
     public function updateAuditMailSentStatus($auditIds)
@@ -2442,7 +2454,7 @@ class SpiFormVer6Table extends AbstractTableGateway
     {
         if (trim($id) != "" && trim($status) != '') {
             $data = array('status' => $status);
-            $this->update($data, array('id' => $id));
+            $this->updateAudits($data, ['id' => $id]);
         }
         return $id;
     }
@@ -2862,8 +2874,10 @@ class SpiFormVer6Table extends AbstractTableGateway
             $eventTable = new EventLogTable($dbAdapter);
             $sql = new Sql($this->adapter);
             $formId = base64_decode($params['formId']);
-            $summationData = [];
+            // Without corrective action rows in the post, the column stays NULL.
+            $summationData = null;
             if (isset($params['sectionNo'])) {
+                $summationData = [];
                 $n = count($params['sectionNo']);
                 for ($i = 0; $i < $n; $i++) {
                     $rowId = $params['rowId'][$i];
@@ -3045,7 +3059,7 @@ class SpiFormVer6Table extends AbstractTableGateway
             );
             // \Zend\Debug\Debug::dump($data);die;
 
-            $result = $this->update($data, array('id' => $formId));
+            $result = $this->updateAudits($data, ['id' => $formId]);
             $subject = '';
             $eventType = 'Update-SPI RT Form 6-Request';
             $action = $user_name . ' has updated the SPI RT Form 6 information ' . $formId;
@@ -3190,7 +3204,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 )
             );
 
-            $result = $this->update(['status' => 'deleted'], ['id' => $deleteId]);
+            $result = $this->updateAudits(['status' => 'deleted'], ['id' => $deleteId]);
             if ($result > 0) {
                 $loginContainer = new Container('credo');
                 $userName = $loginContainer->login ?? 'system';
@@ -4751,7 +4765,7 @@ class SpiFormVer6Table extends AbstractTableGateway
                 'facilityid' => $params['facilityId'],
                 'facilityname' => $params['facilityName'],
             );
-            $this->update($data, array('facility' => $id));
+            $this->updateAudits($data, ['facility' => $id]);
         }
         return $id;
     }
