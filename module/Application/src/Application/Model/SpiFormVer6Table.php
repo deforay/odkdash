@@ -533,8 +533,6 @@ class SpiFormVer6Table
 
             try {
 
-                $sql = new Sql($this->adapter);
-
                 if (isset($data['testingpointname']) && trim($data['testingpointname']) == "") {
                     $data['testingpointname'] = $data['testingpointtype'];
                 }
@@ -858,11 +856,10 @@ class SpiFormVer6Table
                     'central_project_id' => $projectId ?? null,
                     'central_form_id' => $formId ?? null,
                 );
-                $dbAdapter = $this->adapter;
-                $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                    ->where(array('spiv6.uuid' => $data["uuid"]));
-                $sQueryStr = $sql->buildSqlString($sQuery);
-                $sResult = $this->db->fetchAssociative($sQueryStr);
+                $where = [];
+                $values = [];
+                self::addEquals('spiv6.uuid', $data["uuid"], $where, $values);
+                $sResult = $this->db->fetchAssociative('SELECT spiv6.* FROM spi_form_v_6 AS spiv6 WHERE ' . implode(' AND ', $where), $values);
                 $currentFormId = null;
                 if (empty($sResult) || $data["uuid"] != $sResult["uuid"]) {
                     $this->db->insert(self::TABLE, $this->quoteColumns($par));
@@ -1836,29 +1833,27 @@ class SpiFormVer6Table
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
         $trackTable = new EventLogTable($this->adapter);
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(['spiv6' => 'spi_form_v_6'])
-            ->where(['spiv6.id' => $id]);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $sResult = $this->fetchRowObject($sQueryStr);
+        $where = [];
+        $values = [];
+        self::addEquals('spiv6.id', $id, $where, $values);
+        $sResult = $this->fetchRowObject('SELECT spiv6.* FROM spi_form_v_6 AS spiv6 WHERE ' . implode(' AND ', $where), $values);
         if ($sResult) {
-            $searchFacility = false;
             if (trim($sResult['facility']) != '' || trim($sResult['facilityid']) != '' || trim($sResult['facilityname']) != '') {
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(['fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude']);
+                $match = null;
                 if (isset($sResult['facility']) && $sResult['facility'] > 0) {
-                    $fQuery = $fQuery->where(["spirt3.id" => $sResult['facility']]);
-                    $searchFacility = true;
+                    $match = ['spirt3.id', $sResult['facility']];
                 } elseif (isset($sResult['facilityid']) && $sResult['facilityid'] != '') {
-                    $fQuery = $fQuery->where(["spirt3.facility_id" => $sResult['facilityid']]);
-                    $searchFacility = true;
+                    $match = ['spirt3.facility_id', $sResult['facilityid']];
                 } elseif (isset($sResult['facilityname']) && $sResult['facilityname'] != '') {
-                    $fQuery = $fQuery->where(["spirt3.facility_name" => $sResult['facilityname']]);
-                    $searchFacility = true;
+                    $match = ['spirt3.facility_name', $sResult['facilityname']];
                 }
-                if ($searchFacility) {
-                    $fQueryStr = $sql->buildSqlString($fQuery);
-                    $sResult['facilityInfo'] = $this->fetchRowObject($fQueryStr);
+                if ($match !== null) {
+                    $sResult['facilityInfo'] = $this->fetchRowObject(
+                        'SELECT spirt3.id AS fId, spirt3.facility_id AS ffId, spirt3.facility_name AS fName, spirt3.email AS fEmail,'
+                        . ' spirt3.contact_person AS fCPerson, spirt3.latitude AS fLatitude, spirt3.longitude AS fLongitude'
+                        . ' FROM spi_rt_3_facilities AS spirt3 WHERE ' . $match[0] . ' = ?',
+                        [$match[1]]
+                    );
                 }
             }
             //if ($pdfDowload == 'yes') {
@@ -1903,17 +1898,11 @@ class SpiFormVer6Table
 
     public function updateAuditMailSentStatus($auditIds)
     {
-        $auditIdArray = explode(",", $auditIds);
-
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()
-            ->from('spi_form_v_6')
-            ->columns(['id', 'form_metadata'])
-            ->where(['id' => $auditIdArray]);
-
-        $queryStr = $sql->buildSqlString($query);
-        $results = $this->db->fetchAllAssociative($queryStr);
+        $auditIdArray = explode(",", (string) $auditIds);
+        $results = $this->db->fetchAllAssociative(
+            'SELECT id, form_metadata FROM spi_form_v_6 WHERE id IN (' . self::placeholders($auditIdArray) . ')',
+            $auditIdArray
+        );
 
         foreach ($results as $row) {
             $this->updateFormMetadata($row['id'], 'audit_email_sent', 'yes', $row['form_metadata']);
@@ -2468,7 +2457,6 @@ class SpiFormVer6Table
             $user_name = $sessionLogin->login;
             $dbAdapter = $this->adapter;
             $eventTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($this->adapter);
             $formId = base64_decode($params['formId']);
             // Without corrective action rows in the post, the column stays NULL.
             $summationData = null;
@@ -2501,11 +2489,10 @@ class SpiFormVer6Table
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id, $params);
             } elseif (trim($params['testingFacilityName']) != '') {
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('id'))
-                    ->where(array('spirt3.facility_name' => $params['testingFacilityName']));
-                $fQueryStr = $sql->buildSqlString($fQuery);
-                $fResult = $this->db->fetchAssociative($fQueryStr);
+                $fResult = $this->db->fetchAssociative(
+                    'SELECT spirt3.id AS id FROM spi_rt_3_facilities AS spirt3 WHERE spirt3.facility_name = ?',
+                    [$params['testingFacilityName']]
+                );
                 if ($fResult) {
                     $id = $fResult['id'];
                     $facilityDb->updateFacilityInfo($id, $params);
@@ -2759,14 +2746,9 @@ class SpiFormVer6Table
              * The id on its own is no help afterwards: it is shown in no column, and
              * once the row reads "deleted" nothing in the log says which site it
              * belonged to. */
-            $sql = new Sql($this->adapter);
             $before = $this->db->fetchAssociative(
-                $sql->buildSqlString(
-                    $sql->select()
-                        ->from(['spiv6' => 'spi_form_v_6'])
-                        ->columns(['facilityname', 'assesmentofaudit', 'auditroundno', 'status'])
-                        ->where(['spiv6.id' => $deleteId])
-                )
+                'SELECT facilityname, assesmentofaudit, auditroundno, status FROM spi_form_v_6 WHERE id = ?',
+                [$deleteId]
             );
 
             $result = $this->updateAudits(['status' => 'deleted'], ['id' => $deleteId]);
