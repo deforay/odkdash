@@ -2937,12 +2937,12 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            if (!$queryContainer->exportQueryV6 instanceof Select) {
+            $stored = $queryContainer->exportQueryV6;
+            if (!is_array($stored)) {
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportQueryV6);
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
             // print_r(count($sResult)); die;
             if (!empty($sResult)) {
 
