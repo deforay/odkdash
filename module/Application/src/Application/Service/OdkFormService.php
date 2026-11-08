@@ -1765,7 +1765,6 @@ class OdkFormService
             $username = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $trackTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -1826,41 +1825,48 @@ class OdkFormService
                 }
             }
 
-            $sQuery = $sql->select()->from(array('spiv6' => 'spi_form_v_6'))
-                ->columns(array('formId', 'formVersion', 'meta-instance-id', 'meta-model-version', 'meta-ui-version', 'meta-submission-date', 'meta-is-complete', 'meta-date-marked-as-complete', 'start', 'end', 'today', 'deviceid', 'assesmentofaudit', 'auditEndTime', 'auditStartTime', 'auditroundno', 'facility', 'facilityname', 'testingpointtype', 'testingpointtype_other', 'physicaladdress', 'level', 'level_other', 'affiliation', 'affiliation_other', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE_ROUNDED', 'DO_SURVEILLANCE', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_Q_3_TESTS_RECORDED_RECENCY', 'S0_C_3_TESTS_RECORDED_RECENCY', 'S0_Q_4_PROCESS_DOCUMENTED', 'S0_C_4_PROCESS_DOCUMENTED', 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS', 'S0_C_7_DOCUMENTING_PROTOCOL_ERRORS', 'D0_N_1_DIAGNOSED_HIV_ABOVE_15', 'D0_D_1_DIAGNOSED_HIV_ABOVE_15', 'D0_S_1_DIAGNOSED_HIV_ABOVE_15', 'D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_N_5_DOCUMENTED_AND_REFUSED', 'D0_D_5_DOCUMENTED_AND_REFUSED', 'D0_S_5_DOCUMENTED_AND_REFUSED', 'D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'))
-                ->where('spiv6.status != "deleted"');
-
+            $columns = ['formId', 'formVersion', 'meta-instance-id', 'meta-model-version', 'meta-ui-version', 'meta-submission-date', 'meta-is-complete', 'meta-date-marked-as-complete', 'start', 'end', 'today', 'deviceid', 'assesmentofaudit', 'auditEndTime', 'auditStartTime', 'auditroundno', 'facility', 'facilityname', 'testingpointtype', 'testingpointtype_other', 'physicaladdress', 'level', 'level_other', 'affiliation', 'affiliation_other', 'NumberofTester', 'AUDIT_SCORE_PERCENTAGE', 'AUDIT_SCORE_PERCENTAGE_ROUNDED', 'DO_SURVEILLANCE', 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_C_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY', 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_C_2_COUNSELORS_FOLLOWING_PROTOCOL', 'S0_Q_3_TESTS_RECORDED_RECENCY', 'S0_C_3_TESTS_RECORDED_RECENCY', 'S0_Q_4_PROCESS_DOCUMENTED', 'S0_C_4_PROCESS_DOCUMENTED', 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_C_5_RESULTS_RETURNED_IN_TWO_WEEKS', 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_C_6_PROTOCOL_VIOLATION_DOCUMENTED', 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS', 'S0_C_7_DOCUMENTING_PROTOCOL_ERRORS', 'D0_N_1_DIAGNOSED_HIV_ABOVE_15', 'D0_D_1_DIAGNOSED_HIV_ABOVE_15', 'D0_S_1_DIAGNOSED_HIV_ABOVE_15', 'D0_N_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_D_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION', 'D0_N_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_D_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD', 'D0_N_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_D_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD', 'D0_N_5_DOCUMENTED_AND_REFUSED', 'D0_D_5_DOCUMENTED_AND_REFUSED', 'D0_S_5_DOCUMENTED_AND_REFUSED', 'D0_N_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_D_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI', 'D0_N_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_D_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI', 'D0_N_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_D_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI', 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'];
+            $db = $this->sm->get(Connection::class);
+            $where = ["spiv6.status != 'deleted'"];
+            $values = [];
             if ($params['auditRndNo'] != '') {
-                $sQuery = $sQuery->where(['spiv6.auditroundno' => $params['auditRndNo']]);
+                $where[] = 'spiv6.auditroundno = ?';
+                $values[] = $params['auditRndNo'];
             }
             if (trim($startDate) != "" && trim($endDate) != "") {
-                $sQuery = $sQuery->where(['spiv6.assesmentofaudit >= ?' => $startDate, 'spiv6.assesmentofaudit <= ?' => $endDate]);
+                $where[] = 'spiv6.assesmentofaudit >= ? AND spiv6.assesmentofaudit <= ?';
+                $values[] = $startDate;
+                $values[] = $endDate;
             }
             if ($params['level'] != '') {
-                $sQuery = $sQuery->where(['spiv6.level' => $params['level']]);
+                $where[] = 'spiv6.level = ?';
+                $values[] = $params['level'];
             }
             if ($params['affiliation'] != '') {
-                $sQuery = $sQuery->where(['spiv6.affiliation' => $params['affiliation']]);
+                $where[] = 'spiv6.affiliation = ?';
+                $values[] = $params['affiliation'];
             }
 
             if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
                 if ($params['scoreLevel'] == 0) {
-                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE < 40");
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE < 40";
                 } elseif ($params['scoreLevel'] == 1) {
-                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59");
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59";
                 } elseif ($params['scoreLevel'] == 2) {
-                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79");
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79";
                 } elseif ($params['scoreLevel'] == 3) {
-                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89");
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89";
                 } elseif ($params['scoreLevel'] == 4) {
-                    $sQuery = $sQuery->where("spiv6.AUDIT_SCORE_PERCENTAGE >= 90");
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 90";
                 }
             }
             if (!empty($loginContainer->token)) {
-                $sQuery = $sQuery->where(['spiv6.token' => CommonService::inList($loginContainer->token)]);
+                $tokens = CommonService::inList($loginContainer->token);
+                $where[] = 'spiv6.token IN (' . implode(', ', array_fill(0, count($tokens), '?')) . ')';
+                array_push($values, ...$tokens);
             }
-            $sQueryStr = $sql->buildSqlString($sQuery);
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+            $select = implode(', ', array_map(static fn(string $column): string => 'spiv6.' . $db->quoteSingleIdentifier($column), $columns));
+            $sResult = $db->fetchAllAssociative('SELECT ' . $select . ' FROM spi_form_v_6 AS spiv6 WHERE ' . implode(' AND ', $where), $values);
 
             $output = [];
             $outputScore = [];
