@@ -644,6 +644,15 @@ class SpiFormVer3Table
                     'central_form_id' => $formId,
                 );
                 $dbAdapter = $this->adapter;
+                // A submission already stored is skipped, as in V6, so a sync that
+                // fetches it again does not add a second copy.
+                $stored = $this->db->fetchOne(
+                    'SELECT id FROM spi_form_v_3 WHERE `meta-instance-id` = ? LIMIT 1',
+                    [$par['meta-instance-id']]
+                );
+                if ($stored !== false) {
+                    continue;
+                }
                 $this->db->insert(self::TABLE, $this->quoteColumns($par));
                 $insertedId = $this->db->lastInsertId();
 
@@ -3494,6 +3503,9 @@ class SpiFormVer3Table
 
     public function getLatestFormDate($projectId, $formId)
     {
+        // The day the newest audit was filled in, which comes before its
+        // submission. The sync then fetches recent submissions again, which
+        // retries one that failed to save. saveOdkCentralData skips the rest.
         $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_3 WHERE central_project_id = ? AND central_form_id = ?";
         return $this->db->fetchAllAssociative($query, [$projectId, $formId]);
     }
