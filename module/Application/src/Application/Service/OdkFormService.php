@@ -3213,25 +3213,49 @@ class OdkFormService
      * decode), saves per-page so a crash mid-sync only loses the in-flight
      * page, and parallelises media downloads with Guzzle Pool. Driven by an
      * optional SymfonyStyle for progress / sign-of-life.
+     *
+     * Returns true when every project synced in full. Returns false when
+     * another sync holds the lock, a project failed, or a submission was not
+     * saved in full. It tries every project either way.
      */
-    public function syncOdkCentralV6(?SymfonyStyle $io = null): void
+    public function syncOdkCentralV6(?SymfonyStyle $io = null): bool
     {
         $configResult = $this->sm->get('Config');
         $projects = $configResult['odkcentral']['spirrt'] ?? [];
         if (!is_array($projects) || $projects === []) {
             $io?->warning('No spirrt projects configured under odkcentral.');
-            return;
+            return true;
         }
 
+        // Two syncs at once can both store the same submission, as each
+        // checks for it before it inserts. A long first sync must not
+        // overlap the next scheduled one. The lock ends with the process.
+        $varFolder = dirname(__DIR__, 5) . '/var';
+        if (!is_dir($varFolder)) {
+            @mkdir($varFolder, 0775, true);
+        }
+        $lock = @fopen($varFolder . '/sync-central-v6.lock', 'c');
+        if ($lock === false) {
+            throw new \RuntimeException("Cannot open the sync lock in $varFolder");
+        }
+        if (!flock($lock, LOCK_EX | LOCK_NB)) {
+            $io?->warning('Another V6 sync is running, so this one stops.');
+            return false;
+        }
+
+        $allSynced = true;
         foreach ($projects as $item) {
             if (empty($item['url']) || empty($item['projectId']) || empty($item['formId'])) {
                 $io?->warning('Skipping project entry: missing url / projectId / formId.');
                 continue;
             }
             try {
-                $this->syncProjectV6($item, $io);
+                if (!$this->syncProjectV6($item, $io)) {
+                    $allSynced = false;
+                }
             } catch (\Throwable $e) {
                 // One bad project shouldn't abort the rest of the sync.
+                $allSynced = false;
                 $io?->error(sprintf(
                     'Project %s/%s failed: %s',
                     $item['projectId'] ?? '?',
@@ -3242,6 +3266,7 @@ class OdkFormService
                 error_log($e->getTraceAsString());
             }
         }
+        return $allSynced;
     }
 
     /** Page size for the OData submissions listing. */
@@ -3270,7 +3295,8 @@ class OdkFormService
     /** Media fields at the top level of the submission. */
     private const MEDIA_FIELDS_FLAT = ['sitephoto', 'sitephoto2', 'auditorSignature'];
 
-    private function syncProjectV6(array $item, ?SymfonyStyle $io): void
+    /** Returns false when a submission was not saved in full. */
+    private function syncProjectV6(array $item, ?SymfonyStyle $io): bool
     {
         $spirrtURL = rtrim((string) $item['url'], '/');
         $projectId = $item['projectId'];
@@ -3303,13 +3329,13 @@ class OdkFormService
         ]);
         if ($authResp->getStatusCode() !== 200) {
             $io?->error('Auth failed: HTTP ' . $authResp->getStatusCode());
-            return;
+            return false;
         }
         $authBody = json_decode($authResp->getBody()->getContents(), true);
         $authToken = $authBody['token'] ?? null;
         if (!$authToken) {
             $io?->error('Auth response had no token.');
-            return;
+            return false;
         }
         $authHeaders = ['Authorization' => 'Bearer ' . $authToken];
 
@@ -3472,6 +3498,7 @@ class OdkFormService
         } else {
             $io?->success(sprintf('Saved %d new submission(s) of %d fetched, across %d page(s).', $savedCount, $totalSeen, $pageNumber));
         }
+        return $failedDates === [];
     }
 
     /**
