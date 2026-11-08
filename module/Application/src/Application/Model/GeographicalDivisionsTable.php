@@ -302,11 +302,11 @@ class GeographicalDivisionsTable
         if (isset($parameters['iSortCol_0'])) {
             $sOrder = "";
             for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ",";
+                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true" && isset($aColumns[(int) $parameters['iSortCol_' . $i]])) {
+                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ", ";
                 }
             }
-            $sOrder = substr_replace($sOrder, "", -1);
+            $sOrder = rtrim($sOrder, ", ");
             if ($sOrder != "") {
                 $sQuery->order($sOrder);
             }
