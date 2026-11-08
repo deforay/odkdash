@@ -9,8 +9,8 @@ declare(strict_types=1);
  * Plain SQL migrations versioned as semver. Reads files from /migrations/,
  * compares against DB version stored in global_config (global_name =
  * 'db_version'). App version is read from composer.json (top-level `version`
- * field) — single source of truth. Uses the Laminas Db Adapter so config
- * merge, credentials, driver options, and connection lifecycle stay
+ * field) — single source of truth. Uses the web app's DBAL connection, so
+ * config merge, credentials, driver options, and connection lifecycle stay
  * consistent with the web app.
  *
  * Uses PhpMyAdmin\SqlParser to split statements (handles triggers, procedures,
@@ -38,8 +38,8 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Composer\Semver\Comparator;
-use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Adapter\Exception\ExceptionInterface as DbException;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception as DbException;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
 use PhpMyAdmin\SqlParser\TokenType;
@@ -69,8 +69,8 @@ if (!is_array($mergedDb) || !isset($mergedDb['driver'])) {
     exit(1);
 }
 
-/** @var Adapter $adapter */
-$adapter = $services->get(Adapter::class);
+/** @var \Doctrine\DBAL\Connection $db */
+$db = $services->get(Connection::class);
 
 const MIG_NOT_HANDLED = 0;
 const MIG_EXECUTED = 1;
@@ -85,99 +85,75 @@ $dryRun = isset($args['dry-run']);
 $verbose = isset($args['verbose']) || (bool) getenv('MIG_VERBOSE');
 $fromVersion = $args['version'] ?? null;
 
-/* ---------------------- Adapter helpers ---------------------- */
+/* ---------------------- Connection helpers ---------------------- */
 
 /** Run a statement that returns no result set (DDL, INSERT/UPDATE/DELETE). */
-function run_sql(Adapter $adapter, string $sql, array $params = []): void
+function run_sql(Connection $db, string $sql, array $params = []): void
 {
-    if ($params === []) {
-        $adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
-    } else {
-        $adapter->query($sql, $params);
-    }
+    $db->executeStatement($sql, $params);
 }
 
 /** Fetch a single scalar (first column of first row), or null. */
-function fetch_scalar(Adapter $adapter, string $sql, array $params = []): mixed
+function fetch_scalar(Connection $db, string $sql, array $params = []): mixed
 {
-    $result = $params === []
-        ? $adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)
-        : $adapter->query($sql, $params);
-    foreach ($result as $row) {
-        $arr = is_array($row) ? $row : (array) $row;
-        $val = reset($arr);
-        return $val === false ? null : $val;
-    }
-    return null;
+    $val = $db->fetchOne($sql, $params);
+    return $val === false ? null : $val;
 }
 
 /** Fetch a single-column list. */
-function fetch_column(Adapter $adapter, string $sql, array $params = []): array
+function fetch_column(Connection $db, string $sql, array $params = []): array
 {
-    $result = $params === []
-        ? $adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)
-        : $adapter->query($sql, $params);
-    $out = [];
-    foreach ($result as $row) {
-        $arr = is_array($row) ? $row : (array) $row;
-        $val = reset($arr);
-        if ($val !== false) {
-            $out[] = $val;
-        }
-    }
-    return $out;
+    return $db->fetchFirstColumn($sql, $params);
 }
 
 /** Extract the underlying MySQL error code from a wrapped DB exception. */
 function db_error_code(Throwable $e): string
 {
-    // The MySQL error number. A query run directly throws a PDOException
-    // whose code is the SQLSTATE, so read errorInfo, on it or the one it wraps.
-    if ($e instanceof PDOException && isset($e->errorInfo[1])) {
-        return (string) $e->errorInfo[1];
-    }
-    $prev = $e->getPrevious();
-    if ($prev instanceof PDOException && isset($prev->errorInfo[1])) {
-        return (string) $prev->errorInfo[1];
+    // The MySQL error number. A PDOException's own code is the SQLSTATE, so
+    // read its errorInfo. DBAL wraps the PDOException twice, so walk the chain.
+    for ($x = $e; $x !== null; $x = $x->getPrevious()) {
+        if ($x instanceof PDOException && isset($x->errorInfo[1])) {
+            return (string) $x->errorInfo[1];
+        }
     }
     return (string) $e->getCode();
 }
 
 /* ---------------------- Idempotent DDL helpers ---------------------- */
 
-function current_db(Adapter $adapter): string
+function current_db(Connection $db): string
 {
     static $dbName = null;
     if ($dbName === null) {
-        $dbName = (string) (fetch_scalar($adapter, 'SELECT DATABASE() AS db') ?? '');
+        $dbName = (string) (fetch_scalar($db, 'SELECT DATABASE() AS db') ?? '');
     }
     return $dbName;
 }
 
-function column_exists(Adapter $adapter, string $table, string $column): bool
+function column_exists(Connection $db, string $table, string $column): bool
 {
     return (bool) fetch_scalar(
-        $adapter,
+        $db,
         "SELECT 1 FROM information_schema.COLUMNS
          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
-        [current_db($adapter), $table, $column]
+        [current_db($db), $table, $column]
     );
 }
 
-function index_exists(Adapter $adapter, string $table, string $index): bool
+function index_exists(Connection $db, string $table, string $index): bool
 {
     return (bool) fetch_scalar(
-        $adapter,
+        $db,
         "SELECT 1 FROM information_schema.STATISTICS
          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND INDEX_NAME=? LIMIT 1",
-        [current_db($adapter), $table, $index]
+        [current_db($db), $table, $index]
     );
 }
 
-function table_primary_key(Adapter $adapter, string $table): array
+function table_primary_key(Connection $db, string $table): array
 {
     $cols = fetch_column(
-        $adapter,
+        $db,
         "SELECT k.COLUMN_NAME
          FROM information_schema.TABLE_CONSTRAINTS t
          JOIN information_schema.KEY_COLUMN_USAGE k
@@ -188,7 +164,7 @@ function table_primary_key(Adapter $adapter, string $table): array
            AND t.TABLE_NAME   = ?
            AND t.CONSTRAINT_TYPE = 'PRIMARY KEY'
          ORDER BY k.ORDINAL_POSITION",
-        [current_db($adapter), $table]
+        [current_db($db), $table]
     );
     return array_map(static fn($c) => strtolower(trim((string) $c)), $cols);
 }
@@ -204,98 +180,98 @@ function parse_cols_list(string $list): array
     }, $parts);
 }
 
-function add_column_if_missing(Adapter $adapter, string $table, string $column, string $ddl): int
+function add_column_if_missing(Connection $db, string $table, string $column, string $ddl): int
 {
-    if (column_exists($adapter, $table, $column)) {
+    if (column_exists($db, $table, $column)) {
         return MIG_SKIPPED;
     }
-    run_sql($adapter, $ddl);
+    run_sql($db, $ddl);
     return MIG_EXECUTED;
 }
 
-function add_index_if_missing(Adapter $adapter, string $table, string $index, string $ddl): int
+function add_index_if_missing(Connection $db, string $table, string $index, string $ddl): int
 {
-    if (index_exists($adapter, $table, $index)) {
+    if (index_exists($db, $table, $index)) {
         return MIG_SKIPPED;
     }
-    run_sql($adapter, $ddl);
+    run_sql($db, $ddl);
     return MIG_EXECUTED;
 }
 
-function drop_column_if_exists(Adapter $adapter, string $table, string $column): int
+function drop_column_if_exists(Connection $db, string $table, string $column): int
 {
-    if (!column_exists($adapter, $table, $column)) {
+    if (!column_exists($db, $table, $column)) {
         return MIG_SKIPPED;
     }
 
     // MySQL refuses DROP COLUMN if any index or foreign key still references
     // the column. Sweep those references first so the drop always succeeds.
-    $db = current_db($adapter);
+    $schema = current_db($db);
 
     $fks = fetch_column(
-        $adapter,
+        $db,
         "SELECT DISTINCT CONSTRAINT_NAME
          FROM information_schema.KEY_COLUMN_USAGE
          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?
            AND REFERENCED_TABLE_NAME IS NOT NULL",
-        [$db, $table, $column]
+        [$schema, $table, $column]
     );
     foreach ($fks as $fkName) {
-        run_sql($adapter, "ALTER TABLE `{$table}` DROP FOREIGN KEY `{$fkName}`");
+        run_sql($db, "ALTER TABLE `{$table}` DROP FOREIGN KEY `{$fkName}`");
     }
 
     $indexes = fetch_column(
-        $adapter,
+        $db,
         "SELECT DISTINCT INDEX_NAME
          FROM information_schema.STATISTICS
          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?
            AND INDEX_NAME != 'PRIMARY'",
-        [$db, $table, $column]
+        [$schema, $table, $column]
     );
     foreach ($indexes as $indexName) {
-        run_sql($adapter, "ALTER TABLE `{$table}` DROP INDEX `{$indexName}`");
+        run_sql($db, "ALTER TABLE `{$table}` DROP INDEX `{$indexName}`");
     }
 
-    run_sql($adapter, "ALTER TABLE `{$table}` DROP `{$column}`");
+    run_sql($db, "ALTER TABLE `{$table}` DROP `{$column}`");
     return MIG_EXECUTED;
 }
 
-function drop_index_if_exists(Adapter $adapter, string $table, string $index): int
+function drop_index_if_exists(Connection $db, string $table, string $index): int
 {
-    if (!index_exists($adapter, $table, $index)) {
+    if (!index_exists($db, $table, $index)) {
         return MIG_SKIPPED;
     }
-    run_sql($adapter, "ALTER TABLE `{$table}` DROP INDEX `{$index}`");
+    run_sql($db, "ALTER TABLE `{$table}` DROP INDEX `{$index}`");
     return MIG_EXECUTED;
 }
 
-function foreign_key_exists(Adapter $adapter, string $table, string $constraint): bool
+function foreign_key_exists(Connection $db, string $table, string $constraint): bool
 {
     return (bool) fetch_scalar(
-        $adapter,
+        $db,
         "SELECT 1 FROM information_schema.TABLE_CONSTRAINTS
          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND CONSTRAINT_NAME=?
            AND CONSTRAINT_TYPE='FOREIGN KEY' LIMIT 1",
-        [current_db($adapter), $table, $constraint]
+        [current_db($db), $table, $constraint]
     );
 }
 
-function drop_foreign_key_if_exists(Adapter $adapter, string $table, string $constraint): int
+function drop_foreign_key_if_exists(Connection $db, string $table, string $constraint): int
 {
-    if (!foreign_key_exists($adapter, $table, $constraint)) {
+    if (!foreign_key_exists($db, $table, $constraint)) {
         return MIG_SKIPPED;
     }
-    run_sql($adapter, "ALTER TABLE `{$table}` DROP FOREIGN KEY `{$constraint}`");
+    run_sql($db, "ALTER TABLE `{$table}` DROP FOREIGN KEY `{$constraint}`");
     return MIG_EXECUTED;
 }
 
-function apply_add_primary_key(Adapter $adapter, string $table, string $colsList, string $originalSql): int
+function apply_add_primary_key(Connection $db, string $table, string $colsList, string $originalSql): int
 {
     $wantedCols = parse_cols_list($colsList);
-    $haveCols = table_primary_key($adapter, $table);
+    $haveCols = table_primary_key($db, $table);
 
     if ($haveCols === []) {
-        run_sql($adapter, $originalSql);
+        run_sql($db, $originalSql);
         return MIG_EXECUTED;
     }
     if ($haveCols === $wantedCols) {
@@ -303,9 +279,9 @@ function apply_add_primary_key(Adapter $adapter, string $table, string $colsList
     }
 
     if (getenv('MIG_REPLACE_PK')) {
-        run_sql($adapter, "ALTER TABLE `{$table}` DROP PRIMARY KEY");
+        run_sql($db, "ALTER TABLE `{$table}` DROP PRIMARY KEY");
         $colsSql = implode(',', array_map(static fn($c): string => "`{$c}`", $wantedCols));
-        run_sql($adapter, "ALTER TABLE `{$table}` ADD PRIMARY KEY ({$colsSql})");
+        run_sql($db, "ALTER TABLE `{$table}` ADD PRIMARY KEY ({$colsSql})");
         return MIG_EXECUTED;
     }
 
@@ -316,48 +292,48 @@ function apply_add_primary_key(Adapter $adapter, string $table, string $colsList
  * Route known DDL patterns through idempotent helpers.
  * Returns MIG_EXECUTED / MIG_SKIPPED if handled, MIG_NOT_HANDLED to fall through.
  */
-function handle_idempotent_ddl(Adapter $adapter, string $query): int
+function handle_idempotent_ddl(Connection $db, string $query): int
 {
     $q = trim($query);
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(?:column\s+)?`?([a-z0-9_]+)`?\s+/i', $q, $m)) {
         $kw = strtolower($m[2]);
         if (!in_array($kw, ['index', 'key', 'primary', 'constraint', 'unique', 'fulltext', 'spatial', 'foreign'], true)) {
-            return add_column_if_missing($adapter, $m[1], $m[2], $q);
+            return add_column_if_missing($db, $m[1], $m[2], $q);
         }
     }
 
     if (preg_match('/^create\s+(unique\s+)?index\s+`?([^`\s]+)`?\s*(?:using\s+btree)?\s+on\s+`?([^`\s(]+)`?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
-        return add_index_if_missing($adapter, $m[3], $m[2], $q);
+        return add_index_if_missing($db, $m[3], $m[2], $q);
     }
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?index\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', $q, $m)) {
         $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', empty($m[2]) ? '' : 'UNIQUE ', $m[3], $m[1], trim($m[4]));
-        return add_index_if_missing($adapter, $m[1], $m[3], $ddl);
+        return add_index_if_missing($db, $m[1], $m[3], $ddl);
     }
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?key\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', $q, $m)) {
         $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', empty($m[2]) ? '' : 'UNIQUE ', $m[3], $m[1], trim($m[4]));
-        return add_index_if_missing($adapter, $m[1], $m[3], $ddl);
+        return add_index_if_missing($db, $m[1], $m[3], $ddl);
     }
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+column\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
-        return drop_column_if_exists($adapter, $m[1], $m[2]);
+        return drop_column_if_exists($db, $m[1], $m[2]);
     }
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+index\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
-        return drop_index_if_exists($adapter, $m[1], $m[2]);
+        return drop_index_if_exists($db, $m[1], $m[2]);
     }
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+foreign\s+key\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
-        return drop_foreign_key_if_exists($adapter, $m[1], $m[2]);
+        return drop_foreign_key_if_exists($db, $m[1], $m[2]);
     }
 
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+constraint\s+`?([a-z0-9_]+)`?\s+foreign\s+key\b/i', $q, $m)) {
-        if (foreign_key_exists($adapter, $m[1], $m[2])) {
+        if (foreign_key_exists($db, $m[1], $m[2])) {
             return MIG_SKIPPED;
         }
-        run_sql($adapter, $q);
+        run_sql($db, $q);
         return MIG_EXECUTED;
     }
 
@@ -366,15 +342,15 @@ function handle_idempotent_ddl(Adapter $adapter, string $query): int
         if (in_array($kw, ['foreign', 'primary', 'key', 'check', 'constraint', 'unique', 'fulltext', 'spatial'], true)) {
             return MIG_NOT_HANDLED;
         }
-        return drop_column_if_exists($adapter, $m[1], $m[2]);
+        return drop_column_if_exists($db, $m[1], $m[2]);
     }
 
     if (preg_match('/^alter\s+table\s+`?([^`\s]+)`?\s+add\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
-        return apply_add_primary_key($adapter, $m[1], $m[2], $q);
+        return apply_add_primary_key($db, $m[1], $m[2], $q);
     }
 
     if (preg_match('/^alter\s+table\s+`?([^`\s]+)`?\s+add\s+constraint\s+`?[^`]+`?\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
-        return apply_add_primary_key($adapter, $m[1], $m[2], $q);
+        return apply_add_primary_key($db, $m[1], $m[2], $q);
     }
 
     return MIG_NOT_HANDLED;
@@ -542,10 +518,10 @@ function migration_error_is_warnable(string $errorCode, string $statement): bool
 
 /* ---------------------- Version persistence ---------------------- */
 
-function stamp_global_config(Adapter $adapter, string $key, string $value, string $displayName): void
+function stamp_global_config(Connection $db, string $key, string $value, string $displayName): void
 {
     run_sql(
-        $adapter,
+        $db,
         "INSERT INTO global_config (display_name, global_name, global_value)
          VALUES (?, ?, ?)
          ON DUPLICATE KEY UPDATE global_value = VALUES(global_value)",
@@ -553,11 +529,11 @@ function stamp_global_config(Adapter $adapter, string $key, string $value, strin
     );
 }
 
-function read_global_config(Adapter $adapter, string $key): ?string
+function read_global_config(Connection $db, string $key): ?string
 {
     try {
         $val = fetch_scalar(
-            $adapter,
+            $db,
             "SELECT global_value FROM global_config WHERE global_name = ? LIMIT 1",
             [$key]
         );
@@ -581,7 +557,7 @@ function read_app_version(): string
 
 /* ---------------------- Main ---------------------- */
 
-$dbVersion = read_global_config($adapter, VERSION_KEY_DB) ?? '0.0.0';
+$dbVersion = read_global_config($db, VERSION_KEY_DB) ?? '0.0.0';
 
 echo "Running migrations...\n";
 echo "Current DB version: {$dbVersion}\n\n";
@@ -640,7 +616,7 @@ if (empty($pending)) {
         $appVersion = read_app_version();
         if ($appVersion !== '') {
             try {
-                stamp_global_config($adapter, VERSION_KEY_APP, $appVersion, 'Application Version');
+                stamp_global_config($db, VERSION_KEY_APP, $appVersion, 'Application Version');
                 echo "  Stamped app_version: {$appVersion}\n";
             } catch (Throwable $e) {
                 fwrite(STDERR, "Warning: could not persist app_version: {$e->getMessage()}\n");
@@ -710,7 +686,7 @@ foreach ($pending as $m) {
         $preview = substr((string) preg_replace('/\s+/', ' ', $stmt), 0, 80);
 
         try {
-            $status = handle_idempotent_ddl($adapter, $stmt);
+            $status = handle_idempotent_ddl($db, $stmt);
 
             if ($status === MIG_SKIPPED) {
                 if ($verbose)
@@ -728,7 +704,7 @@ foreach ($pending as $m) {
                 continue;
             }
 
-            run_sql($adapter, $stmt);
+            run_sql($db, $stmt);
             if ($verbose)
                 echo "  \033[32mPASS\033[0m  {$preview}\n";
             $passed++;
@@ -784,8 +760,8 @@ if (!$dryRun && $failed === 0) {
         $appVersion = $lastVersion;
     }
     try {
-        stamp_global_config($adapter, VERSION_KEY_DB, $lastVersion, 'Database Schema Version');
-        stamp_global_config($adapter, VERSION_KEY_APP, $appVersion, 'Application Version');
+        stamp_global_config($db, VERSION_KEY_DB, $lastVersion, 'Database Schema Version');
+        stamp_global_config($db, VERSION_KEY_APP, $appVersion, 'Application Version');
         $finalAppVersion = $appVersion;
     } catch (Throwable $e) {
         fwrite(STDERR, "Warning: could not persist version: {$e->getMessage()}\n");
