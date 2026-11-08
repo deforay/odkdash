@@ -1428,11 +1428,11 @@ class SpiFormVer6Table
         self::addEquals('`' . str_replace('.', '`.`', $field) . '`', $params['val'] ?? null, $where, $values);
     }
 
-    /** The audits behind the round-wise charts, newest first. */
+    /** The audits behind the round-wise charts, newest first. Deleted audits are left out. */
     private function roundWiseRows($params): array
     {
         $loginContainer = new Container('credo');
-        $where = [];
+        $where = ["spiv6.status != 'deleted'"];
         $values = [];
         self::addRoundNumbers($params, $where, $values);
         self::addTokenRule($loginContainer, $where, $values);
@@ -1452,7 +1452,7 @@ class SpiFormVer6Table
         self::addFieldFilter($params, $where, $values);
         return $this->db->fetchAllAssociative(
             'SELECT spiv6.*' . $mappingColumns . $filterColumns . ' FROM spi_form_v_6 AS spiv6' . $mappingJoin . $filterJoin
-            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where)) . ' ORDER BY id DESC',
+            . ' WHERE ' . implode(' AND ', $where) . ' ORDER BY id DESC',
             $values
         );
     }
