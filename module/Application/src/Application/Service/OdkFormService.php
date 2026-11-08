@@ -51,7 +51,7 @@ class OdkFormService
 
     /**
      * Build a Guzzle HandlerStack with the api_logs middleware pushed on,
-     * tagged with $source so every outbound call from sync-central-v3 /
+     * tagged with $source so every outbound call from sync-central-v3 or
      * sync-central-v6 lands in the api_logs table for later inspection.
      */
     private function buildLoggingHandler(string $source): HandlerStack
@@ -3085,129 +3085,30 @@ class OdkFormService
 
     // Finding the odkformsubmissions
 
-    public function syncOdkCentralV3(?SymfonyStyle $io = null): void
-    {
-        $configResult = $this->sm->get('Config');
-        $projects = $configResult['odkcentral']['spirt'] ?? [];
-        if (!is_array($projects) || $projects === []) {
-            $io?->warning('No spirt projects configured under odkcentral.');
-            return;
-        }
+    /**
+     * The settings of each form version's Central sync: its projects under
+     * odkcentral in the config, its table, and its name in the API log and
+     * the lock file. Only V6 downloads the photos.
+     */
+    private const SYNC_FORMS = [
+        3 => ['config' => 'spirt', 'table' => 'SpiFormVer3Table', 'name' => 'sync-central-v3', 'photos' => false],
+        6 => ['config' => 'spirrt', 'table' => 'SpiFormVer6Table', 'name' => 'sync-central-v6', 'photos' => true],
+    ];
 
-        foreach ($projects as $item) {
-            if (empty($item['url']) || empty($item['projectId']) || empty($item['formId'])) {
-                $io?->warning('Skipping project entry: missing url / projectId / formId.');
-                continue;
-            }
-            try {
-                $this->syncProjectV3($item, $io);
-            } catch (\Throwable $e) {
-                // One bad project shouldn't abort the rest of the sync.
-                $io?->error(sprintf(
-                    'Project %s/%s failed: %s',
-                    $item['projectId'] ?? '?',
-                    $item['formId'] ?? '?',
-                    $e->getMessage()
-                ));
-                error_log($e->getMessage());
-                error_log($e->getTraceAsString());
-            }
-        }
+    /** Syncs the V3 submissions from ODK Central. See syncOdkCentral(). */
+    public function syncOdkCentralV3(?SymfonyStyle $io = null): bool
+    {
+        return $this->syncOdkCentral(3, $io);
     }
 
-    private function syncProjectV3(array $item, ?SymfonyStyle $io): void
+    /** Syncs the V6 submissions from ODK Central. See syncOdkCentral(). */
+    public function syncOdkCentralV6(?SymfonyStyle $io = null): bool
     {
-        $spirrtURL = rtrim((string) $item['url'], '/');
-        $projectId = $item['projectId'];
-        $formId    = $item['formId'];
-        $email     = $item['email'] ?? '';
-        $password  = $item['password'] ?? '';
-
-        $io?->section(sprintf('%s / project=%s form=%s', $spirrtURL, $projectId, $formId));
-
-        /** @var SpiFormVer3Table $spiV3db */
-        $spiV3db = $this->sm->get('SpiFormVer3Table');
-        $lastDateQuery = $spiV3db->getLatestFormDate($projectId, $formId);
-        $lastFormDate = $lastDateQuery[0]['last_added_form_date'] ?? null;
-
-        $baseUrl = "$spirrtURL/v1/projects/$projectId/forms/$formId/submissions";
-        if (!empty($lastFormDate)) {
-            $url = $baseUrl . '?%24filter=__system%2FsubmissionDate%20gt%20' . urlencode($lastFormDate);
-        } else {
-            $url = $baseUrl;
-        }
-
-        $httpClient = new Client([
-            'base_uri' => $baseUrl,
-            'cookies'  => true,
-            'handler'  => $this->buildLoggingHandler('sync-central-v3'),
-        ]);
-
-        // Authenticate and obtain session token.
-        $authResp = $httpClient->post('/v1/sessions', [
-            'json' => ['email' => $email, 'password' => $password],
-        ]);
-        if ($authResp->getStatusCode() !== 200) {
-            $io?->error('Auth failed: HTTP ' . $authResp->getStatusCode());
-            return;
-        }
-        $authBody  = json_decode($authResp->getBody()->getContents(), true);
-        $authToken = $authBody['token'] ?? null;
-        if (!$authToken) {
-            $io?->error('Auth response did not include a token.');
-            return;
-        }
-        $authHeaders = ['Authorization' => 'Bearer ' . $authToken];
-
-        // Fetch the submission list.
-        $listResp = $httpClient->get($url, ['headers' => $authHeaders]);
-        $responseSubmission = $this->formatResponse($listResp->getBody()->getContents());
-
-        $count = is_array($responseSubmission) ? count($responseSubmission) : 0;
-        if ($count === 0) {
-            $io?->writeln('<info>Nothing new to sync — already up to date.</info>');
-            return;
-        }
-
-        $progress = null;
-        if ($io !== null) {
-            $progress = $io->createProgressBar($count);
-            $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %message%');
-            $progress->setMessage('fetching submission XML…');
-            $progress->start();
-        }
-
-        $params = [];
-        $correctiveActions = [];
-        foreach ($responseSubmission as $submission) {
-            $formInstanceResponse = $httpClient->get(
-                "$baseUrl/{$submission['instanceId']}.xml",
-                ['headers' => $authHeaders + ['Content-Type' => 'application/xml']]
-            );
-            $formXml = $formInstanceResponse->getBody()->getContents();
-            $xml = simplexml_load_string($formXml);
-            $array = json_decode(json_encode($xml), true);
-            $params[$submission['instanceId']] = [...$array, ...$submission];
-            $correctiveActions[$submission['instanceId']] = isset($array['correctiveaction'][0])
-                ? $array['correctiveaction']
-                : [$array['correctiveaction'] ?? null];
-            $progress?->advance();
-        }
-
-        if ($params !== []) {
-            $progress?->setMessage('saving to database…');
-            $progress?->display();
-            $spiV3db->saveOdkCentralData($params, $correctiveActions, $projectId, $formId);
-        }
-
-        $progress?->setMessage('done');
-        $progress?->finish();
-        $io?->newLine(2);
-        $io?->success(sprintf('Synced %d submission(s).', $count));
+        return $this->syncOdkCentral(6, $io);
     }
 
     /**
-     * Sync submissions from ODK Central v6 forms.
+     * Syncs the submissions of one form version from ODK Central.
      *
      * Streams OData pages to disk, parses with JsonMachine (no full-response
      * decode), saves per-page so a crash mid-sync only loses the in-flight
@@ -3215,15 +3116,16 @@ class OdkFormService
      * optional SymfonyStyle for progress / sign-of-life.
      *
      * Returns true when every project synced in full. Returns false when
-     * another sync holds the lock, a project failed, or a submission was not
-     * saved in full. It tries every project either way.
+     * another sync of this version holds the lock, a project failed, or a
+     * submission was not saved in full. It tries every project either way.
      */
-    public function syncOdkCentralV6(?SymfonyStyle $io = null): bool
+    private function syncOdkCentral(int $formVersion, ?SymfonyStyle $io): bool
     {
+        $form = self::SYNC_FORMS[$formVersion];
         $configResult = $this->sm->get('Config');
-        $projects = $configResult['odkcentral']['spirrt'] ?? [];
+        $projects = $configResult['odkcentral'][$form['config']] ?? [];
         if (!is_array($projects) || $projects === []) {
-            $io?->warning('No spirrt projects configured under odkcentral.');
+            $io?->warning("No {$form['config']} projects configured under odkcentral.");
             return true;
         }
 
@@ -3234,12 +3136,12 @@ class OdkFormService
         if (!is_dir($varFolder)) {
             @mkdir($varFolder, 0775, true);
         }
-        $lock = @fopen($varFolder . '/sync-central-v6.lock', 'c');
+        $lock = @fopen("$varFolder/{$form['name']}.lock", 'c');
         if ($lock === false) {
             throw new \RuntimeException("Cannot open the sync lock in $varFolder");
         }
         if (!flock($lock, LOCK_EX | LOCK_NB)) {
-            $io?->warning('Another V6 sync is running, so this one stops.');
+            $io?->warning("Another V$formVersion sync is running, so this one stops.");
             return false;
         }
 
@@ -3250,7 +3152,7 @@ class OdkFormService
                 continue;
             }
             try {
-                if (!$this->syncProjectV6($item, $io)) {
+                if (!$this->syncProject($formVersion, $item, $io)) {
                     $allSynced = false;
                 }
             } catch (\Throwable $e) {
@@ -3296,19 +3198,20 @@ class OdkFormService
     private const MEDIA_FIELDS_FLAT = ['sitephoto', 'sitephoto2', 'auditorSignature'];
 
     /** Returns false when a submission was not saved in full. */
-    private function syncProjectV6(array $item, ?SymfonyStyle $io): bool
+    private function syncProject(int $formVersion, array $item, ?SymfonyStyle $io): bool
     {
+        $form = self::SYNC_FORMS[$formVersion];
         $spirrtURL = rtrim((string) $item['url'], '/');
         $projectId = $item['projectId'];
         $formId = $item['formId'];
-        $email = $item['email'];
-        $password = $item['password'];
+        $email = $item['email'] ?? '';
+        $password = $item['password'] ?? '';
 
         $io?->section(sprintf('%s / project=%s form=%s', $spirrtURL, $projectId, $formId));
 
-        /** @var SpiFormVer6Table $spiV6db */
-        $spiV6db = $this->sm->get('SpiFormVer6Table');
-        $fetchFrom = $this->syncCheckpoint(6, $projectId, $formId);
+        /** @var SpiFormVer3Table|SpiFormVer6Table $formTable */
+        $formTable = $this->sm->get($form['table']);
+        $fetchFrom = $this->syncCheckpoint($formVersion, $projectId, $formId);
 
         $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
         $startUrl = "$baseUrl.svc/Submissions?\$top=" . self::ODATA_PAGE_SIZE . '&$count=true';
@@ -3320,7 +3223,7 @@ class OdkFormService
             'base_uri' => $baseUrl,
             'cookies'  => true,
             'timeout'  => 300,
-            'handler'  => $this->buildLoggingHandler('sync-central-v6'),
+            'handler'  => $this->buildLoggingHandler($form['name']),
         ]);
 
         // Authenticate and obtain a session token.
@@ -3404,7 +3307,7 @@ class OdkFormService
             // stored one gets only the photos missing on disk: those that
             // failed to download before. A stored audit's files are complete,
             // as a file gets its name only once its download finishes.
-            $stored = $spiV6db->storedInstanceIds(array_map(
+            $stored = $formTable->storedInstanceIds(array_map(
                 static fn(array $submission): string => (string) ($submission['meta']['instanceID'] ?? ''),
                 $page,
             ));
@@ -3415,7 +3318,8 @@ class OdkFormService
             foreach ($page as $submission) {
                 $submissionDate = (string) ($submission['__system']['submissionDate'] ?? '');
                 $isStored = isset($stored[(string) ($submission['meta']['instanceID'] ?? '')]);
-                foreach ($this->collectMediaRequestsV6($submission, $baseUrl) as $req) {
+                $photos = $form['photos'] ? $this->collectMediaRequestsV6($submission, $baseUrl) : [];
+                foreach ($photos as $req) {
                     if (!$isStored || !is_file($req['sink'])) {
                         $mediaRequests[] = $req + ['submissionDate' => $submissionDate];
                     }
@@ -3463,7 +3367,7 @@ class OdkFormService
             // each page acts as a crash-recovery checkpoint.
             if ($batch !== []) {
                 $this->displayMessage($progress, sprintf('p%d saving %d rows…', $pageNumber, count($batch)));
-                $saveFailures = $spiV6db->saveOdkCentralData($batch, $correctiveActions, $projectId, $formId);
+                $saveFailures = $formTable->saveOdkCentralData($batch, $correctiveActions, $projectId, $formId);
                 $savedCount += count($batch) - count($saveFailures);
                 array_push($failedDates, ...$saveFailures);
             }
@@ -3483,14 +3387,14 @@ class OdkFormService
         // submission not saved in full, or else to the newest one seen.
         if ($failedDates !== []) {
             sort($failedDates);
-            $this->saveSyncCheckpoint(6, $projectId, $formId, $failedDates[0]);
+            $this->saveSyncCheckpoint($formVersion, $projectId, $formId, $failedDates[0]);
             $io?->warning(sprintf(
                 '%d submission(s) were not saved in full. The next run fetches again from %s.',
                 count(array_unique($failedDates)),
                 $failedDates[0] === '' ? 'the start' : $failedDates[0],
             ));
         } elseif ($newestSeen !== '') {
-            $this->saveSyncCheckpoint(6, $projectId, $formId, $newestSeen);
+            $this->saveSyncCheckpoint($formVersion, $projectId, $formId, $newestSeen);
         }
 
         if ($savedCount === 0 && $failedDates === []) {
@@ -3754,11 +3658,6 @@ class OdkFormService
         $progress->display();
     }
 
-    public function formatResponse($strResponse)
-    {
-        $response = html_entity_decode(stripslashes($strResponse), ENT_QUOTES, 'UTF-8');
-        return json_decode(preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $response), true);
-    }
     public function getV6DownloadDataList()
     {
         $db = $this->sm->get('SpiFormVer6DownloadTable');

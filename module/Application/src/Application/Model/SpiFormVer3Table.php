@@ -134,12 +134,18 @@ class SpiFormVer3Table
         return $row === false ? null : new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS);
     }
 
-    public function saveOdkCentralData($params, $correctiveActions, $projectId, $formId)
+    /**
+     * Stores each submission whose instance ID is not stored yet.
+     *
+     * @return list<string> The submission date, as Central writes it, of each
+     *         submission that failed to save.
+     */
+    public function saveOdkCentralData($params, $correctiveActions, $projectId, $formId): array
     {
-
         if ($params == null || $params == "" || empty($params)) {
-            return;
+            return [];
         }
+        $failedDates = [];
 
         $dbAdapter = $this->adapter;
 
@@ -383,7 +389,7 @@ class SpiFormVer3Table
             $data['info25'] = $submissionData['SUMMARY']['info25'] ?? null;
             $data['info26'] = $submissionData['SUMMARY']['info26'] ?? null;
             $data['info27'] = $submissionData['info27'] ?? null;
-            $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['__id']]);
+            $data['correctiveaction'] = json_encode($correctiveActions[$submissionData['__id'] ?? ''] ?? []);
             $data['sitephoto'] = $submissionData['sitephoto'] ?? null;
             $data['Latitude'] = $submissionData["lab_geopoint"]["coordinates"][1] ?? null;
             $data['Longitude'] = $submissionData["lab_geopoint"]["coordinates"][0] ?? null;
@@ -660,11 +666,13 @@ class SpiFormVer3Table
                 // to a mapped user. Only approval may create a new facility. As V6.
                 $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
                 $facilityDb->addFacilityBasedOnForm($insertedId, 3, $approveStatus == 'approved');
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
+                $failedDates[] = (string) ($submissionData['__system']['submissionDate'] ?? '');
                 error_log($e->getMessage());
                 error_log($e->getTraceAsString());
             }
         }
+        return $failedDates;
     }
 
     public function getPerformance($params)
@@ -3506,13 +3514,27 @@ class SpiFormVer3Table
         return $id;
     }
 
-    public function getLatestFormDate($projectId, $formId)
+    /**
+     * The instance IDs in $instanceIds that are stored, as keys. An audit
+     * removed as a duplicate counts as stored, so a sync does not bring it
+     * back.
+     *
+     * @param list<string> $instanceIds
+     * @return array<string, true>
+     */
+    public function storedInstanceIds(array $instanceIds): array
     {
-        // The day the newest audit was filled in, which comes before its
-        // submission. The sync then fetches recent submissions again, which
-        // retries one that failed to save. saveOdkCentralData skips the rest.
-        $query = "SELECT MAX(today) as last_added_form_date FROM spi_form_v_3 WHERE central_project_id = ? AND central_form_id = ?";
-        return $this->db->fetchAllAssociative($query, [$projectId, $formId]);
+        $instanceIds = array_values(array_unique(array_filter($instanceIds, static fn(string $id): bool => $id !== '')));
+        if ($instanceIds === []) {
+            return [];
+        }
+        $in = implode(', ', array_fill(0, count($instanceIds), '?'));
+        $stored = $this->db->fetchFirstColumn(
+            "SELECT `meta-instance-id` FROM spi_form_v_3 WHERE `meta-instance-id` IN ($in)"
+            . " UNION SELECT `meta-instance-id` FROM spi_form_v_3_duplicate WHERE `meta-instance-id` IN ($in)",
+            [...$instanceIds, ...$instanceIds],
+        );
+        return array_fill_keys(array_map('strval', $stored), true);
     }
 
     public function fetchV3DetailsByMetaInstanceId($metaInstantId)

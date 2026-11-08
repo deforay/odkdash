@@ -35,7 +35,9 @@ class SyncCentralV3 extends Command
         $io->title('Sync ODK Central (v3)');
 
         try {
-            $this->odkFormService->syncOdkCentralV3($io);
+            if (!$this->odkFormService->syncOdkCentralV3($io)) {
+                return Command::FAILURE;
+            }
         } catch (\Throwable $e) {
             $io->error($e->getMessage());
             $io->writeln('<comment>' . $e->getTraceAsString() . '</comment>', OutputInterface::VERBOSITY_VERBOSE);
