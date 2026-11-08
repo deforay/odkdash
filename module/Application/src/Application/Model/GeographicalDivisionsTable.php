@@ -2,13 +2,13 @@
 
 namespace Application\Model;
 
+use App\Db\DataTables;
 use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Sql;
 
 /**
  * Provinces and districts. A province has geo_parent 0. A district has
@@ -51,19 +51,15 @@ class GeographicalDivisionsTable
     {
         $aColumns = ['geo_name', 'geo_code', 'geo_status'];
 
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from('geographical_divisions')->where("(geo_parent = 0 OR geo_parent IS NULL)");
-        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
-        if ($sWhere !== null) {
-            $sQuery->where($sWhere);
-        }
-        $this->orderAndPage($sQuery, $aColumns, $parameters);
+        [$search, $values] = DataTables::search($aColumns, $parameters);
+        $where = '(geo_parent = 0 OR geo_parent IS NULL)' . ($search !== '' ? " AND $search" : '');
+        $order = DataTables::order($aColumns, $parameters);
 
-        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
-
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
+        $rResult = $this->db->fetchAllAssociative(
+            "SELECT * FROM geographical_divisions WHERE $where" . ($order !== '' ? " ORDER BY $order" : '') . DataTables::limit($parameters),
+            $values
+        );
+        $iFilteredTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM geographical_divisions WHERE $where", $values);
         $iTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM geographical_divisions WHERE geo_parent = 0');
 
         $output = [
@@ -131,21 +127,16 @@ class GeographicalDivisionsTable
     {
         $aColumns = ['d.geo_name', 'd.geo_code', 'p.geo_name', 'd.geo_status'];
 
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(['d' => 'geographical_divisions'])
-            ->join(['p' => 'geographical_divisions'], 'p.geo_id=d.geo_parent', ['province' => 'geo_name'])
-            ->where("d.geo_parent!='0'");
-        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
-        if ($sWhere !== null) {
-            $sQuery->where($sWhere);
-        }
-        $this->orderAndPage($sQuery, $aColumns, $parameters);
+        [$search, $values] = DataTables::search($aColumns, $parameters);
+        $from = 'FROM geographical_divisions AS d INNER JOIN geographical_divisions AS p ON p.geo_id = d.geo_parent'
+            . " WHERE d.geo_parent != '0'" . ($search !== '' ? " AND $search" : '');
+        $order = DataTables::order($aColumns, $parameters);
 
-        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
-
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
+        $rResult = $this->db->fetchAllAssociative(
+            "SELECT d.*, p.geo_name AS province $from" . ($order !== '' ? " ORDER BY $order" : '') . DataTables::limit($parameters),
+            $values
+        );
+        $iFilteredTotal = (int) $this->db->fetchOne("SELECT COUNT(*) $from", $values);
         $iTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM geographical_divisions WHERE geo_parent > 0');
 
         $output = [
@@ -292,26 +283,5 @@ class GeographicalDivisionsTable
             'updated_datetime' => $currentDateTime,
         ]);
         return (int) $this->db->lastInsertId();
-    }
-
-    /** The DataTables sort and page, as the lists have always read them. */
-    private function orderAndPage($sQuery, array $aColumns, $parameters): void
-    {
-        if (isset($parameters['iSortCol_0'])) {
-            $sOrder = "";
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true" && isset($aColumns[(int) $parameters['iSortCol_' . $i]])) {
-                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ", ";
-                }
-            }
-            $sOrder = rtrim($sOrder, ", ");
-            if ($sOrder != "") {
-                $sQuery->order($sOrder);
-            }
-        }
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sQuery->limit((int) $parameters['iDisplayLength']);
-            $sQuery->offset((int) $parameters['iDisplayStart']);
-        }
     }
 }
