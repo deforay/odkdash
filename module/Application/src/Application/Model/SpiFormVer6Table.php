@@ -70,11 +70,18 @@ class SpiFormVer6Table
         return $response;
     }
 
-    public function saveOdkCentralData($params, $correctiveActions, $projectId, $formId)
+    /**
+     * Stores each submission whose instance ID is not stored yet.
+     *
+     * @return list<string> The submission date, as Central writes it, of each
+     *         submission that failed to save.
+     */
+    public function saveOdkCentralData($params, $correctiveActions, $projectId, $formId): array
     {
         if ($params == null || $params == "" || empty($params)) {
-            return;
+            return [];
         }
+        $failedDates = [];
 
         $dbAdapter = $this->adapter;
 
@@ -871,11 +878,13 @@ class SpiFormVer6Table
                     $facilityDb->addFacilityBasedOnForm($currentFormId, 6, $approveStatus == 'approved');
                 }
                 // }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
+                $failedDates[] = (string) ($submissionData['__system']['submissionDate'] ?? '');
                 error_log($e->getMessage());
                 error_log($e->getTraceAsString());
             }
         }
+        return $failedDates;
     }
 
     public function getPerformanceV6($params)
@@ -3030,10 +3039,27 @@ class SpiFormVer6Table
         );
     }
 
-    public function getLatestFormDate($projectId, $formId)
+    /**
+     * The instance IDs in $instanceIds that are stored, as keys. An audit
+     * removed as a duplicate counts as stored, so a sync does not bring it
+     * back.
+     *
+     * @param list<string> $instanceIds
+     * @return array<string, true>
+     */
+    public function storedInstanceIds(array $instanceIds): array
     {
-        $query = "SELECT MAX(`meta-submission-date`) as last_added_form_date FROM spi_form_v_6 WHERE central_project_id = ? AND central_form_id = ?";
-        return $this->db->fetchAllAssociative($query, [$projectId, $formId]);
+        $instanceIds = array_values(array_unique(array_filter($instanceIds, static fn(string $id): bool => $id !== '')));
+        if ($instanceIds === []) {
+            return [];
+        }
+        $in = self::placeholders($instanceIds);
+        $stored = $this->db->fetchFirstColumn(
+            "SELECT `meta-instance-id` FROM spi_form_v_6 WHERE `meta-instance-id` IN ($in)"
+            . " UNION SELECT `meta-instance-id` FROM spi_form_v_6_duplicate WHERE `meta-instance-id` IN ($in)",
+            [...$instanceIds, ...$instanceIds],
+        );
+        return array_fill_keys(array_map('strval', $stored), true);
     }
 
     public function fetchV6DetailsByMetaInstanceId($metaInstantId)

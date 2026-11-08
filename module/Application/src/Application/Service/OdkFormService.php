@@ -3282,17 +3282,12 @@ class OdkFormService
 
         /** @var SpiFormVer6Table $spiV6db */
         $spiV6db = $this->sm->get('SpiFormVer6Table');
-        $lastDateQuery = $spiV6db->getLatestFormDate($projectId, $formId);
-        $lastFormDate = $lastDateQuery[0]['last_added_form_date'] ?? null;
+        $fetchFrom = $this->syncCheckpoint(6, $projectId, $formId);
 
         $baseUrl = $spirrtURL . "/v1/projects/$projectId/forms/$formId";
         $startUrl = "$baseUrl.svc/Submissions?\$top=" . self::ODATA_PAGE_SIZE . '&$count=true';
-        if (!empty($lastFormDate)) {
-            $lastFormDate = DateTime::createFromFormat('Y-m-d H:i:s.u', $lastFormDate, new DateTimeZone('UTC'));
-            if ($lastFormDate instanceof DateTime) {
-                $iso = $lastFormDate->format('Y-m-d\TH:i:s.v\Z');
-                $startUrl .= '&$filter=' . urlencode("__system/submissionDate gt $iso");
-            }
+        if ($fetchFrom !== null) {
+            $startUrl .= '&$filter=' . urlencode("__system/submissionDate ge $fetchFrom");
         }
 
         $httpClient = new Client([
@@ -3322,6 +3317,11 @@ class OdkFormService
         $totalSeen = 0;
         $pageNumber = 0;
         $nextUrl = $startUrl;
+        // Submission dates, as Central writes them, of the newest submission
+        // seen and of each one this run could not save in full.
+        $newestSeen = '';
+        $failedDates = [];
+        $savedCount = 0;
 
         while ($nextUrl !== null) {
             $pageNumber++;
@@ -3361,30 +3361,52 @@ class OdkFormService
                 'decoder' => new \JsonMachine\JsonDecoder\ExtJsonDecoder(true),
             ]);
 
-            $batch = [];
-            $correctiveActions = [];
-            $caRequests = [];
-            $mediaRequests = [];
-
+            $page = [];
             foreach ($submissions as $submission) {
                 $submission = (array) $submission;
-                $batch[] = $submission;
+                $page[] = $submission;
                 $totalSeen++;
-
-                if (!empty($submission['correctiveaction@odata.navigationLink'])) {
-                    $caRequests[] = [
-                        'submissionId' => $submission['__id'] ?? null,
-                        'url'          => $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'],
-                    ];
-                }
-                foreach ($this->collectMediaRequestsV6($submission, $baseUrl) as $req) {
-                    $mediaRequests[] = $req;
-                }
+                $newestSeen = max($newestSeen, (string) ($submission['__system']['submissionDate'] ?? ''));
 
                 $progress?->setMessage(sprintf('p%d sub %s', $pageNumber, substr((string) ($submission['__id'] ?? ''), -8)));
                 $progress?->advance();
             }
             unset($submissions);
+
+            // The checkpoint brings back submissions that are stored already.
+            // Only the new ones are saved, with their corrective actions. A
+            // stored one gets only the photos missing on disk: those that
+            // failed to download before. A stored audit's files are complete,
+            // as a file gets its name only once its download finishes.
+            $stored = $spiV6db->storedInstanceIds(array_map(
+                static fn(array $submission): string => (string) ($submission['meta']['instanceID'] ?? ''),
+                $page,
+            ));
+            $batch = [];
+            $correctiveActions = [];
+            $caRequests = [];
+            $mediaRequests = [];
+            foreach ($page as $submission) {
+                $submissionDate = (string) ($submission['__system']['submissionDate'] ?? '');
+                $isStored = isset($stored[(string) ($submission['meta']['instanceID'] ?? '')]);
+                foreach ($this->collectMediaRequestsV6($submission, $baseUrl) as $req) {
+                    if (!$isStored || !is_file($req['sink'])) {
+                        $mediaRequests[] = $req + ['submissionDate' => $submissionDate];
+                    }
+                }
+                if ($isStored) {
+                    continue;
+                }
+                $batch[] = $submission;
+                if (!empty($submission['correctiveaction@odata.navigationLink'])) {
+                    $caRequests[] = [
+                        'submissionId'   => $submission['__id'] ?? null,
+                        'submissionDate' => $submissionDate,
+                        'url'            => $baseUrl . '.svc/' . $submission['correctiveaction@odata.navigationLink'],
+                    ];
+                }
+            }
+            unset($page);
 
             // Pool corrective-action fetches — used to be sequential inside
             // the inner foreach, where a single slow upstream stalled the
@@ -3392,21 +3414,32 @@ class OdkFormService
             // submission no longer hangs the rest.
             if ($caRequests !== []) {
                 $this->displayMessage($progress, sprintf('p%d fetching %d corrective actions…', $pageNumber, count($caRequests)));
-                $correctiveActions = $this->fetchCorrectiveActionsPoolV6($httpClient, $authHeaders, $caRequests, $io);
+                [$correctiveActions, $caFailed] = $this->fetchCorrectiveActionsPoolV6($httpClient, $authHeaders, $caRequests, $io);
+                // An audit is saved with its corrective actions or not at all,
+                // so the next run fetches it again.
+                if ($caFailed !== []) {
+                    $batch = array_values(array_filter(
+                        $batch,
+                        static fn(array $submission): bool => !isset($caFailed[(string) ($submission['__id'] ?? '')]),
+                    ));
+                    array_push($failedDates, ...array_values($caFailed));
+                }
             }
 
             // Pool media downloads — each request carries its own `sink` so
             // Guzzle streams straight to disk.
             if ($mediaRequests !== []) {
                 $this->displayMessage($progress, sprintf('p%d downloading %d media…', $pageNumber, count($mediaRequests)));
-                $this->downloadMediaPoolV6($httpClient, $authHeaders, $mediaRequests, $io);
+                array_push($failedDates, ...$this->downloadMediaPoolV6($httpClient, $authHeaders, $mediaRequests, $io));
             }
 
             // Per-page save: bounded memory regardless of backlog size, and
             // each page acts as a crash-recovery checkpoint.
             if ($batch !== []) {
                 $this->displayMessage($progress, sprintf('p%d saving %d rows…', $pageNumber, count($batch)));
-                $spiV6db->saveOdkCentralData($batch, $correctiveActions, $projectId, $formId);
+                $saveFailures = $spiV6db->saveOdkCentralData($batch, $correctiveActions, $projectId, $formId);
+                $savedCount += count($batch) - count($saveFailures);
+                array_push($failedDates, ...$saveFailures);
             }
 
             @unlink($tmpPath);
@@ -3419,11 +3452,65 @@ class OdkFormService
         $progress?->setMessage('done');
         $progress?->finish();
         $io?->newLine(2);
-        if ($totalSeen === 0) {
+
+        // The run is complete, so the checkpoint moves: to the earliest
+        // submission not saved in full, or else to the newest one seen.
+        if ($failedDates !== []) {
+            sort($failedDates);
+            $this->saveSyncCheckpoint(6, $projectId, $formId, $failedDates[0]);
+            $io?->warning(sprintf(
+                '%d submission(s) were not saved in full. The next run fetches again from %s.',
+                count(array_unique($failedDates)),
+                $failedDates[0] === '' ? 'the start' : $failedDates[0],
+            ));
+        } elseif ($newestSeen !== '') {
+            $this->saveSyncCheckpoint(6, $projectId, $formId, $newestSeen);
+        }
+
+        if ($savedCount === 0 && $failedDates === []) {
             $io?->writeln('<info>Nothing new to sync — already up to date.</info>');
         } else {
-            $io?->success(sprintf('Synced %d submission(s) across %d page(s).', $totalSeen, $pageNumber));
+            $io?->success(sprintf('Saved %d new submission(s) of %d fetched, across %d page(s).', $savedCount, $totalSeen, $pageNumber));
         }
+    }
+
+    /**
+     * The submission date a sync of this form resumes from, in Central's
+     * format, or null to fetch every submission.
+     */
+    private function syncCheckpoint(int $formVersion, $projectId, $formId): ?string
+    {
+        $fetchFrom = $this->sm->get(Connection::class)->fetchOne(
+            'SELECT fetch_from FROM central_sync_checkpoint WHERE form_version = ? AND central_project_id = ? AND central_form_id = ?',
+            [$formVersion, $projectId, $formId],
+        );
+        if ($fetchFrom === false || $fetchFrom === null) {
+            return null;
+        }
+        $date = DateTime::createFromFormat('Y-m-d H:i:s.v', (string) $fetchFrom, new DateTimeZone('UTC'))
+            ?: DateTime::createFromFormat('Y-m-d H:i:s', (string) $fetchFrom, new DateTimeZone('UTC'));
+        return $date instanceof DateTime ? $date->format('Y-m-d\TH:i:s.v\Z') : null;
+    }
+
+    /**
+     * Stores the submission date, in Central's format, that the next sync of
+     * this form resumes from. '' or a date that does not parse removes the
+     * checkpoint, so the next sync fetches every submission.
+     */
+    private function saveSyncCheckpoint(int $formVersion, $projectId, $formId, string $submissionDate): void
+    {
+        $db = $this->sm->get(Connection::class);
+        $key = [$formVersion, $projectId, $formId];
+        $date = $submissionDate === '' ? false : date_create_immutable($submissionDate);
+        if ($date === false) {
+            $db->executeStatement('DELETE FROM central_sync_checkpoint WHERE form_version = ? AND central_project_id = ? AND central_form_id = ?', $key);
+            return;
+        }
+        $db->executeStatement(
+            'INSERT INTO central_sync_checkpoint (form_version, central_project_id, central_form_id, fetch_from, updated_on) VALUES (?, ?, ?, ?, ?)'
+            . ' ON DUPLICATE KEY UPDATE fetch_from = VALUES(fetch_from), updated_on = VALUES(updated_on)',
+            [...$key, $date->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s.v'), CommonService::getDateTime()],
+        );
     }
 
     /**
@@ -3487,14 +3574,21 @@ class OdkFormService
      * option — Guzzle streams the body straight to disk; nothing is held in
      * PHP memory.
      */
-    private function downloadMediaPoolV6(Client $client, array $authHeaders, array $requests, ?SymfonyStyle $io): void
+    /**
+     * @return list<string> The submission date of each failed download. A
+     *         file Central does not have (404) is not a failure.
+     */
+    private function downloadMediaPoolV6(Client $client, array $authHeaders, array $requests, ?SymfonyStyle $io): array
     {
+        $failedDates = [];
         $requestGenerator = function () use ($client, $requests, $authHeaders) {
             foreach ($requests as $req) {
                 yield function () use ($client, $req, $authHeaders) {
+                    // The file gets its name only once it is complete, so a
+                    // later sync never mistakes a cut-off download for a photo.
                     return $client->getAsync($req['url'], [
                         'headers' => $authHeaders,
-                        'sink'    => $req['sink'],
+                        'sink'    => $req['sink'] . '.part',
                         'timeout' => self::POOL_REQUEST_TIMEOUT,
                     ]);
                 };
@@ -3503,19 +3597,28 @@ class OdkFormService
 
         $pool = new Pool($client, $requestGenerator(), [
             'concurrency' => self::POOL_CONCURRENCY,
-            'fulfilled'   => static function () { /* sink wrote it; nothing to do */ },
-            'rejected'    => function ($reason, $index) use ($requests, $io) {
+            'fulfilled'   => function ($response, $index) use ($requests, $io, &$failedDates) {
+                $sink = $requests[$index]['sink'];
+                if (!rename($sink . '.part', $sink)) {
+                    $io?->writeln("<comment>media download failed: could not write $sink</comment>");
+                    $failedDates[] = (string) ($requests[$index]['submissionDate'] ?? '');
+                }
+            },
+            'rejected'    => function ($reason, $index) use ($requests, $io, &$failedDates) {
                 $url = $requests[$index]['url'] ?? '?';
                 $msg = $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason;
                 $io?->writeln("<comment>media download failed: $url ($msg)</comment>");
-                // Partial sink files from a failed transfer would otherwise
-                // sit on disk and be served as truncated images.
-                if (isset($requests[$index]['sink']) && is_file($requests[$index]['sink'])) {
-                    @unlink($requests[$index]['sink']);
+                $missing = $reason instanceof \GuzzleHttp\Exception\ClientException && $reason->getResponse()->getStatusCode() === 404;
+                if (!$missing) {
+                    $failedDates[] = (string) ($requests[$index]['submissionDate'] ?? '');
+                }
+                if (isset($requests[$index]['sink']) && is_file($requests[$index]['sink'] . '.part')) {
+                    @unlink($requests[$index]['sink'] . '.part');
                 }
             },
         ]);
         $pool->promise()->wait();
+        return $failedDates;
     }
 
     /**
@@ -3523,12 +3626,15 @@ class OdkFormService
      * Was sequential inside the inner foreach, where a single slow upstream
      * would stall the whole page (see "stuck at 48/1467" report 2026-05-25).
      *
-     * @param array<int, array{submissionId: ?string, url: string}> $requests
-     * @return array<string, array> Map of submissionId => value array.
+     * @param array<int, array{submissionId: ?string, submissionDate: string, url: string}> $requests
+     * @return array{0: array<string, array>, 1: array<string, string>} The
+     *         corrective actions by submission ID, and the submission date of
+     *         each failed fetch by submission ID.
      */
     private function fetchCorrectiveActionsPoolV6(Client $client, array $authHeaders, array $requests, ?SymfonyStyle $io): array
     {
         $out = [];
+        $failed = [];
 
         $gen = function () use ($client, $requests, $authHeaders) {
             foreach ($requests as $req) {
@@ -3543,9 +3649,13 @@ class OdkFormService
 
         $pool = new Pool($client, $gen(), [
             'concurrency' => self::POOL_CONCURRENCY,
-            'fulfilled'   => function ($response, $index) use ($requests, &$out) {
+            'fulfilled'   => function ($response, $index) use ($requests, &$out, &$failed) {
                 $submissionId = $requests[$index]['submissionId'] ?? null;
-                if ($submissionId === null || $response->getStatusCode() !== 200) {
+                if ($submissionId === null) {
+                    return;
+                }
+                if ($response->getStatusCode() !== 200) {
+                    $failed[$submissionId] = $requests[$index]['submissionDate'];
                     return;
                 }
                 $body = $response->getBody()->getContents();
@@ -3556,15 +3666,16 @@ class OdkFormService
                 $decoded = json_decode($body, true);
                 $out[$submissionId] = $decoded['value'] ?? [];
             },
-            'rejected'    => function ($reason, $index) use ($requests, $io) {
+            'rejected'    => function ($reason, $index) use ($requests, $io, &$failed) {
                 $url = $requests[$index]['url'] ?? '?';
                 $msg = $reason instanceof \Throwable ? $reason->getMessage() : (string) $reason;
                 $io?->writeln("<comment>corrective-action fetch failed: $url ($msg)</comment>");
+                $failed[(string) ($requests[$index]['submissionId'] ?? '')] = $requests[$index]['submissionDate'];
             },
         ]);
         $pool->promise()->wait();
 
-        return $out;
+        return [$out, $failed];
     }
 
     /**
