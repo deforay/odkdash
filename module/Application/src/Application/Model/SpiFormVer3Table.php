@@ -1283,6 +1283,11 @@ class SpiFormVer3Table
         }
         //get earliest date
         $eQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
+        // The earliest audit the user may see, scoped as the list is.
+        if (!empty($loginContainer->token)) {
+            $eQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
+        }
+        $eQuery = self::applyV3LocationScope($eQuery);
         $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
         $eResult = $this->db->fetchAssociative($eQueryStr);
         //get duplicate value
