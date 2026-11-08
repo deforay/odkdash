@@ -5512,7 +5512,8 @@ class OdkFormService
                 $row = [];
                 $level = null;
                 if ($source == 'hv' || $source == 'la' || $source == 'apall' || $source == 'apl180' || $source == 'ap') {
-                    $auditScore += $aRow['AUDIT_SCORE_PERCENTAGE'];
+                    // A blank score counts as 0, as the list's summary counts it.
+                    $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
                     if (isset($scorePer) && $scorePer < 40) {
                         $level = 0;
                         $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
