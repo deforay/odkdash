@@ -46,7 +46,6 @@ class SpiFormVer3TempTable
         /* Array of database columns which should be read and sent back to DataTables. Use a space where
         * you want to insert a non-database field (for example a counter or static image)
         */
-        $queryContainer = new Container('query');
         $aColumns = ['id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status'];
         $orderColumns = ['id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'status'];
 
@@ -115,8 +114,6 @@ class SpiFormVer3TempTable
             $sQuery->offset($sOffset);
         }
 
-        // The export reads this Select after the reset below, so it is unpaged.
-        $queryContainer->exportAllDataQuery = $sQuery;
         $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
 
         /* Data set length after filtering */
