@@ -5,7 +5,6 @@ namespace Application\Service;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Sql\Sql;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -345,8 +344,12 @@ class FacilityService
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $output = [];
             $sheet = $spreadsheet->getActiveSheet();
-            $sql = new Sql($this->sm->get('Laminas\Db\Adapter\Adapter'));
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sql->buildSqlString($queryContainer->exportAllFacilityQuery));
+            // The query the facility list last ran, without its page. A session
+            // that has not opened the list since this changed holds none.
+            $query = $queryContainer->exportAllFacilityQuery;
+            $sResult = is_array($query)
+                ? $this->sm->get(Connection::class)->fetchAllAssociative($query['sql'], $query['values'])
+                : [];
             if (!empty($sResult)) {
                 foreach ($sResult as $aRow) {
                     $row = [];

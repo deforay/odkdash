@@ -2,6 +2,7 @@
 
 namespace Application\Model;
 
+use App\Db\DataTables;
 use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
@@ -9,7 +10,6 @@ use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
 use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Sql;
 
 class SpiRtFacilitiesTable
 {
@@ -242,44 +242,22 @@ class SpiRtFacilitiesTable
         $queryContainer = new Container('query');
         $aColumns = ['facility_id', 'facility_name', 'email', 'contact_person'];
 
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(['spirt3' => 'spi_rt_3_facilities'])
-            ->columns(['id', 'facility_id', 'facility_name', 'email', 'contact_person', 'latitude', 'longitude', 'status'])
-            ->join(['g' => 'geographical_divisions'], 'spirt3.province=g.geo_id', ['province' => 'geo_name'], 'left')
-            ->join(['gd' => 'geographical_divisions'], 'spirt3.district=gd.geo_id', ['district' => 'geo_name'], 'left')
-            ->where("spirt3.status != 'deleted'");
+        [$search, $values] = DataTables::search($aColumns, $parameters);
+        $order = DataTables::order($aColumns, $parameters);
+        $from = 'FROM spi_rt_3_facilities AS spirt3'
+            . ' LEFT JOIN geographical_divisions AS g ON spirt3.province = g.geo_id'
+            . ' LEFT JOIN geographical_divisions AS gd ON spirt3.district = gd.geo_id'
+            . " WHERE spirt3.status != 'deleted'" . ($search !== '' ? " AND $search" : '');
+        $select = 'SELECT spirt3.id, spirt3.facility_id, spirt3.facility_name, spirt3.email, spirt3.contact_person,'
+            . ' spirt3.latitude, spirt3.longitude, spirt3.status, g.geo_name AS province, gd.geo_name AS district '
+            . $from . ($order !== '' ? " ORDER BY $order" : '');
 
-        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
-        if ($sWhere !== null) {
-            $sQuery->where($sWhere);
-        }
-
-        if (isset($parameters['iSortCol_0'])) {
-            $sOrder = "";
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true" && isset($aColumns[(int) $parameters['iSortCol_' . $i]])) {
-                    $sOrder .= $aColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ", ";
-                }
-            }
-            $sOrder = rtrim($sOrder, ", ");
-            if ($sOrder != "") {
-                $sQuery->order($sOrder);
-            }
-        }
-
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sQuery->limit((int) $parameters['iDisplayLength']);
-            $sQuery->offset((int) $parameters['iDisplayStart']);
-        }
-
-        $rResult = $this->db->fetchAllAssociative($sql->buildSqlString($sQuery));
+        $rResult = $this->db->fetchAllAssociative($select . DataTables::limit($parameters), $values);
 
         // The export runs this query again without the page, so it has every
         // facility the search matches.
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $queryContainer->exportAllFacilityQuery = $sQuery;
-        $iFilteredTotal = (int) $this->db->fetchOne('SELECT COUNT(*) FROM (' . $sql->buildSqlString($sQuery) . ') AS filtered');
+        $queryContainer->exportAllFacilityQuery = ['sql' => $select, 'values' => $values];
+        $iFilteredTotal = (int) $this->db->fetchOne("SELECT COUNT(*) $from", $values);
         $iTotal = (int) $this->db->fetchOne("SELECT COUNT(*) FROM spi_rt_3_facilities WHERE status != 'deleted'");
 
         $output = [
