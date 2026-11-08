@@ -75,7 +75,7 @@ class SpiFormVer6Table
     public function saveOdkCentralData($params, $correctiveActions, $projectId, $formId)
     {
         if ($params == null || $params == "" || empty($params)) {
-            exit;
+            return;
         }
 
         $dbAdapter = $this->adapter;
