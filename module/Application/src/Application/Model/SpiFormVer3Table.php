@@ -1507,6 +1507,7 @@ class SpiFormVer3Table
         $dbAdapter = $this->adapter;
         $sql = new Sql($this->adapter);
         $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
+            ->where('spiv3.status != "deleted"')
             ->order(array("spiv3.id DESC"));
         if (isset($params['roundno']) && $params['roundno'] != '') {
             $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($params['roundno'])]);
