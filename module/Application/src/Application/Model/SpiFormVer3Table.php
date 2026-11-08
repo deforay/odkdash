@@ -1251,7 +1251,7 @@ class SpiFormVer3Table extends AbstractTableGateway
             $row[] = CommonService::escapeHtml($aRow['TEST_SCORE']);
             $row[] = CommonService::escapeHtml($aRow['POST_SCORE']);
             $row[] = CommonService::escapeHtml($aRow['EQA_SCORE']);
-            $t = $aRow['PERSONAL_SCORE'] + $aRow['PHYSICAL_SCORE'] + $aRow['SAFETY_SCORE'] + $aRow['PRETEST_SCORE'] + $aRow['TEST_SCORE'] + $aRow['POST_SCORE'] + $aRow['EQA_SCORE'];
+            $t = (float) $aRow['PERSONAL_SCORE'] + (float) $aRow['PHYSICAL_SCORE'] + (float) $aRow['SAFETY_SCORE'] + (float) $aRow['PRETEST_SCORE'] + (float) $aRow['TEST_SCORE'] + (float) $aRow['POST_SCORE'] + (float) $aRow['EQA_SCORE'];
             $row[] = $t . "(" . round((float) ($aRow['AUDIT_SCORE_PERCANTAGE']), 2) . ")";
             $output['aaData'][] = $row;
         }
