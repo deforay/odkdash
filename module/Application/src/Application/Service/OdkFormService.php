@@ -5454,12 +5454,12 @@ class OdkFormService
             $testPoint = isset($params[5]['value']) && ($params[5]['value'] != "") ? "Type of Testing Point : " . $params[5]['value'] : "Type of Testing Point : ";
             $source = $params[0]['value'];
 
-            if (!$queryContainer->exportViewDataV6Query instanceof Select) {
+            $stored = $queryContainer->exportViewDataV6Query;
+            if (!is_array($stored)) {
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportViewDataV6Query);
-            $rResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+            $rResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
 
             $auditScore = 0;
             $levelZero = [];
