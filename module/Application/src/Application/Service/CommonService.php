@@ -809,7 +809,10 @@ class CommonService
                 foreach ($columns as $column) {
                     $anyColumn->addPredicate(new PredicateExpression($column . ' LIKE ?', ['%' . $word . '%']), PredicateSet::OP_OR);
                 }
-                $search->addPredicate($anyColumn);
+                // With no searchable columns the group is empty, and MySQL rejects "()".
+                if (count($anyColumn) > 0) {
+                    $search->addPredicate($anyColumn);
+                }
             }
         }
 
