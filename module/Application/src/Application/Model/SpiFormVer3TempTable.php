@@ -145,7 +145,7 @@ class SpiFormVer3TempTable
             $row[] = CommonService::escapeHtml($aRow['testingpointtype']);
             $row[] = CommonService::escapeHtml($aRow['level'] . $level);
             $row[] = CommonService::escapeHtml($aRow['affiliation']);
-            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE']), 2);
+            $row[] = round((float) ($aRow['AUDIT_SCORE_PERCANTAGE'] ?? 0), 2);
             $row[] = CommonService::escapeHtml(ucwords($aRow['status']));
             $output['aaData'][] = $row;
         }
