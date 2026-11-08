@@ -1598,7 +1598,7 @@ class SpiFormVer6Table
         if (isset($sOrder) && $sOrder != "") {
             $sQuery->order($sOrder);
         }
-        $queryContainer->exportAllDataQuery = $sQuery;
+        $queryContainer->exportAllDataQueryV6 = $sQuery;
         if (isset($sLimit) && isset($sOffset)) {
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
@@ -2312,7 +2312,7 @@ class SpiFormVer6Table
             $sQuery->limit($sLimit);
             $sQuery->offset($sOffset);
         }
-        $queryContainer->exportQuery = $sQuery;
+        $queryContainer->exportQueryV6 = $sQuery;
         $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
         //echo $sQueryStr;die;
         $rResult = $this->db->fetchAllAssociative($sQueryStr);
