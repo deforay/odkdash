@@ -656,10 +656,10 @@ class SpiFormVer3Table
                 $this->db->insert(self::TABLE, $this->quoteColumns($par));
                 $insertedId = $this->db->lastInsertId();
 
-                if ($approveStatus == 'approved') {
-                    $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
-                    $facilityResult = $facilityDb->addFacilityBasedOnForm($insertedId);
-                }
+                // Link on ingest either way, so a pending audit is still visible
+                // to a mapped user. Only approval may create a new facility. As V6.
+                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+                $facilityDb->addFacilityBasedOnForm($insertedId, 3, $approveStatus == 'approved');
             } catch (\Exception $e) {
                 error_log($e->getMessage());
                 error_log($e->getTraceAsString());
@@ -3481,7 +3481,11 @@ class SpiFormVer3Table
                 );
                 $dbAdapter = $this->adapter;
                 $this->db->insert(self::TABLE, $this->quoteColumns($par));
-                if ($this->db->lastInsertId() > 0) {
+                $insertedId = $this->db->lastInsertId();
+                if ($insertedId > 0) {
+                    // Linked as a synced audit is: always to a facility that exists,
+                    // and to a new one only when the row is approved.
+                    (new SpiRtFacilitiesTable($this->adapter))->addFacilityBasedOnForm($insertedId, 3, $newResult['status'] == 'approved');
                     $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->adapter);
                     $spiv3Temp->deleteById($newResult['id']);
                 }
