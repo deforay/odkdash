@@ -16,8 +16,6 @@ use JsonMachine\Items;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Sql\Select;
-use Laminas\Db\Sql\Sql;
 use CpChart\Chart\Radar;
 use Shuchkin\SimpleXLSXGen;
 use Application\Session\Container;
@@ -1677,7 +1675,6 @@ class OdkFormService
         $trackTable = new EventLogTable($dbAdapter);
         //$db = $this->sm->get('SpiFormVer6DownloadTable');
         //$result = $db->fetchDownloadFilesRow();
-        $sql = new Sql($dbAdapter);
         $stored = $queryContainer->exportAllDataQueryV6;
         if (!is_array($stored)) {
             // The list this export reruns was not opened in this session.
@@ -2014,7 +2011,6 @@ class OdkFormService
             $username = $loginContainer->login;
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $trackTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -2918,7 +2914,6 @@ class OdkFormService
             $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v6-' . date('d-M-Y-H-i-s') . '.xlsx';
             $sheet = $spreadsheet->getActiveSheet();
-            $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 $fromDate = '';
@@ -5464,7 +5459,6 @@ class OdkFormService
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $username = $loginContainer->login;
             $trackTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params[4]['value']) && ($params[4]['value'] != "")) {
                 $dateRangeDate = explode(" - ", $params[4]['value']);

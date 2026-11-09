@@ -8,8 +8,6 @@ use Ramsey\Uuid\Uuid;
 use DateTimeImmutable;
 use App\Db\Dbal;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Sql\Predicate\Expression as PredicateExpression;
-use Laminas\Db\Sql\Predicate\PredicateSet;
 use Application\Session\Container;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
@@ -764,13 +762,13 @@ class CommonService
     }
 
     /**
-     * The values of a multi-select filter, for a bound IN list:
-     * ->where(['f.country' => CommonService::inList($params['country'])]).
+     * The values of a multi-select filter, for a bound IN list: one ? for
+     * each value.
      *
      * The pages send a selection either as an array or as a comma-separated
-     * string such as "3,7". The list is never empty, because laminas-db
-     * renders an empty list as IN (), which is a SQL error. An empty
-     * selection becomes [''] and matches nothing.
+     * string such as "3,7". The list is never empty, because an empty list
+     * gives IN (), which is a SQL error. An empty selection becomes [''] and
+     * matches nothing.
      *
      * @return list<string>
      */
@@ -786,44 +784,6 @@ class CommonService
         }
 
         return $list === [] ? [''] : $list;
-    }
-
-    /**
-     * The DataTables search box and column filters as one bound predicate,
-     * or null when neither is set. Pass the result to $select->where().
-     *
-     * Each word of sSearch must appear in at least one column. Each
-     * sSearch_N filter must appear in column N. $columns are the table's own
-     * $aColumns, never request data, because they are written into the SQL.
-     *
-     * @param list<string> $columns
-     */
-    public static function dataTablesSearch(array $columns, mixed $parameters): ?PredicateSet
-    {
-        $search = new PredicateSet();
-
-        $words = (string) ($parameters['sSearch'] ?? '');
-        if ($words !== '') {
-            foreach (explode(' ', $words) as $word) {
-                $anyColumn = new PredicateSet([], PredicateSet::OP_OR);
-                foreach ($columns as $column) {
-                    $anyColumn->addPredicate(new PredicateExpression($column . ' LIKE ?', ['%' . $word . '%']), PredicateSet::OP_OR);
-                }
-                // With no searchable columns the group is empty, and MySQL rejects "()".
-                if (count($anyColumn) > 0) {
-                    $search->addPredicate($anyColumn);
-                }
-            }
-        }
-
-        foreach (array_values($columns) as $i => $column) {
-            $filter = (string) ($parameters['sSearch_' . $i] ?? '');
-            if (($parameters['bSearchable_' . $i] ?? '') == 'true' && $filter !== '') {
-                $search->addPredicate(new PredicateExpression($column . ' LIKE ?', ['%' . $filter . '%']));
-            }
-        }
-
-        return count($search) > 0 ? $search : null;
     }
 
     /**
