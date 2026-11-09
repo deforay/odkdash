@@ -17,6 +17,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\DBAL\Connection;
 use CpChart\Chart\Radar;
+use App\Export\FacilityReport;
 use App\Export\Workbook;
 use Application\Session\Container;
 use Application\Model\EventLogTable;
@@ -25,11 +26,6 @@ use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer6Table;
 use Application\Model\SpiRtFacilitiesTable;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class OdkFormService
 {
@@ -298,11 +294,7 @@ class OdkFormService
             $userName = $loginContainer->login;
             $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
             $trackTable = new EventLogTable($dbConnection);
-            $spreadsheet = new Spreadsheet();
-            $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xlsx';
-            $output = [];
-            $sheet = $spreadsheet->getActiveSheet();
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 $fromDate = '';
@@ -323,122 +315,25 @@ class OdkFormService
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
-            if (!empty($sResult)) {
-
-                foreach ($sResult as $aRow) {
-                    $auditDate = "";
-                    if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                    }
-                    $row = [];
-                    $row[] = $aRow['facilityname'];
-                    $row[] = $auditDate;
-                    $row[] = $aRow['testingpointname'] . " - " . $aRow['testingpointtype'];
-                    $row[] = $aRow['PERSONAL_SCORE'];
-                    $row[] = $aRow['PHYSICAL_SCORE'];
-                    $row[] = $aRow['SAFETY_SCORE'];
-                    $row[] = $aRow['PRETEST_SCORE'];
-                    $row[] = $aRow['TEST_SCORE'];
-                    $row[] = $aRow['POST_SCORE'];
-                    $row[] = $aRow['EQA_SCORE'];
-                    $row[] = $aRow['FINAL_AUDIT_SCORE'];
-                    $row[] = round((float) ($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE']), 2);
-                    $output[] = $row;
+            $rows = (function () use ($stored): \Generator {
+                foreach ($this->sm->get(Connection::class)->iterateAssociative($stored['sql'], $stored['values']) as $aRow) {
+                    yield [
+                        $aRow['facilityname'],
+                        trim((string) ($aRow['assesmentofaudit'] ?? '')) != '' ? CommonService::humanReadableDateFormat($aRow['assesmentofaudit']) : '',
+                        $aRow['testingpointname'] . ' - ' . $aRow['testingpointtype'],
+                        $aRow['PERSONAL_SCORE'],
+                        $aRow['PHYSICAL_SCORE'],
+                        $aRow['SAFETY_SCORE'],
+                        $aRow['PRETEST_SCORE'],
+                        $aRow['TEST_SCORE'],
+                        $aRow['POST_SCORE'],
+                        $aRow['EQA_SCORE'],
+                        $aRow['FINAL_AUDIT_SCORE'],
+                        round((float) ($aRow['AUDIT_SCORE_PERCANTAGE'] ?? $aRow['AUDIT_SCORE_PERCENTAGE']), 2),
+                    ];
                 }
-            }
-            $styleArray = [
-                'font' => [
-                    'bold' => true,
-                    'size' => 12,
-                ],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ],
-                'borders' => [
-                    'outline' => [
-                        'style' => Border::BORDER_THICK,
-                    ],
-                ],
-            ];
-            $borderStyle = [
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                ],
-                'borders' => [
-                    'outline' => [
-                        'style' => Border::BORDER_MEDIUM,
-                    ],
-                ],
-            ];
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-            $sheet->mergeCells('I4:I5');
-            $sheet->mergeCells('J4:J5');
-            $sheet->mergeCells('K4:K5');
-            $sheet->mergeCells('L4:L5');
-
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report Version 3', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'));
-
-            $sheet->setCellValue('A4', html_entity_decode('Facility name', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('B4', html_entity_decode('Audit Date', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('C4', html_entity_decode('Testing Point', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('D4', html_entity_decode('Personnel Training & Certification', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('E4', html_entity_decode('Physical', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('F4', html_entity_decode('Safety', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('G4', html_entity_decode('Pre-Testing', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('H4', html_entity_decode('Testing', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('I4', html_entity_decode('Post-Testing', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('J4', html_entity_decode('External QA', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('K4', html_entity_decode('Total', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('L4', html_entity_decode('% Scores', ENT_QUOTES, 'UTF-8'));
-
-            $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
-            $sheet->getStyle('A2:B2')->getFont()->setBold(true)->setSize(13);
-
-            $sheet->getStyle('A4:A5')->applyFromArray($styleArray);
-            $sheet->getStyle('B4:B5')->applyFromArray($styleArray);
-            $sheet->getStyle('C4:C5')->applyFromArray($styleArray);
-            $sheet->getStyle('D4:D5')->applyFromArray($styleArray);
-            $sheet->getStyle('E4:E5')->applyFromArray($styleArray);
-            $sheet->getStyle('F4:F5')->applyFromArray($styleArray);
-            $sheet->getStyle('G4:G5')->applyFromArray($styleArray);
-            $sheet->getStyle('H4:H5')->applyFromArray($styleArray);
-            $sheet->getStyle('I4:I5')->applyFromArray($styleArray);
-            $sheet->getStyle('J4:J5')->applyFromArray($styleArray);
-            $sheet->getStyle('K4:K5')->applyFromArray($styleArray);
-            $sheet->getStyle('L4:L5')->applyFromArray($styleArray);
-
-            $start = 0;
-            foreach ($output as $rowNo => $rowData) {
-                $colNo = 1;
-                foreach ($rowData as $field => $value) {
-                    if (!isset($value)) {
-                        $value = "";
-                    }
-                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                    $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getColumn();
-                    $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                    $sheet->getDefaultRowDimension()->setRowHeight(18);
-                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getAlignment()->setWrapText(true);
-                    $colNo++;
-                }
-            }
-
-            $writer->save(CommonService::downloadFile($filename));
+            })();
+            FacilityReport::write(CommonService::downloadFile($filename), 'Facility Report Version 3', $displayDate, ['Facility name', 'Audit Date', 'Testing Point', 'Personnel Training & Certification', 'Physical', 'Safety', 'Pre-Testing', 'Testing', 'Post-Testing', 'External QA', 'Total', '% Scores'], $rows);
             $subject = '';
             $eventType = 'Export-Facility';
             $action = $userName . ' has exported V3 Facility Report';
@@ -2238,11 +2133,7 @@ class OdkFormService
             $userName = $loginContainer->login;
             $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
             $auditTable = new EventLogTable($dbConnection);
-            $output = [];
-            $spreadsheet = new Spreadsheet();
-            $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v6-' . date('d-M-Y-H-i-s') . '.xlsx';
-            $sheet = $spreadsheet->getActiveSheet();
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 $fromDate = '';
@@ -2263,131 +2154,26 @@ class OdkFormService
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
-            // print_r(count($sResult)); die;
-            if (!empty($sResult)) {
-
-                foreach ($sResult as $aRow) {
-                    $auditDate = "";
-                    if (isset($aRow['assesmentofaudit']) && trim($aRow['assesmentofaudit']) != "") {
-                        $auditDate = CommonService::humanReadableDateFormat($aRow['assesmentofaudit']);
-                    }
-                    $row = [];
-                    $row[] = $aRow['facilityname'];
-                    $row[] = $auditDate;
-                    $row[] = $aRow['testingpointtype'];
-                    $row[] = $aRow['PERSONAL_SCORE'];
-                    $row[] = $aRow['PHYSICAL_SCORE'];
-                    $row[] = $aRow['SAFETY_SCORE'];
-                    $row[] = $aRow['PRETEST_SCORE'];
-                    $row[] = $aRow['TEST_SCORE'];
-                    $row[] = $aRow['POST_SCORE'];
-                    $row[] = $aRow['EQA_SCORE'];
-                    $row[] = $aRow['RTRI_SCORE'];
-                    $row[] = $aRow['FINAL_AUDIT_SCORE'];
-                    $row[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                    $output[] = $row;
+            $rows = (function () use ($stored): \Generator {
+                foreach ($this->sm->get(Connection::class)->iterateAssociative($stored['sql'], $stored['values']) as $aRow) {
+                    yield [
+                        $aRow['facilityname'],
+                        trim((string) ($aRow['assesmentofaudit'] ?? '')) != '' ? CommonService::humanReadableDateFormat($aRow['assesmentofaudit']) : '',
+                        $aRow['testingpointtype'],
+                        $aRow['PERSONAL_SCORE'],
+                        $aRow['PHYSICAL_SCORE'],
+                        $aRow['SAFETY_SCORE'],
+                        $aRow['PRETEST_SCORE'],
+                        $aRow['TEST_SCORE'],
+                        $aRow['POST_SCORE'],
+                        $aRow['EQA_SCORE'],
+                        $aRow['RTRI_SCORE'],
+                        $aRow['FINAL_AUDIT_SCORE'],
+                        $aRow['AUDIT_SCORE_PERCENTAGE'],
+                    ];
                 }
-            }
-            //echo "<pre>";
-            // print_r($output);die;
-            $styleArray = array(
-                'font' => array(
-                    'bold' => true,
-                    'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'borderStyle' => Border::BORDER_THICK,
-                    ),
-                ),
-            );
-
-            $borderStyle = array(
-                'alignment' => array(
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'borderStyle' => Border::BORDER_MEDIUM,
-                    ),
-                ),
-            );
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-            $sheet->mergeCells('I4:I5');
-            $sheet->mergeCells('J4:J5');
-            $sheet->mergeCells('K4:K5');
-            $sheet->mergeCells('L4:L5');
-            $sheet->mergeCells('M4:M5');
-
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('A2', html_entity_decode($displayDate, ENT_QUOTES, 'UTF-8'));
-
-            $sheet->setCellValue('A4', html_entity_decode('Facility name', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('B4', html_entity_decode('Audit Date', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('C4', html_entity_decode('Testing Point', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('D4', html_entity_decode('Personnel Training & Certification', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('E4', html_entity_decode('Physical', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('F4', html_entity_decode('Safety', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('G4', html_entity_decode('Pre-Testing', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('H4', html_entity_decode('Testing', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('I4', html_entity_decode('Post-Testing', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('J4', html_entity_decode('External QA', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('K4', html_entity_decode('RTRI', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('L4', html_entity_decode('Total', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('M4', html_entity_decode('% Scores', ENT_QUOTES, 'UTF-8'));
-
-            $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
-            $sheet->getStyle('A2:B2')->getFont()->setBold(true)->setSize(13);
-
-            $sheet->getStyle('A4:A5')->applyFromArray($styleArray);
-            $sheet->getStyle('B4:B5')->applyFromArray($styleArray);
-            $sheet->getStyle('C4:C5')->applyFromArray($styleArray);
-            $sheet->getStyle('D4:D5')->applyFromArray($styleArray);
-            $sheet->getStyle('E4:E5')->applyFromArray($styleArray);
-            $sheet->getStyle('F4:F5')->applyFromArray($styleArray);
-            $sheet->getStyle('G4:G5')->applyFromArray($styleArray);
-            $sheet->getStyle('H4:H5')->applyFromArray($styleArray);
-            $sheet->getStyle('I4:I5')->applyFromArray($styleArray);
-            $sheet->getStyle('J4:J5')->applyFromArray($styleArray);
-            $sheet->getStyle('K4:K5')->applyFromArray($styleArray);
-            $sheet->getStyle('L4:L5')->applyFromArray($styleArray);
-            $sheet->getStyle('M4:M5')->applyFromArray($styleArray);
-
-            $start = 0;
-            foreach ($output as $rowNo => $rowData) {
-                $colNo = 1;
-                foreach ($rowData as $field => $value) {
-
-                    if (!isset($value)) {
-                        $value = "";
-                    }
-                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                    $rRowCount = $rowNo + 6;
-                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . $rRowCount)->applyFromArray($borderStyle);
-                    $sheet->getDefaultRowDimension()->setRowHeight(18);
-                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getAlignment()->setWrapText(true);
-                    ++$colNo;
-                }
-            }
-
-            $writer = new Xlsx($spreadsheet);
-            $writer->save(CommonService::downloadFile($filename));
+            })();
+            FacilityReport::write(CommonService::downloadFile($filename), 'Facility Report', $displayDate, ['Facility name', 'Audit Date', 'Testing Point', 'Personnel Training & Certification', 'Physical', 'Safety', 'Pre-Testing', 'Testing', 'Post-Testing', 'External QA', 'RTRI', 'Total', '% Scores'], $rows);
             $subject = '';
             $eventType = 'Export-Facility';
             $action = $userName . ' has exported SPI-RRT Facility Report';
@@ -2397,7 +2183,6 @@ class OdkFormService
         } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
-
             return "";
         }
     }

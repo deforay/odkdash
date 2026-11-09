@@ -5,7 +5,7 @@ namespace Application\Service;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Export\FacilityReport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class FacilityService
@@ -315,116 +315,33 @@ class FacilityService
     public function exportFacility()
     {
         try {
-
             $queryContainer = new Container('query');
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $output = [];
-            $sheet = $spreadsheet->getActiveSheet();
             // The query the facility list last ran, without its page. A session
             // that has not opened the list since this changed holds none.
             $query = $queryContainer->exportAllFacilityQuery;
-            $sResult = is_array($query)
-                ? $this->sm->get(Connection::class)->fetchAllAssociative($query['sql'], $query['values'])
-                : [];
-            if (!empty($sResult)) {
-                foreach ($sResult as $aRow) {
-                    $row = [];
-                    $row[] = $aRow['facility_id'];
-                    $row[] = $aRow['facility_name'];
-                    $row[] = $aRow['email'];
-                    $row[] = $aRow['contact_person'];
-                    $row[] = $aRow['province'];
-                    $row[] = $aRow['district'];
-                    $row[] = $aRow['latitude'];
-                    $row[] = $aRow['longitude'];
-                    $output[] = $row;
+            $rows = (function () use ($query): \Generator {
+                if (!is_array($query)) {
+                    return;
                 }
-            }
-            $styleArray = array(
-                'font' => array(
-                    'bold' => true,
-                    'size' => 12,
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
-                    ),
-                )
-            );
-            $borderStyle = array(
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                ),
-                'borders' => array(
-                    'outline' => array(
-                        'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
-                    ),
-                )
-            );
-
-            $sheet->mergeCells('A1:B1');
-            $sheet->mergeCells('A2:B2');
-            $sheet->mergeCells('A4:A5');
-            $sheet->mergeCells('B4:B5');
-            $sheet->mergeCells('C4:C5');
-            $sheet->mergeCells('D4:D5');
-            $sheet->mergeCells('E4:E5');
-            $sheet->mergeCells('F4:F5');
-            $sheet->mergeCells('G4:G5');
-            $sheet->mergeCells('H4:H5');
-
-            $sheet->setCellValue('A1', html_entity_decode('Facility Report', ENT_QUOTES, 'UTF-8'));
-
-            $sheet->setCellValue('A4', html_entity_decode('Facility Id', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('B4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('C4', html_entity_decode('Email', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('D4', html_entity_decode('Contact Person', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('E4', html_entity_decode('Province', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('F4', html_entity_decode('District', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('G4', html_entity_decode('Latitude', ENT_QUOTES, 'UTF-8'));
-            $sheet->setCellValue('H4', html_entity_decode('Longitude', ENT_QUOTES, 'UTF-8'));
-
-            $sheet->getStyle('A1:B1')->getFont()->setBold(true)->setSize(16);
-
-            $sheet->getStyle('A4:A5')->applyFromArray($styleArray);
-            $sheet->getStyle('B4:B5')->applyFromArray($styleArray);
-            $sheet->getStyle('C4:C5')->applyFromArray($styleArray);
-            $sheet->getStyle('D4:D5')->applyFromArray($styleArray);
-            $sheet->getStyle('E4:E5')->applyFromArray($styleArray);
-            $sheet->getStyle('F4:F5')->applyFromArray($styleArray);
-            $sheet->getStyle('G4:G5')->applyFromArray($styleArray);
-            $sheet->getStyle('H4:H5')->applyFromArray($styleArray);
-
-            $start = 0;
-            foreach ($output as $rowNo => $rowData) {
-                $colNo = 1;
-                foreach ($rowData as $field => $value) {
-                    if (!isset($value)) {
-                        $value = "";
-                    }
-                    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->setValueExplicit(html_entity_decode($value, ENT_QUOTES, 'UTF-8'));
-                    $rRowCount = $rowNo + 6;
-                    $cellName = $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getColumn();
-                    $sheet->getStyle($cellName . $rRowCount)->applyFromArray($borderStyle);
-                    $sheet->getDefaultRowDimension()->setRowHeight(18);
-                    $sheet->getColumnDimensionByColumn($colNo)->setWidth(20);
-                    $sheet->getStyle(Coordinate::stringFromColumnIndex($colNo) . ($rowNo + 6))->getAlignment()->setWrapText(true);
-                    $colNo++;
+                foreach ($this->sm->get(Connection::class)->iterateAssociative($query['sql'], $query['values']) as $aRow) {
+                    yield [
+                        $aRow['facility_id'],
+                        $aRow['facility_name'],
+                        $aRow['email'],
+                        $aRow['contact_person'],
+                        $aRow['province'],
+                        $aRow['district'],
+                        $aRow['latitude'],
+                        $aRow['longitude'],
+                    ];
                 }
-            }
-
+            })();
             $filename = 'facility-list-report-' . date('d-M-Y-H-i-s') . '.xlsx';
-            $writer->save(CommonService::downloadFile($filename));
+            FacilityReport::write(CommonService::downloadFile($filename), 'Facility Report', '', ['Facility Id', 'Facility Name', 'Email', 'Contact Person', 'Province', 'District', 'Latitude', 'Longitude'], $rows);
             return $filename;
         } catch (\Exception $exc) {
             error_log("GENERATE-FACILITY-REPORT-EXCEL--" . $exc->getMessage());
             error_log($exc->getTraceAsString());
-
             return "";
         }
     }
