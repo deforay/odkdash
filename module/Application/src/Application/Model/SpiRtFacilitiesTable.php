@@ -9,7 +9,6 @@ use Application\Service\CommonService;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Laminas\Db\Adapter\Adapter;
-use Laminas\Db\Sql\Select;
 
 class SpiRtFacilitiesTable
 {
@@ -21,30 +20,9 @@ class SpiRtFacilitiesTable
     }
 
     /**
-     * Limits a query on spi_rt_3_facilities to the user's mapped locations.
-     * A Super Admin has no mapping, so every facility passes. A mapping type
-     * this code does not know matches nothing.
-     */
-    public static function applyMappingToFacilities(Select $query, string $alias): Select
-    {
-        $loginContainer = new Container('credo');
-        if (empty($loginContainer->userMappedIds) || !is_array($loginContainer->userMappedIds) || $loginContainer->userMappingType == '') {
-            return $query;
-        }
-        $column = match ($loginContainer->userMappingType) {
-            'country', 'province', 'district' => $alias . '.' . $loginContainer->userMappingType,
-            default => null,
-        };
-        if ($column === null) {
-            return $query->where('1 = 0');
-        }
-        return $query->where([$column => CommonService::inList($loginContainer->userMappedIds)]);
-    }
-
-    /**
      * The user's mapped locations as SQL on spi_rt_3_facilities, and its
-     * values, as applyMappingToFacilities() applies them. '' when the user
-     * has no mapping. A mapping type this code does not know matches nothing.
+     * values. A Super Admin has no mapping, so this is '' and every facility
+     * passes. A mapping type this code does not know matches nothing.
      *
      * @return array{0: string, 1: list<string>}
      */
