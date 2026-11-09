@@ -91,9 +91,9 @@ class OdkFormService
             $loginContainer = new Container('credo');
             $output = [];
             $outputScore = [];
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
             $username = $loginContainer->login;
-            $trackTable = new EventLogTable($dbAdapter);
+            $trackTable = new EventLogTable($dbConnection);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -381,8 +381,8 @@ class OdkFormService
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
             $userName = $loginContainer->login;
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $trackTable = new EventLogTable($dbAdapter);
+            $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
+            $trackTable = new EventLogTable($dbConnection);
             $spreadsheet = new Spreadsheet();
             $writer = new Xlsx($spreadsheet);
             $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xlsx';
@@ -1391,8 +1391,8 @@ class OdkFormService
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-        $trackTable = new EventLogTable($dbAdapter);
+        $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
+        $trackTable = new EventLogTable($dbConnection);
         $db = $this->sm->get('SpiFormVer3DownloadTable');
         $result = $db->fetchDownloadFilesRow();
         $xlsx = new SimpleXLSXGen();
@@ -1546,8 +1546,8 @@ class OdkFormService
         $loginContainer = new Container('credo');
         $queryContainer = new Container('query');
         $username = $loginContainer->login;
-        $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-        $trackTable = new EventLogTable($dbAdapter);
+        $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
+        $trackTable = new EventLogTable($dbConnection);
         //$db = $this->sm->get('SpiFormVer6DownloadTable');
         //$result = $db->fetchDownloadFilesRow();
         $stored = $queryContainer->exportAllDataQueryV6;
@@ -1646,8 +1646,8 @@ class OdkFormService
             $loginContainer = new Container('credo');
             $queryContainer = new Container('query');
             $username = $loginContainer->login;
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $trackTable = new EventLogTable($dbAdapter);
+            $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
+            $trackTable = new EventLogTable($dbConnection);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -1884,8 +1884,8 @@ class OdkFormService
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
             $username = $loginContainer->login;
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $trackTable = new EventLogTable($dbAdapter);
+            $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
+            $trackTable = new EventLogTable($dbConnection);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -2610,8 +2610,8 @@ class OdkFormService
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
             $userName = $loginContainer->login;
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
-            $auditTable = new EventLogTable($dbAdapter);
+            $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
+            $auditTable = new EventLogTable($dbConnection);
             $output = [];
             $spreadsheet = new Spreadsheet();
             $writer = new Xlsx($spreadsheet);
@@ -5153,9 +5153,9 @@ class OdkFormService
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
             $outputScore = [];
-            $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
+            $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
             $username = $loginContainer->login;
-            $trackTable = new EventLogTable($dbAdapter);
+            $trackTable = new EventLogTable($dbConnection);
             $displayDate = "";
             if (isset($params[4]['value']) && ($params[4]['value'] != "")) {
                 $dateRangeDate = explode(" - ", $params[4]['value']);

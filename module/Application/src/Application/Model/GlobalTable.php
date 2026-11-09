@@ -3,18 +3,16 @@
 namespace Application\Model;
 
 use App\Db\DataTables;
-use App\Db\Dbal;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 class GlobalTable
 {
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     private function update(array $data, array $where): int

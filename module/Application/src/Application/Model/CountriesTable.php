@@ -2,19 +2,17 @@
 
 namespace Application\Model;
 
-use App\Db\Dbal;
 use Application\Session\Container;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 class CountriesTable
 {
     private readonly Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     public function fetchAllCountries()

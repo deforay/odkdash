@@ -1,6 +1,6 @@
 # From Laminas MVC to Slim: where the code lives now
 
-odkdash moved off laminas-mvc one controller at a time. Every request now runs on Slim, and laminas-mvc is no longer installed. One Laminas package remains, laminas-db, for the database layer. See [What is still on Laminas](#what-is-still-on-laminas). This page explains the new layout for anyone who knows the Laminas one.
+odkdash moved off Laminas one piece at a time. Every request runs on Slim, and the database layer is Doctrine DBAL. No Laminas package is installed. See [What replaced each Laminas package](#what-replaced-each-laminas-package). This page explains the new layout for anyone who knows the Laminas one.
 
 The short version: controllers moved from `module/` to `src/`, and templates moved from `module/Application/view/` to `templates/`. Services, models and config stay where they are.
 
@@ -149,48 +149,44 @@ Route names did not change either. Every `$this->url('spi-v3-form', ...)` in a t
 - **Helper actions inherit access from their pages.** A helper is an action that a page's JavaScript calls and that has no row in the `privileges` table, such as a table feed or a dropdown fill. A role that may open a page that calls the helper may call the helper. `bin/dev/helper-access` builds the list of callers from the templates into `config/helper-access.php`. Run it after a template starts calling a new helper. `composer qc` fails when the file is out of date.
 - **Every route must name an ACL resource or be marked public.** A route that does neither answers 500, so a forgotten check cannot leave a page open.
 
-## What is still on Laminas
+## What replaced each Laminas package
 
-No controller, route, module or MVC event is left. One package remains, laminas-db, and it brings laminas-stdlib, which the app no longer calls itself:
+| Package | Replaced by |
+|---|---|
+| laminas-mvc, laminas-router | Slim 4. See [How a request is served](#how-a-request-is-served). |
+| laminas-servicemanager | PHP-DI. `ServiceDefinitions` registers every service under its old key. The factories in `Module::getServiceConfig()` are invokable objects, and `DI\factory()` passes them the container as their first argument, so their bodies did not change. |
+| laminas-escaper | `App\View\Escape`. Its output matched Laminas on 200,011 random strings, invalid UTF-8 included. |
+| laminas-stdlib | `App\Http\Parameters` replaces `Parameters`, with null for a missing key and property access. `ServiceDefinitions::merge()` replaces `ArrayUtils::merge()`. |
+| laminas-db | Doctrine DBAL. See [The database](#the-database). |
 
-| Package | Used by | Next step |
-|---|---|---|
-| laminas-db | `SpiFormVer3Table`, `SpiFormVer6Table` and the DataTables lists | Replace with Doctrine DBAL, in batches by kind of query. |
+### The database
 
-### Moving the models to Doctrine DBAL
+Every model takes the one `Doctrine\DBAL\Connection`. Models build each other with `new SomeTable($db)`, and services get the connection from the container as `Connection::class`. One shared object means DBAL counts nested transactions in one place.
 
-The models move to Doctrine DBAL in two stages:
-
-1. Run every query through DBAL. The laminas-db query builders stay, so each query's SQL text does not change. `$adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)->toArray()` becomes `$db->fetchAllAssociative($sql)`. A list's `count($result)` becomes `$db->executeQuery($sql)->rowCount()`. The table gateway's `insert()`, `update()` and `delete()` become the DBAL methods of the same names.
-2. Replace the query builders with DBAL's QueryBuilder or with SQL that binds its values. Each converted query must return the same rows as before.
-
-Move a large model in batches by kind of query: the reads that return arrays, then the single-row lookups, then the writes. Each batch then has one kind of difference to look for.
-
-A model that has finished stage 1 no longer extends `AbstractTableGateway`. Models still build each other with `new SomeTable($adapter)`, so a moved model keeps its `Adapter` constructor and gets its connection from `App\Db\Dbal::connection($adapter)`. Every model then shares one `Connection` object. `AuditMailTable` shows the pattern.
-
-A simple query can skip stage 1 and become SQL with bound values directly, as in `CountriesTable`. The rows must match the old query's rows.
+| laminas-db | DBAL |
+|---|---|
+| `$adapter->query($sql, Adapter::QUERY_MODE_EXECUTE)->toArray()` | `$db->fetchAllAssociative($sql, $values)` |
+| `new Sql($adapter)`, `Select`, `where([...])` | SQL with `?` placeholders and a list of values |
+| `CommonService::dataTablesSearch()` and a sort string | `App\Db\DataTables::search()`, `order()` and `limit()` |
+| The table gateway's `insert()`, `update()`, `delete()` | The DBAL methods of the same names |
+| `$adapter->getDriver()->getConnection()->beginTransaction()` | `$db->beginTransaction()` |
 
 DBAL's `insert()` and `update()` do not quote column names. Quote a name that is not a plain word, such as `meta-instance-id`, with `$db->quoteSingleIdentifier()`. `SpiFormVer6DuplicateTable` does this.
 
-`ODKDASH_SQL_LOG=<file>` makes the app log every statement through either library, so two versions of the code can be compared request by request.
+A list that an export reruns stores its query in the session as `['sql' => ..., 'values' => [...]]`, without the page. The export returns no file when the key holds anything else.
 
-DBAL runs on the PDO connection the Laminas adapter opens, through `App\Db\SharedPdoDriver`. One connection means a transaction a service begins on the adapter also covers the DBAL queries inside it. The adapter still reads `config['db']`, so servers' `config/autoload/` does not change.
+Begin and commit a transaction on the container's `Connection`. Roll back when the save returns 0 and in the `catch`. `UserService` shows the pattern.
 
-Move a service's transactions in the same PR as the tables they cover. Begin and commit on the container's `Doctrine\DBAL\Connection`, not on the adapter. DBAL cannot see a transaction begun on the adapter, so its nesting count and `isTransactionActive()` would be wrong. Roll back when the save returns 0 and in the `catch`. `UserService` shows the pattern.
+`App\Db\ConfigPdoDriver` opens the connection from `config['db']`, read as laminas-db read it. The keys `driver`, `dsn`, `driver_options`, `username` and `password` mean what they meant, so no server's `config/autoload/` had to change.
 
-Three packages are gone:
-
-- laminas-servicemanager. `ServiceDefinitions` registers every service with PHP-DI under its old key. The factories in `Module::getServiceConfig()` are invokable objects, and `DI\factory()` passes them the container as their first argument, so their bodies did not change. psr/container moved to version 2, which laminas-servicemanager had blocked.
-
-- laminas-escaper. `App\View\Escape` replaces it. Its output matched Laminas on 200,011 random strings, invalid UTF-8 included.
-- laminas-stdlib as a direct dependency. `App\Http\Parameters` replaces `Parameters` with the same behaviour: null for a missing key, and property access. `ServiceDefinitions::merge()` replaces `ArrayUtils::merge()`. The merged config and the registered services are identical.
+`ODKDASH_SQL_LOG=<file>` makes the app log every statement, so two versions of the code can be compared request by request.
 
 `ServiceDefinitions::config()` merges the config in the order the module manager merged it:
 
 1. `module/Application/config/module.config.php`.
 2. `config/autoload/global.php`, then `*.global.php`, then `local.php`, then `*.local.php`.
 
-A later file overrides an earlier one, as before. `config/autoload/` did not change. Servers' `global.php` still holds a `service_manager` key naming laminas-db's `AdapterServiceFactory`. Nothing reads it any more. `ServiceDefinitions` builds the adapter the same way, as `new Adapter($config['db'])`.
+A later file overrides an earlier one, as before. `config/autoload/` did not change. Servers' `global.php` still holds a `service_manager` key naming laminas-db's `AdapterServiceFactory`. Nothing reads it.
 
 Composer lists `module/Application/Module.php` in its `classmap`. The module manager used to load it.
 

@@ -2,10 +2,10 @@
 
 namespace Application\Model;
 
-use App\Db\Dbal;
+use Doctrine\DBAL\Connection;
+
 use App\Db\DataTables;
 use Application\Session\Container;
-use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
@@ -304,9 +304,9 @@ class SpiFormVer3Table
 
     private readonly \Doctrine\DBAL\Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     /**
@@ -355,12 +355,12 @@ class SpiFormVer3Table
         }
         $failedDates = [];
 
-        $dbAdapter = $this->adapter;
+        $dbConnection = $this->db;
 
-        CommonService::saveFormDump($dbAdapter, $params);
+        CommonService::saveFormDump($dbConnection, $params);
 
         //get global values
-        $globalDB = new GlobalTable($dbAdapter);
+        $globalDB = new GlobalTable($dbConnection);
         $globalValue = $globalDB->getGlobalValue('approve_status');
         $approveStatus = $globalValue == 'yes' ? 'approved' : 'pending';
 
@@ -854,7 +854,7 @@ class SpiFormVer3Table
                     'central_project_id' => $projectId,
                     'central_form_id' => $formId,
                 );
-                $dbAdapter = $this->adapter;
+                $dbConnection = $this->db;
                 // A submission already stored is skipped, as in V6, so a sync that
                 // fetches it again does not add a second copy.
                 $stored = $this->db->fetchOne(
@@ -869,7 +869,7 @@ class SpiFormVer3Table
 
                 // Link on ingest either way, so a pending audit is still visible
                 // to a mapped user. Only approval may create a new facility. As V6.
-                $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+                $facilityDb = new SpiRtFacilitiesTable($dbConnection);
                 $facilityDb->addFacilityBasedOnForm($insertedId, 3, $approveStatus == 'approved');
             } catch (\Throwable $e) {
                 $failedDates[] = (string) ($submissionData['__system']['submissionDate'] ?? '');
@@ -1227,7 +1227,7 @@ class SpiFormVer3Table
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $trackTable = new EventLogTable($this->adapter);
+        $trackTable = new EventLogTable($this->db);
         $sResult = $this->fetchRowObject('SELECT spiv3.* FROM spi_form_v_3 AS spiv3 WHERE spiv3.id = ?', [$id]);
         if ($sResult) {
             if (trim($sResult['facility']) != '' || trim($sResult['facilityid']) != '' || trim($sResult['facilityname']) != '') {
@@ -1530,8 +1530,8 @@ class SpiFormVer3Table
         if (trim($params['formId']) != "") {
             $sessionLogin = new Container('credo');
             $user_name = $sessionLogin->login;
-            $dbAdapter = $this->adapter;
-            $eventTable = new EventLogTable($dbAdapter);
+            $dbConnection = $this->db;
+            $eventTable = new EventLogTable($dbConnection);
             $formId = base64_decode($params['formId']);
             // Without corrective action rows in the post, the column stays NULL.
             $summationData = null;
@@ -1562,7 +1562,7 @@ class SpiFormVer3Table
 
             //update facility tbl
             $id = 0;
-            $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+            $facilityDb = new SpiRtFacilitiesTable($dbConnection);
             if (trim($params['testingFacility']) != '') {
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id, $params);
@@ -1741,9 +1741,9 @@ class SpiFormVer3Table
         $result2 = 0;
         $loginContainer = new Container('credo');
         $userName = $loginContainer->login;
-        $dbAdapter = $this->adapter;
-        $auditTable = new EventLogTable($dbAdapter);
-        $facilityDb = new SpiRtFacilitiesTable($this->adapter);
+        $dbConnection = $this->db;
+        $auditTable = new EventLogTable($dbConnection);
+        $facilityDb = new SpiRtFacilitiesTable($this->db);
         if (isset($params['editFacilityName']) && trim($params['editFacilityName']) != '') {
             $facilityResult = $this->db->fetchAssociative(
                 'SELECT spirt3.facility_name AS facility_name FROM spi_rt_3_facilities AS spirt3 WHERE spirt3.facility_name = ?',
@@ -1933,7 +1933,7 @@ class SpiFormVer3Table
             if ($result > 0) {
                 $loginContainer = new Container('credo');
                 $userName = $loginContainer->login ?? 'system';
-                $eventTable = new EventLogTable($this->adapter);
+                $eventTable = new EventLogTable($this->db);
                 $eventTable->addEventLog(
                     '',
                     'delete',
@@ -2303,7 +2303,7 @@ class SpiFormVer3Table
 
     public function addValidateSpiv3Data($params)
     {
-        $dbAdapter = $this->adapter;
+        $dbConnection = $this->db;
         $vId = CommonService::inList(explode(",", $params['validateId']));
         // Only rows whose instance ID is new, the rows the page lists. Adding a
         // stored one would make a duplicate audit.
@@ -2555,14 +2555,14 @@ class SpiFormVer3Table
                     'instanceName' => $newResult['instanceName'],
                     'status' => $newResult['status'],
                 );
-                $dbAdapter = $this->adapter;
+                $dbConnection = $this->db;
                 $this->db->insert(self::TABLE, $this->quoteColumns($par));
                 $insertedId = $this->db->lastInsertId();
                 if ($insertedId > 0) {
                     // Linked as a synced audit is: always to a facility that exists,
                     // and to a new one only when the row is approved.
-                    (new SpiRtFacilitiesTable($this->adapter))->addFacilityBasedOnForm($insertedId, 3, $newResult['status'] == 'approved');
-                    $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->adapter);
+                    (new SpiRtFacilitiesTable($this->db))->addFacilityBasedOnForm($insertedId, 3, $newResult['status'] == 'approved');
+                    $spiv3Temp = new \Application\Model\SpiFormVer3TempTable($this->db);
                     $spiv3Temp->deleteById($newResult['id']);
                 }
             }
@@ -2606,7 +2606,7 @@ class SpiFormVer3Table
 
     public function fetchV3DetailsByMetaInstanceId($metaInstantId)
     {
-        return Dbal::connection($this->adapter)->fetchAssociative(
+        return $this->db->fetchAssociative(
             'SELECT * FROM spi_form_v_3 WHERE `meta-instance-id` = ?',
             [$metaInstantId],
         );

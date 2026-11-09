@@ -3,12 +3,10 @@
 namespace Application\Model;
 
 use App\Db\DataTables;
-use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 /**
  * Provinces and districts. A province has geo_parent 0. A district has
@@ -20,9 +18,9 @@ class GeographicalDivisionsTable
 {
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     public function addProvinceDetails($params)
@@ -177,7 +175,7 @@ class GeographicalDivisionsTable
         $result['provinces'] = $this->activeDivisions("geo_parent = '0'", 'province');
         $result['districts'] = $this->activeDivisions('geo_parent != 0', 'district');
 
-        $countriesTable = new CountriesTable($this->adapter);
+        $countriesTable = new CountriesTable($this->db);
         $result['countries'] = $countriesTable->fetchAllMapedCountries();
 
         return $result;

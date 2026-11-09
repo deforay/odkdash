@@ -2,18 +2,16 @@
 
 namespace Application\Model;
 
-use App\Db\Dbal;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 /** V6 audits removed as duplicates, kept in spi_form_v_6_duplicate. */
 class SpiFormVer6DuplicateTable
 {
     private readonly Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     //remove audit data

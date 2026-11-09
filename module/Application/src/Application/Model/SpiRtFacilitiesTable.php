@@ -3,20 +3,18 @@
 namespace Application\Model;
 
 use App\Db\DataTables;
-use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 class SpiRtFacilitiesTable
 {
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     /**
@@ -106,7 +104,7 @@ class SpiRtFacilitiesTable
             $district = null;
             $province = 'Unknown';
             if (isset($result['district']) && $result['district'] != '') {
-                $geoTable = new GeographicalDivisionsTable($this->adapter);
+                $geoTable = new GeographicalDivisionsTable($this->db);
                 $res = $geoTable->checkDistrict(trim($result['district']));
                 if ($res) {
                     $district = $res['district'];
@@ -139,7 +137,7 @@ class SpiRtFacilitiesTable
      */
     public function getInstanceCountryId()
     {
-        $gTable = new GlobalTable($this->adapter);
+        $gTable = new GlobalTable($this->db);
         $countryName = trim((string) $gTable->getGlobalValue('country-name'));
         if ($countryName === '') {
             return null;
@@ -152,7 +150,7 @@ class SpiRtFacilitiesTable
     public function addFacilityDetails($params)
     {
         if (isset($params['facilityId']) && trim($params['facilityId']) != "") {
-            $geoTable = new GeographicalDivisionsTable($this->adapter);
+            $geoTable = new GeographicalDivisionsTable($this->db);
             $countryId = $provinceId = $districtId = null;
             //Add Country
             if (isset($params['country']) && trim($params['country']) != '') {
@@ -193,11 +191,11 @@ class SpiRtFacilitiesTable
     public function updateFacilityDetails($params)
     {
         if (isset($params['rowId']) && trim($params['rowId']) != "") {
-            $spiv3Db = new SpiFormVer3Table($this->adapter);
-            $spiv6Db = new SpiFormVer6Table($this->adapter);
+            $spiv3Db = new SpiFormVer3Table($this->db);
+            $spiv6Db = new SpiFormVer6Table($this->db);
             $rowId = base64_decode($params['rowId']);
 
-            $geoTable = new GeographicalDivisionsTable($this->adapter);
+            $geoTable = new GeographicalDivisionsTable($this->db);
             //Add Country
             if (isset($params['country']) && trim($params['country']) != '') {
                 $params['country'] = base64_decode($params['country']);
@@ -357,9 +355,9 @@ class SpiRtFacilitiesTable
         $result = 0;
         $loginContainer = new Container('credo');
         $userName = $loginContainer->login;
-        $eventTable = new EventLogTable($this->adapter);
+        $eventTable = new EventLogTable($this->db);
 
-        $geographicalDivisionsTable = new GeographicalDivisionsTable($this->adapter);
+        $geographicalDivisionsTable = new GeographicalDivisionsTable($this->db);
         $provinceId = null;
         $districtId = null;
         if (isset($params['province']) && trim($params['province']) == 'other') {

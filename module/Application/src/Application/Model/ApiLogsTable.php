@@ -2,11 +2,9 @@
 
 namespace Application\Model;
 
-use App\Db\Dbal;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Laminas\Db\Adapter\Adapter;
 
 /**
  * Read-side queries for the API Logs viewer. The api_logs table is
@@ -18,9 +16,9 @@ class ApiLogsTable
 {
     private readonly Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     /**

@@ -3,19 +3,17 @@
 namespace Application\Model;
 
 use App\Db\DataTables;
-use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 class SpiFormVer3TempTable
 {
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     /** Stores one row of an uploaded sheet. The sheet's headers name the columns. */

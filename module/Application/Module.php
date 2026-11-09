@@ -78,72 +78,72 @@ class Module
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer3Table($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer3Table($dbConnection);
                     }
                 },
                 'SpiFormVer6Table' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer6Table($dbAdapter, $diContainer->get('translator'));
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer6Table($dbConnection, $diContainer->get('translator'));
                     }
                 },
                 'UsersTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new UsersTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new UsersTable($dbConnection);
                     }
                 },
                 'SpiFormLabelsTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormLabelsTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormLabelsTable($dbConnection);
                     }
                 },
                 'SpiRtFacilitiesTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiRtFacilitiesTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiRtFacilitiesTable($dbConnection);
                     }
                 },
                 'RolesTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new RolesTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new RolesTable($dbConnection);
                     }
                 },
                 'GlobalTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new GlobalTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new GlobalTable($dbConnection);
                     }
                 },
                 'EventLogTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new EventLogTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new EventLogTable($dbConnection);
                     }
                 },
                 'ApiLogsTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new ApiLogsTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new ApiLogsTable($dbConnection);
                     }
                 },
                 'ApiLogger' => new class
@@ -171,88 +171,88 @@ class Module
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new AuditMailTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new AuditMailTable($dbConnection);
                     }
                 },
                 'SpiFormVer3DownloadTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer3DownloadTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer3DownloadTable($dbConnection);
                     }
                 },
                 'SpiFormVer6DownloadTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer6DownloadTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer6DownloadTable($dbConnection);
                     }
                 },
                 'SpiFormVer3DuplicateTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer3DuplicateTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer3DuplicateTable($dbConnection);
                     }
                 },
                 'SpiFormVer6DuplicateTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer6DuplicateTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer6DuplicateTable($dbConnection);
                     }
                 },
                 'SpiFormVer3TempTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new SpiFormVer3TempTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new SpiFormVer3TempTable($dbConnection);
                     }
                 },
                 'CountriesTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new CountriesTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new CountriesTable($dbConnection);
                     }
                 },
                 'AuditSpiFormV3Table' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new AuditSpiFormV3Table($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new AuditSpiFormV3Table($dbConnection);
                     }
                 },
                 'AuditSpiFormV6Table' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new AuditSpiFormV6Table($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new AuditSpiFormV6Table($dbConnection);
                     }
                 },
                 'GeographicalDivisionsTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new GeographicalDivisionsTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new GeographicalDivisionsTable($dbConnection);
                     }
                 },
                 'UserLocationMapTable' => new class
                 {
                     public function __invoke($diContainer)
                     {
-                        $dbAdapter = $diContainer->get('Laminas\Db\Adapter\Adapter');
-                        return new UserLocationMapTable($dbAdapter);
+                        $dbConnection = $diContainer->get(\Doctrine\DBAL\Connection::class);
+                        return new UserLocationMapTable($dbConnection);
                     }
                 },
                 'OdkFormService' => new class

@@ -22,13 +22,13 @@ use Application\Command\SyncCentralV3;
 use Application\Command\SyncCentralV3Factory;
 use Application\Command\SyncCentralV6;
 use Application\Command\SyncCentralV6Factory;
-use App\Db\Dbal;
+use App\Db\ConfigPdoDriver;
 use App\Db\QueryLog;
 use Application\I18n\Translator;
 use Application\Module;
 use DI\Container;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
+use Doctrine\DBAL\Logging\Middleware as LoggingMiddleware;
 use Psr\Container\ContainerInterface;
 
 use function DI\factory;
@@ -67,8 +67,8 @@ final class ServiceDefinitions
      *    then *.local.php. Each glob is in alphabetical order.
      *
      * The 'service_manager' key that servers' global.php still carries is
-     * not read. Its one entry built the database adapter, which
-     * definitions() builds the same way.
+     * not read. Its one entry built the laminas-db adapter. connection()
+     * opens the database from the same 'db' block.
      *
      * @return array<string, mixed>
      */
@@ -101,22 +101,25 @@ final class ServiceDefinitions
             ...$definitions,
             'config' => static fn(): array => self::config($appRoot),
             'Config' => get('config'),
-            Adapter::class => static fn(ContainerInterface $c): Adapter => self::adapter($c),
-            Connection::class => static fn(ContainerInterface $c): Connection => Dbal::connection($c->get(Adapter::class)),
+            Connection::class => static fn(ContainerInterface $c): Connection => self::connection($c),
             'translator' => static fn(ContainerInterface $c): Translator => self::translator($c),
         ];
     }
 
-    /** What laminas-db's AdapterServiceFactory built, with the query log when it is on. */
-    private static function adapter(ContainerInterface $c): Adapter
+    /**
+     * The one database connection, opened from config['db'] on first use,
+     * with the query log when it is on. Every model and service shares it,
+     * so DBAL counts nested transactions in one place.
+     */
+    private static function connection(ContainerInterface $c): Connection
     {
-        $adapter = new Adapter($c->get('config')['db']);
+        $driver = new ConfigPdoDriver($c->get('config')['db'] ?? []);
         $log = QueryLog::fromEnvironment();
         if ($log !== null) {
-            $adapter->setProfiler($log);
+            $driver = (new LoggingMiddleware($log))->wrap($driver);
         }
 
-        return $adapter;
+        return new Connection([], $driver);
     }
 
     /** A container for bin/console and bin/migrate. */

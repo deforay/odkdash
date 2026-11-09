@@ -6,7 +6,6 @@ use Exception;
 use ZipArchive;
 use Ramsey\Uuid\Uuid;
 use DateTimeImmutable;
-use App\Db\Dbal;
 use Doctrine\DBAL\Connection;
 use Application\Session\Container;
 use RecursiveIteratorIterator;
@@ -464,7 +463,7 @@ class CommonService
         return $cache[$key];
     }
 
-    public static function saveFormDump($dbAdapter, $params)
+    public static function saveFormDump($dbConnection, $params)
     {
         $storagePath = self::privateUploadFolder('form_dump');
         if (!file_exists($storagePath)) {
@@ -477,7 +476,7 @@ class CommonService
         $fullPath = ArchiveUtility::compressContent(json_encode($params), $dstStem);
 
         // The row holds the file's path, not the JSON.
-        Dbal::connection($dbAdapter)->executeStatement('INSERT INTO form_dump (file_path, received_on) VALUES (?, NOW())', [$fullPath]);
+        $dbConnection->executeStatement('INSERT INTO form_dump (file_path, received_on) VALUES (?, NOW())', [$fullPath]);
     }
 
     public static function buildSafePath($baseDirectory, array $pathComponents)

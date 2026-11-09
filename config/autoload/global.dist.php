@@ -21,10 +21,4 @@ return [
         'Application' => 'layout/layout',
         'Application' => 'layout/modal'
     ],
-    'service_manager' => [
-        'factories' => [
-            'Laminas\Db\Adapter\Adapter'
-            => 'Laminas\Db\Adapter\AdapterServiceFactory',
-        ],
-    ],
 ];
