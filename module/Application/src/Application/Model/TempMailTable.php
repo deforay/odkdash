@@ -15,21 +15,6 @@ class TempMailTable
     {
     }
 
-    public function insertTempMailDetails($toEmailAddress, $cc, $subject, $message, $fromName, $fromEmailAddress, $bcc = null)
-    {
-        $this->db->insert(self::TABLE, [
-            'from_full_name' => $fromName,
-            'from_mail' => $fromEmailAddress,
-            'to_email' => $toEmailAddress,
-            'cc' => $cc,
-            'bcc' => $bcc,
-            'subject' => $subject,
-            'message' => $message,
-        ]);
-
-        return $this->db->lastInsertId();
-    }
-
     public function updateTempMailStatus($id)
     {
         return $this->db->update(self::TABLE, ['status' => 'not-sent'], ['temp_id' => $id]);

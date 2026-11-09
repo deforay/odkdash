@@ -63,15 +63,6 @@ final class FacilityHandler extends ActionHandler
         ]);
     }
 
-    public function facilityListAction(ServerRequestInterface $request): ResponseInterface
-    {
-        if ($request->getMethod() !== 'GET') {
-            return $this->fallback('facility-list');
-        }
-        $result = $this->facilityService->getFacilityList($this->query($request, 'search'));
-        return $this->respond->html(CommonService::jsonEncode($result));
-    }
-
     /** Opened in a modal from the facility list. */
     public function getFacilityNameAction(ServerRequestInterface $request): ResponseInterface
     {
@@ -139,25 +130,6 @@ final class FacilityHandler extends ActionHandler
         ]);
     }
 
-    public function searchProvinceListAction(ServerRequestInterface $request): ResponseInterface
-    {
-        if ($request->getMethod() !== 'GET') {
-            return $this->fallback('search-province-list');
-        }
-        $result = $this->facilityService->getProvinceData($this->query($request, 'q'));
-        return $this->respond->html(CommonService::jsonEncode($result));
-    }
-
-    /** Has no template, so anything but GET is the error page, as before. */
-    public function searchDistrictListAction(ServerRequestInterface $request): ResponseInterface
-    {
-        if ($request->getMethod() !== 'GET') {
-            return $this->fallback('search-district-list');
-        }
-        $result = $this->facilityService->getDistrictData($this->query($request, 'q'));
-        return $this->respond->html(CommonService::jsonEncode($result));
-    }
-
     /**
      * The upload form, and the upload itself. The template reads the counts
      * from $_GET. The redirect after an upload is a literal path, as before.
@@ -193,10 +165,5 @@ final class FacilityHandler extends ActionHandler
     private function fallback(string $action): ResponseInterface
     {
         return $this->respond->page('application/facility/' . $action);
-    }
-
-    private function query(ServerRequestInterface $request, string $name): mixed
-    {
-        return $request->getQueryParams()[$name] ?? null;
     }
 }

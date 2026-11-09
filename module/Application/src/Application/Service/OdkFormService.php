@@ -42,11 +42,6 @@ class OdkFormService
         $this->translator = $sm->get('translator');
     }
 
-    public function getServiceManager()
-    {
-        return $this->sm;
-    }
-
     /**
      * Build a Guzzle HandlerStack with the api_logs middleware pushed on,
      * tagged with $source so every outbound call from sync-central-v3 or
@@ -311,126 +306,6 @@ class OdkFormService
         $db = $this->sm->get('SpiFormVer3Table');
         return $db->getAuditRoundWiseData($params);
     }
-    //download pie chart
-    public function getPerformancePieChart($params)
-    {
-        /** @var SpiFormVer3Table  $db */
-        $db = $this->sm->get('SpiFormVer3Table');
-        $result = $db->getPerformance($params);
-        $MyData = new Data();
-        if (count($result) > 0) {
-            foreach ($result as $key => $data) {
-                $MyData->addPoints([$data['level0'], $data['level1'], $data['level2'], $data['level3'], $data['level4']], "Level" . $key);
-                $MyData->setSerieDescription("Level $key");
-                $rgbColor = [];
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Level $key", ["R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']]);
-            }
-        }
-
-        $percentage = $result[0]['level0'] + $result[0]['level1'] + $result[0]['level2'] + $result[0]['level3'] + $result[0]['level4'];
-
-        /* Define the absissa serie */
-        $MyData->addPoints(
-            array(
-                $this->translator->translate('Level 0 (Below 40)') . "&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level0'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level0'] . ")",
-                $this->translator->translate('Level 1 (40-59)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level1'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level1'] . ")",
-                $this->translator->translate('Level 2 (60-79)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level2'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level2'] . ")",
-                $this->translator->translate('Level 3 (80-89)') . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . round(($result[0]['level3'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level3'] . ")",
-                $this->translator->translate('Level 4 (90 and above)') . "&nbsp;" . round(($result[0]['level4'] / $percentage) * 100, 1) . "%&nbsp;(" . $this->translator->translate('No. of Audits') . "&nbsp;" . $result[0]['level4'] . ")",
-            ),
-            "Labels"
-        );
-        $MyData->setAbscissa("Labels");
-
-        /* Create the pChart object */
-        $myPicture = new Image(400, 510, $MyData);
-        $myPicture->drawRectangle(0, 0, 390, 480, array("R" => 0, "G" => 0, "B" => 0));
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 13, "R" => 80, "G" => 80, "B" => 80));
-
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 0, "Y" => 0, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 0));
-
-        $PieChart = new Pie($myPicture, $MyData);
-        $PieChart->draw2DPie(195, 195, array("Radius" => 190, "Border" => true));
-        $PieChart->drawPieLegend(5, 390);
-        $fileName = 'piechart.png';
-        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . "piechart.png");
-        return $fileName;
-    }
-
-    //download spider chart pdf
-    public function getAuditRoundWiseDataChart($params)
-    {
-        /** @var SpiFormVer3Table  $db */
-        $db = $this->sm->get('SpiFormVer3Table');
-        $result = $db->getAuditRoundWiseData($params);
-        $MyData = new Data();
-        /* Create and populate the pData object */
-        $filename = '';
-        if (count($result) > 0) {
-            foreach ($result as $auditNo => $adata) {
-                //$MyData->addPoints(array(round($adata['PERSONAL_SCORE'],2),round($adata['PHYSICAL_SCORE'],2),round($adata['SAFETY_SCORE'],2),round($adata['PRETEST_SCORE'],2),round($adata['TEST_SCORE'],2),round($adata['POST_SCORE'],2),round($adata['EQA_SCORE'],2)),"Score".$auditNo);
-                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
-                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = [];
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
-            }
-        }
-        /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
-        $MyData->setAbscissa("Label");
-
-        /* Create the pChart object */
-        $myPicture = new Image(600, 690, $MyData);
-        //$myPicture->drawGradientArea(0,0,450,50,DIRECTION_VERTICAL,array("StartR"=>400,"StartG"=>400,"StartB"=>400,"EndR"=>480,"EndG"=>480,"EndB"=>480,"Alpha"=>0));
-        //$myPicture->drawGradientArea(0,0,450,25,DIRECTION_HORIZONTAL,array("StartR"=>60,"StartG"=>60,"StartB"=>60,"EndR"=>200,"EndG"=>200,"EndB"=>200,"Alpha"=>0));
-        //$myPicture->drawLine(0,25,450,25,array("R"=>255,"G"=>255,"B"=>255));
-        //$RectangleSettings = array("R"=>180,"G"=>180,"B"=>180,"Alpha"=>50);
-
-        /* Add a border to the picture */
-        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
-
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-        /* Write the picture title */
-        //$myPicture->setFontProperties(array("FontName"=>$path."/Silkscreen.ttf","FontSize"=>6));
-        //$myPicture->drawText(10,13,"pRadar - Draw radar charts",array("R"=>255,"G"=>255,"B"=>255));
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
-
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-
-        /* Create the pRadar object */
-        $SplitChart = new Radar();
-        /* Draw a radar chart */
-        $myPicture->setGraphArea(15, 15, 590, 590);
-        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
-        $SplitChart->drawRadar($myPicture, $MyData, $Options);
-
-        /* Write the chart legend */
-        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
-        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
-
-        /* Render the picture (choose the best way) */
-        $fileName = 'radar.png';
-        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . "radar.png");
-        return $fileName;
-    }
-
 
     public function getFormData($id, $pdf = 'no')
     {
@@ -2666,185 +2541,13 @@ class OdkFormService
         return $db->fetchAllApprovedSubmissionLocationV6($params);
     }
 
-    //download spider chart pdf
-    public function getAuditRoundWiseDataChartV6($params)
-    {
-        $db = $this->sm->get('SpiFormVer6Table');
-        $result = $db->getAuditRoundWiseDataV6($params);
-        $MyData = new Data();
-        /* Create and populate the pData object */
-        $filename = '';
-        if (count($result) > 0) {
-            foreach ($result as $auditNo => $adata) {
-
-                $MyData->addPoints(array(round($adata['PERSONAL_SCORE'], 2), round($adata['PHYSICAL_SCORE'], 2), round($adata['SAFETY_SCORE'], 2), round($adata['PRETEST_SCORE'], 2), round($adata['TEST_SCORE'], 2), round($adata['POST_SCORE'], 2), round($adata['EQA_SCORE'], 2)), "Audit Performance");
-                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = [];
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
-            }
-        }
-        /* Define the absissa serie */
-        $MyData->addPoints(array("Personnel Training & Certification", "Physical", "Safety", "Pre-Testing", "Testing", "Post Testing Phase", "External Quality Audit"), "Label");
-        $MyData->setAbscissa("Label");
-
-        /* Create the pChart object */
-        $myPicture = new Image(600, 690, $MyData);
-
-        /* Add a border to the picture */
-        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
-
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-        /* Write the picture title */
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
-
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-
-        /* Create the pRadar object */
-        $SplitChart = new Radar();
-        /* Draw a radar chart */
-        $myPicture->setGraphArea(15, 15, 590, 590);
-        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
-        $SplitChart->drawRadar($myPicture, $MyData, $Options);
-
-        /* Write the chart legend */
-        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
-        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
-
-        /* Render the picture (choose the best way) */
-        $fileName = 'radar.png';
-        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . "radar.png");
-        return $fileName;
-    }
-
     /*
     get section S0 V6
      */
 
-    public function getAuditRoundWiseS0DataChartV6($params)
-    {
-        $db = $this->sm->get('SpiFormVer6Table');
-        $result = $db->getAuditRoundWiseS0DataV6($params);
-        $MyData = new Data();
-        /* Create and populate the pData object */
-        $filename = '';
-        if (count($result) > 0) {
-            foreach ($result as $auditNo => $adata) {
-
-                $MyData->addPoints(array(round($adata['SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY'], 2), round($adata['COUNSELORS_FOLLOWING_PROTOCOL'], 2), round($adata['TESTS_RECORDED_RECENCY'], 2), round($adata['PROCESS_DOCUMENTED'], 2), round($adata['RESULTS_RETURNED_IN_TWO_WEEKS'], 2), round($adata['PROTOCOL_VIOLATION_DOCUMENTED'], 2), round($adata['DOCUMENTING_PROTOCOL_ERRORS'], 2)), "Audit Performance");
-                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = [];
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
-            }
-        }
-        /* Define the absissa serie */
-        $MyData->addPoints(array("Surveilance Eligibility", "Counselor Protocol", "Recency Test Recorded", "Process Documented", "2 weeks Results", "Violation Documented", "Documented Errors"), "Label");
-        $MyData->setAbscissa("Label");
-
-        /* Create the pChart object */
-        $myPicture = new Image(600, 690, $MyData);
-
-        /* Add a border to the picture */
-        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
-
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-        /* Write the picture title */
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
-
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-
-        /* Create the pRadar object */
-        $SplitChart = new Radar();
-        /* Draw a radar chart */
-        $myPicture->setGraphArea(15, 15, 590, 590);
-        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
-        $SplitChart->drawRadar($myPicture, $MyData, $Options);
-
-        /* Write the chart legend */
-        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
-        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
-
-        /* Render the picture (choose the best way) */
-        $fileName = 'radar-s0-v6.png';
-        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
-        return $fileName;
-    }
-
     /*
     get section D0 V6
      */
-
-    public function getAuditRoundWiseD0DataChartV6($params)
-    {
-        $db = $this->sm->get('SpiFormVer6Table');
-        $result = $db->getAuditRoundWiseD0DataV6($params);
-        $MyData = new Data();
-        /* Create and populate the pData object */
-        $filename = '';
-        if (count($result) > 0) {
-            foreach ($result as $auditNo => $adata) {
-
-                $MyData->addPoints(array(round($adata['DIAGNOSED_HIV_ABOVE_15'], 2), round($adata['CANDIDATE_SCREENED_FOR_PARTICIPATION'], 2), round($adata['ELIGIBLE_DURING_REVIEW_PERIOD'], 2), round($adata['ELIGIBLE_AND_DECLINED_REVIEW_PERIOD'], 2), round($adata['DOCUMENTED_AND_REFUSED'], 2), round($adata['PARTICIAPANTS_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI'], 2), round($adata['PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI'], 2)), "Audit Performance");
-                $MyData->setSerieDescription("Audit Performance" . $auditNo, $auditNo);
-                $rgbColor = [];
-                //Create a loop.
-                foreach (array('r', 'g', 'b') as $color) {
-                    //Generate a random number between 0 and 255.
-                    $rgbColor[$color] = mt_rand(0, 255);
-                }
-                $MyData->setPalette("Audit Performance" . $auditNo, array("R" => $rgbColor['r'], "G" => $rgbColor['g'], "B" => $rgbColor['b']));
-            }
-        }
-        /* Define the absissa serie */
-        $MyData->addPoints(array("HIV above 15", "Screened for participation", "Eligible during Review", "Eligible and declined", "Documented and refused", "Enrolled in RTRI", "Incorrectly Enrolled", "Correctly Enrolled"), "Label");
-        $MyData->setAbscissa("Label");
-
-        /* Create the pChart object */
-        $myPicture = new Image(600, 690, $MyData);
-
-        /* Add a border to the picture */
-        $myPicture->drawRectangle(0, 0, 599, 678, array("R" => 0, "G" => 0, "B" => 0));
-
-        $path = FONT_PATH . DIRECTORY_SEPARATOR;
-        /* Write the picture title */
-
-        /* Set the default font properties */
-        $myPicture->setFontProperties(array("FontName" => $path . "/Forgotte.ttf", "FontSize" => 15, "R" => 80, "G" => 80, "B" => 80));
-
-        /* Enable shadow computing */
-        $myPicture->setShadow(true, array("X" => 1, "Y" => 1, "R" => 0, "G" => 0, "B" => 0, "Alpha" => 10));
-
-        /* Create the pRadar object */
-        $SplitChart = new Radar();
-        /* Draw a radar chart */
-        $myPicture->setGraphArea(15, 15, 590, 590);
-        $Options = array("Layout" => RADAR_LAYOUT_STAR, "BackgroundGradient" => array("StartR" => 510, "StartG" => 510, "StartB" => 510, "StartAlpha" => 10, "EndR" => 414, "EndG" => 454, "EndB" => 250, "EndAlpha" => 10), "FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 15);
-        $SplitChart->drawRadar($myPicture, $MyData, $Options);
-
-        /* Write the chart legend */
-        $myPicture->setFontProperties(array("FontName" => $path . "/pf_arma_five.ttf", "FontSize" => 7));
-        $myPicture->drawLegend(330, 620, array("Style" => LEGEND_BOX, "Mode" => LEGEND_VERTICAL));
-
-        /* Render the picture (choose the best way) */
-        $fileName = 'radar-d0-v6.png';
-        $result = $myPicture->autoOutput(CommonService::userFolder() . DIRECTORY_SEPARATOR . $fileName);
-        return $fileName;
-    }
 
     public function getTestingPointTypeNamesByTypeV6($params)
     {
@@ -5437,12 +5140,6 @@ class OdkFormService
         }
     }
 
-    public function getAllProvince()
-    {
-        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fetchAllProvince();
-    }
-
     public function getDistrictByProvince($params)
     {
         $db = $this->sm->get('SpiRtFacilitiesTable');
@@ -5634,12 +5331,5 @@ class OdkFormService
 
             return "";
         }
-    }
-
-    public function getSpiV6FormUniqueLevels()
-    {
-        /** @var SpiFormVer6Table  $db */
-        $db = $this->sm->get('SpiFormVer6Table');
-        return $db->fetchSpiV6FormUniqueLevels();
     }
 }

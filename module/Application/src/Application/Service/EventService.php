@@ -2,7 +2,6 @@
 
 namespace Application\Service;
 
-use Application\Session\Container;
 
 class EventService {
 
@@ -11,16 +10,7 @@ class EventService {
     public function __construct($sm) {
         $this->sm = $sm;
     }
-
-    public function getServiceManager() {
-        return $this->sm;
-    }
     
-    public function getAllDetails($params) {
-        $eventLogDb = $this->sm->get('EventLogTable');
-        return $eventLogDb->fetchAllDetails($params);
-    }
-
     public function getFeed(array $params): array
     {
         return $this->sm->get('EventLogTable')->fetchFeed($params);

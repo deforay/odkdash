@@ -2,7 +2,6 @@
 
 namespace Application\Service;
 
-use Application\Session\Container;
 
 class AuditTrailService {
 
@@ -10,10 +9,6 @@ class AuditTrailService {
 
     public function __construct($sm) {
         $this->sm = $sm;
-    }
-
-    public function getServiceManager() {
-        return $this->sm;
     }
     
     public function getSpiV3Details($params) {
