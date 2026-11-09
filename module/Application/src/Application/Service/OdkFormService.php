@@ -515,7 +515,6 @@ class OdkFormService
             $filename = 'facility-report-v3' . date('d-M-Y-H-i-s') . '.xlsx';
             $output = [];
             $sheet = $spreadsheet->getActiveSheet();
-            $sql = new Sql($dbAdapter);
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
                 $fromDate = '';
@@ -531,13 +530,12 @@ class OdkFormService
                 $displayDate = "";
             }
 
-            if (!$queryContainer->exportQuery instanceof Select) {
+            $stored = $queryContainer->exportQuery;
+            if (!is_array($stored)) {
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportQuery);
-
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
             if (!empty($sResult)) {
 
                 foreach ($sResult as $aRow) {
