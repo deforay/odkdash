@@ -11,9 +11,9 @@ use RuntimeException;
 use SensitiveParameter;
 
 /**
- * A DBAL driver that opens PDO from config['db'], read as laminas-db read it.
+ * A DBAL driver that opens PDO from config['db'].
  *
- * Each server's config/autoload/global.php keeps the laminas-db format:
+ * Each server's config/autoload/global.php holds the block in this format:
  *
  *     'db' => [
  *         'driver' => 'Pdo',
@@ -23,10 +23,9 @@ use SensitiveParameter;
  *         'password' => '...',
  *     ],
  *
- * The keys mean what they meant to laminas-db, so no server's config has to
- * change. Without 'dsn', a driver such as 'Pdo_Mysql' builds one from
- * 'database', 'hostname', 'port', 'charset' and 'unix_socket'. Any other key
- * is passed to PDO as an option, as laminas-db passed it.
+ * Without 'dsn', a driver such as 'Pdo_Mysql' builds one from 'database',
+ * 'hostname', 'port', 'charset' and 'unix_socket'. Any other key is passed
+ * to PDO as an option.
  */
 final class ConfigPdoDriver extends AbstractMySQLDriver
 {

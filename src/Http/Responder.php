@@ -11,12 +11,11 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Factory\StreamFactory;
 
 /**
- * Builds the responses a Laminas action used to return.
+ * Builds the responses the handlers return.
  *
- * Every HTML and text response carries "text/html; charset=UTF-8". That is
- * what PHP sent for Laminas responses, which set no Content-Type of their
- * own, including the ones whose body is JSON. Some jQuery code parses those
- * bodies itself and breaks if the type changes.
+ * Every HTML and text response carries "text/html; charset=UTF-8", including
+ * the ones whose body is JSON. Some jQuery code parses those bodies itself
+ * and breaks if the type changes.
  */
 final class Responder
 {
@@ -74,7 +73,7 @@ final class Responder
         return $response;
     }
 
-    /** For endpoints that already sent application/json under Laminas. */
+    /** For the endpoints whose callers expect application/json. */
     public function json(string $body, int $status = 200): ResponseInterface
     {
         $response = $this->responses->createResponse($status)->withHeader('Content-Type', 'application/json');

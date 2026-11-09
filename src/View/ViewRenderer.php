@@ -7,10 +7,10 @@ namespace App\View;
 use RuntimeException;
 
 /**
- * Renders the existing .phtml templates outside laminas-view.
+ * Renders the .phtml templates.
  *
- * Template names resolve as Laminas resolved them through
- * template_path_stack: 'application/log-viewer/index' is
+ * A template name is a path under templates/:
+ * 'application/log-viewer/index' is
  * templates/application/log-viewer/index.phtml. Inside a
  * template, $this is a Template, so $this->translate(), $this->url(),
  * $this->layout()->acl and the other calls the templates make keep working.
@@ -43,8 +43,7 @@ final class ViewRenderer
     }
 
     /**
-     * Renders a template inside a layout, as a Laminas ViewModel returned from
-     * a controller action did.
+     * Renders a template inside a layout.
      *
      * @param array<string, mixed> $variables
      */

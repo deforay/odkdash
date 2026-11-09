@@ -5,17 +5,13 @@ declare(strict_types=1);
 namespace Application\Session;
 
 /**
- * Namespaced session container, replacing Laminas\Session\Container.
+ * Namespaced session container over $_SESSION.
  *
- * laminas-session was used here as a namespaced wrapper over $_SESSION and
- * nothing more: four namespaces — credo, alert, query, language — reached
- * entirely through property access, with no session configuration, no
- * validators, no expiration hops and no custom save handler. This is that
- * wrapper, over the PHP session directly.
+ * The app uses four namespaces: credo, alert, query and language. Each is
+ * reached through property access. Values live under $_SESSION[$namespace].
  *
- * The session is started on first use, as Laminas did, so nothing has to
- * remember to start it. Values live under $_SESSION[$namespace], so a var_dump
- * of the session is now readable rather than a nest of ArrayObjects.
+ * The session is started on first use, so nothing has to remember to start
+ * it.
  */
 class Container
 {
@@ -51,7 +47,7 @@ class Container
     }
 
     /**
-     * A null value reads as unset, which is what Laminas did and what the
+     * A null value reads as unset, which is what the
      * `empty($session->userId)` checks throughout the app expect.
      */
     public function __isset(string $key): bool

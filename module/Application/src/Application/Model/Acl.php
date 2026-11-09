@@ -5,20 +5,14 @@ namespace Application\Model;
 /**
  * Role-based access control for the dashboard.
  *
- * This used to extend laminas-permissions-acl, of which the application used
- * five methods and none of the features — no role inheritance, no deny rules,
- * no assertions, no resource tree. What is left once those go is a flat
- * allow-list built from the resources, roles, privileges and
- * roles_privileges_map tables, which is what this class holds directly.
+ * A flat allow-list built from the resources, roles, privileges and
+ * roles_privileges_map tables. There is no role inheritance, no deny rule,
+ * no assertion and no resource tree. Callers use isAllowed() and
+ * hasResource().
  *
- * Externally only isAllowed() and hasResource() are called, so the swap is
- * invisible to the 110 call sites in the controllers and layout.
- *
- * Two deliberate differences from the Laminas behaviour, both denying where
- * it threw: an unknown role or an unknown resource returns false rather than
- * raising InvalidArgumentException. A resource that vanishes from the
- * database therefore hides a menu entry instead of producing a 500, and no
- * case grants access that Laminas would have refused.
+ * An unknown role or an unknown resource is denied, not an error. A resource
+ * that vanishes from the database therefore hides a menu entry instead of
+ * producing a 500.
  */
 class Acl
 {
@@ -126,9 +120,7 @@ class Acl
     }
 
     /**
-     * A role with a blanket allow still needs the resource to be registered,
-     * matching Laminas, where isAllowed() resolved the resource before it
-     * consulted any rule.
+     * A role with a blanket allow still needs the resource to be registered.
      */
     public function isAllowed($role = null, $resource = null, $privilege = null): bool
     {
@@ -155,8 +147,8 @@ class Acl
 
     /**
      * True when the privileges table defines this privilege, so the role
-     * edit screen can grant it. Spellings Laminas treated as one action
-     * (get-x, get_x, getX) count as the same privilege.
+     * edit screen can grant it. The spellings get-x, get_x and getX name one
+     * action, so they count as the same privilege.
      */
     public function isDefined(string $resource, string $privilege): bool
     {
@@ -179,8 +171,8 @@ class Acl
     }
 
     /**
-     * Called with a role alone this is a blanket allow, as it was in Laminas,
-     * where a null resource and privilege meant "all of them".
+     * Called with a role alone, this is a blanket allow: a null resource and
+     * privilege mean "all of them".
      */
     private function allow($role, $resource = null, $privilege = null): void
     {

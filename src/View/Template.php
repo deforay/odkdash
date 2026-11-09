@@ -9,7 +9,7 @@ use Throwable;
 /**
  * $this inside a .phtml template.
  *
- * Variables read both ways laminas-view allowed: as locals ($files) and as
+ * Variables read two ways: as locals ($files) and as
  * properties ($this->files). Method calls go to the view helpers, except
  * partial() and layout(), which need the renderer.
  */
@@ -51,8 +51,7 @@ final class Template
     }
 
     /**
-     * The layout's variables, read as $this->layout()->acl. Laminas returned
-     * the layout ViewModel here. Templates only ever read variables off it.
+     * The layout's variables, read as $this->layout()->acl.
      */
     public function layout(): object
     {

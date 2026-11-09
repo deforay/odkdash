@@ -311,7 +311,7 @@ class SpiFormVer3Table
 
     /**
      * Updates the audits that match $where and returns the number changed.
-     * Column names are quoted, as Laminas quoted them.
+     * Column names are quoted.
      */
     private function updateAudits(array $set, array $where): int
     {
@@ -320,8 +320,8 @@ class SpiFormVer3Table
 
     /**
      * Quotes each key, so a column such as `meta-instance-id` works in DBAL's
-     * insert and update. An array value is written as NULL, as Laminas wrote
-     * it. DBAL would write the text "Array".
+     * insert and update. An array value is written as NULL, where DBAL alone
+     * would write the text "Array".
      */
     private function quoteColumns(array $row): array
     {
@@ -333,7 +333,7 @@ class SpiFormVer3Table
     }
 
     /**
-     * One row as Laminas returned it: an object whose columns also read as
+     * One row as an object whose columns also read as
      * properties, or null. Templates read these rows with `->`.
      */
     private function fetchRowObject(string $sql, array $values = []): ?\ArrayObject

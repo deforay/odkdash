@@ -10,8 +10,7 @@ use RuntimeException;
 /**
  * $this->url(name, params, options) in the templates.
  *
- * Routes keep their Laminas route names, and SlimUrls builds each URL as
- * the Laminas router built it, so the templates did not change.
+ * SlimUrls builds each URL from the route's segment pattern.
  */
 final class UrlHelper
 {

@@ -9,9 +9,7 @@ use Application\I18n\Translator;
 /**
  * The translate() helper the views call, ~2900 times.
  *
- * laminas-i18n used to supply this. It is registered here now that the
- * translator behind it is Application\I18n\Translator, with the same
- * signature, so no view changes.
+ * The translator behind it is Application\I18n\Translator.
  */
 class Translate
 {

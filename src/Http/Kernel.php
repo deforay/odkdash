@@ -49,12 +49,12 @@ use function DI\get;
 final class Kernel
 {
     /**
-     * The Slim pattern for each Laminas optional tail the routes use.
+     * The Slim pattern for each optional tail the segment patterns use.
      *
      * FastRoute allows optional parts only at the end of a pattern, nested,
      * so /x[/:action][/][:id] becomes /x[/[{action}[/[{id}]]]]. That matches
      * /x, /x/, /x/edit, /x/edit/ and /x/edit/5, which covers every URL
-     * Laminas builds for the route. A pattern with a tail not listed here
+     * SlimUrls builds for the route. A pattern with a tail not listed here
      * stops the app with an error naming it. Add its line here.
      */
     private const array SLIM_TAILS = [
@@ -127,9 +127,8 @@ final class Kernel
         $app->setBasePath($basePath);
         $container->set(App::class, $app);
 
-        // Route names are the old Laminas route names, and each route
-        // registers the Laminas pattern it replaced, so $this->url() calls in
-        // the templates produce the same links after a page moves.
+        // Each route registers its segment pattern, which $this->url() in
+        // the templates builds links from.
         $urls = $container->get(SlimUrls::class);
 
         foreach (self::routes() as $name => $route) {
@@ -150,7 +149,7 @@ final class Kernel
 
     /**
      * Every route in src/Http/Routes/, keyed by route name. Each file holds
-     * one module's routes in the Laminas route config format. See
+     * one module's routes. See
      * Routes/Application.php. bin/dev/helper-access reads them too.
      *
      * @return array<string, array<string, mixed>>
@@ -173,7 +172,7 @@ final class Kernel
     }
 
     /**
-     * Registers one route: its name and Laminas pattern for URL building,
+     * Registers one route: its name and segment pattern for URL building,
      * then the Slim route with its ACL resource and defaults.
      *
      * @param array<string, mixed> $route
@@ -208,16 +207,16 @@ final class Kernel
         }
     }
 
-    private static function slimPattern(string $laminasPattern): string
+    private static function slimPattern(string $segmentPattern): string
     {
-        $start = strpos($laminasPattern, '[');
+        $start = strpos($segmentPattern, '[');
         if ($start === false) {
-            return $laminasPattern;
+            return $segmentPattern;
         }
-        $tail = substr($laminasPattern, $start);
+        $tail = substr($segmentPattern, $start);
 
-        return substr($laminasPattern, 0, $start) . (self::SLIM_TAILS[$tail]
-            ?? throw new \RuntimeException(sprintf('No Slim pattern for "%s". Add one to Kernel::SLIM_TAILS.', $laminasPattern)));
+        return substr($segmentPattern, 0, $start) . (self::SLIM_TAILS[$tail]
+            ?? throw new \RuntimeException(sprintf('No Slim pattern for "%s". Add one to Kernel::SLIM_TAILS.', $segmentPattern)));
     }
 
     public function run(): void
@@ -237,8 +236,7 @@ final class Kernel
     }
 
     /**
-     * The helpers the templates call. Names and signatures match the Laminas
-     * helpers they replace.
+     * The helpers the templates call.
      */
     private static function viewHelpers(ContainerInterface $c, string $basePath): ViewHelpers
     {
@@ -257,14 +255,13 @@ final class Kernel
                 => new GlobalConfigHelper($c->get('GlobalTable')),
             'GetCountryDetailsByIdHelper' => static fn(): GetCountryDetailsByIdHelper
                 => new GetCountryDetailsByIdHelper($c->get('CountriesTable')),
-            // Laminas collected titles for the layout to print. The layouts
-            // never print them, so a call outputs nothing.
+            // The layouts print no title from here, so a call outputs nothing.
             'headTitle' => static fn(): \Closure => static fn(mixed ...$ignored): string => '',
         ]);
     }
 
     /**
-     * Sets the translator's locale, as Module::initTranslator does: the
+     * Sets the translator's locale: the
      * user's chosen language, or the instance default from global_config.
      */
     private static function applyLocale(ContainerInterface $c, Translator $translator): Translator
@@ -280,8 +277,8 @@ final class Kernel
 
     /**
      * Where the app lives under the web root: empty at the root, "/odkdash"
-     * when installed in a sub-directory. Read from SCRIPT_NAME, as Laminas
-     * does, but only when it names the front controller. Under the built-in
+     * when installed in a sub-directory. Read from SCRIPT_NAME,
+     * but only when it names the front controller. Under the built-in
      * server's router mode it holds the request path instead.
      */
     private static function basePath(): string

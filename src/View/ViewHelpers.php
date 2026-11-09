@@ -11,8 +11,8 @@ use RuntimeException;
  * The helpers templates call as $this->name(...).
  *
  * Each helper is built on first use, so a page that never translates never
- * loads the translator. Names match case-insensitively, as the Laminas
- * helper manager matched them: $this->GlobalConfigHelper() and
+ * loads the translator. Names match case-insensitively:
+ * $this->GlobalConfigHelper() and
  * $this->globalConfigHelper() reach the same helper.
  */
 final class ViewHelpers

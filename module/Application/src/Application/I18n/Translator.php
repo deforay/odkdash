@@ -11,14 +11,12 @@ use Symfony\Component\Translation\Translator as SymfonyTranslator;
 /**
  * Application translator, backed by symfony/translation.
  *
- * This replaces laminas-i18n's translator and keeps its method names, so the
- * call sites do not change: the views reach it through the translate() view
- * helper, and Kernel::applyLocale() chains setLocale()->setFallbackLocale().
+ * The views reach it through the translate() view helper, and
+ * Kernel::applyLocale() chains setLocale()->setFallbackLocale().
  *
- * The catalogue format is unchanged — the same gettext .mo files under
- * module/Application/language, read by Symfony's MoFileLoader. Nothing needs
- * regenerating, and a message with no translation returns the source string,
- * as it did before.
+ * The catalogues are the gettext .mo files under module/Application/language,
+ * read by Symfony's MoFileLoader. A message with no translation returns the
+ * source string.
  */
 class Translator
 {
@@ -32,8 +30,7 @@ class Translator
     }
 
     /**
-     * Register a directory of catalogues the way laminas-i18n's
-     * translation_file_patterns did: a base directory plus a filename pattern
+     * Register a directory of catalogues: a base directory plus a filename pattern
      * in which %s stands for the locale, e.g. '%s.mo'. The locale is read back
      * out of each filename the pattern matches.
      */
@@ -67,7 +64,7 @@ class Translator
     /**
      * Empty locales are ignored rather than passed through: the language comes
      * from global_config, which can be unset on a fresh install, and Symfony
-     * rejects an empty locale where Laminas quietly kept the current one.
+     * rejects an empty locale. The current locale stays.
      */
     public function setLocale(?string $locale): static
     {

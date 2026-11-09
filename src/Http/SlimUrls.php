@@ -9,25 +9,24 @@ use RuntimeException;
 use Slim\Interfaces\RouteCollectorInterface;
 
 /**
- * Builds URLs for Slim routes exactly as the Laminas router built them, so a
- * page renders the same links after it moves.
+ * Builds URLs for Slim routes from their segment patterns.
  *
- * Each route registers the Laminas segment pattern it replaced, such as
- * /roles[/:action][/][:id], with its defaults. URLs are assembled from that
- * pattern with the rules of Laminas\Router\Http\Segment::buildPath():
+ * Each route registers its segment pattern, such as /roles[/:action][/][:id],
+ * with its defaults. URLs are assembled from that pattern with these rules:
  *
  * - The defaults are merged under the given parameters first.
  * - An optional group is left out when every parameter in it is missing or
  *   equal to its default.
  * - An optional group with no parameter, such as [/], is always kept. That
  *   is why url('roles') is /roles/, not /roles.
- * - Values are encoded as Segment::encode() encodes them.
+ * - Values are encoded with rawurlencode(), then the characters in KEEP are
+ *   put back.
  *
  * Slim's own urlFor() follows none of these rules.
  */
 final class SlimUrls
 {
-    /** Characters Laminas puts back after rawurlencode(). */
+    /** Characters put back after rawurlencode(). */
     private const array KEEP = [
         '%21' => '!', '%24' => '$', '%26' => '&', '%27' => "'", '%28' => '(', '%29' => ')',
         '%2A' => '*', '%2B' => '+', '%2C' => ',', '%3A' => ':', '%3B' => ';', '%3D' => '=', '%40' => '@',
@@ -41,13 +40,13 @@ final class SlimUrls
     }
 
     /**
-     * Registers the Laminas pattern a Slim route replaced.
+     * Registers the segment pattern of a Slim route.
      *
      * @param array<string, string> $defaults
      */
-    public function register(string $route, string $laminasPattern, array $defaults = []): void
+    public function register(string $route, string $segmentPattern, array $defaults = []): void
     {
-        $this->patterns[$route] = ['parts' => self::parse($laminasPattern), 'defaults' => $defaults];
+        $this->patterns[$route] = ['parts' => self::parse($segmentPattern), 'defaults' => $defaults];
     }
 
     public function has(string $name): bool
@@ -130,7 +129,7 @@ final class SlimUrls
     }
 
     /**
-     * Splits a Laminas segment pattern into literal, parameter and optional
+     * Splits a segment pattern into literal, parameter and optional
      * parts. Covers the syntax odkdash's routes use: literals, :name and
      * nested [...] groups.
      *

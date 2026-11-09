@@ -159,7 +159,7 @@ run_git() {
     git -c safe.directory='*' -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
 }
 
-# An odkdash tree, as opposed to any other Laminas app sharing the server. The
+# An odkdash tree, as opposed to any other PHP app sharing the server. The
 # composer.json name is the discriminating marker. bin/migrate is deliberately
 # NOT required: it only landed in May 2026, and installs old enough to lack it
 # are precisely the ones that need upgrading. The deploy puts it there.

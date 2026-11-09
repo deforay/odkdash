@@ -12,8 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * The SPI-RT V3 audit pages. Actions that only answer POST render their
- * template inside the layout for any other method, as the Laminas actions
- * did by returning null.
+ * template inside the layout for any other method.
  */
 final class SpiV3Handler extends ActionHandler
 {
@@ -217,7 +216,7 @@ final class SpiV3Handler extends ActionHandler
             return $this->respond->html(CommonService::jsonEncode($result));
         }
         $query = $request->getQueryParams();
-        // Laminas read each filter with fromQuery() and kept it only when truthy.
+        // A filter that is empty, "0" or absent is "".
         $filter = static fn(string $name): mixed => empty($query[$name]) ? '' : $query[$name];
         return $this->respond->page('application/spi-v3/view-data', [
             'source' => $filter('source'),
@@ -361,7 +360,7 @@ final class SpiV3Handler extends ActionHandler
         return $this->respond->file($path, 'application/zip');
     }
 
-    /** What a Laminas action that returned null rendered. */
+    /** The action's template inside the layout, with no variables. */
     private function fallback(string $action): ResponseInterface
     {
         return $this->respond->page('application/spi-v3/' . $action);

@@ -7,12 +7,11 @@ namespace App\Http;
 use ArrayObject;
 
 /**
- * Request values as the services expect them, in place of
- * Laminas\Stdlib\Parameters, with the same behaviour:
+ * Request values as the services expect them:
  *
  * - $params['missing'] is null, without a warning.
  * - $params->name reads and writes like $params['name'].
- * - get($name, $default) and set($name, $value) work as in Laminas.
+ * - get($name, $default) returns $default for a missing key. set($name, $value) writes one.
  *
  * @extends ArrayObject<array-key, mixed>
  */

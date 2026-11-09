@@ -13,10 +13,10 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Routing\RouteContext;
 
 /**
- * A ported Laminas controller: one handler for a route with an {action}
+ * A handler for a route with an {action}
  * placeholder, one public method per action.
  *
- * Action names map to methods as Laminas mapped them, so "check-password",
+ * Action names map to methods so that "check-password",
  * "check_password" and "checkPassword" all reach checkPasswordAction(). An
  * absent action is "index". An action without a public method is a 404.
  * Methods keep the Action suffix, so a ported controller reads like the
@@ -43,14 +43,14 @@ abstract class ActionHandler implements RequestHandlerInterface
         return $action === null || $action === '' ? 'index' : $action;
     }
 
-    /** Laminas AbstractController::getMethodFromAction(). */
+    /** The method name for an action: "check-password" is checkPasswordAction. */
     public static function methodFor(string $action): string
     {
         return lcfirst(str_replace(' ', '', ucwords(str_replace(['.', '-', '_'], ' ', $action)))) . 'Action';
     }
 
     /**
-     * POST data as Laminas handed it to the services: a Parameters object,
+     * POST data as the services expect it: a Parameters object,
      * readable as $params['x'] and $params->x, with null for missing keys.
      */
     protected function post(ServerRequestInterface $request): Parameters

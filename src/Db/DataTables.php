@@ -80,7 +80,7 @@ final class DataTables
     }
 
     /**
-     * Quotes a column name such as "status" or "d.geo_name", as Laminas did.
+     * Quotes a column name such as "status" or "d.geo_name".
      * An expression such as "DATE_FORMAT(...)" is left as the code wrote it.
      */
     private static function quoteColumn(string $column): string

@@ -85,7 +85,7 @@ final class UsersHandler extends ActionHandler
 
     /**
      * Called by the change-password page's JavaScript. Prints the service's
-     * answer and nothing else. A GET printed nothing under Laminas.
+     * answer and nothing else. A GET prints nothing.
      */
     public function checkPasswordAction(ServerRequestInterface $request): ResponseInterface
     {
@@ -111,7 +111,7 @@ final class UsersHandler extends ActionHandler
     public function resetPasswordAction(ServerRequestInterface $request): ResponseInterface
     {
         if ($this->isPost($request)) {
-            // Rendered without a layout, as under Laminas.
+            // Rendered without a layout.
             return $this->respond->fragment('application/users/reset-password', [
                 'result' => $this->userService->resetPassword($this->post($request)),
             ]);

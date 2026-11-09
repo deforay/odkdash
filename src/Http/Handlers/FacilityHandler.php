@@ -14,8 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * The facility pages. Actions that only answer POST (or only GET) render
- * their template inside the layout for the other method, as the Laminas
- * actions did by returning null.
+ * their template inside the layout for the other method.
  */
 final class FacilityHandler extends ActionHandler
 {
@@ -161,7 +160,7 @@ final class FacilityHandler extends ActionHandler
         return $this->respond->html(CommonService::jsonEncode($result));
     }
 
-    /** What a Laminas action that returned null rendered. */
+    /** The action's template inside the layout, with no variables. */
     private function fallback(string $action): ResponseInterface
     {
         return $this->respond->page('application/facility/' . $action);

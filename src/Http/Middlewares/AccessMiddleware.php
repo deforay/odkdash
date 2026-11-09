@@ -20,18 +20,17 @@ use RuntimeException;
 use Slim\Routing\RouteContext;
 
 /**
- * Login and permission checks for Slim routes, in place of
- * Module::preSetter on the Laminas side.
+ * Login and permission checks for Slim routes.
  *
  * Every route is closed unless it says otherwise. A route names its ACL
- * resource and privilege as route arguments, which are the controller class
- * and action Laminas checked:
+ * resource and privilege as route arguments, which are a controller class
+ * name and an action:
  *
  *     ->setArgument('resource', 'Application\Controller\LogViewerController')
  *     ->setArgument('privilege', 'index')
  *
  * A route with an {action} placeholder leaves out the privilege: the action
- * named in the URL is the privilege, "index" when absent, as in Laminas.
+ * named in the URL is the privilege, "index" when absent.
  *
  * An action with no privilege in the privileges table is a helper that a
  * page's own JavaScript calls. The role edit screen cannot grant it, so a
@@ -67,7 +66,7 @@ final class AccessMiddleware implements MiddlewareInterface
 
         $session = new Container('credo');
 
-        // A public page needs no login. As in preSetter, a logged-in user
+        // A public page needs no login. A logged-in user
         // still gets the ACL, which the home layout's menu reads.
         if ($route->getArgument('access') === 'public') {
             $this->rememberCountry($session);
@@ -116,7 +115,7 @@ final class AccessMiddleware implements MiddlewareInterface
     }
 
     /**
-     * The layouts print the country name. preSetter fills it in on the first
+     * The layouts print the country name. This fills it in on the first
      * request of a session.
      */
     private function rememberCountry(Container $session): void

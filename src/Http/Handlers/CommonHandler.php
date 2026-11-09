@@ -75,7 +75,7 @@ final class CommonHandler extends ActionHandler
         if ($this->isPost($request)) {
             return $this->respond->html($this->commonService->generatePassword());
         }
-        // There is no template for this action. Laminas failed the same way.
+        // There is no template for this action, so a GET fails.
         return $this->respond->page('application/common/generate-password');
     }
 }

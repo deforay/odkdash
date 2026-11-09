@@ -7,8 +7,7 @@ namespace App\View;
 use RuntimeException;
 
 /**
- * The escapeHtml and escapeHtmlAttr view helpers. The output matches the
- * Laminas escaper byte for byte, so templates render as they did.
+ * The escapeHtml and escapeHtmlAttr view helpers.
  *
  * html() is htmlspecialchars() with quotes escaped. attr() follows the
  * OWASP rule for attribute values: every character except letters,

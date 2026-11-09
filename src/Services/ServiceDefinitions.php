@@ -38,10 +38,9 @@ use function DI\get;
  * The application services, as PHP-DI definitions. The web app (Kernel),
  * bin/console and bin/migrate build their containers from these.
  *
- * Services are registered under the string keys the Laminas service
- * manager used ('CommonService', 'GlobalTable', 'AppAcl'), so the services
- * that call $this->sm->get('...') keep working. Each one is built on first
- * use and shared after that, as before.
+ * Services are registered under string keys ('CommonService', 'GlobalTable',
+ * 'AppAcl'), which the services pass to $this->sm->get('...'). Each one is
+ * built on first use and shared after that.
  */
 final class ServiceDefinitions
 {
@@ -59,16 +58,14 @@ final class ServiceDefinitions
     ];
 
     /**
-     * The application config, merged in the order the Laminas module
-     * manager merged it. A later source overrides an earlier one:
+     * The application config, merged in this order. A later source overrides an earlier one:
      *
      * 1. module/Application/config/module.config.php.
      * 2. config/autoload/global.php, then *.global.php, then local.php,
      *    then *.local.php. Each glob is in alphabetical order.
      *
      * The 'service_manager' key that servers' global.php still carries is
-     * not read. Its one entry built the laminas-db adapter. connection()
-     * opens the database from the same 'db' block.
+     * not read. connection() opens the database from the 'db' block.
      *
      * @return array<string, mixed>
      */
@@ -144,7 +141,7 @@ final class ServiceDefinitions
     }
 
     /**
-     * Merges config arrays as Laminas ArrayUtils::merge() did. A list item
+     * Merges config arrays. A list item
      * from $b is appended. Two arrays under one string key are merged.
      * Anything else from $b replaces the value in $a.
      *
