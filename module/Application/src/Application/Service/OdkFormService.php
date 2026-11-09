@@ -101,7 +101,6 @@ class OdkFormService
             $dbAdapter = $this->sm->get('Laminas\Db\Adapter\Adapter');
             $username = $loginContainer->login;
             $trackTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($dbAdapter);
             $displayDate = "";
             if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
                 $dateRangeDate = explode(" - ", $params['dateRange']);
@@ -150,12 +149,12 @@ class OdkFormService
                 $testPoint = "Type of Testing Point : ";
             }
 
-            if (!$queryContainer->exportAllDataQuery instanceof Select) {
+            $stored = $queryContainer->exportAllDataQuery;
+            if (!is_array($stored)) {
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sQueryStr = $sql->buildSqlString($queryContainer->exportAllDataQuery);
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($sQueryStr);
+            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
             $output = [];
             $outputScore = [];
             if (!empty($sResult)) {
