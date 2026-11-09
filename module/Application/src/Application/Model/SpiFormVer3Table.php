@@ -126,6 +126,171 @@ class SpiFormVer3Table
         return implode(', ', array_fill(0, count($values), '?'));
     }
 
+    /**
+     * The builder's [column => value]: IS NULL for null, IN for an array, = for anything else.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addEquals(string $column, mixed $value, array &$where, array &$values): void
+    {
+        if ($value === null) {
+            $where[] = $column . ' IS NULL';
+            return;
+        }
+        if (is_array($value)) {
+            $list = CommonService::inList($value);
+            $where[] = $column . ' IN (' . self::placeholders($list) . ')';
+            array_push($values, ...$list);
+            return;
+        }
+        $where[] = $column . ' = ?';
+        $values[] = $value;
+    }
+
+    /**
+     * The roundno filter: audits in any of the chosen rounds.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addRoundNumbers($params, array &$where, array &$values): void
+    {
+        if (isset($params['roundno']) && $params['roundno'] != '') {
+            self::addEquals('spiv3.auditroundno', CommonService::inList($params['roundno']), $where, $values);
+        }
+    }
+
+    /**
+     * The auditRndNo filter: audits of one round.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addAuditRound($params, array &$where, array &$values): void
+    {
+        if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
+            self::addEquals('spiv3.auditroundno', $params['auditRndNo'], $where, $values);
+        }
+    }
+
+    /**
+     * The dateRange filter, "<start> to <end>". Applies only when both dates read.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addDateRange($params, array &$where, array &$values): void
+    {
+        $startDate = '';
+        $endDate = '';
+        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
+            $dateField = explode(" ", $params['dateRange']);
+            if (isset($dateField[0]) && trim($dateField[0]) != "") {
+                $startDate = CommonService::isoDateFormat($dateField[0]);
+            }
+            if (isset($dateField[2]) && trim($dateField[2]) != "") {
+                $endDate = CommonService::isoDateFormat($dateField[2]);
+            }
+        }
+        if (trim((string) $startDate) != "" && trim((string) $endDate) != "") {
+            $where[] = 'spiv3.assesmentofaudit >= ? AND spiv3.assesmentofaudit <= ?';
+            $values[] = $startDate;
+            $values[] = $endDate;
+        }
+    }
+
+    /**
+     * The chart pages' filters on the audit itself: the testing point and
+     * its name, the level, the affiliation and the score band.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addChartFilters($params, array &$where, array &$values): void
+    {
+        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
+            self::addEquals('spiv3.testingpointtype', $params['testPoint'], $where, $values);
+            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
+                $nameColumn = trim($params['testPoint']) != 'other' ? 'spiv3.testingpointname' : 'spiv3.testingpointtype_other';
+                self::addEquals($nameColumn, $params['testPointName'], $where, $values);
+            }
+        }
+        if (isset($params['level']) && $params['level'] != '') {
+            self::addEquals('spiv3.level', $params['level'], $where, $values);
+        }
+        if (isset($params['affiliation']) && $params['affiliation'] != '') {
+            self::addEquals('spiv3.affiliation', $params['affiliation'], $where, $values);
+        }
+        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
+            $band = match (true) {
+                $params['scoreLevel'] == 0 => 'spiv3.AUDIT_SCORE_PERCANTAGE < 40',
+                $params['scoreLevel'] == 1 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59',
+                $params['scoreLevel'] == 2 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79',
+                $params['scoreLevel'] == 3 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89',
+                $params['scoreLevel'] == 4 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 90',
+                default => null,
+            };
+            if ($band !== null) {
+                $where[] = $band;
+            }
+        }
+    }
+
+    /**
+     * The chart pages' province and district filters. A province, as a list
+     * or as "3,5", adds an inner join to the audit's facility, which also
+     * adds its province and district to each row. The district filter needs
+     * that join, so it applies only with a province.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     * @return array{0: string, 1: string} The columns and the join.
+     */
+    private static function addProvinceFilters($params, array &$where, array &$values): array
+    {
+        $province = $params['province'] ?? null;
+        $district = $params['district'] ?? null;
+        $result = ['', ''];
+        $joined = [', f.province AS province, f.district AS district', ' INNER JOIN spi_rt_3_facilities AS f ON f.id = spiv3.facility'];
+        if (is_array($province) && $province !== []) {
+            $result = $joined;
+            self::addEquals('f.province', CommonService::inList($province), $where, $values);
+        } elseif ($province != '') {
+            $result = $joined;
+            self::addEquals('f.province', CommonService::inList(explode(',', $province)), $where, $values);
+        }
+        if ($province != '') {
+            if (is_array($district) && $district !== []) {
+                self::addEquals('f.district', CommonService::inList($district), $where, $values);
+            } elseif ($district != '') {
+                self::addEquals('f.district', CommonService::inList(explode(',', $district)), $where, $values);
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * The fieldName and val filter some chart requests may carry. No page
+     * sends it. fieldName must be a column name, such as "level" or
+     * "spiv3.level". Anything else matches nothing.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addFieldFilter($params, array &$where, array &$values): void
+    {
+        if (!isset($params['fieldName']) || trim($params['fieldName']) == '') {
+            return;
+        }
+        $field = trim((string) $params['fieldName']);
+        if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$/', $field) !== 1) {
+            $where[] = '1 = 0';
+            return;
+        }
+        self::addEquals('`' . str_replace('.', '`.`', $field) . '`', $params['val'] ?? null, $where, $values);
+    }
+
     /** DESC when the caller asks for it, else ASC. */
     private static function direction(mixed $sortOrder): string
     {
@@ -747,116 +912,31 @@ class SpiFormVer3Table
     public function getPerformance($params)
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(
-                'oldestDate' => new Expression("MIN(`assesmentofaudit`)"),
-                'newestDate' => new Expression("MAX(`assesmentofaudit`)"),
-                'totalDataPoints' => new Expression("COUNT(*)"),
-                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
-                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
-                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
-                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
-                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
-            ))
-            ->where(array('spiv3.status' => 'approved'));
-        if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
-            $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
-        }
-
-        if (isset($params['roundno']) && $params['roundno'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($params['roundno'])]);
-        }
-        $startDate = '';
-        $endDate = '';
-        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-            $dateField = explode(" ", $params['dateRange']);
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-
-        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $params['testPoint']]);
-            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
-                if (trim($params['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $params['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $params['testPointName']]);
-                }
-            }
-        }
-        if (isset($params['level']) && $params['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $params['level']]);
-        }
-        if (isset($params['affiliation']) && $params['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $params['affiliation']]);
-        }
-        if (isset($params['province']) && is_array($params['province']) && $params['province'] !== []) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($params['province'])]);
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($params['province'])]);
-            }
-        } elseif (isset($params['province']) && $params['province'] != '') {
-            $provinces = explode(",", $params['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if (isset($params['province']) && $params['province'] != '') {
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($params['district'])]);
-            } elseif ($params['district'] != '') {
-                $provinces = explode(",", $params['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        //if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
-        //    $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
-        //}else{
-        //    if(isset($params['province']) && $params['province']!=''){
-        //        $provinces = explode(",",$params['province']);
-        //        $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
-        //    }
-        //}
-        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
-            if ($params['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($params['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($params['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($params['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($params['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //        die($sQueryStr);
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv3.status = 'approved'"];
+        $values = [];
+        self::addFieldFilter($params, $where, $values);
+        self::addRoundNumbers($params, $where, $values);
+        self::addDateRange($params, $where, $values);
+        self::addChartFilters($params, $where, $values);
+        [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        $rResult = $this->db->fetchAllAssociative(
+            'SELECT MIN(`assesmentofaudit`) AS oldestDate, MAX(`assesmentofaudit`) AS newestDate, COUNT(*) AS totalDataPoints,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0)) AS level0,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0)) AS level1,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0)) AS level2,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0)) AS level3,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0)) AS level4' . $provinceColumns
+            . ' FROM spi_form_v_3 AS spiv3' . $provinceJoin . $scopeJoin . self::whereSql($where),
+            $values
+        );
         return $rResult;
     }
 
     public function getPerformanceLast30Days($params)
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-
         $startDate = date('Y-m-d');
         $endDate = date('Y-m-d', strtotime('-30 days', strtotime($startDate)));
 
@@ -870,79 +950,24 @@ class SpiFormVer3Table
             }
         }
 
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(
-                'newestDate' => new Expression("'$startDate'"),
-                'oldestDate' => new Expression("'$endDate'"),
-                'totalDataPoints' => new Expression("COUNT(*)"),
-                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
-                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
-                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
-                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
-                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
-            ))
-            ->where("spiv3.status='approved'")
-            ->where(['(`assesmentofaudit` BETWEEN ? - INTERVAL DATEDIFF(?, ?) DAY AND ?)' => [$startDate, $startDate, $endDate, $startDate]]);
-        //    $sQuery = $sQuery->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE())");
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => $params['auditRndNo']]);
-        }
-        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $params['testPoint']]);
-            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
-                if (trim($params['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $params['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $params['testPointName']]);
-                }
-            }
-        }
-        if (isset($params['level']) && $params['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $params['level']]);
-        }
-        if (isset($params['affiliation']) && $params['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $params['affiliation']]);
-        }
-        if (isset($params['province']) && is_array($params['province']) && $params['province'] !== []) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($params['province'])]);
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($params['province'])]);
-            }
-        } elseif (isset($params['province']) && $params['province'] != '') {
-            $provinces = explode(",", $params['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if (isset($params['province']) && $params['province'] != '') {
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($params['district'])]);
-            } elseif ($params['district'] != '') {
-                $provinces = explode(",", $params['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
-            if ($params['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($params['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($params['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($params['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($params['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //die($sQueryStr);
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv3.status='approved'", '(`assesmentofaudit` BETWEEN ? - INTERVAL DATEDIFF(?, ?) DAY AND ?)'];
+        // The two dates in the select list come first.
+        $values = [$startDate, $endDate, $startDate, $startDate, $endDate, $startDate];
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        self::addAuditRound($params, $where, $values);
+        self::addChartFilters($params, $where, $values);
+        [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
+        $rResult = $this->db->fetchAllAssociative(
+            'SELECT ? AS newestDate, ? AS oldestDate, COUNT(*) AS totalDataPoints,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0)) AS level0,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0)) AS level1,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0)) AS level2,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0)) AS level3,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0)) AS level4' . $provinceColumns
+            . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where),
+            $values
+        );
 
         return $rResult;
     }
@@ -950,30 +975,22 @@ class SpiFormVer3Table
     public function getPerformanceLast180Days()
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         $today = date('Y-m-d');
         $last180Date = date('Y-m-d', strtotime('-180 days', strtotime($today)));
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(
-                'newestDate' => new Expression("'$today'"),
-                'oldestDate' => new Expression("'$last180Date'"),
-                'totalDataPoints' => new Expression("COUNT(*)"),
-                'level0' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0))"),
-                'level1' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0))"),
-                'level2' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0))"),
-                'level3' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0))"),
-                'level4' => new Expression("SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0))"),
-            ))
-            ->where(array('spiv3.status' => 'approved'))
-            ->where("(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())");
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv3.status = 'approved'", '(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())'];
+        $values = [$today, $last180Date];
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        $rResult = $this->db->fetchAllAssociative(
+            'SELECT ? AS newestDate, ? AS oldestDate, COUNT(*) AS totalDataPoints,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0)) AS level0,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0)) AS level1,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0)) AS level2,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0)) AS level3,'
+            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0)) AS level4'
+            . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . self::whereSql($where),
+            $values
+        );
 
         return $rResult;
     }
@@ -993,83 +1010,19 @@ class SpiFormVer3Table
     public function getAllApprovedTestingVolume($params)
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->order(array("avgMonthTesting DESC"));
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $startDate = '';
-        $endDate = '';
-        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-            $dateField = explode(" ", $params['dateRange']);
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-
-        if (isset($params['auditRndNo']) && $params['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => $params['auditRndNo']]);
-        }
-        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $params['testPoint']]);
-            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
-                if (trim($params['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $params['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $params['testPointName']]);
-                }
-            }
-        }
-        if (isset($params['level']) && $params['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $params['level']]);
-        }
-        if (isset($params['affiliation']) && $params['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $params['affiliation']]);
-        }
-        if (isset($params['province']) && is_array($params['province']) && $params['province'] !== []) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($params['province'])]);
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($params['province'])]);
-            }
-        } elseif (isset($params['province']) && $params['province'] != '') {
-            $provinces = explode(",", $params['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if (isset($params['province']) && $params['province'] != '') {
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($params['district'])]);
-            } elseif ($params['district'] != '') {
-                $provinces = explode(",", $params['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
-            if ($params['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($params['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($params['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($params['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($params['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $where = [];
+        $values = [];
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        self::addDateRange($params, $where, $values);
+        self::addAuditRound($params, $where, $values);
+        self::addChartFilters($params, $where, $values);
+        [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
+        $rResult = $this->db->fetchAllAssociative(
+            'SELECT spiv3.*' . $provinceColumns . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where)
+            . ' ORDER BY avgMonthTesting DESC',
+            $values
+        );
         return $rResult;
     }
 
@@ -1567,98 +1520,21 @@ class SpiFormVer3Table
     {
         $loginContainer = new Container('credo');
         //$rResult = $this->getAllSubmissions();
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where('spiv3.status != "deleted"')
-            ->order(array("spiv3.id DESC"));
-        if (isset($params['roundno']) && $params['roundno'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($params['roundno'])]);
-        }
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $startDate = '';
-        $endDate = '';
-        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-            $dateField = explode(" ", $params['dateRange']);
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-        if ($params['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => $params['auditRndNo']]);
-        }
-
-        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $params['testPoint']]);
-            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
-                if (trim($params['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $params['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $params['testPointName']]);
-                }
-            }
-        }
-        if (isset($params['level']) && $params['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $params['level']]);
-        }
-        if (isset($params['affiliation']) && $params['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $params['affiliation']]);
-        }
-        if (is_array($params['province']) && $params['province'] !== []) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($params['province'])]);
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($params['province'])]);
-            }
-        } elseif ($params['province'] != '') {
-            $provinces = explode(",", $params['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if ($params['province'] != '') {
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($params['district'])]);
-            } elseif ($params['district'] != '') {
-                $provinces = explode(",", $params['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        //if(isset($params['province']) && is_array($params['province']) && count($params['province'])>0 ){
-        //    $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $params['province']) . '")');
-        //}else{
-        //    if(isset($params['province']) && $params['province']!=''){
-        //        $provinces = explode(",",$params['province']);
-        //        $sQuery = $sQuery->where('spiv3.level_name IN ("' . implode('", "', $provinces) . '")');
-        //    }
-        //}
-        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
-            if ($params['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($params['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($params['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($params['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($params['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-
-        if (isset($params['fieldName']) && trim($params['fieldName']) != '') {
-            $sQuery = $sQuery->where(array($params['fieldName'] => $params['val']));
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv3.status != 'deleted'"];
+        $values = [];
+        self::addRoundNumbers($params, $where, $values);
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        self::addDateRange($params, $where, $values);
+        self::addAuditRound($params, $where, $values);
+        self::addChartFilters($params, $where, $values);
+        [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
+        self::addFieldFilter($params, $where, $values);
+        $rResult = $this->db->fetchAllAssociative(
+            'SELECT spiv3.*' . $provinceColumns . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where)
+            . ' ORDER BY spiv3.id DESC',
+            $values
+        );
 
         $response = [];
 
@@ -1697,89 +1573,20 @@ class SpiFormVer3Table
     {
         $loginContainer = new Container('credo');
         //$rResult = $this->fetchAllApprovedSubmissions();
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where(array('spiv3.status' => 'approved'))
-            ->order(array("assesmentofaudit DESC"));
-        if (isset($params['roundno']) && $params['roundno'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($params['roundno'])]);
-        }
-
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $startDate = '';
-        $endDate = '';
-        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-            $dateField = explode(" ", $params['dateRange']);
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-        if ($params['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => $params['auditRndNo']]);
-        }
-
-        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $params['testPoint']]);
-            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
-                if (trim($params['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $params['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $params['testPointName']]);
-                }
-            }
-        }
-        if (isset($params['level']) && $params['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $params['level']]);
-        }
-        if (isset($params['affiliation']) && $params['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $params['affiliation']]);
-        }
-        if (is_array($params['province']) && $params['province'] !== []) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($params['province'])]);
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($params['province'])]);
-            }
-        } elseif ($params['province'] != '') {
-            $provinces = explode(",", $params['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if ($params['province'] != '') {
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($params['district'])]);
-            } elseif ($params['district'] != '') {
-                $provinces = explode(",", $params['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
-            if ($params['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($params['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($params['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($params['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($params['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv3.status = 'approved'"];
+        $values = [];
+        self::addRoundNumbers($params, $where, $values);
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        self::addDateRange($params, $where, $values);
+        self::addAuditRound($params, $where, $values);
+        self::addChartFilters($params, $where, $values);
+        [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
+        $rResult = $this->db->fetchAllAssociative(
+            'SELECT spiv3.*' . $provinceColumns . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where)
+            . ' ORDER BY assesmentofaudit DESC',
+            $values
+        );
 
         $response = [];
 
@@ -2123,95 +1930,21 @@ class SpiFormVer3Table
     public function fetchAllApprovedSubmissionLocation($params)
     {
         $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where(array('spiv3.status' => 'approved'))
-            ->order(array("assesmentofaudit DESC"));
-
-
         $auditRound = $params['roundno'] ?: array($this->fetchLatestSpiV3FormAuditNo());
-
-        $sQuery = $sQuery->where(['spiv3.auditroundno' => CommonService::inList($auditRound)]);
-
-        // if (isset($params['roundno']) && $params['roundno'] != '') {
-        //     $sQuery = $sQuery->where('spiv3.auditroundno IN ("' . implode('", "', $params['roundno']) . '")');
-        // }
-
-
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $startDate = '';
-        $endDate = '';
-        if (isset($params['dateRange']) && ($params['dateRange'] != "")) {
-            $dateField = explode(" ", $params['dateRange']);
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-        if ($params['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => $params['auditRndNo']]);
-        }
-
-        if (isset($params['testPoint']) && trim($params['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $params['testPoint']]);
-            if (isset($params['testPointName']) && trim($params['testPointName']) != '') {
-                if (trim($params['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $params['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $params['testPointName']]);
-                }
-            }
-        }
-        if (isset($params['level']) && $params['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $params['level']]);
-        }
-        if (isset($params['affiliation']) && $params['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $params['affiliation']]);
-        }
-        if (is_array($params['province']) && $params['province'] !== []) {
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($params['province'])]);
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($params['province'])]);
-            }
-        } elseif ($params['province'] != '') {
-            $provinces = explode(",", $params['province']);
-            $sQuery = $sQuery->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-                ->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if ($params['province'] != '') {
-            if (is_array($params['district']) && $params['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($params['district'])]);
-            } elseif ($params['district'] != '') {
-                $provinces = explode(",", $params['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
-            if ($params['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($params['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($params['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($params['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($params['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        return $this->db->fetchAllAssociative($sQueryStr);
+        $where = ["spiv3.status = 'approved'"];
+        $values = [];
+        self::addEquals('spiv3.auditroundno', CommonService::inList($auditRound), $where, $values);
+        self::addTokenRule($loginContainer, $where, $values);
+        $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
+        self::addDateRange($params, $where, $values);
+        self::addAuditRound($params, $where, $values);
+        self::addChartFilters($params, $where, $values);
+        [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv3.*' . $provinceColumns . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where)
+            . ' ORDER BY assesmentofaudit DESC',
+            $values
+        );
     }
 
 
