@@ -1020,7 +1020,9 @@ class SpiFormVer3Table
         [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT spiv3.*' . $provinceColumns . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where)
-            . ' ORDER BY avgMonthTesting DESC',
+            // The column is text, so + 0 sorts it as a number. Every page shows
+            // the first 10.
+            . ' ORDER BY spiv3.avgMonthTesting + 0 DESC, spiv3.id DESC LIMIT 10',
             $values
         );
         return $rResult;
