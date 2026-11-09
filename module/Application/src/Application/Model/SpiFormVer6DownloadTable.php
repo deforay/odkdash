@@ -2,12 +2,10 @@
 
 namespace Application\Model;
 
-use App\Db\Dbal;
 use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Laminas\Db\Adapter\Adapter;
 
 /** Bulk PDF download requests for V6 audits, in r_spi_form_v_6_download. */
 class SpiFormVer6DownloadTable
@@ -16,9 +14,9 @@ class SpiFormVer6DownloadTable
 
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     public function addDownloadDataDetails($params)
@@ -39,7 +37,7 @@ class SpiFormVer6DownloadTable
         $eventType = 'Export-SPI RT Form 6-PDF';
         $action = $username . ' has exported the SPI RT Form 6 PDF';
         $resourceName = 'SPI-RT-Form-6-PDF';
-        (new EventLogTable($this->adapter))->addEventLog($subject, $eventType, $action, $resourceName);
+        (new EventLogTable($this->db))->addEventLog($subject, $eventType, $action, $resourceName);
         $this->db->insert(self::TABLE, $downloadData);
         return (int) $this->db->lastInsertId();
     }

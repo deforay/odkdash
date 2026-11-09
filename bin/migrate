@@ -50,9 +50,9 @@ use PhpMyAdmin\SqlParser\TokenType;
 $services = ServiceDefinitions::container(getcwd());
 
 // db.driver and the DSN live in config/autoload/global.php, which is gitignored
-// and copied from global.dist.php during setup. When it is absent the adapter
-// factory throws "createDriver expects a driver key" with a Laminas stack trace
-// that says nothing about the real cause, so check for it here instead.
+// and copied from global.dist.php during setup. When it is absent the first
+// query fails with an error that says nothing about the real cause, so check
+// for it here instead.
 $mergedDb = $services->get('config')['db'] ?? [];
 if (!is_array($mergedDb) || !isset($mergedDb['driver'])) {
     $configDir = dirname(__DIR__) . '/config/autoload';

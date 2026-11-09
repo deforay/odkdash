@@ -4,30 +4,27 @@ declare(strict_types=1);
 
 namespace App\Db;
 
-use Laminas\Db\Adapter\Profiler\ProfilerInterface;
-use Laminas\Db\Adapter\StatementContainerInterface;
 use Psr\Log\AbstractLogger;
 use RuntimeException;
 use Stringable;
 
 /**
- * A development log of every SQL statement the app runs, through laminas-db
- * or DBAL, for comparing two versions of the code.
+ * A development log of every SQL statement the app runs, for comparing two
+ * versions of the code.
  *
  * It is off unless the ODKDASH_SQL_LOG environment variable names a file:
  *
  *     ODKDASH_SQL_LOG=/tmp/sql.log php -S 127.0.0.1:8765 -t public
  *
- * Each line is one JSON object: {"sql": "...", "params": {...}}. The
- * laminas-db adapter calls it as its profiler. DBAL calls it as the logger
- * of its logging middleware. Transaction and connection messages are not
- * written, so the log holds statements only.
+ * Each line is one JSON object: {"sql": "...", "params": {...}}. DBAL calls
+ * it as the logger of its logging middleware. Transaction and connection
+ * messages are not written, so the log holds statements only.
  *
  * Secrets are written as <redacted>: password hashes, literals next to a
  * password or secret column, and every string parameter of a statement
  * that names such a column. The file is kept readable by its owner only.
  */
-final class QueryLog extends AbstractLogger implements ProfilerInterface
+final class QueryLog extends AbstractLogger
 {
     /** A column name that holds a secret. */
     private const string SECRET_COLUMN = '\w*(?:password|secret|api_?key)\w*';
@@ -52,24 +49,7 @@ final class QueryLog extends AbstractLogger implements ProfilerInterface
         return is_string($file) && $file !== '' ? new self($file) : null;
     }
 
-    /** laminas-db: a query string, or a prepared statement with its parameters. */
-    public function profilerStart($target): self
-    {
-        if ($target instanceof StatementContainerInterface) {
-            $this->write($target->getSql(), $target->getParameterContainer()?->getNamedArray() ?? []);
-        } else {
-            $this->write((string) $target, []);
-        }
-
-        return $this;
-    }
-
-    public function profilerFinish(): self
-    {
-        return $this;
-    }
-
-    /** DBAL: only the messages that carry a statement. */
+    /** The messages of DBAL's logging middleware that carry a statement. */
     public function log($level, string|Stringable $message, array $context = []): void
     {
         if (isset($context['sql'])) {

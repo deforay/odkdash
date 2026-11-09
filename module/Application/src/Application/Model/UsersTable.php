@@ -3,12 +3,10 @@
 namespace Application\Model;
 
 use App\Db\DataTables;
-use App\Db\Dbal;
 use Application\Session\Container;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
@@ -17,13 +15,11 @@ use Application\Model\UserLocationMapTable;
 
 class UsersTable
 {
-    private readonly Adapter $adapter;
     private readonly Connection $db;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->adapter = $adapter;
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
 
@@ -32,7 +28,7 @@ class UsersTable
         $container = new Container('alert');
         $username = $params['username'];
 
-        $trackTable = new EventLogTable($this->adapter);
+        $trackTable = new EventLogTable($this->db);
         $sResult = $this->db->fetchAssociative(
             "SELECT u.*, urm.role_id, r.role_name, r.role_code
             FROM users u
@@ -345,8 +341,8 @@ class UsersTable
 
     public function logout($username)
     {
-        $dbAdapter = $this->adapter;
-        $trackTable = new EventLogTable($dbAdapter);
+        $dbConnection = $this->db;
+        $trackTable = new EventLogTable($dbConnection);
         $subject = '';
         $eventType = 'log-out';
         $action = $username . ' logged out';
@@ -492,7 +488,7 @@ class UsersTable
         }
         $userMappedIdsArray = null;
         $userMappingType = null;
-        foreach ((new UserLocationMapTable($this->adapter))->fetchSelectedLocation($userId) as $ulMap) {
+        foreach ((new UserLocationMapTable($this->db))->fetchSelectedLocation($userId) as $ulMap) {
             $userMappedIdsArray[] = $ulMap['location_id'];
             $userMappingType = $ulMap['mapping_type'];
         }
@@ -504,9 +500,9 @@ class UsersTable
 
     public function userEventLog($sResult)
     {
-        $dbAdapter = $this->adapter;
-        $gTable = new GlobalTable($dbAdapter);
-        $trackTable = new EventLogTable($dbAdapter);
+        $dbConnection = $this->db;
+        $gTable = new GlobalTable($dbConnection);
+        $trackTable = new EventLogTable($dbConnection);
         $loginContainer = new Container('credo');
         $scope = $this->scopeFor((int) $sResult['id'], (string) $sResult['role_code']);
 

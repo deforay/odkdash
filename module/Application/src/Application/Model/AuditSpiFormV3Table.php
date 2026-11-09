@@ -2,18 +2,16 @@
 
 namespace Application\Model;
 
-use App\Db\Dbal;
 use Doctrine\DBAL\Connection;
-use Laminas\Db\Adapter\Adapter;
 
 /** The change history of V3 audits, kept in audit_spi_form_v_3. */
 class AuditSpiFormV3Table
 {
     private readonly Connection $db;
 
-    public function __construct(private readonly Adapter $adapter)
+    public function __construct(Connection $db)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     public function fetchAllDetails($parameters)
@@ -22,7 +20,7 @@ class AuditSpiFormV3Table
         $response['auditColumns'] = $this->db->fetchAllAssociative($columnsSql, ['audit_spi_form_v_3']);
         $response['spiColumns'] = $this->db->fetchAllAssociative($columnsSql, ['spi_form_v_3']);
 
-        $audits = new SpiFormVer3Table($this->adapter);
+        $audits = new SpiFormVer3Table($this->db);
         $metaInstance = trim((string) ($parameters['metaInstance'] ?? ''));
         $response['currentRecord'] = $metaInstance !== '' ? $audits->fetchV3DetailsByMetaInstanceId($metaInstance) : false;
         // A mapped user sees the trail of an audit in their locations only.

@@ -2,11 +2,11 @@
 
 namespace Application\Model;
 
+use Doctrine\DBAL\Connection;
+
 use App\Db\DataTables;
-use App\Db\Dbal;
 use Application\Session\Container;
 use Application\I18n\Translator;
-use Laminas\Db\Adapter\Adapter;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
@@ -26,9 +26,9 @@ class SpiFormVer6Table
     private readonly \Doctrine\DBAL\Connection $db;
 
     /** $translator is optional: only the lists render text, and they get the container's. */
-    public function __construct(private readonly Adapter $adapter, private readonly ?Translator $translator = null)
+    public function __construct(Connection $db, private readonly ?Translator $translator = null)
     {
-        $this->db = Dbal::connection($adapter);
+        $this->db = $db;
     }
 
     private function translate(string $text): string
@@ -83,12 +83,12 @@ class SpiFormVer6Table
         }
         $failedDates = [];
 
-        $dbAdapter = $this->adapter;
+        $dbConnection = $this->db;
 
-        CommonService::saveFormDump($dbAdapter, $params);
+        CommonService::saveFormDump($dbConnection, $params);
 
         //get global values
-        $globalDB = new GlobalTable($dbAdapter);
+        $globalDB = new GlobalTable($dbConnection);
         $globalValue = $globalDB->getGlobalValue('approve_status');
         $approveStatus = $globalValue == 'yes' ? 'approved' : 'pending';
 
@@ -872,7 +872,7 @@ class SpiFormVer6Table
                     //$this->update($par, array('uuid' => $data["uuid"]));
                 }
                 if (!empty($currentFormId) && $currentFormId > 0) {
-                    $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+                    $facilityDb = new SpiRtFacilitiesTable($dbConnection);
                     // Link on ingest either way, so a pending audit is still visible
                     // to a mapped user. Only approval may create a new facility.
                     $facilityDb->addFacilityBasedOnForm($currentFormId, 6, $approveStatus == 'approved');
@@ -1774,7 +1774,7 @@ class SpiFormVer6Table
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $trackTable = new EventLogTable($this->adapter);
+        $trackTable = new EventLogTable($this->db);
         $where = [];
         $values = [];
         self::addEquals('spiv6.id', $id, $where, $values);
@@ -2242,8 +2242,8 @@ class SpiFormVer6Table
         if (trim($params['formId']) != "") {
             $sessionLogin = new Container('credo');
             $user_name = $sessionLogin->login;
-            $dbAdapter = $this->adapter;
-            $eventTable = new EventLogTable($dbAdapter);
+            $dbConnection = $this->db;
+            $eventTable = new EventLogTable($dbConnection);
             $formId = base64_decode($params['formId']);
             // Without corrective action rows in the post, the column stays NULL.
             $summationData = null;
@@ -2270,8 +2270,8 @@ class SpiFormVer6Table
 
             // update facility tbl
             $id = 0;
-            //$facilityDb = new SpiRt5FacilitiesTable($dbAdapter);
-            $facilityDb = new SpiRtFacilitiesTable($dbAdapter);
+            //$facilityDb = new SpiRt5FacilitiesTable($dbConnection);
+            $facilityDb = new SpiRtFacilitiesTable($dbConnection);
             if (trim($params['testingFacility']) != '') {
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id, $params);
@@ -2542,7 +2542,7 @@ class SpiFormVer6Table
             if ($result > 0) {
                 $loginContainer = new Container('credo');
                 $userName = $loginContainer->login ?? 'system';
-                $eventTable = new EventLogTable($this->adapter);
+                $eventTable = new EventLogTable($this->db);
 
                 $detail = $userName . ' deleted SPI-RRT record #' . $deleteId;
                 if ($before) {
@@ -3068,7 +3068,7 @@ class SpiFormVer6Table
 
     public function fetchV6DetailsByMetaInstanceId($metaInstantId)
     {
-        return Dbal::connection($this->adapter)->fetchAssociative(
+        return $this->db->fetchAssociative(
             'SELECT * FROM spi_form_v_6 WHERE `meta-instance-id` = ?',
             [$metaInstantId],
         );
