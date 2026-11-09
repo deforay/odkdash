@@ -11,8 +11,7 @@ class SessionStorage
 {
     /**
      * Empties every namespace and ends the session, which is what logout
-     * needs: Laminas' clear() on the storage wiped the whole session, not
-     * just the container that reached it.
+     * needs: the whole session, not only the container that reached it.
      */
     public function clear(): void
     {

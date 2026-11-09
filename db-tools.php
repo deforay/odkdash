@@ -3,7 +3,7 @@
 /**
  * db-tools configuration — read by vendor/bin/db-tools.
  *
- * Pulls DB credentials from the same Laminas autoload files the app uses
+ * Pulls DB credentials from the same config/autoload files the app uses
  * (config/autoload/global.php + local.php), so db-tools always targets the
  * exact database the running app talks to. No .env, no duplicated config.
  */
@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 $autoloadDir = __DIR__ . '/config/autoload';
 
-// Merge global + local the way Laminas would (later files win). global.php
+// Merge global + local. Later files win. global.php
 // is the gitignored per-environment file; global.dist.php is the template.
 // Either may be present at any given time on a freshly-cloned repo.
 $merged = [];

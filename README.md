@@ -1,7 +1,7 @@
 SPI RRT Dashboard Application
 =============================
 
-Laminas MVC application on PHP 8.4 or later, MySQL, and Apache.
+Slim 4 application on PHP 8.4 or later, MySQL, and Apache.
 
 ## Operational scripts
 

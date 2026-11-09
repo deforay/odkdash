@@ -13,8 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * The SPI-RT V6 audit pages. Actions that only answer POST render their
- * template inside the layout for any other method, as the Laminas actions
- * did by returning null.
+ * template inside the layout for any other method.
  */
 final class SpiV6Handler extends ActionHandler
 {
@@ -402,15 +401,15 @@ final class SpiV6Handler extends ActionHandler
         ]);
     }
 
-    /** What a Laminas action that returned null rendered. */
+    /** The action's template inside the layout, with no variables. */
     private function fallback(string $action): ResponseInterface
     {
         return $this->respond->page('application/spi-v6/' . $action);
     }
 
     /**
-     * The filters the dashboards pass in the query string. Laminas read each
-     * with fromQuery() and kept it only when truthy.
+     * The filters the dashboards pass in the query string. A filter that is
+     * empty, "0" or absent is "".
      *
      * @return array{source: mixed, roundno: mixed, drange: mixed, level: mixed}
      */

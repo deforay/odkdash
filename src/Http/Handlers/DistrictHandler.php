@@ -45,8 +45,7 @@ final class DistrictHandler extends ActionHandler
             return $this->respond->redirect('district');
         }
 
-        // The edit page reads the district from the provinces lookup, as
-        // the Laminas controller did.
+        // The edit page reads the district from the provinces lookup.
         $id = base64_decode((string) $this->routeParam($request, 'id'));
         return $this->respond->page('application/district/edit', [
             'result' => $this->provinceService->getProvince($id),

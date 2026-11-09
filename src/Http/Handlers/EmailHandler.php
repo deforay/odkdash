@@ -94,7 +94,7 @@ final class EmailHandler extends ActionHandler
 
     /**
      * Reloads the page with base64("<email id>#<audit id>#...") in the URL.
-     * The path has no base path, as in the Laminas controller.
+     * The path has no base path.
      */
     private function afterSending(mixed $tempId, Parameters $params, string $path): ResponseInterface
     {

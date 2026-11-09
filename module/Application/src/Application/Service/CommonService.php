@@ -678,7 +678,7 @@ class CommonService
      */
     public static function jsonEncode(mixed $data, int $options = 0, int $depth = 512): string
     {
-        // Default to Laminas-like behavior (escape <, >, &, ', " and throw on error)
+        // Escape <, >, &, ' and ", and throw on error.
         $options |= JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_THROW_ON_ERROR;
 
         return json_encode($data, $options, $depth);

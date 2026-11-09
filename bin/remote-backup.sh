@@ -1134,11 +1134,6 @@ restore_from() {
   verify_database_restored \
     || fail "The restore reported success but ${DB_NAME} holds no tables. What was there before is in ${safety}."
 
-  # The merged config cache is written to data/cache by Laminas. Where a
-  # deployment has turned it on, a stale copy holds the credentials from before
-  # the restore. Drop it and let the next request rebuild it.
-  rm -f "${APP_PATH}"/data/cache/*.php 2>/dev/null || true
-
   print success "Restored the backup taken at ${run}"
   print info    "Fetched copy   : ${local_copy}"
   print info    "Previous state : ${safety}"

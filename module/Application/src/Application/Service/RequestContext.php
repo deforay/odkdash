@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
  * timeline later.
  *
  * Reads $_SERVER directly because addEventLog is called from deep in the
- * model layer where the Laminas Request object isn't reachable.
+ * model layer, where the request object is not reachable.
  *
  * session_hash is sha256(session_id()) — a stable correlation key that
  * survives CGNAT (where many users share one public IP) without storing

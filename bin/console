@@ -6,11 +6,6 @@ declare(strict_types=1);
 /**
  * Console runner for odkdash.
  *
- * Replaces vendor/bin/laminas. The commands were always plain Symfony
- * Console classes; laminas-cli supplied only three things — a container, a
- * command loader, and the binding of a name to a class — and all three fit
- * in this file.
- *
  * Commands are declared under the 'console' key in
  * module/Application/config/module.config.php, mapping a command name to a
  * class ServiceDefinitions can build.
@@ -36,8 +31,8 @@ $services = ServiceDefinitions::container(getcwd());
 $commands = $services->get('config')['console']['commands'] ?? [];
 
 // Lazy, so a single command run does not construct the other five and their
-// database adapters. The name lives in the config map rather than on the
-// class — as it did under laminas-cli — so it is bound at construction.
+// database connections. The name lives in the config map rather than on the
+// class, so it is bound at construction.
 $factories = [];
 foreach ($commands as $name => $class) {
     $factories[$name] = static function () use ($services, $class, $name): Command {

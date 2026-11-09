@@ -164,17 +164,17 @@ fi
 # pointers name the code.
 CONTEXT="Before reviewing, read these for the rules this codebase is held to:
 - docs/engineering-standards.md — the bar, and what counts as a finding
-- module/Application/Module.php — service wiring, and the onBootstrap gate that checks
-  every route against the role allow-list
+- src/Http/Middlewares/AccessMiddleware.php — the gate that checks every route against
+  the role allow-list
 - module/Application/src/Application/Model/Acl.php — that allow-list
-- module/Application/src/Application/Model/SpiFormVer6Table.php — applyV6LocationScope:
+- module/Application/src/Application/Model/SpiFormVer6Table.php — addLocationScope:
   how a user mapped to countries, provinces or districts is kept to their own audits
 - module/Application/src/Application/Service/CommonService.php — escapeHtml, the helper
   every ODK submission value passes through before it reaches a grid cell or a PDF
 - migrations/README.md and bin/migrate — every schema change belongs in migrations/, must
   replay on a fresh install, and comes with a version bump in composer.json
-- module/Application/config/module.config.php — routes, and the console commands under
-  the 'console' key
+- src/Http/Routes/Application.php — the routes, with their ACL resources
+- module/Application/config/module.config.php — the console commands under the 'console' key
 
 A finding is a defect with a failure scenario: concrete inputs or state, and the wrong
 output or lost data that results. A deliberate trade-off already recorded in these

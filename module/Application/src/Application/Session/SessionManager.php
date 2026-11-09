@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Application\Session;
 
 /**
- * The small part of Laminas\Session\SessionManager the application used:
- * getStorage()->clear() at logout. Kept as two objects rather than collapsed
- * into one so the call site reads as it did before.
+ * Gives logout its getStorage()->clear() call.
  */
 class SessionManager
 {

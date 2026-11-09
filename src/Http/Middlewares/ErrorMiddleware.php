@@ -16,12 +16,11 @@ use Slim\Exception\HttpNotFoundException;
 use Throwable;
 
 /**
- * Turns exceptions into the error pages Laminas showed, and logs the
- * unexpected ones to the app log as Module::onBootstrap does.
+ * Turns exceptions into the error pages, and logs the unexpected ones to the
+ * app log.
  *
  * A missing action renders error/404 and any other exception renders
- * error/index, both inside the layout, with the variables the Laminas
- * strategies set. Exception details appear only when
+ * error/index, both inside the layout. Exception details appear only when
  * view_manager.display_exceptions is on. If the error page itself fails,
  * the response is the bare status code.
  */

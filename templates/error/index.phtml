@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @var Laminas\View\Renderer\PhpRenderer $this
+ * @var \App\View\Template $this
  *
  * Server error page. With `view_manager.display_exceptions` off (the default
  * in production) this shows a friendly fallback and nothing else — the
- * exception is already captured by the Logger listener wired in
- * Module::onBootstrap, so admins can find the full trace in var/log/.
+ * exception is already logged by ErrorMiddleware, so admins can find the full
+ * trace in var/log/.
  *
  * Override `display_exceptions => true` in config/autoload/local.php during
  * development to see the full stack inline.

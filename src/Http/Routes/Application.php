@@ -3,20 +3,17 @@
 declare(strict_types=1);
 
 /**
- * Slim routes for the Application module, keyed by their Laminas route
- * names.
+ * Slim routes for the Application module, keyed by route name.
  *
- * Each entry is the route's entry in module.config.php with a handler
- * added, so moving a route is a copy:
+ * Each entry has these keys:
  *
- * - route: the Laminas segment pattern. URLs are built from it as Laminas
- *   built them. Kernel::SLIM_TAILS turns it into the Slim pattern.
- * - defaults: as in Laminas. defaults.controller is the ACL resource, the
- *   value Module::preSetter() checked. defaults.action is the action, and
- *   the privilege, when the URL names none.
+ * - route: the segment pattern, such as /roles[/:action][/][:id]. SlimUrls
+ *   builds URLs from it. Kernel::SLIM_TAILS turns it into the Slim pattern.
+ * - defaults: defaults.controller is the ACL resource. defaults.action is
+ *   the action, and the privilege, when the URL names none.
  * - handler: the class that serves the route. Without one, the name is
  *   registered for URL building only.
- * - slim: the Slim pattern, for the rare route whose Laminas pattern
+ * - slim: the Slim pattern, for the rare route whose segment pattern
  *   Kernel::SLIM_TAILS cannot express. See "home".
  * - public: true for a route that needs no login. Only the landing page and
  *   the login page are public.
@@ -200,8 +197,8 @@ return [
         'defaults' => ['controller' => 'Application\\Controller\\LoginController', 'action' => 'index'],
         'public' => true,
     ],
-    // The public landing page. Its Laminas pattern also matched any single
-    // path segment, such as /index or /foo. That segment became the id. The
+    // The public landing page. Its segment pattern also matches any single
+    // path segment, such as /index or /foo. That segment becomes the id. The
     // Slim pattern matches the same paths. It must stay last: FastRoute
     // refuses a fixed path such as /login declared after /{id}.
     'home' => [
