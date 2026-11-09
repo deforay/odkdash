@@ -4954,7 +4954,8 @@ class OdkFormService
             $book->addRow($fieldNames);
             foreach ($rows as $aRow) {
                 $count++;
-                $scorePer = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']));
+                // The audit dates source selects no score.
+                $scorePer = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE'] ?? 0));
                 $row = [];
                 $level = null;
                 if ($source == 'hv' || $source == 'la' || $source == 'apall' || $source == 'apl180' || $source == 'ap') {
