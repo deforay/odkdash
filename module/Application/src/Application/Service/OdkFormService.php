@@ -5035,8 +5035,8 @@ class OdkFormService
             }
             $book->close();
             $subject = '';
-            $eventType = 'Export-' . $headerRow;
-            $action = $username . ' has exported ' . $headerRow;
+            $eventType = 'Export-' . ($headerRow[0] ?? 'Audits');
+            $action = $username . ' has exported ' . ($headerRow[0] ?? 'Audits');
             $resourceName = 'Export-view-data-v6';
             $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
             return $filename;
