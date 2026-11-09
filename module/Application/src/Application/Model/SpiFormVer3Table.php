@@ -1956,7 +1956,6 @@ class SpiFormVer3Table
             $user_name = $sessionLogin->login;
             $dbAdapter = $this->adapter;
             $eventTable = new EventLogTable($dbAdapter);
-            $sql = new Sql($this->adapter);
             $formId = base64_decode($params['formId']);
             // Without corrective action rows in the post, the column stays NULL.
             $summationData = null;
@@ -1992,11 +1991,10 @@ class SpiFormVer3Table
                 $id = base64_decode($params['testingFacility']);
                 $facilityDb->updateFacilityInfo($id, $params);
             } elseif (trim($params['testingFacilityName']) != '') {
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('id'))
-                    ->where(['spirt3.facility_name' => $params['testingFacilityName']]);
-                $fQueryStr = $sql->buildSqlString($fQuery);
-                $fResult = $this->db->fetchAssociative($fQueryStr);
+                $fResult = $this->db->fetchAssociative(
+                    'SELECT spirt3.id AS id FROM spi_rt_3_facilities AS spirt3 WHERE spirt3.facility_name = ?',
+                    [$params['testingFacilityName']]
+                );
                 if ($fResult) {
                     $id = $fResult['id'];
                     $facilityDb->updateFacilityInfo($id, $params);
@@ -2169,13 +2167,12 @@ class SpiFormVer3Table
         $userName = $loginContainer->login;
         $dbAdapter = $this->adapter;
         $auditTable = new EventLogTable($dbAdapter);
-        $sql = new Sql($this->adapter);
         $facilityDb = new SpiRtFacilitiesTable($this->adapter);
         if (isset($params['editFacilityName']) && trim($params['editFacilityName']) != '') {
-            $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
-                ->where(array('spirt3.facility_name' => $params['defaultFacilityName']));
-            $facilityQueryStr = $sql->buildSqlString($facilityQuery);
-            $facilityResult = $this->db->fetchAssociative($facilityQueryStr);
+            $facilityResult = $this->db->fetchAssociative(
+                'SELECT spirt3.facility_name AS facility_name FROM spi_rt_3_facilities AS spirt3 WHERE spirt3.facility_name = ?',
+                [$params['defaultFacilityName']]
+            );
             if ($facilityResult) {
                 $data = array(
                     'facility_id' => $params['facilityId'],
@@ -2184,10 +2181,10 @@ class SpiFormVer3Table
                 $facilityDb->update($data, array('facility_name' => $params['defaultFacilityName']));
             }
 
-            $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname'))
-                ->where(array('spiv3.facilityname' => $params['defaultFacilityName']));
-            $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $this->db->fetchAssociative($aQueryStr);
+            $aResult = $this->db->fetchAssociative(
+                'SELECT spiv3.facilityname AS facilityname FROM spi_form_v_3 AS spiv3 WHERE spiv3.facilityname = ?',
+                [$params['defaultFacilityName']]
+            );
             if ($aResult) {
                 $data = array(
                     'facilityid' => $params['facilityId'],
@@ -2198,10 +2195,10 @@ class SpiFormVer3Table
         }
         $c = count($params['upFaciltyName']);
         for ($i = 0; $i < $c; $i++) {
-            $aQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname', 'id'))
-                ->where(array('spiv3.facilityname' => $params['upFaciltyName'][$i]));
-            $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $this->db->fetchAllAssociative($aQueryStr);
+            $aResult = $this->db->fetchAllAssociative(
+                'SELECT spiv3.facilityname AS facilityname, spiv3.id AS id FROM spi_form_v_3 AS spiv3 WHERE spiv3.facilityname = ?',
+                [$params['upFaciltyName'][$i]]
+            );
             //error_log($aQueryStr);
             if (count($aResult) > 0) {
                 $counter = count($aResult);
@@ -2215,10 +2212,10 @@ class SpiFormVer3Table
             }
 
             //Update status in Facility table
-            $facilityQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))->columns(array('facility_name'))
-                ->where(array('spirt3.facility_name' => $params['upFaciltyName'][$i]));
-            $facilityQueryStr = $sql->buildSqlString($facilityQuery);
-            $facilityResult = $this->db->fetchAssociative($facilityQueryStr);
+            $facilityResult = $this->db->fetchAssociative(
+                'SELECT spirt3.facility_name AS facility_name FROM spi_rt_3_facilities AS spirt3 WHERE spirt3.facility_name = ?',
+                [$params['upFaciltyName'][$i]]
+            );
             if ($facilityResult) {
                 $facilityDb->update(array('status' => 'deleted'), array('facility_name' => $params['upFaciltyName'][$i]));
             }
@@ -2958,14 +2955,13 @@ class SpiFormVer3Table
     public function addValidateSpiv3Data($params)
     {
         $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $vId = explode(",", $params['validateId']);
+        $vId = CommonService::inList(explode(",", $params['validateId']));
         // Only rows whose instance ID is new, the rows the page lists. Adding a
         // stored one would make a duplicate audit.
-        $newQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3_temp'))
-            ->where(['spiv3.id' => CommonService::inList($vId), 'spiv3.spi_data_status' => 0]);
-        $newQueryStr = $sql->buildSqlString($newQuery); // Get the string of the Sql, instead of the Select-instance
-        $totalResult = $this->db->fetchAllAssociative($newQueryStr);
+        $totalResult = $this->db->fetchAllAssociative(
+            'SELECT spiv3.* FROM spi_form_v_3_temp AS spiv3 WHERE spiv3.id IN (' . self::placeholders($vId) . ') AND spiv3.spi_data_status = ?',
+            [...$vId, 0]
+        );
         if ($totalResult) {
             foreach ($totalResult as $newResult) {
                 if (isset($newResult['testingpointname']) && trim($newResult['testingpointname']) == "") {
