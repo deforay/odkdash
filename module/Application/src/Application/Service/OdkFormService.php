@@ -25,7 +25,7 @@ use Application\Service\CommonService;
 use Application\Model\SpiFormVer3Table;
 use Application\Model\SpiFormVer6Table;
 use Application\Model\SpiRtFacilitiesTable;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Import\SheetRows;
 
 class OdkFormService
 {
@@ -1236,42 +1236,39 @@ class OdkFormService
         $ranNumber = str_pad(rand(0, pow(10, 6) - 1), 6, '0', STR_PAD_LEFT);
         $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         $fileName = $ranNumber . "." . $extension;
+        if (!in_array($extension, SheetRows::EXTENSIONS, true)) {
+            return;
+        }
         $importFolder = CommonService::privateUploadFolder('import-files');
         if (!file_exists($importFolder . DIRECTORY_SEPARATOR . $fileName) && move_uploaded_file($_FILES['fileName']['tmp_name'], $importFolder . DIRECTORY_SEPARATOR . $fileName)) {
             $db->deleteAll();
-            $spreadsheet = IOFactory::load($importFolder . DIRECTORY_SEPARATOR . $fileName);
-            $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
-            $highestColumm = $spreadsheet->getActiveSheet()->getHighestColumn();
-            //$highestColumnIndex = Coordinate::columnIndexFromString($highestColumm);
-
-            $rownumber = 1;
-            $rowIterator = $spreadsheet->getActiveSheet()->getRowIterator($rownumber);
-            $row = $rowIterator->current();
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(false);
+            $rows = SheetRows::read($importFolder . DIRECTORY_SEPARATOR . $fileName, $extension);
+            // A heading such as "meta:instanceID" names the column instanceID.
             $headerName = [];
-            foreach ($cellIterator as $cell) {
-                $header = explode(":", $cell->getValue());
+            foreach ($rows->current() ?? [] as $heading) {
+                $header = explode(":", (string) $heading);
                 $headerName[] = end($header);
             }
-            $count = count($sheetData);
+            $rows->next();
             $findInstancePosition = array_search('instanceID', $headerName);
             $findStartPosition = array_search('start', $headerName);
             $findEndPosition = array_search('end', $headerName);
             $findAuditSignPosition = array_search('auditorSignature', $headerName);
             $findAssesmentOfAuditPosition = array_search('assesmentofaudit', $headerName);
-            for ($i = 2; $i <= $count; $i++) {
-                $row = $spreadsheet->getActiveSheet()->getRowIterator($i)->current();
-                $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(false);
-                $inc = 0;
+            for (; $rows->valid(); $rows->next()) {
+                $cells = $rows->current();
+                // A blank line stages nothing.
+                if (array_filter($cells, static fn($cell) => $cell !== null) === []) {
+                    continue;
+                }
                 $validateData = 0;
-                foreach ($cellIterator as $cell) {
-                    $value = $cell->getValue();
-                    if ($inc == $findStartPosition || $inc == $findEndPosition && trim($cell->getValue()) != '') {
-                        $dValue = explode(" ", trim($cell->getValue()));
+                foreach (array_keys($headerName) as $inc) {
+                    $raw = $cells[$inc] ?? null;
+                    $value = $raw;
+                    if ($inc == $findStartPosition || $inc == $findEndPosition && trim($raw) != '') {
+                        $dValue = explode(" ", trim($raw));
                         if (count($dValue) == 2) {
-                            $value = trim($cell->getValue());
+                            $value = trim($raw);
                         } else {
                             $originalDate = $dValue[5] . "-" . $dValue[1] . "-" . $dValue[2];
                             $newDate = date("Y-m-d", strtotime($originalDate));
@@ -1279,10 +1276,10 @@ class OdkFormService
                         }
                     }
                     if ($inc == $findAssesmentOfAuditPosition) {
-                        if (trim($cell->getValue()) != '') {
-                            $dValue = explode(" ", trim($cell->getValue()));
+                        if (trim($raw) != '') {
+                            $dValue = explode(" ", trim($raw));
                             if (count($dValue) == 2) {
-                                $value = trim($cell->getValue());
+                                $value = trim($raw);
                             } else {
                                 $originalDate = $dValue[5] . "-" . $dValue[1] . "-" . $dValue[2];
                                 $newDate = date("Y-m-d", strtotime($originalDate));
@@ -1291,12 +1288,12 @@ class OdkFormService
                         } else {
                             $value = '0000:00:00';
                         }
-                    } elseif ($inc == $findAuditSignPosition && trim($cell->getValue() != '')) {
-                        $auditorSign = array('url' => $cell->getValue());
+                    } elseif ($inc == $findAuditSignPosition && trim($raw != '')) {
+                        $auditorSign = array('url' => $raw);
                         $value = json_encode($auditorSign);
                     }
                     if ($inc == $findInstancePosition) {
-                        $validateResult = $connection->fetchOne('SELECT 1 FROM spi_form_v_3 WHERE instanceID = ? LIMIT 1', [trim($cell->getValue())]);
+                        $validateResult = $connection->fetchOne('SELECT 1 FROM spi_form_v_3 WHERE instanceID = ? LIMIT 1', [trim($raw)]);
                         if ($validateResult) {
                             $validateData = 1; //exist meta instance id
                         } else {
@@ -1304,7 +1301,6 @@ class OdkFormService
                         }
                     }
                     $spiv3FormData[$headerName[$inc]] = $value;
-                    $inc++;
                 }
                 $spiv3FormData['spi_data_status'] = $validateData;
                 $db->insert($spiv3FormData);

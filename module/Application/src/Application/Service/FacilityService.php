@@ -6,7 +6,9 @@ use Application\Session\Container;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
 use App\Export\FacilityReport;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Export\Workbook;
+use App\Import\SheetRows;
+use OpenSpout\Common\Entity\Style\Style;
 
 class FacilityService
 {
@@ -370,19 +372,23 @@ class FacilityService
                 $facilitiesFolder = CommonService::privateUploadFolder('facilities');
 
                 $extension = strtolower(pathinfo($_FILES['facilitiesInfo']['name'], PATHINFO_EXTENSION));
+                if (!in_array($extension, SheetRows::EXTENSIONS, true)) {
+                    $container->alertMsg = $this->sm->get('translator')->translate('Upload an .xlsx, .ods or .csv file');
+                    return "";
+                }
                 $fileName = CommonService::generateRandomString(5) . "." . $extension;
 
                 if (move_uploaded_file($_FILES["facilitiesInfo"]["tmp_name"], $facilitiesFolder . DIRECTORY_SEPARATOR . $fileName)) {
 
                     $uploadedFilePath = $facilitiesFolder . DIRECTORY_SEPARATOR . $fileName;
-                    $spreadsheet = IOFactory::load($uploadedFilePath);
-                    $sheetData = $spreadsheet->getActiveSheet();
-
-                    $dataArray = $sheetData->toArray(null, true, true, true);
-                    $resultArray = array_slice($dataArray, 1);
-                    $filteredArray = array_filter($resultArray, function ($row) {
-                        return !empty(array_filter($row)); // Remove empty rows
-                    });
+                    // Each row keyed by column letter, A to H, after the heading row.
+                    $filteredArray = [];
+                    foreach (SheetRows::read($uploadedFilePath, $extension) as $index => $cells) {
+                        $row = array_combine(range('A', 'H'), array_pad(array_slice($cells, 0, 8), 8, null));
+                        if ($index > 0 && !empty(array_filter($row))) {
+                            $filteredArray[] = $row;
+                        }
+                    }
                     $total = count($filteredArray);
                     $facilityNotAdded = [];
 
@@ -470,15 +476,15 @@ class FacilityService
 
                     $notAdded = count($facilityNotAdded);
                     if ($notAdded > 0) {
-                        $spreadsheet = IOFactory::load(WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx');
-                        $sheet = $spreadsheet->getActiveSheet();
-                        foreach ($facilityNotAdded as $rowNo => $dataValue) {
-                            $rRowCount = $rowNo + 2;
-                            $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
-                        }
-                        $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
+                        // The upload template's heading row, then the rows not added.
+                        $template = WEB_ROOT . '/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx';
                         $incorrectRowsFile = 'INCORRECT-FACILITY-ROWS-' . date('d-M-Y-H-i-s') . '.xlsx';
-                        $writer->save(CommonService::downloadFile($incorrectRowsFile));
+                        $book = new Workbook(CommonService::downloadFile($incorrectRowsFile));
+                        $book->addRow(SheetRows::read($template, 'xlsx')->current(), (new Style())->withFontBold(true));
+                        foreach ($facilityNotAdded as $dataValue) {
+                            $book->addRow($dataValue);
+                        }
+                        $book->close();
                     }
 
                     $container->alertMsg = 'Facilities added successfully';
