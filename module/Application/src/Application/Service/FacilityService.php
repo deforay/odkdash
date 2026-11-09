@@ -18,11 +18,6 @@ class FacilityService
         $this->sm = $sm;
     }
 
-    public function getServiceManager()
-    {
-        return $this->sm;
-    }
-
     public function addFacility($params)
     {
         $loginContainer = new Container('credo');
@@ -100,12 +95,6 @@ class FacilityService
     {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
         return $facilityDb->fetchFacility($id);
-    }
-
-    public function getFacilityList($val)
-    {
-        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fetchFacilityList($val);
     }
 
     public function addEmail($params)
@@ -312,18 +301,6 @@ class FacilityService
         }
         return $result;
     }
-
-    public function getProvinceList()
-    {
-        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fetchProvinceList();
-    }
-    public function getDistrictList()
-    {
-        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fetchDistrictList();
-    }
-
     public function mapProvince($params)
     {
         $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
@@ -450,11 +427,6 @@ class FacilityService
 
             return "";
         }
-    }
-    public function getProvinceData($searchStr)
-    {
-        $facilityDb = $this->sm->get('SpiRtFacilitiesTable');
-        return $facilityDb->fecthProvinceData($searchStr);
     }
     public function getDistrictData($searchStr)
     {

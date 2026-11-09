@@ -305,19 +305,6 @@ class SpiRtFacilitiesTable
         return $this->facilityById((int) $id);
     }
 
-    public function fetchFacilityList($strSearch)
-    {
-        $rows = $this->db->fetchAllAssociative(
-            'SELECT id, facility_name FROM spi_rt_3_facilities WHERE facility_name LIKE ?',
-            ['%' . $strSearch . '%']
-        );
-        $echoResult = [];
-        foreach ($rows as $row) {
-            $echoResult[] = ["id" => $row['id'], "name" => ucwords($row['facility_name'])];
-        }
-        return ["result" => $echoResult];
-    }
-
     public function updateFacilityInfo($id, $params)
     {
         if ($id > 0) {
@@ -353,11 +340,6 @@ class SpiRtFacilitiesTable
     public function fetchFacilityProfileByAuditV6($ids)
     {
         return $this->facilityProfile($ids, 'spi_form_v_6', 'id, assesmentofaudit');
-    }
-
-    public function fetchProvinceList()
-    {
-        return $this->db->fetchAllAssociative('SELECT DISTINCT province AS name FROM spi_rt_3_facilities');
     }
 
     public function fetchDistrictList()
@@ -417,13 +399,6 @@ class SpiRtFacilitiesTable
         return $result;
     }
 
-    public function fecthProvinceData($searchStr)
-    {
-        if (trim($searchStr) != "") {
-            return $this->matchingValues('province', $searchStr);
-        }
-    }
-
     public function fecthDistrictData($searchStr)
     {
         if (trim($searchStr) != "") {
@@ -435,15 +410,6 @@ class SpiRtFacilitiesTable
     public function fetchFacilityDetails($params): ?\ArrayObject
     {
         return $this->facilityById((int) base64_decode($params['id']));
-    }
-
-    public function fetchAllProvince()
-    {
-        return $this->db->fetchAllAssociative(
-            "SELECT DISTINCT province FROM spi_rt_3_facilities
-            WHERE province NOT LIKE '' AND province IS NOT NULL
-            ORDER BY province ASC"
-        );
     }
 
     /** Every district the facilities of the picked provinces have. No province picked means every district. */

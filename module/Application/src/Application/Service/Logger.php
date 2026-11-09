@@ -57,11 +57,6 @@ final class Logger
         $this->log(Level::Error, $message, $context);
     }
 
-    public function critical(string $message, array $context = []): void
-    {
-        $this->log(Level::Critical, $message, $context);
-    }
-
     /**
      * Log a Throwable with full class, message, file:line, and trace.
      */

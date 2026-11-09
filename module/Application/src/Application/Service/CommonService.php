@@ -14,7 +14,6 @@ use RecursiveDirectoryIterator;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\Part\DataPart;
 use Hackzilla\PasswordGenerator\Generator\RequirementPasswordGenerator;
 use ArchiveUtil\ArchiveUtility;
 
@@ -30,11 +29,6 @@ class CommonService
             throw new Exception("Service Manager cannot be null");
         }
         $this->sm = $sm;
-    }
-
-    public function getServiceManager()
-    {
-        return $this->sm;
     }
 
     public static function generateRandomString($length = 32)
@@ -153,20 +147,6 @@ class CommonService
 
             return (new DateTimeImmutable($date))->format($format);
         }
-    }
-
-    public function insertTempMail($to, $subject, $message, $fromMail, $fromName, $cc, $bcc)
-    {
-        $tempmailDb = $this->sm->get('TempMailTable');
-        return $tempmailDb->insertTempMailDetails(
-            toEmailAddress: $to,
-            cc: $cc,
-            subject: $subject,
-            message: $message,
-            fromName: $fromName,
-            fromEmailAddress: $fromMail,
-            bcc: $bcc,
-        );
     }
 
     public function sendTempMail()
@@ -332,11 +312,6 @@ class CommonService
         return self::getDateTime('Y-m-d', $timezone);
     }
 
-    public static function getCurrentTime($timezone = null)
-    {
-        return self::getDateTime('H:i', $timezone);
-    }
-
     public function getAllConfig($params)
     {
         $configDb = $this->sm->get('GlobalTable');
@@ -376,45 +351,6 @@ class CommonService
             }
             error_log($exc->getMessage());
             error_log($exc->getTraceAsString());
-        }
-    }
-
-    public function dbBackup()
-    {
-        try {
-            $configResult = include(CONFIG_PATH . '/autoload/local.php');
-            $dbUsername = $configResult["db"]["username"];
-            $dbPassword = $configResult["db"]["password"];
-            $dbName = $configResult["db"]["data-base-name"];
-            $dbHost = $configResult["db"]["data-base-host"];
-            $folderPath = BACKUP_PATH . DIRECTORY_SEPARATOR;
-
-            if (!file_exists($folderPath) && !is_dir($folderPath)) {
-                mkdir($folderPath);
-            }
-            $currentDate = date("d-m-Y-H-i-s");
-            $file = $folderPath . 'odkdash-dbdump-' . $currentDate . '.sql';
-            $command = sprintf("mysqldump -h %s -u %s --password='%s' -d %s --skip-no-data > %s", $dbHost, $dbUsername, $dbPassword, $dbName, $file);
-            exec($command);
-
-            $days = 30;
-            if (is_dir($folderPath)) {
-                $dh = opendir($folderPath);
-                while (($oldFileName = readdir($dh)) !== false) {
-                    if ($oldFileName == 'index.php' || $oldFileName == "." || $oldFileName == ".." || $oldFileName == "") {
-                        continue;
-                    }
-                    $file = $folderPath . $oldFileName;
-                    if (time() - filemtime($file) > (86400) * $days) {
-                        unlink($file);
-                    }
-                }
-                closedir($dh);
-            }
-        } catch (\Exception $exc) {
-            error_log($exc->getMessage());
-            error_log($exc->getTraceAsString());
-            error_log('whoops! Something went wrong in cron/dbBackup');
         }
     }
 
@@ -510,18 +446,6 @@ class CommonService
             }
         }
         rmdir($dir);
-    }
-
-    public static function smartUrlEncode($string)
-    {
-        // Check if the string is already URL-encoded.
-        if (urlencode(urldecode($string)) === $string) {
-            // The string is already URL-encoded, return as is.
-            return $string;
-        } else {
-            // The string is not URL-encoded, encode it.
-            return urlencode($string);
-        }
     }
 
     public static function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $sm = null)

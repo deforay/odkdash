@@ -3085,9 +3085,4 @@ class SpiFormVer6Table
         }
         return $id;
     }
-
-    public function fetchSpiV6FormUniqueLevels()
-    {
-        return $this->db->fetchAllAssociative("SELECT DISTINCT level AS level FROM spi_form_v_6 WHERE level != '' ORDER BY level ASC");
-    }
 }

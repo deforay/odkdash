@@ -17,11 +17,6 @@ class UserService
         $this->usersTable = $usersTable;
     }
 
-    public function getServiceManager()
-    {
-        return $this->sm;
-    }
-
     public function login($params)
     {
         $configResult = $this->sm->get('Config');

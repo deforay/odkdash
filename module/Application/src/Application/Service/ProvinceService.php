@@ -13,10 +13,6 @@ class ProvinceService {
         $this->sm = $sm;
     }
 
-    public function getServiceManager() {
-        return $this->sm;
-    }
-
     public function addProvince($params) {
         $db = $this->sm->get(Connection::class);
         $db->beginTransaction();

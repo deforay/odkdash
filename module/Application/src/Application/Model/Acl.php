@@ -125,11 +125,6 @@ class Acl
         return isset($this->resources[(string) $resource]);
     }
 
-    public function hasRole($role): bool
-    {
-        return isset($this->roles[(string) $role]);
-    }
-
     /**
      * A role with a blanket allow still needs the resource to be registered,
      * matching Laminas, where isAllowed() resolved the resource before it

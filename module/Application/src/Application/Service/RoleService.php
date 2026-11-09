@@ -13,10 +13,6 @@ class RoleService {
         $this->sm = $sm;
     }
 
-    public function getServiceManager() {
-        return $this->sm;
-    }
-
     public function addRoles($params) {
         $db = $this->sm->get(Connection::class);
         $db->beginTransaction();
