@@ -55,6 +55,84 @@ class SpiFormVer3Table
     }
 
     /**
+     * The user's location mapping as SQL on an audit query aliased spiv3, as
+     * applyV3LocationScope() applies it. Adds the condition to $where and
+     * its values to $values, and returns the join to append. Adds nothing
+     * when the user has no mapping. A mapping type this code does not know
+     * matches nothing.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addLocationScope(Container $loginContainer, array &$where, array &$values): string
+    {
+        if (empty($loginContainer->userMappedIds) || !is_array($loginContainer->userMappedIds) || $loginContainer->userMappingType == '') {
+            return '';
+        }
+        $column = match ($loginContainer->userMappingType) {
+            'country', 'province', 'district' => 'fm.' . $loginContainer->userMappingType,
+            default => null,
+        };
+        if ($column === null) {
+            $where[] = '1 = 0';
+            return '';
+        }
+        $ids = CommonService::inList($loginContainer->userMappedIds);
+        $where[] = $column . ' IN (' . self::placeholders($ids) . ')';
+        array_push($values, ...$ids);
+        return ' INNER JOIN spi_rt_3_facilities AS fm ON fm.id = spiv3.facility';
+    }
+
+    /**
+     * The user's token rule: audits whose token the user holds. Adds nothing
+     * when the user holds no token.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addTokenRule(Container $loginContainer, array &$where, array &$values): void
+    {
+        if (empty($loginContainer->token)) {
+            return;
+        }
+        $tokens = CommonService::inList($loginContainer->token);
+        $where[] = 'spiv3.token IN (' . self::placeholders($tokens) . ')';
+        array_push($values, ...$tokens);
+    }
+
+    /**
+     * The token rule and the location mapping together, as most audit
+     * queries apply them. Returns the join to append.
+     *
+     * @param list<string> $where
+     * @param list<mixed> $values
+     */
+    private static function addUserScope(array &$where, array &$values): string
+    {
+        $loginContainer = new Container('credo');
+        self::addTokenRule($loginContainer, $where, $values);
+        return self::addLocationScope($loginContainer, $where, $values);
+    }
+
+    /** " WHERE a AND b", or '' when there is no condition. */
+    private static function whereSql(array $where): string
+    {
+        return $where === [] ? '' : ' WHERE ' . implode(' AND ', $where);
+    }
+
+    /** "?, ?, ?" for each of $values. */
+    private static function placeholders(array $values): string
+    {
+        return implode(', ', array_fill(0, count($values), '?'));
+    }
+
+    /** DESC when the caller asks for it, else ASC. */
+    private static function direction(mixed $sortOrder): string
+    {
+        return strtoupper(trim((string) $sortOrder)) === 'DESC' ? 'DESC' : 'ASC';
+    }
+
+    /**
      * Whether the signed-in user sees every audit: no token and no location
      * mapping, as a Super Admin. auditInScope() passes every audit for them.
      */
@@ -82,16 +160,10 @@ class SpiFormVer3Table
         if (self::seesEveryAudit()) {
             return true;
         }
-        $loginContainer = new Container('credo');
-        $hasTokens = !empty($loginContainer->token);
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(['spiv3' => 'spi_form_v_3'])->columns(['id'])
-            ->where(['spiv3.id' => trim((string) $id)]);
-        if ($hasTokens) {
-            $query->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $query = self::applyV3LocationScope($query);
-        return $this->db->fetchOne($sql->buildSqlString($query)) !== false;
+        $where = ['spiv3.id = ?'];
+        $values = [trim((string) $id)];
+        $join = self::addUserScope($where, $values);
+        return $this->db->fetchOne('SELECT spiv3.id FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where), $values) !== false;
     }
 
     private readonly \Doctrine\DBAL\Connection $db;
@@ -128,9 +200,9 @@ class SpiFormVer3Table
      * One row as Laminas returned it: an object whose columns also read as
      * properties, or null. Templates read these rows with `->`.
      */
-    private function fetchRowObject(string $sql): ?\ArrayObject
+    private function fetchRowObject(string $sql, array $values = []): ?\ArrayObject
     {
-        $row = $this->db->fetchAssociative($sql);
+        $row = $this->db->fetchAssociative($sql, $values);
         return $row === false ? null : new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS);
     }
 
@@ -401,9 +473,6 @@ class SpiFormVer3Table
             $data['status'] = $approveStatus;
 
             try {
-
-                $sql = new Sql($this->adapter);
-
                 if (isset($data['testingpointname']) && trim($data['testingpointname']) == "") {
                     $data['testingpointname'] = $data['testingpointtype'];
                 }
@@ -911,20 +980,14 @@ class SpiFormVer3Table
 
     public function getAllSubmissions($sortOrder = 'DESC')
     {
-        $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where('spiv3.status != "deleted"')
-            ->order(array("spiv3.status DESC", "spiv3.id $sortOrder"));
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return $rResult;
+        $where = ["spiv3.status != 'deleted'"];
+        $values = [];
+        $join = self::addUserScope($where, $values);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv3.* FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where)
+            . ' ORDER BY spiv3.status DESC, spiv3.id ' . self::direction($sortOrder),
+            $values
+        );
     }
 
     public function getAllApprovedTestingVolume($params)
@@ -1323,8 +1386,6 @@ class SpiFormVer3Table
 
     public function fetchAllDuplicateSubmissionsDetails()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         // Every copy of each duplicated submission, oldest first, so the view can
         // keep the first copy and offer the rest for removal by their own id.
         return $this->db->fetchAllAssociative("SELECT s.`meta-instance-id`, s.`id`, s.`facilityname`, s.`status`, s.`auditroundno`, s.`AUDIT_SCORE_PERCANTAGE`, s.`affiliation`, s.`level`, s.`assesmentofaudit`, s.`testingpointtype`, s.`testingpointname`
@@ -1464,38 +1525,32 @@ class SpiFormVer3Table
 
     public function fetchPendingFacilityNames()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where(array('spiv3.status' => 'pending'));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        return $this->db->fetchAllAssociative($sQueryStr);
+        return $this->db->fetchAllAssociative("SELECT spiv3.* FROM spi_form_v_3 AS spiv3 WHERE spiv3.status = 'pending'");
     }
 
     public function getFormData($id, $pdfDowload = 'no')
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
-        $dbAdapter = $this->adapter;
-        $trackTable = new EventLogTable($dbAdapter);
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where(array('spiv3.id' => $id));
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $sResult = $this->fetchRowObject($sQueryStr);
+        $trackTable = new EventLogTable($this->adapter);
+        $sResult = $this->fetchRowObject('SELECT spiv3.* FROM spi_form_v_3 AS spiv3 WHERE spiv3.id = ?', [$id]);
         if ($sResult) {
             if (trim($sResult['facility']) != '' || trim($sResult['facilityid']) != '' || trim($sResult['facilityname']) != '') {
-                $fQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-                    ->columns(array('fId' => 'id', 'ffId' => 'facility_id', 'fName' => 'facility_name', 'fEmail' => 'email', 'fCPerson' => 'contact_person', 'fDistrict' => 'district', 'fProvince' => 'province', 'fLatitude' => 'latitude', 'fLongitude' => 'longitude'));
+                $fSql = 'SELECT spirt3.id AS fId, spirt3.facility_id AS ffId, spirt3.facility_name AS fName, spirt3.email AS fEmail,'
+                    . ' spirt3.contact_person AS fCPerson, spirt3.district AS fDistrict, spirt3.province AS fProvince,'
+                    . ' spirt3.latitude AS fLatitude, spirt3.longitude AS fLongitude FROM spi_rt_3_facilities AS spirt3';
+                $fValues = [];
                 if (isset($sResult['facility']) && $sResult['facility'] > 0) {
-                    $fQuery = $fQuery->where(['spirt3.id' => $sResult['facility']]);
+                    $fSql .= ' WHERE spirt3.id = ?';
+                    $fValues[] = $sResult['facility'];
                 } elseif (isset($sResult['facilityid']) && $sResult['facilityid'] != '') {
-                    $fQuery = $fQuery->where(['spirt3.facility_id' => $sResult['facilityid']]);
+                    $fSql .= ' WHERE spirt3.facility_id = ?';
+                    $fValues[] = $sResult['facilityid'];
                 } elseif (isset($sResult['facilityname']) && $sResult['facilityname'] != '') {
-                    $fQuery = $fQuery->where(['spirt3.facility_name' => $sResult['facilityname']]);
+                    $fSql .= ' WHERE spirt3.facility_name = ?';
+                    $fValues[] = $sResult['facilityname'];
                 }
-                $fQueryStr = $sql->buildSqlString($fQuery);
-                $sResult['facilityInfo'] = $this->fetchRowObject($fQueryStr);
+                $sResult['facilityInfo'] = $this->fetchRowObject($fSql, $fValues);
             }
             if ($pdfDowload == 'yes') {
                 $subject = '';
@@ -1823,20 +1878,14 @@ class SpiFormVer3Table
 
     public function fetchAllApprovedSubmissions($sortOrder = 'DESC')
     {
-        $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where(array('spiv3.status' => 'approved'))
-            ->order(array("assesmentofaudit $sortOrder"));
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return $rResult;
+        $where = ["spiv3.status = 'approved'"];
+        $values = [];
+        $join = self::addUserScope($where, $values);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv3.* FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where)
+            . ' ORDER BY assesmentofaudit ' . self::direction($sortOrder),
+            $values
+        );
     }
 
     public function fecthAllApprovedSubmissionsTable($parameters)
@@ -2334,42 +2383,32 @@ class SpiFormVer3Table
     }
     public function fetchSpiV3FormAuditNo()
     {
-        $loginContainer = new Container('credo');
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array('assesmentofaudit', 'auditroundno', 'rowCount' => new Expression("COUNT('auditroundno')")))
-            ->group('auditroundno')
-            ->order("auditroundno ASC");
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        return $this->db->fetchAllAssociative($sQueryStr);
+        $where = [];
+        $values = [];
+        $join = self::addUserScope($where, $values);
+        return $this->db->fetchAllAssociative(
+            "SELECT spiv3.assesmentofaudit AS assesmentofaudit, spiv3.auditroundno AS auditroundno, COUNT('auditroundno') AS rowCount"
+            . ' FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where)
+            . ' GROUP BY auditroundno ORDER BY auditroundno ASC',
+            $values
+        );
     }
 
     public function fetchLatestSpiV3FormAuditNo()
     {
-        $loginContainer = new Container('credo');
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array('auditroundno'))
-            ->group('auditroundno')
-            ->order(array("assesmentofaudit DESC", "auditroundno DESC"))
-            ->limit(1);
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        $res = $this->db->fetchAssociative($sQueryStr);
+        $where = [];
+        $values = [];
+        $join = self::addUserScope($where, $values);
+        $res = $this->db->fetchAssociative(
+            'SELECT spiv3.auditroundno AS auditroundno FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where)
+            . ' GROUP BY auditroundno ORDER BY assesmentofaudit DESC, auditroundno DESC LIMIT 1',
+            $values
+        );
         return $res === false ? null : $res['auditroundno'];
     }
 
     public function fetchSpiV3FormFacilityAuditNo($params)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
         // The facility list names the field it filters on, as "facilityid" or
         // "facilityId". Only these two fields exist.
         $columns = ['facilityid' => 'spiv3.facilityid', 'facilityname' => 'spiv3.facilityname'];
@@ -2377,21 +2416,15 @@ class SpiFormVer3Table
         if ($column === null) {
             return [];
         }
-        $loginContainer = new Container('credo');
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(new Expression('DISTINCT(auditroundno) as auditroundno'), 'rowCount' => new Expression("COUNT('auditroundno')")))
-            ->where([$column => $params['val'] ?? ''])
-            ->group('auditroundno')
-            ->order("auditroundno ASC");
-        if (!empty($loginContainer->token)) {
-            $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-
-        return $rResult;
+        $where = [$column . ' = ?'];
+        $values = [$params['val'] ?? ''];
+        $join = self::addUserScope($where, $values);
+        return $this->db->fetchAllAssociative(
+            "SELECT DISTINCT(auditroundno) as auditroundno, COUNT('auditroundno') AS rowCount"
+            . ' FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where)
+            . ' GROUP BY auditroundno ORDER BY auditroundno ASC',
+            $values
+        );
     }
 
     public function mergeFacilityName($params)
@@ -2469,22 +2502,24 @@ class SpiFormVer3Table
     //get all faciltiy name
     public function fetchAllFacilityNames()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $loginContainer = new Container('credo');
-        $uQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('facilityname' => new Expression("DISTINCT spiv3.facilityname")))->order('spiv3.facilityname ASC');
-        if (!empty($loginContainer->token)) {
-            $uQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $uQuery = self::applyV3LocationScope($uQuery);
-        $uQueryStr = $sql->buildSqlString($uQuery);
-        $uResult = $this->db->fetchAllAssociative($uQueryStr);
+        $where = [];
+        $values = [];
+        $join = self::addUserScope($where, $values);
+        $uResult = $this->db->fetchAllAssociative(
+            'SELECT DISTINCT spiv3.facilityname AS facilityname FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where)
+            . ' ORDER BY spiv3.facilityname ASC',
+            $values
+        );
 
-        $aQuery = $sql->select()->from(array('spirt3' => 'spi_rt_3_facilities'))
-            ->where('spirt3.status != "deleted"')->order('spirt3.facility_name ASC');
-        $aQuery = SpiRtFacilitiesTable::applyMappingToFacilities($aQuery, 'spirt3');
-        $aQueryStr = $sql->buildSqlString($aQuery);
-        $aResult = $this->db->fetchAllAssociative($aQueryStr);
+        $facilityWhere = ["spirt3.status != 'deleted'"];
+        [$mapped, $mappedIds] = SpiRtFacilitiesTable::mappingCondition('spirt3');
+        if ($mapped !== '') {
+            $facilityWhere[] = $mapped;
+        }
+        $aResult = $this->db->fetchAllAssociative(
+            'SELECT spirt3.* FROM spi_rt_3_facilities AS spirt3' . self::whereSql($facilityWhere) . ' ORDER BY spirt3.facility_name ASC',
+            $mappedIds
+        );
 
         return array('uniqueName' => $uResult, 'allName' => $aResult);
     }
@@ -2620,43 +2655,29 @@ class SpiFormVer3Table
         $audits = [];
         $aResult = "";
         if (isset($params['facilityName']) && trim($params['facilityName']) != '') {
-            $dbAdapter = $this->adapter;
-            $sql = new Sql($this->adapter);
-            $loginContainer = new Container('credo');
-            $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                ->columns(array('id', 'testingpointname', 'assesmentofaudit'))
-                ->where(array('spiv3.facilityname' => $params['facilityName'], 'spiv3.status' => 'approved'));
-            if (!empty($loginContainer->token)) {
-                $query->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-            }
-            $query = self::applyV3LocationScope($query);
-            $queryStr = $sql->buildSqlString($query);
-            $audits = $this->db->fetchAllAssociative($queryStr);
+            $where = ['spiv3.facilityname = ?', "spiv3.status = 'approved'"];
+            $values = [$params['facilityName']];
+            $join = self::addUserScope($where, $values);
+            $audits = $this->db->fetchAllAssociative(
+                'SELECT spiv3.id AS id, spiv3.testingpointname AS testingpointname, spiv3.assesmentofaudit AS assesmentofaudit'
+                . ' FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where),
+                $values
+            );
 
-            $aQuery = $sql->select()->from(array('spiv3_fclt' => 'spi_rt_3_facilities'))
-                ->columns(array('facility_name', 'email'))
-                ->where(array('spiv3_fclt.facility_name' => $params['facilityName']));
-            $aQueryStr = $sql->buildSqlString($aQuery);
-            $aResult = $this->fetchRowObject($aQueryStr);
+            $aResult = $this->fetchRowObject(
+                'SELECT spiv3_fclt.facility_name AS facility_name, spiv3_fclt.email AS email FROM spi_rt_3_facilities AS spiv3_fclt WHERE spiv3_fclt.facility_name = ?',
+                [$params['facilityName']]
+            );
         }
         return array('audits' => $audits, 'facilityProfile' => $aResult);
     }
 
     public function getSpiV3PendingCount()
     {
-        $loginContainer = new Container('credo');
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where('spiv3.status = "pending"');
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        $sQueryStr = $sql->buildSqlString($sQuery);
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-        return count($rResult);
+        $where = ["spiv3.status = 'pending'"];
+        $values = [];
+        $join = self::addUserScope($where, $values);
+        return (int) $this->db->fetchOne('SELECT COUNT(*) FROM spi_form_v_3 AS spiv3' . $join . self::whereSql($where), $values);
     }
 
     public function deleteAuditRowData($params)
@@ -2815,14 +2836,7 @@ class SpiFormVer3Table
 
     public function fetchSpiV3FormUniqueTokens()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $tokenQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(new Expression('DISTINCT(token) as token')))
-            ->group('token')
-            ->order("token ASC");
-        $tokenQueryStr = $sql->buildSqlString($tokenQuery);
-        return $this->db->fetchAllAssociative($tokenQueryStr);
+        return $this->db->fetchAllAssociative('SELECT DISTINCT(token) as token FROM spi_form_v_3 AS spiv3 GROUP BY token ORDER BY token ASC');
     }
 
     public function fetchViewDataDetails($parameters)
@@ -3165,15 +3179,9 @@ class SpiFormVer3Table
 
     public function fetchAllTestingPointType()
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array(new Expression('DISTINCT(testingPointType) as testingPointType')))
-            ->group('testingPointType')
-            ->order("testingPointType ASC");
-        $queryStr = $sql->buildSqlString($query);
-
-        return $this->db->fetchAllAssociative($queryStr);
+        return $this->db->fetchAllAssociative(
+            'SELECT DISTINCT(testingPointType) as testingPointType FROM spi_form_v_3 AS spiv3 GROUP BY testingPointType ORDER BY testingPointType ASC'
+        );
     }
 
     public function fetchTestingPointTypeNamesByType($params)
@@ -3185,52 +3193,33 @@ class SpiFormVer3Table
             } else {
                 $column = 'DISTINCT(testingpointname) as testingpointName';
             }
-            $dbAdapter = $this->adapter;
-            $sql = new Sql($this->adapter);
-            $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-                ->columns(array(new Expression($column)))
-                ->where(array('testingpointtype' => $params['testingPointType']));
-            $queryStr = $sql->buildSqlString($query);
-            $typeResult = $this->db->fetchAllAssociative($queryStr);
+            $typeResult = $this->db->fetchAllAssociative(
+                'SELECT ' . $column . ' FROM spi_form_v_3 AS spiv3 WHERE testingpointtype = ?',
+                [$params['testingPointType']]
+            );
         }
         return $typeResult;
     }
 
     public function fetchSpiV3FormUniqueLevelNames()
     {
-
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->columns(array('facilityname'))
-            ->join(array('f' => 'spi_rt_3_facilities'), 'f.id=spiv3.facility', array('province', 'district'))
-            ->where('f.province not like "" AND f.province is not null')
-            ->group("province")
-            ->order("province ASC");
-        $queryStr = $sql->buildSqlString($query);
-        //$query = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-        //                       ->columns(array(new Expression('DISTINCT(level_name) as level_name')))
-        //                       ->order("level_name ASC");
-        //$queryStr = $sql->buildSqlString($query);
-        return $this->db->fetchAllAssociative($queryStr);
+        return $this->db->fetchAllAssociative(
+            'SELECT spiv3.facilityname AS facilityname, f.province AS province, f.district AS district'
+            . ' FROM spi_form_v_3 AS spiv3 INNER JOIN spi_rt_3_facilities AS f ON f.id = spiv3.facility'
+            . " WHERE f.province NOT LIKE '' AND f.province IS NOT NULL GROUP BY province ORDER BY province ASC"
+        );
     }
     public function fetchDistrictData($params)
     {
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $query = $sql->select()
-            ->quantifier(\Laminas\Db\Sql\Select::QUANTIFIER_DISTINCT)
-            ->from(array('f' => 'spi_rt_3_facilities'))
-            ->columns(array('district'));
-        if (!empty($params['province']) && is_array($params['province'])) {
-            $query = $query->where(['f.province' => CommonService::inList($params['province'])])->where('f.district not like "" AND f.district is not null');
-        } elseif (!empty($params['province']) && !is_array($params['province'])) {
-            $query = $query->where(['f.province' => $params['province']])->where('f.district not like "" AND f.district is not null');
-        } else {
-            $query = $query->where('f.district not like "" AND f.district is not null');
+        $where = [];
+        $values = [];
+        if (!empty($params['province'])) {
+            $provinces = is_array($params['province']) ? CommonService::inList($params['province']) : [$params['province']];
+            $where[] = 'f.province IN (' . self::placeholders($provinces) . ')';
+            array_push($values, ...$provinces);
         }
-        $queryStr = $sql->buildSqlString($query);
-        return $this->db->fetchAllAssociative($queryStr);
+        $where[] = "f.district NOT LIKE '' AND f.district IS NOT NULL";
+        return $this->db->fetchAllAssociative('SELECT DISTINCT f.district AS district FROM spi_rt_3_facilities AS f' . self::whereSql($where), $values);
     }
 
     public function addValidateSpiv3Data($params)
