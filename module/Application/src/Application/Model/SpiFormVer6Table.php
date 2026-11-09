@@ -2109,7 +2109,8 @@ class SpiFormVer6Table
         [$columns, $join] = self::addInlineMapping($loginContainer, $where, $values);
         return $this->db->fetchAllAssociative(
             'SELECT spiv6.*' . $columns . ' FROM spi_form_v_6 AS spiv6' . $join
-            . ' WHERE ' . implode(' AND ', $where) . ' ORDER BY client_tested_HIV_PM DESC LIMIT 10',
+            // The column is text, so + 0 sorts it as a number.
+            . ' WHERE ' . implode(' AND ', $where) . ' ORDER BY spiv6.client_tested_HIV_PM + 0 DESC, spiv6.id DESC LIMIT 10',
             $values
         );
     }
