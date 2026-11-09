@@ -17,7 +17,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Doctrine\DBAL\Connection;
 use CpChart\Chart\Radar;
-use Shuchkin\SimpleXLSXGen;
+use App\Export\Workbook;
 use Application\Session\Container;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
@@ -89,8 +89,6 @@ class OdkFormService
         try {
             $queryContainer = new Container('query');
             $loginContainer = new Container('credo');
-            $output = [];
-            $outputScore = [];
             $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
             $username = $loginContainer->login;
             $trackTable = new EventLogTable($dbConnection);
@@ -147,101 +145,18 @@ class OdkFormService
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
-            $output = [];
-            $outputScore = [];
-            if (!empty($sResult)) {
-                $auditScore = 0;
-                $levelZero = [];
-                $levelOne = [];
-                $levelTwo = [];
-                $levelThree = [];
-                $levelFour = [];
-                $counter = count($sResult);
-                for ($l = 0; $l < $counter; $l++) {
-                    $row = [];
-                    foreach ($sResult[$l] as $key => $aRow) {
-                        if ($key != 'id' && $key != 'content' && $key != 'token') {
-
-                            if ($key == 'AUDIT_SCORE_PERCANTAGE' || $key == 'AUDIT_SCORE_PERCENTAGE') {
-                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) {
-                                    continue;
-                                }
-
-                                $auditScore += $sResult[$l][$key];
-                                if ($sResult[$l][$key] < 40) {
-                                    $levelZero[] = $sResult[$l][$key];
-                                } elseif ($sResult[$l][$key] >= 40 && $sResult[$l][$key] < 60) {
-                                    $levelOne[] = $sResult[$l][$key];
-                                } elseif ($sResult[$l][$key] >= 60 && $sResult[$l][$key] < 80) {
-                                    $levelTwo[] = $sResult[$l][$key];
-                                } elseif ($sResult[$l][$key] >= 80 && $sResult[$l][$key] < 90) {
-                                    $levelThree[] = $sResult[$l][$key];
-                                } elseif ($sResult[$l][$key] >= 90) {
-                                    $levelFour[] = $sResult[$l][$key];
-                                }
-                            }
-                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
-                            if ($key == 'today') {
-                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } elseif ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            }
-                            $row[] = $sResult[$l][$key] . $level;
-                        }
-                    }
-                    $output[] = $row;
-                }
-
-                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
-                $outputScore['levelZeroCount'] = count($levelZero);
-                $outputScore['levelOneCount'] = count($levelOne);
-                $outputScore['levelTwoCount'] = count($levelTwo);
-                $outputScore['levelThreeCount'] = count($levelThree);
-                $outputScore['levelFourCount'] = count($levelFour);
-            }
-            $fieldNames = [];
-            foreach ($sResult[0] as $key => $aRow) {
-                if ($key != 'id' && $key != 'content' && $key != 'token') {
-                    $fieldNames[] = $key;
-                }
-            }
-            $xlsx = new SimpleXLSXGen();
-            $outputData = [];
-            $headerRow = ['Facility Report SPI-RT--CHECKLIST-version-3'];
-            $outputData[] = $headerRow;
-            $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint];
-            $outputData[] = $data;
-            $outputData[] = $fieldNames;
-            foreach ($output as $rowNo => $rowData) {
-                $row = [];
-                $colNo = 1;
-
-                foreach ($rowData as $field => $value) {
-                    if (!isset($value) || $value === '') {
-                        $value = "";
-                    }
-                    $row[] = $value;
-                    $colNo++;
-                }
-
-                $outputData[] = $row;
-            }
-
-            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
-
-            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
-
-            $xlsx->addSheet($outputData);
+            $rows = $this->sm->get(Connection::class)->iterateAssociative($stored['sql'], $stored['values']);
             $filename = 'SPI-RT-CHECKLIST-version-3-' . time() . '.xlsx';
-            $TemporaryFolderPath = CommonService::downloadFile($filename);
-            $xlsx->mergeCells('A1:Q1');
-            $xlsx->saveAs($TemporaryFolderPath);
+            $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
+            $book->addRow(['Facility Report SPI-RT--CHECKLIST-version-3']);
+            $book->addRow([$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint]);
+            $written = $this->writeAuditRows($book, $rows, false);
+            $book->addRow(['No.of Audit(s)    : ' . $written['count']]);
+            $book->addRow(['Avg. Audit Score    : ' . ($written['count'] > 0 ? round($written['auditScore'] / $written['count'], 2) : '')]);
+            foreach (self::SCORE_LEVEL_LABELS as $level => $label) {
+                $book->addRow([$label . ($written['count'] > 0 ? $written['levels'][$level] : '')]);
+            }
+            $book->close();
             $subject = '';
             $eventType = 'Export-All Data';
             $action = "$username has exported all data SPI RT Checklist version 3";
@@ -1387,41 +1302,33 @@ class OdkFormService
         return $db->removeAuditData($params);
     }
 
-    public function getDownloadFilesRow()
+    /** Writes every V3 bulk download row to a file and returns its path. */
+    public function getDownloadFilesRow(): string
     {
         $loginContainer = new Container('credo');
         $username = $loginContainer->login;
         $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
         $trackTable = new EventLogTable($dbConnection);
         $db = $this->sm->get('SpiFormVer3DownloadTable');
-        $result = $db->fetchDownloadFilesRow();
-        $xlsx = new SimpleXLSXGen();
-        $output = [];
-        $headerRow = ['Audit Round No', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Level Name', 'Audit Score'];
-        $output[] = $headerRow;
-        if (count($result) > 0) {
-            foreach ($result as $data) {
-                $row = [];
-                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
-                ;
-                $row[] = $data['assesmentofaudit'];
-                $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
-                $row[] = trim($data['testingpointname']) == '' ? 'All' : $data['testingpointname'];
-                $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
-                $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];
-                $row[] = trim($data['level_name']) == '' ? 'All' : $data['level_name'];
-                $row[] = trim($data['AUDIT_SCORE_PERCANTAGE']) == '' ? 'All' : $data['AUDIT_SCORE_PERCANTAGE'];
-                $output[] = $row;
-            }
+        $path = CommonService::downloadFile('SPI-RT-Audits-' . time() . '.xlsx');
+        $book = new Workbook($path);
+        $book->addRow(['Audit Round No', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Level Name', 'Audit Score']);
+        $all = static fn($value) => trim((string) $value) == '' ? 'All' : $value;
+        foreach ($db->fetchDownloadFilesRow() as $data) {
+            $book->addRow([
+                $all($data['auditroundno']),
+                $data['assesmentofaudit'],
+                $all($data['testingpointtype']),
+                $all($data['testingpointname']),
+                $all($data['level']),
+                $all($data['affiliation']),
+                $all($data['level_name']),
+                $all($data['AUDIT_SCORE_PERCANTAGE']),
+            ]);
         }
-        $xlsx->addSheet($output);
-        $filename = 'SPI-RT-Audits-' . time() . '.xlsx';
-        $subject = '';
-        $eventType = 'Download-Audits';
-        $action = $username . ' has downloaded SPI RT Audits';
-        $resourceName = 'Download-SPI-RT-Audits';
-        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-        return $xlsx->downloadAs($filename);
+        $book->close();
+        $trackTable->addEventLog('', 'Download-Audits', $username . ' has downloaded SPI RT Audits', 'Download-SPI-RT-Audits');
+        return $path;
     }
 
     public function validateSPIV3File($params)
@@ -1541,46 +1448,40 @@ class OdkFormService
         return $db->fetchAllV6DuplicateSubmissionsDetails();
     }
 
-    public function getV6DownloadFilesRow()
+    /**
+     * Writes the audits the V6 list last showed to a file and returns its
+     * path, or null when this session has not opened the list.
+     */
+    public function getV6DownloadFilesRow(): ?string
     {
         $loginContainer = new Container('credo');
         $queryContainer = new Container('query');
         $username = $loginContainer->login;
         $dbConnection = $this->sm->get(\Doctrine\DBAL\Connection::class);
         $trackTable = new EventLogTable($dbConnection);
-        //$db = $this->sm->get('SpiFormVer6DownloadTable');
-        //$result = $db->fetchDownloadFilesRow();
         $stored = $queryContainer->exportAllDataQueryV6;
         if (!is_array($stored)) {
-            // The list this export reruns was not opened in this session.
-            return "";
+            return null;
         }
-        $result = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
-        $xlsx = new SimpleXLSXGen();
-        $output = [];
-        $headerRow = ['Facility Name', 'Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score'];
-        $output[] = $headerRow;
-        if (count($result) > 0) {
-            foreach ($result as $data) {
-                $row = [];
-                $row[] = $data['facilityname'];
-                $row[] = trim($data['auditroundno']) == '' ? 'All' : $data['auditroundno'];
-                $row[] = CommonService::humanReadableDateFormat($data['assesmentofaudit']);
-                $row[] = trim($data['testingpointtype']) == '' ? 'All' : $data['testingpointtype'];
-                $row[] = trim($data['level']) == '' ? 'All' : $data['level'];
-                $row[] = trim($data['affiliation']) == '' ? 'All' : $data['affiliation'];
-                $row[] = trim($data['AUDIT_SCORE_PERCENTAGE']) == '' ? 'All' : $data['AUDIT_SCORE_PERCENTAGE'];
-                $output[] = $row;
-            }
+        $rows = $this->sm->get(Connection::class)->iterateAssociative($stored['sql'], $stored['values']);
+        $path = CommonService::downloadFile('SPI-RRT-Audits-' . time() . '.xlsx');
+        $book = new Workbook($path);
+        $book->addRow(['Facility Name', 'Audit Round No', 'Audit Date', 'Testing Point Type', 'Level', 'Affiliation', 'Audit Score']);
+        $all = static fn($value) => trim((string) $value) == '' ? 'All' : $value;
+        foreach ($rows as $data) {
+            $book->addRow([
+                $data['facilityname'],
+                $all($data['auditroundno']),
+                CommonService::humanReadableDateFormat($data['assesmentofaudit']),
+                $all($data['testingpointtype']),
+                $all($data['level']),
+                $all($data['affiliation']),
+                $all($data['AUDIT_SCORE_PERCENTAGE']),
+            ]);
         }
-        $xlsx->addSheet($output);
-        $filename = 'SPI-RRT-Audits-' . time() . '.xlsx';
-        $subject = '';
-        $eventType = 'Download-Audits';
-        $action = $username . ' has downloaded SPI RRT v6 Audits';
-        $resourceName = 'Download-SPI-RRT-Audits';
-        $trackTable->addEventLog($subject, $eventType, $action, $resourceName);
-        return $xlsx->downloadAs($filename);
+        $book->close();
+        $trackTable->addEventLog('', 'Download-Audits', $username . ' has downloaded SPI RRT v6 Audits', 'Download-SPI-RRT-Audits');
+        return $path;
     }
 
     public function removeAuditV6($params)
@@ -1666,7 +1567,6 @@ class OdkFormService
             $auditRndNo = '';
             $levelData = '';
             $affiliation = '';
-            $province = '';
             $scoreLevel = '';
             $testPoint = '';
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
@@ -1679,11 +1579,6 @@ class OdkFormService
                 $affiliation = "Affiliation : " . $params['affiliation'];
             } else {
                 $affiliation = "Affiliation : ";
-            }
-            if (isset($params['province']) && ($params['province'] != "")) {
-                $province = "Province/District(s) : " . implode(',', $params['province']);
-            } else {
-                $province = "Province/District(s) : ";
             }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
@@ -1766,105 +1661,18 @@ class OdkFormService
                 array_push($values, ...$mappedIds);
             }
             $select = implode(', ', array_map(static fn(string $column): string => 'spiv6.' . $db->quoteSingleIdentifier($column), $columns));
-            $sResult = $db->fetchAllAssociative('SELECT ' . $select . ' FROM ' . $from . ' WHERE ' . implode(' AND ', $where), $values);
-
-            $output = [];
-            $outputScore = [];
-            if (!empty($sResult)) {
-                $auditScore = 0;
-                $levelZero = [];
-                $levelOne = [];
-                $levelTwo = [];
-                $levelThree = [];
-                $levelFour = [];
-                $counter = count($sResult);
-                for ($l = 0; $l < $counter; $l++) {
-                    $row = [];
-                    $cells = [];
-                    foreach ($sResult[$l] as $key => $aRow) {
-                        if ($key != 'id' && $key != 'content' && $key != 'token') {
-                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
-                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) {
-                                    continue;
-                                }
-
-                                $auditScore += $sResult[$l][$key];
-                                $scorePer = round($sResult[$l][$key]);
-                                if ($scorePer < 40) {
-                                    $levelZero[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 40 && $scorePer < 60) {
-                                    $levelOne[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 60 && $scorePer < 80) {
-                                    $levelTwo[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 80 && $scorePer < 90) {
-                                    $levelThree[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 90) {
-                                    $levelFour[] = $sResult[$l][$key];
-                                }
-                            }
-                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
-                            if ($key == 'today') {
-                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } elseif ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            }
-                            $row[] = $sResult[$l][$key] . $level;
-                        }
-                    }
-                    $output[] = $row;
-                }
-                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
-                $outputScore['levelZeroCount'] = count($levelZero);
-                $outputScore['levelOneCount'] = count($levelOne);
-                $outputScore['levelTwoCount'] = count($levelTwo);
-                $outputScore['levelThreeCount'] = count($levelThree);
-                $outputScore['levelFourCount'] = count($levelFour);
-            }
-
-            $fieldNames = [];
-            $lastColumnArray = [];
-            $lastColumnArray = array_keys($outputScore);
-            foreach ($sResult[0] as $key => $aRow) {
-                if ($key != 'id' && $key != 'content' && $key != 'token') {
-                    $fieldNames[] = $key;
-                }
-            }
-            $xlsx = new SimpleXLSXGen();
-            $outputData = [];
-            $headerRow = ['Facility Report SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION'];
-            $outputData[] = $headerRow;
-            $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint];
-            $outputData[] = $data;
-            $outputData[] = $fieldNames;
-            foreach ($output as $rowNo => $rowData) {
-                $row = [];
-                $colNo = 1;
-
-                foreach ($rowData as $field => $value) {
-                    if (!isset($value) || $value === '') {
-                        $value = "";
-                    }
-                    $row[] = $value;
-                    $colNo++;
-                }
-
-                $outputData[] = $row;
-            }
-
-            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
-
-            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
-
-            $xlsx->addSheet($outputData);
+            $rows = $db->iterateAssociative('SELECT ' . $select . ' FROM ' . $from . ' WHERE ' . implode(' AND ', $where), $values);
             $filename = 'SPI-RRT--CHECKLIST-version-6-S-AND-D-SECTION-' . time() . '.xlsx';
-            $TemporaryFolderPath = CommonService::downloadFile($filename);
-            $xlsx->mergeCells('A1:Q1');
-            $xlsx->saveAs($TemporaryFolderPath);
+            $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
+            $book->addRow(['Facility Report SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION']);
+            $book->addRow([$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint]);
+            $written = $this->writeAuditRows($book, $rows, true);
+            $book->addRow(['No.of Audit(s)    : ' . $written['count']]);
+            $book->addRow(['Avg. Audit Score    : ' . ($written['count'] > 0 ? round($written['auditScore'] / $written['count'], 2) : '')]);
+            foreach (self::SCORE_LEVEL_LABELS as $level => $label) {
+                $book->addRow([$label . ($written['count'] > 0 ? $written['levels'][$level] : '')]);
+            }
+            $book->close();
             $subject = '';
             $eventType = 'Export-D and S Data';
             $action = $username . ' has exported D and S data SPI RRT v6';
@@ -1904,7 +1712,6 @@ class OdkFormService
             $auditRndNo = '';
             $levelData = '';
             $affiliation = '';
-            $province = '';
             $scoreLevel = '';
             $testPoint = '';
             if (isset($params['auditRndNo']) && ($params['auditRndNo'] != "")) {
@@ -1917,11 +1724,6 @@ class OdkFormService
                 $affiliation = "Affiliation : " . $params['affiliation'];
             } else {
                 $affiliation = "Affiliation : ";
-            }
-            if (isset($params['province']) && ($params['province'] != "")) {
-                $province = "Province/District(s) : " . implode(',', $params['province']);
-            } else {
-                $province = "Province/District(s) : ";
             }
             if (isset($params['scoreLevel']) && ($params['scoreLevel'] != "")) {
                 $scoreLevel = "Score Level : " . $params['scoreLevel'];
@@ -1938,198 +1740,22 @@ class OdkFormService
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $sResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
-
-            $output = [];
-            $outputScore = [];
-            if (!empty($sResult)) {
-                $auditScore = 0;
-                $sQ1Score = 0;
-                $sQ2Score = 0;
-                $sQ3Score = 0;
-                $sQ4Score = 0;
-                $sQ5Score = 0;
-                $sQ6Score = 0;
-                $sQ7Score = 0;
-                $D0_S1_Score = 0;
-                $D0_S2_Score = 0;
-                $D0_S3_Score = 0;
-                $D0_S4_Score = 0;
-                $D0_S5_Score = 0;
-                $D0_S6_Score = 0;
-                $D0_S7_Score = 0;
-                $D0_S8_Score = 0;
-                $levelZero = [];
-                $levelOne = [];
-                $levelTwo = [];
-                $levelThree = [];
-                $levelFour = [];
-                $counter = count($sResult);
-                for ($l = 0; $l < $counter; $l++) {
-                    $row = [];
-                    $cells = [];
-                    foreach ($sResult[$l] as $key => $aRow) {
-                        if ($key != 'id' && $key != 'content' && $key != 'token') {
-                            if (($key == 'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY')) {
-                                // $sQ1Score += $sResult[$l][$key];
-                                $sQ1Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL')) {
-                                $sQ2Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'S0_Q_3_TESTS_RECORDED_RECENCY')) {
-                                $sQ3Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'S0_Q_4_PROCESS_DOCUMENTED')) {
-                                $sQ4Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS')) {
-                                $sQ5Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED')) {
-                                $sQ6Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS')) {
-                                $sQ7Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_1_DIAGNOSED_HIV_ABOVE_15')) {
-                                $D0_S1_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION')) {
-                                $D0_S2_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD')) {
-                                $D0_S3_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD')) {
-                                $D0_S4_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_5_DOCUMENTED_AND_REFUSED')) {
-                                $D0_S5_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI')) {
-                                $D0_S6_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI')) {
-                                $D0_S7_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if (($key == 'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI')) {
-                                $D0_S8_Score += is_numeric($sResult[$l][$key]) ? $sResult[$l][$key] : 0;
-                            }
-                            if ($key == 'AUDIT_SCORE_PERCENTAGE') {
-                                if (!isset($sResult[$l][$key]) || !is_numeric($sResult[$l][$key])) {
-                                    continue;
-                                }
-
-                                $auditScore += $sResult[$l][$key];
-                                $scorePer = round($sResult[$l][$key]);
-                                if ($scorePer < 40) {
-                                    $levelZero[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 40 && $scorePer < 60) {
-                                    $levelOne[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 60 && $scorePer < 80) {
-                                    $levelTwo[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 80 && $scorePer < 90) {
-                                    $levelThree[] = $sResult[$l][$key];
-                                } elseif ($scorePer >= 90) {
-                                    $levelFour[] = $sResult[$l][$key];
-                                }
-                            }
-                            $level = $key == 'level_other' ? " - " . $sResult[$l][$key] : '';
-                            if ($key == 'today') {
-                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            } elseif ($key == 'assesmentofaudit') {
-                                $sResult[$l][$key] = CommonService::humanReadableDateFormat($sResult[$l][$key]);
-                            }
-                            $row[] = $sResult[$l][$key] . $level;
-                        }
-                    }
-                    $output[] = $row;
-                }
-                $outputScore['avgAuditScore'] = (count($sResult) > 0) ? round($auditScore / count($sResult), 2) : 0;
-                $outputScore['avgAuditScore'] = round($outputScore['avgAuditScore']);
-                $outputScore['sQ1Score'] = (count($sResult) > 0) ? round((float) $sQ1Score / count($sResult), 2) : 0;
-                $outputScore['sQ2Score'] = (count($sResult) > 0) ? round((float) $sQ2Score / count($sResult), 2) : 0;
-                $outputScore['sQ3Score'] = (count($sResult) > 0) ? round((float) $sQ3Score / count($sResult), 2) : 0;
-                $outputScore['sQ4Score'] = (count($sResult) > 0) ? round((float) $sQ4Score / count($sResult), 2) : 0;
-                $outputScore['sQ5Score'] = (count($sResult) > 0) ? round((float) $sQ5Score / count($sResult), 2) : 0;
-                $outputScore['sQ6Score'] = (count($sResult) > 0) ? round((float) $sQ6Score / count($sResult), 2) : 0;
-                $outputScore['sQ7Score'] = (count($sResult) > 0) ? round((float) $sQ7Score / count($sResult), 2) : 0;
-                $outputScore['D0_S1_Score'] = (count($sResult) > 0) ? round((float) $D0_S1_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S2_Score'] = (count($sResult) > 0) ? round((float) $D0_S2_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S3_Score'] = (count($sResult) > 0) ? round((float) $D0_S3_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S4_Score'] = (count($sResult) > 0) ? round((float) $D0_S4_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S5_Score'] = (count($sResult) > 0) ? round((float) $D0_S5_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S6_Score'] = (count($sResult) > 0) ? round((float) $D0_S6_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S7_Score'] = (count($sResult) > 0) ? round((float) $D0_S7_Score / count($sResult), 2) : 0;
-                $outputScore['D0_S8_Score'] = (count($sResult) > 0) ? round((float) $D0_S8_Score / count($sResult), 2) : 0;
-                $outputScore['levelZeroCount'] = count($levelZero);
-                $outputScore['levelOneCount'] = count($levelOne);
-                $outputScore['levelTwoCount'] = count($levelTwo);
-                $outputScore['levelThreeCount'] = count($levelThree);
-                $outputScore['levelFourCount'] = count($levelFour);
-            }
-            $fieldNames = [];
-            $lastColumnArray = [];
-            $lastColumnArray = array_keys($outputScore);
-            foreach ($sResult[0] as $key => $aRow) {
-                if ($key != 'id' && $key != 'content' && $key != 'token') {
-                    $fieldNames[] = $key;
-                }
-            }
-            $xlsx = new SimpleXLSXGen();
-            $outputData = [];
-            $headerRow = ['Facility Report SPI-RRT--CHECKLIST-version-6'];
-            $outputData[] = $headerRow;
-            $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint];
-            $outputData[] = $data;
-            $outputData[] = $fieldNames;
-            foreach ($output as $rowNo => $rowData) {
-                $row = [];
-                $colNo = 1;
-
-                foreach ($rowData as $field => $value) {
-                    if (!isset($value) || $value === '') {
-                        $value = "";
-                    }
-
-                    $row[] = $value;
-                    $colNo++;
-                }
-
-                $outputData[] = $row;
-            }
-            $outputData[] = ['No.of Audit(s)    : ' . count($sResult)];
-            $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
-
-            $outputData[] = ['Avg. S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY Score    : ' . $outputScore['sQ1Score']];
-            $outputData[] = ['Avg. S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL Score    : ' . $outputScore['sQ2Score']];
-            $outputData[] = ['Avg. S0_Q_3_TESTS_RECORDED_RECENCY Score    : ' . $outputScore['sQ3Score']];
-            $outputData[] = ['Avg. S0_Q_4_PROCESS_DOCUMENTED Score    : ' . $outputScore['sQ4Score']];
-            $outputData[] = ['Avg. S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS Score    : ' . $outputScore['sQ5Score']];
-            $outputData[] = ['Avg. S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED Score    : ' . $outputScore['sQ6Score']];
-            $outputData[] = ['Avg. S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS Score    : ' . $outputScore['sQ7Score']];
-
-            $outputData[] = ['Avg. D0_S_1_DIAGNOSED_HIV_ABOVE_15 Score    : ' . $outputScore['D0_S1_Score']];
-            $outputData[] = ['Avg. D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION Score    : ' . $outputScore['D0_S2_Score']];
-            $outputData[] = ['Avg. D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD Score    : ' . $outputScore['D0_S3_Score']];
-            $outputData[] = ['Avg. D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD Score    : ' . $outputScore['D0_S4_Score']];
-            $outputData[] = ['Avg. D0_S_5_DOCUMENTED_AND_REFUSED Score    : ' . $outputScore['D0_S5_Score']];
-            $outputData[] = ['Avg. D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI Score    : ' . $outputScore['D0_S6_Score']];
-            $outputData[] = ['Avg. D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI Score    : ' . $outputScore['D0_S7_Score']];
-            $outputData[] = ['Avg. D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI Score    : ' . $outputScore['D0_S8_Score']];
-
-            $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
-            $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
-            $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
-            $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
-            $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
-
-            $xlsx->addSheet($outputData);
+            $rows = $this->sm->get(Connection::class)->iterateAssociative($stored['sql'], $stored['values']);
             $filename = 'SPI-RRT--CHECKLIST-version-6-' . time() . '.xlsx';
-            $TemporaryFolderPath = CommonService::downloadFile($filename);
-            $xlsx->mergeCells('A1:Q1');
-            $xlsx->saveAs($TemporaryFolderPath);
+            $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
+            $book->addRow(['Facility Report SPI-RRT--CHECKLIST-version-6']);
+            $book->addRow([$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint]);
+            $written = $this->writeAuditRows($book, $rows, true, self::V6_AVERAGED_COLUMNS);
+            $book->addRow(['No.of Audit(s)    : ' . $written['count']]);
+            $book->addRow(['Avg. Audit Score    : ' . ($written['count'] > 0 ? round(round($written['auditScore'] / $written['count'], 2)) : '')]);
+            foreach (self::V6_AVERAGED_COLUMNS as $column) {
+                $average = $written['count'] > 0 ? round($written['sums'][$column] / $written['count'], 2) : '';
+                $book->addRow(['Avg. ' . $column . ' Score    : ' . $average]);
+            }
+            foreach (self::SCORE_LEVEL_LABELS as $level => $label) {
+                $book->addRow([$label . ($written['count'] > 0 ? $written['levels'][$level] : '')]);
+            }
+            $book->close();
             $subject = '';
             $eventType = 'Export-All Data';
             $action = $username . ' has exported all data SPI RRT v6 ';
@@ -2779,6 +2405,97 @@ class OdkFormService
     //get pending facility names v6
 
     // Finding the odkformsubmissions
+
+    /** The summary line for each score level, by level. */
+    private const SCORE_LEVEL_LABELS = [
+        0 => 'Level 0(Below 40) : ',
+        1 => 'Level 1(40-59)    : ',
+        2 => 'Level 2(60-79)    : ',
+        3 => 'Level 3(80-89)    : ',
+        4 => 'Level 4(90)       : ',
+    ];
+
+    /** The V6 columns whose average the all-data export prints under the audits. */
+    private const V6_AVERAGED_COLUMNS = [
+        'S0_Q_1_SURVEILLANCE_STUDY_PROTOCOL_ELIGIBILITY',
+        'S0_Q_2_COUNSELORS_FOLLOWING_PROTOCOL',
+        'S0_Q_3_TESTS_RECORDED_RECENCY',
+        'S0_Q_4_PROCESS_DOCUMENTED',
+        'S0_Q_5_RESULTS_RETURNED_IN_TWO_WEEKS',
+        'S0_Q_6_PROTOCOL_VIOLATION_DOCUMENTED',
+        'S0_Q_7_DOCUMENTING_PROTOCOL_ERRORS',
+        'D0_S_1_DIAGNOSED_HIV_ABOVE_15',
+        'D0_S_2_CANDIDATE_SCREENED_FOR_PARTICIPATION',
+        'D0_S_3_ELIGIBLE_DURING_REVIEW_PERIOD',
+        'D0_S_4_ELIGIBLE_AND_DECLINED_REVIEW_PERIOD',
+        'D0_S_5_DOCUMENTED_AND_REFUSED',
+        'D0_S_6_PARTICIAPANTS_ENROLLED_IN_RTRI',
+        'D0_S_7_PARTICIAPANTS_INCORRECTLY_ENROLLED_IN_RTRI',
+        'D0_S_8_PARTICIAPANTS_CORRECTLY_ENROLLED_IN_RTRI',
+    ];
+
+    /**
+     * Writes the audits of an all-data export: a row of column names, then
+     * one row per audit. id, content and token are left out. An audit with a
+     * blank or non-numeric score has no score cell, so its later cells shift
+     * left. With no audits, the column names row is empty.
+     *
+     * @param iterable<array<string, mixed>> $rows
+     * @param bool $roundScore Whether an audit's level comes from its score
+     *                         rounded to a whole number (V6) or as stored (V3).
+     * @param list<string> $summed Columns to add up across the audits.
+     * @return array{count: int, auditScore: float, levels: array<int, int>, sums: array<string, float>}
+     */
+    private function writeAuditRows(Workbook $book, iterable $rows, bool $roundScore, array $summed = []): array
+    {
+        $count = 0;
+        $auditScore = 0.0;
+        $levels = [0, 0, 0, 0, 0];
+        $sums = array_fill_keys($summed, 0.0);
+        foreach ($rows as $audit) {
+            if ($count === 0) {
+                $book->addRow(array_keys(array_diff_key($audit, ['id' => 1, 'content' => 1, 'token' => 1])));
+            }
+            $count++;
+            $row = [];
+            foreach ($audit as $key => $value) {
+                if ($key == 'id' || $key == 'content' || $key == 'token') {
+                    continue;
+                }
+                if (isset($sums[$key]) && is_numeric($value)) {
+                    $sums[$key] += $value;
+                }
+                if ($key == 'AUDIT_SCORE_PERCANTAGE' || $key == 'AUDIT_SCORE_PERCENTAGE') {
+                    if (!is_numeric($value)) {
+                        continue;
+                    }
+                    $auditScore += $value;
+                    $levels[self::scoreLevel($roundScore ? round((float) $value) : (float) $value)]++;
+                }
+                if ($key == 'today' || $key == 'assesmentofaudit') {
+                    $value = CommonService::humanReadableDateFormat($value);
+                }
+                $row[] = $value . ($key == 'level_other' ? ' - ' . $value : '');
+            }
+            $book->addRow($row);
+        }
+        if ($count === 0) {
+            $book->addRow([]);
+        }
+        return ['count' => $count, 'auditScore' => $auditScore, 'levels' => $levels, 'sums' => $sums];
+    }
+
+    /** 0 below 40, 1 from 40, 2 from 60, 3 from 80 and 4 from 90. */
+    private static function scoreLevel(float $score): int
+    {
+        return match (true) {
+            $score < 40 => 0,
+            $score < 60 => 1,
+            $score < 80 => 2,
+            $score < 90 => 3,
+            default => 4,
+        };
+    }
 
     /**
      * The settings of each form version's Central sync: its projects under
@@ -5184,7 +4901,8 @@ class OdkFormService
                 // The list this export reruns was not opened in this session.
                 return "";
             }
-            $rResult = $this->sm->get(Connection::class)->fetchAllAssociative($stored['sql'], $stored['values']);
+            $rows = $this->sm->get(Connection::class)->iterateAssociative($stored['sql'], $stored['values']);
+            $count = 0;
 
             $auditScore = 0;
             $levelZero = [];
@@ -5224,15 +4942,18 @@ class OdkFormService
                 $fieldNames = ['Audit Date', 'Personal Training and Certifications', 'Physical Facility', 'Saftey', 'Pre-Testing Phase', 'Testing Phase', 'Post-Testing Phase', 'External Quality Assessment'];
             }
 
-            $outputData[] = $headerRow;
+            $filename = $excelName . ' - ' . time() . '.xlsx';
+            $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
+            $book->addRow($headerRow);
             if ($source == 'apl180' || $source == 'apall' || $source == 'ap') {
                 $data = [$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint];
                 $fieldNames = ['Facility Id', 'Facility Name', 'Audit Round No.', 'Audit Date', 'Testing Point Type', 'Testing Point Name', 'Level', 'Affiliation', 'Score Level', 'Percentage'];
-                $outputData[] = $data;
+                $book->addRow($data);
             }
 
-            $outputData[] = $fieldNames;
-            foreach ($rResult as $aRow) {
+            $book->addRow($fieldNames);
+            foreach ($rows as $aRow) {
+                $count++;
                 $scorePer = round((float) ($aRow['AUDIT_SCORE_PERCENTAGE']));
                 $row = [];
                 $level = null;
@@ -5293,9 +5014,9 @@ class OdkFormService
                     $row[] = round((float) ($aRow['POST_SCORE']), 2);
                     $row[] = round((float) ($aRow['EQA_SCORE']), 2);
                 }
-                $outputData[] = $row;
+                $book->addRow($row);
             }
-            $outputScore['avgAuditScore'] = (count($rResult) > 0) ? round($auditScore / count($rResult), 2) : 0;
+            $outputScore['avgAuditScore'] = ($count > 0) ? round($auditScore / $count, 2) : 0;
             $outputScore['levelZeroCount'] = count($levelZero);
             $outputScore['levelOneCount'] = count($levelOne);
             $outputScore['levelTwoCount'] = count($levelTwo);
@@ -5303,22 +5024,16 @@ class OdkFormService
             $outputScore['levelFourCount'] = count($levelFour);
 
             if ($source == 'apl180' || $source == 'apall' || $source == 'ap') {
-                $outputData[] = ['No.of Audit(s)    : ' . count($rResult)];
-                $outputData[] = ['Avg. Audit Score    : ' . $outputScore['avgAuditScore']];
+                $book->addRow(['No.of Audit(s)    : ' . $count]);
+                $book->addRow(['Avg. Audit Score    : ' . $outputScore['avgAuditScore']]);
 
-                $outputData[] = ['Level 0(Below 40) : ' . $outputScore['levelZeroCount']];
-                $outputData[] = ['Level 1(40-59)    : ' . $outputScore['levelOneCount']];
-                $outputData[] = ['Level 2(60-79)    : ' . $outputScore['levelTwoCount']];
-                $outputData[] = ['Level 3(80-89)    : ' . $outputScore['levelThreeCount']];
-                $outputData[] = ['Level 4(90)       : ' . $outputScore['levelFourCount']];
-                // $xlsx->addSheet($outputData);
+                $book->addRow(['Level 0(Below 40) : ' . $outputScore['levelZeroCount']]);
+                $book->addRow(['Level 1(40-59)    : ' . $outputScore['levelOneCount']]);
+                $book->addRow(['Level 2(60-79)    : ' . $outputScore['levelTwoCount']]);
+                $book->addRow(['Level 3(80-89)    : ' . $outputScore['levelThreeCount']]);
+                $book->addRow(['Level 4(90)       : ' . $outputScore['levelFourCount']]);
             }
-            $xlsx = new SimpleXLSXGen();
-            $xlsx->addSheet($outputData);
-            $filename = $excelName . ' - ' . time() . '.xlsx';
-            $TemporaryFolderPath = CommonService::downloadFile($filename);
-            $xlsx->mergeCells('A1:Q1');
-            $xlsx->saveAs($TemporaryFolderPath);
+            $book->close();
             $subject = '';
             $eventType = 'Export-' . $headerRow;
             $action = $username . ' has exported ' . $headerRow;

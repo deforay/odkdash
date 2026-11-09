@@ -291,12 +291,10 @@ final class SpiV3Handler extends ActionHandler
         ]);
     }
 
-    /** Has no template, so it is the error page, as before. */
+    /** The V3 bulk download rows as a spreadsheet. */
     public function downloadFilesAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->respond->page('application/spi-v3/download-files', [
-            'result' => $this->odkFormService->getDownloadFilesRow(),
-        ]);
+        return $this->respond->file($this->odkFormService->getDownloadFilesRow(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     }
 
     public function getDistrictByProvinceAction(ServerRequestInterface $request): ResponseInterface

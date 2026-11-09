@@ -341,14 +341,13 @@ final class SpiV6Handler extends ActionHandler
     }
 
     /**
-     * The service sends the bulk download itself and exits. There is no
-     * template, so a request it does not answer is the error page, as before.
+     * The audits the V6 list last showed, as a spreadsheet. A 404 when this
+     * session has not opened the list.
      */
     public function downloadFilesAction(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->respond->page('application/spi-v6/download-files', [
-            'result' => $this->odkFormService->getV6DownloadFilesRow(),
-        ]);
+        $path = $this->odkFormService->getV6DownloadFilesRow();
+        return $path === null ? $this->respond->status(404) : $this->respond->file($path, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     }
 
     public function getDistrictByProvinceAction(ServerRequestInterface $request): ResponseInterface
