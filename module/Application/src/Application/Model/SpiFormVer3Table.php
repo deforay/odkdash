@@ -3,6 +3,7 @@
 namespace Application\Model;
 
 use App\Db\Dbal;
+use App\Db\DataTables;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Expression;
@@ -1037,214 +1038,39 @@ class SpiFormVer3Table
         $queryContainer = new Container('query');
         $aColumns = array('spiv3.id', 'facilityname', 'auditroundno', "DATE_FORMAT(assesmentofaudit,'%d-%b-%Y')", 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'spiv3.status');
         $orderColumns = array('spiv3.id', 'facilityname', 'auditroundno', 'assesmentofaudit', 'testingpointname', 'testingpointtype', 'level', 'affiliation', 'AUDIT_SCORE_PERCANTAGE', 'spiv3.status');
+        // The filters the list and its total share. The total leaves out the
+        // search, as before.
+        $where = ["spiv3.status != 'deleted'"];
+        $values = [];
+        self::addAuditRound($parameters, $where, $values);
+        self::addDateRange($parameters, $where, $values);
+        self::addChartFilters($parameters, $where, $values);
+        // The list joins the facility for every row, so the province and
+        // district filters reuse that join instead of adding their own.
+        self::addProvinceFilters($parameters, $where, $values);
+        $join = self::addUserScope($where, $values);
+        $from = ' FROM spi_form_v_3 AS spiv3 LEFT JOIN spi_rt_3_facilities AS f ON f.id = spiv3.facility' . $join;
+        $select = 'SELECT spiv3.*, f.province AS province, f.district AS district' . $from;
+        $tWhere = $where;
+        $tValues = $values;
 
-        /*
-         * Paging
-         */
-        $sLimit = "";
-        if (isset($parameters['iDisplayStart']) && $parameters['iDisplayLength'] != '-1') {
-            $sOffset = $parameters['iDisplayStart'];
-            $sLimit = $parameters['iDisplayLength'];
-        }
-
-        /*
-         * Ordering
-         */
-
-        $sOrder = "";
-        if (isset($parameters['iSortCol_0'])) {
-            for ($i = 0; $i < (int) $parameters['iSortingCols']; $i++) {
-                if ($parameters['bSortable_' . (int) $parameters['iSortCol_' . $i]] == "true" && isset($orderColumns[(int) $parameters['iSortCol_' . $i]])) {
-                    $sOrder .= $orderColumns[(int) $parameters['iSortCol_' . $i]] . " " . ($parameters['sSortDir_' . $i]) . ", ";
-                }
-            }
-            $sOrder = rtrim($sOrder, ", ");
+        [$search, $searchValues] = DataTables::search($aColumns, $parameters);
+        if ($search !== '') {
+            $where[] = $search;
+            array_push($values, ...$searchValues);
         }
 
-        /*
-         * Filtering
-         * NOTE this does not match the built-in DataTables filtering which does it
-         * word by word on any field. It's possible to do here, but concerned about efficiency
-         * on very large tables, and MySQL's regex functionality is very limited
-         */
+        $sql = $select . self::whereSql($where);
+        $order = DataTables::order($orderColumns, $parameters);
+        if ($order !== '') {
+            $sql .= ' ORDER BY ' . $order;
+        }
+        // The export reruns this query without the page.
+        $queryContainer->exportAllDataQuery = ['sql' => $sql, 'values' => $values];
 
-        $sWhere = CommonService::dataTablesSearch($aColumns, $parameters);
-
-        /*
-         * SQL queries
-         * Get data to display
-         */
-        $dbAdapter = $this->adapter;
-        $sql = new Sql($this->adapter);
-        $startDate = "";
-        $endDate = "";
-        if (isset($parameters['dateRange']) && ($parameters['dateRange'] != "")) {
-            $dateField = explode(" ", $parameters['dateRange']);
-            //print_r($proceed_date);die;
-            if (isset($dateField[0]) && trim($dateField[0]) != "") {
-                $startDate = CommonService::isoDateFormat($dateField[0]);
-            }
-            if (isset($dateField[2]) && trim($dateField[2]) != "") {
-                $endDate = CommonService::isoDateFormat($dateField[2]);
-            }
-        }
-
-        $sQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where('spiv3.status != "deleted"')
-            ->join(
-                array('f' => 'spi_rt_3_facilities'),
-                'f.id=spiv3.facility',
-                array('province', 'district'),
-                'left'
-            );
-
-        if ($parameters['auditRndNo'] != '') {
-            $sQuery = $sQuery->where(['spiv3.auditroundno' => $parameters['auditRndNo']]);
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $sQuery = $sQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
-            $sQuery = $sQuery->where(['spiv3.testingpointtype' => $parameters['testPoint']]);
-            if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '') {
-                if (trim($parameters['testPoint']) != 'other') {
-                    $sQuery = $sQuery->where(['spiv3.testingpointname' => $parameters['testPointName']]);
-                } else {
-                    $sQuery = $sQuery->where(['spiv3.testingpointtype_other' => $parameters['testPointName']]);
-                }
-            }
-        }
-        if ($parameters['level'] != '') {
-            $sQuery = $sQuery->where(['spiv3.level' => $parameters['level']]);
-        }
-        if ($parameters['affiliation'] != '') {
-            $sQuery = $sQuery->where(['spiv3.affiliation' => $parameters['affiliation']]);
-        }
-        if (is_array($parameters['province']) && $parameters['province'] !== []) {
-            $sQuery = $sQuery->where(['f.province' => CommonService::inList($parameters['province'])]);
-            if (is_array($parameters['district']) && $parameters['district'] !== []) {
-                $sQuery = $sQuery->where(['f.province' => CommonService::inList($parameters['province'])]);
-            }
-        } elseif ($parameters['province'] != '') {
-            $provinces = explode(",", $parameters['province']);
-            $sQuery = $sQuery->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if ($parameters['province'] != '') {
-            if (is_array($parameters['district']) && $parameters['district'] !== []) {
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($parameters['district'])]);
-            } elseif ($parameters['district'] != '') {
-                $provinces = explode(",", $parameters['district']);
-                $sQuery = $sQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
-            if ($parameters['scoreLevel'] == 0) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($parameters['scoreLevel'] == 1) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($parameters['scoreLevel'] == 2) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($parameters['scoreLevel'] == 3) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($parameters['scoreLevel'] == 4) {
-                $sQuery = $sQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-        if (!empty($loginContainer->token)) {
-            $sQuery = $sQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $sQuery = self::applyV3LocationScope($sQuery);
-        if ($sWhere !== null) {
-            $sQuery->where($sWhere);
-        }
-
-        if (isset($sOrder) && $sOrder != "") {
-            $sQuery->order($sOrder);
-        }
-        $queryContainer->exportAllDataQuery = $sQuery;
-        if (isset($sLimit) && isset($sOffset)) {
-            $sQuery->limit($sLimit);
-            $sQuery->offset($sOffset);
-        }
-
-        $sQueryStr = $sql->buildSqlString($sQuery); // Get the string of the Sql, instead of the Select-instance
-
-        //echo $sQueryStr;die;
-        $rResult = $this->db->fetchAllAssociative($sQueryStr);
-
-        /* Data set length after filtering */
-        $sQuery->reset('limit');
-        $sQuery->reset('offset');
-        $fQuery = $sql->buildSqlString($sQuery);
-        $iFilteredTotal = $this->db->executeQuery($fQuery)->rowCount();
-
-        /* Total data set length */
-        $tQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))
-            ->where('spiv3.status != "deleted"')
-            ->join(
-                array('f' => 'spi_rt_3_facilities'),
-                'f.id=spiv3.facility',
-                array('province', 'district'),
-                'left'
-            );
-        if ($parameters['auditRndNo'] != '') {
-            $tQuery = $tQuery->where(['spiv3.auditroundno' => $parameters['auditRndNo']]);
-        }
-        if (trim($startDate) != "" && trim($endDate) != "") {
-            $tQuery = $tQuery->where(['spiv3.assesmentofaudit >= ?' => $startDate, 'spiv3.assesmentofaudit <= ?' => $endDate]);
-        }
-        if (isset($parameters['testPoint']) && trim($parameters['testPoint']) != '') {
-            $tQuery = $tQuery->where(['spiv3.testingpointtype' => $parameters['testPoint']]);
-            if (isset($parameters['testPointName']) && trim($parameters['testPointName']) != '') {
-                if (trim($parameters['testPoint']) != 'other') {
-                    $tQuery = $tQuery->where(['spiv3.testingpointname' => $parameters['testPointName']]);
-                } else {
-                    $tQuery = $tQuery->where(['spiv3.testingpointtype_other' => $parameters['testPointName']]);
-                }
-            }
-        }
-        if ($parameters['level'] != '') {
-            $tQuery = $tQuery->where(['spiv3.level' => $parameters['level']]);
-        }
-        if ($parameters['affiliation'] != '') {
-            $tQuery = $tQuery->where(['spiv3.affiliation' => $parameters['affiliation']]);
-        }
-        if (is_array($parameters['province']) && $parameters['province'] !== []) {
-            $tQuery = $tQuery->where(['f.province' => CommonService::inList($parameters['province'])]);
-            if (is_array($parameters['district']) && $parameters['district'] !== []) {
-                $tQuery = $tQuery->where(['f.province' => CommonService::inList($parameters['province'])]);
-            }
-        } elseif ($parameters['province'] != '') {
-            $provinces = explode(",", $parameters['province']);
-            $tQuery = $tQuery->where(['f.province' => CommonService::inList($provinces)]);
-        }
-        if ($parameters['province'] != '') {
-            if (is_array($parameters['district']) && $parameters['district'] !== []) {
-                $tQuery = $tQuery->where(['f.district' => CommonService::inList($parameters['district'])]);
-            } elseif ($parameters['district'] != '') {
-                $provinces = explode(",", $parameters['district']);
-                $tQuery = $tQuery->where(['f.district' => CommonService::inList($provinces)]);
-            }
-        }
-        if (isset($parameters['scoreLevel']) && $parameters['scoreLevel'] != '') {
-            if ($parameters['scoreLevel'] == 0) {
-                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE < 40");
-            } elseif ($parameters['scoreLevel'] == 1) {
-                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59");
-            } elseif ($parameters['scoreLevel'] == 2) {
-                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79");
-            } elseif ($parameters['scoreLevel'] == 3) {
-                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89");
-            } elseif ($parameters['scoreLevel'] == 4) {
-                $tQuery = $tQuery->where("spiv3.AUDIT_SCORE_PERCANTAGE >= 90");
-            }
-        }
-        if (!empty($loginContainer->token)) {
-            $tQuery = $tQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $tQuery = self::applyV3LocationScope($tQuery);
-        $tQueryStr = $sql->buildSqlString($tQuery); // Get the string of the Sql, instead of the Select-instance
-        $iTotal = $this->db->executeQuery($tQueryStr)->rowCount();
+        $rResult = $this->db->fetchAllAssociative($sql . DataTables::limit($parameters), $values);
+        $iFilteredTotal = $this->db->executeQuery($sql, $values)->rowCount();
+        $iTotal = $this->db->executeQuery($select . self::whereSql($tWhere), $tValues)->rowCount();
         $output = array(
             "sEcho" => (int) $parameters['sEcho'],
             "iTotalRecords" => $iTotal,
@@ -1317,14 +1143,14 @@ class SpiFormVer3Table
             $output['aaData'][] = $row;
         }
         //get earliest date
-        $eQuery = $sql->select()->from(array('spiv3' => 'spi_form_v_3'))->columns(array('assesmentofaudit'))->order('assesmentofaudit ASC');
         // The earliest audit the user may see, scoped as the list is.
-        if (!empty($loginContainer->token)) {
-            $eQuery->where(['spiv3.token' => CommonService::inList($loginContainer->token)]);
-        }
-        $eQuery = self::applyV3LocationScope($eQuery);
-        $eQueryStr = $sql->buildSqlString($eQuery); // Get the string of the Sql, instead of the Select-instance
-        $eResult = $this->db->fetchAssociative($eQueryStr);
+        $eWhere = [];
+        $eValues = [];
+        $eJoin = self::addUserScope($eWhere, $eValues);
+        $eResult = $this->db->fetchAssociative(
+            'SELECT spiv3.assesmentofaudit AS assesmentofaudit FROM spi_form_v_3 AS spiv3' . $eJoin . self::whereSql($eWhere) . ' ORDER BY assesmentofaudit ASC',
+            $eValues
+        );
         //get duplicate value
         $dpResult = $this->db->fetchAllAssociative("SELECT `meta-instance-id`, COUNT(*) c FROM spi_form_v_3 GROUP BY `meta-instance-id` HAVING c > 1");
 
