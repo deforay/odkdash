@@ -28,6 +28,7 @@ use OpenSpout\Writer\XLSX\Writer;
  * - "2026-01-09" is a date.
  * - Any other string is text, so a value that starts with "=" is never a
  *   formula.
+ * - A Cell is written as it is.
  *
  * Each column is as wide as its longest value plus one, up to 60, unless
  * the file was opened with a fixed width.
@@ -66,7 +67,8 @@ final class Workbook
         $column = 1;
         foreach ($values as $value) {
             $cells[] = self::cell($value, $style);
-            $this->longest[$column] = max($this->longest[$column] ?? 0, mb_strlen((string) $value));
+            $length = $value instanceof Cell ? 0 : mb_strlen((string) $value);
+            $this->longest[$column] = max($this->longest[$column] ?? 0, $length);
             $column++;
         }
         $this->writer->addRow(new Row($cells));
@@ -87,6 +89,9 @@ final class Workbook
 
     public static function cell(mixed $value, ?Style $style = null): Cell
     {
+        if ($value instanceof Cell) {
+            return $value;
+        }
         if ($value === null || $value === '') {
             return new EmptyCell(null, $style);
         }
