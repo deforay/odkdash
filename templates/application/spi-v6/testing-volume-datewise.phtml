@@ -34,7 +34,8 @@
             }
 
             $levelData[] = "{ y : " . $level . ", color : '" . $color . "' }";
-            $volumeData[] = (isset($row['avgMonthTesting']) ? $row['avgMonthTesting'] : 0);
+            // The column is text. A blank or other text plots as 0.
+            $volumeData[] = (float) ($row['client_tested_HIV_PM'] ?? 0);
             $testerData[] = (isset($row['NumberofTester']) ? $row['NumberofTester'] : 0);
             $labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname'])) . " <br> Testing Point Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['testingpointname'])) . "<br>'");
             $counter++;
