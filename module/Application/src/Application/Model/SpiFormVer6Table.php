@@ -1076,7 +1076,10 @@ class SpiFormVer6Table
         self::addScoreLevel($params, $where);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT spiv6.*' . $mappingColumns . $filterColumns . ' FROM spi_form_v_6 AS spiv6' . $mappingJoin . $filterJoin
-            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where)),
+            . ($where === [] ? '' : ' WHERE ' . implode(' AND ', $where))
+            // The ten audits with the highest monthly volume, as the pages
+            // show. The column is text, so + 0 sorts it as a number.
+            . ' ORDER BY spiv6.client_tested_HIV_PM + 0 DESC, spiv6.id DESC LIMIT 10',
             $values
         );
 
