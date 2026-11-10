@@ -10,7 +10,7 @@ use Doctrine\DBAL\ParameterType;
 use Application\Model\GlobalTable;
 use Application\Model\EventLogTable;
 use Application\Service\CommonService;
-use \Application\Service\ImageResizeService;
+use App\Upload\UploadedImage;
 use Application\Model\UserLocationMapTable;
 
 class UsersTable
@@ -126,42 +126,7 @@ class UsersTable
                 $this->db->insert('user_role_map', ['user_id' => $lastInsertId, 'role_id' => $params['roleId']]);
                 $this->saveLocationsAndTokens($lastInsertId, $params);
             }
-            if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
-                // Sanitize the base directory path
-                $baseDirectory = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users";
-                $safeDirectoryPath = CommonService::buildSafePath(UPLOAD_PATH, ['users']); // Use buildSafePath to sanitize path
-
-                if ($safeDirectoryPath !== false) {
-                    // Extract the file extension
-                    $extension = strtolower(pathinfo($_FILES['user_image']['name'], PATHINFO_EXTENSION));
-
-                    // Construct a preliminary filename and clean it using preg_replace
-                    $prelimFileName = time() . '_' . $lastInsertId; // Filename before sanitization
-                    $prelimFileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $prelimFileName); // Strip out any invalid characters
-
-                    // Now clean the file name further using cleanFileName()
-                    $safeFileName = CommonService::cleanFileName($prelimFileName) . "." . $extension;
-
-                    // Construct the full safe file path
-                    $imageFullPath = $safeDirectoryPath . DIRECTORY_SEPARATOR . $safeFileName;
-
-                    // Move the uploaded file to the safe directory
-                    if (move_uploaded_file($_FILES["user_image"]["tmp_name"], $imageFullPath)) {
-                        // Resize the image if upload was successful
-                        $resizeObj = new ImageResizeService($imageFullPath);
-                        $resizeObj->resizeImage(320, 214, 'auto');
-                        $resizeObj->saveImage($imageFullPath, 100);
-
-                        // Save the file path relative to the uploads folder
-                        $imageUpName = '/uploads/users/' . $safeFileName;
-                        $imageData = array('user_image' => $imageUpName);
-                        $this->db->update('users', $imageData, ['id' => $lastInsertId]);
-                    }
-                } else {
-                    // Handle error if directory creation fails
-                    echo "Failed to create directory.";
-                }
-            }
+            $this->saveUserImage((int) $lastInsertId);
 
             return $lastInsertId;
         }
@@ -203,42 +168,7 @@ class UsersTable
                 $result = $this->db->update('users', $imageData, ['id' => $userId]);
             }
 
-            if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
-                // Sanitize the base directory path
-                $baseDirectory = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users";
-                $safeDirectoryPath = CommonService::buildSafePath(UPLOAD_PATH, ['users']); // Use buildSafePath to sanitize path
-
-                if ($safeDirectoryPath !== false) {
-                    // Extract the file extension
-                    $extension = strtolower(pathinfo($_FILES['user_image']['name'], PATHINFO_EXTENSION));
-
-                    // Construct a preliminary filename and clean it using preg_replace
-                    $prelimFileName = time() . '_' . $userId; // Filename before sanitization
-                    $prelimFileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $prelimFileName); // Strip out any invalid characters
-
-                    // Now clean the file name further using cleanFileName()
-                    $safeFileName = CommonService::cleanFileName($prelimFileName) . "." . $extension;
-
-                    // Construct the full safe file path
-                    $imageFullPath = $safeDirectoryPath . DIRECTORY_SEPARATOR . $safeFileName;
-
-                    // Move the uploaded file to the safe directory
-                    if (move_uploaded_file($_FILES["user_image"]["tmp_name"], $imageFullPath)) {
-                        // Resize the image if upload was successful
-                        $resizeObj = new ImageResizeService($imageFullPath);
-                        $resizeObj->resizeImage(320, 214, 'auto');
-                        $resizeObj->saveImage($imageFullPath, 100);
-
-                        // Save the file path relative to the uploads folder
-                        $imageUpName = '/uploads/users/' . $safeFileName;
-                        $imageData = array('user_image' => $imageUpName);
-                        $this->db->update('users', $imageData, ['id' => $userId]);
-                    }
-                } else {
-                    // Handle error if directory creation fails
-                    echo "Failed to create directory.";
-                }
-            }
+            $this->saveUserImage((int) $userId);
 
             return $userId;
         }
@@ -371,44 +301,25 @@ class UsersTable
                 $imageData = array('user_image' => '');
                 $result = $this->db->update('users', $imageData, ['id' => $userId]);
             }
-            if (isset($_FILES['user_image']['name']) && $_FILES['user_image']['name'] != '') {
-                // Sanitize the base directory path
-                $baseDirectory = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users";
-                $safeDirectoryPath = CommonService::buildSafePath(UPLOAD_PATH, ['users']); // Use buildSafePath to sanitize path
-
-                if ($safeDirectoryPath !== false) {
-                    // Extract the file extension
-                    $extension = strtolower(pathinfo($_FILES['user_image']['name'], PATHINFO_EXTENSION));
-
-                    // Construct a preliminary filename and clean it using preg_replace
-                    $prelimFileName = time() . '_' . $userId; // Filename before sanitization
-                    $prelimFileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $prelimFileName); // Strip out any invalid characters
-
-                    // Now clean the file name further using cleanFileName()
-                    $safeFileName = CommonService::cleanFileName($prelimFileName) . "." . $extension;
-
-                    // Construct the full safe file path
-                    $imageFullPath = $safeDirectoryPath . DIRECTORY_SEPARATOR . $safeFileName;
-
-                    // Move the uploaded file to the safe directory
-                    if (move_uploaded_file($_FILES["user_image"]["tmp_name"], $imageFullPath)) {
-                        // Resize the image if upload was successful
-                        $resizeObj = new ImageResizeService($imageFullPath);
-                        $resizeObj->resizeImage(320, 214, 'auto');
-                        $resizeObj->saveImage($imageFullPath, 100);
-
-                        // Save the file path relative to the uploads folder
-                        $imageUpName = '/uploads/users/' . $safeFileName;
-                        $imageData = array('user_image' => $imageUpName);
-                        $this->db->update('users', $imageData, ['id' => $userId]);
-                    }
-                } else {
-                    // Handle error if directory creation fails
-                    echo "Failed to create directory.";
-                }
-            }
+            $this->saveUserImage((int) $userId);
 
             return $userId;
+        }
+    }
+
+    /**
+     * Saves the photo from the form's user_image field as the user's photo.
+     * The photo is scaled down to fit 320 by 214 pixels.
+     */
+    private function saveUserImage(int $userId): void
+    {
+        if (empty($_FILES['user_image']['name'])) {
+            return;
+        }
+        $folder = CommonService::buildSafePath(UPLOAD_PATH, ['users']);
+        $fileName = $folder === false ? null : UploadedImage::save($_FILES['user_image'], $folder, time() . '_' . $userId, 320, 214);
+        if ($fileName !== null) {
+            $this->db->update('users', ['user_image' => '/uploads/users/' . $fileName], ['id' => $userId]);
         }
     }
 

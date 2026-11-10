@@ -121,12 +121,6 @@ parameters:
 			path: module/Application/src/Application/Service/GuzzleApiLogMiddleware.php
 
 		-
-			message: '#^Parameter \#3 \$quality of function imagepng expects int, float given\.$#'
-			identifier: argument.type
-			count: 1
-			path: module/Application/src/Application/Service/ImageResizeService.php
-
-		-
 			message: '#^Binary operation "\." between ''Export\-'' and array\{\}\|array\{''Audit Dates''\}\|array\{''Audit Performance''\}\|array\{''Latest Audits''\}\|array\{''Overall Audit…''\}\|array\{''Performance \- Last…''\}\|array\{''Performance of High…''\} results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1

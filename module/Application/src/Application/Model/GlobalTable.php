@@ -3,6 +3,7 @@
 namespace Application\Model;
 
 use App\Db\DataTables;
+use App\Upload\UploadedImage;
 use Application\Service\CommonService;
 use Doctrine\DBAL\Connection;
 
@@ -64,6 +65,22 @@ class GlobalTable
         return $this->db->fetchAllKeyValue('SELECT global_name, global_value FROM global_config');
     }
 
+    /**
+     * Saves the image from the form field $name, logo or additional_logo, as
+     * that logo. The file name is the field name and a random string.
+     */
+    private function saveLogo(string $name): void
+    {
+        if (empty($_FILES[$name]['name'])) {
+            return;
+        }
+        $folder = CommonService::buildSafePath(UPLOAD_PATH, ['logo']);
+        $fileName = $folder === false ? null : UploadedImage::save($_FILES[$name], $folder, $name . CommonService::generateRandomString(6));
+        if ($fileName !== null) {
+            $this->update(['global_value' => $fileName], ['global_name' => $name]);
+        }
+    }
+
     public function updateConfigDetails($params)
     {
         $result = 0;
@@ -75,17 +92,7 @@ class GlobalTable
             $this->update(array('global_value' => ''), array('global_name' => 'logo'));
         }
 
-        if (isset($_FILES['logo']['name']) && $_FILES['logo']['name'] != "") {
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
-            }
-            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['logo']['name'], PATHINFO_EXTENSION));
-            $string = CommonService::generateRandomString(6) . ".";
-            $imageName = "logo" . $string . $extension;
-            if (move_uploaded_file($_FILES["logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
-                $this->update(array('global_value' => $imageName), array('global_name' => 'logo'));
-            }
-        }
+        $this->saveLogo('logo');
 
         $fileName =$_POST['removedAdditionalLogoImage'];
         $cleanedFileName = CommonService::cleanFileName($fileName);
@@ -95,18 +102,7 @@ class GlobalTable
             $this->update(array('global_value' => ''), array('global_name' => 'additional_logo'));
         }
 
-        if (isset($_FILES['additional_logo']['name']) && $_FILES['additional_logo']['name'] != "") {
-
-            if (!file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo") && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo")) {
-                mkdir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
-            }
-            $extension = strtolower(pathinfo(UPLOAD_PATH . DIRECTORY_SEPARATOR . $_FILES['additional_logo']['name'], PATHINFO_EXTENSION));
-            $string = CommonService::generateRandomString(6) . ".";
-            $imageName = "additional_logo" . $string . $extension;
-            if (move_uploaded_file($_FILES["additional_logo"]["tmp_name"], UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $imageName)) {
-                $this->update(array('global_value' => $imageName), array('global_name' => 'additional_logo'));
-            }
-        }
+        $this->saveLogo('additional_logo');
 
         $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $_POST['removedTempFile']);
         $cleanedFileName = CommonService::cleanFileName($fileName);
