@@ -194,6 +194,9 @@ class SpiRtFacilitiesTable
             $spiv3Db = new SpiFormVer3Table($this->db);
             $spiv6Db = new SpiFormVer6Table($this->db);
             $rowId = base64_decode($params['rowId']);
+            if ($this->facilityById((int) $rowId) === null) {
+                return null;
+            }
 
             $geoTable = new GeographicalDivisionsTable($this->db);
             //Add Country
@@ -426,9 +429,14 @@ class SpiRtFacilitiesTable
         }
     }
 
+    /** The facility, or null when it is outside the user's locations. */
     private function facilityById(int $id): ?\ArrayObject
     {
-        $row = $this->db->fetchAssociative('SELECT * FROM spi_rt_3_facilities WHERE id = ?', [$id]);
+        [$scope, $scopeValues] = self::mappingCondition('spirt3');
+        $row = $this->db->fetchAssociative(
+            'SELECT * FROM spi_rt_3_facilities AS spirt3 WHERE spirt3.id = ?' . ($scope !== '' ? " AND $scope" : ''),
+            [$id, ...$scopeValues]
+        );
         return $row ? new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS) : null;
     }
 
