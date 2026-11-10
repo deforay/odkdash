@@ -42,11 +42,6 @@
             "module/Application/Module.php"
         ]
     },
-    "autoload-dev": {
-        "psr-4": {
-            "ApplicationTest\\": "module/Application/test/"
-        }
-    },
     "scripts": {
         "serve": "php -S 0.0.0.0:8080 -t public",
         "migrate": "@php bin/migrate",
