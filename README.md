@@ -60,8 +60,8 @@ One failing instance does not stop the others. The summary at the end lists what
 upgraded and what failed, and the exit status is non-zero if any instance failed.
 
 The script preserves everything under `config/autoload/`, which holds the
-database credentials for the deployment. It also preserves `var/`, `uploads/`,
-`public/uploads/`, `public/temporary/`, and `data/cache/`.
+database credentials for the deployment. It also preserves `var/`,
+`public/uploads/`, and `public/temporary/`.
 
 To confirm the upgrade succeeded, check the schema version:
 

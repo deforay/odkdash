@@ -173,7 +173,7 @@ CONTEXT="Before reviewing, read these for the rules this codebase is held to:
   every ODK submission value passes through before it reaches a grid cell or a PDF
 - migrations/README.md and bin/migrate — every schema change belongs in migrations/, must
   replay on a fresh install, and comes with a version bump in composer.json
-- src/Http/Routes/Application.php — the routes, with their ACL resources
+- src/Http/routes.php — the routes, with their ACL resources
 - module/Application/config/module.config.php — the console commands under the 'console' key
 
 A finding is a defect with a failure scenario: concrete inputs or state, and the wrong

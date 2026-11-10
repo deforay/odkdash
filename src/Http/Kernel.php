@@ -43,7 +43,7 @@ use function DI\get;
 /**
  * Builds the Slim app that serves every request. public/index.php runs it.
  *
- * The routes live in src/Http/Routes/. A path with no route answers the
+ * The routes live in src/Http/routes.php. A path with no route answers the
  * error/404 page. The services come from ServiceDefinitions.
  */
 final class Kernel
@@ -148,27 +148,14 @@ final class Kernel
     }
 
     /**
-     * Every route in src/Http/Routes/, keyed by route name. Each file holds
-     * one module's routes. See
-     * Routes/Application.php. bin/dev/helper-access reads them too.
+     * Every route in src/Http/routes.php, keyed by route name.
+     * bin/dev/helper-access reads them too.
      *
      * @return array<string, array<string, mixed>>
      */
     public static function routes(): array
     {
-        $routes = [];
-        $files = glob(__DIR__ . '/Routes/*.php') ?: [];
-        sort($files);
-        foreach ($files as $file) {
-            foreach (require $file as $name => $route) {
-                if (isset($routes[$name])) {
-                    throw new \RuntimeException(sprintf('Route "%s" is defined twice, again in %s.', $name, $file));
-                }
-                $routes[$name] = $route;
-            }
-        }
-
-        return $routes;
+        return require __DIR__ . '/routes.php';
     }
 
     /**
