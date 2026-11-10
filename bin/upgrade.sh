@@ -493,10 +493,8 @@ upgrade_instance() {
         --exclude='config/autoload/' \
         --exclude='vendor/' \
         --exclude='var/' \
-        --exclude='uploads/' \
         --exclude='public/uploads/' \
         --exclude='public/temporary/' \
-        --exclude='data/cache/' \
         "$src_dir/" "$app_path/" 2>>"$log_file" ||
         { fail "rsync deploy failed for ${app_path}. See ${log_file}."; return 1; }
 
@@ -624,13 +622,12 @@ upgrade_instance() {
     # --- permissions --------------------------------------------------------
     # Directories the app writes to at runtime. Git tracks none of their
     # contents, and the rsync deploy excludes them, so they can be missing.
-    for dir in var/log var/api-logs var/backups data/cache public/temporary public/uploads uploads backup; do
+    for dir in var/log var/api-logs var/backups public/temporary public/uploads; do
         mkdir -p "$app_path/$dir"
     done
 
     chown -R "$web_user":"$web_user" "$app_path"
-    chmod -R u+rwX,g+rwX "$app_path/var" "$app_path/data/cache" "$app_path/public/temporary" \
-        "$app_path/public/uploads" "$app_path/uploads" "$app_path/backup"
+    chmod -R u+rwX,g+rwX "$app_path/var" "$app_path/public/temporary" "$app_path/public/uploads"
     chmod +x "$app_path/cron.sh" "$app_path/bin/migrate" "$app_path/bin/console" \
         "$app_path/bin/upgrade.sh" 2>/dev/null
 

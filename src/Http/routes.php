@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Slim routes for the Application module, keyed by route name.
+ * The Slim routes, keyed by route name.
  *
  * Each entry has these keys:
  *
