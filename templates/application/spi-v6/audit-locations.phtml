@@ -37,11 +37,11 @@ $icon = $this->basePath('assets/img/map-points/dark-green.png');
 				$icon = $this->basePath('assets/img/map-points/dark-green.png');
 				if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
 					$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] <= 89) {
+				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] < 90) {
 					$icon = $this->basePath('assets/img/map-points/light-green.png');
-				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] <= 79) {
+				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] < 80) {
 					$icon = $this->basePath('assets/img/map-points/yellow.png');
-				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] <= 599) {
+				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] < 60) {
 					$icon = $this->basePath('assets/img/map-points/orange.png');
 				} else {
 					$icon = $this->basePath('assets/img/map-points/red.png');

@@ -1325,9 +1325,9 @@ class SpiFormVer6Table
         $score = $rounded ? 'ROUND(spiv6.AUDIT_SCORE_PERCENTAGE)' : 'spiv6.AUDIT_SCORE_PERCENTAGE';
         $band = match (true) {
             $params['scoreLevel'] == 0 => 'spiv6.AUDIT_SCORE_PERCENTAGE < 40',
-            $params['scoreLevel'] == 1 => "$score >= 40 AND $score <= 59",
-            $params['scoreLevel'] == 2 => "$score >= 60 AND $score <= 79",
-            $params['scoreLevel'] == 3 => "$score >= 80 AND $score <= 89",
+            $params['scoreLevel'] == 1 => "$score >= 40 AND $score < 60",
+            $params['scoreLevel'] == 2 => "$score >= 60 AND $score < 80",
+            $params['scoreLevel'] == 3 => "$score >= 80 AND $score < 90",
             $params['scoreLevel'] == 4 => "$score >= 90",
             default => null,
         };
