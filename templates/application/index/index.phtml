@@ -257,15 +257,16 @@ $config = $this->GlobalConfigHelper();
 		$labNameData = [];
 		foreach ($allSubmissions as $row) {
 			if ($counter == 20) break;
-			if ($row['AUDIT_SCORE_PERCENTAGE'] < 40) {
+			$percent = \App\Audit\AuditScore::percent($row['AUDIT_SCORE_PERCENTAGE']);
+			if ($percent < 40) {
 				$color = '#FF0000';
-			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] < 60) {
+			} else if ($percent >= 40 && $percent < 60) {
 				$color = '#FFA500';
-			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] < 80) {
+			} else if ($percent >= 60 && $percent < 80) {
 				$color = '#FFFF00';
-			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] < 90) {
+			} else if ($percent >= 80 && $percent < 90) {
 				$color = '#8DD63E';
-			} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+			} else if ($percent >= 90) {
 				$color = '#528A16';
 			}
 
@@ -681,19 +682,20 @@ $config = $this->GlobalConfigHelper();
 				break;
 			}
 			$percentage = $row['AUDIT_SCORE_PERCANTAGE'] ?? $row['AUDIT_SCORE_PERCENTAGE'];
-			if ($percentage < 40) {
+			$percent = \App\Audit\AuditScore::percent($percentage);
+			if ($percent < 40) {
 				$color = '#FF0000';
 				$level = 0;
-			} else if ($percentage >= 40 && $percentage < 60) {
+			} else if ($percent >= 40 && $percent < 60) {
 				$color = '#FFA500';
 				$level = 1;
-			} else if ($percentage >= 60 && $percentage < 80) {
+			} else if ($percent >= 60 && $percent < 80) {
 				$color = '#FFFF00';
 				$level = 2;
-			} else if ($percentage >= 80 && $percentage < 90) {
+			} else if ($percent >= 80 && $percent < 90) {
 				$color = '#8DD63E';
 				$level = 3;
-			} else if ($percentage >= 90) {
+			} else if ($percent >= 90) {
 				$color = '#528A16';
 				$level = 4;
 			}

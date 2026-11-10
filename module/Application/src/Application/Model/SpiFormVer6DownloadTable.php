@@ -93,15 +93,15 @@ class SpiFormVer6DownloadTable
 
             if (isset($queryResult['AUDIT_SCORE_PERCENTAGE']) && $queryResult['AUDIT_SCORE_PERCENTAGE'] != '') {
                 if ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 0) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE < 40";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 40";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 1) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE < 60";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 40 AND FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 60";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 2) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE < 80";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 60 AND FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 80";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 3) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE < 90";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 80 AND FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 90";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 4) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 90";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 90";
                 }
             }
             $result = $this->db->fetchAllAssociative(

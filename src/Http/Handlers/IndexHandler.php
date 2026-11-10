@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Handlers;
 
+use App\Audit\AuditScore;
 use App\Http\Responder;
 use Application\Service\CommonService;
 use Application\Service\OdkFormService;
@@ -60,7 +61,7 @@ final class IndexHandler extends ActionHandler
             $points[] = [
                 'latitude' => round((float) $audit['Latitude'], 1),
                 'longitude' => round((float) $audit['Longitude'], 1),
-                'score' => (float) ($audit['AUDIT_SCORE_PERCENTAGE'] ?? 0),
+                'score' => AuditScore::percent($audit['AUDIT_SCORE_PERCENTAGE'] ?? null),
             ];
         }
 

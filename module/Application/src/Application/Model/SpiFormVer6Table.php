@@ -4,6 +4,7 @@ namespace Application\Model;
 
 use Doctrine\DBAL\Connection;
 
+use App\Audit\AuditScore;
 use App\Db\DataTables;
 use Application\Session\Container;
 use Application\I18n\Translator;
@@ -1001,11 +1002,11 @@ class SpiFormVer6Table
         self::addScoreLevel($params, $where);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT ? AS newestDate, ? AS oldestDate, COUNT(*) AS totalDataPoints,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0)) AS level0,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0)) AS level1,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0)) AS level2,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0)) AS level3,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0)) AS level4' . $mappingColumns . $filterColumns
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 40, 1,0)) AS level0,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 40 and FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 60, 1,0)) AS level1,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 60 and FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 80, 1,0)) AS level2,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 80 and FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 90, 1,0)) AS level3,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 90, 1,0)) AS level4' . $mappingColumns . $filterColumns
             . ' FROM spi_form_v_6 AS spiv6' . $mappingJoin . $filterJoin . ' WHERE ' . implode(' AND ', $where),
             $values
         );
@@ -1025,11 +1026,11 @@ class SpiFormVer6Table
         [$mappingColumns, $mappingJoin] = self::addInlineMapping($loginContainer, $where, $values);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT ? AS newestDate, ? AS oldestDate, COUNT(*) AS totalDataPoints,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) < 40, 1,0)) AS level0,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 40 and (AUDIT_SCORE_PERCENTAGE) < 60, 1,0)) AS level1,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 60 and (AUDIT_SCORE_PERCENTAGE) < 80, 1,0)) AS level2,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 80 and (AUDIT_SCORE_PERCENTAGE) < 90, 1,0)) AS level3,'
-            . ' SUM(IF((AUDIT_SCORE_PERCENTAGE) >= 90, 1,0)) AS level4' . $mappingColumns
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 40, 1,0)) AS level0,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 40 and FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 60, 1,0)) AS level1,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 60 and FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 80, 1,0)) AS level2,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 80 and FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) < 90, 1,0)) AS level3,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCENTAGE + 0.5) >= 90, 1,0)) AS level4' . $mappingColumns
             . ' FROM spi_form_v_6 AS spiv6' . $mappingJoin . ' WHERE ' . implode(' AND ', $where),
             $values
         );
@@ -1313,18 +1314,15 @@ class SpiFormVer6Table
         }
     }
 
-    /**
-     * The scoreLevel filter: the score band of levels 0 to 4. When $rounded,
-     * levels 1 to 4 compare the rounded score, as the submissions list does.
-     */
-    private static function addScoreLevel($params, array &$where, bool $rounded = false): void
+    /** The scoreLevel filter: levels 0 to 4 of the rounded score (AuditScore). */
+    private static function addScoreLevel($params, array &$where): void
     {
         if (!isset($params['scoreLevel']) || $params['scoreLevel'] == '') {
             return;
         }
-        $score = $rounded ? 'ROUND(spiv6.AUDIT_SCORE_PERCENTAGE)' : 'spiv6.AUDIT_SCORE_PERCENTAGE';
+        $score = AuditScore::sql('spiv6.AUDIT_SCORE_PERCENTAGE');
         $band = match (true) {
-            $params['scoreLevel'] == 0 => 'spiv6.AUDIT_SCORE_PERCENTAGE < 40',
+            $params['scoreLevel'] == 0 => "$score < 40",
             $params['scoreLevel'] == 1 => "$score >= 40 AND $score < 60",
             $params['scoreLevel'] == 2 => "$score >= 60 AND $score < 80",
             $params['scoreLevel'] == 3 => "$score >= 80 AND $score < 90",
@@ -1448,7 +1446,7 @@ class SpiFormVer6Table
      * The approved-audit filters of the view-data lists' ap sources: the
      * last 180 days for apl180, testing point, round, score band and level.
      */
-    private static function addApprovedViewDataFilters($parameters, bool $roundedScore, array &$where, array &$values): void
+    private static function addApprovedViewDataFilters($parameters, array &$where, array &$values): void
     {
         if ($parameters['source'] == 'apl180') {
             $where[] = "(`assesmentofaudit` BETWEEN CURDATE() - INTERVAL 180 DAY AND CURDATE())";
@@ -1464,7 +1462,7 @@ class SpiFormVer6Table
             }
         }
         self::addAuditRound($parameters, $where, $values);
-        self::addScoreLevel($parameters, $where, $roundedScore);
+        self::addScoreLevel($parameters, $where);
         if (isset($parameters['level']) && $parameters['level'] != '') {
             self::addEquals('spiv6.level', $parameters['level'], $where, $values);
         }
@@ -1493,7 +1491,7 @@ class SpiFormVer6Table
                 . ' spiv6.testingpointtype_other AS testingpointtype_other, spiv6.level AS level, spiv6.affiliation AS affiliation,'
                 . ' spiv6.AUDIT_SCORE_PERCENTAGE AS AUDIT_SCORE_PERCENTAGE';
             $where[] = "spiv6.status = 'approved'";
-            self::addApprovedViewDataFilters($parameters, false, $where, $values);
+            self::addApprovedViewDataFilters($parameters, $where, $values);
             if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
                 self::addEquals('spiv6.affiliation', $parameters['affiliation'], $where, $values);
             }
@@ -1571,7 +1569,7 @@ class SpiFormVer6Table
         if (isset($parameters['affiliation']) && $parameters['affiliation'] != '') {
             self::addEquals('spiv6.affiliation', $parameters['affiliation'], $where, $values);
         }
-        self::addScoreLevel($parameters, $where, true);
+        self::addScoreLevel($parameters, $where);
         [$columns, $joins] = self::addLocationScope($parameters, $loginContainer, $where, $values);
         self::addTokenRule($loginContainer, $where, $values);
         $from = ' FROM spi_form_v_6 AS spiv6' . $joins;
@@ -2145,7 +2143,7 @@ class SpiFormVer6Table
             self::addEquals('spiv6.affiliation', $parameters['affiliation'], $where, $values);
         }
         self::addTokenRule($loginContainer, $where, $values);
-        self::addScoreLevel($parameters, $where, true);
+        self::addScoreLevel($parameters, $where);
         [$columns, $joins] = self::addInlineMapping($loginContainer, $where, $values, 'fm');
         // The page's location filters: an inner join each, which adds that
         // column of the facility to each row. Unlinked audits do not match.
@@ -2607,9 +2605,9 @@ class SpiFormVer6Table
                 . ' spiv6.assesmentofaudit AS assesmentofaudit, spiv6.client_tested_HIV_PM AS client_tested_HIV_PM,'
                 . ' spiv6.testingpointtype AS testingpointtype, spiv6.testingpointname AS testingpointname,'
                 . ' spiv6.testingpointtype_other AS testingpointtype_other, spiv6.level AS level, spiv6.affiliation AS affiliation,'
-                . ' ROUND(AUDIT_SCORE_PERCENTAGE) AS AUDIT_SCORE_PERCENTAGE';
+                . ' ' . AuditScore::sql('AUDIT_SCORE_PERCENTAGE') . ' AS AUDIT_SCORE_PERCENTAGE';
             $where[] = "spiv6.status = 'approved'";
-            self::addApprovedViewDataFilters($parameters, true, $where, $values);
+            self::addApprovedViewDataFilters($parameters, $where, $values);
         } elseif ($parameters['source'] == 'apspi') {
             $columns = 'spiv6.assesmentofaudit AS assesmentofaudit, spiv6.client_tested_HIV_PM AS client_tested_HIV_PM, '
                 . self::averages(['PERSONAL_SCORE', 'PHYSICAL_SCORE', 'SAFETY_SCORE', 'PRETEST_SCORE', 'TEST_SCORE', 'POST_SCORE', 'EQA_SCORE']);
@@ -2646,8 +2644,9 @@ class SpiFormVer6Table
         $summaryColumns = 'COUNT(*) AS filtered';
         if ($isScored) {
             $score = 'COALESCE(t.AUDIT_SCORE_PERCENTAGE + 0, 0)';
-            $summaryColumns .= ", SUM($score) AS scoreTotal, SUM($score < 40) AS levelZero, SUM($score >= 40 AND $score < 60) AS levelOne,"
-                . " SUM($score >= 60 AND $score < 80) AS levelTwo, SUM($score >= 80 AND $score < 90) AS levelThree, SUM($score >= 90) AS levelFour";
+            $percent = AuditScore::sql($score);
+            $summaryColumns .= ", SUM($score) AS scoreTotal, SUM($percent < 40) AS levelZero, SUM($percent >= 40 AND $percent < 60) AS levelOne,"
+                . " SUM($percent >= 60 AND $percent < 80) AS levelTwo, SUM($percent >= 80 AND $percent < 90) AS levelThree, SUM($percent >= 90) AS levelFour";
         }
         $summary = $this->db->fetchAssociative('SELECT ' . $summaryColumns . ' FROM (' . $filtered . ') AS t', $values);
         $iFilteredTotal = (int) $summary['filtered'];
@@ -2671,7 +2670,7 @@ class SpiFormVer6Table
             $level = null;
 
             if ($isScored) {
-                $scorePer = (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
+                $scorePer = AuditScore::percent($aRow['AUDIT_SCORE_PERCENTAGE']);
                 if ($scorePer < 40) {
                     $level = 0;
                 } elseif ($scorePer < 60) {
@@ -2795,19 +2794,20 @@ class SpiFormVer6Table
             $level = null;
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
-                if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
+                $percent = AuditScore::percent($aRow['AUDIT_SCORE_PERCENTAGE']);
+                if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 40 && $percent < 60) {
                     $level = 1;
                     $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 60 && $percent < 80) {
                     $level = 2;
                     $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 80 && $percent < 90) {
                     $level = 3;
                     $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 90) {
                     $level = 4;
                     $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                 }
@@ -2933,19 +2933,20 @@ class SpiFormVer6Table
             $level = null;
             if ($parameters['source'] == 'hv' || $parameters['source'] == 'la' || $parameters['source'] == 'apall' || $parameters['source'] == 'apl180' || $parameters['source'] == 'ap') {
                 $auditScore += (float) $aRow['AUDIT_SCORE_PERCENTAGE'];
-                if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] < 40) {
+                $percent = AuditScore::percent($aRow['AUDIT_SCORE_PERCENTAGE']);
+                if (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent < 40) {
                     $level = 0;
                     $levelZero[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 60) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 40 && $percent < 60) {
                     $level = 1;
                     $levelOne[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 80) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 60 && $percent < 80) {
                     $level = 2;
                     $levelTwo[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCENTAGE'] < 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 80 && $percent < 90) {
                     $level = 3;
                     $levelThree[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
-                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $aRow['AUDIT_SCORE_PERCENTAGE'] >= 90) {
+                } elseif (isset($aRow['AUDIT_SCORE_PERCENTAGE']) && $percent >= 90) {
                     $level = 4;
                     $levelFour[] = $aRow['AUDIT_SCORE_PERCENTAGE'];
                 }
