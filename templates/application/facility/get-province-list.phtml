@@ -90,13 +90,13 @@
 									<select id="facility" name="facility[]" multiple="multiple">
 										<?php
 										foreach ($facilityName['allName'] as $name) {
-											if (trim($name['facility_id']) != '') {
+											if (trim((string) $name['facility_id']) != '') {
 												$facility = $name['facility_id'] . " - " . ucwords($name['facility_name']);
 											} else {
 												$facility = ucwords($name['facility_name']);
 											}
 										?>
-											<option value="<?php echo (int) $name['id']; ?>"><?php echo $facility; ?></option>
+											<option value="<?php echo (int) $name['id']; ?>"><?php echo $this->escapeHtml($facility); ?></option>
 										<?php
 										}
 										?>
