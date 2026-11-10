@@ -37,9 +37,34 @@ final class IndexHandler extends ActionHandler
             return $this->respond->page('application/index/audit-locations');
         }
         return $this->respond->fragment('application/index/audit-locations', [
-            'allSubmissions' => $this->odkFormService->getAllApprovedSubmissionLocationV6($this->post($request)),
+            'points' => self::mapPoints($this->odkFormService->getAllApprovedSubmissionLocationV6($this->post($request))),
             'configData' => $this->commonService->getGlobalConfigDetails(),
         ]);
+    }
+
+    /**
+     * The public map's points: the score and a location rounded to one
+     * decimal place, about 11 km. The page is public, so it shows where
+     * audits scored what, not which lab scored it.
+     *
+     * @param list<array<string, mixed>> $audits
+     * @return list<array{latitude: float, longitude: float, score: float}>
+     */
+    private static function mapPoints(array $audits): array
+    {
+        $points = [];
+        foreach ($audits as $audit) {
+            if (!is_numeric($audit['Latitude'] ?? null) || !is_numeric($audit['Longitude'] ?? null)) {
+                continue;
+            }
+            $points[] = [
+                'latitude' => round((float) $audit['Latitude'], 1),
+                'longitude' => round((float) $audit['Longitude'], 1),
+                'score' => (float) ($audit['AUDIT_SCORE_PERCENTAGE'] ?? 0),
+            ];
+        }
+
+        return $points;
     }
 
     public function auditPerformanceAction(ServerRequestInterface $request): ResponseInterface

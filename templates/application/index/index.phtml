@@ -272,7 +272,8 @@ $config = $this->GlobalConfigHelper();
 			$barData[] = "{ y : " . round((float) ($row['AUDIT_SCORE_PERCENTAGE']), 2) . ", color : '" . $color . "' }";
 			// The column is text. A blank or other text plots as 0.
 			$volumeData[] = (float) ($row['client_tested_HIV_PM'] ?? 0);
-			$labNameData[] = ("'Date : " . $this->humanReadableDateFormat($row['assesmentofaudit']) . "<br>' + ' ' + 'Facility Name : " . addslashes(\Application\Service\CommonService::escapeHtml($row['facilityname'])) . " <br> Testing Point Name : " . "<br>'");
+			// The page is public, so the tooltip names the audit date, not the lab.
+			$labNameData[] = "'Date : " . addslashes((string) $this->humanReadableDateFormat($row['assesmentofaudit'])) . "'";
 			$counter++;
 		}
 		?>
