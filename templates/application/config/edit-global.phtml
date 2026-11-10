@@ -32,7 +32,7 @@
 											</div>
 											<div>
 												<span class="btn btn-default btn-file"><span class="fileinput-new"><?= $this->translate('Select image'); ?></span><span class="fileinput-exists"><?= $this->translate('Change'); ?></span>
-													<input type="file" id="logo" name="logo" accept="image/jpeg,image/png,image/gif" title="<?= $this->translate('Please select logo image'); ?>" onchange="getNewImage('<?php echo $this->escapeHtml($config['logo']); ?>');">
+													<input type="file" id="logo" name="logo" accept="image/jpeg,image/png,image/gif,image/webp,image/avif" title="<?= $this->translate('Please select logo image'); ?>" onchange="getNewImage('<?php echo $this->escapeHtml($config['logo']); ?>');">
 												</span>
 												<?php
 												if (isset($config['logo']) && trim($config['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['logo'])) {
@@ -63,7 +63,7 @@
 											</div>
 											<div>
 												<span class="btn btn-default btn-file"><span class="fileinput-new"><?= $this->translate('Select image'); ?></span><span class="fileinput-exists"><?= $this->translate('Change'); ?></span>
-													<input type="file" id="additional_logo" name="additional_logo" accept="image/jpeg,image/png,image/gif" title="<?= $this->translate('Please select additional logo image'); ?>" onchange="getNewAdditionalLogoImage('<?php echo $this->escapeHtml($config['additional_logo']); ?>');">
+													<input type="file" id="additional_logo" name="additional_logo" accept="image/jpeg,image/png,image/gif,image/webp,image/avif" title="<?= $this->translate('Please select additional logo image'); ?>" onchange="getNewAdditionalLogoImage('<?php echo $this->escapeHtml($config['additional_logo']); ?>');">
 												</span>
 												<?php
 												if (isset($config['additional_logo']) && trim($config['additional_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $config['additional_logo'])) {

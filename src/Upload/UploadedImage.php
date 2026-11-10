@@ -7,11 +7,13 @@ namespace App\Upload;
 use GdImage;
 
 /**
- * Saves an uploaded profile photo or logo. The upload must be a JPEG, PNG
- * or GIF image. The class decodes the image and writes a new copy, so
- * nothing else from the uploaded file reaches the uploads folder. The
- * extension comes from the image type, not from the uploaded file name.
- * The PDF headers read the logo, and they handle these three types.
+ * Saves an uploaded profile photo or logo. The upload must be a JPEG, PNG,
+ * GIF, WebP or AVIF image. The class decodes the image and writes a new
+ * copy, so nothing else from the uploaded file reaches the uploads folder.
+ *
+ * A JPEG is saved as a JPEG. Every other type is saved as a PNG, which
+ * keeps transparency. The PDF headers read the logo, and TCPDF embeds a
+ * JPEG or PNG as it is but turns a WebP into a JPEG without transparency.
  */
 final class UploadedImage
 {
@@ -19,7 +21,9 @@ final class UploadedImage
     private const EXTENSIONS = [
         IMAGETYPE_JPEG => 'jpg',
         IMAGETYPE_PNG => 'png',
-        IMAGETYPE_GIF => 'gif',
+        IMAGETYPE_GIF => 'png',
+        IMAGETYPE_WEBP => 'png',
+        IMAGETYPE_AVIF => 'png',
     ];
 
     /** The largest image, in pixels, that the class decodes. */
@@ -41,13 +45,19 @@ final class UploadedImage
         $size = @getimagesize($file['tmp_name']);
         $extension = $size === false ? null : (self::EXTENSIONS[$size[2]] ?? null);
         if ($extension === null || $size[0] < 1 || $size[1] < 1 || $size[0] * $size[1] > self::MAX_PIXELS) {
-            error_log('Refused an upload that is not a JPEG, PNG or GIF image: ' . ($file['name'] ?? ''));
+            error_log('Refused an upload that is not a JPEG, PNG, GIF, WebP or AVIF image: ' . ($file['name'] ?? ''));
             return null;
         }
+        // A server's GD may lack AVIF support. The upload is then refused here.
         $image = @imagecreatefromstring((string) file_get_contents($file['tmp_name']));
         if ($image === false) {
             error_log('Could not read the uploaded image: ' . ($file['name'] ?? ''));
             return null;
+        }
+        // A GIF decodes to a palette. True colour keeps its transparency
+        // through the scaling and the PNG.
+        if (!imageistruecolor($image)) {
+            imagepalettetotruecolor($image);
         }
         if ($maxWidth > 0 && $maxHeight > 0) {
             $image = self::fit($image, $maxWidth, $maxHeight);
@@ -56,11 +66,7 @@ final class UploadedImage
         $fileName = $name . '.' . $extension;
         $path = $folder . DIRECTORY_SEPARATOR . $fileName;
         imagesavealpha($image, true);
-        $saved = match ($extension) {
-            'jpg' => imagejpeg($image, $path, 90),
-            'png' => imagepng($image, $path),
-            'gif' => imagegif($image, $path),
-        };
+        $saved = $extension === 'jpg' ? imagejpeg($image, $path, 90) : imagepng($image, $path);
 
         return $saved ? $fileName : null;
     }
