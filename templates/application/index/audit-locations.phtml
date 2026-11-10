@@ -32,35 +32,26 @@ $icon = $this->basePath('assets/img/map-points/dark-green.png');
 		}).addTo(map);
 
 		// visualize the markers on the map
-		<?php foreach ($allSubmissions as $row) {
-			if (isset($row['Latitude']) && $row['Latitude'] != "") {
+		<?php foreach ($points as $point) {
+			$score = $point['score'];
+			if ($score >= 90) {
 				$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				if ($row['AUDIT_SCORE_PERCENTAGE'] >= 90) {
-					$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 80 && $row['AUDIT_SCORE_PERCENTAGE'] <= 89) {
-					$icon = $this->basePath('assets/img/map-points/light-green.png');
-				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 60 && $row['AUDIT_SCORE_PERCENTAGE'] <= 79) {
-					$icon = $this->basePath('assets/img/map-points/yellow.png');
-				} else if ($row['AUDIT_SCORE_PERCENTAGE'] >= 40 && $row['AUDIT_SCORE_PERCENTAGE'] <= 599) {
-					$icon = $this->basePath('assets/img/map-points/orange.png');
-				} else {
-					$icon = $this->basePath('assets/img/map-points/red.png');
-				}
+			} else if ($score >= 80 && $score <= 89) {
+				$icon = $this->basePath('assets/img/map-points/light-green.png');
+			} else if ($score >= 60 && $score <= 79) {
+				$icon = $this->basePath('assets/img/map-points/yellow.png');
+			} else if ($score >= 40 && $score <= 599) {
+				$icon = $this->basePath('assets/img/map-points/orange.png');
+			} else {
+				$icon = $this->basePath('assets/img/map-points/red.png');
+			}
 		?>
-				var marker = L.marker([<?php echo \Application\Service\CommonService::jsonEncode($row['Latitude']); ?>, <?php echo \Application\Service\CommonService::jsonEncode($row['Longitude']); ?>], {
-						icon: new LeafIcon({
-							iconUrl: "<?php echo $icon; ?>"
-						})
-					}).bindPopup(<?php echo \Application\Service\CommonService::jsonEncode(\Application\Service\CommonService::escapeHtml($row['facilityname'])); ?>)
-					.addTo(map).on('mouseover', function(e) {
-						this.openPopup();
-					})
-					.on('mouseout', function(e) {
-						this.closePopup();
-					});
-
-		<?php }
-		} ?>
+			L.marker([<?php echo \Application\Service\CommonService::jsonEncode($point['latitude']); ?>, <?php echo \Application\Service\CommonService::jsonEncode($point['longitude']); ?>], {
+				icon: new LeafIcon({
+					iconUrl: "<?php echo $icon; ?>"
+				})
+			}).addTo(map);
+		<?php } ?>
 
 	});
 </script>
