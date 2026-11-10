@@ -1910,10 +1910,7 @@ class SpiFormVer3Table
                 $values
             );
 
-            $aResult = $this->fetchRowObject(
-                'SELECT spiv3_fclt.facility_name AS facility_name, spiv3_fclt.email AS email FROM spi_rt_3_facilities AS spiv3_fclt WHERE spiv3_fclt.facility_name = ?',
-                [$params['facilityName']]
-            );
+            $aResult = (new SpiRtFacilitiesTable($this->db))->fetchFacilityByName($params['facilityName']);
         }
         return array('audits' => $audits, 'facilityProfile' => $aResult);
     }
