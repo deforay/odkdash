@@ -54,9 +54,12 @@ final class FacilityHandler extends ActionHandler
             $this->facilityService->updateFacility($this->post($request));
             return $this->respond->redirect('spi-facility');
         }
-        $id = base64_decode((string) $this->routeParam($request, 'id'));
+        $facility = $this->facilityService->getFacility(base64_decode((string) $this->routeParam($request, 'id')));
+        if ($facility === null) {
+            return $this->respond->status(404);
+        }
         return $this->respond->page('application/facility/edit', [
-            'result' => $this->facilityService->getFacility($id),
+            'result' => $facility,
             'provinceResult' => $this->provinceService->getAllActiveProvinces(),
             'countries' => $this->provinceService->getAllMapedCountries(),
         ]);
