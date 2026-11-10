@@ -36,11 +36,11 @@ $icon = $this->basePath('assets/img/map-points/dark-green.png');
 			$score = $point['score'];
 			if ($score >= 90) {
 				$icon = $this->basePath('assets/img/map-points/dark-green.png');
-			} else if ($score >= 80 && $score <= 89) {
+			} else if ($score >= 80 && $score < 90) {
 				$icon = $this->basePath('assets/img/map-points/light-green.png');
-			} else if ($score >= 60 && $score <= 79) {
+			} else if ($score >= 60 && $score < 80) {
 				$icon = $this->basePath('assets/img/map-points/yellow.png');
-			} else if ($score >= 40 && $score <= 599) {
+			} else if ($score >= 40 && $score < 60) {
 				$icon = $this->basePath('assets/img/map-points/orange.png');
 			} else {
 				$icon = $this->basePath('assets/img/map-points/red.png');

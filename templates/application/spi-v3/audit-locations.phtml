@@ -8,11 +8,11 @@
 				$icon = $this->basePath('assets/img/map-points/dark-green.png');
 				if ($percentage >= 90) {
 					$icon = $this->basePath('assets/img/map-points/dark-green.png');
-				} else if ($percentage >= 80 && $percentage <= 89) {
+				} else if ($percentage >= 80 && $percentage < 90) {
 					$icon = $this->basePath('assets/img/map-points/light-green.png');
-				} else if ($percentage >= 60 && $percentage <= 79) {
+				} else if ($percentage >= 60 && $percentage < 80) {
 					$icon = $this->basePath('assets/img/map-points/yellow.png');
-				} else if ($percentage >= 40 && $percentage <= 599) {
+				} else if ($percentage >= 40 && $percentage < 60) {
 					$icon = $this->basePath('assets/img/map-points/orange.png');
 				} else {
 					$icon = $this->basePath('assets/img/map-points/red.png');

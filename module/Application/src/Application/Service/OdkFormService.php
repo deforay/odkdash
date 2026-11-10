@@ -1530,11 +1530,11 @@ class OdkFormService
                 if ($params['scoreLevel'] == 0) {
                     $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE < 40";
                 } elseif ($params['scoreLevel'] == 1) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59";
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE < 60";
                 } elseif ($params['scoreLevel'] == 2) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79";
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE < 80";
                 } elseif ($params['scoreLevel'] == 3) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89";
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE < 90";
                 } elseif ($params['scoreLevel'] == 4) {
                     $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 90";
                 }

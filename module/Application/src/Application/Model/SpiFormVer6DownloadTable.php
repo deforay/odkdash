@@ -95,11 +95,11 @@ class SpiFormVer6DownloadTable
                 if ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 0) {
                     $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE < 40";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 1) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 59";
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE < 60";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 2) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 79";
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE < 80";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 3) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE <= 89";
+                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE < 90";
                 } elseif ($queryResult['AUDIT_SCORE_PERCENTAGE'] == 4) {
                     $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 90";
                 }

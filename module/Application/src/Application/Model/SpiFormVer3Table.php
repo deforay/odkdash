@@ -196,9 +196,9 @@ class SpiFormVer3Table
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             $band = match (true) {
                 $params['scoreLevel'] == 0 => 'spiv3.AUDIT_SCORE_PERCANTAGE < 40',
-                $params['scoreLevel'] == 1 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 59',
-                $params['scoreLevel'] == 2 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 79',
-                $params['scoreLevel'] == 3 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE <= 89',
+                $params['scoreLevel'] == 1 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE < 60',
+                $params['scoreLevel'] == 2 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE < 80',
+                $params['scoreLevel'] == 3 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE < 90',
                 $params['scoreLevel'] == 4 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 90',
                 default => null,
             };
