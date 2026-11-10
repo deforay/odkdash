@@ -323,14 +323,35 @@ class SpiRtFacilitiesTable
         return $id !== false ? $id : $this->insert($this->facilityInfo($params));
     }
 
+    /** Saves the email address on the facility that fetchFacilityByName() finds. */
     public function updateFacilityEmailAddress($params)
     {
         $result = 0;
         if (isset($params['facility']) && trim($params['facility']) != '') {
             $result = 1;
-            $this->update(['email' => $params['emailAddress']], ['facility_name' => $params['facility']]);
+            $facility = $this->fetchFacilityByName($params['facility']);
+            if ($facility !== null) {
+                $this->update(['email' => $params['emailAddress']], ['id' => $facility['id']]);
+            }
         }
         return $result;
+    }
+
+    /**
+     * The facility with this name in the user's locations, for the email
+     * pages. Audits name their facility, and two facilities can share a
+     * name, so this picks the one with the lowest id.
+     */
+    public function fetchFacilityByName(string $name): ?\ArrayObject
+    {
+        [$scope, $scopeValues] = self::mappingCondition('spirt3');
+        $row = $this->db->fetchAssociative(
+            "SELECT spirt3.id, spirt3.facility_name, spirt3.email FROM spi_rt_3_facilities AS spirt3"
+            . " WHERE spirt3.facility_name = ? AND spirt3.status != 'deleted'" . ($scope !== '' ? " AND $scope" : '')
+            . ' ORDER BY spirt3.id LIMIT 1',
+            [$name, ...$scopeValues]
+        );
+        return $row ? new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS) : null;
     }
 
     public function fetchFacilityProfileByAudit($ids)
@@ -385,10 +406,17 @@ class SpiRtFacilitiesTable
             // Only what was chosen is written: a province or district left blank
             // keeps the facility's current value instead of clearing it.
             $data = array_filter(['province' => $provinceId, 'district' => $districtId], fn($value) => $value !== null);
+            // The form sends facility ids. A facility outside the user's
+            // locations is left as it is.
+            $ids = array_map('intval', (array) $params['facility']);
             if ($data !== []) {
-                foreach ($params['facility'] as $facilityName) {
-                    $this->update($data, ['facility_name' => $facilityName]);
-                }
+                [$scope, $scopeValues] = self::mappingCondition('spirt3');
+                $set = implode(', ', array_map(fn($column) => "spirt3.$column = ?", array_keys($data)));
+                $this->db->executeStatement(
+                    "UPDATE spi_rt_3_facilities AS spirt3 SET $set WHERE spirt3.id IN ("
+                    . implode(', ', array_fill(0, count($ids), '?')) . ')' . ($scope !== '' ? " AND $scope" : ''),
+                    [...array_values($data), ...$ids, ...$scopeValues]
+                );
             }
 
             $subject = '';
@@ -472,11 +500,7 @@ class SpiRtFacilitiesTable
                 "SELECT $auditColumns FROM $formTable WHERE facilityname = ? AND status = 'approved'",
                 [$facilityName]
             );
-            $row = $this->db->fetchAssociative(
-                'SELECT facility_name, email FROM spi_rt_3_facilities WHERE facility_name = ? LIMIT 1',
-                [$facilityName]
-            );
-            $fResult = $row ? new \ArrayObject($row, \ArrayObject::ARRAY_AS_PROPS) : null;
+            $fResult = $this->fetchFacilityByName((string) $facilityName);
         }
         return ['fResult' => $fResult, 'auditsResult' => $auditsResult];
     }
