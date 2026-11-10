@@ -4,6 +4,7 @@ namespace Application\Model;
 
 use Doctrine\DBAL\Connection;
 
+use App\Audit\AuditScore;
 use App\Db\DataTables;
 use Application\Session\Container;
 use Application\Model\GlobalTable;
@@ -195,11 +196,11 @@ class SpiFormVer3Table
         }
         if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
             $band = match (true) {
-                $params['scoreLevel'] == 0 => 'spiv3.AUDIT_SCORE_PERCANTAGE < 40',
-                $params['scoreLevel'] == 1 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 40 AND spiv3.AUDIT_SCORE_PERCANTAGE < 60',
-                $params['scoreLevel'] == 2 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 60 AND spiv3.AUDIT_SCORE_PERCANTAGE < 80',
-                $params['scoreLevel'] == 3 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 80 AND spiv3.AUDIT_SCORE_PERCANTAGE < 90',
-                $params['scoreLevel'] == 4 => 'spiv3.AUDIT_SCORE_PERCANTAGE >= 90',
+                $params['scoreLevel'] == 0 => 'FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) < 40',
+                $params['scoreLevel'] == 1 => 'FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) >= 40 AND FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) < 60',
+                $params['scoreLevel'] == 2 => 'FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) >= 60 AND FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) < 80',
+                $params['scoreLevel'] == 3 => 'FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) >= 80 AND FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) < 90',
+                $params['scoreLevel'] == 4 => 'FLOOR(spiv3.AUDIT_SCORE_PERCANTAGE + 0.5) >= 90',
                 default => null,
             };
             if ($band !== null) {
@@ -894,11 +895,11 @@ class SpiFormVer3Table
         $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT MIN(`assesmentofaudit`) AS oldestDate, MAX(`assesmentofaudit`) AS newestDate, COUNT(*) AS totalDataPoints,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0)) AS level0,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0)) AS level1,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0)) AS level2,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0)) AS level3,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0)) AS level4' . $provinceColumns
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 40, 1,0)) AS level0,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 40 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 60, 1,0)) AS level1,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 60 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 80, 1,0)) AS level2,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 80 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 90, 1,0)) AS level3,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 90, 1,0)) AS level4' . $provinceColumns
             . ' FROM spi_form_v_3 AS spiv3' . $provinceJoin . $scopeJoin . self::whereSql($where),
             $values
         );
@@ -931,11 +932,11 @@ class SpiFormVer3Table
         [$provinceColumns, $provinceJoin] = self::addProvinceFilters($params, $where, $values);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT ? AS newestDate, ? AS oldestDate, COUNT(*) AS totalDataPoints,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0)) AS level0,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0)) AS level1,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0)) AS level2,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0)) AS level3,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0)) AS level4' . $provinceColumns
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 40, 1,0)) AS level0,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 40 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 60, 1,0)) AS level1,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 60 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 80, 1,0)) AS level2,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 80 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 90, 1,0)) AS level3,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 90, 1,0)) AS level4' . $provinceColumns
             . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . $provinceJoin . self::whereSql($where),
             $values
         );
@@ -954,11 +955,11 @@ class SpiFormVer3Table
         $scopeJoin = self::addLocationScope($loginContainer, $where, $values);
         $rResult = $this->db->fetchAllAssociative(
             'SELECT ? AS newestDate, ? AS oldestDate, COUNT(*) AS totalDataPoints,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) < 40, 1,0)) AS level0,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 40 and (AUDIT_SCORE_PERCANTAGE) < 60, 1,0)) AS level1,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 60 and (AUDIT_SCORE_PERCANTAGE) < 80, 1,0)) AS level2,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 80 and (AUDIT_SCORE_PERCANTAGE) < 90, 1,0)) AS level3,'
-            . ' SUM(IF((AUDIT_SCORE_PERCANTAGE) >= 90, 1,0)) AS level4'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 40, 1,0)) AS level0,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 40 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 60, 1,0)) AS level1,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 60 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 80, 1,0)) AS level2,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 80 and FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) < 90, 1,0)) AS level3,'
+            . ' SUM(IF(FLOOR(AUDIT_SCORE_PERCANTAGE + 0.5) >= 90, 1,0)) AS level4'
             . ' FROM spi_form_v_3 AS spiv3' . $scopeJoin . self::whereSql($where),
             $values
         );
@@ -1064,15 +1065,16 @@ class SpiFormVer3Table
             $approve = '';
             $downloadPdf = "";
             $auditScore += (int) $aRow['AUDIT_SCORE_PERCANTAGE'];
-            if (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] < 40) {
+            $percent = AuditScore::percent($aRow['AUDIT_SCORE_PERCANTAGE']);
+            if (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $percent < 40) {
                 $levelZero[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 40 && $aRow['AUDIT_SCORE_PERCANTAGE'] < 60) {
+            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $percent >= 40 && $percent < 60) {
                 $levelOne[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 60 && $aRow['AUDIT_SCORE_PERCANTAGE'] < 80) {
+            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $percent >= 60 && $percent < 80) {
                 $levelTwo[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 80 && $aRow['AUDIT_SCORE_PERCANTAGE'] < 90) {
+            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $percent >= 80 && $percent < 90) {
                 $levelThree[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
-            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $aRow['AUDIT_SCORE_PERCANTAGE'] >= 90) {
+            } elseif (isset($aRow['AUDIT_SCORE_PERCANTAGE']) && $percent >= 90) {
                 $levelFour[] = $aRow['AUDIT_SCORE_PERCANTAGE'];
             }
             $row['DT_RowId'] = $aRow['id'];
@@ -2136,12 +2138,13 @@ class SpiFormVer3Table
         if ($isScored) {
             $isSet = 't.AUDIT_SCORE_PERCANTAGE IS NOT NULL';
             $score = 'COALESCE(t.AUDIT_SCORE_PERCANTAGE + 0, 0)';
+            $percent = AuditScore::sql($score);
             $summaryColumns .= ", SUM($score) AS scoreTotal"
-                . ", SUM($isSet AND $score < 40) AS levelZero"
-                . ", SUM($isSet AND $score >= 40 AND $score < 60) AS levelOne"
-                . ", SUM($isSet AND $score >= 60 AND $score < 80) AS levelTwo"
-                . ", SUM($isSet AND $score >= 80 AND $score < 90) AS levelThree"
-                . ", SUM($isSet AND $score >= 90) AS levelFour";
+                . ", SUM($isSet AND $percent < 40) AS levelZero"
+                . ", SUM($isSet AND $percent >= 40 AND $percent < 60) AS levelOne"
+                . ", SUM($isSet AND $percent >= 60 AND $percent < 80) AS levelTwo"
+                . ", SUM($isSet AND $percent >= 80 AND $percent < 90) AS levelThree"
+                . ", SUM($isSet AND $percent >= 90) AS levelFour";
         }
         $summary = $this->db->fetchAssociative('SELECT ' . $summaryColumns . ' FROM (' . $sql . ') AS t', $values);
         $iFilteredTotal = (int) $summary['filtered'];
@@ -2181,7 +2184,7 @@ class SpiFormVer3Table
             // Reset per row: a row without a score would otherwise show the previous row's level.
             $level = null;
             if ($isScored && isset($aRow['AUDIT_SCORE_PERCANTAGE'])) {
-                $scorePer = $aRow['AUDIT_SCORE_PERCANTAGE'];
+                $scorePer = AuditScore::percent($aRow['AUDIT_SCORE_PERCANTAGE']);
                 if ($scorePer < 40) {
                     $level = 0;
                 } elseif ($scorePer < 60) {

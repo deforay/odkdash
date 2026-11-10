@@ -15,6 +15,7 @@ use Application\Service\GuzzleApiLogMiddleware;
 use JsonMachine\Items;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use App\Audit\AuditScore;
 use Doctrine\DBAL\Connection;
 use CpChart\Chart\Radar;
 use App\Export\FacilityReport;
@@ -146,7 +147,7 @@ class OdkFormService
             $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
             $book->addRow(['Facility Report SPI-RT--CHECKLIST-version-3']);
             $book->addRow([$displayDate, $auditRndNo, $levelData, $affiliation, $province, $scoreLevel, $testPoint]);
-            $written = $this->writeAuditRows($book, $rows, false);
+            $written = $this->writeAuditRows($book, $rows);
             $book->addRow(['No.of Audit(s)    : ' . $written['count']]);
             $book->addRow(['Avg. Audit Score    : ' . ($written['count'] > 0 ? round($written['auditScore'] / $written['count'], 2) : '')]);
             foreach (self::SCORE_LEVEL_LABELS as $level => $label) {
@@ -1528,15 +1529,15 @@ class OdkFormService
 
             if (isset($params['scoreLevel']) && $params['scoreLevel'] != '') {
                 if ($params['scoreLevel'] == 0) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE < 40";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 40";
                 } elseif ($params['scoreLevel'] == 1) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 40 AND spiv6.AUDIT_SCORE_PERCENTAGE < 60";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 40 AND FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 60";
                 } elseif ($params['scoreLevel'] == 2) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 60 AND spiv6.AUDIT_SCORE_PERCENTAGE < 80";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 60 AND FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 80";
                 } elseif ($params['scoreLevel'] == 3) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 80 AND spiv6.AUDIT_SCORE_PERCENTAGE < 90";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 80 AND FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) < 90";
                 } elseif ($params['scoreLevel'] == 4) {
-                    $where[] = "spiv6.AUDIT_SCORE_PERCENTAGE >= 90";
+                    $where[] = "FLOOR(spiv6.AUDIT_SCORE_PERCENTAGE + 0.5) >= 90";
                 }
             }
             if (!empty($loginContainer->token)) {
@@ -1557,7 +1558,7 @@ class OdkFormService
             $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
             $book->addRow(['Facility Report SPI-RT--CHECKLIST-version-6-S-AND-D-SECTION']);
             $book->addRow([$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint]);
-            $written = $this->writeAuditRows($book, $rows, true);
+            $written = $this->writeAuditRows($book, $rows);
             $book->addRow(['No.of Audit(s)    : ' . $written['count']]);
             $book->addRow(['Avg. Audit Score    : ' . ($written['count'] > 0 ? round($written['auditScore'] / $written['count'], 2) : '')]);
             foreach (self::SCORE_LEVEL_LABELS as $level => $label) {
@@ -1636,7 +1637,7 @@ class OdkFormService
             $book = new Workbook(CommonService::downloadFile($filename), ['A1:Q1']);
             $book->addRow(['Facility Report SPI-RRT--CHECKLIST-version-6']);
             $book->addRow([$displayDate, $auditRndNo, $levelData, $affiliation, $scoreLevel, $testPoint]);
-            $written = $this->writeAuditRows($book, $rows, true, self::V6_AVERAGED_COLUMNS);
+            $written = $this->writeAuditRows($book, $rows, self::V6_AVERAGED_COLUMNS);
             $book->addRow(['No.of Audit(s)    : ' . $written['count']]);
             $book->addRow(['Avg. Audit Score    : ' . ($written['count'] > 0 ? round(round($written['auditScore'] / $written['count'], 2)) : '')]);
             foreach (self::V6_AVERAGED_COLUMNS as $column) {
@@ -2222,12 +2223,10 @@ class OdkFormService
      * left. With no audits, the column names row is empty.
      *
      * @param iterable<array<string, mixed>> $rows
-     * @param bool $roundScore Whether an audit's level comes from its score
-     *                         rounded to a whole number (V6) or as stored (V3).
      * @param list<string> $summed Columns to add up across the audits.
      * @return array{count: int, auditScore: float, levels: array<int, int>, sums: array<string, float>}
      */
-    private function writeAuditRows(Workbook $book, iterable $rows, bool $roundScore, array $summed = []): array
+    private function writeAuditRows(Workbook $book, iterable $rows, array $summed = []): array
     {
         $count = 0;
         $auditScore = 0.0;
@@ -2251,7 +2250,7 @@ class OdkFormService
                         continue;
                     }
                     $auditScore += $value;
-                    $levels[self::scoreLevel($roundScore ? round((float) $value) : (float) $value)]++;
+                    $levels[self::scoreLevel(AuditScore::percent($value))]++;
                 }
                 if ($key == 'today' || $key == 'assesmentofaudit') {
                     $value = CommonService::humanReadableDateFormat($value);
