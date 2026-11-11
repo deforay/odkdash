@@ -167,6 +167,8 @@ class UserService
                 $container->alertMsg = 'Password changed successfully';
             } else {
                 $db->rollBack();
+                $container = new Container('alert');
+                $container->alertMsg = $this->sm->get('translator')->translate('Password not changed. Check the old password, and that the new password matches its confirmation.');
             }
         } catch (\Exception $exc) {
             if ($db->isTransactionActive()) {

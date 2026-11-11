@@ -323,11 +323,20 @@ class UsersTable
         }
     }
 
+    /**
+     * Saves the signed-in user's new password. The current password must be
+     * right, and the new one must match its confirmation. Returns 0 when
+     * either check fails.
+     */
     public function updatePassword($params)
     {
+        $newPassword = (string) ($params['newpassword'] ?? '');
+        if (!$this->checkPassword($params) || trim($newPassword) === '' || $newPassword !== (string) ($params['confirmpassword'] ?? '')) {
+            return 0;
+        }
         $loginContainer = new Container('credo');
         $userId = $loginContainer->userId;
-        $password = $this->passwordHash($params['newpassword']);
+        $password = $this->passwordHash($newPassword);
         $data = array('password' => $password);
         return $this->db->update('users', $data, ['id' => $userId]);
     }
@@ -336,7 +345,7 @@ class UsersTable
     {
         $hash = $this->db->fetchOne('SELECT password FROM users WHERE id = ?', [(new Container('credo'))->userId]);
 
-        return is_string($hash) && password_verify($params['password'], $hash);
+        return is_string($hash) && password_verify((string) ($params['password'] ?? ''), $hash);
     }
 
     public function resetPassword($params)
