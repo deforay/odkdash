@@ -1,0 +1,87 @@
+<?php
+/**
+ * Sends the session's request token with every same-origin POST, PUT, PATCH
+ * and DELETE that the page makes. App\Http\Middlewares\CsrfMiddleware checks it.
+ *
+ * - XMLHttpRequest, and so jQuery: the X-CSRF-Token header.
+ * - fetch: the X-CSRF-Token header.
+ * - A form that posts: a hidden csrf_token field, added when it submits.
+ *
+ * Include it in the head of every page that has its own <html>, before any
+ * other script, so the first request a page makes carries the token.
+ */
+
+use App\Http\Middlewares\CsrfMiddleware;
+
+?>
+<script>
+(function () {
+    var token = <?= json_encode(CsrfMiddleware::token(), JSON_HEX_TAG) ?>;
+    var header = <?= json_encode(CsrfMiddleware::HEADER) ?>;
+    var field = <?= json_encode(CsrfMiddleware::FIELD) ?>;
+    var checked = /^(POST|PUT|PATCH|DELETE)$/i;
+
+    function sameOrigin(url) {
+        try {
+            return new URL(url, window.location.href).origin === window.location.origin;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function addToForm(form) {
+        // getAttribute, because an input named "method" or "action" hides
+        // the form properties of that name.
+        if (!form || form.tagName !== 'FORM'
+            || !checked.test(form.getAttribute('method') || 'GET')
+            || !sameOrigin(form.getAttribute('action') || window.location.href)) {
+            return;
+        }
+        var input = form.querySelector('input[name="' + field + '"]');
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field;
+            form.appendChild(input);
+        }
+        input.value = token;
+    }
+
+    // A form's submit() skips the submit event, so it adds the field itself.
+    document.addEventListener('submit', function (event) { addToForm(event.target); }, true);
+    var submit = HTMLFormElement.prototype.submit;
+    HTMLFormElement.prototype.submit = function () {
+        addToForm(this);
+        return submit.apply(this, arguments);
+    };
+
+    var open = XMLHttpRequest.prototype.open;
+    var send = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function (method, url) {
+        this.csrfNeeded = checked.test(method || '') && sameOrigin(url || '');
+        return open.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function () {
+        if (this.csrfNeeded) {
+            this.setRequestHeader(header, token);
+        }
+        return send.apply(this, arguments);
+    };
+
+    if (window.fetch) {
+        var fetch = window.fetch;
+        window.fetch = function (input, init) {
+            init = init || {};
+            var request = input instanceof Request ? input : null;
+            var method = init.method || (request ? request.method : 'GET');
+            var url = request ? request.url : String(input);
+            if (checked.test(method) && sameOrigin(url)) {
+                var headers = new Headers(init.headers || (request ? request.headers : undefined));
+                headers.set(header, token);
+                init.headers = headers;
+            }
+            return fetch.call(window, input, init);
+        };
+    }
+})();
+</script>
