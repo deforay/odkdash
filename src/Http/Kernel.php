@@ -6,6 +6,7 @@ namespace App\Http;
 
 use App\Http\Handlers\ClientErrorHandler;
 use App\Http\Middlewares\AccessMiddleware;
+use App\Http\Middlewares\CsrfMiddleware;
 use App\Http\Middlewares\ErrorMiddleware;
 use App\Services\ServiceDefinitions;
 use App\View\Escape;
@@ -100,6 +101,7 @@ final class Kernel
             // builds any class without a definition from its constructor.
             ErrorMiddleware::class => autowire(),
             AccessMiddleware::class => autowire(),
+            CsrfMiddleware::class => autowire(),
 
             ClientErrorHandler::class => static fn(ContainerInterface $c): ClientErrorHandler => new ClientErrorHandler(
                 $c->get(ResponseFactoryInterface::class),
@@ -136,8 +138,10 @@ final class Kernel
         }
 
         // Slim runs the middleware added last first. The order a request
-        // meets them is: errors, routing, body parsing, access, handler.
+        // meets them is: errors, routing, body parsing, request token,
+        // access, handler.
         $app->add(AccessMiddleware::class);
+        $app->add(CsrfMiddleware::class);
         $app->addBodyParsingMiddleware();
         $app->addRoutingMiddleware();
         $app->add(ErrorMiddleware::class);

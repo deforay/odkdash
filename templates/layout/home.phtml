@@ -19,6 +19,7 @@ $totalVersions = count(explode(",", $web_version));
 
 <head>
   <meta charset="utf-8" />
+  <?= $this->partial('partials/csrf-token.phtml') ?>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title><?php echo $this->translate('SPI RRT Dashboard'); ?></title>
   <meta name="description" content="" />
