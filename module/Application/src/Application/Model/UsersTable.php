@@ -23,12 +23,31 @@ class UsersTable
     }
 
 
+    /** Failed logins for one username that block further tries. */
+    public const MAX_FAILED_LOGINS = 5;
+
+    /** How far back failed logins are counted, in minutes. */
+    public const FAILED_LOGIN_WINDOW_MINUTES = 15;
+
+    /** Reason logged for a try refused because of earlier failures. */
+    private const TOO_MANY_ATTEMPTS = 'too many attempts';
+
     public function login($params, $configResult)
     {
         $container = new Container('alert');
-        $username = $params['username'];
+        $username = (string) $params['username'];
 
         $trackTable = new EventLogTable($this->db);
+
+        // Checked before the user lookup and password_verify(), so a blocked
+        // username costs no bcrypt work and gets the same answer whether or
+        // not it exists.
+        if ($this->recentFailedLogins($username) >= self::MAX_FAILED_LOGINS) {
+            $this->logFailedLogin($trackTable, $username, self::TOO_MANY_ATTEMPTS);
+            $container->alertMsg = 'Please check your login credentials';
+            return 'login';
+        }
+
         $sResult = $this->db->fetchAssociative(
             "SELECT u.*, urm.role_id, r.role_name, r.role_code
             FROM users u
@@ -43,18 +62,40 @@ class UsersTable
             $passwordValidation = password_verify($params['password'], $sResult['password']);
         }
 
-        if ($sResult) {
-            $this->db->update('users', ['last_login_datetime' => CommonService::getDateTime()], ['id' => $sResult['id']]);
-        }
-
         if ($sResult && $passwordValidation) {
+            $this->db->update('users', ['last_login_datetime' => CommonService::getDateTime()], ['id' => $sResult['id']]);
             return $this->userEventLog($sResult);
         } else {
-            $reason = $sResult ? 'invalid password' : 'unknown user';
-            $trackTable->addEventLog('', 'login-failed', "Failed login for '{$username}' ({$reason})", 'login');
+            $this->logFailedLogin($trackTable, $username, $sResult ? 'invalid password' : 'unknown user');
             $container->alertMsg = 'Please check your login credentials';
             return 'login';
         }
+    }
+
+    /**
+     * Failed logins for this username in the last FAILED_LOGIN_WINDOW_MINUTES.
+     * Tries refused for too many attempts are not counted, so the block ends
+     * once the oldest of the counted failures is older than the window, even
+     * if someone keeps trying meanwhile.
+     */
+    private function recentFailedLogins(string $username): int
+    {
+        $since = (new \DateTimeImmutable(CommonService::getDateTime()))
+            ->modify('-' . self::FAILED_LOGIN_WINDOW_MINUTES . ' minutes')
+            ->format('Y-m-d H:i:s');
+
+        return (int) $this->db->fetchOne(
+            "SELECT COUNT(*) FROM event_log
+            WHERE event_type = 'login-failed' AND subject = ? AND date_time >= ?
+            AND action NOT LIKE ?",
+            [$username, $since, '%(' . self::TOO_MANY_ATTEMPTS . ')']
+        );
+    }
+
+    /** The username goes in subject so recentFailedLogins() can count by it. */
+    private function logFailedLogin(EventLogTable $trackTable, string $username, string $reason): void
+    {
+        $trackTable->addEventLog($username, 'login-failed', "Failed login for '{$username}' ({$reason})", 'login');
     }
 
     public function passwordHash($password)
@@ -423,6 +464,12 @@ class UsersTable
         $dbConnection = $this->db;
         $gTable = new GlobalTable($dbConnection);
         $trackTable = new EventLogTable($dbConnection);
+        // A new session ID at login, so an ID planted in the browser before
+        // login (session fixation) is not the one that becomes signed in.
+        // true deletes the old session's data on the server.
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
         $loginContainer = new Container('credo');
         $scope = $this->scopeFor((int) $sResult['id'], (string) $sResult['role_code']);
 
