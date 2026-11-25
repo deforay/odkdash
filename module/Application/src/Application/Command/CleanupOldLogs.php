@@ -13,7 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Periodic cleanup for high-volume log tables (api_logs, form_dump).
+ * Periodic cleanup for high-volume log tables (api_logs, form_dump), and
+ * for failed-login rows in event_log.
  *
  * Default policy: drop rows older than --days (365) but ALWAYS keep at
  * least --floor most-recent rows per table even if older. The floor
@@ -24,12 +25,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * For each row deleted we also remove the associated compressed body
  * file on disk so var/api-logs and the form_dump folder don't grow
  * unboundedly.
+ *
+ * Failed logins (event_log rows with event_type 'login-failed') are kept for
+ * FAILED_LOGIN_DAYS, whatever --days says, and have no floor: someone who
+ * keeps guessing adds a row each time. Successful logins and every other
+ * event_log row are never touched.
  */
 class CleanupOldLogs extends Command
 {
     private const FORM_DUMP_FLOOR = 500;
     private const API_LOGS_FLOOR = 5000;
     private const DEFAULT_DAYS = 365;
+    private const FAILED_LOGIN_DAYS = 180;
 
     public function __construct(private readonly Connection $db, private readonly ApiLogsTable $apiLogsTable)
     {
@@ -38,7 +45,7 @@ class CleanupOldLogs extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Prune old api_logs and form_dump rows, and their body files');
+        $this->setDescription('Prune old api_logs and form_dump rows and their body files, and old failed-login rows');
 
         $this->addOption('days', null, InputOption::VALUE_REQUIRED, 'Delete rows older than N days', (string) self::DEFAULT_DAYS);
         $this->addOption('api-logs-floor', null, InputOption::VALUE_REQUIRED, 'Minimum api_logs rows to retain', (string) self::API_LOGS_FLOOR);
@@ -61,6 +68,7 @@ class CleanupOldLogs extends Command
 
         $this->cleanApiLogs($io, $cutoff, $apiFloor, $dryRun);
         $this->cleanFormDump($io, $cutoff, $formFloor, $dryRun);
+        $this->cleanFailedLogins($io, new \DateTimeImmutable('-' . self::FAILED_LOGIN_DAYS . ' days'), $dryRun);
 
         return Command::SUCCESS;
     }
@@ -87,6 +95,20 @@ class CleanupOldLogs extends Command
             }
         }
         $io->writeln(sprintf('api_logs: deleted <info>%d</info> rows, removed <info>%d</info> body files', $result['deleted'], $filesRemoved));
+    }
+
+    private function cleanFailedLogins(SymfonyStyle $io, \DateTimeImmutable $cutoff, bool $dryRun): void
+    {
+        $params = [$cutoff->format('Y-m-d H:i:s')];
+        if ($dryRun) {
+            $oldCount = (int) $this->db->fetchOne("SELECT COUNT(*) FROM event_log WHERE event_type = 'login-failed' AND date_time < ?", $params);
+            $io->writeln(sprintf('event_log failed logins: older-than-%s=%d · would-delete=%d',
+                $cutoff->format('Y-m-d H:i'), $oldCount, $oldCount));
+            return;
+        }
+
+        $deleted = $this->db->executeStatement("DELETE FROM event_log WHERE event_type = 'login-failed' AND date_time < ?", $params);
+        $io->writeln(sprintf('event_log failed logins: deleted <info>%d</info> rows older than %s', $deleted, $cutoff->format('Y-m-d H:i')));
     }
 
     private function cleanFormDump(SymfonyStyle $io, \DateTimeImmutable $cutoff, int $floor, bool $dryRun): void
