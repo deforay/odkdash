@@ -92,12 +92,13 @@ if ($hasEmailConfig($customConfig)) {
 // ─── Weekly log cleanup ───
 // Trims api_logs and form_dump to rows newer than 365 days, but always
 // keeps a floor of recent rows even if older so a low-activity site
-// doesn't end up with empty audit pages.
+// doesn't end up with empty audit pages. Also deletes failed-login
+// event_log rows older than 180 days.
 $schedule->run('php bin/console cleanup-old-logs')
     ->sundays()
     ->at('03:30')
     ->timezone($timezone)
-    ->description('Prune old api_logs and form_dump rows + files')
+    ->description('Prune old api_logs and form_dump rows + files, and old failed logins')
     ->appendOutputTo(__DIR__ . '/../var/log/cron-cleanup-old-logs.log');
 
 return $schedule;
