@@ -436,7 +436,7 @@ class FacilityService
                                     //$facilityNotAdded[] = $rowData;
                                 }
                             } elseif ($uploadOption == "skip_facility_name_code") {
-                                if (empty($facilityIdCheck) || empty($facilityCheck)) {
+                                if (empty($facilityIdCheck) && empty($facilityCheck)) {
                                     $facilityDb->insert($data);
                                 } else {
                                     $facilityNotAdded[] = $rowData;
